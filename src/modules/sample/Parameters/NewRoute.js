@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Card,
   Box,
@@ -82,7 +83,10 @@ const Distribution = () => {
     products: [],
   };
   const emptyCategory = {
-    categories: [],
+    active: true,
+    default: false,
+    description: "",
+    productCategoryId: uuidv4()
   };
   const dispatch = useDispatch();
   const [routes, setRoutes] = React.useState([]);
@@ -351,6 +355,11 @@ const Distribution = () => {
         metadata4: 'EUROS',
       };
     }
+    let finalCategories = categories;
+
+    if(finalCategories.length >= 1){
+      finalCategories[0].default = true;
+    }
     const finalPayload = {
       request: {
         payload: {
@@ -362,7 +371,7 @@ const Distribution = () => {
           defaultIgvValue: defaultIgvActivation,
           price: defaultPriceRange,
           filters: filters,
-          categories: categories,
+          categories: finalCategories,
         },
       },
     };

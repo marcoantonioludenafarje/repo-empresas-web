@@ -83,6 +83,7 @@ const CategoryCard = ({
   const [openSelectProduct, setOpenSelectProduct] = React.useState(false);
   const [makeReferralGuide, setMakeReferralGuide] = React.useState(false);
   const [readyData, setReadyData] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] = React.useState('noCategories');
   const counts = {};
 
   const {getCarriersRes} = useSelector(({carriers}) => carriers);
@@ -114,8 +115,8 @@ const CategoryCard = ({
     if (initialValues && initialValues.empty != true) {
       console.log('initialValues', initialValues);
 
-      changeValue('observationDelivery', initialValues);
-
+      changeValue('observationDelivery', initialValues.description);
+      setSelectedCategory(initialValues)
       let newProds = [];
       let internalCounter = 1;
       let productsToSet = initialValues.products
@@ -203,9 +204,9 @@ const CategoryCard = ({
     //   filterName: data.observationDelivery,
     //   options: productsList,
     // };
-    let newOption = data.observationDelivery;
+    let newOption = data;
     console.log('Nueva opción', newOption);
-    newValuesData(order, newOption);
+    newValuesData(order, selectedCategory);
     setSubmitting(false);
   };
 
@@ -266,9 +267,10 @@ const CategoryCard = ({
     changeValue('totalWeight', fixDecimals(totalWeight));
   };
   const handleChange = (event) => {
-    if (event.target.name.includes('count')) {
-      const rowId = event.target.name.replace('count', '');
-      setCountOfProduct(rowId, event.target.value);
+    if (event.target.name.includes('observationDelivery')) {
+      let updateCategory = selectedCategory;
+      updateCategory.description = event.target.value
+      setSelectedCategory(updateCategory)
     }
   };
   const showTotalWeight = (weight, count) => {

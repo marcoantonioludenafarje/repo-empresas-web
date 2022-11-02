@@ -233,6 +233,7 @@ const NewProduct = (props) => {
   const [publish, setPublish] = React.useState(true);
   const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
   const [selectedImages, setSelectedImages] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
 
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
@@ -264,8 +265,8 @@ const NewProduct = (props) => {
   console.log('createPresigned', presigned);
   const {addProductResponse} = useSelector(({products}) => products);
   console.log('addProductResponse', addProductResponse);
-  const {getCategoriesRes} = useSelector(({products}) => products);
-  console.log('getCategoriesRes', getCategoriesRes);
+  // const {getCategoriesRes} = useSelector(({products}) => products);
+  // console.log('getCategoriesRes', getCategoriesRes);
   const {successMessage} = useSelector(({products}) => products);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({products}) => products);
@@ -376,6 +377,12 @@ const NewProduct = (props) => {
       });
       setSelectedFilters(filters);
       console.log('selectedFilters', selectedFilters);
+
+      let categoriesProductParameter = businessParameter.find(
+        (obj) => obj.abreParametro == 'DEFAULT_CATEGORIES_PRODUCTS',
+      ).value;
+      console.log('categoriesProductParameter', categoriesProductParameter);
+      setCategories(categoriesProductParameter);
     }
   }, [businessParameter]);
   if (businessParameter != undefined) {
@@ -394,27 +401,27 @@ const NewProduct = (props) => {
   }
 
   useEffect(() => {
-    if (getCategoriesRes !== undefined && getCategoriesRes.length >= 1) {
-      let defaultId = getCategoriesRes.find(
+    if (categories !== undefined && categories.length >= 1) {
+      let defaultCategory = categories.find(
         (obj) => obj.default == true,
-      ).productCategoryId;
-      console.log('defaultId', defaultId);
-      setSelectedCategory(defaultId);
+      );
+      console.log('defaultCategory', defaultCategory);
+      setSelectedCategory(defaultCategory);
       console.log('selectedCategory', selectedCategory);
     } else {
       setSelectedCategory('noCategory');
     }
-  }, [getCategoriesRes]);
+  }, [categories]);
 
   useEffect(() => {
     if (
-      getCategoriesRes != undefined &&
+      categories != undefined &&
       selectedCategory &&
       prevSelectedCategory !== selectedCategory
     ) {
       console.log('selectedCategory responsivo', selectedCategory);
     }
-  }, [getCategoriesRes != undefined && selectedCategory, selectedCategory]);
+  }, [categories != undefined && selectedCategory, selectedCategory]);
 
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
@@ -812,14 +819,14 @@ const NewProduct = (props) => {
                       label='Categoría'
                       onChange={handleFieldCategory}
                     >
-                      {getCategoriesRes &&
-                      Array.isArray(getCategoriesRes) &&
-                      getCategoriesRes.length >= 1 ? (
-                        getCategoriesRes.map((obj, index) => {
+                      {categories &&
+                      Array.isArray(categories) &&
+                      categories.length >= 1 ? (
+                        categories.map((obj, index) => {
                           return (
                             <MenuItem
                               key={index}
-                              value={obj.productCategoryId}
+                              value={obj}
                               style={{fontWeight: 200}}
                             >
                               {obj.description}
