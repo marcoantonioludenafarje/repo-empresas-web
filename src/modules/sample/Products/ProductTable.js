@@ -438,13 +438,19 @@ const ProductTable = (arrayObjs, props) => {
   };
 
   const goToFile = () => {
-    Router.push({
-      pathname: '/sample/explorer',
-      query: {
-        goDirectory: true,
-        path: 'productos/' + selectedProduct.product.toString(),
-      },
-    });
+    // Router.push({
+    //   pathname: '/sample/explorer',
+    //   query: {
+    //     goDirectory: true,
+    //     path: 'productos/' + selectedProduct.product.toString(),
+    //   },
+    // });
+    const data = {
+      goDirectory: true,
+      path: 'productos/' + selectedProduct.product.toString(),
+    };
+    localStorage.setItem('redirectUrl', JSON.stringify(data));
+    window.open('/sample/explorer');
   };
 
   const diaSemana = [

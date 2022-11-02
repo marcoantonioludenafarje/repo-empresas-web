@@ -186,15 +186,14 @@ const FileExplorer = (props) => {
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: GET_DATA, payload: undefined});
 
-      getDataPayload.request.payload.merchantId = userDataRes.merchantSelected.merchantId;
-
+      getDataPayload.request.payload.merchantId =
+        userDataRes.merchantSelected.merchantId;
 
       toGetData(getDataPayload);
     }
   }, [userDataRes]);
   useEffect(() => {
     if (existStorage()) {
-
       const data = JSON.parse(localStorage.getItem('redirectUrl'));
       console.log('data', data);
       getDataPayload.request.payload.path = data.path;
@@ -787,7 +786,10 @@ const FileExplorer = (props) => {
             getDataRes.objects &&
             typeof getDataRes.objects !== 'string' ? (
               getDataRes.objects.map((obj, index) => {
-                if (obj.nameFile !== ('initialFolder.txt' && 'initialFolder')) {
+                if (
+                  obj.nameFile !== 'initialFolder.txt' &&
+                  obj.nameFile !== 'initialFolder'
+                ) {
                   return (
                     <TableRow
                       key={index}

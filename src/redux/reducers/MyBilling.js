@@ -11,7 +11,10 @@ const INIT_STATE = {
 const dataReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_CURRENT_MOVEMENTS_DOCUMENTS:
-      console.log('data de reducer GET_CURRENT_MOVEMENTS_DOCUMENTS', action.payload);
+      console.log(
+        'data de reducer GET_CURRENT_MOVEMENTS_DOCUMENTS',
+        action.payload,
+      );
       return {
         ...state,
         currentMovementsDocuments: action.payload,

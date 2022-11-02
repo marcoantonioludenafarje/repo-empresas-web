@@ -5,6 +5,9 @@ import {Form, Formik} from 'formik';
 import AppPage from '../../../@crema/hoc/AppPage';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import YouTubeIcon from '@mui/icons-material/YouTube';
+
+import {Fonts} from '../../../shared/constants/AppEnums';
+
 import {orange} from '@mui/material/colors';
 import {
   FETCH_SUCCESS,
@@ -29,15 +32,24 @@ import {
   Alert,
   Dialog,
   Divider,
+  Badge,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   CircularProgress,
   Typography,
+  FormGroup,
+  FormControlLabel,
+  Switch,
   Grid,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
 } from '@mui/material';
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -105,6 +117,10 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
+  title: yup.string().typeError(<IntlMessages id='validation.string' />),
+  commercialDescription: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />),
   customCodeProduct: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
@@ -149,6 +165,8 @@ const validationSchema = yup.object({
 
 const defaultValues = {
   businessProductCode: '',
+  title: '',
+  commercialDescription: '',
   description: '',
   customCodeProduct: '',
   costPriceUnit: undefined,
@@ -171,6 +189,13 @@ function getBase64(file, cb) {
     console.log('Error: ', error);
   };
 }
+// const getBase64 = (file) => {
+//   let reader = new FileReader();
+//   reader.readAsDataURL(file);
+//   reader.onload = () => {
+//     onLoad(reader.result);
+//   };
+// };
 const useForceUpdate = () => {
   const [reload, setReload] = React.useState(0); // integer state
   return () => setReload((value) => value + 1); // update the state to force render
@@ -183,6 +208,7 @@ let objSelects = {
   unitMeasure: 'NIU',
   unitMeasureWeight: null,
   unitMeasureMoney: null,
+  tags: {},
 };
 
 const NewProduct = (props) => {
@@ -203,6 +229,11 @@ const NewProduct = (props) => {
   const [open2, setOpen2] = React.useState(false);
   const [typeAlert, setTypeAlert] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
+  const [selectedFilters, setSelectedFilters] = React.useState({});
+  const [publish, setPublish] = React.useState(true);
+  const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
+  const [selectedImages, setSelectedImages] = React.useState([]);
+
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
   });
@@ -251,6 +282,7 @@ const NewProduct = (props) => {
   //GET_GLOBAL_PARAMETER
   let money_unit;
   let weight_unit;
+  let ecommerce_params;
   let imgBase64;
   let selectedFile;
 
@@ -315,7 +347,20 @@ const NewProduct = (props) => {
   useEffect(() => {
     if (userDataRes) {
       defaultValues.merchantId = userDataRes.merchantSelected.merchantId;
-
+      if (
+        userDataRes.merchantSelected.plans.find(
+          (element) => element.active == true,
+        ).description == 'eCommerce'
+      ) {
+        setSectionEcommerce(true);
+      }
+      if (
+        userDataRes.rolSelected.modules.find(
+          (element) => element.moduleName == 'Ecommerce',
+        ).idFront == 'ecommerce'
+      ) {
+        setSectionEcommerce(true);
+      }
       getProducts(listPayload);
       getBusinessParameter(parameterPayload);
       toGetCategories(getCategoriesPayload);
@@ -323,6 +368,16 @@ const NewProduct = (props) => {
     }
   }, [userDataRes]);
 
+  useEffect(() => {
+    if (businessParameter) {
+      let filters = {};
+      ecommerce_params.map((filter) => {
+        filters[filter.featureName] = [];
+      });
+      setSelectedFilters(filters);
+      console.log('selectedFilters', selectedFilters);
+    }
+  }, [businessParameter]);
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
       (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
@@ -331,6 +386,10 @@ const NewProduct = (props) => {
     money_unit = businessParameter.find(
       (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
     ).value;
+    ecommerce_params = businessParameter.find(
+      (obj) => obj.abreParametro == 'ECOMMERCE_PRODUCT_PARAMETERS',
+    ).tags;
+
     objSelects.unitMeasureMoney = money_unit;
   }
 
@@ -381,23 +440,46 @@ const NewProduct = (props) => {
     });
     console.log('objSelects', objSelects);
   };
-
+  const handleFieldFilter = (event) => {
+    console.log('evento', event);
+    let newSelectedFilters = selectedFilters;
+    newSelectedFilters[event.target.name][0] = event.target.value;
+    if (event.target.value == 'noFilters') {
+      newSelectedFilters[event.target.name] = [];
+    }
+    setSelectedFilters(newSelectedFilters);
+    console.log('selectedFilters actualizados', selectedFilters);
+  };
+  const handlePublicChange = (event) => {
+    console.log('Switch cambio', event);
+    setPublish(event.target.checked);
+  };
   const getImage = (event) => {
     console.log('Archivo recogido ', event.target.files[0]);
     selectedFile = event.target.files[0];
     const [file] = imgInp.files;
     imagePayload.request.payload.contentType = file.type;
     if (file) {
-      preview.src = URL.createObjectURL(file);
+      // preview.src = URL.createObjectURL(file);
       getBase64(file, (result) => {
         console.log('Resultado en base 64', result);
         imgBase64 = result;
         toCreatePresigned(imagePayload);
       });
     } else {
-      preview.src = '';
-      imgBase64 = '';
-      imagePayload.request.payload.contentType = '';
+      event = null;
+      console.log('no se selecciono un archivo');
+    }
+    if (event.target.files) {
+      const fileArray = Array.from(event.target.files).map((file) =>
+        URL.createObjectURL(file),
+      );
+      // console.log("este es el fileArray", fileArray)
+      // setSelectedImages((prevImages)=>prevImages.concat(fileArray))
+
+      setSelectedImages((prevImages) => prevImages.concat(fileArray));
+
+      Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
     }
   };
 
@@ -467,6 +549,8 @@ const NewProduct = (props) => {
           });
         }
         console.log(cleanProducts);
+        console.log('Esta es la imagen seleccionada', selectedFile);
+        console.log('Cuál es el presigned', presigned);
         /* console.log('finalPayload', { */
         toAddProduct({
           request: {
@@ -479,15 +563,19 @@ const NewProduct = (props) => {
                   sellPriceUnit: Number(data.referecialPriceSell),
                   weight: Number(data.weight),
                   initialStock: parseInt(Number(data.initialStock)),
-                  imgKey: null,
                   customCodeProduct: data.customCodeProduct,
+                  title: data.title,
+                  commercialDescription: data.commercialDescription,
                   unitMeasureWeight: weight_unit,
                   unitMeasureMoney: money_unit,
                   category: selectedCategory,
+                  tags: selectedFilters,
                   typeProduct: objSelects.typeProduct,
+                  imgKey: '',
                   unitMeasure: objSelects.unitMeasure,
                   unitsToProduce: 1,
                   inputsProduct: cleanProducts,
+                  publish: publish,
                 },
               ],
               merchantId: userDataRes.merchantSelected.merchantId,
@@ -595,7 +683,12 @@ const NewProduct = (props) => {
     selectedProducts.splice(index, 1);
     forceUpdate();
   };
-
+  const your_function = () => {
+    console.log('hola your_function');
+  };
+  const deleteImage = (index) => {
+    console.log('hola your_function', index);
+  };
   const allCountsRigth = (countProducts) => {
     let status = true;
     selectedProducts.map((obj) => {
@@ -609,6 +702,15 @@ const NewProduct = (props) => {
     console.log('estado de cuentas', status);
     return status;
   };
+
+  function srcset(image, width, height, rows = 1, cols = 1) {
+    return {
+      src: `${image}?w=${width * cols}&h=${height * rows}&fit=crop&auto=format`,
+      srcSet: `${image}?w=${width * cols}&h=${
+        height * rows
+      }&fit=crop&auto=format&dpr=2 2x`,
+    };
+  }
 
   return (
     <Card sx={{p: 4}}>
@@ -825,6 +927,212 @@ const NewProduct = (props) => {
                     </Select>
                   </FormControl>
                 </Grid>
+                {sectionEcommerce === true ? (
+                  <>
+                    <Typography
+                      component='h3'
+                      sx={{
+                        fontSize: 12,
+                        fontWeight: Fonts.BOLD,
+                        ml: {xs: 3, lg: 4},
+                      }}
+                    >
+                      Sección ecommerce
+                    </Typography>
+                    <Grid item xs={12}>
+                      <AppTextField
+                        label='Título del Producto de forma pública'
+                        name='title'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <AppTextField
+                        label='Descripción de forma pública'
+                        name='commercialDescription'
+                        multiline
+                        rows={4}
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
+                    </Grid>
+                    {ecommerce_params &&
+                    Array.isArray(ecommerce_params) &&
+                    ecommerce_params.length >= 1 ? (
+                      ecommerce_params.map((obj, index) => {
+                        return (
+                          <Grid key={index} item xs={12}>
+                            <FormControl fullWidth sx={{my: 2}}>
+                              <InputLabel
+                                id='categoria-label'
+                                style={{fontWeight: 200}}
+                              >
+                                {obj.featureName}
+                              </InputLabel>
+                              <Select
+                                key={'SelectFilter' + index}
+                                value={selectedFilters[obj.featureName]}
+                                name={obj.featureName}
+                                labelId={obj.featureName + '-label'}
+                                label={obj.featureName}
+                                onChange={handleFieldFilter}
+                              >
+                                {obj.values &&
+                                Array.isArray(obj.values) &&
+                                obj.values.length >= 1 ? (
+                                  obj.values.map((obj, index) => {
+                                    return (
+                                      <MenuItem
+                                        key={index + 1}
+                                        value={index + 1}
+                                        style={{fontWeight: 200}}
+                                      >
+                                        {obj.name}
+                                      </MenuItem>
+                                    );
+                                  })
+                                ) : (
+                                  <MenuItem
+                                    key={1}
+                                    value={'noFilters'}
+                                    style={{fontWeight: 200}}
+                                  >
+                                    <IntlMessages id='common.undefinedFilter' />
+                                  </MenuItem>
+                                )}
+                                <MenuItem
+                                  key={0}
+                                  value={'noFilters'}
+                                  style={{fontWeight: 200}}
+                                >
+                                  <IntlMessages id='common.undefinedFilter' />
+                                </MenuItem>
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                        );
+                      })
+                    ) : (
+                      <></>
+                    )}
+
+                    {/* IMPORTANTE NO BORRAR */}
+                    <Grid item xs={12} md={12}>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        component='label'
+                      >
+                        Subir imagen
+                        <input
+                          type='file'
+                          hidden
+                          multiple
+                          onChange={getImage}
+                          id='imgInp'
+                          name='imgInp'
+                          accept='.png, .jpeg, .jpg'
+                        />
+                      </Button>
+                    </Grid>
+                    {/* <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                      <img id='preview' className={classes.img} src=''></img>
+                    </Box> */}
+                    {/* {selectedImages ? (
+                      selectedImages.map((photo) => {
+                        return (
+                          <Grid item xs={12}  md={4}>
+                            <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                            <Badge className={classes.img} color="secondary" badgeContent=" ">
+                               <img className={classes.img} src={photo} key={photo}></img>
+                            </Badge>
+
+                            </Box>
+                          </Grid>
+                        )
+                      })
+                    ) : (
+                      <></>
+                    )} */}
+                    <ImageList
+                      sx={{
+                        width: 500,
+                        height: 450,
+                        // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
+                        transform: 'translateZ(0)',
+                        my: 1,
+                        p: 4,
+                      }}
+                      rowHeight={200}
+                      gap={1}
+                    >
+                      {selectedImages.map((item, index) => {
+                        const cols = item.featured ? 2 : 1;
+                        const rows = item.featured ? 2 : 1;
+
+                        return (
+                          <ImageListItem key={item} cols={cols} rows={rows}>
+                            <img
+                              className={classes.img}
+                              src={item}
+                              key={item}
+                            ></img>
+                            <ImageListItemBar
+                              sx={{
+                                background:
+                                  'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+                                  'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                              }}
+                              // title={"Prueba"}
+                              position='top'
+                              actionIcon={
+                                <IconButton
+                                  sx={{color: 'white'}}
+                                  aria-label={`star prueba`}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              }
+                              actionPosition='left'
+                            />
+                          </ImageListItem>
+                        );
+                      })}
+                    </ImageList>
+                    <Grid item xs={12} md={12}>
+                      <FormGroup
+                        sx={{
+                          ml: 2,
+                        }}
+                      >
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={publish}
+                              onChange={handlePublicChange}
+                            />
+                          }
+                          label='Mantener Público en Ecommerce'
+                        />
+                      </FormGroup>
+                    </Grid>
+                  </>
+                ) : (
+                  <></>
+                )}
               </Grid>
               {typeProduct != 'rawMaterial' ? (
                 <Box sx={{textAlign: 'center'}}>
@@ -843,26 +1151,6 @@ const NewProduct = (props) => {
               ) : (
                 <></>
               )}
-              {/* IMPORTANTE NO BORRAR */}
-              {/* <Button
-                sx={{width: '100%'}}
-                variant='contained'
-                component='label'
-              >
-                Subir imagen
-                <input
-                  type='file'
-                  hidden
-                  onChange={getImage}
-                  id='imgInp'
-                  name='imgInp'
-                  accept='.png, .jpeg, .jpg'
-                />
-              </Button>
-
-              <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
-                <img id='preview' className={classes.img} src=''></img>
-              </Box> */}
 
               <Collapse in={showAlert}>
                 <Alert
@@ -1069,7 +1357,7 @@ const NewProduct = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Desea cancelar esta operación?. <br /> Se perderá lala información
+            Desea cancelar esta operación?. <br /> Se perderá la información
             ingresada
           </DialogContentText>
         </DialogContent>

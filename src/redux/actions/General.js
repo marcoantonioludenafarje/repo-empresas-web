@@ -12,6 +12,7 @@ import {
   CANCEL_COMPLETE_BUSINESS,
   GET_ROL_USER,
   UPGRADE_TO_NEW_PLAN,
+  UPDATE_ALL_BUSINESS_PARAMETER,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -52,17 +53,23 @@ export const onGetGlobalParameter = (payload) => {
       });
   };
 };
-export const createPresigned = (payload) => {
+export const createPresigned = (payload, file) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
+    const {key} = payload?.request?.payload;
     API.post('tunexo', '/utility/getPresignedUrl', {body: payload})
-      .then((data) => {
+      .then(async (data) => {
         console.log('createPresigned resultado', data);
+
         dispatch({
           type: GET_PRESIGNED,
-          payload: data.response.payload,
+          payload: data.response.payload.response.payload,
         });
-        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        let newPresigned = {...data?.response?.payload.response.payload};
+        newPresigned.name = key;
+        console.log('newPresigned json', newPresigned);
+        // dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        await dispatch(uploadFileByPresign(newPresigned?.presignedS3Url, file));
       })
       .catch((error) => {
         console.log('createPresigned error', error);
@@ -103,6 +110,24 @@ export const uploadFile = (payload, url) => {
       .catch((error) => {
         console.log('uploadFile error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const uploadFileByPresign = (url, file) => {
+  return async (dispatch) => {
+    dispatch({type: FETCH_START});
+
+    await fetch(url, {
+      method: 'PUT',
+      body: file.image,
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((err) => {
+        dispatch({type: FETCH_ERROR, payload: err.message});
+        console.log('uploadImage error', err);
       });
   };
 };
@@ -214,6 +239,25 @@ export const onGetBusinessPlan = (payload) => {
       })
       .catch((error) => {
         console.log('onGetBusinessPlan error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const updateAllBusinessParameter = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/parameters/update', {body: payload})
+      .then((data) => {
+        console.log('updateAllBusinessParameter resultado', data);
+        dispatch({
+          type: UPDATE_ALL_BUSINESS_PARAMETER,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('updateAllBusinessParameter error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

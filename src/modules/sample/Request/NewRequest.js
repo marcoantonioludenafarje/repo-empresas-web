@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {useIntl} from 'react-intl';
+import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
 import {blue, green, red} from '@mui/material/colors';
@@ -25,6 +26,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  PriorityHighIcon,
   DialogTitle,
   CircularProgress,
 } from '@mui/material';
@@ -65,6 +67,7 @@ import {
   uploadFile,
 } from '../../../redux/actions/FileExplorer';
 import {onGetBusinessPlans} from '../../../redux/actions/General';
+import {previousMonday} from 'date-fns';
 const validationSchema = yup.object({
   promotionalCode: yup
     .string()
@@ -74,12 +77,46 @@ const validationSchema = yup.object({
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
 });
+const useStyles = makeStyles((theme) => ({
+  container: {
+    textAlign: 'center',
+  },
+  btnGroup: {
+    marginTop: '1em',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  btn: {
+    margin: '3px 0',
+    width: '260px',
+  },
+  noSub: {
+    textDecoration: 'none',
+  },
+  field: {
+    marginTop: '10px',
+  },
+  imgPreview: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  img: {
+    width: '50%',
+  },
+  closeButton: {
+    cursor: 'pointer',
+    float: 'right',
+    marginTop: '5px',
+    width: '20px',
+  },
+}));
 let typeForm = '';
 let fileToUpload;
 let urlToUpload;
 let loadThis = '';
 let toUpload = false;
 const NewRequest = ({data, subType}) => {
+  const classes = useStyles({data, subType});
   const [rowNumber, setRowNumber] = React.useState(0);
   const [rowNumber2, setRowNumber2] = React.useState(0);
   const [openDetails, setOpenDetails] = React.useState(false);
@@ -87,6 +124,7 @@ const NewRequest = ({data, subType}) => {
   const [requestTypeSelected, setRequestTypeSelected] = React.useState(subType);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [base64, setBase64] = React.useState('');
+  const [selectedImages, setSelectedImages] = React.useState([]);
 
   const [typeFile, setTypeFile] = React.useState('');
   const [nameFile, setNameFile] = React.useState('');
@@ -283,6 +321,7 @@ const NewRequest = ({data, subType}) => {
       onLoad(reader.result);
     };
   };
+
   const uploadNewFile2 = (event) => {
     if (event.target.value !== '') {
       console.log('archivo', event.target.files[0]);
@@ -298,6 +337,17 @@ const NewRequest = ({data, subType}) => {
       //   .slice(0, -1)
       //   .join('.');
       // generatePresignedPayload.request.payload.path = actualPath;
+      if (event.target.files) {
+        const fileArray = Array.from(event.target.files).map((file) =>
+          URL.createObjectURL(file),
+        );
+        // console.log("este es el fileArray", fileArray)
+        // setSelectedImages((prevImages)=>prevImages.concat(fileArray))
+
+        setSelectedImages((prevImages) => (prevImages = [fileArray[0]]));
+
+        Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
+      }
       setTypeFile(fileToUpload.type);
       setNameFile(fileToUpload.name);
 
@@ -310,7 +360,9 @@ const NewRequest = ({data, subType}) => {
   const cancel = () => {
     setRequestTypeSelected('');
     setPlanSelected('');
+    Router.push('/sample/products/table');
   };
+
   if (getPresignedRes != undefined) {
     urlToUpload = getPresignedRes.response.payload.presignedS3Url;
     console.log('urlToUpload', urlToUpload);
@@ -494,6 +546,27 @@ const NewRequest = ({data, subType}) => {
                     />
                   </Button>
                 </Grid>
+                {/* <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                      <img id='preview' className={classes.img} src=''></img>
+                </Box> */}
+                {selectedImages ? (
+                  selectedImages.map((photo, index) => {
+                    return (
+                      <Grid key={index} item xs={12} md={12}>
+                        <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                          <img
+                            className={classes.img}
+                            src={photo}
+                            key={photo}
+                          ></img>
+                        </Box>
+                      </Grid>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
+                {/* {renderPhotos(selectedImages)} */}
                 <Grid item xs={12} md={12}>
                   <Box
                     sx={{
@@ -513,7 +586,7 @@ const NewRequest = ({data, subType}) => {
                       {/* <IntlMessages id='common.saveChanges' /> */}
                       Registrar
                     </Button>
-                    <Button
+                    {/* <Button
                       sx={{
                         position: 'relative',
                         minWidth: 100,
@@ -524,7 +597,7 @@ const NewRequest = ({data, subType}) => {
                       onClick={cancel}
                     >
                       <IntlMessages id='common.cancel' />
-                    </Button>
+                    </Button> */}
                   </Box>
                 </Grid>
               </AppGridContainer>

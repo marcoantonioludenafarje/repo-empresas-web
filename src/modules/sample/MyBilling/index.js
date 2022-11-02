@@ -78,11 +78,11 @@ import {
   FETCH_ERROR,
   GET_USER_DATA,
   GET_BUSINESS_PARAMETER,
-  GET_CURRENT_MOVEMENTS_DOCUMENTS
+  GET_CURRENT_MOVEMENTS_DOCUMENTS,
 } from '../../../shared/constants/ActionTypes';
 import {onGetBusinessParameter} from 'redux/actions/General';
 import myBilling from 'pages/sample/myBilling';
-import { ConstructionRounded } from '@mui/icons-material';
+import {ConstructionRounded} from '@mui/icons-material';
 //ESTILOS
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -208,11 +208,10 @@ const MyBilling = (props) => {
     setMonthYearStatus(true);
   }, [month || year]);
   useEffect(() => {
-    
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
       dispatch({type: GET_USER_DATA, payload: undefined});
-      
+
       const toGetUserData = (payload) => {
         dispatch(getUserData(payload));
       };
@@ -238,9 +237,8 @@ const MyBilling = (props) => {
 
   useEffect(() => {
     if (userDataRes && !businessParameter) {
-
       console.log('Esto se ejecuta?');
-      
+
       dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
       const getBusinessParameter = (payload) => {
         dispatch(onGetBusinessParameter(payload));
@@ -262,15 +260,19 @@ const MyBilling = (props) => {
     if (!currentMovementsDocuments && userDataRes) {
       dispatch({type: GET_CURRENT_MOVEMENTS_DOCUMENTS, payload: undefined});
       const toGetCurrentMovementsDocumentsBusinessPayload = {
-        "request": {
-            "payload": {
-                "numberDocumentMerchant": indicadorDesarrollo ? "20561337633" : userDataRes.merchantSelected.numberDocumentMerchant,
-                "year": year,
-                "month": month
-            }
-        }
-      }
-      toGetCurrentMovementsDocumentsBusiness(toGetCurrentMovementsDocumentsBusinessPayload);
+        request: {
+          payload: {
+            numberDocumentMerchant: indicadorDesarrollo
+              ? '20561337633'
+              : userDataRes.merchantSelected.numberDocumentMerchant,
+            year: year,
+            month: month,
+          },
+        },
+      };
+      toGetCurrentMovementsDocumentsBusiness(
+        toGetCurrentMovementsDocumentsBusinessPayload,
+      );
     }
   }, [currentMovementsDocuments || userDataRes]);
   useEffect(() => {
@@ -291,12 +293,12 @@ const MyBilling = (props) => {
       let actualDocumentsParam = businessParameter.find(
         (element) => element.abreParametro == 'CURRENT_COUNT_MOVEMENT',
       ).transactionalSunatDocuments;
-      if (userDataRes.merchantSelected.isBillingEnabled){
+      if (userDataRes.merchantSelected.isBillingEnabled) {
         actualDocumentsParam = currentMovementsDocuments.find(
           (element) => element.month == month,
         ).totalDocuments;
       }
-      
+
       setActualDocuments(actualDocumentsParam);
       const availableDocumentsData = userDataRes.merchantSelected.plans.find(
         (element) => element.active == true,

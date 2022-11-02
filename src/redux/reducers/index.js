@@ -14,6 +14,7 @@ import ToDoApp from './ToDoApp';
 import MyBilling from './MyBilling';
 import Requests from './Requests';
 import Notifications from './Notifications';
+import Orders from './Orders';
 
 const reducers = combineReducers({
   settings: Settings,
@@ -31,5 +32,6 @@ const reducers = combineReducers({
   myBilling: MyBilling,
   requests: Requests,
   notifications: Notifications,
+  orders: Orders,
 });
 export default reducers;

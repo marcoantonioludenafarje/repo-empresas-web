@@ -16,6 +16,7 @@ import {
   MONEY_UNIT_BUSINESS,
   MONEY_SYMBOL,
   UPGRADE_TO_NEW_PLAN,
+  UPDATE_ALL_BUSINESS_PARAMETER,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -119,6 +120,15 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         upgradeToNewPlanRes: action.payload,
+      };
+    case UPDATE_ALL_BUSINESS_PARAMETER:
+      console.log(
+        'data de reducer UPDATE_ALL_BUSINESS_PARAMETER',
+        action.payload,
+      );
+      return {
+        ...state,
+        updateAllBusinessParameterRes: action.payload,
       };
     default:
       return state;

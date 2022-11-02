@@ -159,7 +159,8 @@ export const UPDATE_USER = 'update_user';
 export const UPGRADE_TO_NEW_PLAN = 'upgrade_to_new_plan';
 export const GET_BUSINESS_PLANS = 'get_business_plans';
 export const GET_BUSINESS_PLAN = 'get_business_plan';
-export const GET_CURRENT_MOVEMENTS_DOCUMENTS = 'get_current_movements_documents';
+export const GET_CURRENT_MOVEMENTS_DOCUMENTS =
+  'get_current_movements_documents';
 //ROL USER
 export const GET_ROL_USER = 'get_rol_user';
 export const LIST_ROL = 'list_rol';
@@ -167,6 +168,7 @@ export const LIST_ROL = 'list_rol';
 //PARAMETERS
 export const GET_BUSINESS_PARAMETER = 'get_business_parameter';
 export const GET_GLOBAL_PARAMETER = 'get_global_parameter';
+export const UPDATE_ALL_BUSINESS_PARAMETER = 'update_all_business_parameter';
 export const WEIGHT_BUSINESS = 'weight_business';
 export const MONEY_UNIT_BUSINESS = 'money_unit_business';
 export const MONEY_SYMBOL = 'money_symbol';
@@ -238,6 +240,13 @@ export const GET_FINANCES_FOR_RESULT_STATE = 'get_finances_for_result_state';
 export const ADD_FINANCE = 'add_finance';
 export const DELETE_FINANCE = 'delete_finance';
 export const UPDATE_FINANCE = 'update_finance';
+
+//ORDERS
+export const GET_ORDERS = 'get_orders';
+export const NEW_ORDER = 'new_order';
+export const DELETE_ORDER = 'delete_order';
+export const UPDATE_ORDER = 'update_order';
+export const CHANGE_STATUS_ORDER = 'change_status_order';
 
 //UTILDATA
 export const EMAIL_TO_SEND_CODE = 'email_to_send_code';

@@ -15,6 +15,7 @@ import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 import MapIcon from '@mui/icons-material/Map';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import ForkRightIcon from '@mui/icons-material/ForkRight';
@@ -158,6 +159,14 @@ const rolesRoutesConfig = {
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/carriers/table',
         },
+        {
+          id: 'parametersTable',
+          title: 'Parameters Table',
+          messageId: 'sidebar.sample.parametersTable',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/parameters/update',
+        },
       ],
     },
     {
@@ -208,6 +217,23 @@ const rolesRoutesConfig = {
       type: 'item',
       icon: <FolderOutlinedIcon fontSize='small' />,
       url: '/sample/explorer',
+    },
+    {
+      id: 'ecommerce',
+      title: 'ecommerce',
+      messageId: 'sidebar.sample.ecommerce',
+      type: 'collapse',
+      icon: <StorefrontIcon fontSize='small' />,
+      children: [
+        {
+          id: 'orderTable',
+          title: 'Orders Table',
+          messageId: 'sidebar.sample.order',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/orders/table',
+        },
+      ],
     },
     // {
     //   id: 'graphics',
