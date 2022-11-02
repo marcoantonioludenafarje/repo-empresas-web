@@ -1,0 +1,7498 @@
+[
+  {
+    "ubigeo": "010101",
+    "descripcion": "CHACHAPOYAS / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010102",
+    "descripcion": "ASUNCION / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010103",
+    "descripcion": "BALSAS / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010104",
+    "descripcion": "CHETO / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010105",
+    "descripcion": "CHILIQUIN / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010106",
+    "descripcion": "CHUQUIBAMBA / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010107",
+    "descripcion": "GRANADA / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010108",
+    "descripcion": "HUANCAS / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010109",
+    "descripcion": "LA JALCA / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010110",
+    "descripcion": "LEIMEBAMBA / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010111",
+    "descripcion": "LEVANTO / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010112",
+    "descripcion": "MAGDALENA / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010113",
+    "descripcion": "MARISCAL CASTILLA / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010114",
+    "descripcion": "MOLINOPAMPA / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010115",
+    "descripcion": "MONTEVIDEO / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010116",
+    "descripcion": "OLLEROS / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010117",
+    "descripcion": "QUINJALCA / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010118",
+    "descripcion": "SAN FRANCISCO DE DAGUAS / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010119",
+    "descripcion": "SAN ISIDRO DE MAINO / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010120",
+    "descripcion": "SOLOCO / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010121",
+    "descripcion": "SONCHE / CHACHAPOYAS / AMAZONAS"
+  },
+  {
+    "ubigeo": "010201",
+    "descripcion": "BAGUA / BAGUA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010202",
+    "descripcion": "ARAMANGO / BAGUA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010203",
+    "descripcion": "COPALLIN / BAGUA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010204",
+    "descripcion": "EL PARCO / BAGUA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010205",
+    "descripcion": "IMAZA / BAGUA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010206",
+    "descripcion": "LA PECA / BAGUA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010301",
+    "descripcion": "JUMBILLA / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010302",
+    "descripcion": "CHISQUILLA / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010303",
+    "descripcion": "CHURUJA / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010304",
+    "descripcion": "COROSHA / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010305",
+    "descripcion": "CUISPES / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010306",
+    "descripcion": "FLORIDA / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010307",
+    "descripcion": "JAZAN / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010308",
+    "descripcion": "RECTA / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010309",
+    "descripcion": "SAN CARLOS / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010310",
+    "descripcion": "SHIPASBAMBA / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010311",
+    "descripcion": "VALERA / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010312",
+    "descripcion": "YAMBRASBAMBA / BONGARA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010401",
+    "descripcion": "NIEVA / CONDORCANQUI / AMAZONAS"
+  },
+  {
+    "ubigeo": "010402",
+    "descripcion": "EL CENEPA / CONDORCANQUI / AMAZONAS"
+  },
+  {
+    "ubigeo": "010403",
+    "descripcion": "RIO SANTIAGO / CONDORCANQUI / AMAZONAS"
+  },
+  {
+    "ubigeo": "010501",
+    "descripcion": "LAMUD / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010502",
+    "descripcion": "CAMPORREDONDO / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010503",
+    "descripcion": "COCABAMBA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010504",
+    "descripcion": "COLCAMAR / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010505",
+    "descripcion": "CONILA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010506",
+    "descripcion": "INGUILPATA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010507",
+    "descripcion": "LONGUITA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010508",
+    "descripcion": "LONYA CHICO / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010509",
+    "descripcion": "LUYA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010510",
+    "descripcion": "LUYA VIEJO / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010511",
+    "descripcion": "MARIA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010512",
+    "descripcion": "OCALLI / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010513",
+    "descripcion": "OCUMAL / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010514",
+    "descripcion": "PISUQUIA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010515",
+    "descripcion": "PROVIDENCIA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010516",
+    "descripcion": "SAN CRISTOBAL / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010517",
+    "descripcion": "SAN FRANCISCO DEL YESO / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010518",
+    "descripcion": "SAN JERONIMO / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010519",
+    "descripcion": "SAN JUAN DE LOPECANCHA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010520",
+    "descripcion": "SANTA CATALINA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010521",
+    "descripcion": "SANTO TOMAS / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010522",
+    "descripcion": "TINGO / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010523",
+    "descripcion": "TRITA / LUYA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010601",
+    "descripcion": "SAN NICOLAS / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010602",
+    "descripcion": "CHIRIMOTO / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010603",
+    "descripcion": "COCHAMAL / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010604",
+    "descripcion": "HUAMBO / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010605",
+    "descripcion": "LIMABAMBA / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010606",
+    "descripcion": "LONGAR / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010607",
+    "descripcion": "MARISCAL BENAVIDES / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010608",
+    "descripcion": "MILPUC / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010609",
+    "descripcion": "OMIA / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010610",
+    "descripcion": "SANTA ROSA / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010611",
+    "descripcion": "TOTORA / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010612",
+    "descripcion": "VISTA ALEGRE / RODRIGUEZ DE MENDOZA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010701",
+    "descripcion": "BAGUA GRANDE / UTCUBAMBA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010702",
+    "descripcion": "CAJARURO / UTCUBAMBA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010703",
+    "descripcion": "CUMBA / UTCUBAMBA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010704",
+    "descripcion": "EL MILAGRO / UTCUBAMBA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010705",
+    "descripcion": "JAMALCA / UTCUBAMBA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010706",
+    "descripcion": "LONYA GRANDE / UTCUBAMBA / AMAZONAS"
+  },
+  {
+    "ubigeo": "010707",
+    "descripcion": "YAMON / UTCUBAMBA / AMAZONAS"
+  },
+  {
+    "ubigeo": "020101",
+    "descripcion": "HUARAZ / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020102",
+    "descripcion": "COCHABAMBA / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020103",
+    "descripcion": "COLCABAMBA / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020104",
+    "descripcion": "HUANCHAY / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020105",
+    "descripcion": "INDEPENDENCIA / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020106",
+    "descripcion": "JANGAS / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020107",
+    "descripcion": "LA LIBERTAD / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020108",
+    "descripcion": "OLLEROS / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020109",
+    "descripcion": "PAMPAS GRANDE / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020110",
+    "descripcion": "PARIACOTO / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020111",
+    "descripcion": "PIRA / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020112",
+    "descripcion": "TARICA / HUARAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020201",
+    "descripcion": "AIJA / AIJA / ANCASH"
+  },
+  {
+    "ubigeo": "020202",
+    "descripcion": "CORIS / AIJA / ANCASH"
+  },
+  {
+    "ubigeo": "020203",
+    "descripcion": "HUACLLAN / AIJA / ANCASH"
+  },
+  {
+    "ubigeo": "020204",
+    "descripcion": "LA MERCED / AIJA / ANCASH"
+  },
+  {
+    "ubigeo": "020205",
+    "descripcion": "SUCCHA / AIJA / ANCASH"
+  },
+  {
+    "ubigeo": "020301",
+    "descripcion": "LLAMELLIN / ANTONIO RAYMONDI / ANCASH"
+  },
+  {
+    "ubigeo": "020302",
+    "descripcion": "ACZO / ANTONIO RAYMONDI / ANCASH"
+  },
+  {
+    "ubigeo": "020303",
+    "descripcion": "CHACCHO / ANTONIO RAYMONDI / ANCASH"
+  },
+  {
+    "ubigeo": "020304",
+    "descripcion": "CHINGAS / ANTONIO RAYMONDI / ANCASH"
+  },
+  {
+    "ubigeo": "020305",
+    "descripcion": "MIRGAS / ANTONIO RAYMONDI / ANCASH"
+  },
+  {
+    "ubigeo": "020306",
+    "descripcion": "SAN JUAN DE RONTOY / ANTONIO RAYMONDI / ANCASH"
+  },
+  {
+    "ubigeo": "020401",
+    "descripcion": "CHACAS / ASUNCION / ANCASH"
+  },
+  {
+    "ubigeo": "020402",
+    "descripcion": "ACOCHACA / ASUNCION / ANCASH"
+  },
+  {
+    "ubigeo": "020501",
+    "descripcion": "CHIQUIAN / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020502",
+    "descripcion": "ABELARDO PARDO LEZAMETA / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020503",
+    "descripcion": "ANTONIO RAYMONDI / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020504",
+    "descripcion": "AQUIA / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020505",
+    "descripcion": "CAJACAY / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020506",
+    "descripcion": "CANIS / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020507",
+    "descripcion": "COLQUIOC / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020508",
+    "descripcion": "HUALLANCA / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020509",
+    "descripcion": "HUASTA / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020510",
+    "descripcion": "HUAYLLACAYAN / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020511",
+    "descripcion": "LA PRIMAVERA / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020512",
+    "descripcion": "MANGAS / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020513",
+    "descripcion": "PACLLON / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020514",
+    "descripcion": "SAN MIGUEL DE CORPANQUI / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020515",
+    "descripcion": "TICLLOS / BOLOGNESI / ANCASH"
+  },
+  {
+    "ubigeo": "020601",
+    "descripcion": "CARHUAZ / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020602",
+    "descripcion": "ACOPAMPA / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020603",
+    "descripcion": "AMASHCA / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020604",
+    "descripcion": "ANTA / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020605",
+    "descripcion": "ATAQUERO / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020606",
+    "descripcion": "MARCARA / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020607",
+    "descripcion": "PARIAHUANCA / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020608",
+    "descripcion": "SAN MIGUEL DE ACO / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020609",
+    "descripcion": "SHILLA / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020610",
+    "descripcion": "TINCO / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020611",
+    "descripcion": "YUNGAR / CARHUAZ / ANCASH"
+  },
+  {
+    "ubigeo": "020701",
+    "descripcion": "SAN LUIS / CARLOS FERMIN FITZCARRALD / ANCASH"
+  },
+  {
+    "ubigeo": "020702",
+    "descripcion": "SAN NICOLAS / CARLOS FERMIN FITZCARRALD / ANCASH"
+  },
+  {
+    "ubigeo": "020703",
+    "descripcion": "YAUYA / CARLOS FERMIN FITZCARRALD / ANCASH"
+  },
+  {
+    "ubigeo": "020801",
+    "descripcion": "CASMA / CASMA / ANCASH"
+  },
+  {
+    "ubigeo": "020802",
+    "descripcion": "BUENA VISTA ALTA / CASMA / ANCASH"
+  },
+  {
+    "ubigeo": "020803",
+    "descripcion": "COMANDANTE NOEL / CASMA / ANCASH"
+  },
+  {
+    "ubigeo": "020804",
+    "descripcion": "YAUTAN / CASMA / ANCASH"
+  },
+  {
+    "ubigeo": "020901",
+    "descripcion": "CORONGO / CORONGO / ANCASH"
+  },
+  {
+    "ubigeo": "020902",
+    "descripcion": "ACO / CORONGO / ANCASH"
+  },
+  {
+    "ubigeo": "020903",
+    "descripcion": "BAMBAS / CORONGO / ANCASH"
+  },
+  {
+    "ubigeo": "020904",
+    "descripcion": "CUSCA / CORONGO / ANCASH"
+  },
+  {
+    "ubigeo": "020905",
+    "descripcion": "LA PAMPA / CORONGO / ANCASH"
+  },
+  {
+    "ubigeo": "020906",
+    "descripcion": "YANAC / CORONGO / ANCASH"
+  },
+  {
+    "ubigeo": "020907",
+    "descripcion": "YUPAN / CORONGO / ANCASH"
+  },
+  {
+    "ubigeo": "021001",
+    "descripcion": "HUARI / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021002",
+    "descripcion": "ANRA / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021003",
+    "descripcion": "CAJAY / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021004",
+    "descripcion": "CHAVIN DE HUANTAR / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021005",
+    "descripcion": "HUACACHI / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021006",
+    "descripcion": "HUACCHIS / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021007",
+    "descripcion": "HUACHIS / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021008",
+    "descripcion": "HUANTAR / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021009",
+    "descripcion": "MASIN / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021010",
+    "descripcion": "PAUCAS / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021011",
+    "descripcion": "PONTO / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021012",
+    "descripcion": "RAHUAPAMPA / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021013",
+    "descripcion": "RAPAYAN / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021014",
+    "descripcion": "SAN MARCOS / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021015",
+    "descripcion": "SAN PEDRO DE CHANA / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021016",
+    "descripcion": "UCO / HUARI / ANCASH"
+  },
+  {
+    "ubigeo": "021101",
+    "descripcion": "HUARMEY / HUARMEY / ANCASH"
+  },
+  {
+    "ubigeo": "021102",
+    "descripcion": "COCHAPETI / HUARMEY / ANCASH"
+  },
+  {
+    "ubigeo": "021103",
+    "descripcion": "CULEBRAS / HUARMEY / ANCASH"
+  },
+  {
+    "ubigeo": "021104",
+    "descripcion": "HUAYAN / HUARMEY / ANCASH"
+  },
+  {
+    "ubigeo": "021105",
+    "descripcion": "MALVAS / HUARMEY / ANCASH"
+  },
+  {
+    "ubigeo": "021201",
+    "descripcion": "CARAZ / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021202",
+    "descripcion": "HUALLANCA / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021203",
+    "descripcion": "HUATA / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021204",
+    "descripcion": "HUAYLAS / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021205",
+    "descripcion": "MATO / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021206",
+    "descripcion": "PAMPAROMAS / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021207",
+    "descripcion": "PUEBLO LIBRE / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021208",
+    "descripcion": "SANTA CRUZ / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021209",
+    "descripcion": "SANTO TORIBIO / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021210",
+    "descripcion": "YURACMARCA / HUAYLAS / ANCASH"
+  },
+  {
+    "ubigeo": "021301",
+    "descripcion": "PISCOBAMBA / MARISCAL LUZURIAGA / ANCASH"
+  },
+  {
+    "ubigeo": "021302",
+    "descripcion": "CASCA / MARISCAL LUZURIAGA / ANCASH"
+  },
+  {
+    "ubigeo": "021303",
+    "descripcion": "ELEAZAR GUZMAN BARRON / MARISCAL LUZURIAGA / ANCASH"
+  },
+  {
+    "ubigeo": "021304",
+    "descripcion": "FIDEL OLIVAS ESCUDERO / MARISCAL LUZURIAGA / ANCASH"
+  },
+  {
+    "ubigeo": "021305",
+    "descripcion": "LLAMA / MARISCAL LUZURIAGA / ANCASH"
+  },
+  {
+    "ubigeo": "021306",
+    "descripcion": "LLUMPA / MARISCAL LUZURIAGA / ANCASH"
+  },
+  {
+    "ubigeo": "021307",
+    "descripcion": "LUCMA / MARISCAL LUZURIAGA / ANCASH"
+  },
+  {
+    "ubigeo": "021308",
+    "descripcion": "MUSGA / MARISCAL LUZURIAGA / ANCASH"
+  },
+  {
+    "ubigeo": "021401",
+    "descripcion": "OCROS / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021402",
+    "descripcion": "ACAS / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021403",
+    "descripcion": "CAJAMARQUILLA / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021404",
+    "descripcion": "CARHUAPAMPA / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021405",
+    "descripcion": "COCHAS / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021406",
+    "descripcion": "CONGAS / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021407",
+    "descripcion": "LLIPA / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021408",
+    "descripcion": "SAN CRISTOBAL DE RAJAN / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021409",
+    "descripcion": "SAN PEDRO / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021410",
+    "descripcion": "SANTIAGO DE CHILCAS / OCROS / ANCASH"
+  },
+  {
+    "ubigeo": "021501",
+    "descripcion": "CABANA / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021502",
+    "descripcion": "BOLOGNESI / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021503",
+    "descripcion": "CONCHUCOS / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021504",
+    "descripcion": "HUACASCHUQUE / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021505",
+    "descripcion": "HUANDOVAL / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021506",
+    "descripcion": "LACABAMBA / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021507",
+    "descripcion": "LLAPO / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021508",
+    "descripcion": "PALLASCA / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021509",
+    "descripcion": "PAMPAS / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021510",
+    "descripcion": "SANTA ROSA / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021511",
+    "descripcion": "TAUCA / PALLASCA / ANCASH"
+  },
+  {
+    "ubigeo": "021601",
+    "descripcion": "POMABAMBA / POMABAMBA / ANCASH"
+  },
+  {
+    "ubigeo": "021602",
+    "descripcion": "HUAYLLAN / POMABAMBA / ANCASH"
+  },
+  {
+    "ubigeo": "021603",
+    "descripcion": "PAROBAMBA / POMABAMBA / ANCASH"
+  },
+  {
+    "ubigeo": "021604",
+    "descripcion": "QUINUABAMBA / POMABAMBA / ANCASH"
+  },
+  {
+    "ubigeo": "021701",
+    "descripcion": "RECUAY / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021702",
+    "descripcion": "CATAC / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021703",
+    "descripcion": "COTAPARACO / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021704",
+    "descripcion": "HUAYLLAPAMPA / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021705",
+    "descripcion": "LLACLLIN / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021706",
+    "descripcion": "MARCA / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021707",
+    "descripcion": "PAMPAS CHICO / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021708",
+    "descripcion": "PARARIN / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021709",
+    "descripcion": "TAPACOCHA / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021710",
+    "descripcion": "TICAPAMPA / RECUAY / ANCASH"
+  },
+  {
+    "ubigeo": "021801",
+    "descripcion": "CHIMBOTE / SANTA / ANCASH"
+  },
+  {
+    "ubigeo": "021802",
+    "descripcion": "CACERES DEL PERU / SANTA / ANCASH"
+  },
+  {
+    "ubigeo": "021803",
+    "descripcion": "COISHCO / SANTA / ANCASH"
+  },
+  {
+    "ubigeo": "021804",
+    "descripcion": "MACATE / SANTA / ANCASH"
+  },
+  {
+    "ubigeo": "021805",
+    "descripcion": "MORO / SANTA / ANCASH"
+  },
+  {
+    "ubigeo": "021806",
+    "descripcion": "NEPEÑA / SANTA / ANCASH"
+  },
+  {
+    "ubigeo": "021807",
+    "descripcion": "SAMANCO / SANTA / ANCASH"
+  },
+  {
+    "ubigeo": "021808",
+    "descripcion": "SANTA / SANTA / ANCASH"
+  },
+  {
+    "ubigeo": "021809",
+    "descripcion": "NUEVO CHIMBOTE / SANTA / ANCASH"
+  },
+  {
+    "ubigeo": "021901",
+    "descripcion": "SIHUAS / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "021902",
+    "descripcion": "ACOBAMBA / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "021903",
+    "descripcion": "ALFONSO UGARTE / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "021904",
+    "descripcion": "CASHAPAMPA / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "021905",
+    "descripcion": "CHINGALPO / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "021906",
+    "descripcion": "HUAYLLABAMBA / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "021907",
+    "descripcion": "QUICHES / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "021908",
+    "descripcion": "RAGASH / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "021909",
+    "descripcion": "SAN JUAN / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "021910",
+    "descripcion": "SICSIBAMBA / SIHUAS / ANCASH"
+  },
+  {
+    "ubigeo": "022001",
+    "descripcion": "YUNGAY / YUNGAY / ANCASH"
+  },
+  {
+    "ubigeo": "022002",
+    "descripcion": "CASCAPARA / YUNGAY / ANCASH"
+  },
+  {
+    "ubigeo": "022003",
+    "descripcion": "MANCOS / YUNGAY / ANCASH"
+  },
+  {
+    "ubigeo": "022004",
+    "descripcion": "MATACOTO / YUNGAY / ANCASH"
+  },
+  {
+    "ubigeo": "022005",
+    "descripcion": "QUILLO / YUNGAY / ANCASH"
+  },
+  {
+    "ubigeo": "022006",
+    "descripcion": "RANRAHIRCA / YUNGAY / ANCASH"
+  },
+  {
+    "ubigeo": "022007",
+    "descripcion": "SHUPLUY / YUNGAY / ANCASH"
+  },
+  {
+    "ubigeo": "022008",
+    "descripcion": "YANAMA / YUNGAY / ANCASH"
+  },
+  {
+    "ubigeo": "030101",
+    "descripcion": "ABANCAY / ABANCAY / APURIMAC"
+  },
+  {
+    "ubigeo": "030102",
+    "descripcion": "CHACOCHE / ABANCAY / APURIMAC"
+  },
+  {
+    "ubigeo": "030103",
+    "descripcion": "CIRCA / ABANCAY / APURIMAC"
+  },
+  {
+    "ubigeo": "030104",
+    "descripcion": "CURAHUASI / ABANCAY / APURIMAC"
+  },
+  {
+    "ubigeo": "030105",
+    "descripcion": "HUANIPACA / ABANCAY / APURIMAC"
+  },
+  {
+    "ubigeo": "030106",
+    "descripcion": "LAMBRAMA / ABANCAY / APURIMAC"
+  },
+  {
+    "ubigeo": "030107",
+    "descripcion": "PICHIRHUA / ABANCAY / APURIMAC"
+  },
+  {
+    "ubigeo": "030108",
+    "descripcion": "SAN PEDRO DE CACHORA / ABANCAY / APURIMAC"
+  },
+  {
+    "ubigeo": "030109",
+    "descripcion": "TAMBURCO / ABANCAY / APURIMAC"
+  },
+  {
+    "ubigeo": "030201",
+    "descripcion": "ANDAHUAYLAS / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030202",
+    "descripcion": "ANDARAPA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030203",
+    "descripcion": "CHIARA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030204",
+    "descripcion": "HUANCARAMA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030205",
+    "descripcion": "HUANCARAY / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030206",
+    "descripcion": "HUAYANA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030207",
+    "descripcion": "KISHUARA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030208",
+    "descripcion": "PACOBAMBA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030209",
+    "descripcion": "PACUCHA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030210",
+    "descripcion": "PAMPACHIRI / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030211",
+    "descripcion": "POMACOCHA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030212",
+    "descripcion": "SAN ANTONIO DE CACHI / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030213",
+    "descripcion": "SAN JERONIMO / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030214",
+    "descripcion": "SAN MIGUEL DE CHACCRAMPA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030215",
+    "descripcion": "SANTA MARIA DE CHICMO / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030216",
+    "descripcion": "TALAVERA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030217",
+    "descripcion": "TUMAY HUARACA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030218",
+    "descripcion": "TURPO / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030219",
+    "descripcion": "KAQUIABAMBA / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030220",
+    "descripcion": "JOSE MARIA ARGUEDAS / ANDAHUAYLAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030301",
+    "descripcion": "ANTABAMBA / ANTABAMBA / APURIMAC"
+  },
+  {
+    "ubigeo": "030302",
+    "descripcion": "EL ORO / ANTABAMBA / APURIMAC"
+  },
+  {
+    "ubigeo": "030303",
+    "descripcion": "HUAQUIRCA / ANTABAMBA / APURIMAC"
+  },
+  {
+    "ubigeo": "030304",
+    "descripcion": "JUAN ESPINOZA MEDRANO / ANTABAMBA / APURIMAC"
+  },
+  {
+    "ubigeo": "030305",
+    "descripcion": "OROPESA / ANTABAMBA / APURIMAC"
+  },
+  {
+    "ubigeo": "030306",
+    "descripcion": "PACHACONAS / ANTABAMBA / APURIMAC"
+  },
+  {
+    "ubigeo": "030307",
+    "descripcion": "SABAINO / ANTABAMBA / APURIMAC"
+  },
+  {
+    "ubigeo": "030401",
+    "descripcion": "CHALHUANCA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030402",
+    "descripcion": "CAPAYA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030403",
+    "descripcion": "CARAYBAMBA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030404",
+    "descripcion": "CHAPIMARCA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030405",
+    "descripcion": "COLCABAMBA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030406",
+    "descripcion": "COTARUSE / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030407",
+    "descripcion": "IHUAYLLO / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030408",
+    "descripcion": "JUSTO APU SAHUARAURA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030409",
+    "descripcion": "LUCRE / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030410",
+    "descripcion": "POCOHUANCA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030411",
+    "descripcion": "SAN JUAN DE CHACÑA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030412",
+    "descripcion": "SAÑAYCA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030413",
+    "descripcion": "SORAYA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030414",
+    "descripcion": "TAPAIRIHUA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030415",
+    "descripcion": "TINTAY / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030416",
+    "descripcion": "TORAYA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030417",
+    "descripcion": "YANACA / AYMARAES / APURIMAC"
+  },
+  {
+    "ubigeo": "030501",
+    "descripcion": "TAMBOBAMBA / COTABAMBAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030502",
+    "descripcion": "COTABAMBAS / COTABAMBAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030503",
+    "descripcion": "COYLLURQUI / COTABAMBAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030504",
+    "descripcion": "HAQUIRA / COTABAMBAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030505",
+    "descripcion": "MARA / COTABAMBAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030506",
+    "descripcion": "CHALLHUAHUACHO / COTABAMBAS / APURIMAC"
+  },
+  {
+    "ubigeo": "030601",
+    "descripcion": "CHINCHEROS / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030602",
+    "descripcion": "ANCO_HUALLO / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030603",
+    "descripcion": "COCHARCAS / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030604",
+    "descripcion": "HUACCANA / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030605",
+    "descripcion": "OCOBAMBA / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030606",
+    "descripcion": "ONGOY / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030607",
+    "descripcion": "URANMARCA / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030608",
+    "descripcion": "RANRACANCHA / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030609",
+    "descripcion": "ROCCHACC / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030610",
+    "descripcion": "EL PORVENIR / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030611",
+    "descripcion": "LOS CHANKAS / CHINCHEROS / APURIMAC"
+  },
+  {
+    "ubigeo": "030701",
+    "descripcion": "CHUQUIBAMBILLA / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030702",
+    "descripcion": "CURPAHUASI / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030703",
+    "descripcion": "GAMARRA / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030704",
+    "descripcion": "HUAYLLATI / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030705",
+    "descripcion": "MAMARA / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030706",
+    "descripcion": "MICAELA BASTIDAS / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030707",
+    "descripcion": "PATAYPAMPA / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030708",
+    "descripcion": "PROGRESO / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030709",
+    "descripcion": "SAN ANTONIO / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030710",
+    "descripcion": "SANTA ROSA / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030711",
+    "descripcion": "TURPAY / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030712",
+    "descripcion": "VILCABAMBA / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030713",
+    "descripcion": "VIRUNDO / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "030714",
+    "descripcion": "CURASCO / GRAU / APURIMAC"
+  },
+  {
+    "ubigeo": "040101",
+    "descripcion": "AREQUIPA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040102",
+    "descripcion": "ALTO SELVA ALEGRE / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040103",
+    "descripcion": "CAYMA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040104",
+    "descripcion": "CERRO COLORADO / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040105",
+    "descripcion": "CHARACATO / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040106",
+    "descripcion": "CHIGUATA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040107",
+    "descripcion": "JACOBO HUNTER / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040108",
+    "descripcion": "LA JOYA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040109",
+    "descripcion": "MARIANO MELGAR / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040110",
+    "descripcion": "MIRAFLORES / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040111",
+    "descripcion": "MOLLEBAYA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040112",
+    "descripcion": "PAUCARPATA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040113",
+    "descripcion": "POCSI / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040114",
+    "descripcion": "POLOBAYA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040115",
+    "descripcion": "QUEQUEÑA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040116",
+    "descripcion": "SABANDIA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040117",
+    "descripcion": "SACHACA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040118",
+    "descripcion": "SAN JUAN DE SIGUAS / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040119",
+    "descripcion": "SAN JUAN DE TARUCANI / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040120",
+    "descripcion": "SANTA ISABEL DE SIGUAS / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040121",
+    "descripcion": "SANTA RITA DE SIGUAS / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040122",
+    "descripcion": "SOCABAYA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040123",
+    "descripcion": "TIABAYA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040124",
+    "descripcion": "UCHUMAYO / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040125",
+    "descripcion": "VITOR / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040126",
+    "descripcion": "YANAHUARA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040127",
+    "descripcion": "YARABAMBA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040128",
+    "descripcion": "YURA / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040129",
+    "descripcion": "JOSE LUIS BUSTAMANTE Y RIVERO / AREQUIPA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040201",
+    "descripcion": "CAMANA / CAMANA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040202",
+    "descripcion": "JOSE MARIA QUIMPER / CAMANA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040203",
+    "descripcion": "MARIANO NICOLAS VALCARCEL / CAMANA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040204",
+    "descripcion": "MARISCAL CACERES / CAMANA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040205",
+    "descripcion": "NICOLAS DE PIEROLA / CAMANA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040206",
+    "descripcion": "OCOÑA / CAMANA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040207",
+    "descripcion": "QUILCA / CAMANA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040208",
+    "descripcion": "SAMUEL PASTOR / CAMANA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040301",
+    "descripcion": "CARAVELI / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040302",
+    "descripcion": "ACARI / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040303",
+    "descripcion": "ATICO / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040304",
+    "descripcion": "ATIQUIPA / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040305",
+    "descripcion": "BELLA UNION / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040306",
+    "descripcion": "CAHUACHO / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040307",
+    "descripcion": "CHALA / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040308",
+    "descripcion": "CHAPARRA / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040309",
+    "descripcion": "HUANUHUANU / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040310",
+    "descripcion": "JAQUI / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040311",
+    "descripcion": "LOMAS / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040312",
+    "descripcion": "QUICACHA / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040313",
+    "descripcion": "YAUCA / CARAVELI / AREQUIPA"
+  },
+  {
+    "ubigeo": "040401",
+    "descripcion": "APLAO / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040402",
+    "descripcion": "ANDAGUA / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040403",
+    "descripcion": "AYO / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040404",
+    "descripcion": "CHACHAS / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040405",
+    "descripcion": "CHILCAYMARCA / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040406",
+    "descripcion": "CHOCO / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040407",
+    "descripcion": "HUANCARQUI / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040408",
+    "descripcion": "MACHAGUAY / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040409",
+    "descripcion": "ORCOPAMPA / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040410",
+    "descripcion": "PAMPACOLCA / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040411",
+    "descripcion": "TIPAN / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040412",
+    "descripcion": "UÑON / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040413",
+    "descripcion": "URACA / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040414",
+    "descripcion": "VIRACO / CASTILLA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040501",
+    "descripcion": "CHIVAY / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040502",
+    "descripcion": "ACHOMA / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040503",
+    "descripcion": "CABANACONDE / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040504",
+    "descripcion": "CALLALLI / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040505",
+    "descripcion": "CAYLLOMA / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040506",
+    "descripcion": "COPORAQUE / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040507",
+    "descripcion": "HUAMBO / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040508",
+    "descripcion": "HUANCA / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040509",
+    "descripcion": "ICHUPAMPA / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040510",
+    "descripcion": "LARI / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040511",
+    "descripcion": "LLUTA / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040512",
+    "descripcion": "MACA / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040513",
+    "descripcion": "MADRIGAL / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040514",
+    "descripcion": "SAN ANTONIO DE CHUCA / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040515",
+    "descripcion": "SIBAYO / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040516",
+    "descripcion": "TAPAY / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040517",
+    "descripcion": "TISCO / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040518",
+    "descripcion": "TUTI / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040519",
+    "descripcion": "YANQUE / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040520",
+    "descripcion": "MAJES / CAYLLOMA / AREQUIPA"
+  },
+  {
+    "ubigeo": "040601",
+    "descripcion": "CHUQUIBAMBA / CONDESUYOS / AREQUIPA"
+  },
+  {
+    "ubigeo": "040602",
+    "descripcion": "ANDARAY / CONDESUYOS / AREQUIPA"
+  },
+  {
+    "ubigeo": "040603",
+    "descripcion": "CAYARANI / CONDESUYOS / AREQUIPA"
+  },
+  {
+    "ubigeo": "040604",
+    "descripcion": "CHICHAS / CONDESUYOS / AREQUIPA"
+  },
+  {
+    "ubigeo": "040605",
+    "descripcion": "IRAY / CONDESUYOS / AREQUIPA"
+  },
+  {
+    "ubigeo": "040606",
+    "descripcion": "RIO GRANDE / CONDESUYOS / AREQUIPA"
+  },
+  {
+    "ubigeo": "040607",
+    "descripcion": "SALAMANCA / CONDESUYOS / AREQUIPA"
+  },
+  {
+    "ubigeo": "040608",
+    "descripcion": "YANAQUIHUA / CONDESUYOS / AREQUIPA"
+  },
+  {
+    "ubigeo": "040701",
+    "descripcion": "MOLLENDO / ISLAY / AREQUIPA"
+  },
+  {
+    "ubigeo": "040702",
+    "descripcion": "COCACHACRA / ISLAY / AREQUIPA"
+  },
+  {
+    "ubigeo": "040703",
+    "descripcion": "DEAN VALDIVIA / ISLAY / AREQUIPA"
+  },
+  {
+    "ubigeo": "040704",
+    "descripcion": "ISLAY / ISLAY / AREQUIPA"
+  },
+  {
+    "ubigeo": "040705",
+    "descripcion": "MEJIA / ISLAY / AREQUIPA"
+  },
+  {
+    "ubigeo": "040706",
+    "descripcion": "PUNTA DE BOMBON / ISLAY / AREQUIPA"
+  },
+  {
+    "ubigeo": "040801",
+    "descripcion": "COTAHUASI / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040802",
+    "descripcion": "ALCA / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040803",
+    "descripcion": "CHARCANA / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040804",
+    "descripcion": "HUAYNACOTAS / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040805",
+    "descripcion": "PAMPAMARCA / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040806",
+    "descripcion": "PUYCA / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040807",
+    "descripcion": "QUECHUALLA / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040808",
+    "descripcion": "SAYLA / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040809",
+    "descripcion": "TAURIA / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040810",
+    "descripcion": "TOMEPAMPA / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "040811",
+    "descripcion": "TORO / LA UNION / AREQUIPA"
+  },
+  {
+    "ubigeo": "050101",
+    "descripcion": "AYACUCHO / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050102",
+    "descripcion": "ACOCRO / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050103",
+    "descripcion": "ACOS VINCHOS / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050104",
+    "descripcion": "CARMEN ALTO / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050105",
+    "descripcion": "CHIARA / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050106",
+    "descripcion": "OCROS / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050107",
+    "descripcion": "PACAYCASA / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050108",
+    "descripcion": "QUINUA / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050109",
+    "descripcion": "SAN JOSE DE TICLLAS / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050110",
+    "descripcion": "SAN JUAN BAUTISTA / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050111",
+    "descripcion": "SANTIAGO DE PISCHA / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050112",
+    "descripcion": "SOCOS / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050113",
+    "descripcion": "TAMBILLO / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050114",
+    "descripcion": "VINCHOS / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050115",
+    "descripcion": "JESUS NAZARENO / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050116",
+    "descripcion": "ANDRES AVELINO CACERES DORREGARAY / HUAMANGA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050201",
+    "descripcion": "CANGALLO / CANGALLO / AYACUCHO"
+  },
+  {
+    "ubigeo": "050202",
+    "descripcion": "CHUSCHI / CANGALLO / AYACUCHO"
+  },
+  {
+    "ubigeo": "050203",
+    "descripcion": "LOS MOROCHUCOS / CANGALLO / AYACUCHO"
+  },
+  {
+    "ubigeo": "050204",
+    "descripcion": "MARIA PARADO DE BELLIDO / CANGALLO / AYACUCHO"
+  },
+  {
+    "ubigeo": "050205",
+    "descripcion": "PARAS / CANGALLO / AYACUCHO"
+  },
+  {
+    "ubigeo": "050206",
+    "descripcion": "TOTOS / CANGALLO / AYACUCHO"
+  },
+  {
+    "ubigeo": "050301",
+    "descripcion": "SANCOS / HUANCA SANCOS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050302",
+    "descripcion": "CARAPO / HUANCA SANCOS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050303",
+    "descripcion": "SACSAMARCA / HUANCA SANCOS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050304",
+    "descripcion": "SANTIAGO DE LUCANAMARCA / HUANCA SANCOS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050401",
+    "descripcion": "HUANTA / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050402",
+    "descripcion": "AYAHUANCO / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050403",
+    "descripcion": "HUAMANGUILLA / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050404",
+    "descripcion": "IGUAIN / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050405",
+    "descripcion": "LURICOCHA / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050406",
+    "descripcion": "SANTILLANA / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050407",
+    "descripcion": "SIVIA / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050408",
+    "descripcion": "LLOCHEGUA / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050409",
+    "descripcion": "CANAYRE / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050410",
+    "descripcion": "UCHURACCAY / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050411",
+    "descripcion": "PUCACOLPA / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050412",
+    "descripcion": "CHACA / HUANTA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050501",
+    "descripcion": "SAN MIGUEL / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050502",
+    "descripcion": "ANCO / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050503",
+    "descripcion": "AYNA / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050504",
+    "descripcion": "CHILCAS / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050505",
+    "descripcion": "CHUNGUI / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050506",
+    "descripcion": "LUIS CARRANZA / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050507",
+    "descripcion": "SANTA ROSA / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050508",
+    "descripcion": "TAMBO / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050509",
+    "descripcion": "SAMUGARI / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050510",
+    "descripcion": "ANCHIHUAY / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050511",
+    "descripcion": "ORONCCOY / LA MAR / AYACUCHO"
+  },
+  {
+    "ubigeo": "050601",
+    "descripcion": "PUQUIO / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050602",
+    "descripcion": "AUCARA / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050603",
+    "descripcion": "CABANA / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050604",
+    "descripcion": "CARMEN SALCEDO / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050605",
+    "descripcion": "CHAVIÑA / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050606",
+    "descripcion": "CHIPAO / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050607",
+    "descripcion": "HUAC-HUAS / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050608",
+    "descripcion": "LARAMATE / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050609",
+    "descripcion": "LEONCIO PRADO / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050610",
+    "descripcion": "LLAUTA / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050611",
+    "descripcion": "LUCANAS / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050612",
+    "descripcion": "OCAÑA / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050613",
+    "descripcion": "OTOCA / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050614",
+    "descripcion": "SAISA / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050615",
+    "descripcion": "SAN CRISTOBAL / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050616",
+    "descripcion": "SAN JUAN / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050617",
+    "descripcion": "SAN PEDRO / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050618",
+    "descripcion": "SAN PEDRO DE PALCO / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050619",
+    "descripcion": "SANCOS / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050620",
+    "descripcion": "SANTA ANA DE HUAYCAHUACHO / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050621",
+    "descripcion": "SANTA LUCIA / LUCANAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050701",
+    "descripcion": "CORACORA / PARINACOCHAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050702",
+    "descripcion": "CHUMPI / PARINACOCHAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050703",
+    "descripcion": "CORONEL CASTAÑEDA / PARINACOCHAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050704",
+    "descripcion": "PACAPAUSA / PARINACOCHAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050705",
+    "descripcion": "PULLO / PARINACOCHAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050706",
+    "descripcion": "PUYUSCA / PARINACOCHAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050707",
+    "descripcion": "SAN FRANCISCO DE RAVACAYCO / PARINACOCHAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050708",
+    "descripcion": "UPAHUACHO / PARINACOCHAS / AYACUCHO"
+  },
+  {
+    "ubigeo": "050801",
+    "descripcion": "PAUSA / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050802",
+    "descripcion": "COLTA / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050803",
+    "descripcion": "CORCULLA / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050804",
+    "descripcion": "LAMPA / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050805",
+    "descripcion": "MARCABAMBA / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050806",
+    "descripcion": "OYOLO / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050807",
+    "descripcion": "PARARCA / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050808",
+    "descripcion": "SAN JAVIER DE ALPABAMBA / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050809",
+    "descripcion": "SAN JOSE DE USHUA / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050810",
+    "descripcion": "SARA SARA / PAUCAR DEL SARA SARA / AYACUCHO"
+  },
+  {
+    "ubigeo": "050901",
+    "descripcion": "QUEROBAMBA / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050902",
+    "descripcion": "BELEN / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050903",
+    "descripcion": "CHALCOS / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050904",
+    "descripcion": "CHILCAYOC / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050905",
+    "descripcion": "HUACAÑA / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050906",
+    "descripcion": "MORCOLLA / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050907",
+    "descripcion": "PAICO / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050908",
+    "descripcion": "SAN PEDRO DE LARCAY / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050909",
+    "descripcion": "SAN SALVADOR DE QUIJE / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050910",
+    "descripcion": "SANTIAGO DE PAUCARAY / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "050911",
+    "descripcion": "SORAS / SUCRE / AYACUCHO"
+  },
+  {
+    "ubigeo": "051001",
+    "descripcion": "HUANCAPI / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051002",
+    "descripcion": "ALCAMENCA / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051003",
+    "descripcion": "APONGO / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051004",
+    "descripcion": "ASQUIPATA / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051005",
+    "descripcion": "CANARIA / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051006",
+    "descripcion": "CAYARA / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051007",
+    "descripcion": "COLCA / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051008",
+    "descripcion": "HUAMANQUIQUIA / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051009",
+    "descripcion": "HUANCARAYLLA / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051010",
+    "descripcion": "HUALLA / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051011",
+    "descripcion": "SARHUA / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051012",
+    "descripcion": "VILCANCHOS / VICTOR FAJARDO / AYACUCHO"
+  },
+  {
+    "ubigeo": "051101",
+    "descripcion": "VILCAS HUAMAN / VILCAS HUAMAN / AYACUCHO"
+  },
+  {
+    "ubigeo": "051102",
+    "descripcion": "ACCOMARCA / VILCAS HUAMAN / AYACUCHO"
+  },
+  {
+    "ubigeo": "051103",
+    "descripcion": "CARHUANCA / VILCAS HUAMAN / AYACUCHO"
+  },
+  {
+    "ubigeo": "051104",
+    "descripcion": "CONCEPCION / VILCAS HUAMAN / AYACUCHO"
+  },
+  {
+    "ubigeo": "051105",
+    "descripcion": "HUAMBALPA / VILCAS HUAMAN / AYACUCHO"
+  },
+  {
+    "ubigeo": "051106",
+    "descripcion": "INDEPENDENCIA / VILCAS HUAMAN / AYACUCHO"
+  },
+  {
+    "ubigeo": "051107",
+    "descripcion": "SAURAMA / VILCAS HUAMAN / AYACUCHO"
+  },
+  {
+    "ubigeo": "051108",
+    "descripcion": "VISCHONGO / VILCAS HUAMAN / AYACUCHO"
+  },
+  {
+    "ubigeo": "060101",
+    "descripcion": "CAJAMARCA / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060102",
+    "descripcion": "ASUNCION / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060103",
+    "descripcion": "CHETILLA / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060104",
+    "descripcion": "COSPAN / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060105",
+    "descripcion": "ENCAÑADA / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060106",
+    "descripcion": "JESUS / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060107",
+    "descripcion": "LLACANORA / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060108",
+    "descripcion": "LOS BAÑOS DEL INCA / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060109",
+    "descripcion": "MAGDALENA / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060110",
+    "descripcion": "MATARA / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060111",
+    "descripcion": "NAMORA / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060112",
+    "descripcion": "SAN JUAN / CAJAMARCA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060201",
+    "descripcion": "CAJABAMBA / CAJABAMBA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060202",
+    "descripcion": "CACHACHI / CAJABAMBA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060203",
+    "descripcion": "CONDEBAMBA / CAJABAMBA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060204",
+    "descripcion": "SITACOCHA / CAJABAMBA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060301",
+    "descripcion": "CELENDIN / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060302",
+    "descripcion": "CHUMUCH / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060303",
+    "descripcion": "CORTEGANA / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060304",
+    "descripcion": "HUASMIN / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060305",
+    "descripcion": "JORGE CHAVEZ / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060306",
+    "descripcion": "JOSE GALVEZ / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060307",
+    "descripcion": "MIGUEL IGLESIAS / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060308",
+    "descripcion": "OXAMARCA / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060309",
+    "descripcion": "SOROCHUCO / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060310",
+    "descripcion": "SUCRE / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060311",
+    "descripcion": "UTCO / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060312",
+    "descripcion": "LA LIBERTAD DE PALLAN / CELENDIN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060401",
+    "descripcion": "CHOTA / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060402",
+    "descripcion": "ANGUIA / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060403",
+    "descripcion": "CHADIN / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060404",
+    "descripcion": "CHIGUIRIP / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060405",
+    "descripcion": "CHIMBAN / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060406",
+    "descripcion": "CHOROPAMPA / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060407",
+    "descripcion": "COCHABAMBA / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060408",
+    "descripcion": "CONCHAN / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060409",
+    "descripcion": "HUAMBOS / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060410",
+    "descripcion": "LAJAS / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060411",
+    "descripcion": "LLAMA / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060412",
+    "descripcion": "MIRACOSTA / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060413",
+    "descripcion": "PACCHA / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060414",
+    "descripcion": "PION / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060415",
+    "descripcion": "QUEROCOTO / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060416",
+    "descripcion": "SAN JUAN DE LICUPIS / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060417",
+    "descripcion": "TACABAMBA / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060418",
+    "descripcion": "TOCMOCHE / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060419",
+    "descripcion": "CHALAMARCA / CHOTA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060501",
+    "descripcion": "CONTUMAZA / CONTUMAZA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060502",
+    "descripcion": "CHILETE / CONTUMAZA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060503",
+    "descripcion": "CUPISNIQUE / CONTUMAZA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060504",
+    "descripcion": "GUZMANGO / CONTUMAZA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060505",
+    "descripcion": "SAN BENITO / CONTUMAZA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060506",
+    "descripcion": "SANTA CRUZ DE TOLED / CONTUMAZA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060507",
+    "descripcion": "TANTARICA / CONTUMAZA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060508",
+    "descripcion": "YONAN / CONTUMAZA / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060601",
+    "descripcion": "CUTERVO / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060602",
+    "descripcion": "CALLAYUC / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060603",
+    "descripcion": "CHOROS / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060604",
+    "descripcion": "CUJILLO / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060605",
+    "descripcion": "LA RAMADA / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060606",
+    "descripcion": "PIMPINGOS / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060607",
+    "descripcion": "QUEROCOTILLO / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060608",
+    "descripcion": "SAN ANDRES DE CUTERVO / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060609",
+    "descripcion": "SAN JUAN DE CUTERVO / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060610",
+    "descripcion": "SAN LUIS DE LUCMA / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060611",
+    "descripcion": "SANTA CRUZ / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060612",
+    "descripcion": "SANTO DOMINGO DE LA CAPILLA / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060613",
+    "descripcion": "SANTO TOMAS / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060614",
+    "descripcion": "SOCOTA / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060615",
+    "descripcion": "TORIBIO CASANOVA / CUTERVO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060701",
+    "descripcion": "BAMBAMARCA / HUALGAYOC / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060702",
+    "descripcion": "CHUGUR / HUALGAYOC / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060703",
+    "descripcion": "HUALGAYOC / HUALGAYOC / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060801",
+    "descripcion": "JAEN / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060802",
+    "descripcion": "BELLAVISTA / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060803",
+    "descripcion": "CHONTALI / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060804",
+    "descripcion": "COLASAY / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060805",
+    "descripcion": "HUABAL / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060806",
+    "descripcion": "LAS PIRIAS / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060807",
+    "descripcion": "POMAHUACA / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060808",
+    "descripcion": "PUCARA / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060809",
+    "descripcion": "SALLIQUE / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060810",
+    "descripcion": "SAN FELIPE / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060811",
+    "descripcion": "SAN JOSE DEL ALTO / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060812",
+    "descripcion": "SANTA ROSA / JAEN / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060901",
+    "descripcion": "SAN IGNACIO / SAN IGNACIO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060902",
+    "descripcion": "CHIRINOS / SAN IGNACIO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060903",
+    "descripcion": "HUARANGO / SAN IGNACIO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060904",
+    "descripcion": "LA COIPA / SAN IGNACIO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060905",
+    "descripcion": "NAMBALLE / SAN IGNACIO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060906",
+    "descripcion": "SAN JOSE DE LOURDES / SAN IGNACIO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "060907",
+    "descripcion": "TABACONAS / SAN IGNACIO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061001",
+    "descripcion": "PEDRO GALVEZ / SAN MARCOS / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061002",
+    "descripcion": "CHANCAY / SAN MARCOS / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061003",
+    "descripcion": "EDUARDO VILLANUEVA / SAN MARCOS / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061004",
+    "descripcion": "GREGORIO PITA / SAN MARCOS / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061005",
+    "descripcion": "ICHOCAN / SAN MARCOS / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061006",
+    "descripcion": "JOSE MANUEL QUIROZ / SAN MARCOS / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061007",
+    "descripcion": "JOSE SABOGAL / SAN MARCOS / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061101",
+    "descripcion": "SAN MIGUEL / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061102",
+    "descripcion": "BOLIVAR / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061103",
+    "descripcion": "CALQUIS / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061104",
+    "descripcion": "CATILLUC / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061105",
+    "descripcion": "EL PRADO / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061106",
+    "descripcion": "LA FLORIDA / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061107",
+    "descripcion": "LLAPA / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061108",
+    "descripcion": "NANCHOC / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061109",
+    "descripcion": "NIEPOS / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061110",
+    "descripcion": "SAN GREGORIO / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061111",
+    "descripcion": "SAN SILVESTRE DE COCHAN / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061112",
+    "descripcion": "TONGOD / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061113",
+    "descripcion": "UNION AGUA BLANCA / SAN MIGUEL / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061201",
+    "descripcion": "SAN PABLO / SAN PABLO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061202",
+    "descripcion": "SAN BERNARDINO / SAN PABLO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061203",
+    "descripcion": "SAN LUIS / SAN PABLO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061204",
+    "descripcion": "TUMBADEN / SAN PABLO / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061301",
+    "descripcion": "SANTA CRUZ / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061302",
+    "descripcion": "ANDABAMBA / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061303",
+    "descripcion": "CATACHE / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061304",
+    "descripcion": "CHANCAYBAÑOS / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061305",
+    "descripcion": "LA ESPERANZA / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061306",
+    "descripcion": "NINABAMBA / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061307",
+    "descripcion": "PULAN / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061308",
+    "descripcion": "SAUCEPAMPA / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061309",
+    "descripcion": "SEXI / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061310",
+    "descripcion": "UTICYACU / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "061311",
+    "descripcion": "YAUYUCAN / SANTA CRUZ / CAJAMARCA"
+  },
+  {
+    "ubigeo": "070101",
+    "descripcion": "CALLAO / CALLAO / CALLAO"
+  },
+  {
+    "ubigeo": "070102",
+    "descripcion": "BELLAVISTA / CALLAO / CALLAO"
+  },
+  {
+    "ubigeo": "070103",
+    "descripcion": "CARMEN DE LA LEGUA REYNOSO / CALLAO / CALLAO"
+  },
+  {
+    "ubigeo": "070104",
+    "descripcion": "LA PERLA / CALLAO / CALLAO"
+  },
+  {
+    "ubigeo": "070105",
+    "descripcion": "LA PUNTA / CALLAO / CALLAO"
+  },
+  {
+    "ubigeo": "070106",
+    "descripcion": "VENTANILLA / CALLAO / CALLAO"
+  },
+  {
+    "ubigeo": "070107",
+    "descripcion": "MI PERU / CALLAO / CALLAO"
+  },
+  {
+    "ubigeo": "080101",
+    "descripcion": "CUSCO / CUSCO / CUSCO"
+  },
+  {
+    "ubigeo": "080102",
+    "descripcion": "CCORCA / CUSCO / CUSCO"
+  },
+  {
+    "ubigeo": "080103",
+    "descripcion": "POROY / CUSCO / CUSCO"
+  },
+  {
+    "ubigeo": "080104",
+    "descripcion": "SAN JERONIMO / CUSCO / CUSCO"
+  },
+  {
+    "ubigeo": "080105",
+    "descripcion": "SAN SEBASTIAN / CUSCO / CUSCO"
+  },
+  {
+    "ubigeo": "080106",
+    "descripcion": "SANTIAGO / CUSCO / CUSCO"
+  },
+  {
+    "ubigeo": "080107",
+    "descripcion": "SAYLLA / CUSCO / CUSCO"
+  },
+  {
+    "ubigeo": "080108",
+    "descripcion": "WANCHAQ / CUSCO / CUSCO"
+  },
+  {
+    "ubigeo": "080201",
+    "descripcion": "ACOMAYO / ACOMAYO / CUSCO"
+  },
+  {
+    "ubigeo": "080202",
+    "descripcion": "ACOPIA / ACOMAYO / CUSCO"
+  },
+  {
+    "ubigeo": "080203",
+    "descripcion": "ACOS / ACOMAYO / CUSCO"
+  },
+  {
+    "ubigeo": "080204",
+    "descripcion": "MOSOC LLACTA / ACOMAYO / CUSCO"
+  },
+  {
+    "ubigeo": "080205",
+    "descripcion": "POMACANCHI / ACOMAYO / CUSCO"
+  },
+  {
+    "ubigeo": "080206",
+    "descripcion": "RONDOCAN / ACOMAYO / CUSCO"
+  },
+  {
+    "ubigeo": "080207",
+    "descripcion": "SANGARARA / ACOMAYO / CUSCO"
+  },
+  {
+    "ubigeo": "080301",
+    "descripcion": "ANTA / ANTA / CUSCO"
+  },
+  {
+    "ubigeo": "080302",
+    "descripcion": "ANCAHUASI / ANTA / CUSCO"
+  },
+  {
+    "ubigeo": "080303",
+    "descripcion": "CACHIMAYO / ANTA / CUSCO"
+  },
+  {
+    "ubigeo": "080304",
+    "descripcion": "CHINCHAYPUJIO / ANTA / CUSCO"
+  },
+  {
+    "ubigeo": "080305",
+    "descripcion": "HUAROCONDO / ANTA / CUSCO"
+  },
+  {
+    "ubigeo": "080306",
+    "descripcion": "LIMATAMBO / ANTA / CUSCO"
+  },
+  {
+    "ubigeo": "080307",
+    "descripcion": "MOLLEPATA / ANTA / CUSCO"
+  },
+  {
+    "ubigeo": "080308",
+    "descripcion": "PUCYURA / ANTA / CUSCO"
+  },
+  {
+    "ubigeo": "080309",
+    "descripcion": "ZURITE / ANTA / CUSCO"
+  },
+  {
+    "ubigeo": "080401",
+    "descripcion": "CALCA / CALCA / CUSCO"
+  },
+  {
+    "ubigeo": "080402",
+    "descripcion": "COYA / CALCA / CUSCO"
+  },
+  {
+    "ubigeo": "080403",
+    "descripcion": "LAMAY / CALCA / CUSCO"
+  },
+  {
+    "ubigeo": "080404",
+    "descripcion": "LARES / CALCA / CUSCO"
+  },
+  {
+    "ubigeo": "080405",
+    "descripcion": "PISAC / CALCA / CUSCO"
+  },
+  {
+    "ubigeo": "080406",
+    "descripcion": "SAN SALVADOR / CALCA / CUSCO"
+  },
+  {
+    "ubigeo": "080407",
+    "descripcion": "TARAY / CALCA / CUSCO"
+  },
+  {
+    "ubigeo": "080408",
+    "descripcion": "YANATILE / CALCA / CUSCO"
+  },
+  {
+    "ubigeo": "080501",
+    "descripcion": "YANAOCA / CANAS / CUSCO"
+  },
+  {
+    "ubigeo": "080502",
+    "descripcion": "CHECCA / CANAS / CUSCO"
+  },
+  {
+    "ubigeo": "080503",
+    "descripcion": "KUNTURKANKI / CANAS / CUSCO"
+  },
+  {
+    "ubigeo": "080504",
+    "descripcion": "LANGUI / CANAS / CUSCO"
+  },
+  {
+    "ubigeo": "080505",
+    "descripcion": "LAYO / CANAS / CUSCO"
+  },
+  {
+    "ubigeo": "080506",
+    "descripcion": "PAMPAMARCA / CANAS / CUSCO"
+  },
+  {
+    "ubigeo": "080507",
+    "descripcion": "QUEHUE / CANAS / CUSCO"
+  },
+  {
+    "ubigeo": "080508",
+    "descripcion": "TUPAC AMARU / CANAS / CUSCO"
+  },
+  {
+    "ubigeo": "080601",
+    "descripcion": "SICUANI / CANCHIS / CUSCO"
+  },
+  {
+    "ubigeo": "080602",
+    "descripcion": "CHECACUPE / CANCHIS / CUSCO"
+  },
+  {
+    "ubigeo": "080603",
+    "descripcion": "COMBAPATA / CANCHIS / CUSCO"
+  },
+  {
+    "ubigeo": "080604",
+    "descripcion": "MARANGANI / CANCHIS / CUSCO"
+  },
+  {
+    "ubigeo": "080605",
+    "descripcion": "PITUMARCA / CANCHIS / CUSCO"
+  },
+  {
+    "ubigeo": "080606",
+    "descripcion": "SAN PABLO / CANCHIS / CUSCO"
+  },
+  {
+    "ubigeo": "080607",
+    "descripcion": "SAN PEDRO / CANCHIS / CUSCO"
+  },
+  {
+    "ubigeo": "080608",
+    "descripcion": "TINTA / CANCHIS / CUSCO"
+  },
+  {
+    "ubigeo": "080701",
+    "descripcion": "SANTO TOMAS / CHUMBIVILCAS / CUSCO"
+  },
+  {
+    "ubigeo": "080702",
+    "descripcion": "CAPACMARCA / CHUMBIVILCAS / CUSCO"
+  },
+  {
+    "ubigeo": "080703",
+    "descripcion": "CHAMACA / CHUMBIVILCAS / CUSCO"
+  },
+  {
+    "ubigeo": "080704",
+    "descripcion": "COLQUEMARCA / CHUMBIVILCAS / CUSCO"
+  },
+  {
+    "ubigeo": "080705",
+    "descripcion": "LIVITACA / CHUMBIVILCAS / CUSCO"
+  },
+  {
+    "ubigeo": "080706",
+    "descripcion": "LLUSCO / CHUMBIVILCAS / CUSCO"
+  },
+  {
+    "ubigeo": "080707",
+    "descripcion": "QUIÑOTA / CHUMBIVILCAS / CUSCO"
+  },
+  {
+    "ubigeo": "080708",
+    "descripcion": "VELILLE / CHUMBIVILCAS / CUSCO"
+  },
+  {
+    "ubigeo": "080801",
+    "descripcion": "ESPINAR / ESPINAR / CUSCO"
+  },
+  {
+    "ubigeo": "080802",
+    "descripcion": "CONDOROMA / ESPINAR / CUSCO"
+  },
+  {
+    "ubigeo": "080803",
+    "descripcion": "COPORAQUE / ESPINAR / CUSCO"
+  },
+  {
+    "ubigeo": "080804",
+    "descripcion": "OCORURO / ESPINAR / CUSCO"
+  },
+  {
+    "ubigeo": "080805",
+    "descripcion": "PALLPATA / ESPINAR / CUSCO"
+  },
+  {
+    "ubigeo": "080806",
+    "descripcion": "PICHIGUA / ESPINAR / CUSCO"
+  },
+  {
+    "ubigeo": "080807",
+    "descripcion": "SUYCKUTAMBO / ESPINAR / CUSCO"
+  },
+  {
+    "ubigeo": "080808",
+    "descripcion": "ALTO PICHIGUA / ESPINAR / CUSCO"
+  },
+  {
+    "ubigeo": "080901",
+    "descripcion": "SANTA ANA / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080902",
+    "descripcion": "ECHARATE / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080903",
+    "descripcion": "HUAYOPATA / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080904",
+    "descripcion": "MARANURA / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080905",
+    "descripcion": "OCOBAMBA / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080906",
+    "descripcion": "QUELLOUNO / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080907",
+    "descripcion": "KIMBIRI / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080908",
+    "descripcion": "SANTA TERESA / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080909",
+    "descripcion": "VILCABAMBA / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080910",
+    "descripcion": "PICHARI / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080911",
+    "descripcion": "INKAWASI / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080912",
+    "descripcion": "VILLA VIRGEN / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080913",
+    "descripcion": "VILLA KINTIARINA / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080914",
+    "descripcion": "MEGANTONI / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "081001",
+    "descripcion": "PARURO / PARURO / CUSCO"
+  },
+  {
+    "ubigeo": "081002",
+    "descripcion": "ACCHA / PARURO / CUSCO"
+  },
+  {
+    "ubigeo": "081003",
+    "descripcion": "CCAPI / PARURO / CUSCO"
+  },
+  {
+    "ubigeo": "081004",
+    "descripcion": "COLCHA / PARURO / CUSCO"
+  },
+  {
+    "ubigeo": "081005",
+    "descripcion": "HUANOQUITE / PARURO / CUSCO"
+  },
+  {
+    "ubigeo": "081006",
+    "descripcion": "OMACHA / PARURO / CUSCO"
+  },
+  {
+    "ubigeo": "081007",
+    "descripcion": "PACCARITAMBO / PARURO / CUSCO"
+  },
+  {
+    "ubigeo": "081008",
+    "descripcion": "PILLPINTO / PARURO / CUSCO"
+  },
+  {
+    "ubigeo": "081009",
+    "descripcion": "YAURISQUE / PARURO / CUSCO"
+  },
+  {
+    "ubigeo": "081101",
+    "descripcion": "PAUCARTAMBO / PAUCARTAMBO / CUSCO"
+  },
+  {
+    "ubigeo": "081102",
+    "descripcion": "CAICAY / PAUCARTAMBO / CUSCO"
+  },
+  {
+    "ubigeo": "081103",
+    "descripcion": "CHALLABAMBA / PAUCARTAMBO / CUSCO"
+  },
+  {
+    "ubigeo": "081104",
+    "descripcion": "COLQUEPATA / PAUCARTAMBO / CUSCO"
+  },
+  {
+    "ubigeo": "081105",
+    "descripcion": "HUANCARANI / PAUCARTAMBO / CUSCO"
+  },
+  {
+    "ubigeo": "081106",
+    "descripcion": "KOSÑIPATA / PAUCARTAMBO / CUSCO"
+  },
+  {
+    "ubigeo": "081201",
+    "descripcion": "URCOS / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081202",
+    "descripcion": "ANDAHUAYLILLAS / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081203",
+    "descripcion": "CAMANTI / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081204",
+    "descripcion": "CCARHUAYO / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081205",
+    "descripcion": "CCATCA / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081206",
+    "descripcion": "CUSIPATA / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081207",
+    "descripcion": "HUARO / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081208",
+    "descripcion": "LUCRE / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081209",
+    "descripcion": "MARCAPATA / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081210",
+    "descripcion": "OCONGATE / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081211",
+    "descripcion": "OROPESA / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081212",
+    "descripcion": "QUIQUIJANA / QUISPICANCHI / CUSCO"
+  },
+  {
+    "ubigeo": "081301",
+    "descripcion": "URUBAMBA / URUBAMBA / CUSCO"
+  },
+  {
+    "ubigeo": "081302",
+    "descripcion": "CHINCHERO / URUBAMBA / CUSCO"
+  },
+  {
+    "ubigeo": "081303",
+    "descripcion": "HUAYLLABAMBA / URUBAMBA / CUSCO"
+  },
+  {
+    "ubigeo": "081304",
+    "descripcion": "MACHUPICCHU / URUBAMBA / CUSCO"
+  },
+  {
+    "ubigeo": "081305",
+    "descripcion": "MARAS / URUBAMBA / CUSCO"
+  },
+  {
+    "ubigeo": "081306",
+    "descripcion": "OLLANTAYTAMBO / URUBAMBA / CUSCO"
+  },
+  {
+    "ubigeo": "081307",
+    "descripcion": "YUCAY / URUBAMBA / CUSCO"
+  },
+  {
+    "ubigeo": "090101",
+    "descripcion": "HUANCAVELICA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090102",
+    "descripcion": "ACOBAMBILLA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090103",
+    "descripcion": "ACORIA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090104",
+    "descripcion": "CONAYCA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090105",
+    "descripcion": "CUENCA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090106",
+    "descripcion": "HUACHOCOLPA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090107",
+    "descripcion": "HUAYLLAHUARA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090108",
+    "descripcion": "IZCUCHACA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090109",
+    "descripcion": "LARIA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090110",
+    "descripcion": "MANTA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090111",
+    "descripcion": "MARISCAL CACERES / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090112",
+    "descripcion": "MOYA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090113",
+    "descripcion": "NUEVO OCCORO / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090114",
+    "descripcion": "PALCA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090115",
+    "descripcion": "PILCHACA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090116",
+    "descripcion": "VILCA / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090117",
+    "descripcion": "YAULI / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090118",
+    "descripcion": "ASCENSION / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090119",
+    "descripcion": "HUANDO / HUANCAVELICA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090201",
+    "descripcion": "ACOBAMBA / ACOBAMBA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090202",
+    "descripcion": "ANDABAMBA / ACOBAMBA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090203",
+    "descripcion": "ANTA / ACOBAMBA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090204",
+    "descripcion": "CAJA / ACOBAMBA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090205",
+    "descripcion": "MARCAS / ACOBAMBA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090206",
+    "descripcion": "PAUCARA / ACOBAMBA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090207",
+    "descripcion": "POMACOCHA / ACOBAMBA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090208",
+    "descripcion": "ROSARIO / ACOBAMBA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090301",
+    "descripcion": "LIRCAY / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090302",
+    "descripcion": "ANCHONGA / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090303",
+    "descripcion": "CALLANMARCA / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090304",
+    "descripcion": "CCOCHACCASA / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090305",
+    "descripcion": "CHINCHO / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090306",
+    "descripcion": "CONGALLA / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090307",
+    "descripcion": "HUANCA-HUANCA / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090308",
+    "descripcion": "HUAYLLAY GRANDE / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090309",
+    "descripcion": "JULCAMARCA / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090310",
+    "descripcion": "SAN ANTONIO DE ANTAPARCO / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090311",
+    "descripcion": "SANTO TOMAS DE PATA / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090312",
+    "descripcion": "SECCLLA / ANGARAES / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090401",
+    "descripcion": "CASTROVIRREYNA / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090402",
+    "descripcion": "ARMA / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090403",
+    "descripcion": "AURAHUA / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090404",
+    "descripcion": "CAPILLAS / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090405",
+    "descripcion": "CHUPAMARCA / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090406",
+    "descripcion": "COCAS / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090407",
+    "descripcion": "HUACHOS / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090408",
+    "descripcion": "HUAMATAMBO / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090409",
+    "descripcion": "MOLLEPAMPA / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090410",
+    "descripcion": "SAN JUAN / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090411",
+    "descripcion": "SANTA ANA / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090412",
+    "descripcion": "TANTARA / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090413",
+    "descripcion": "TICRAPO / CASTROVIRREYNA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090501",
+    "descripcion": "CHURCAMPA / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090502",
+    "descripcion": "ANCO / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090503",
+    "descripcion": "CHINCHIHUASI / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090504",
+    "descripcion": "EL CARMEN / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090505",
+    "descripcion": "LA MERCED / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090506",
+    "descripcion": "LOCROJA / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090507",
+    "descripcion": "PAUCARBAMBA / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090508",
+    "descripcion": "SAN MIGUEL DE MAYOCC / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090509",
+    "descripcion": "SAN PEDRO DE CORIS / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090510",
+    "descripcion": "PACHAMARCA / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090511",
+    "descripcion": "COSME / CHURCAMPA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090601",
+    "descripcion": "HUAYTARA / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090602",
+    "descripcion": "AYAVI / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090603",
+    "descripcion": "CORDOVA / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090604",
+    "descripcion": "HUAYACUNDO ARMA / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090605",
+    "descripcion": "LARAMARCA / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090606",
+    "descripcion": "OCOYO / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090607",
+    "descripcion": "PILPICHACA / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090608",
+    "descripcion": "QUERCO / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090609",
+    "descripcion": "QUITO-ARMA / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090610",
+    "descripcion": "SAN ANTONIO DE CUSICANCHA / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090611",
+    "descripcion": "SAN FRANCISCO DE SANGAYAICO / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090612",
+    "descripcion": "SAN ISIDRO / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090613",
+    "descripcion": "SANTIAGO DE CHOCORVOS / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090614",
+    "descripcion": "SANTIAGO DE QUIRAHUARA / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090615",
+    "descripcion": "SANTO DOMINGO DE CAPILLAS / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090616",
+    "descripcion": "TAMBO / HUAYTARA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090701",
+    "descripcion": "PAMPAS / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090702",
+    "descripcion": "ACOSTAMBO / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090703",
+    "descripcion": "ACRAQUIA / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090704",
+    "descripcion": "AHUAYCHA / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090705",
+    "descripcion": "COLCABAMBA / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090706",
+    "descripcion": "DANIEL HERNANDEZ / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090707",
+    "descripcion": "HUACHOCOLPA / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090709",
+    "descripcion": "HUARIBAMBA / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090710",
+    "descripcion": "ÑAHUIMPUQUIO / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090711",
+    "descripcion": "PAZOS / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090713",
+    "descripcion": "QUISHUAR / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090714",
+    "descripcion": "SALCABAMBA / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090715",
+    "descripcion": "SALCAHUASI / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090716",
+    "descripcion": "SAN MARCOS DE ROCCHAC / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090717",
+    "descripcion": "SURCUBAMBA / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090718",
+    "descripcion": "TINTAY PUNCU / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090719",
+    "descripcion": "QUICHUAS / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090720",
+    "descripcion": "ANDAYMARCA / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090721",
+    "descripcion": "ROBLE / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090722",
+    "descripcion": "PICHOS / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": "090723",
+    "descripcion": "SANTIAGO DE TUCUMA / TAYACAJA / HUANCAVELICA"
+  },
+  {
+    "ubigeo": 100101,
+    "descripcion": "HUANUCO / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100102,
+    "descripcion": "AMARILIS / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100103,
+    "descripcion": "CHINCHAO / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100104,
+    "descripcion": "CHURUBAMBA / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100105,
+    "descripcion": "MARGOS / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100106,
+    "descripcion": "QUISQUI (KICHKI) / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100107,
+    "descripcion": "SAN FRANCISCO DE CAYRAN / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100108,
+    "descripcion": "SAN PEDRO DE CHAULAN / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100109,
+    "descripcion": "SANTA MARIA DEL VALLE / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100110,
+    "descripcion": "YARUMAYO / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100111,
+    "descripcion": "PILLCO MARCA / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100112,
+    "descripcion": "YACUS / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100113,
+    "descripcion": "SAN PABLO DE PILLAO / HUANUCO / HUANUCO"
+  },
+  {
+    "ubigeo": 100201,
+    "descripcion": "AMBO / AMBO / HUANUCO"
+  },
+  {
+    "ubigeo": 100202,
+    "descripcion": "CAYNA / AMBO / HUANUCO"
+  },
+  {
+    "ubigeo": 100203,
+    "descripcion": "COLPAS / AMBO / HUANUCO"
+  },
+  {
+    "ubigeo": 100204,
+    "descripcion": "CONCHAMARCA / AMBO / HUANUCO"
+  },
+  {
+    "ubigeo": 100205,
+    "descripcion": "HUACAR / AMBO / HUANUCO"
+  },
+  {
+    "ubigeo": 100206,
+    "descripcion": "SAN FRANCISCO / AMBO / HUANUCO"
+  },
+  {
+    "ubigeo": 100207,
+    "descripcion": "SAN RAFAEL / AMBO / HUANUCO"
+  },
+  {
+    "ubigeo": 100208,
+    "descripcion": "TOMAY KICHWA / AMBO / HUANUCO"
+  },
+  {
+    "ubigeo": 100301,
+    "descripcion": "LA UNION / DOS DE MAYO / HUANUCO"
+  },
+  {
+    "ubigeo": 100307,
+    "descripcion": "CHUQUIS / DOS DE MAYO / HUANUCO"
+  },
+  {
+    "ubigeo": 100311,
+    "descripcion": "MARIAS / DOS DE MAYO / HUANUCO"
+  },
+  {
+    "ubigeo": 100313,
+    "descripcion": "PACHAS / DOS DE MAYO / HUANUCO"
+  },
+  {
+    "ubigeo": 100316,
+    "descripcion": "QUIVILLA / DOS DE MAYO / HUANUCO"
+  },
+  {
+    "ubigeo": 100317,
+    "descripcion": "RIPAN / DOS DE MAYO / HUANUCO"
+  },
+  {
+    "ubigeo": 100321,
+    "descripcion": "SHUNQUI / DOS DE MAYO / HUANUCO"
+  },
+  {
+    "ubigeo": 100322,
+    "descripcion": "SILLAPATA / DOS DE MAYO / HUANUCO"
+  },
+  {
+    "ubigeo": 100323,
+    "descripcion": "YANAS / DOS DE MAYO / HUANUCO"
+  },
+  {
+    "ubigeo": 100401,
+    "descripcion": "HUACAYBAMBA / HUACAYBAMBA / HUANUCO"
+  },
+  {
+    "ubigeo": 100402,
+    "descripcion": "CANCHABAMBA / HUACAYBAMBA / HUANUCO"
+  },
+  {
+    "ubigeo": 100403,
+    "descripcion": "COCHABAMBA / HUACAYBAMBA / HUANUCO"
+  },
+  {
+    "ubigeo": 100404,
+    "descripcion": "PINRA / HUACAYBAMBA / HUANUCO"
+  },
+  {
+    "ubigeo": 100501,
+    "descripcion": "LLATA / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100502,
+    "descripcion": "ARANCAY / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100503,
+    "descripcion": "CHAVIN DE PARIARCA / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100504,
+    "descripcion": "JACAS GRANDE / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100505,
+    "descripcion": "JIRCAN / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100506,
+    "descripcion": "MIRAFLORES / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100507,
+    "descripcion": "MONZON / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100508,
+    "descripcion": "PUNCHAO / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100509,
+    "descripcion": "PUÑOS / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100510,
+    "descripcion": "SINGA / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100511,
+    "descripcion": "TANTAMAYO / HUAMALIES / HUANUCO"
+  },
+  {
+    "ubigeo": 100601,
+    "descripcion": "RUPA-RUPA / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100602,
+    "descripcion": "DANIEL ALOMIA ROBLES / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100603,
+    "descripcion": "HERMILIO VALDIZAN / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100604,
+    "descripcion": "JOSE CRESPO Y CASTILLO / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100605,
+    "descripcion": "LUYANDO / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100606,
+    "descripcion": "MARIANO DAMASO BERAUN / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100607,
+    "descripcion": "PUCAYACU / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100608,
+    "descripcion": "CASTILLO GRANDE / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100609,
+    "descripcion": "PUEBLO NUEVO / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100610,
+    "descripcion": "SANTO DOMINGO DE ANDIA / LEONCIO PRADO / HUANUCO"
+  },
+  {
+    "ubigeo": 100701,
+    "descripcion": "HUACRACHUCO / MARAÑON / HUANUCO"
+  },
+  {
+    "ubigeo": 100702,
+    "descripcion": "CHOLON / MARAÑON / HUANUCO"
+  },
+  {
+    "ubigeo": 100703,
+    "descripcion": "SAN BUENAVENTURA / MARAÑON / HUANUCO"
+  },
+  {
+    "ubigeo": 100704,
+    "descripcion": "LA MORADA / MARAÑON / HUANUCO"
+  },
+  {
+    "ubigeo": 100705,
+    "descripcion": "SANTA ROSA DE ALTO YANAJANCA / MARAÑON / HUANUCO"
+  },
+  {
+    "ubigeo": 100801,
+    "descripcion": "PANAO / PACHITEA / HUANUCO"
+  },
+  {
+    "ubigeo": 100802,
+    "descripcion": "CHAGLLA / PACHITEA / HUANUCO"
+  },
+  {
+    "ubigeo": 100803,
+    "descripcion": "MOLINO / PACHITEA / HUANUCO"
+  },
+  {
+    "ubigeo": 100804,
+    "descripcion": "UMARI / PACHITEA / HUANUCO"
+  },
+  {
+    "ubigeo": 100901,
+    "descripcion": "PUERTO INCA / PUERTO INCA / HUANUCO"
+  },
+  {
+    "ubigeo": 100902,
+    "descripcion": "CODO DEL POZUZO / PUERTO INCA / HUANUCO"
+  },
+  {
+    "ubigeo": 100903,
+    "descripcion": "HONORIA / PUERTO INCA / HUANUCO"
+  },
+  {
+    "ubigeo": 100904,
+    "descripcion": "TOURNAVISTA / PUERTO INCA / HUANUCO"
+  },
+  {
+    "ubigeo": 100905,
+    "descripcion": "YUYAPICHIS / PUERTO INCA / HUANUCO"
+  },
+  {
+    "ubigeo": 101001,
+    "descripcion": "JESUS / LAURICOCHA / HUANUCO"
+  },
+  {
+    "ubigeo": 101002,
+    "descripcion": "BAÑOS / LAURICOCHA / HUANUCO"
+  },
+  {
+    "ubigeo": 101003,
+    "descripcion": "JIVIA / LAURICOCHA / HUANUCO"
+  },
+  {
+    "ubigeo": 101004,
+    "descripcion": "QUEROPALCA / LAURICOCHA / HUANUCO"
+  },
+  {
+    "ubigeo": 101005,
+    "descripcion": "RONDOS / LAURICOCHA / HUANUCO"
+  },
+  {
+    "ubigeo": 101006,
+    "descripcion": "SAN FRANCISCO DE ASIS / LAURICOCHA / HUANUCO"
+  },
+  {
+    "ubigeo": 101007,
+    "descripcion": "SAN MIGUEL DE CAURI / LAURICOCHA / HUANUCO"
+  },
+  {
+    "ubigeo": 101101,
+    "descripcion": "CHAVINILLO / YAROWILCA / HUANUCO"
+  },
+  {
+    "ubigeo": 101102,
+    "descripcion": "CAHUAC / YAROWILCA / HUANUCO"
+  },
+  {
+    "ubigeo": 101103,
+    "descripcion": "CHACABAMBA / YAROWILCA / HUANUCO"
+  },
+  {
+    "ubigeo": 101104,
+    "descripcion": "APARICIO POMARES / YAROWILCA / HUANUCO"
+  },
+  {
+    "ubigeo": 101105,
+    "descripcion": "JACAS CHICO / YAROWILCA / HUANUCO"
+  },
+  {
+    "ubigeo": 101106,
+    "descripcion": "OBAS / YAROWILCA / HUANUCO"
+  },
+  {
+    "ubigeo": 101107,
+    "descripcion": "PAMPAMARCA / YAROWILCA / HUANUCO"
+  },
+  {
+    "ubigeo": 101108,
+    "descripcion": "CHORAS / YAROWILCA / HUANUCO"
+  },
+  {
+    "ubigeo": 110101,
+    "descripcion": "ICA / ICA / ICA"
+  },
+  {
+    "ubigeo": 110102,
+    "descripcion": "LA TINGUIÑA / ICA / ICA"
+  },
+  {
+    "ubigeo": 110103,
+    "descripcion": "LOS AQUIJES / ICA / ICA"
+  },
+  {
+    "ubigeo": 110104,
+    "descripcion": "OCUCAJE / ICA / ICA"
+  },
+  {
+    "ubigeo": 110105,
+    "descripcion": "PACHACUTEC / ICA / ICA"
+  },
+  {
+    "ubigeo": 110106,
+    "descripcion": "PARCONA / ICA / ICA"
+  },
+  {
+    "ubigeo": 110107,
+    "descripcion": "PUEBLO NUEVO / ICA / ICA"
+  },
+  {
+    "ubigeo": 110108,
+    "descripcion": "SALAS / ICA / ICA"
+  },
+  {
+    "ubigeo": 110109,
+    "descripcion": "SAN JOSE DE LOS MOLINOS / ICA / ICA"
+  },
+  {
+    "ubigeo": 110110,
+    "descripcion": "SAN JUAN BAUTISTA / ICA / ICA"
+  },
+  {
+    "ubigeo": 110111,
+    "descripcion": "SANTIAGO / ICA / ICA"
+  },
+  {
+    "ubigeo": 110112,
+    "descripcion": "SUBTANJALLA / ICA / ICA"
+  },
+  {
+    "ubigeo": 110113,
+    "descripcion": "TATE / ICA / ICA"
+  },
+  {
+    "ubigeo": 110114,
+    "descripcion": "YAUCA DEL ROSARIO / ICA / ICA"
+  },
+  {
+    "ubigeo": 110201,
+    "descripcion": "CHINCHA ALTA / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110202,
+    "descripcion": "ALTO LARAN / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110203,
+    "descripcion": "CHAVIN / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110204,
+    "descripcion": "CHINCHA BAJA / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110205,
+    "descripcion": "EL CARMEN / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110206,
+    "descripcion": "GROCIO PRADO / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110207,
+    "descripcion": "PUEBLO NUEVO / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110208,
+    "descripcion": "SAN JUAN DE YANAC / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110209,
+    "descripcion": "SAN PEDRO DE HUACARPANA / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110210,
+    "descripcion": "SUNAMPE / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110211,
+    "descripcion": "TAMBO DE MORA / CHINCHA / ICA"
+  },
+  {
+    "ubigeo": 110301,
+    "descripcion": "NASCA / NASCA / ICA"
+  },
+  {
+    "ubigeo": 110302,
+    "descripcion": "CHANGUILLO / NASCA / ICA"
+  },
+  {
+    "ubigeo": 110303,
+    "descripcion": "EL INGENIO / NASCA / ICA"
+  },
+  {
+    "ubigeo": 110304,
+    "descripcion": "MARCONA / NASCA / ICA"
+  },
+  {
+    "ubigeo": 110305,
+    "descripcion": "VISTA ALEGRE / NASCA / ICA"
+  },
+  {
+    "ubigeo": 110401,
+    "descripcion": "PALPA / PALPA / ICA"
+  },
+  {
+    "ubigeo": 110402,
+    "descripcion": "LLIPATA / PALPA / ICA"
+  },
+  {
+    "ubigeo": 110403,
+    "descripcion": "RIO GRANDE / PALPA / ICA"
+  },
+  {
+    "ubigeo": 110404,
+    "descripcion": "SANTA CRUZ / PALPA / ICA"
+  },
+  {
+    "ubigeo": 110405,
+    "descripcion": "TIBILLO / PALPA / ICA"
+  },
+  {
+    "ubigeo": 110501,
+    "descripcion": "PISCO / PISCO / ICA"
+  },
+  {
+    "ubigeo": 110502,
+    "descripcion": "HUANCANO / PISCO / ICA"
+  },
+  {
+    "ubigeo": 110503,
+    "descripcion": "HUMAY / PISCO / ICA"
+  },
+  {
+    "ubigeo": 110504,
+    "descripcion": "INDEPENDENCIA / PISCO / ICA"
+  },
+  {
+    "ubigeo": 110505,
+    "descripcion": "PARACAS / PISCO / ICA"
+  },
+  {
+    "ubigeo": 110506,
+    "descripcion": "SAN ANDRES / PISCO / ICA"
+  },
+  {
+    "ubigeo": 110507,
+    "descripcion": "SAN CLEMENTE / PISCO / ICA"
+  },
+  {
+    "ubigeo": 110508,
+    "descripcion": "TUPAC AMARU INCA / PISCO / ICA"
+  },
+  {
+    "ubigeo": 120101,
+    "descripcion": "HUANCAYO / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120104,
+    "descripcion": "CARHUACALLANGA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120105,
+    "descripcion": "CHACAPAMPA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120106,
+    "descripcion": "CHICCHE / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120107,
+    "descripcion": "CHILCA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120108,
+    "descripcion": "CHONGOS ALTO / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120111,
+    "descripcion": "CHUPURO / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120112,
+    "descripcion": "COLCA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120113,
+    "descripcion": "CULLHUAS / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120114,
+    "descripcion": "EL TAMBO / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120116,
+    "descripcion": "HUACRAPUQUIO / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120117,
+    "descripcion": "HUALHUAS / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120119,
+    "descripcion": "HUANCAN / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120120,
+    "descripcion": "HUASICANCHA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120121,
+    "descripcion": "HUAYUCACHI / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120122,
+    "descripcion": "INGENIO / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120124,
+    "descripcion": "PARIAHUANCA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120125,
+    "descripcion": "PILCOMAYO / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120126,
+    "descripcion": "PUCARA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120127,
+    "descripcion": "QUICHUAY / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120128,
+    "descripcion": "QUILCAS / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120129,
+    "descripcion": "SAN AGUSTIN / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120130,
+    "descripcion": "SAN JERONIMO DE TUNAN / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120132,
+    "descripcion": "SAÑO / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120133,
+    "descripcion": "SAPALLANGA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120134,
+    "descripcion": "SICAYA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120135,
+    "descripcion": "SANTO DOMINGO DE ACOBAMBA / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120136,
+    "descripcion": "VIQUES / HUANCAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120201,
+    "descripcion": "CONCEPCION / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120202,
+    "descripcion": "ACO / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120203,
+    "descripcion": "ANDAMARCA / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120204,
+    "descripcion": "CHAMBARA / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120205,
+    "descripcion": "COCHAS / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120206,
+    "descripcion": "COMAS / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120207,
+    "descripcion": "HEROINAS TOLEDO / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120208,
+    "descripcion": "MANZANARES / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120209,
+    "descripcion": "MARISCAL CASTILLA / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120210,
+    "descripcion": "MATAHUASI / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120211,
+    "descripcion": "MITO / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120212,
+    "descripcion": "NUEVE DE JULIO / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120213,
+    "descripcion": "ORCOTUNA / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120214,
+    "descripcion": "SAN JOSE DE QUERO / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120215,
+    "descripcion": "SANTA ROSA DE OCOPA / CONCEPCION / JUNIN"
+  },
+  {
+    "ubigeo": 120301,
+    "descripcion": "CHANCHAMAYO / CHANCHAMAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120302,
+    "descripcion": "PERENE / CHANCHAMAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120303,
+    "descripcion": "PICHANAQUI / CHANCHAMAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120304,
+    "descripcion": "SAN LUIS DE SHUARO / CHANCHAMAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120305,
+    "descripcion": "SAN RAMON / CHANCHAMAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120306,
+    "descripcion": "VITOC / CHANCHAMAYO / JUNIN"
+  },
+  {
+    "ubigeo": 120401,
+    "descripcion": "JAUJA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120402,
+    "descripcion": "ACOLLA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120403,
+    "descripcion": "APATA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120404,
+    "descripcion": "ATAURA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120405,
+    "descripcion": "CANCHAYLLO / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120406,
+    "descripcion": "CURICACA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120407,
+    "descripcion": "EL MANTARO / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120408,
+    "descripcion": "HUAMALI / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120409,
+    "descripcion": "HUARIPAMPA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120410,
+    "descripcion": "HUERTAS / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120411,
+    "descripcion": "JANJAILLO / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120412,
+    "descripcion": "JULCAN / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120413,
+    "descripcion": "LEONOR ORDOÑEZ / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120414,
+    "descripcion": "LLOCLLAPAMPA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120415,
+    "descripcion": "MARCO / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120416,
+    "descripcion": "MASMA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120417,
+    "descripcion": "MASMA CHICCHE / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120418,
+    "descripcion": "MOLINOS / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120419,
+    "descripcion": "MONOBAMBA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120420,
+    "descripcion": "MUQUI / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120421,
+    "descripcion": "MUQUIYAUYO / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120422,
+    "descripcion": "PACA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120423,
+    "descripcion": "PACCHA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120424,
+    "descripcion": "PANCAN / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120425,
+    "descripcion": "PARCO / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120426,
+    "descripcion": "POMACANCHA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120427,
+    "descripcion": "RICRAN / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120428,
+    "descripcion": "SAN LORENZO / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120429,
+    "descripcion": "SAN PEDRO DE CHUNAN / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120430,
+    "descripcion": "SAUSA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120431,
+    "descripcion": "SINCOS / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120432,
+    "descripcion": "TUNAN MARCA / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120433,
+    "descripcion": "YAULI / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120434,
+    "descripcion": "YAUYOS / JAUJA / JUNIN"
+  },
+  {
+    "ubigeo": 120501,
+    "descripcion": "JUNIN / JUNIN / JUNIN"
+  },
+  {
+    "ubigeo": 120502,
+    "descripcion": "CARHUAMAYO / JUNIN / JUNIN"
+  },
+  {
+    "ubigeo": 120503,
+    "descripcion": "ONDORES / JUNIN / JUNIN"
+  },
+  {
+    "ubigeo": 120504,
+    "descripcion": "ULCUMAYO / JUNIN / JUNIN"
+  },
+  {
+    "ubigeo": 120601,
+    "descripcion": "SATIPO / SATIPO / JUNIN"
+  },
+  {
+    "ubigeo": 120602,
+    "descripcion": "COVIRIALI / SATIPO / JUNIN"
+  },
+  {
+    "ubigeo": 120603,
+    "descripcion": "LLAYLLA / SATIPO / JUNIN"
+  },
+  {
+    "ubigeo": 120604,
+    "descripcion": "MAZAMARI / SATIPO / JUNIN"
+  },
+  {
+    "ubigeo": 120605,
+    "descripcion": "PAMPA HERMOSA / SATIPO / JUNIN"
+  },
+  {
+    "ubigeo": 120606,
+    "descripcion": "PANGOA / SATIPO / JUNIN"
+  },
+  {
+    "ubigeo": 120607,
+    "descripcion": "RIO NEGRO / SATIPO / JUNIN"
+  },
+  {
+    "ubigeo": 120608,
+    "descripcion": "RIO TAMBO / SATIPO / JUNIN"
+  },
+  {
+    "ubigeo": 120609,
+    "descripcion": "VIZCATAN DEL ENE / SATIPO / JUNIN"
+  },
+  {
+    "ubigeo": 120701,
+    "descripcion": "TARMA / TARMA / JUNIN"
+  },
+  {
+    "ubigeo": 120702,
+    "descripcion": "ACOBAMBA / TARMA / JUNIN"
+  },
+  {
+    "ubigeo": 120703,
+    "descripcion": "HUARICOLCA / TARMA / JUNIN"
+  },
+  {
+    "ubigeo": 120704,
+    "descripcion": "HUASAHUASI / TARMA / JUNIN"
+  },
+  {
+    "ubigeo": 120705,
+    "descripcion": "LA UNION / TARMA / JUNIN"
+  },
+  {
+    "ubigeo": 120706,
+    "descripcion": "PALCA / TARMA / JUNIN"
+  },
+  {
+    "ubigeo": 120707,
+    "descripcion": "PALCAMAYO / TARMA / JUNIN"
+  },
+  {
+    "ubigeo": 120708,
+    "descripcion": "SAN PEDRO DE CAJAS / TARMA / JUNIN"
+  },
+  {
+    "ubigeo": 120709,
+    "descripcion": "TAPO / TARMA / JUNIN"
+  },
+  {
+    "ubigeo": 120801,
+    "descripcion": "LA OROYA / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120802,
+    "descripcion": "CHACAPALPA / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120803,
+    "descripcion": "HUAY-HUAY / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120804,
+    "descripcion": "MARCAPOMACOCHA / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120805,
+    "descripcion": "MOROCOCHA / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120806,
+    "descripcion": "PACCHA / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120807,
+    "descripcion": "SANTA BARBARA DE CARHUACAYAN / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120808,
+    "descripcion": "SANTA ROSA DE SACCO / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120809,
+    "descripcion": "SUITUCANCHA / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120810,
+    "descripcion": "YAULI / YAULI / JUNIN"
+  },
+  {
+    "ubigeo": 120901,
+    "descripcion": "CHUPACA / CHUPACA / JUNIN"
+  },
+  {
+    "ubigeo": 120902,
+    "descripcion": "AHUAC / CHUPACA / JUNIN"
+  },
+  {
+    "ubigeo": 120903,
+    "descripcion": "CHONGOS BAJO / CHUPACA / JUNIN"
+  },
+  {
+    "ubigeo": 120904,
+    "descripcion": "HUACHAC / CHUPACA / JUNIN"
+  },
+  {
+    "ubigeo": 120905,
+    "descripcion": "HUAMANCACA CHICO / CHUPACA / JUNIN"
+  },
+  {
+    "ubigeo": 120906,
+    "descripcion": "SAN JUAN DE ISCOS / CHUPACA / JUNIN"
+  },
+  {
+    "ubigeo": 120907,
+    "descripcion": "SAN JUAN DE JARPA / CHUPACA / JUNIN"
+  },
+  {
+    "ubigeo": 120908,
+    "descripcion": "TRES DE DICIEMBRE / CHUPACA / JUNIN"
+  },
+  {
+    "ubigeo": 120909,
+    "descripcion": "YANACANCHA / CHUPACA / JUNIN"
+  },
+  {
+    "ubigeo": 130101,
+    "descripcion": "TRUJILLO / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130102,
+    "descripcion": "EL PORVENIR / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130103,
+    "descripcion": "FLORENCIA DE MORA / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130104,
+    "descripcion": "HUANCHACO / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130105,
+    "descripcion": "LA ESPERANZA / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130106,
+    "descripcion": "LAREDO / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130107,
+    "descripcion": "MOCHE / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130108,
+    "descripcion": "POROTO / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130109,
+    "descripcion": "SALAVERRY / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130110,
+    "descripcion": "SIMBAL / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130111,
+    "descripcion": "VICTOR LARCO HERRERA / TRUJILLO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130201,
+    "descripcion": "ASCOPE / ASCOPE / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130202,
+    "descripcion": "CHICAMA / ASCOPE / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130203,
+    "descripcion": "CHOCOPE / ASCOPE / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130204,
+    "descripcion": "MAGDALENA DE CAO / ASCOPE / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130205,
+    "descripcion": "PAIJAN / ASCOPE / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130206,
+    "descripcion": "RAZURI / ASCOPE / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130207,
+    "descripcion": "SANTIAGO DE CAO / ASCOPE / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130208,
+    "descripcion": "CASA GRANDE / ASCOPE / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130301,
+    "descripcion": "BOLIVAR / BOLIVAR / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130302,
+    "descripcion": "BAMBAMARCA / BOLIVAR / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130303,
+    "descripcion": "CONDORMARCA / BOLIVAR / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130304,
+    "descripcion": "LONGOTEA / BOLIVAR / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130305,
+    "descripcion": "UCHUMARCA / BOLIVAR / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130306,
+    "descripcion": "UCUNCHA / BOLIVAR / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130401,
+    "descripcion": "CHEPEN / CHEPEN / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130402,
+    "descripcion": "PACANGA / CHEPEN / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130403,
+    "descripcion": "PUEBLO NUEVO / CHEPEN / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130501,
+    "descripcion": "JULCAN / JULCAN / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130502,
+    "descripcion": "CALAMARCA / JULCAN / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130503,
+    "descripcion": "CARABAMBA / JULCAN / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130504,
+    "descripcion": "HUASO / JULCAN / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130601,
+    "descripcion": "OTUZCO / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130602,
+    "descripcion": "AGALLPAMPA / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130604,
+    "descripcion": "CHARAT / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130605,
+    "descripcion": "HUARANCHAL / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130606,
+    "descripcion": "LA CUESTA / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130608,
+    "descripcion": "MACHE / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130610,
+    "descripcion": "PARANDAY / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130611,
+    "descripcion": "SALPO / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130613,
+    "descripcion": "SINSICAP / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130614,
+    "descripcion": "USQUIL / OTUZCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130701,
+    "descripcion": "SAN PEDRO DE LLOC / PACASMAYO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130702,
+    "descripcion": "GUADALUPE / PACASMAYO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130703,
+    "descripcion": "JEQUETEPEQUE / PACASMAYO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130704,
+    "descripcion": "PACASMAYO / PACASMAYO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130705,
+    "descripcion": "SAN JOSE / PACASMAYO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130801,
+    "descripcion": "TAYABAMBA / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130802,
+    "descripcion": "BULDIBUYO / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130803,
+    "descripcion": "CHILLIA / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130804,
+    "descripcion": "HUANCASPATA / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130805,
+    "descripcion": "HUAYLILLAS / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130806,
+    "descripcion": "HUAYO / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130807,
+    "descripcion": "ONGON / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130808,
+    "descripcion": "PARCOY / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130809,
+    "descripcion": "PATAZ / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130810,
+    "descripcion": "PIAS / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130811,
+    "descripcion": "SANTIAGO DE CHALLAS / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130812,
+    "descripcion": "TAURIJA / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130813,
+    "descripcion": "URPAY / PATAZ / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130901,
+    "descripcion": "HUAMACHUCO / SANCHEZ CARRION / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130902,
+    "descripcion": "CHUGAY / SANCHEZ CARRION / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130903,
+    "descripcion": "COCHORCO / SANCHEZ CARRION / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130904,
+    "descripcion": "CURGOS / SANCHEZ CARRION / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130905,
+    "descripcion": "MARCABAL / SANCHEZ CARRION / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130906,
+    "descripcion": "SANAGORAN / SANCHEZ CARRION / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130907,
+    "descripcion": "SARIN / SANCHEZ CARRION / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 130908,
+    "descripcion": "SARTIMBAMBA / SANCHEZ CARRION / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131001,
+    "descripcion": "SANTIAGO DE CHUCO / SANTIAGO DE CHUCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131002,
+    "descripcion": "ANGASMARCA / SANTIAGO DE CHUCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131003,
+    "descripcion": "CACHICADAN / SANTIAGO DE CHUCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131004,
+    "descripcion": "MOLLEBAMBA / SANTIAGO DE CHUCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131005,
+    "descripcion": "MOLLEPATA / SANTIAGO DE CHUCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131006,
+    "descripcion": "QUIRUVILCA / SANTIAGO DE CHUCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131007,
+    "descripcion": "SANTA CRUZ DE CHUCA / SANTIAGO DE CHUCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131008,
+    "descripcion": "SITABAMBA / SANTIAGO DE CHUCO / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131101,
+    "descripcion": "CASCAS / GRAN CHIMU / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131102,
+    "descripcion": "LUCMA / GRAN CHIMU / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131103,
+    "descripcion": "MARMOT / GRAN CHIMU / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131104,
+    "descripcion": "SAYAPULLO / GRAN CHIMU / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131201,
+    "descripcion": "VIRU / VIRU / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131202,
+    "descripcion": "CHAO / VIRU / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 131203,
+    "descripcion": "GUADALUPITO / VIRU / LA LIBERTAD"
+  },
+  {
+    "ubigeo": 140101,
+    "descripcion": "CHICLAYO / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140102,
+    "descripcion": "CHONGOYAPE / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140103,
+    "descripcion": "ETEN / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140104,
+    "descripcion": "ETEN PUERTO / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140105,
+    "descripcion": "JOSE LEONARDO ORTIZ / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140106,
+    "descripcion": "LA VICTORIA / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140107,
+    "descripcion": "LAGUNAS / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140108,
+    "descripcion": "MONSEFU / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140109,
+    "descripcion": "NUEVA ARICA / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140110,
+    "descripcion": "OYOTUN / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140111,
+    "descripcion": "PICSI / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140112,
+    "descripcion": "PIMENTEL / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140113,
+    "descripcion": "REQUE / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140114,
+    "descripcion": "SANTA ROSA / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140115,
+    "descripcion": "SAÑA / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140116,
+    "descripcion": "CAYALTI / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140117,
+    "descripcion": "PATAPO / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140118,
+    "descripcion": "POMALCA / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140119,
+    "descripcion": "PUCALA / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140120,
+    "descripcion": "TUMAN / CHICLAYO / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140201,
+    "descripcion": "FERREÑAFE / FERREÑAFE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140202,
+    "descripcion": "CAÑARIS / FERREÑAFE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140203,
+    "descripcion": "INCAHUASI / FERREÑAFE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140204,
+    "descripcion": "MANUEL ANTONIO MESONES MURO / FERREÑAFE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140205,
+    "descripcion": "PITIPO / FERREÑAFE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140206,
+    "descripcion": "PUEBLO NUEVO / FERREÑAFE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140301,
+    "descripcion": "LAMBAYEQUE / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140302,
+    "descripcion": "CHOCHOPE / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140303,
+    "descripcion": "ILLIMO / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140304,
+    "descripcion": "JAYANCA / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140305,
+    "descripcion": "MOCHUMI / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140306,
+    "descripcion": "MORROPE / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140307,
+    "descripcion": "MOTUPE / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140308,
+    "descripcion": "OLMOS / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140309,
+    "descripcion": "PACORA / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140310,
+    "descripcion": "SALAS / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140311,
+    "descripcion": "SAN JOSE / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 140312,
+    "descripcion": "TUCUME / LAMBAYEQUE / LAMBAYEQUE"
+  },
+  {
+    "ubigeo": 150101,
+    "descripcion": "LIMA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150102,
+    "descripcion": "ANCON / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150103,
+    "descripcion": "ATE / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150104,
+    "descripcion": "BARRANCO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150105,
+    "descripcion": "BREÑA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150106,
+    "descripcion": "CARABAYLLO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150107,
+    "descripcion": "CHACLACAYO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150108,
+    "descripcion": "CHORRILLOS / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150109,
+    "descripcion": "CIENEGUILLA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150110,
+    "descripcion": "COMAS / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150111,
+    "descripcion": "EL AGUSTINO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150112,
+    "descripcion": "INDEPENDENCIA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150113,
+    "descripcion": "JESUS MARIA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150114,
+    "descripcion": "LA MOLINA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150115,
+    "descripcion": "LA VICTORIA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150116,
+    "descripcion": "LINCE / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150117,
+    "descripcion": "LOS OLIVOS / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150118,
+    "descripcion": "LURIGANCHO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150119,
+    "descripcion": "LURIN / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150120,
+    "descripcion": "MAGDALENA DEL MAR / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150121,
+    "descripcion": "PUEBLO LIBRE / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150122,
+    "descripcion": "MIRAFLORES / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150123,
+    "descripcion": "PACHACAMAC / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150124,
+    "descripcion": "PUCUSANA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150125,
+    "descripcion": "PUENTE PIEDRA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150126,
+    "descripcion": "PUNTA HERMOSA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150127,
+    "descripcion": "PUNTA NEGRA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150128,
+    "descripcion": "RIMAC / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150129,
+    "descripcion": "SAN BARTOLO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150130,
+    "descripcion": "SAN BORJA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150131,
+    "descripcion": "SAN ISIDRO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150132,
+    "descripcion": "SAN JUAN DE LURIGANCHO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150133,
+    "descripcion": "SAN JUAN DE MIRAFLORES / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150134,
+    "descripcion": "SAN LUIS / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150135,
+    "descripcion": "SAN MARTIN DE PORRES / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150136,
+    "descripcion": "SAN MIGUEL / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150137,
+    "descripcion": "SANTA ANITA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150138,
+    "descripcion": "SANTA MARIA DEL MAR / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150139,
+    "descripcion": "SANTA ROSA / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150140,
+    "descripcion": "SANTIAGO DE SURCO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150141,
+    "descripcion": "SURQUILLO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150142,
+    "descripcion": "VILLA EL SALVADOR / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150143,
+    "descripcion": "VILLA MARIA DEL TRIUNFO / LIMA / LIMA"
+  },
+  {
+    "ubigeo": 150201,
+    "descripcion": "BARRANCA / BARRANCA / LIMA"
+  },
+  {
+    "ubigeo": 150202,
+    "descripcion": "PARAMONGA / BARRANCA / LIMA"
+  },
+  {
+    "ubigeo": 150203,
+    "descripcion": "PATIVILCA / BARRANCA / LIMA"
+  },
+  {
+    "ubigeo": 150204,
+    "descripcion": "SUPE / BARRANCA / LIMA"
+  },
+  {
+    "ubigeo": 150205,
+    "descripcion": "SUPE PUERTO / BARRANCA / LIMA"
+  },
+  {
+    "ubigeo": 150301,
+    "descripcion": "CAJATAMBO / CAJATAMBO / LIMA"
+  },
+  {
+    "ubigeo": 150302,
+    "descripcion": "COPA / CAJATAMBO / LIMA"
+  },
+  {
+    "ubigeo": 150303,
+    "descripcion": "GORGOR / CAJATAMBO / LIMA"
+  },
+  {
+    "ubigeo": 150304,
+    "descripcion": "HUANCAPON / CAJATAMBO / LIMA"
+  },
+  {
+    "ubigeo": 150305,
+    "descripcion": "MANAS / CAJATAMBO / LIMA"
+  },
+  {
+    "ubigeo": 150401,
+    "descripcion": "CANTA / CANTA / LIMA"
+  },
+  {
+    "ubigeo": 150402,
+    "descripcion": "ARAHUAY / CANTA / LIMA"
+  },
+  {
+    "ubigeo": 150403,
+    "descripcion": "HUAMANTANGA / CANTA / LIMA"
+  },
+  {
+    "ubigeo": 150404,
+    "descripcion": "HUAROS / CANTA / LIMA"
+  },
+  {
+    "ubigeo": 150405,
+    "descripcion": "LACHAQUI / CANTA / LIMA"
+  },
+  {
+    "ubigeo": 150406,
+    "descripcion": "SAN BUENAVENTURA / CANTA / LIMA"
+  },
+  {
+    "ubigeo": 150407,
+    "descripcion": "SANTA ROSA DE QUIVES / CANTA / LIMA"
+  },
+  {
+    "ubigeo": 150501,
+    "descripcion": "SAN VICENTE DE CAÑETE / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150502,
+    "descripcion": "ASIA / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150503,
+    "descripcion": "CALANGO / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150504,
+    "descripcion": "CERRO AZUL / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150505,
+    "descripcion": "CHILCA / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150506,
+    "descripcion": "COAYLLO / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150507,
+    "descripcion": "IMPERIAL / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150508,
+    "descripcion": "LUNAHUANA / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150509,
+    "descripcion": "MALA / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150510,
+    "descripcion": "NUEVO IMPERIAL / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150511,
+    "descripcion": "PACARAN / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150512,
+    "descripcion": "QUILMANA / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150513,
+    "descripcion": "SAN ANTONIO / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150514,
+    "descripcion": "SAN LUIS / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150515,
+    "descripcion": "SANTA CRUZ DE FLORES / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150516,
+    "descripcion": "ZUÑIGA / CAÑETE / LIMA"
+  },
+  {
+    "ubigeo": 150601,
+    "descripcion": "HUARAL / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150602,
+    "descripcion": "ATAVILLOS ALTO / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150603,
+    "descripcion": "ATAVILLOS BAJO / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150604,
+    "descripcion": "AUCALLAMA / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150605,
+    "descripcion": "CHANCAY / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150606,
+    "descripcion": "IHUARI / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150607,
+    "descripcion": "LAMPIAN / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150608,
+    "descripcion": "PACARAOS / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150609,
+    "descripcion": "SAN MIGUEL DE ACOS / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150610,
+    "descripcion": "SANTA CRUZ DE ANDAMARCA / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150611,
+    "descripcion": "SUMBILCA / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150612,
+    "descripcion": "VEINTISIETE DE NOVIEMBRE / HUARAL / LIMA"
+  },
+  {
+    "ubigeo": 150701,
+    "descripcion": "MATUCANA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150702,
+    "descripcion": "ANTIOQUIA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150703,
+    "descripcion": "CALLAHUANCA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150704,
+    "descripcion": "CARAMPOMA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150705,
+    "descripcion": "CHICLA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150706,
+    "descripcion": "CUENCA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150707,
+    "descripcion": "HUACHUPAMPA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150708,
+    "descripcion": "HUANZA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150709,
+    "descripcion": "HUAROCHIRI / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150710,
+    "descripcion": "LAHUAYTAMBO / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150711,
+    "descripcion": "LANGA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150712,
+    "descripcion": "SAN PEDRO DE LARAOS / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150713,
+    "descripcion": "MARIATANA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150714,
+    "descripcion": "RICARDO PALMA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150715,
+    "descripcion": "SAN ANDRES DE TUPICOCHA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150716,
+    "descripcion": "SAN ANTONIO / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150717,
+    "descripcion": "SAN BARTOLOME / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150718,
+    "descripcion": "SAN DAMIAN / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150719,
+    "descripcion": "SAN JUAN DE IRIS / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150720,
+    "descripcion": "SAN JUAN DE TANTARANCHE / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150721,
+    "descripcion": "SAN LORENZO DE QUINTI / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150722,
+    "descripcion": "SAN MATEO / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150723,
+    "descripcion": "SAN MATEO DE OTAO / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150724,
+    "descripcion": "SAN PEDRO DE CASTA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150725,
+    "descripcion": "SAN PEDRO DE HUANCAYRE / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150726,
+    "descripcion": "SANGALLAYA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150727,
+    "descripcion": "SANTA CRUZ DE COCACHACRA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150728,
+    "descripcion": "SANTA EULALIA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150729,
+    "descripcion": "SANTIAGO DE ANCHUCAYA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150730,
+    "descripcion": "SANTIAGO DE TUNA / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150731,
+    "descripcion": "SANTO DOMINGO DE LOS OLLEROS / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150732,
+    "descripcion": "SURCO / HUAROCHIRI / LIMA"
+  },
+  {
+    "ubigeo": 150801,
+    "descripcion": "HUACHO / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150802,
+    "descripcion": "AMBAR / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150803,
+    "descripcion": "CALETA DE CARQUIN / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150804,
+    "descripcion": "CHECRAS / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150805,
+    "descripcion": "HUALMAY / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150806,
+    "descripcion": "HUAURA / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150807,
+    "descripcion": "LEONCIO PRADO / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150808,
+    "descripcion": "PACCHO / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150809,
+    "descripcion": "SANTA LEONOR / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150810,
+    "descripcion": "SANTA MARIA / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150811,
+    "descripcion": "SAYAN / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150812,
+    "descripcion": "VEGUETA / HUAURA / LIMA"
+  },
+  {
+    "ubigeo": 150901,
+    "descripcion": "OYON / OYON / LIMA"
+  },
+  {
+    "ubigeo": 150902,
+    "descripcion": "ANDAJES / OYON / LIMA"
+  },
+  {
+    "ubigeo": 150903,
+    "descripcion": "CAUJUL / OYON / LIMA"
+  },
+  {
+    "ubigeo": 150904,
+    "descripcion": "COCHAMARCA / OYON / LIMA"
+  },
+  {
+    "ubigeo": 150905,
+    "descripcion": "NAVAN / OYON / LIMA"
+  },
+  {
+    "ubigeo": 150906,
+    "descripcion": "PACHANGARA / OYON / LIMA"
+  },
+  {
+    "ubigeo": 151001,
+    "descripcion": "YAUYOS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151002,
+    "descripcion": "ALIS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151003,
+    "descripcion": "ALLAUCA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151004,
+    "descripcion": "AYAVIRI / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151005,
+    "descripcion": "AZANGARO / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151006,
+    "descripcion": "CACRA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151007,
+    "descripcion": "CARANIA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151008,
+    "descripcion": "CATAHUASI / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151009,
+    "descripcion": "CHOCOS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151010,
+    "descripcion": "COCHAS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151011,
+    "descripcion": "COLONIA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151012,
+    "descripcion": "HONGOS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151013,
+    "descripcion": "HUAMPARA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151014,
+    "descripcion": "HUANCAYA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151015,
+    "descripcion": "HUANGASCAR / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151016,
+    "descripcion": "HUANTAN / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151017,
+    "descripcion": "HUAÑEC / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151018,
+    "descripcion": "LARAOS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151019,
+    "descripcion": "LINCHA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151020,
+    "descripcion": "MADEAN / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151021,
+    "descripcion": "MIRAFLORES / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151022,
+    "descripcion": "OMAS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151023,
+    "descripcion": "PUTINZA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151024,
+    "descripcion": "QUINCHES / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151025,
+    "descripcion": "QUINOCAY / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151026,
+    "descripcion": "SAN JOAQUIN / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151027,
+    "descripcion": "SAN PEDRO DE PILAS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151028,
+    "descripcion": "TANTA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151029,
+    "descripcion": "TAURIPAMPA / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151030,
+    "descripcion": "TOMAS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151031,
+    "descripcion": "TUPE / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151032,
+    "descripcion": "VIÑAC / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 151033,
+    "descripcion": "VITIS / YAUYOS / LIMA"
+  },
+  {
+    "ubigeo": 160101,
+    "descripcion": "IQUITOS / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160102,
+    "descripcion": "ALTO NANAY / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160103,
+    "descripcion": "FERNANDO LORES / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160104,
+    "descripcion": "INDIANA / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160105,
+    "descripcion": "LAS AMAZONAS / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160106,
+    "descripcion": "MAZAN / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160107,
+    "descripcion": "NAPO / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160108,
+    "descripcion": "PUNCHANA / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160110,
+    "descripcion": "TORRES CAUSANA / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160112,
+    "descripcion": "BELEN / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160113,
+    "descripcion": "SAN JUAN BAUTISTA / MAYNAS / LORETO"
+  },
+  {
+    "ubigeo": 160201,
+    "descripcion": "YURIMAGUAS / ALTO AMAZONAS / LORETO"
+  },
+  {
+    "ubigeo": 160202,
+    "descripcion": "BALSAPUERTO / ALTO AMAZONAS / LORETO"
+  },
+  {
+    "ubigeo": 160205,
+    "descripcion": "JEBEROS / ALTO AMAZONAS / LORETO"
+  },
+  {
+    "ubigeo": 160206,
+    "descripcion": "LAGUNAS / ALTO AMAZONAS / LORETO"
+  },
+  {
+    "ubigeo": 160210,
+    "descripcion": "SANTA CRUZ / ALTO AMAZONAS / LORETO"
+  },
+  {
+    "ubigeo": 160211,
+    "descripcion": "TENIENTE CESAR LOPEZ ROJAS / ALTO AMAZONAS / LORETO"
+  },
+  {
+    "ubigeo": 160301,
+    "descripcion": "NAUTA / LORETO / LORETO"
+  },
+  {
+    "ubigeo": 160302,
+    "descripcion": "PARINARI / LORETO / LORETO"
+  },
+  {
+    "ubigeo": 160303,
+    "descripcion": "TIGRE / LORETO / LORETO"
+  },
+  {
+    "ubigeo": 160304,
+    "descripcion": "TROMPETEROS / LORETO / LORETO"
+  },
+  {
+    "ubigeo": 160305,
+    "descripcion": "URARINAS / LORETO / LORETO"
+  },
+  {
+    "ubigeo": 160401,
+    "descripcion": "RAMON CASTILLA / MARISCAL RAMON CASTILLA / LORETO"
+  },
+  {
+    "ubigeo": 160402,
+    "descripcion": "PEBAS / MARISCAL RAMON CASTILLA / LORETO"
+  },
+  {
+    "ubigeo": 160403,
+    "descripcion": "YAVARI / MARISCAL RAMON CASTILLA / LORETO"
+  },
+  {
+    "ubigeo": 160404,
+    "descripcion": "SAN PABLO / MARISCAL RAMON CASTILLA / LORETO"
+  },
+  {
+    "ubigeo": 160501,
+    "descripcion": "REQUENA / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160502,
+    "descripcion": "ALTO TAPICHE / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160503,
+    "descripcion": "CAPELO / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160504,
+    "descripcion": "EMILIO SAN MARTIN / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160505,
+    "descripcion": "MAQUIA / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160506,
+    "descripcion": "PUINAHUA / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160507,
+    "descripcion": "SAQUENA / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160508,
+    "descripcion": "SOPLIN / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160509,
+    "descripcion": "TAPICHE / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160510,
+    "descripcion": "JENARO HERRERA / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160511,
+    "descripcion": "YAQUERANA / REQUENA / LORETO"
+  },
+  {
+    "ubigeo": 160601,
+    "descripcion": "CONTAMANA / UCAYALI / LORETO"
+  },
+  {
+    "ubigeo": 160602,
+    "descripcion": "INAHUAYA / UCAYALI / LORETO"
+  },
+  {
+    "ubigeo": 160603,
+    "descripcion": "PADRE MARQUEZ / UCAYALI / LORETO"
+  },
+  {
+    "ubigeo": 160604,
+    "descripcion": "PAMPA HERMOSA / UCAYALI / LORETO"
+  },
+  {
+    "ubigeo": 160605,
+    "descripcion": "SARAYACU / UCAYALI / LORETO"
+  },
+  {
+    "ubigeo": 160606,
+    "descripcion": "VARGAS GUERRA / UCAYALI / LORETO"
+  },
+  {
+    "ubigeo": 160701,
+    "descripcion": "BARRANCA / DATEM DEL MARAÑON / LORETO"
+  },
+  {
+    "ubigeo": 160702,
+    "descripcion": "CAHUAPANAS / DATEM DEL MARAÑON / LORETO"
+  },
+  {
+    "ubigeo": 160703,
+    "descripcion": "MANSERICHE / DATEM DEL MARAÑON / LORETO"
+  },
+  {
+    "ubigeo": 160704,
+    "descripcion": "MORONA / DATEM DEL MARAÑON / LORETO"
+  },
+  {
+    "ubigeo": 160705,
+    "descripcion": "PASTAZA / DATEM DEL MARAÑON / LORETO"
+  },
+  {
+    "ubigeo": 160706,
+    "descripcion": "ANDOAS / DATEM DEL MARAÑON / LORETO"
+  },
+  {
+    "ubigeo": 160801,
+    "descripcion": "PUTUMAYO / PUTUMAYO / LORETO"
+  },
+  {
+    "ubigeo": 160802,
+    "descripcion": "ROSA PANDURO / PUTUMAYO / LORETO"
+  },
+  {
+    "ubigeo": 160803,
+    "descripcion": "TENIENTE MANUEL CLAVERO / PUTUMAYO / LORETO"
+  },
+  {
+    "ubigeo": 160804,
+    "descripcion": "YAGUAS / PUTUMAYO / LORETO"
+  },
+  {
+    "ubigeo": 170101,
+    "descripcion": "TAMBOPATA / TAMBOPATA / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170102,
+    "descripcion": "INAMBARI / TAMBOPATA / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170103,
+    "descripcion": "LAS PIEDRAS / TAMBOPATA / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170104,
+    "descripcion": "LABERINTO / TAMBOPATA / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170201,
+    "descripcion": "MANU / MANU / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170202,
+    "descripcion": "FITZCARRALD / MANU / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170203,
+    "descripcion": "MADRE DE DIOS / MANU / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170204,
+    "descripcion": "HUEPETUHE / MANU / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170301,
+    "descripcion": "IÑAPARI / TAHUAMANU / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170302,
+    "descripcion": "IBERIA / TAHUAMANU / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 170303,
+    "descripcion": "TAHUAMANU / TAHUAMANU / MADRE DE DIOS"
+  },
+  {
+    "ubigeo": 180101,
+    "descripcion": "MOQUEGUA / MARISCAL NIETO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180102,
+    "descripcion": "CARUMAS / MARISCAL NIETO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180103,
+    "descripcion": "CUCHUMBAYA / MARISCAL NIETO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180104,
+    "descripcion": "SAMEGUA / MARISCAL NIETO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180105,
+    "descripcion": "SAN CRISTOBAL / MARISCAL NIETO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180106,
+    "descripcion": "TORATA / MARISCAL NIETO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180201,
+    "descripcion": "OMATE / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180202,
+    "descripcion": "CHOJATA / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180203,
+    "descripcion": "COALAQUE / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180204,
+    "descripcion": "ICHUÑA / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180205,
+    "descripcion": "LA CAPILLA / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180206,
+    "descripcion": "LLOQUE / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180207,
+    "descripcion": "MATALAQUE / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180208,
+    "descripcion": "PUQUINA / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180209,
+    "descripcion": "QUINISTAQUILLAS / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180210,
+    "descripcion": "UBINAS / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180211,
+    "descripcion": "YUNGA / GENERAL SANCHEZ CERRO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180301,
+    "descripcion": "ILO / ILO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180302,
+    "descripcion": "EL ALGARROBAL / ILO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 180303,
+    "descripcion": "PACOCHA / ILO / MOQUEGUA"
+  },
+  {
+    "ubigeo": 190101,
+    "descripcion": "CHAUPIMARCA / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190102,
+    "descripcion": "HUACHON / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190103,
+    "descripcion": "HUARIACA / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190104,
+    "descripcion": "HUAYLLAY / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190105,
+    "descripcion": "NINACACA / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190106,
+    "descripcion": "PALLANCHACRA / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190107,
+    "descripcion": "PAUCARTAMBO / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190108,
+    "descripcion": "SAN FRANCISCO DE ASIS DE YARUSYACAN / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190109,
+    "descripcion": "SIMON BOLIVAR / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190110,
+    "descripcion": "TICLACAYAN / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190111,
+    "descripcion": "TINYAHUARCO / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190112,
+    "descripcion": "VICCO / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190113,
+    "descripcion": "YANACANCHA / PASCO / PASCO"
+  },
+  {
+    "ubigeo": 190201,
+    "descripcion": "YANAHUANCA / DANIEL ALCIDES CARRION / PASCO"
+  },
+  {
+    "ubigeo": 190202,
+    "descripcion": "CHACAYAN / DANIEL ALCIDES CARRION / PASCO"
+  },
+  {
+    "ubigeo": 190203,
+    "descripcion": "GOYLLARISQUIZGA / DANIEL ALCIDES CARRION / PASCO"
+  },
+  {
+    "ubigeo": 190204,
+    "descripcion": "PAUCAR / DANIEL ALCIDES CARRION / PASCO"
+  },
+  {
+    "ubigeo": 190205,
+    "descripcion": "SAN PEDRO DE PILLAO / DANIEL ALCIDES CARRION / PASCO"
+  },
+  {
+    "ubigeo": 190206,
+    "descripcion": "SANTA ANA DE TUSI / DANIEL ALCIDES CARRION / PASCO"
+  },
+  {
+    "ubigeo": 190207,
+    "descripcion": "TAPUC / DANIEL ALCIDES CARRION / PASCO"
+  },
+  {
+    "ubigeo": 190208,
+    "descripcion": "VILCABAMBA / DANIEL ALCIDES CARRION / PASCO"
+  },
+  {
+    "ubigeo": 190301,
+    "descripcion": "OXAPAMPA / OXAPAMPA / PASCO"
+  },
+  {
+    "ubigeo": 190302,
+    "descripcion": "CHONTABAMBA / OXAPAMPA / PASCO"
+  },
+  {
+    "ubigeo": 190303,
+    "descripcion": "HUANCABAMBA / OXAPAMPA / PASCO"
+  },
+  {
+    "ubigeo": 190304,
+    "descripcion": "PALCAZU / OXAPAMPA / PASCO"
+  },
+  {
+    "ubigeo": 190305,
+    "descripcion": "POZUZO / OXAPAMPA / PASCO"
+  },
+  {
+    "ubigeo": 190306,
+    "descripcion": "PUERTO BERMUDEZ / OXAPAMPA / PASCO"
+  },
+  {
+    "ubigeo": 190307,
+    "descripcion": "VILLA RICA / OXAPAMPA / PASCO"
+  },
+  {
+    "ubigeo": 190308,
+    "descripcion": "CONSTITUCION / OXAPAMPA / PASCO"
+  },
+  {
+    "ubigeo": 200101,
+    "descripcion": "PIURA / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200104,
+    "descripcion": "CASTILLA / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200105,
+    "descripcion": "CATACAOS / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200107,
+    "descripcion": "CURA MORI / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200108,
+    "descripcion": "EL TALLAN / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200109,
+    "descripcion": "LA ARENA / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200110,
+    "descripcion": "LA UNION / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200111,
+    "descripcion": "LAS LOMAS / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200114,
+    "descripcion": "TAMBO GRANDE / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200115,
+    "descripcion": "VEINTISEIS DE OCTUBRE / PIURA / PIURA"
+  },
+  {
+    "ubigeo": 200201,
+    "descripcion": "AYABACA / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200202,
+    "descripcion": "FRIAS / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200203,
+    "descripcion": "JILILI / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200204,
+    "descripcion": "LAGUNAS / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200205,
+    "descripcion": "MONTERO / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200206,
+    "descripcion": "PACAIPAMPA / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200207,
+    "descripcion": "PAIMAS / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200208,
+    "descripcion": "SAPILLICA / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200209,
+    "descripcion": "SICCHEZ / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200210,
+    "descripcion": "SUYO / AYABACA / PIURA"
+  },
+  {
+    "ubigeo": 200301,
+    "descripcion": "HUANCABAMBA / HUANCABAMBA / PIURA"
+  },
+  {
+    "ubigeo": 200302,
+    "descripcion": "CANCHAQUE / HUANCABAMBA / PIURA"
+  },
+  {
+    "ubigeo": 200303,
+    "descripcion": "EL CARMEN DE LA FRONTERA / HUANCABAMBA / PIURA"
+  },
+  {
+    "ubigeo": 200304,
+    "descripcion": "HUARMACA / HUANCABAMBA / PIURA"
+  },
+  {
+    "ubigeo": 200305,
+    "descripcion": "LALAQUIZ / HUANCABAMBA / PIURA"
+  },
+  {
+    "ubigeo": 200306,
+    "descripcion": "SAN MIGUEL DE EL FAIQUE / HUANCABAMBA / PIURA"
+  },
+  {
+    "ubigeo": 200307,
+    "descripcion": "SONDOR / HUANCABAMBA / PIURA"
+  },
+  {
+    "ubigeo": 200308,
+    "descripcion": "SONDORILLO / HUANCABAMBA / PIURA"
+  },
+  {
+    "ubigeo": 200401,
+    "descripcion": "CHULUCANAS / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200402,
+    "descripcion": "BUENOS AIRES / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200403,
+    "descripcion": "CHALACO / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200404,
+    "descripcion": "LA MATANZA / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200405,
+    "descripcion": "MORROPON / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200406,
+    "descripcion": "SALITRAL / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200407,
+    "descripcion": "SAN JUAN DE BIGOTE / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200408,
+    "descripcion": "SANTA CATALINA DE MOSSA / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200409,
+    "descripcion": "SANTO DOMINGO / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200410,
+    "descripcion": "YAMANGO / MORROPON / PIURA"
+  },
+  {
+    "ubigeo": 200501,
+    "descripcion": "PAITA / PAITA / PIURA"
+  },
+  {
+    "ubigeo": 200502,
+    "descripcion": "AMOTAPE / PAITA / PIURA"
+  },
+  {
+    "ubigeo": 200503,
+    "descripcion": "ARENAL / PAITA / PIURA"
+  },
+  {
+    "ubigeo": 200504,
+    "descripcion": "COLAN / PAITA / PIURA"
+  },
+  {
+    "ubigeo": 200505,
+    "descripcion": "LA HUACA / PAITA / PIURA"
+  },
+  {
+    "ubigeo": 200506,
+    "descripcion": "TAMARINDO / PAITA / PIURA"
+  },
+  {
+    "ubigeo": 200507,
+    "descripcion": "VICHAYAL / PAITA / PIURA"
+  },
+  {
+    "ubigeo": 200601,
+    "descripcion": "SULLANA / SULLANA / PIURA"
+  },
+  {
+    "ubigeo": 200602,
+    "descripcion": "BELLAVISTA / SULLANA / PIURA"
+  },
+  {
+    "ubigeo": 200603,
+    "descripcion": "IGNACIO ESCUDERO / SULLANA / PIURA"
+  },
+  {
+    "ubigeo": 200604,
+    "descripcion": "LANCONES / SULLANA / PIURA"
+  },
+  {
+    "ubigeo": 200605,
+    "descripcion": "MARCAVELICA / SULLANA / PIURA"
+  },
+  {
+    "ubigeo": 200606,
+    "descripcion": "MIGUEL CHECA / SULLANA / PIURA"
+  },
+  {
+    "ubigeo": 200607,
+    "descripcion": "QUERECOTILLO / SULLANA / PIURA"
+  },
+  {
+    "ubigeo": 200608,
+    "descripcion": "SALITRAL / SULLANA / PIURA"
+  },
+  {
+    "ubigeo": 200701,
+    "descripcion": "PARIÑAS / TALARA / PIURA"
+  },
+  {
+    "ubigeo": 200702,
+    "descripcion": "EL ALTO / TALARA / PIURA"
+  },
+  {
+    "ubigeo": 200703,
+    "descripcion": "LA BREA / TALARA / PIURA"
+  },
+  {
+    "ubigeo": 200704,
+    "descripcion": "LOBITOS / TALARA / PIURA"
+  },
+  {
+    "ubigeo": 200705,
+    "descripcion": "LOS ORGANOS / TALARA / PIURA"
+  },
+  {
+    "ubigeo": 200706,
+    "descripcion": "MANCORA / TALARA / PIURA"
+  },
+  {
+    "ubigeo": 200801,
+    "descripcion": "SECHURA / SECHURA / PIURA"
+  },
+  {
+    "ubigeo": 200802,
+    "descripcion": "BELLAVISTA DE LA UNION / SECHURA / PIURA"
+  },
+  {
+    "ubigeo": 200803,
+    "descripcion": "BERNAL / SECHURA / PIURA"
+  },
+  {
+    "ubigeo": 200804,
+    "descripcion": "CRISTO NOS VALGA / SECHURA / PIURA"
+  },
+  {
+    "ubigeo": 200805,
+    "descripcion": "VICE / SECHURA / PIURA"
+  },
+  {
+    "ubigeo": 200806,
+    "descripcion": "RINCONADA LLICUAR / SECHURA / PIURA"
+  },
+  {
+    "ubigeo": 210101,
+    "descripcion": "PUNO / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210102,
+    "descripcion": "ACORA / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210103,
+    "descripcion": "AMANTANI / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210104,
+    "descripcion": "ATUNCOLLA / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210105,
+    "descripcion": "CAPACHICA / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210106,
+    "descripcion": "CHUCUITO / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210107,
+    "descripcion": "COATA / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210108,
+    "descripcion": "HUATA / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210109,
+    "descripcion": "MAÑAZO / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210110,
+    "descripcion": "PAUCARCOLLA / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210111,
+    "descripcion": "PICHACANI / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210112,
+    "descripcion": "PLATERIA / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210113,
+    "descripcion": "SAN ANTONIO / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210114,
+    "descripcion": "TIQUILLACA / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210115,
+    "descripcion": "VILQUE / PUNO / PUNO"
+  },
+  {
+    "ubigeo": 210201,
+    "descripcion": "AZANGARO / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210202,
+    "descripcion": "ACHAYA / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210203,
+    "descripcion": "ARAPA / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210204,
+    "descripcion": "ASILLO / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210205,
+    "descripcion": "CAMINACA / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210206,
+    "descripcion": "CHUPA / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210207,
+    "descripcion": "JOSE DOMINGO CHOQUEHUANCA / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210208,
+    "descripcion": "MUÑANI / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210209,
+    "descripcion": "POTONI / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210210,
+    "descripcion": "SAMAN / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210211,
+    "descripcion": "SAN ANTON / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210212,
+    "descripcion": "SAN JOSE / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210213,
+    "descripcion": "SAN JUAN DE SALINAS / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210214,
+    "descripcion": "SANTIAGO DE PUPUJA / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210215,
+    "descripcion": "TIRAPATA / AZANGARO / PUNO"
+  },
+  {
+    "ubigeo": 210301,
+    "descripcion": "MACUSANI / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210302,
+    "descripcion": "AJOYANI / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210303,
+    "descripcion": "AYAPATA / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210304,
+    "descripcion": "COASA / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210305,
+    "descripcion": "CORANI / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210306,
+    "descripcion": "CRUCERO / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210307,
+    "descripcion": "ITUATA / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210308,
+    "descripcion": "OLLACHEA / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210309,
+    "descripcion": "SAN GABAN / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210310,
+    "descripcion": "USICAYOS / CARABAYA / PUNO"
+  },
+  {
+    "ubigeo": 210401,
+    "descripcion": "JULI / CHUCUITO / PUNO"
+  },
+  {
+    "ubigeo": 210402,
+    "descripcion": "DESAGUADERO / CHUCUITO / PUNO"
+  },
+  {
+    "ubigeo": 210403,
+    "descripcion": "HUACULLANI / CHUCUITO / PUNO"
+  },
+  {
+    "ubigeo": 210404,
+    "descripcion": "KELLUYO / CHUCUITO / PUNO"
+  },
+  {
+    "ubigeo": 210405,
+    "descripcion": "PISACOMA / CHUCUITO / PUNO"
+  },
+  {
+    "ubigeo": 210406,
+    "descripcion": "POMATA / CHUCUITO / PUNO"
+  },
+  {
+    "ubigeo": 210407,
+    "descripcion": "ZEPITA / CHUCUITO / PUNO"
+  },
+  {
+    "ubigeo": 210501,
+    "descripcion": "ILAVE / EL COLLAO / PUNO"
+  },
+  {
+    "ubigeo": 210502,
+    "descripcion": "CAPAZO / EL COLLAO / PUNO"
+  },
+  {
+    "ubigeo": 210503,
+    "descripcion": "PILCUYO / EL COLLAO / PUNO"
+  },
+  {
+    "ubigeo": 210504,
+    "descripcion": "SANTA ROSA / EL COLLAO / PUNO"
+  },
+  {
+    "ubigeo": 210505,
+    "descripcion": "CONDURIRI / EL COLLAO / PUNO"
+  },
+  {
+    "ubigeo": 210601,
+    "descripcion": "HUANCANE / HUANCANE / PUNO"
+  },
+  {
+    "ubigeo": 210602,
+    "descripcion": "COJATA / HUANCANE / PUNO"
+  },
+  {
+    "ubigeo": 210603,
+    "descripcion": "HUATASANI / HUANCANE / PUNO"
+  },
+  {
+    "ubigeo": 210604,
+    "descripcion": "INCHUPALLA / HUANCANE / PUNO"
+  },
+  {
+    "ubigeo": 210605,
+    "descripcion": "PUSI / HUANCANE / PUNO"
+  },
+  {
+    "ubigeo": 210606,
+    "descripcion": "ROSASPATA / HUANCANE / PUNO"
+  },
+  {
+    "ubigeo": 210607,
+    "descripcion": "TARACO / HUANCANE / PUNO"
+  },
+  {
+    "ubigeo": 210608,
+    "descripcion": "VILQUE CHICO / HUANCANE / PUNO"
+  },
+  {
+    "ubigeo": 210701,
+    "descripcion": "LAMPA / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210702,
+    "descripcion": "CABANILLA / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210703,
+    "descripcion": "CALAPUJA / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210704,
+    "descripcion": "NICASIO / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210705,
+    "descripcion": "OCUVIRI / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210706,
+    "descripcion": "PALCA / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210707,
+    "descripcion": "PARATIA / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210708,
+    "descripcion": "PUCARA / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210709,
+    "descripcion": "SANTA LUCIA / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210710,
+    "descripcion": "VILAVILA / LAMPA / PUNO"
+  },
+  {
+    "ubigeo": 210801,
+    "descripcion": "AYAVIRI / MELGAR / PUNO"
+  },
+  {
+    "ubigeo": 210802,
+    "descripcion": "ANTAUTA / MELGAR / PUNO"
+  },
+  {
+    "ubigeo": 210803,
+    "descripcion": "CUPI / MELGAR / PUNO"
+  },
+  {
+    "ubigeo": 210804,
+    "descripcion": "LLALLI / MELGAR / PUNO"
+  },
+  {
+    "ubigeo": 210805,
+    "descripcion": "MACARI / MELGAR / PUNO"
+  },
+  {
+    "ubigeo": 210806,
+    "descripcion": "NUÑOA / MELGAR / PUNO"
+  },
+  {
+    "ubigeo": 210807,
+    "descripcion": "ORURILLO / MELGAR / PUNO"
+  },
+  {
+    "ubigeo": 210808,
+    "descripcion": "SANTA ROSA / MELGAR / PUNO"
+  },
+  {
+    "ubigeo": 210809,
+    "descripcion": "UMACHIRI / MELGAR / PUNO"
+  },
+  {
+    "ubigeo": 210901,
+    "descripcion": "MOHO / MOHO / PUNO"
+  },
+  {
+    "ubigeo": 210902,
+    "descripcion": "CONIMA / MOHO / PUNO"
+  },
+  {
+    "ubigeo": 210903,
+    "descripcion": "HUAYRAPATA / MOHO / PUNO"
+  },
+  {
+    "ubigeo": 210904,
+    "descripcion": "TILALI / MOHO / PUNO"
+  },
+  {
+    "ubigeo": 211001,
+    "descripcion": "PUTINA / SAN ANTONIO DE PUTINA / PUNO"
+  },
+  {
+    "ubigeo": 211002,
+    "descripcion": "ANANEA / SAN ANTONIO DE PUTINA / PUNO"
+  },
+  {
+    "ubigeo": 211003,
+    "descripcion": "PEDRO VILCA APAZA / SAN ANTONIO DE PUTINA / PUNO"
+  },
+  {
+    "ubigeo": 211004,
+    "descripcion": "QUILCAPUNCU / SAN ANTONIO DE PUTINA / PUNO"
+  },
+  {
+    "ubigeo": 211005,
+    "descripcion": "SINA / SAN ANTONIO DE PUTINA / PUNO"
+  },
+  {
+    "ubigeo": 211101,
+    "descripcion": "JULIACA / SAN ROMAN / PUNO"
+  },
+  {
+    "ubigeo": 211102,
+    "descripcion": "CABANA / SAN ROMAN / PUNO"
+  },
+  {
+    "ubigeo": 211103,
+    "descripcion": "CABANILLAS / SAN ROMAN / PUNO"
+  },
+  {
+    "ubigeo": 211104,
+    "descripcion": "CARACOTO / SAN ROMAN / PUNO"
+  },
+  {
+    "ubigeo": 211105,
+    "descripcion": "SAN MIGUEL / SAN ROMAN / PUNO"
+  },
+  {
+    "ubigeo": 211201,
+    "descripcion": "SANDIA / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211202,
+    "descripcion": "CUYOCUYO / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211203,
+    "descripcion": "LIMBANI / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211204,
+    "descripcion": "PATAMBUCO / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211205,
+    "descripcion": "PHARA / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211206,
+    "descripcion": "QUIACA / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211207,
+    "descripcion": "SAN JUAN DEL ORO / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211208,
+    "descripcion": "YANAHUAYA / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211209,
+    "descripcion": "ALTO INAMBARI / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211210,
+    "descripcion": "SAN PEDRO DE PUTINA PUNCO / SANDIA / PUNO"
+  },
+  {
+    "ubigeo": 211301,
+    "descripcion": "YUNGUYO / YUNGUYO / PUNO"
+  },
+  {
+    "ubigeo": 211302,
+    "descripcion": "ANAPIA / YUNGUYO / PUNO"
+  },
+  {
+    "ubigeo": 211303,
+    "descripcion": "COPANI / YUNGUYO / PUNO"
+  },
+  {
+    "ubigeo": 211304,
+    "descripcion": "CUTURAPI / YUNGUYO / PUNO"
+  },
+  {
+    "ubigeo": 211305,
+    "descripcion": "OLLARAYA / YUNGUYO / PUNO"
+  },
+  {
+    "ubigeo": 211306,
+    "descripcion": "TINICACHI / YUNGUYO / PUNO"
+  },
+  {
+    "ubigeo": 211307,
+    "descripcion": "UNICACHI / YUNGUYO / PUNO"
+  },
+  {
+    "ubigeo": 220101,
+    "descripcion": "MOYOBAMBA / MOYOBAMBA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220102,
+    "descripcion": "CALZADA / MOYOBAMBA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220103,
+    "descripcion": "HABANA / MOYOBAMBA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220104,
+    "descripcion": "JEPELACIO / MOYOBAMBA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220105,
+    "descripcion": "SORITOR / MOYOBAMBA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220106,
+    "descripcion": "YANTALO / MOYOBAMBA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220201,
+    "descripcion": "BELLAVISTA / BELLAVISTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220202,
+    "descripcion": "ALTO BIAVO / BELLAVISTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220203,
+    "descripcion": "BAJO BIAVO / BELLAVISTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220204,
+    "descripcion": "HUALLAGA / BELLAVISTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220205,
+    "descripcion": "SAN PABLO / BELLAVISTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220206,
+    "descripcion": "SAN RAFAEL / BELLAVISTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220301,
+    "descripcion": "SAN JOSE DE SISA / EL DORADO / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220302,
+    "descripcion": "AGUA BLANCA / EL DORADO / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220303,
+    "descripcion": "SAN MARTIN / EL DORADO / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220304,
+    "descripcion": "SANTA ROSA / EL DORADO / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220305,
+    "descripcion": "SHATOJA / EL DORADO / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220401,
+    "descripcion": "SAPOSOA / HUALLAGA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220402,
+    "descripcion": "ALTO SAPOSOA / HUALLAGA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220403,
+    "descripcion": "EL ESLABON / HUALLAGA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220404,
+    "descripcion": "PISCOYACU / HUALLAGA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220405,
+    "descripcion": "SACANCHE / HUALLAGA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220406,
+    "descripcion": "TINGO DE SAPOSOA / HUALLAGA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220501,
+    "descripcion": "LAMAS / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220502,
+    "descripcion": "ALONSO DE ALVARADO / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220503,
+    "descripcion": "BARRANQUITA / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220504,
+    "descripcion": "CAYNARACHI / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220505,
+    "descripcion": "CUÑUMBUQUI / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220506,
+    "descripcion": "PINTO RECODO / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220507,
+    "descripcion": "RUMISAPA / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220508,
+    "descripcion": "SAN ROQUE DE CUMBAZA / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220509,
+    "descripcion": "SHANAO / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220510,
+    "descripcion": "TABALOSOS / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220511,
+    "descripcion": "ZAPATERO / LAMAS / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220601,
+    "descripcion": "JUANJUI / MARISCAL CACERES / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220602,
+    "descripcion": "CAMPANILLA / MARISCAL CACERES / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220603,
+    "descripcion": "HUICUNGO / MARISCAL CACERES / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220604,
+    "descripcion": "PACHIZA / MARISCAL CACERES / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220605,
+    "descripcion": "PAJARILLO / MARISCAL CACERES / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220701,
+    "descripcion": "PICOTA / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220702,
+    "descripcion": "BUENOS AIRES / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220703,
+    "descripcion": "CASPISAPA / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220704,
+    "descripcion": "PILLUANA / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220705,
+    "descripcion": "PUCACACA / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220706,
+    "descripcion": "SAN CRISTOBAL / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220707,
+    "descripcion": "SAN HILARION / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220708,
+    "descripcion": "SHAMBOYACU / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220709,
+    "descripcion": "TINGO DE PONASA / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220710,
+    "descripcion": "TRES UNIDOS / PICOTA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220801,
+    "descripcion": "RIOJA / RIOJA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220802,
+    "descripcion": "AWAJUN / RIOJA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220803,
+    "descripcion": "ELIAS SOPLIN VARGAS / RIOJA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220804,
+    "descripcion": "NUEVA CAJAMARCA / RIOJA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220805,
+    "descripcion": "PARDO MIGUEL / RIOJA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220806,
+    "descripcion": "POSIC / RIOJA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220807,
+    "descripcion": "SAN FERNANDO / RIOJA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220808,
+    "descripcion": "YORONGOS / RIOJA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220809,
+    "descripcion": "YURACYACU / RIOJA / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220901,
+    "descripcion": "TARAPOTO / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220902,
+    "descripcion": "ALBERTO LEVEAU / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220903,
+    "descripcion": "CACATACHI / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220904,
+    "descripcion": "CHAZUTA / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220905,
+    "descripcion": "CHIPURANA / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220906,
+    "descripcion": "EL PORVENIR / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220907,
+    "descripcion": "HUIMBAYOC / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220908,
+    "descripcion": "JUAN GUERRA / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220909,
+    "descripcion": "LA BANDA DE SHILCAYO / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220910,
+    "descripcion": "MORALES / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220911,
+    "descripcion": "PAPAPLAYA / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220912,
+    "descripcion": "SAN ANTONIO / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220913,
+    "descripcion": "SAUCE / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 220914,
+    "descripcion": "SHAPAJA / SAN MARTIN / SAN MARTIN"
+  },
+  {
+    "ubigeo": 221001,
+    "descripcion": "TOCACHE / TOCACHE / SAN MARTIN"
+  },
+  {
+    "ubigeo": 221002,
+    "descripcion": "NUEVO PROGRESO / TOCACHE / SAN MARTIN"
+  },
+  {
+    "ubigeo": 221003,
+    "descripcion": "POLVORA / TOCACHE / SAN MARTIN"
+  },
+  {
+    "ubigeo": 221004,
+    "descripcion": "SHUNTE / TOCACHE / SAN MARTIN"
+  },
+  {
+    "ubigeo": 221005,
+    "descripcion": "UCHIZA / TOCACHE / SAN MARTIN"
+  },
+  {
+    "ubigeo": 230101,
+    "descripcion": "TACNA / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230102,
+    "descripcion": "ALTO DE LA ALIANZA / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230103,
+    "descripcion": "CALANA / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230104,
+    "descripcion": "CIUDAD NUEVA / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230105,
+    "descripcion": "INCLAN / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230106,
+    "descripcion": "PACHIA / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230107,
+    "descripcion": "PALCA / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230108,
+    "descripcion": "POCOLLAY / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230109,
+    "descripcion": "SAMA / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230110,
+    "descripcion": "CORONEL GREGORIO ALBARRACIN LANCHIPA / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230111,
+    "descripcion": "LA YARADA LOS PALOS / TACNA / TACNA"
+  },
+  {
+    "ubigeo": 230201,
+    "descripcion": "CANDARAVE / CANDARAVE / TACNA"
+  },
+  {
+    "ubigeo": 230202,
+    "descripcion": "CAIRANI / CANDARAVE / TACNA"
+  },
+  {
+    "ubigeo": 230203,
+    "descripcion": "CAMILACA / CANDARAVE / TACNA"
+  },
+  {
+    "ubigeo": 230204,
+    "descripcion": "CURIBAYA / CANDARAVE / TACNA"
+  },
+  {
+    "ubigeo": 230205,
+    "descripcion": "HUANUARA / CANDARAVE / TACNA"
+  },
+  {
+    "ubigeo": 230206,
+    "descripcion": "QUILAHUANI / CANDARAVE / TACNA"
+  },
+  {
+    "ubigeo": 230301,
+    "descripcion": "LOCUMBA / JORGE BASADRE / TACNA"
+  },
+  {
+    "ubigeo": 230302,
+    "descripcion": "ILABAYA / JORGE BASADRE / TACNA"
+  },
+  {
+    "ubigeo": 230303,
+    "descripcion": "ITE / JORGE BASADRE / TACNA"
+  },
+  {
+    "ubigeo": 230401,
+    "descripcion": "TARATA / TARATA / TACNA"
+  },
+  {
+    "ubigeo": 230402,
+    "descripcion": "HEROES ALBARRACIN / TARATA / TACNA"
+  },
+  {
+    "ubigeo": 230403,
+    "descripcion": "ESTIQUE / TARATA / TACNA"
+  },
+  {
+    "ubigeo": 230404,
+    "descripcion": "ESTIQUE-PAMPA / TARATA / TACNA"
+  },
+  {
+    "ubigeo": 230405,
+    "descripcion": "SITAJARA / TARATA / TACNA"
+  },
+  {
+    "ubigeo": 230406,
+    "descripcion": "SUSAPAYA / TARATA / TACNA"
+  },
+  {
+    "ubigeo": 230407,
+    "descripcion": "TARUCACHI / TARATA / TACNA"
+  },
+  {
+    "ubigeo": 230408,
+    "descripcion": "TICACO / TARATA / TACNA"
+  },
+  {
+    "ubigeo": 240101,
+    "descripcion": "TUMBES / TUMBES / TUMBES"
+  },
+  {
+    "ubigeo": 240102,
+    "descripcion": "CORRALES / TUMBES / TUMBES"
+  },
+  {
+    "ubigeo": 240103,
+    "descripcion": "LA CRUZ / TUMBES / TUMBES"
+  },
+  {
+    "ubigeo": 240104,
+    "descripcion": "PAMPAS DE HOSPITAL / TUMBES / TUMBES"
+  },
+  {
+    "ubigeo": 240105,
+    "descripcion": "SAN JACINTO / TUMBES / TUMBES"
+  },
+  {
+    "ubigeo": 240106,
+    "descripcion": "SAN JUAN DE LA VIRGEN / TUMBES / TUMBES"
+  },
+  {
+    "ubigeo": 240201,
+    "descripcion": "ZORRITOS / CONTRALMIRANTE VILLAR / TUMBES"
+  },
+  {
+    "ubigeo": 240202,
+    "descripcion": "CASITAS / CONTRALMIRANTE VILLAR / TUMBES"
+  },
+  {
+    "ubigeo": 240203,
+    "descripcion": "CANOAS DE PUNTA SAL / CONTRALMIRANTE VILLAR / TUMBES"
+  },
+  {
+    "ubigeo": 240301,
+    "descripcion": "ZARUMILLA / ZARUMILLA / TUMBES"
+  },
+  {
+    "ubigeo": 240302,
+    "descripcion": "AGUAS VERDES / ZARUMILLA / TUMBES"
+  },
+  {
+    "ubigeo": 240303,
+    "descripcion": "MATAPALO / ZARUMILLA / TUMBES"
+  },
+  {
+    "ubigeo": 240304,
+    "descripcion": "PAPAYAL / ZARUMILLA / TUMBES"
+  },
+  {
+    "ubigeo": 250101,
+    "descripcion": "CALLERIA / CORONEL PORTILLO / UCAYALI"
+  },
+  {
+    "ubigeo": 250102,
+    "descripcion": "CAMPOVERDE / CORONEL PORTILLO / UCAYALI"
+  },
+  {
+    "ubigeo": 250103,
+    "descripcion": "IPARIA / CORONEL PORTILLO / UCAYALI"
+  },
+  {
+    "ubigeo": 250104,
+    "descripcion": "MASISEA / CORONEL PORTILLO / UCAYALI"
+  },
+  {
+    "ubigeo": 250105,
+    "descripcion": "YARINACOCHA / CORONEL PORTILLO / UCAYALI"
+  },
+  {
+    "ubigeo": 250106,
+    "descripcion": "NUEVA REQUENA / CORONEL PORTILLO / UCAYALI"
+  },
+  {
+    "ubigeo": 250107,
+    "descripcion": "MANANTAY / CORONEL PORTILLO / UCAYALI"
+  },
+  {
+    "ubigeo": 250201,
+    "descripcion": "RAYMONDI / ATALAYA / UCAYALI"
+  },
+  {
+    "ubigeo": 250202,
+    "descripcion": "SEPAHUA / ATALAYA / UCAYALI"
+  },
+  {
+    "ubigeo": 250203,
+    "descripcion": "TAHUANIA / ATALAYA / UCAYALI"
+  },
+  {
+    "ubigeo": 250204,
+    "descripcion": "YURUA / ATALAYA / UCAYALI"
+  },
+  {
+    "ubigeo": 250301,
+    "descripcion": "PADRE ABAD / PADRE ABAD / UCAYALI"
+  },
+  {
+    "ubigeo": 250302,
+    "descripcion": "IRAZOLA / PADRE ABAD / UCAYALI"
+  },
+  {
+    "ubigeo": 250303,
+    "descripcion": "CURIMANA / PADRE ABAD / UCAYALI"
+  },
+  {
+    "ubigeo": 250304,
+    "descripcion": "NESHUYA / PADRE ABAD / UCAYALI"
+  },
+  {
+    "ubigeo": 250305,
+    "descripcion": "ALEXANDER VON HUMBOLDT / PADRE ABAD / UCAYALI"
+  },
+  {
+    "ubigeo": 250401,
+    "descripcion": "PURUS / PURUS / UCAYALI"
+  }
+]
