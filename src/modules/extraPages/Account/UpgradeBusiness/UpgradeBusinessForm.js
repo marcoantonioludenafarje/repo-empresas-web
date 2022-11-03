@@ -140,7 +140,31 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
               label={getBusinessPlanRes[0].description}
             />
           </Grid>
-
+          {getBusinessPlanRes &&
+          !getBusinessPlanRes[0].modules
+            .find((module) => module?.moduleName === 'Ecommerce') ? (
+            <></>
+          ) : (
+            <>
+              <Grid item xs={6} md={6}>
+                <Typography
+                  component='h3'
+                  sx={{
+                    fontSize: 16,
+                  }}
+                >
+                  <IntlMessages id='common.eMerchantSlugName' />
+                </Typography>
+              </Grid>
+              <Grid item xs={6} md={6}>
+                <AppTextField
+                  name='eMerchantSlugName'
+                  fullWidth
+                  label={<IntlMessages id='common.slug' />}
+                />
+              </Grid>
+            </>
+          )}
           {getBusinessPlanRes &&
           !getBusinessPlanRes[0].modules
             .find((module) => module?.moduleName === 'Finance')

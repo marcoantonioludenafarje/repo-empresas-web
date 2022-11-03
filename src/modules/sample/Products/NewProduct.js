@@ -13,6 +13,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
+  GET_PRESIGNED
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -350,17 +351,7 @@ const NewProduct = (props) => {
       };
 
       toGetUserData(getUserDataPayload);
-    }
-    setTimeout(() => {
-      setMinTutorial(true);
-    }, 2000);
-  }, []);
-  useEffect(() => {
-    console.log("selectedJsonImages", selectedJsonImages)
-  }, [selectedJsonImages]);
-  useEffect(() => {
-    if (userDataRes) {
-      defaultValues.merchantId = userDataRes.merchantSelected.merchantId;
+    } else {
       if (
         userDataRes.merchantSelected.plans.find(
           (element) => element.active == true,
@@ -368,10 +359,37 @@ const NewProduct = (props) => {
       ) {
         setSectionEcommerce(true);
       }
+    }
+    dispatch({
+      type: GET_PRESIGNED,
+      payload: undefined,
+    });
+    setTimeout(() => {
+      setMinTutorial(true);
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    if(presigned){
+      console.log("useEffect presigned", presigned)
+      let actualSelectedJsonImages = selectedJsonImages;
+      const newJsonImages = {
+        keyMaster: presigned.keymaster,
+        nameFile: imagePayload.request.payload.name || presigned.name
+      };
+      console.log("newJsonImages", newJsonImages)
+      actualSelectedJsonImages.push(newJsonImages)
+      console.log("actualSelectedJsonImages", actualSelectedJsonImages)
+      setSelectedJsonImages(actualSelectedJsonImages)
+    }
+  }, [presigned]);
+  useEffect(() => {
+    if (userDataRes) {
+      defaultValues.merchantId = userDataRes.merchantSelected.merchantId;
       if (
-        userDataRes.rolSelected.modules.find(
-          (element) => element.moduleName == 'Ecommerce',
-        ).idFront == 'ecommerce'
+        userDataRes.merchantSelected.plans.find(
+          (element) => element.active == true,
+        ).description == 'eCommerce'
       ) {
         setSectionEcommerce(true);
       }
@@ -487,14 +505,6 @@ const NewProduct = (props) => {
         image: file,
         type: file?.type || null
       });
-      let actualSelectedJsonImages = selectedJsonImages;
-      const newJsonImages = {
-        keyMaster: presigned.keymaster,
-        nameFile: imagePayload.request.payload.name
-      };
-      console.log("newJsonImages", newJsonImages)
-      actualSelectedJsonImages.push(newJsonImages)
-      setSelectedJsonImages(actualSelectedJsonImages)
     } else {
       event = null;
       console.log('no se selecciono un archivo');
@@ -581,6 +591,11 @@ const NewProduct = (props) => {
         console.log(cleanProducts);
         console.log('Esta es la imagen seleccionada', selectedFile);
         console.log('Cuál es el selectedJsonImages', selectedJsonImages);
+        
+        dispatch({
+          type: GET_PRESIGNED,
+          payload: undefined,
+        });
         /* console.log('finalPayload', { */
         toAddProduct({
           request: {
@@ -1058,91 +1073,95 @@ const NewProduct = (props) => {
                     ) : (
                       <></>
                     )}
+                  </>
+                ) : (
+                  <></>
+                )}
+                {/* IMPORTANTE NO BORRAR */}
+                <Grid item xs={12} md={12}>
+                  <Button
+                    variant='contained'
+                    color='secondary'
+                    component='label'
+                  >
+                    Subir imagen
+                    <input
+                      type='file'
+                      hidden
+                      multiple
+                      onChange={getImage}
+                      id='imgInp'
+                      name='imgInp'
+                      accept='.png, .jpeg, .jpg'
+                    />
+                  </Button>
+                </Grid>
+                {/* <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                  <img id='preview' className={classes.img} src=''></img>
+                </Box> */}
+                {/* {selectedImages ? (
+                  selectedImages.map((photo) => {
+                    return (
+                      <Grid item xs={12}  md={4}>
+                        <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                        <Badge className={classes.img} color="secondary" badgeContent=" ">
+                            <img className={classes.img} src={photo} key={photo}></img>
+                        </Badge>
 
-                    {/* IMPORTANTE NO BORRAR */}
-                    <Grid item xs={12} md={12}>
-                      <Button
-                        variant='contained'
-                        color='secondary'
-                        component='label'
-                      >
-                        Subir imagen
-                        <input
-                          type='file'
-                          hidden
-                          multiple
-                          onChange={getImage}
-                          id='imgInp'
-                          name='imgInp'
-                          accept='.png, .jpeg, .jpg'
+                        </Box>
+                      </Grid>
+                    )
+                  })
+                ) : (
+                  <></>
+                )} */}
+                <ImageList
+                  sx={{
+                    width: 500,
+                    // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
+                    transform: 'translateZ(0)',
+                    my: 1,
+                    p: 4,
+                  }}
+                  rowHeight={200}
+                  gap={1}
+                >
+                  {selectedImages.map((item, index) => {
+                    const cols = item.featured ? 2 : 1;
+                    const rows = item.featured ? 2 : 1;
+
+                    return (
+                      <ImageListItem key={item} cols={cols} rows={rows}>
+                        <img
+                          className={classes.img}
+                          src={item}
+                          key={item}
+                        ></img>
+                        <ImageListItemBar
+                          sx={{
+                            background:
+                              'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+                              'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                          }}
+                          // title={"Prueba"}
+                          position='top'
+                          actionIcon={
+                            <IconButton
+                              sx={{color: 'white'}}
+                              aria-label={`star prueba`}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          }
+                          actionPosition='left'
                         />
-                      </Button>
-                    </Grid>
-                    {/* <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
-                      <img id='preview' className={classes.img} src=''></img>
-                    </Box> */}
-                    {/* {selectedImages ? (
-                      selectedImages.map((photo) => {
-                        return (
-                          <Grid item xs={12}  md={4}>
-                            <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
-                            <Badge className={classes.img} color="secondary" badgeContent=" ">
-                               <img className={classes.img} src={photo} key={photo}></img>
-                            </Badge>
-
-                            </Box>
-                          </Grid>
-                        )
-                      })
-                    ) : (
-                      <></>
-                    )} */}
-                    <ImageList
-                      sx={{
-                        width: 500,
-                        height: 450,
-                        // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
-                        transform: 'translateZ(0)',
-                        my: 1,
-                        p: 4,
-                      }}
-                      rowHeight={200}
-                      gap={1}
-                    >
-                      {selectedImages.map((item, index) => {
-                        const cols = item.featured ? 2 : 1;
-                        const rows = item.featured ? 2 : 1;
-
-                        return (
-                          <ImageListItem key={item} cols={cols} rows={rows}>
-                            <img
-                              className={classes.img}
-                              src={item}
-                              key={item}
-                            ></img>
-                            <ImageListItemBar
-                              sx={{
-                                background:
-                                  'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-                                  'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-                              }}
-                              // title={"Prueba"}
-                              position='top'
-                              actionIcon={
-                                <IconButton
-                                  sx={{color: 'white'}}
-                                  aria-label={`star prueba`}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              }
-                              actionPosition='left'
-                            />
-                          </ImageListItem>
-                        );
-                      })}
-                    </ImageList>
-                    <Grid item xs={12} md={12}>
+                      </ImageListItem>
+                    );
+                  })}
+                </ImageList>
+                {sectionEcommerce === true ? (
+                  <>
+                <Grid item xs={12} md={12}>
                       <FormGroup
                         sx={{
                           ml: 2,

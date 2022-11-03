@@ -53,6 +53,9 @@ const validationSchema = yup.object({
   serieBackDocumenteReferralGuide: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />),
+  eMerchantSlugName: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />),
 });
 const UpgradeBusiness = () => {
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -95,6 +98,7 @@ const UpgradeBusiness = () => {
     serieBackDocumenteReceipt: '',
     serieDocumenteReferralGuide: '',
     serieBackDocumenteReferralGuide: '',
+    eMerchantSlugName: '',
   };
   const registerSuccess = () => {
     return (
@@ -194,13 +198,13 @@ const UpgradeBusiness = () => {
                 merchantId: userDataRes.merchantSelected.merchantId,
                 planDesiredId: userDataRes.merchantSelected.planDesiredId,
                 promotionCodeId: userDataRes.merchantSelected.promotionCodeId,
-                serieDocumenteBilling: data.serieDocumenteBilling,
-                serieBackDocumenteBilling: data.serieBackDocumenteBilling,
-                serieDocumenteReceipt: data.serieDocumenteReceipt,
-                serieBackDocumenteReceipt: data.serieBackDocumenteReceipt,
-                serieDocumenteReferralGuide: data.serieDocumenteReferralGuide,
-                serieBackDocumenteReferralGuide:
-                  data.serieBackDocumenteReferralGuide,
+                serieDocumenteBilling: data.serieDocumenteBilling || "",
+                serieBackDocumenteBilling: data.serieBackDocumenteBilling || "",
+                serieDocumenteReceipt: data.serieDocumenteReceipt || "",
+                serieBackDocumenteReceipt: data.serieBackDocumenteReceipt || "",
+                serieDocumenteReferralGuide: data.serieDocumenteReferralGuide || "",
+                serieBackDocumenteReferralGuide: data.serieBackDocumenteReferralGuide || "",
+                eMerchantSlugName: data.eMerchantSlugName || "",
                 merchantMasterId: userDataRes.merchantMasterId,
               },
             },

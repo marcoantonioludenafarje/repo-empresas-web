@@ -96,12 +96,13 @@ const Distribution = () => {
   const [execAll, setExecAll] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [defaultMoney, setDefaultMoney] = React.useState('s');
-  const [defaultWeight, setDefaultWeight] = React.useState('s');
+  const [defaultMoney, setDefaultMoney] = React.useState('PEN');
+  const [defaultWeight, setDefaultWeight] = React.useState('KG');
   const [defaultIgvActivation, setDefaultIgvActivation] = React.useState(0);
   const [defaultPriceRange, setDefaultPriceRange] = React.useState([
-    0, 1000000000,
+    0, 1000,
   ]);
+  const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
   const {listProducts} = useSelector(({products}) => products);
   console.log('products', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -151,8 +152,8 @@ const Distribution = () => {
     routeName: '',
     defaultMinPrice: 0,
     defaultMaxPrice: 1000,
-    defaultWeight: 'LB',
-    defaultMoney: 'USD',
+    defaultWeight: 'KG',
+    defaultMoney: 'PEN',
     defaultIgvActivation: 0,
   };
   useEffect(() => {
@@ -170,6 +171,13 @@ const Distribution = () => {
         },
       };
       getBusinessParameter(parameterPayload);
+      if (
+        userDataRes.merchantSelected.plans.find(
+          (element) => element.active == true,
+        ).description == 'eCommerce'
+      ) {
+        setSectionEcommerce(true);
+      }
     }
   }, [userDataRes]);
   useEffect(() => {
@@ -244,6 +252,14 @@ const Distribution = () => {
       };
 
       toGetUserData(getUserDataPayload);
+    } else {
+      if (
+        userDataRes.merchantSelected.plans.find(
+          (element) => element.active == true,
+        ).description == 'eCommerce'
+      ) {
+        setSectionEcommerce(true);
+      }
     }
   }, []);
 
@@ -614,7 +630,7 @@ const Distribution = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} md={12}>
+                <Grid sx={{mb: 3, my: 2}} item xs={12} md={12}>
                   <AppTextField
                     name='defaultIgvActivation'
                     value={defaultIgvActivation}
@@ -622,105 +638,119 @@ const Distribution = () => {
                     label={'IGV'}
                   />
                 </Grid>
-                <Grid item xs={12} md={12}>
-                  <InputLabel id='price' style={{fontWeight: 800}}>
-                    Precio
-                  </InputLabel>
-                </Grid>
-                <Grid item xs={6} md={3}>
-                  <AppTextField
-                    name='defaultMinPrice'
-                    value={defaultPriceRange[0]}
-                    fullWidth
-                    label={'Mínimo'}
-                  />
-                </Grid>
-                <Grid item xs={6} md={3}>
-                  <AppTextField
-                    name='defaultMaxPrice'
-                    variant='outlined'
-                    value={defaultPriceRange[1]}
-                    fullWidth
-                    label={'Máximo'}
-                  />
-                </Grid>
+                {sectionEcommerce === true ? (
+                  <>
+                    <Grid sx={{mb: 3}} item xs={12} md={12}>
+                      <InputLabel id='price' style={{fontWeight: 800}}>
+                        Precio
+                      </InputLabel>
+                    </Grid>
+                    <Grid sx={{mb: 2}} item xs={6} md={3}>
+                      <AppTextField
+                        name='defaultMinPrice'
+                        value={defaultPriceRange[0]}
+                        fullWidth
+                        label={'Mínimo'}
+                      />
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                      <AppTextField
+                        name='defaultMaxPrice'
+                        variant='outlined'
+                        value={defaultPriceRange[1]}
+                        fullWidth
+                        label={'Máximo'}
+                      />
+                    </Grid>
+                  </>
+                ) : (
+                  <></>
+                )}
+                
               </Form>
             );
           }}
         </Formik>
       </Box>
-      <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          mb: 5,
-        }}
-      >
-        <Stack
-          direction='row'
-          divider={<Divider orientation='vertical' flexItem />}
-          spacing={2}
-        >
-          <Typography
+      {sectionEcommerce === true ? (
+        <>
+          <Box
             sx={{
-              fontWeight: 600,
-              fontSize: 20,
+              flex: 1,
               display: 'flex',
-              alignItems: 'center',
+              flexDirection: 'column',
+              mb: 5,
             }}
           >
-            <IntlMessages id='common.productTags' />
-          </Typography>
-          <IconButton
-            onClick={() => {
-              console.log('filters', filters);
-              let newFilters = filters;
-              newFilters.push(emptyFilter);
-              setFilters(newFilters);
-              reloadPage();
-            }}
-            aria-label='delete'
-            size='large'
-          >
-            <AddIcon fontSize='inherit' />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              console.log('filters', filters);
-              let newFilters = filters;
-              newFilters.pop();
-              setFilters(newFilters);
-              reloadPage();
-            }}
-            aria-label='delete'
-            size='large'
-          >
-            <RemoveIcon fontSize='inherit' />
-          </IconButton>
-        </Stack>
-      </Box>
+            <Stack
+              direction='row'
+              divider={<Divider orientation='vertical' flexItem />}
+              spacing={2}
+            >
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  fontSize: 20,
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <IntlMessages id='common.productTags' />
+              </Typography>
+              <IconButton
+                onClick={() => {
+                  console.log('filters', filters);
+                  let newFilters = filters;
+                  newFilters.push(emptyFilter);
+                  setFilters(newFilters);
+                  reloadPage();
+                }}
+                aria-label='delete'
+                size='large'
+              >
+                <AddIcon fontSize='inherit' />
+              </IconButton>
+              <IconButton
+                onClick={() => {
+                  console.log('filters', filters);
+                  let newFilters = filters;
+                  newFilters.pop();
+                  setFilters(newFilters);
+                  reloadPage();
+                }}
+                aria-label='delete'
+                size='large'
+              >
+                <RemoveIcon fontSize='inherit' />
+              </IconButton>
+            </Stack>
+          </Box>
 
-      <Box
-        sx={{
-          m: 'auto',
-          mb: 5,
-          border: '1px solid grey',
-          borderRadius: '10px',
-          width: '95  %',
-        }}
-      >
-        {filters &&
-          filters.map((filter, index) => (
-            <DeliveryCard
-              key={index}
-              order={index}
-              execFunctions={execAll}
-              newValuesData={setFilterIndex}
-              initialValues={filter}
-            />
-          ))}
-      </Box>
+          <Box
+            sx={{
+              m: 'auto',
+              mb: 5,
+              border: '1px solid grey',
+              borderRadius: '10px',
+              width: '95  %',
+            }}
+          >
+            {filters &&
+              filters.map((filter, index) => (
+                <DeliveryCard
+                  key={index}
+                  order={index}
+                  execFunctions={execAll}
+                  newValuesData={setFilterIndex}
+                  initialValues={filter}
+                />
+              ))}
+          </Box>
+        </>
+      ) : (
+        <></>
+      )}
+      
       <Box
         sx={{
           flex: 1,

@@ -56,9 +56,6 @@ const AvatarViewWrapper = styled('div')(({theme}) => {
 const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
   console.log('valores', values);
   const [typeDocument, setTypeDocument] = React.useState(values.documentType);
-  const [defaultMoney, setDefaultMoney] = React.useState('PEN');
-  const [defaultWeight, setDefaultWeight] = React.useState('kilogram');
-  const [defaultIgvActivation, setDefaultIgvActivation] = React.useState(18);
 
   console.log('Valores', values);
   const {getRootProps, getInputProps} = useDropzone({
@@ -73,16 +70,6 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
     console.log('valor', event.target.value);
     if (event.target.name == 'documentType') {
       setTypeDocument(event.target.value);
-    }
-    if (event.target.name == 'defaultMoney') {
-      setDefaultMoney(event.target.value);
-    }
-    if (event.target.name == 'defaultWeight') {
-      setDefaultWeight(event.target.value);
-    }
-    if (event.target.name == 'defaultIgvActivation') {
-      setDefaultIgvActivation(event.target.value);
-      console.log('Es el activation IGV: ', event.target.value);
     }
     moveData(event.target.value);
   };
@@ -147,93 +134,6 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
             fullWidth
             label={<IntlMessages id='common.busines.direction' />}
           />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl fullWidth sx={{my: 2}}>
-            <InputLabel id='defaultMoney-label' style={{fontWeight: 200}}>
-              <IntlMessages id='common.busines.defaultMoney' />
-            </InputLabel>
-            <Select
-              name='defaultMoney'
-              labelId='defaultMoney-label'
-              label={<IntlMessages id='common.busines.defaultMoney' />}
-              displayEmpty
-              onChange={handleField}
-              value={defaultMoney}
-              defaultValue='PEN'
-            >
-              <MenuItem value='PEN' style={{fontWeight: 200}}>
-                Sol peruano
-              </MenuItem>
-              <MenuItem value='USD' style={{fontWeight: 200}}>
-                Dólar estadounidense
-              </MenuItem>
-              <MenuItem value='EUR' style={{fontWeight: 200}}>
-                Euro
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl fullWidth sx={{my: 2}}>
-            <InputLabel id='defaultWeight-label' style={{fontWeight: 200}}>
-              <IntlMessages id='common.busines.defaultWeight' />
-            </InputLabel>
-            <Select
-              name='defaultWeight'
-              labelId='defaultWeight-label'
-              label={<IntlMessages id='common.busines.defaultWeight' />}
-              displayEmpty
-              onChange={handleField}
-              value={defaultWeight}
-              defaultValue='kilogram'
-            >
-              <MenuItem value='kilogram' style={{fontWeight: 200}}>
-                Kilogramo
-              </MenuItem>
-              <MenuItem value='pound' style={{fontWeight: 200}}>
-                Libra
-              </MenuItem>
-              <MenuItem value='ton' style={{fontWeight: 200}}>
-                Tonelada
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        {/* <Grid item xs={3}>
-          <ToggleButtonGroup
-          onChange={(event) => {
-              setDefaultIgvActivation(event.target.value);
-              console.log("Es el activation IGV: ", event.target.value)
-          }}
-          value={defaultIgvActivation}
-          name='defaultIgvActivation'
-          exclusive
-          aria-label='text alignment'
-          >
-            <StyledToggleButton
-              value={10}
-              className={clsx({
-                active: defaultIgvActivation === 10,
-              })}
-              aria-label='left aligned'
-            >
-              10%
-            </StyledToggleButton>
-
-            <StyledToggleButton
-              value={18}
-              className={clsx({
-                active: defaultIgvActivation === 18,
-              })}
-              aria-label='centered'
-            >
-              18%
-            </StyledToggleButton>
-          </ToggleButtonGroup>
-        </Grid> */}
-        <Grid item xs={12} md={12}>
-          <AppTextField name='defaultIgvActivation' fullWidth label={'IGV'} />
         </Grid>
         <Grid item xs={12} md={12}>
           <Box

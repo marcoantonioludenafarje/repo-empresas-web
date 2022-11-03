@@ -226,6 +226,8 @@
   "faq.licenseTypes": "Tipos de licencia",
   "faq.support": "Apoyo",
   "common.ubigeo": "Ubigeo del Local Principal",
+  "common.slug": "Slug",
+  "common.eMerchantSlugName": "Nombre de negocio para su búsqueda (Slug)",
   "common.noCategory": "No hay categorías",
   "common.options": "Opciones",
   "common.option": "Opción",

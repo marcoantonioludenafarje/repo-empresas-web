@@ -59,8 +59,8 @@ export const createPresigned = (payload, file) => {
     const key = payload?.request?.payload.name;
     API.post('tunexo', '/utility/getPresignedUrl', {body: payload})
       .then(async (data) => {
+        data.response.payload.response.payload.name = key;
         console.log('createPresigned resultado', data);
-
         dispatch({
           type: GET_PRESIGNED,
           payload: data.response.payload.response.payload,
