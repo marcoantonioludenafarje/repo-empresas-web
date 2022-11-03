@@ -189,6 +189,16 @@ function getBase64(file, cb) {
     console.log('Error: ', error);
   };
 }
+
+const toBase64 = (file) => {
+  console.log('toBase64 file', file);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
 // const getBase64 = (file) => {
 //   let reader = new FileReader();
 //   reader.readAsDataURL(file);
@@ -233,6 +243,7 @@ const NewProduct = (props) => {
   const [publish, setPublish] = React.useState(true);
   const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
   const [selectedImages, setSelectedImages] = React.useState([]);
+  const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
 
   useEffect(() => {
@@ -245,8 +256,8 @@ const NewProduct = (props) => {
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
   };
-  const toCreatePresigned = (payload) => {
-    dispatch(createPresigned(payload));
+  const toCreatePresigned = (payload, file) => {
+    dispatch(createPresigned(payload, file));
   };
   const toAddProduct = (payload) => {
     dispatch(addProduct(payload));
@@ -344,7 +355,9 @@ const NewProduct = (props) => {
       setMinTutorial(true);
     }, 2000);
   }, []);
-
+  useEffect(() => {
+    console.log("selectedJsonImages", selectedJsonImages)
+  }, [selectedJsonImages]);
   useEffect(() => {
     if (userDataRes) {
       defaultValues.merchantId = userDataRes.merchantSelected.merchantId;
@@ -466,13 +479,22 @@ const NewProduct = (props) => {
     selectedFile = event.target.files[0];
     const [file] = imgInp.files;
     imagePayload.request.payload.contentType = file.type;
+    imagePayload.request.payload.name = file.name;
     if (file) {
       // preview.src = URL.createObjectURL(file);
-      getBase64(file, (result) => {
-        console.log('Resultado en base 64', result);
-        imgBase64 = result;
-        toCreatePresigned(imagePayload);
+      console.log('Cuál es el imagePayload', imagePayload);
+      toCreatePresigned(imagePayload, {
+        image: file,
+        type: file?.type || null
       });
+      let actualSelectedJsonImages = selectedJsonImages;
+      const newJsonImages = {
+        keyMaster: presigned.keymaster,
+        nameFile: imagePayload.request.payload.name
+      };
+      console.log("newJsonImages", newJsonImages)
+      actualSelectedJsonImages.push(newJsonImages)
+      setSelectedJsonImages(actualSelectedJsonImages)
     } else {
       event = null;
       console.log('no se selecciono un archivo');
@@ -485,7 +507,8 @@ const NewProduct = (props) => {
       // setSelectedImages((prevImages)=>prevImages.concat(fileArray))
 
       setSelectedImages((prevImages) => prevImages.concat(fileArray));
-
+      console.log("Esto es selectedImages", selectedImages)
+      
       Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
     }
   };
@@ -557,7 +580,7 @@ const NewProduct = (props) => {
         }
         console.log(cleanProducts);
         console.log('Esta es la imagen seleccionada', selectedFile);
-        console.log('Cuál es el presigned', presigned);
+        console.log('Cuál es el selectedJsonImages', selectedJsonImages);
         /* console.log('finalPayload', { */
         toAddProduct({
           request: {
@@ -578,7 +601,7 @@ const NewProduct = (props) => {
                   category: selectedCategory,
                   tags: selectedFilters,
                   typeProduct: objSelects.typeProduct,
-                  imgKey: '',
+                  imgKeys: selectedJsonImages,
                   unitMeasure: objSelects.unitMeasure,
                   unitsToProduce: 1,
                   inputsProduct: cleanProducts,

@@ -5,6 +5,7 @@ import {Form, Formik} from 'formik';
 import AppPage from '../../../@crema/hoc/AppPage';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 
+import {Fonts} from '../../../shared/constants/AppEnums';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 
@@ -30,6 +31,10 @@ import {
   CircularProgress,
   Typography,
   Grid,
+  ImageList,
+  FormGroup,
+  FormControlLabel,
+  Switch
 } from '@mui/material';
 
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
@@ -39,7 +44,12 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import CloseIcon from '@mui/icons-material/Close';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import {red} from '@mui/material/colors';
-
+import {
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+  GET_USER_DATA,
+} from '../../../shared/constants/ActionTypes';
+import {getUserData} from '../../../redux/actions/User';
 import {useHistory} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -179,12 +189,19 @@ const UpdateProduct = (props) => {
   const [selectedCategory, setSelectedCategory] = React.useState(
     query.categoryId,
   );
+  
   const [typeProduct, setTypeProduct] = React.useState(query.typeProduct);
   const [openSelect, setOpenSelect] = React.useState(false);
   const prevSelectedCategoryRef = useRef();
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [typeAlert, setTypeAlert] = React.useState(false);
+  const [minTutorial, setMinTutorial] = React.useState(false);
+  const [selectedFilters, setSelectedFilters] = React.useState({});
+  const [publish, setPublish] = React.useState(true);
+  const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
+  const [selectedImages, setSelectedImages] = React.useState([]);
+  const [categories, setCategories] = React.useState([]);
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
   });
@@ -233,6 +250,7 @@ const UpdateProduct = (props) => {
   //GET_GLOBAL_PARAMETER
   let money_unit;
   let weight_unit;
+  let ecommerce_params;
   let imgBase64;
   let selectedFile;
 
@@ -286,12 +304,67 @@ const UpdateProduct = (props) => {
   };
 
   useEffect(() => {
-    getProducts(listPayload);
-    getBusinessParameter(parameterPayload);
-    toGetCategories(getCategoriesPayload);
-    selectedProducts = [];
+    if (!userDataRes) {
+      console.log('Esto se ejecuta?');
+
+      dispatch({type: GET_USER_DATA, payload: undefined});
+      const toGetUserData = (payload) => {
+        dispatch(getUserData(payload));
+      };
+      let getUserDataPayload = {
+        request: {
+          payload: {
+            userId: JSON.parse(localStorage.getItem('payload')).sub,
+          },
+        },
+      };
+
+      toGetUserData(getUserDataPayload);
+    }
+    setTimeout(() => {
+      setMinTutorial(true);
+    }, 2000);
   }, []);
 
+  useEffect(() => {
+    if (userDataRes) {
+      defaultValues.merchantId = userDataRes.merchantSelected.merchantId;
+      if (
+        userDataRes.merchantSelected.plans.find(
+          (element) => element.active == true,
+        ).description == 'eCommerce'
+      ) {
+        setSectionEcommerce(true);
+      }
+      if (
+        userDataRes.rolSelected.modules.find(
+          (element) => element.moduleName == 'Ecommerce',
+        ).idFront == 'ecommerce'
+      ) {
+        setSectionEcommerce(true);
+      }
+      getProducts(listPayload);
+      getBusinessParameter(parameterPayload);
+      toGetCategories(getCategoriesPayload);
+      selectedProducts = [];
+    }
+  }, [userDataRes]);
+  useEffect(() => {
+    if (businessParameter) {
+      let filters = {};
+      ecommerce_params.map((filter) => {
+        filters[filter.featureName] = [];
+      });
+      setSelectedFilters(filters);
+      console.log('selectedFilters', selectedFilters);
+
+      let categoriesProductParameter = businessParameter.find(
+        (obj) => obj.abreParametro == 'DEFAULT_CATEGORIES_PRODUCTS',
+      ).value;
+      console.log('categoriesProductParameter', categoriesProductParameter);
+      setCategories(categoriesProductParameter);
+    }
+  }, [businessParameter]);
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
       (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
@@ -300,9 +373,24 @@ const UpdateProduct = (props) => {
     money_unit = businessParameter.find(
       (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
     ).value;
+    ecommerce_params = businessParameter.find(
+      (obj) => obj.abreParametro == 'ECOMMERCE_PRODUCT_PARAMETERS',
+    ).tags;
+
     objSelects.unitMeasureMoney = money_unit;
   }
-
+  useEffect(() => {
+    if (categories !== undefined && categories.length >= 1) {
+      let defaultCategory = categories.find(
+        (obj) => obj.productCategoryId == query.categoryId,
+      );
+      console.log('defaultCategory', defaultCategory);
+      setSelectedCategory(defaultCategory);
+      console.log('selectedCategory', selectedCategory);
+    } else {
+      setSelectedCategory('noCategory');
+    }
+  }, [categories]);
   useEffect(() => {
     if (listProducts != undefined) {
       originalProduct = listProducts.find(
@@ -337,13 +425,13 @@ const UpdateProduct = (props) => {
 
   useEffect(() => {
     if (
-      getCategoriesRes != undefined &&
+      categories != undefined &&
       selectedCategory &&
       prevSelectedCategory !== selectedCategory
     ) {
       console.log('selectedCategory responsivo', selectedCategory);
     }
-  }, [getCategoriesRes != undefined && selectedCategory, selectedCategory]);
+  }, [categories != undefined && selectedCategory, selectedCategory]);
 
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
@@ -369,23 +457,47 @@ const UpdateProduct = (props) => {
     });
     console.log('objSelects', objSelects);
   };
-
+  const handleFieldFilter = (event) => {
+    console.log('evento', event);
+    let newSelectedFilters = selectedFilters;
+    newSelectedFilters[event.target.name][0] = event.target.value;
+    if (event.target.value == 'noFilters') {
+      newSelectedFilters[event.target.name] = [];
+    }
+    setSelectedFilters(newSelectedFilters);
+    console.log('selectedFilters actualizados', selectedFilters);
+  };
+  const handlePublicChange = (event) => {
+    console.log('Switch cambio', event);
+    setPublish(event.target.checked);
+  };
   const getImage = (event) => {
     console.log('Archivo recogido ', event.target.files[0]);
     selectedFile = event.target.files[0];
     const [file] = imgInp.files;
     imagePayload.request.payload.contentType = file.type;
+    imagePayload.request.payload.name = file.name;
     if (file) {
-      preview.src = URL.createObjectURL(file);
-      getBase64(file, (result) => {
-        console.log('Resultado en base 64', result);
-        imgBase64 = result;
-        toCreatePresigned(imagePayload);
+      // preview.src = URL.createObjectURL(file);
+      console.log('Cuál es el imagePayload', imagePayload);
+      toCreatePresigned(imagePayload, {
+        image: file,
+        type: file?.type || null
       });
     } else {
-      preview.src = '';
-      imgBase64 = '';
-      imagePayload.request.payload.contentType = '';
+      event = null;
+      console.log('no se selecciono un archivo');
+    }
+    if (event.target.files) {
+      const fileArray = Array.from(event.target.files).map((file) =>
+        URL.createObjectURL(file),
+      );
+      // console.log("este es el fileArray", fileArray)
+      // setSelectedImages((prevImages)=>prevImages.concat(fileArray))
+
+      setSelectedImages((prevImages) => prevImages.concat(fileArray));
+
+      Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
     }
   };
 
@@ -653,13 +765,13 @@ const UpdateProduct = (props) => {
                       label='Categoría'
                       onChange={handleFieldCategory}
                     >
-                      {getCategoriesRes &&
-                      typeof getCategoriesRes !== 'string' ? (
-                        getCategoriesRes.map((obj, index) => {
+                      {categories &&
+                      typeof categories !== 'string' ? (
+                        categories.map((obj, index) => {
                           return (
                             <MenuItem
                               key={index}
-                              value={obj.productCategoryId}
+                              value={obj}
                               style={{fontWeight: 200}}
                             >
                               {obj.description}
@@ -760,7 +872,214 @@ const UpdateProduct = (props) => {
                     </Select>
                   </FormControl>
                 </Grid>
+                {sectionEcommerce === true ? (
+                  <>
+                    <Typography
+                      component='h3'
+                      sx={{
+                        fontSize: 12,
+                        fontWeight: Fonts.BOLD,
+                        ml: {xs: 3, lg: 4},
+                      }}
+                    >
+                      Sección ecommerce
+                    </Typography>
+                    <Grid item xs={12}>
+                      <AppTextField
+                        label='Título del Producto de forma pública'
+                        name='title'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <AppTextField
+                        label='Descripción de forma pública'
+                        name='commercialDescription'
+                        multiline
+                        rows={4}
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
+                    </Grid>
+                    {ecommerce_params &&
+                    Array.isArray(ecommerce_params) &&
+                    ecommerce_params.length >= 1 ? (
+                      ecommerce_params.map((obj, index) => {
+                        return (
+                          <Grid key={index} item xs={12}>
+                            <FormControl fullWidth sx={{my: 2}}>
+                              <InputLabel
+                                id='categoria-label'
+                                style={{fontWeight: 200}}
+                              >
+                                {obj.featureName}
+                              </InputLabel>
+                              <Select
+                                key={'SelectFilter' + index}
+                                value={selectedFilters[obj.featureName]}
+                                name={obj.featureName}
+                                labelId={obj.featureName + '-label'}
+                                label={obj.featureName}
+                                onChange={handleFieldFilter}
+                              >
+                                {obj.values &&
+                                Array.isArray(obj.values) &&
+                                obj.values.length >= 1 ? (
+                                  obj.values.map((obj, index) => {
+                                    return (
+                                      <MenuItem
+                                        key={index + 1}
+                                        value={index + 1}
+                                        style={{fontWeight: 200}}
+                                      >
+                                        {obj.name}
+                                      </MenuItem>
+                                    );
+                                  })
+                                ) : (
+                                  <MenuItem
+                                    key={1}
+                                    value={'noFilters'}
+                                    style={{fontWeight: 200}}
+                                  >
+                                    <IntlMessages id='common.undefinedFilter' />
+                                  </MenuItem>
+                                )}
+                                <MenuItem
+                                  key={0}
+                                  value={'noFilters'}
+                                  style={{fontWeight: 200}}
+                                >
+                                  <IntlMessages id='common.undefinedFilter' />
+                                </MenuItem>
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                        );
+                      })
+                    ) : (
+                      <></>
+                    )}
+
+                    {/* IMPORTANTE NO BORRAR */}
+                    <Grid item xs={12} md={12}>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        component='label'
+                      >
+                        Subir imagen
+                        <input
+                          type='file'
+                          hidden
+                          multiple
+                          onChange={getImage}
+                          id='imgInp'
+                          name='imgInp'
+                          accept='.png, .jpeg, .jpg'
+                        />
+                      </Button>
+                    </Grid>
+                    {/* <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                      <img id='preview' className={classes.img} src=''></img>
+                    </Box> */}
+                    {/* {selectedImages ? (
+                      selectedImages.map((photo) => {
+                        return (
+                          <Grid item xs={12}  md={4}>
+                            <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                            <Badge className={classes.img} color="secondary" badgeContent=" ">
+                               <img className={classes.img} src={photo} key={photo}></img>
+                            </Badge>
+
+                            </Box>
+                          </Grid>
+                        )
+                      })
+                    ) : (
+                      <></>
+                    )} */}
+                    <ImageList
+                      sx={{
+                        width: 500,
+                        height: 450,
+                        // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
+                        transform: 'translateZ(0)',
+                        my: 1,
+                        p: 4,
+                      }}
+                      rowHeight={200}
+                      gap={1}
+                    >
+                      {selectedImages.map((item, index) => {
+                        const cols = item.featured ? 2 : 1;
+                        const rows = item.featured ? 2 : 1;
+
+                        return (
+                          <ImageListItem key={item} cols={cols} rows={rows}>
+                            <img
+                              className={classes.img}
+                              src={item}
+                              key={item}
+                            ></img>
+                            <ImageListItemBar
+                              sx={{
+                                background:
+                                  'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+                                  'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                              }}
+                              // title={"Prueba"}
+                              position='top'
+                              actionIcon={
+                                <IconButton
+                                  sx={{color: 'white'}}
+                                  aria-label={`star prueba`}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              }
+                              actionPosition='left'
+                            />
+                          </ImageListItem>
+                        );
+                      })}
+                    </ImageList>
+                    <Grid item xs={12} md={12}>
+                      <FormGroup
+                        sx={{
+                          ml: 2,
+                        }}
+                      >
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={publish}
+                              onChange={handlePublicChange}
+                            />
+                          }
+                          label='Mantener Público en Ecommerce'
+                        />
+                      </FormGroup>
+                    </Grid>
+                  </>
+                ) : (
+                  <></>
+                )}
               </Grid>
+              
               {typeProduct != 'rawMaterial' ? (
                 <Box sx={{textAlign: 'center'}}>
                   <Button

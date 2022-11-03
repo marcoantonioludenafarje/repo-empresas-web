@@ -56,7 +56,7 @@ export const onGetGlobalParameter = (payload) => {
 export const createPresigned = (payload, file) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    const {key} = payload?.request?.payload;
+    const key = payload?.request?.payload.name;
     API.post('tunexo', '/utility/getPresignedUrl', {body: payload})
       .then(async (data) => {
         console.log('createPresigned resultado', data);
@@ -123,6 +123,7 @@ export const uploadFileByPresign = (url, file) => {
     })
       .then((response) => response.json())
       .then((json) => {
+        console.log("Cuál es el json de uploadFileByPresign", json)
         dispatch({type: FETCH_SUCCESS});
       })
       .catch((err) => {
