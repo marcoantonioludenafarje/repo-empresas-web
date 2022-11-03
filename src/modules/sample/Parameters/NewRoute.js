@@ -376,10 +376,10 @@ const Distribution = () => {
       },
     };
     console.log('finalPayload', finalPayload);
-    // dispatch({type: FETCH_SUCCESS, payload: undefined});
-    // dispatch({type: FETCH_ERROR, payload: undefined});
-    // dispatch({type: UPDATE_ALL_BUSINESS_PARAMETER, payload: undefined});
-    // updateParameters(finalPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: UPDATE_ALL_BUSINESS_PARAMETER, payload: undefined});
+    updateParameters(finalPayload);
     setOpenStatus(true);
     setSubmitting(false);
   };
