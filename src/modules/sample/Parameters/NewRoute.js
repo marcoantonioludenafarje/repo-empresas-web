@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {
   Card,
   Box,
@@ -86,8 +86,8 @@ const Distribution = () => {
   const emptyCategory = {
     active: true,
     default: false,
-    description: "",
-    productCategoryId: ""
+    description: '',
+    productCategoryId: '',
   };
   const dispatch = useDispatch();
   const [routes, setRoutes] = React.useState([]);
@@ -100,10 +100,8 @@ const Distribution = () => {
   const [defaultMoney, setDefaultMoney] = React.useState('PEN');
   const [defaultWeight, setDefaultWeight] = React.useState('KG');
   const [defaultIgvActivation, setDefaultIgvActivation] = React.useState(0);
-  const [defaultPriceRange, setDefaultPriceRange] = React.useState([
-    0, 1000,
-  ]);
-  const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
+  const [defaultPriceRange, setDefaultPriceRange] = React.useState([0, 1000]);
+  const [sectionEcommerce, setSectionEcommerce] = React.useState(true);
   const {listProducts} = useSelector(({products}) => products);
   console.log('products', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -374,7 +372,7 @@ const Distribution = () => {
     }
     let finalCategories = categories;
 
-    if(finalCategories.length >= 1){
+    if (finalCategories.length >= 1) {
       finalCategories[0].default = true;
     }
     const finalPayload = {
@@ -488,9 +486,7 @@ const Distribution = () => {
       console.log('No Fue exitoso?');
       return (
         <>
-          <CancelOutlinedIcon
-            sx={{fontSize: '6em', mx: 2, color: red[500]}}
-          />
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
           <DialogContentText
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
@@ -663,7 +659,6 @@ const Distribution = () => {
                 ) : (
                   <></>
                 )}
-                
               </Form>
             );
           }}
@@ -747,7 +742,7 @@ const Distribution = () => {
       ) : (
         <></>
       )}
-      
+
       <Box
         sx={{
           flex: 1,
@@ -776,10 +771,10 @@ const Distribution = () => {
               console.log('categories', categories);
               let newCategories = categories;
               let newEmptyCategory = emptyCategory;
-              newEmptyCategory.productCategoryId = uuidv4()
-              newEmptyCategory.description = ""
-              if(newCategories.length == 0){
-                newEmptyCategory.default = true
+              newEmptyCategory.productCategoryId = uuidv4();
+              newEmptyCategory.description = '';
+              if (newCategories.length == 0) {
+                newEmptyCategory.default = true;
               }
               newCategories.push(newEmptyCategory);
               setCategories(newCategories);
@@ -815,36 +810,38 @@ const Distribution = () => {
       >
         {categories &&
           categories.map((category, index) => (
-            
-              <Card sx={{p: 2}}>
-                <Box sx={{
+            <Card key={index} sx={{p: 2}}>
+              <Box
+                sx={{
                   display: 'flex',
                   alignItems: 'center',
-                }}>
-                  <CategoryCard
+                }}
+              >
+                <CategoryCard
                   key={index}
                   order={index}
                   execFunctions={execAll}
                   newValuesData={setCategoryIndex}
                   initialValues={category}
-                  />
-                  
-                  <IconButton
+                />
+
+                <IconButton
                   onClick={() => {
                     console.log('categories', categories);
                     let newCategories = categories;
-                    newCategories = newCategories.filter((item) => item.productCategoryId !== category.productCategoryId);
+                    newCategories = newCategories.filter(
+                      (item) =>
+                        item.productCategoryId !== category.productCategoryId,
+                    );
                     setCategories(newCategories);
                     reloadPage();
                   }}
                   aria-label='delete'
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-                
-              </Card>
-            
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            </Card>
           ))}
       </Box>
 

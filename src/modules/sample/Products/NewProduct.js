@@ -13,7 +13,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
-  GET_PRESIGNED
+  GET_PRESIGNED,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -372,17 +372,17 @@ const NewProduct = (props) => {
   }, []);
 
   useEffect(() => {
-    if(presigned){
-      console.log("useEffect presigned", presigned)
+    if (presigned) {
+      console.log('useEffect presigned', presigned);
       let actualSelectedJsonImages = selectedJsonImages;
       const newJsonImages = {
         keyMaster: presigned.keymaster,
-        nameFile: imagePayload.request.payload.name || presigned.name
+        nameFile: imagePayload.request.payload.name || presigned.name,
       };
-      console.log("newJsonImages", newJsonImages)
-      actualSelectedJsonImages.push(newJsonImages)
-      console.log("actualSelectedJsonImages", actualSelectedJsonImages)
-      setSelectedJsonImages(actualSelectedJsonImages)
+      console.log('newJsonImages', newJsonImages);
+      actualSelectedJsonImages.push(newJsonImages);
+      console.log('actualSelectedJsonImages', actualSelectedJsonImages);
+      setSelectedJsonImages(actualSelectedJsonImages);
     }
   }, [presigned]);
   useEffect(() => {
@@ -435,9 +435,7 @@ const NewProduct = (props) => {
 
   useEffect(() => {
     if (categories !== undefined && categories.length >= 1) {
-      let defaultCategory = categories.find(
-        (obj) => obj.default == true,
-      );
+      let defaultCategory = categories.find((obj) => obj.default == true);
       console.log('defaultCategory', defaultCategory);
       setSelectedCategory(defaultCategory);
       console.log('selectedCategory', selectedCategory);
@@ -505,7 +503,7 @@ const NewProduct = (props) => {
       console.log('Cuál es el imagePayload', imagePayload);
       toCreatePresigned(imagePayload, {
         image: file,
-        type: file?.type || null
+        type: file?.type || null,
       });
     } else {
       event = null;
@@ -519,8 +517,8 @@ const NewProduct = (props) => {
       // setSelectedImages((prevImages)=>prevImages.concat(fileArray))
 
       setSelectedImages((prevImages) => prevImages.concat(fileArray));
-      console.log("Esto es selectedImages", selectedImages)
-      
+      console.log('Esto es selectedImages', selectedImages);
+
       Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
     }
   };
@@ -593,7 +591,7 @@ const NewProduct = (props) => {
         console.log(cleanProducts);
         console.log('Esta es la imagen seleccionada', selectedFile);
         console.log('Cuál es el selectedJsonImages', selectedJsonImages);
-        
+
         dispatch({
           type: GET_PRESIGNED,
           payload: undefined,
@@ -674,9 +672,9 @@ const NewProduct = (props) => {
         </>
       );
     } else if (
-      (successMessage != undefined &&
-        addProductResponse &&
-        'error' in addProductResponse)
+      successMessage != undefined &&
+      addProductResponse &&
+      'error' in addProductResponse
     ) {
       return (
         <>
@@ -1162,7 +1160,7 @@ const NewProduct = (props) => {
                 </ImageList>
                 {sectionEcommerce === true ? (
                   <>
-                <Grid item xs={12} md={12}>
+                    <Grid item xs={12} md={12}>
                       <FormGroup
                         sx={{
                           ml: 2,

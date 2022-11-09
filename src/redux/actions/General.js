@@ -123,7 +123,7 @@ export const uploadFileByPresign = (url, file) => {
     })
       .then((response) => response.json())
       .then((json) => {
-        console.log("Cuál es el json de uploadFileByPresign", json)
+        console.log('Cuál es el json de uploadFileByPresign', json);
         dispatch({type: FETCH_SUCCESS});
       })
       .catch((err) => {

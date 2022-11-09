@@ -4,6 +4,8 @@ import {Formik} from 'formik';
 import * as yup from 'yup';
 import UpgradeBusinessForm from './UpgradeBusinessForm';
 import {blue, green, red} from '@mui/material/colors';
+
+import Router, {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {
   Box,
@@ -72,11 +74,17 @@ const UpgradeBusiness = () => {
   const [docType, setDocType] = React.useState(
     userAttributes['custom:businessDocumentType'],
   );
+  const [reload, setReload] = React.useState(false);
+  const [filters, setFilters] = React.useState([]);
+  const [initialCategories, setInitialCategories] = React.useState([]);
 
+  const [execAll, setExecAll] = React.useState(false);
   const toUpgradeToNewPlan = (payload) => {
     dispatch(upgradeToNewPlan(payload));
   };
-
+  const reloadPage = () => {
+    setReload(!reload);
+  };
   const getDocumentType = (value) => {
     console.log('tipo desde index', value);
     setDocType(value);
@@ -99,14 +107,13 @@ const UpgradeBusiness = () => {
     serieDocumenteReferralGuide: '',
     serieBackDocumenteReferralGuide: '',
     eMerchantSlugName: '',
-    defaultMaxPrice:1000,
-    defaultMinPrice:0,
+    defaultMaxPrice: 1000,
+    defaultMinPrice: 0,
   };
   const registerSuccess = () => {
     return (
-      successMessage != undefined &&
-      upgradeToNewPlanRes != undefined &&
-      !('error' in upgradeToNewPlanRes)
+      successMessage != undefined && upgradeToNewPlanRes != undefined
+      // && !('error' in upgradeToNewPlanRes)
     );
   };
 
@@ -120,6 +127,7 @@ const UpgradeBusiness = () => {
   const sendStatus = () => {
     if (registerSuccess()) {
       setOpenStatus(false);
+      Router.push('/sample/home');
     } else if (registerError()) {
       setOpenStatus(false);
     } else {
@@ -175,6 +183,17 @@ const UpgradeBusiness = () => {
       return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
     }
   };
+  const updateCategories = (newCategories) => {
+    console.log('initialCategories', initialCategories);
+    setInitialCategories(newCategories);
+    reloadPage();
+  };
+
+  const updateFilters = (newFilters) => {
+    console.log('filters', filters);
+    setFilters(newFilters);
+    reloadPage();
+  };
   return (
     <Box
       sx={{
@@ -194,51 +213,60 @@ const UpgradeBusiness = () => {
           dispatch({type: FETCH_SUCCESS, payload: undefined});
           dispatch({type: FETCH_ERROR, payload: undefined});
           dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
-          // toUpgradeToNewPlan({
-          //   request: {
-          //     payload: {
-          //       merchantId: userDataRes.merchantSelected.merchantId,
-          //       planDesiredId: userDataRes.merchantSelected.planDesiredId,
-          //       promotionCodeId: userDataRes.merchantSelected.promotionCodeId,
-          //       serieDocumenteBilling: data.serieDocumenteBilling || "",
-          //       serieBackDocumenteBilling: data.serieBackDocumenteBilling || "",
-          //       serieDocumenteReceipt: data.serieDocumenteReceipt || "",
-          //       serieBackDocumenteReceipt: data.serieBackDocumenteReceipt || "",
-          //       serieDocumenteReferralGuide: data.serieDocumenteReferralGuide || "",
-          //       serieBackDocumenteReferralGuide: data.serieBackDocumenteReferralGuide || "",
-          //       eMerchantSlugName: data.eMerchantSlugName || "",
-          //       merchantMasterId: userDataRes.merchantMasterId,
-          //       firstPlanDefault: userDataRes.merchantSelected.firstPlanDefault,
-          //       typeMerchant: userDataRes.merchantSelected.typeMerchant,
-          //       category: selectedCategory,
-          //       tags: selectedFilters,
 
-          //     },
-          //   },
-          // });
-          console.log("Esto se envia", {
+          setExecAll(true);
+          setExecAll(false);
+          toUpgradeToNewPlan({
             request: {
               payload: {
                 merchantId: userDataRes.merchantSelected.merchantId,
                 planDesiredId: userDataRes.merchantSelected.planDesiredId,
                 promotionCodeId: userDataRes.merchantSelected.promotionCodeId,
-                serieDocumenteBilling: data.serieDocumenteBilling || "",
-                serieBackDocumenteBilling: data.serieBackDocumenteBilling || "",
-                serieDocumenteReceipt: data.serieDocumenteReceipt || "",
-                serieBackDocumenteReceipt: data.serieBackDocumenteReceipt || "",
-                serieDocumenteReferralGuide: data.serieDocumenteReferralGuide || "",
-                serieBackDocumenteReferralGuide: data.serieBackDocumenteReferralGuide || "",
-                eMerchantSlugName: data.eMerchantSlugName || "",
+                serieDocumenteBilling: data.serieDocumenteBilling || '',
+                serieBackDocumenteBilling: data.serieBackDocumenteBilling || '',
+                serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                serieBackDocumenteReceipt: data.serieBackDocumenteReceipt || '',
+                serieDocumenteReferralGuide:
+                  data.serieDocumenteReferralGuide || '',
+                serieBackDocumenteReferralGuide:
+                  data.serieBackDocumenteReferralGuide || '',
+                eMerchantSlugName: data.eMerchantSlugName || '',
                 merchantMasterId: userDataRes.merchantMasterId,
                 firstPlanDefault: userDataRes.merchantSelected.firstPlanDefault,
                 typeMerchant: userDataRes.merchantSelected.typeMerchant,
-                category: data.selectedCategory,
-                tags: data.selectedFilters,
-                price: [data.defaultMinPrice,data.defaultMaxPrice]
-
+                categories: initialCategories,
+                filters: filters,
+                price: [data.defaultMinPrice, data.defaultMaxPrice],
               },
             },
-          })
+          });
+          console.log('Esto se envia', {
+            request: {
+              payload: {
+                merchantId: userDataRes.merchantSelected.merchantId,
+                planDesiredId: userDataRes.merchantSelected.planDesiredId,
+                promotionCodeId: userDataRes.merchantSelected.promotionCodeId,
+                serieDocumenteBilling: data.serieDocumenteBilling || '',
+                serieBackDocumenteBilling: data.serieBackDocumenteBilling || '',
+                serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                serieBackDocumenteReceipt: data.serieBackDocumenteReceipt || '',
+                serieDocumenteReferralGuide:
+                  data.serieDocumenteReferralGuide || '',
+                serieBackDocumenteReferralGuide:
+                  data.serieBackDocumenteReferralGuide || '',
+                eMerchantSlugName: data.eMerchantSlugName || '',
+                merchantMasterId: userDataRes.merchantMasterId,
+                firstPlanDefault: userDataRes.merchantSelected.firstPlanDefault,
+                typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                categories: initialCategories,
+                filters: filters,
+                price: [
+                  Number(data.defaultMinPrice),
+                  Number(data.defaultMaxPrice),
+                ],
+              },
+            },
+          });
           setOpenStatus(true);
           setSubmitting(false);
         }}
@@ -249,6 +277,9 @@ const UpgradeBusiness = () => {
               values={values}
               setFieldValue={setFieldValue}
               moveData={getDocumentType}
+              updateCategories={updateCategories}
+              updateFilters={updateFilters}
+              execAll={execAll}
             />
           );
         }}

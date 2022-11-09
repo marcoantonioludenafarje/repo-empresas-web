@@ -198,7 +198,7 @@ const Account = () => {
             {tabs.map((tab, index) => {
               if (tab.permission.includes(typeUser)) {
                 return (userDataRes &&
-                  (!userDataRes.merchantSelected.firstPlanDefault) &&
+                  !userDataRes.merchantSelected.firstPlanDefault &&
                   tab.id == 7) ||
                   (tab.id === 2 &&
                     userDataRes &&

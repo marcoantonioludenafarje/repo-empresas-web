@@ -34,9 +34,12 @@ import {
   ImageList,
   FormGroup,
   FormControlLabel,
-  Switch
+  Switch,
+  ImageListItem,
+  ImageListItemBar,
 } from '@mui/material';
 
+import DeleteIcon from '@mui/icons-material/Delete';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -189,7 +192,7 @@ const UpdateProduct = (props) => {
   const [selectedCategory, setSelectedCategory] = React.useState(
     query.categoryId,
   );
-  
+
   const [typeProduct, setTypeProduct] = React.useState(query.typeProduct);
   const [openSelect, setOpenSelect] = React.useState(false);
   const prevSelectedCategoryRef = useRef();
@@ -482,7 +485,7 @@ const UpdateProduct = (props) => {
       console.log('Cuál es el imagePayload', imagePayload);
       toCreatePresigned(imagePayload, {
         image: file,
-        type: file?.type || null
+        type: file?.type || null,
       });
     } else {
       event = null;
@@ -765,8 +768,7 @@ const UpdateProduct = (props) => {
                       label='Categoría'
                       onChange={handleFieldCategory}
                     >
-                      {categories &&
-                      typeof categories !== 'string' ? (
+                      {categories && typeof categories !== 'string' ? (
                         categories.map((obj, index) => {
                           return (
                             <MenuItem
@@ -1079,7 +1081,7 @@ const UpdateProduct = (props) => {
                   <></>
                 )}
               </Grid>
-              
+
               {typeProduct != 'rawMaterial' ? (
                 <Box sx={{textAlign: 'center'}}>
                   <Button

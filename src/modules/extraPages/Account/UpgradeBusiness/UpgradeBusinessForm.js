@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import {
   alpha,
   Box,
@@ -10,7 +10,7 @@ import {
   Stack,
   Divider,
   IconButton,
-  Card
+  Card,
 } from '@mui/material';
 import {blue, green, red} from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
@@ -70,18 +70,21 @@ const AvatarViewWrapper = styled('div')(({theme}) => {
   };
 });
 
-
-const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
+const UpgradeBusinessForm = ({
+  values,
+  setFieldValue,
+  moveData,
+  updateCategories,
+  updateFilters,
+  execAll,
+}) => {
   console.log('valores', values);
   const dispatch = useDispatch();
   const [typeDocument, setTypeDocument] = React.useState(values.documentType);
-  const [defaultPriceRange, setDefaultPriceRange] = React.useState([
-    0, 1000,
-  ]);
+  const [defaultPriceRange, setDefaultPriceRange] = React.useState([0, 1000]);
   const [filters, setFilters] = React.useState([]);
   const [initialCategories, setInitialCategories] = React.useState([]);
   const [reload, setReload] = React.useState(false);
-  const [execAll, setExecAll] = React.useState(false);
 
   const {getBusinessPlanRes} = useSelector(({general}) => general);
   console.log('getBusinessPlanRes', getBusinessPlanRes);
@@ -105,8 +108,8 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
   const emptyCategory = {
     active: true,
     default: false,
-    description: "",
-    productCategoryId: ""
+    description: '',
+    productCategoryId: '',
   };
   useEffect(() => {
     if (!getBusinessPlanRes) {
@@ -127,6 +130,12 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
     }
   }, []);
   useEffect(() => {
+    updateCategories(initialCategories);
+  }, [initialCategories]);
+  useEffect(() => {
+    updateFilters(filters);
+  }, [filters]);
+  useEffect(() => {
     if (businessParameter !== undefined && businessParameter.length >= 1) {
       let ecommerceProductParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'ECOMMERCE_PRODUCT_PARAMETERS',
@@ -134,7 +143,10 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
       let initialCategoriesProductParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'DEFAULT_CATEGORIES_PRODUCTS',
       ).value;
-      console.log('initialCategoriesProductParameter', initialCategoriesProductParameter);
+      console.log(
+        'initialCategoriesProductParameter',
+        initialCategoriesProductParameter,
+      );
       console.log(
         'ecommerceTagsProductParameter',
         ecommerceProductParameter.tags,
@@ -205,12 +217,14 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
     //   setTotalAmountWithConcepts(event.target.value);
     // }
   };
-  return (getBusinessPlanRes || userDataRes.merchantSelected.firstPlanDefault) ? (
+  return getBusinessPlanRes || userDataRes.merchantSelected.firstPlanDefault ? (
     <>
-      <Form noValidate autoComplete='off'
-      id='principal-form'
-      style={{textAlign: 'left', justifyContent: 'center'}}
-      onChange={handleChange}
+      <Form
+        noValidate
+        autoComplete='off'
+        id='principal-form'
+        style={{textAlign: 'left', justifyContent: 'center'}}
+        onChange={handleChange}
       >
         <Typography
           component='h3'
@@ -249,10 +263,12 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
                 />
               </Grid>
               <Grid item xs={12} md={12}>
-                <Box sx={{
+                <Box
+                  sx={{
                     display: 'flex',
                     alignItems: 'center',
-                  }} >
+                  }}
+                >
                   <Typography
                     component='h3'
                     sx={{
@@ -261,7 +277,7 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
                   >
                     Rango de Precio de Productos:
                   </Typography>
-                  <Grid item xs={4} md={4} sx={{mr:2}}>
+                  <Grid item xs={4} md={4} sx={{mr: 2}}>
                     <AppTextField
                       name='defaultMinPrice'
                       value={defaultPriceRange[0]}
@@ -269,7 +285,7 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
                       label={'Mínimo'}
                     />
                   </Grid>
-                  <Grid item xs={4} md={4} >
+                  <Grid item xs={4} md={4}>
                     <AppTextField
                       name='defaultMaxPrice'
                       variant='outlined'
@@ -282,214 +298,229 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
               </Grid>
               {businessParameter ? (
                 <>
-                {/* */}
-              <Grid item xs={12} md={12}>
-              <Box
-                sx={{
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  mb: 5,
-                  mx: 'auto',
-                }}
-              > 
-              <Box
-                sx={{
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  mb: 5,
-                }}
-              >
-                <Stack
-                  direction='row'
-                  divider={<Divider orientation='vertical' flexItem />}
-                  spacing={2}
-                >
-                  <Typography
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: 20,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <IntlMessages id='common.productTags' />
-                  </Typography>
-                  <IconButton
-                    onClick={() => {
-                      console.log('filters', filters);
-                      let newFilters = filters;
-                      newFilters.push(emptyFilter);
-                      setFilters(newFilters);
-                      reloadPage();
-                    }}
-                    aria-label='delete'
-                    size='large'
-                  >
-                    <AddIcon fontSize='inherit' />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      console.log('filters', filters);
-                      let newFilters = filters;
-                      newFilters.pop();
-                      setFilters(newFilters);
-                      reloadPage();
-                    }}
-                    aria-label='delete'
-                    size='large'
-                  >
-                    <RemoveIcon fontSize='inherit' />
-                  </IconButton>
-                </Stack>
-              </Box>
-            
-              <Box
-                sx={{
-                  m: 'auto',
-                  mb: 5,
-                  border: '1px solid grey',
-                  borderRadius: '10px',
-                  width: '100%',
-                }}
-              >
-                {filters &&
-                  filters.map((filter, index) => (
-                    <DeliveryCard
-                      // key={`count${index}`}
-                      key={index}
-                      order={index}
-                      execFunctions={execAll}
-                      newValuesData={setFilterIndex}
-                      initialValues={filter}
-                    />
-                  ))}
-              </Box>
-              <Box
-                sx={{
-                  flex: 1,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  mb: 5,
-                }}
-              >
-                <Stack
-                  direction='row'
-                  divider={<Divider orientation='vertical' flexItem />}
-                  spacing={2}
-                >
-                  <Typography
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: 20,
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <IntlMessages id='common.productCategories' />
-                  </Typography>
-                  <IconButton
-                    onClick={() => {
-                      console.log('initialCategories', initialCategories);
-                      let newCategories = initialCategories;
-                      let newEmptyCategory = {
-                        active: true,
-                        default: false,
-                        description: "",
-                        productCategoryId:  uuidv4()
-                      };
-                      if(newCategories.length < 1){
-                        console.log("newCategories.length", newCategories.length)
-                        newEmptyCategory.default = true
-                      } else {
-                        console.log("newCategories.length", newCategories.length)
-
-                        newEmptyCategory.default = false
-
-                      }
-                      console.log('newEmptyCategory', newEmptyCategory  );
-                      newCategories.push(newEmptyCategory);
-                      setInitialCategories(newCategories);
-                      
-                      console.log('initialCategories2', newCategories);
-                      reloadPage();
-                    }}
-                    aria-label='delete'
-                    size='large'
-                  >
-                    <AddIcon fontSize='inherit' />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      console.log('initialCategories', initialCategories);
-                      let newCategories = initialCategories;
-                      newCategories.pop();
-                      setInitialCategories(newCategories);
-                      reloadPage();
-                    }}
-                    aria-label='delete'
-                    size='large'
-                  >
-                    <RemoveIcon fontSize='inherit' />
-                  </IconButton>
-                </Stack>
-              </Box>
-              <Box
-                sx={{
-                  m: 'auto',
-                  border: '1px solid grey',
-                  borderRadius: '10px',
-                  width: '100%',
-                }}
-              >
-                {initialCategories &&
-                  initialCategories.map((category, index) => (
-                    
-                      <Card sx={{p: 2}}>
-                        <Box sx={{
+                  {/* */}
+                  <Grid item xs={12} md={12}>
+                    <Box
+                      sx={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        mb: 5,
+                        mx: 'auto',
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          flex: 1,
                           display: 'flex',
-                          alignItems: 'center',
-                        }}>
-                          <CategoryCard
-                          key={index}
-                          order={index}
-                          execFunctions={execAll}
-                          newValuesData={setCategoryIndex}
-                          initialValues={category}
-                          />
-                          
-                          <IconButton
-                          onClick={() => {
-                            console.log('initialCategories', initialCategories);
-                            let newCategories = initialCategories;
-                            newCategories = newCategories.filter((item) => item.productCategoryId !== category.productCategoryId);
-                            setInitialCategories(newCategories);
-                            reloadPage();
-                          }}
-                          aria-label='delete'
+                          flexDirection: 'column',
+                          mb: 5,
+                        }}
+                      >
+                        <Stack
+                          direction='row'
+                          divider={<Divider orientation='vertical' flexItem />}
+                          spacing={2}
+                        >
+                          <Typography
+                            sx={{
+                              fontWeight: 600,
+                              fontSize: 20,
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
                           >
-                            <DeleteIcon />
+                            <IntlMessages id='common.productTags' />
+                          </Typography>
+                          <IconButton
+                            onClick={() => {
+                              console.log('filters', filters);
+                              let newFilters = filters;
+                              newFilters.push(emptyFilter);
+                              setFilters(newFilters);
+                              reloadPage();
+                              updateFilters(filters);
+                            }}
+                            aria-label='delete'
+                            size='large'
+                          >
+                            <AddIcon fontSize='inherit' />
                           </IconButton>
-                        </Box>
-                        
-                      </Card>
-                    
-                  ))}
-              </Box>
-              </Box>
-              </Grid>
-                  
+                          <IconButton
+                            onClick={() => {
+                              console.log('filters', filters);
+                              let newFilters = filters;
+                              newFilters.pop();
+                              setFilters(newFilters);
+                              reloadPage();
+                              updateFilters(filters);
+                            }}
+                            aria-label='delete'
+                            size='large'
+                          >
+                            <RemoveIcon fontSize='inherit' />
+                          </IconButton>
+                        </Stack>
+                      </Box>
+
+                      <Box
+                        sx={{
+                          m: 'auto',
+                          mb: 5,
+                          border: '1px solid grey',
+                          borderRadius: '10px',
+                          width: '100%',
+                        }}
+                      >
+                        {filters &&
+                          filters.map((filter, index) => (
+                            <DeliveryCard
+                              // key={`count${index}`}
+                              key={index}
+                              order={index}
+                              execFunctions={execAll}
+                              newValuesData={setFilterIndex}
+                              initialValues={filter}
+                            />
+                          ))}
+                      </Box>
+                      <Box
+                        sx={{
+                          flex: 1,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          mb: 5,
+                        }}
+                      >
+                        <Stack
+                          direction='row'
+                          divider={<Divider orientation='vertical' flexItem />}
+                          spacing={2}
+                        >
+                          <Typography
+                            sx={{
+                              fontWeight: 600,
+                              fontSize: 20,
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <IntlMessages id='common.productCategories' />
+                          </Typography>
+                          <IconButton
+                            onClick={() => {
+                              console.log(
+                                'initialCategories',
+                                initialCategories,
+                              );
+                              let newCategories = initialCategories;
+                              let newEmptyCategory = {
+                                active: true,
+                                default: false,
+                                description: '',
+                                productCategoryId: uuidv4(),
+                              };
+                              if (newCategories.length < 1) {
+                                console.log(
+                                  'newCategories.length',
+                                  newCategories.length,
+                                );
+                                newEmptyCategory.default = true;
+                              } else {
+                                console.log(
+                                  'newCategories.length',
+                                  newCategories.length,
+                                );
+
+                                newEmptyCategory.default = false;
+                              }
+                              console.log('newEmptyCategory', newEmptyCategory);
+                              newCategories.push(newEmptyCategory);
+                              setInitialCategories(newCategories);
+
+                              console.log('initialCategories2', newCategories);
+                              reloadPage();
+                            }}
+                            aria-label='delete'
+                            size='large'
+                          >
+                            <AddIcon fontSize='inherit' />
+                          </IconButton>
+                          <IconButton
+                            onClick={() => {
+                              console.log(
+                                'initialCategories',
+                                initialCategories,
+                              );
+                              let newCategories = initialCategories;
+                              newCategories.pop();
+                              setInitialCategories(newCategories);
+                              reloadPage();
+                            }}
+                            aria-label='delete'
+                            size='large'
+                          >
+                            <RemoveIcon fontSize='inherit' />
+                          </IconButton>
+                        </Stack>
+                      </Box>
+                      <Box
+                        sx={{
+                          m: 'auto',
+                          border: '1px solid grey',
+                          borderRadius: '10px',
+                          width: '100%',
+                        }}
+                      >
+                        {initialCategories &&
+                          initialCategories.map((category, index) => (
+                            <Card key={index} sx={{p: 2}}>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <CategoryCard
+                                  key={index}
+                                  order={index}
+                                  execFunctions={execAll}
+                                  newValuesData={setCategoryIndex}
+                                  initialValues={category}
+                                />
+
+                                <IconButton
+                                  onClick={() => {
+                                    console.log(
+                                      'initialCategories',
+                                      initialCategories,
+                                    );
+                                    let newCategories = initialCategories;
+                                    newCategories = newCategories.filter(
+                                      (item) =>
+                                        item.productCategoryId !==
+                                        category.productCategoryId,
+                                    );
+                                    setInitialCategories(newCategories);
+                                    reloadPage();
+                                  }}
+                                  aria-label='delete'
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Box>
+                            </Card>
+                          ))}
+                      </Box>
+                    </Box>
+                  </Grid>
                 </>
               ) : (
-                <>
-                </>
+                <></>
               )}
-              
             </>
           ) : (
-            <>
-            </>
+            <></>
           )}
           {getBusinessPlanRes ? (
             <>
@@ -513,15 +544,15 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
               </Grid>
             </>
           ) : (
-            <>
-            </>
+            <></>
           )}
-          
+
           {getBusinessPlanRes &&
-          getBusinessPlanRes[0].modules
-            .find((module) => module?.moduleName === 'Ecommerce') ? (
+          getBusinessPlanRes[0].modules.find(
+            (module) => module?.moduleName === 'Ecommerce',
+          ) ? (
             <>
-            <Grid item xs={6} md={6}>
+              <Grid item xs={6} md={6}>
                 <Typography
                   component='h3'
                   sx={{
@@ -540,9 +571,7 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
               </Grid>
             </>
           ) : (
-            <>
-              
-            </>
+            <></>
           )}
           {getBusinessPlanRes &&
           getBusinessPlanRes[0].modules
@@ -551,7 +580,7 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
               (subModule) => subModule?.submoduleId === 'BILLS',
             ) ? (
             <>
-            <Grid item xs={6} md={6}>
+              <Grid item xs={6} md={6}>
                 <Typography
                   component='h3'
                   sx={{
@@ -575,11 +604,9 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
                   label={<IntlMessages id='common.serieBackDocument' />}
                 />
               </Grid>
-              </>
-          ) : (
-            <>
-              
             </>
+          ) : (
+            <></>
           )}
           {getBusinessPlanRes &&
           getBusinessPlanRes[0].modules
@@ -588,7 +615,7 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
               (subModule) => subModule?.submoduleId === 'RECEIPTS',
             ) ? (
             <>
-            <Grid item xs={6} md={6}>
+              <Grid item xs={6} md={6}>
                 <Typography
                   component='h3'
                   sx={{
@@ -612,11 +639,9 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
                   label={<IntlMessages id='common.serieBackDocument' />}
                 />
               </Grid>
-              </>
-          ) : (
-            <>
-              
             </>
+          ) : (
+            <></>
           )}
 
           {getBusinessPlanRes &&
@@ -626,7 +651,7 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
               (subModule) => subModule?.submoduleId === 'REFERRAL GUIDES',
             ) ? (
             <>
-            <Grid item xs={6} md={6}>
+              <Grid item xs={6} md={6}>
                 <Typography
                   component='h3'
                   sx={{
@@ -650,13 +675,24 @@ const UpgradeBusinessForm = ({values, setFieldValue, moveData}) => {
                   label={<IntlMessages id='common.serieBackDocument' />}
                 />
               </Grid>
-              </>
-          ) : (
-            <>
-              
             </>
+          ) : (
+            <></>
           )}
-
+          <Grid item xs={12} md={12}>
+            <Typography
+              component='h3'
+              sx={{
+                fontSize: 16,
+                fontWeight: Fonts.BOLD,
+                mb: {xs: 3, lg: 4},
+                color: 'secondary.main',
+              }}
+            >
+              Recuerda, esto será siempre editable en la sección
+              Configuración/Parámetros *
+            </Typography>
+          </Grid>
           <Grid item xs={12} md={12}>
             <Box
               sx={{
@@ -702,4 +738,7 @@ UpgradeBusinessForm.propTypes = {
   setFieldValue: PropTypes.func,
   moveData: PropTypes.func,
   values: PropTypes.object,
+  updateCategories: PropTypes.func,
+  updateFilters: PropTypes.func,
+  execAll: PropTypes.bool.isRequired,
 };

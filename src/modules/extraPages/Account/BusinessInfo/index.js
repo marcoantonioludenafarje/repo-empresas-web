@@ -40,7 +40,7 @@ const BusinessInfo = () => {
     documentNumber: userAttributes['custom:businessDocumentNum'],
     direction: userAttributes['custom:businessDirection'],
     documentType: docType /* userAttributes['custom:businessDocumentType'] */,
-    eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug
+    eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
   };
 
   const getDocumentType = (value) => {

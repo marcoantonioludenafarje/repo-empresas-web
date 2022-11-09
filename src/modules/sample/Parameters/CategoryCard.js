@@ -83,7 +83,8 @@ const CategoryCard = ({
   const [openSelectProduct, setOpenSelectProduct] = React.useState(false);
   const [makeReferralGuide, setMakeReferralGuide] = React.useState(false);
   const [readyData, setReadyData] = React.useState(false);
-  const [selectedCategory, setSelectedCategory] = React.useState('noCategories');
+  const [selectedCategory, setSelectedCategory] =
+    React.useState('noCategories');
   const counts = {};
 
   const {getCarriersRes} = useSelector(({carriers}) => carriers);
@@ -116,7 +117,7 @@ const CategoryCard = ({
       console.log('initialValues', initialValues);
 
       changeValue('observationDelivery', initialValues.description);
-      setSelectedCategory(initialValues)
+      setSelectedCategory(initialValues);
       let newProds = [];
       let internalCounter = 1;
       let productsToSet = initialValues.products
@@ -269,8 +270,8 @@ const CategoryCard = ({
   const handleChange = (event) => {
     if (event.target.name.includes('observationDelivery')) {
       let updateCategory = selectedCategory;
-      updateCategory.description = event.target.value
-      setSelectedCategory(updateCategory)
+      updateCategory.description = event.target.value;
+      setSelectedCategory(updateCategory);
     }
   };
   const showTotalWeight = (weight, count) => {
@@ -368,63 +369,63 @@ const CategoryCard = ({
   };
 
   return (
-      <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          mx: 'auto',
-        }}
+    <Box
+      sx={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        mx: 'auto',
+      }}
+    >
+      <Formik
+        validateOnChange={true}
+        validationSchema={validationSchema}
+        initialValues={{...defaultValues}}
+        onSubmit={handleData}
+        innerRef={formRef}
       >
-        <Formik
-          validateOnChange={true}
-          validationSchema={validationSchema}
-          initialValues={{...defaultValues}}
-          onSubmit={handleData}
-          innerRef={formRef}
-        >
-          {({isSubmitting, setFieldValue, values}) => {
-            changeValue = setFieldValue;
-            valuesForm = values;
-            return (
-              <Form
-                style={{textAlign: 'left', justifyContent: 'center'}}
-                noValidate
-                onChange={handleChange}
-                autoComplete='on'
-              >
-                    <AppTextField
-                      label='Nombre de la categoría'
-                      name='observationDelivery'
-                      variant='outlined'
-                      multiline
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                      }}
-                    />
-              </Form>
-            );
-          }}
-        </Formik>
-        <Dialog
-          open={openSelectProduct}
-          onClose={() => setOpenSelectProduct(false)}
-          maxWidth='lg'
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {<IntlMessages id='sidebar.ecommerce.selectProduct' />}
-          </DialogTitle>
-          <DialogContent sx={{justifyContent: 'center'}}>
-            <SelectProduct fcData={getNewProduct} search={false} />
-          </DialogContent>
-        </Dialog>
-      </Box>
+        {({isSubmitting, setFieldValue, values}) => {
+          changeValue = setFieldValue;
+          valuesForm = values;
+          return (
+            <Form
+              style={{textAlign: 'left', justifyContent: 'center'}}
+              noValidate
+              onChange={handleChange}
+              autoComplete='on'
+            >
+              <AppTextField
+                label='Nombre de la categoría'
+                name='observationDelivery'
+                variant='outlined'
+                multiline
+                sx={{
+                  width: '100%',
+                  '& .MuiInputBase-input': {
+                    fontSize: 14,
+                  },
+                }}
+              />
+            </Form>
+          );
+        }}
+      </Formik>
+      <Dialog
+        open={openSelectProduct}
+        onClose={() => setOpenSelectProduct(false)}
+        maxWidth='lg'
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {<IntlMessages id='sidebar.ecommerce.selectProduct' />}
+        </DialogTitle>
+        <DialogContent sx={{justifyContent: 'center'}}>
+          <SelectProduct fcData={getNewProduct} search={false} />
+        </DialogContent>
+      </Dialog>
+    </Box>
   );
 };
 
