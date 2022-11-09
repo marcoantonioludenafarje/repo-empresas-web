@@ -28,6 +28,7 @@ import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveIcon from '@mui/icons-material/Remove';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
@@ -86,7 +87,7 @@ const Distribution = () => {
     active: true,
     default: false,
     description: "",
-    productCategoryId: uuidv4()
+    productCategoryId: ""
   };
   const dispatch = useDispatch();
   const [routes, setRoutes] = React.useState([]);
@@ -471,40 +472,36 @@ const Distribution = () => {
       console.log('Fue exitoso?');
       return (
         <>
-          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            <CheckCircleOutlineOutlinedIcon
-              color='success'
-              sx={{fontSize: '6em', mx: 2}}
-            />
-            <DialogContentText
-              sx={{fontSize: '1.2em', m: 'auto'}}
-              id='alert-dialog-description'
-            >
-              <IntlMessages id='message.register.data.success' />
-            </DialogContentText>
-          </DialogContent>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            <IntlMessages id='message.register.data.success' />
+          </DialogContentText>
         </>
       );
     } else if (registerError()) {
       console.log('No Fue exitoso?');
       return (
         <>
-          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            <CancelOutlinedIcon
-              sx={{fontSize: '6em', mx: 2, color: red[500]}}
-            />
-            <DialogContentText
-              sx={{fontSize: '1.2em', m: 'auto'}}
-              id='alert-dialog-description'
-            >
-              <IntlMessages id='message.register.data.error' />
-              <br />
-              {updateAllBusinessParameterRes &&
-              'error' in updateAllBusinessParameterRes
-                ? updateAllBusinessParameterRes.error
-                : null}
-            </DialogContentText>
-          </DialogContent>
+          <CancelOutlinedIcon
+            sx={{fontSize: '6em', mx: 2, color: red[500]}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            <IntlMessages id='message.register.data.error' />
+            <br />
+            {updateAllBusinessParameterRes &&
+            'error' in updateAllBusinessParameterRes
+              ? updateAllBusinessParameterRes.error
+              : null}
+          </DialogContentText>
         </>
       );
     } else {
@@ -778,7 +775,13 @@ const Distribution = () => {
             onClick={() => {
               console.log('categories', categories);
               let newCategories = categories;
-              newCategories.push(emptyCategory);
+              let newEmptyCategory = emptyCategory;
+              newEmptyCategory.productCategoryId = uuidv4()
+              newEmptyCategory.description = ""
+              if(newCategories.length == 0){
+                newEmptyCategory.default = true
+              }
+              newCategories.push(newEmptyCategory);
               setCategories(newCategories);
               reloadPage();
             }}
@@ -812,13 +815,36 @@ const Distribution = () => {
       >
         {categories &&
           categories.map((category, index) => (
-            <CategoryCard
-              key={index}
-              order={index}
-              execFunctions={execAll}
-              newValuesData={setCategoryIndex}
-              initialValues={category}
-            />
+            
+              <Card sx={{p: 2}}>
+                <Box sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}>
+                  <CategoryCard
+                  key={index}
+                  order={index}
+                  execFunctions={execAll}
+                  newValuesData={setCategoryIndex}
+                  initialValues={category}
+                  />
+                  
+                  <IconButton
+                  onClick={() => {
+                    console.log('categories', categories);
+                    let newCategories = categories;
+                    newCategories = newCategories.filter((item) => item.productCategoryId !== category.productCategoryId);
+                    setCategories(newCategories);
+                    reloadPage();
+                  }}
+                  aria-label='delete'
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+                
+              </Card>
+            
           ))}
       </Box>
 
@@ -942,14 +968,16 @@ const Distribution = () => {
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
           {<IntlMessages id='message.update.configurationParameters' />}
         </DialogTitle>
-        {showMessage()}
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button variant='outlined' onClick={sendStatus}>
             Aceptar
           </Button>
         </DialogActions>
       </Dialog>
-      <AppInfoView />
+      {/* <AppInfoView /> */}
     </Card>
   );
 };

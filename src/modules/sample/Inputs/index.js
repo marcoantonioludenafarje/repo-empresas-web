@@ -756,6 +756,7 @@ const InputsTable = (props) => {
             <TableRow>
               <TableCell>Codigo</TableCell>
               <TableCell>Fecha registrada</TableCell>
+              <TableCell>Última actualización</TableCell>
               <TableCell>Tipo de movimiento</TableCell>
               <TableCell>Proveedor</TableCell>
               <TableCell>Detalle productos</TableCell>
@@ -790,6 +791,9 @@ const InputsTable = (props) => {
                         }`}</TableCell>
                         <TableCell>
                           {convertToDateWithoutTime(obj.timestampMovement)}
+                        </TableCell>
+                        <TableCell>
+                          {convertToDateWithoutTime(obj.updatedDate)}
                         </TableCell>
                         <TableCell>
                           {showSubtypeMovement(obj.movementSubType)}

@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
-import originalUbigeos from '../../../Utils/ubigeo.json';
-import {fixDecimals, isEmpty, dateWithHyphen} from '../../../Utils/utils';
+import originalUbigeos from '../../../../Utils/ubigeo.json';
+import {fixDecimals, isEmpty, dateWithHyphen} from '../../../../Utils/utils';
 import {
   Table,
   TableBody,
@@ -29,13 +29,11 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@mui/material';
-import IntlMessages from '../../../@crema/utility/IntlMessages';
-import AppPageMeta from '../../../@crema/core/AppPageMeta';
-import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import IntlMessages from '../../../../@crema/utility/IntlMessages';
+import AppPageMeta from '../../../../@crema/core/AppPageMeta';
+import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField';
 import TransformIcon from '@mui/icons-material/Transform';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddExisingProduct from '../AddExisingProduct';
-import SelectProduct from '../AddExisingProduct/SelectProduct';
 import AddIcon from '@mui/icons-material/Add';
 import {useIntl} from 'react-intl';
 
@@ -44,11 +42,10 @@ import * as yup from 'yup';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 
 import PropTypes from 'prop-types';
-import {getCarriers} from '../../../redux/actions/Carriers';
+import {getCarriers} from '../../../../redux/actions/Carriers';
 import {useDispatch, useSelector} from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
-import SelectCarrier from '../ReferralGuide/SelectCarrier';
-import {FETCH_ERROR} from '../../../shared/constants/ActionTypes';
+import {FETCH_ERROR} from '../../../../shared/constants/ActionTypes';
 import {loadingButtonClasses} from '@mui/lab';
 
 const CategoryCard = ({
@@ -113,7 +110,7 @@ const CategoryCard = ({
     setProductsList([]);
 
     if (initialValues && initialValues.empty != true) {
-      console.log('initialValues', initialValues);
+      console.log('initialValues categoryCard', initialValues);
 
       changeValue('observationDelivery', initialValues.description);
       setSelectedCategory(initialValues)
@@ -409,21 +406,6 @@ const CategoryCard = ({
             );
           }}
         </Formik>
-        <Dialog
-          open={openSelectProduct}
-          onClose={() => setOpenSelectProduct(false)}
-          maxWidth='lg'
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {<IntlMessages id='sidebar.ecommerce.selectProduct' />}
-          </DialogTitle>
-          <DialogContent sx={{justifyContent: 'center'}}>
-            <SelectProduct fcData={getNewProduct} search={false} />
-          </DialogContent>
-        </Dialog>
       </Box>
   );
 };

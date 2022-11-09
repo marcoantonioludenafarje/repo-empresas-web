@@ -136,6 +136,14 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
           />
         </Grid>
         <Grid item xs={12} md={12}>
+          <AppTextField
+            name='eMerchantSlugName'
+            disabled
+            fullWidth
+            label={<IntlMessages id='common.slug' />}
+          />
+        </Grid>
+        <Grid item xs={12} md={12}>
           <Box
             sx={{
               display: 'flex',

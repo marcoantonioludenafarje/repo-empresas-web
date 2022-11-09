@@ -364,6 +364,8 @@ const NewProduct = (props) => {
       type: GET_PRESIGNED,
       payload: undefined,
     });
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     setTimeout(() => {
       setMinTutorial(true);
     }, 2000);
@@ -674,8 +676,7 @@ const NewProduct = (props) => {
     } else if (
       (successMessage != undefined &&
         addProductResponse &&
-        'error' in addProductResponse) ||
-      errorMessage != undefined
+        'error' in addProductResponse)
     ) {
       return (
         <>
@@ -788,7 +789,7 @@ const NewProduct = (props) => {
               <Grid container spacing={2} sx={{width: 500, mx: 'auto', mb: 4}}>
                 <Grid item xs={12}>
                   <AppTextField
-                    label='Código'
+                    label='Código *'
                     name='businessProductCode'
                     variant='outlined'
                     onChange={handleFieldProduct}
@@ -803,7 +804,7 @@ const NewProduct = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                   <AppTextField
-                    label='Descripción'
+                    label='Descripción *'
                     name='description'
                     variant='outlined'
                     sx={{
@@ -817,7 +818,7 @@ const NewProduct = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                   <AppTextField
-                    label='Código aduanero'
+                    label='Código aduanero (opcional)'
                     name='customCodeProduct'
                     variant='outlined'
                     sx={{
@@ -848,7 +849,7 @@ const NewProduct = (props) => {
                 <Grid item xs={12}>
                   <FormControl fullWidth sx={{my: 2}}>
                     <InputLabel id='categoria-label' style={{fontWeight: 200}}>
-                      Categoría
+                      Categoría *
                     </InputLabel>
                     <Select
                       value={selectedCategory}
@@ -885,7 +886,7 @@ const NewProduct = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                   <AppTextField
-                    label={`Peso (${weight_unit})`}
+                    label={`Peso (${weight_unit}) *`}
                     name='weight'
                     variant='outlined'
                     sx={{
@@ -899,7 +900,7 @@ const NewProduct = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                   <AppTextField
-                    label={`Precio costo sugerido (${money_unit})`}
+                    label={`Precio costo sugerido (${money_unit}) *`}
                     name='costPriceUnit'
                     variant='outlined'
                     sx={{
@@ -916,7 +917,7 @@ const NewProduct = (props) => {
               </Typography> */}
                 <Grid item xs={12}>
                   <AppTextField
-                    label={`Precio venta sugerido (${money_unit})`}
+                    label={`Precio venta sugerido (${money_unit}) *`}
                     name='referecialPriceSell'
                     variant='outlined'
                     sx={{
@@ -930,7 +931,7 @@ const NewProduct = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                   <AppTextField
-                    label='Stock inicial'
+                    label='Stock inicial *'
                     name='initialStock'
                     variant='outlined'
                     sx={{
@@ -948,7 +949,7 @@ const NewProduct = (props) => {
                       id='typeProduct-label'
                       style={{fontWeight: 200}}
                     >
-                      Tipo de producto
+                      Tipo de producto *
                     </InputLabel>
                     <Select
                       defaultValue='rawMaterial'
@@ -977,12 +978,12 @@ const NewProduct = (props) => {
                     <Typography
                       component='h3'
                       sx={{
-                        fontSize: 12,
+                        fontSize: 16,
                         fontWeight: Fonts.BOLD,
                         ml: {xs: 3, lg: 4},
                       }}
                     >
-                      Sección ecommerce
+                      Sección ecommerce (opcional)
                     </Typography>
                     <Grid item xs={12}>
                       <AppTextField
@@ -1084,7 +1085,7 @@ const NewProduct = (props) => {
                     color='secondary'
                     component='label'
                   >
-                    Subir imagen
+                    Subir imágenes
                     <input
                       type='file'
                       hidden

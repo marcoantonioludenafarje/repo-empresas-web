@@ -29,6 +29,7 @@ const BusinessInfo = () => {
   const {user} = useAuthUser();
   console.log('datos user', user);
   const {userAttributes} = useSelector(({user}) => user);
+  const {userDataRes} = useSelector(({user}) => user);
   console.log('userAttributes', userAttributes);
   const [docType, setDocType] = React.useState(
     userAttributes['custom:businessDocumentType'],
@@ -39,6 +40,7 @@ const BusinessInfo = () => {
     documentNumber: userAttributes['custom:businessDocumentNum'],
     direction: userAttributes['custom:businessDirection'],
     documentType: docType /* userAttributes['custom:businessDocumentType'] */,
+    eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug
   };
 
   const getDocumentType = (value) => {

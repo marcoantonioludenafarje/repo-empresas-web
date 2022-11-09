@@ -198,7 +198,7 @@ const Account = () => {
             {tabs.map((tab, index) => {
               if (tab.permission.includes(typeUser)) {
                 return (userDataRes &&
-                  !userDataRes.merchantSelected.upgradeToNewPlan &&
+                  (!userDataRes.merchantSelected.firstPlanDefault) &&
                   tab.id == 7) ||
                   (tab.id === 2 &&
                     userDataRes &&
@@ -220,16 +220,13 @@ const Account = () => {
           <Box className='account-tabs-content'>
             {value === 0 && <PersonalInfo />}
             {value === 1 && <BusinessInfo />}
-            {value === 2 &&
+            {/* {value === 2 &&
               userDataRes &&
               userDataRes.merchantSelected.typeMerchant == 'PROD' && (
                 <NewUsers />
-              )}
-            {value === 7 &&
-              userDataRes &&
-              userDataRes.merchantSelected.upgradeToNewPlan && (
-                <UpgradeBusiness />
-              )}
+              )} */}
+            {value === 2 && <NewUsers />}
+            {value === 7 && <UpgradeBusiness />}
             {value === 3 && <ChangePassword />}
             {value === 4 && <Information />}
             {value === 5 && <Social social={accountData.member} />}

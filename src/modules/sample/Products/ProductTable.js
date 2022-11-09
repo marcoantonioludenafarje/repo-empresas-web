@@ -24,7 +24,13 @@ import {
   Box,
   Collapse,
 } from '@mui/material';
-
+import {
+  getYear,
+  getActualMonth,
+  translateValue,
+  fixDecimals,
+  convertToDateWithoutTime,
+} from '../../../Utils/utils';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -605,6 +611,8 @@ const ProductTable = (arrayObjs, props) => {
               <TableCell>Precio costo sugerido</TableCell>
               <TableCell>Precio venta sugerido</TableCell>
               <TableCell>Stock inicial</TableCell>
+              <TableCell>Fecha registrada</TableCell>
+              <TableCell>Última actualización</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
@@ -655,6 +663,12 @@ const ProductTable = (arrayObjs, props) => {
                         3,
                       )} ${money_unit}`}</TableCell>
                       <TableCell>{obj.initialStock}</TableCell>
+                      <TableCell>
+                        {convertToDateWithoutTime(obj.createdDate)}
+                      </TableCell>
+                      <TableCell>
+                        {convertToDateWithoutTime(obj.updatedDate)}
+                      </TableCell>
                       <TableCell>
                         <Button
                           id='basic-button'

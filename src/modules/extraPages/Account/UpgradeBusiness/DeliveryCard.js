@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
-import originalUbigeos from '../../../Utils/ubigeo.json';
-import {fixDecimals, isEmpty, dateWithHyphen} from '../../../Utils/utils';
+import originalUbigeos from '../../../../Utils/ubigeo.json';
+import {fixDecimals, isEmpty, dateWithHyphen} from '../../../../Utils/utils';
 import {
   Table,
   TableBody,
@@ -29,13 +29,11 @@ import {
   FormControlLabel,
   Checkbox,
 } from '@mui/material';
-import IntlMessages from '../../../@crema/utility/IntlMessages';
-import AppPageMeta from '../../../@crema/core/AppPageMeta';
-import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import IntlMessages from '../../../../@crema/utility/IntlMessages';
+import AppPageMeta from '../../../../@crema/core/AppPageMeta';
+import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField';
 import TransformIcon from '@mui/icons-material/Transform';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AddExisingProduct from '../AddExisingProduct';
-import SelectProduct from '../AddExisingProduct/SelectProduct';
 import AddIcon from '@mui/icons-material/Add';
 import {useIntl} from 'react-intl';
 
@@ -44,14 +42,13 @@ import * as yup from 'yup';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 
 import PropTypes from 'prop-types';
-import {getCarriers} from '../../../redux/actions/Carriers';
+import {getCarriers} from '../../../../redux/actions/Carriers';
 import {useDispatch, useSelector} from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
-import SelectCarrier from '../ReferralGuide/SelectCarrier';
-import {FETCH_ERROR} from '../../../shared/constants/ActionTypes';
+import {FETCH_ERROR} from '../../../../shared/constants/ActionTypes';
 import {loadingButtonClasses} from '@mui/lab';
 
-const CategoryCard = ({
+const DeliveryCard = ({
   order,
   newValuesData,
   execFunctions,
@@ -83,7 +80,6 @@ const CategoryCard = ({
   const [openSelectProduct, setOpenSelectProduct] = React.useState(false);
   const [makeReferralGuide, setMakeReferralGuide] = React.useState(false);
   const [readyData, setReadyData] = React.useState(false);
-  const [selectedCategory, setSelectedCategory] = React.useState('noCategories');
   const counts = {};
 
   const {getCarriersRes} = useSelector(({carriers}) => carriers);
@@ -115,21 +111,21 @@ const CategoryCard = ({
     if (initialValues && initialValues.empty != true) {
       console.log('initialValues', initialValues);
 
-      changeValue('observationDelivery', initialValues.description);
-      setSelectedCategory(initialValues)
+      changeValue(
+        'observationDelivery',
+        initialValues.featureName || initialValues.featureName,
+      );
+
       let newProds = [];
       let internalCounter = 1;
-      let productsToSet = initialValues.products
-        ? initialValues.products
-        : initialValues.productsInfo;
+      let productsToSet = initialValues.values
+        ? initialValues.values
+        : initialValues.values;
       productsToSet
         ? productsToSet.map((prod) => {
-            console.log('prod.weight', prod.weight);
-            let originalProduct = getOriginalProduct(prod.productId);
             newProds.push({
-              ...originalProduct,
-              count: prod.quantityMovement || prod.count,
-              value: prod.quantityMovement || prod.count,
+              count: prod.name,
+              value: prod.name,
               rowId: internalCounter,
             });
             internalCounter += 1;
@@ -200,13 +196,12 @@ const CategoryCard = ({
     setSubmitting(true);
     console.log('setSubmitting', setSubmitting);
     console.log('data', {...data, products: productsList});
-    // let newOption = {
-    //   filterName: data.observationDelivery,
-    //   options: productsList,
-    // };
-    let newOption = data;
+    let newOption = {
+      filterName: data.observationDelivery,
+      options: productsList,
+    };
     console.log('Nueva opción', newOption);
-    newValuesData(order, selectedCategory);
+    newValuesData(order, newOption);
     setSubmitting(false);
   };
 
@@ -267,10 +262,9 @@ const CategoryCard = ({
     changeValue('totalWeight', fixDecimals(totalWeight));
   };
   const handleChange = (event) => {
-    if (event.target.name.includes('observationDelivery')) {
-      let updateCategory = selectedCategory;
-      updateCategory.description = event.target.value
-      setSelectedCategory(updateCategory)
+    if (event.target.name.includes('count')) {
+      const rowId = event.target.name.replace('count', '');
+      setCountOfProduct(rowId, event.target.value);
     }
   };
   const showTotalWeight = (weight, count) => {
@@ -368,11 +362,13 @@ const CategoryCard = ({
   };
 
   return (
+    <Card sx={{p: 4}}>
       <Box
         sx={{
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
+          mb: 5,
           mx: 'auto',
         }}
       >
@@ -393,8 +389,10 @@ const CategoryCard = ({
                 onChange={handleChange}
                 autoComplete='on'
               >
+                <Grid container spacing={2} sx={{width: 'auto'}}>
+                  <Grid item xs={12}>
                     <AppTextField
-                      label='Nombre de la categoría'
+                      label='Nombre del Filtro'
                       name='observationDelivery'
                       variant='outlined'
                       multiline
@@ -403,34 +401,102 @@ const CategoryCard = ({
                         '& .MuiInputBase-input': {
                           fontSize: 14,
                         },
+                        my: 2,
                       }}
                     />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography sx={{m: 2}}>
+                      <IntlMessages id='common.options' />
+                    </Typography>
+                  </Grid>
+
+                  <TableContainer component={Paper} sx={{maxHeight: 440}}>
+                    <Table stickyHeader size='small' aria-label='simple table'>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align='center'>
+                            <IntlMessages id='common.option' />
+                          </TableCell>
+                          <TableCell align='center'>
+                            <IntlMessages id='mailApp.remove' />
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                        {productsList
+                          ? productsList.map((obj, index) => {
+                              if (obj && obj.invalidate !== true) {
+                                return (
+                                  <TableRow
+                                    sx={{
+                                      '&:last-child td, &:last-child th': {
+                                        border: 0,
+                                      },
+                                    }}
+                                    key={index}
+                                  >
+                                    <TableCell>
+                                      <AppTextField
+                                        label='Nombre de opción'
+                                        name={`count${obj.rowId}`}
+                                        variant='outlined'
+                                        sx={{
+                                          my: 2,
+                                          width: '100%',
+                                          '& .MuiInputBase-input': {
+                                            fontSize: 14,
+                                          },
+                                        }}
+                                      />
+                                    </TableCell>
+
+                                    <TableCell align='center'>
+                                      <IconButton
+                                        disabled={obj.invalidate}
+                                        onClick={() => deleteProduct(obj.rowId)}
+                                        aria-label='delete'
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              } else {
+                                return null;
+                              }
+                            })
+                          : null}
+                        <TableRow>
+                          <TableCell align='center' colSpan={6}>
+                            <IconButton
+                              onClick={() => {
+                                addRow();
+                              }}
+                              aria-label='delete'
+                              size='large'
+                            >
+                              <AddIcon fontSize='inherit' />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
               </Form>
             );
           }}
         </Formik>
-        <Dialog
-          open={openSelectProduct}
-          onClose={() => setOpenSelectProduct(false)}
-          maxWidth='lg'
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {<IntlMessages id='sidebar.ecommerce.selectProduct' />}
-          </DialogTitle>
-          <DialogContent sx={{justifyContent: 'center'}}>
-            <SelectProduct fcData={getNewProduct} search={false} />
-          </DialogContent>
-        </Dialog>
       </Box>
+    </Card>
   );
 };
 
-export default CategoryCard;
+export default DeliveryCard;
 
-CategoryCard.propTypes = {
+DeliveryCard.propTypes = {
   newValuesData: PropTypes.func.isRequired,
   execFunctions: PropTypes.bool.isRequired,
   order: PropTypes.number.isRequired,

@@ -83,6 +83,7 @@ import {
   getActualMonth,
   translateValue,
   fixDecimals,
+  convertToDateWithoutTime,
 } from '../../../Utils/utils';
 import OtherPayConceptsTable from './OtherPayConceptsTable';
 import MoreFiltersFinances from '../Filters/MoreFiltersFinances';
@@ -893,6 +894,8 @@ const FinancesTable = (props) => {
               <TableCell>Monto a Pagar/Cobrar</TableCell>
               <TableCell>Monto pagado/Cobrado</TableCell>
               <TableCell>Deuda pendiente</TableCell>
+              <TableCell>Fecha registrada</TableCell>
+              <TableCell>Última actualización</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
@@ -1013,6 +1016,12 @@ const FinancesTable = (props) => {
                       </TableCell>
                       <TableCell>
                         {`${moneySymbol} ${fixDecimals(obj.debt)}`}
+                      </TableCell>
+                      <TableCell>
+                        {convertToDateWithoutTime(obj.createdDate)}
+                      </TableCell>
+                      <TableCell>
+                        {convertToDateWithoutTime(obj.updatedDate)}
                       </TableCell>
                       <TableCell>
                         <Button

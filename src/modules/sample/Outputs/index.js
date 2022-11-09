@@ -884,6 +884,7 @@ const OutputsTable = (props) => {
             <TableRow>
               <TableCell>Codigo</TableCell>
               <TableCell>Fecha registrada</TableCell>
+              <TableCell>Última actualización</TableCell>
               <TableCell>Tipo de movimiento</TableCell>
               <TableCell>Cliente</TableCell>
               <TableCell>Detalle productos</TableCell>
@@ -916,6 +917,9 @@ const OutputsTable = (props) => {
                       }`}</TableCell>
                       <TableCell>
                         {convertToDateWithoutTime(obj.timestampMovement)}
+                      </TableCell>
+                      <TableCell>
+                        {convertToDateWithoutTime(obj.updatedDate)}
                       </TableCell>
                       <TableCell>
                         {showSubtypeMovement(obj.movementSubType)}

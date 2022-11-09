@@ -99,6 +99,8 @@ const UpgradeBusiness = () => {
     serieDocumenteReferralGuide: '',
     serieBackDocumenteReferralGuide: '',
     eMerchantSlugName: '',
+    defaultMaxPrice:1000,
+    defaultMinPrice:0,
   };
   const registerSuccess = () => {
     return (
@@ -177,7 +179,7 @@ const UpgradeBusiness = () => {
     <Box
       sx={{
         position: 'relative',
-        maxWidth: 550,
+        maxWidth: 750,
       }}
     >
       <Formik
@@ -192,7 +194,29 @@ const UpgradeBusiness = () => {
           dispatch({type: FETCH_SUCCESS, payload: undefined});
           dispatch({type: FETCH_ERROR, payload: undefined});
           dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
-          toUpgradeToNewPlan({
+          // toUpgradeToNewPlan({
+          //   request: {
+          //     payload: {
+          //       merchantId: userDataRes.merchantSelected.merchantId,
+          //       planDesiredId: userDataRes.merchantSelected.planDesiredId,
+          //       promotionCodeId: userDataRes.merchantSelected.promotionCodeId,
+          //       serieDocumenteBilling: data.serieDocumenteBilling || "",
+          //       serieBackDocumenteBilling: data.serieBackDocumenteBilling || "",
+          //       serieDocumenteReceipt: data.serieDocumenteReceipt || "",
+          //       serieBackDocumenteReceipt: data.serieBackDocumenteReceipt || "",
+          //       serieDocumenteReferralGuide: data.serieDocumenteReferralGuide || "",
+          //       serieBackDocumenteReferralGuide: data.serieBackDocumenteReferralGuide || "",
+          //       eMerchantSlugName: data.eMerchantSlugName || "",
+          //       merchantMasterId: userDataRes.merchantMasterId,
+          //       firstPlanDefault: userDataRes.merchantSelected.firstPlanDefault,
+          //       typeMerchant: userDataRes.merchantSelected.typeMerchant,
+          //       category: selectedCategory,
+          //       tags: selectedFilters,
+
+          //     },
+          //   },
+          // });
+          console.log("Esto se envia", {
             request: {
               payload: {
                 merchantId: userDataRes.merchantSelected.merchantId,
@@ -206,9 +230,15 @@ const UpgradeBusiness = () => {
                 serieBackDocumenteReferralGuide: data.serieBackDocumenteReferralGuide || "",
                 eMerchantSlugName: data.eMerchantSlugName || "",
                 merchantMasterId: userDataRes.merchantMasterId,
+                firstPlanDefault: userDataRes.merchantSelected.firstPlanDefault,
+                typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                category: data.selectedCategory,
+                tags: data.selectedFilters,
+                price: [data.defaultMinPrice,data.defaultMaxPrice]
+
               },
             },
-          });
+          })
           setOpenStatus(true);
           setSubmitting(false);
         }}
@@ -232,7 +262,7 @@ const UpgradeBusiness = () => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Alta de facturación'}
+          {'Alta de plan'}
         </DialogTitle>
         {showMessage()}
       </Dialog>
