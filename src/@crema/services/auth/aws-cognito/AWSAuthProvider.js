@@ -483,6 +483,7 @@ const AwsAuthProvider = ({children}) => {
     setAwsCognitoData({...awsCognitoData, isLoading: true});
     console.log("Cerrando sesión")
     try {
+      await auth.signOut();
       localStorage.setItem('routesAndPrivileges', false);
       localStorage.setItem('routesRolGeneral2', false);
       getRolUserRes = false;
@@ -498,7 +499,6 @@ const AwsAuthProvider = ({children}) => {
         isAuthenticated: false,
       });
       console.log("Cerrando sesión")
-      await auth.signOut();
     } catch (error) {
       setAwsCognitoData({
         user: null,

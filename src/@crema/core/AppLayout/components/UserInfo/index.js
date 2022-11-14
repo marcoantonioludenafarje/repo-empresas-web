@@ -172,7 +172,7 @@ const UserInfo = ({color}) => {
         >
           <IntlMessages id='sidebar.myUserData' />
         </MenuItem>
-        <MenuItem onClick={finalLogout}>
+        <MenuItem onClick={logout}>
           <IntlMessages id='sidebar.logout' />
         </MenuItem>
       </Menu>
