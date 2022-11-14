@@ -11,13 +11,18 @@ import PropTypes from 'prop-types';
 import {useRouter} from 'next/router';
 import IntlMessages from '../../../../../@crema/utility/IntlMessages';
 
-import {useSelector} from 'react-redux';
-
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+  GET_USER_DATA,
+} from '../../../../../shared/constants/ActionTypes';
 const UserInfo = ({color}) => {
   const {logout} = useAuthMethod();
   const {user} = useAuthUser();
   const history = useRouter();
 
+  const dispatch = useDispatch();
   const {userAttributes} = useSelector(({user}) => user);
   console.log('userAttributes', userAttributes);
   const {getRolUserRes} = useSelector(({general}) => general);
@@ -33,6 +38,12 @@ const UserInfo = ({color}) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const finalLogout = () => {
+    console.log("Aqui imagino que si sale de la sesion")
+    logout()
+    //dispatch({type: GET_USER_DATA, payload: undefined});
   };
 
   const getUserAvatar = () => {
@@ -161,7 +172,7 @@ const UserInfo = ({color}) => {
         >
           <IntlMessages id='sidebar.myUserData' />
         </MenuItem>
-        <MenuItem onClick={logout}>
+        <MenuItem onClick={finalLogout}>
           <IntlMessages id='sidebar.logout' />
         </MenuItem>
       </Menu>

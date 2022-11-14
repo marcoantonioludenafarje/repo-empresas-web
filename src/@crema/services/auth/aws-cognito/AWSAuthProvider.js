@@ -444,11 +444,7 @@ const AwsAuthProvider = ({children}) => {
       });
       /* .then((data) => console.log('changePassword Data', data))
         .catch((err) => console.log('changePassword Error', err)); */
-      if(getRolUserRes.merchantSelected.firstPlanDefault || getRolUserRes.merchantSelected.upgradeToNewPlan){
-        history.replace('/sample/planRegistration');
-      } else {
-        history.replace('/sample/home');
-      }
+      history.replace('/sample/home');
       dispatch({
         type: SHOW_MESSAGE,
         payload: 'Congratulations, password changed',
@@ -485,8 +481,8 @@ const AwsAuthProvider = ({children}) => {
 
   const logout = async () => {
     setAwsCognitoData({...awsCognitoData, isLoading: true});
+    console.log("Cerrando sesión")
     try {
-      await auth.signOut();
       localStorage.setItem('routesAndPrivileges', false);
       localStorage.setItem('routesRolGeneral2', false);
       getRolUserRes = false;
@@ -501,6 +497,8 @@ const AwsAuthProvider = ({children}) => {
         isLoading: false,
         isAuthenticated: false,
       });
+      console.log("Cerrando sesión")
+      await auth.signOut();
     } catch (error) {
       setAwsCognitoData({
         user: null,
