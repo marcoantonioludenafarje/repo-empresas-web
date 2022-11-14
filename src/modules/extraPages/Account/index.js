@@ -57,13 +57,13 @@ const tabs = [
     nameView: 'businessInfo',
     permission: ['administrator'],
   },
-  {
-    id: 7,
-    icon: <AiOutlineLock />,
-    name: <IntlMessages id='userProfile.upgradeBusiness' />,
-    nameView: 'upgradeBusiness',
-    permission: ['administrator', 'viewer'],
-  },
+  // {
+  //   id: 7,
+  //   icon: <AiOutlineLock />,
+  //   name: <IntlMessages id='userProfile.upgradeBusiness' />,
+  //   nameView: 'upgradeBusiness',
+  //   permission: ['administrator', 'viewer'],
+  // },
   {
     id: 2,
     icon: <GroupAddOutlinedIcon />,
@@ -226,7 +226,7 @@ const Account = () => {
                 <NewUsers />
               )} */}
             {value === 2 && <NewUsers />}
-            {value === 7 && <UpgradeBusiness />}
+            {/* {value === 7 && <UpgradeBusiness />} */}
             {value === 3 && <ChangePassword />}
             {value === 4 && <Information />}
             {value === 5 && <Social social={accountData.member} />}

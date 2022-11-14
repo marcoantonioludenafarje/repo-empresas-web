@@ -118,6 +118,9 @@ const AwsAuthProvider = ({children}) => {
           }
         }
       }
+      if(getRolUserRes.merchantSelected.firstPlanDefault || getRolUserRes.merchantSelected.upgradeToNewPlan){
+        listPrivileges.push("planRegistration")
+      }
       //AQUÍ se pondría el listado de paths back
       let pathsBack;
       if (getRolUserRes) {
@@ -199,6 +202,7 @@ const AwsAuthProvider = ({children}) => {
         request: {
           payload: {
             rolId: awsCognitoData.user.signInUserSession.idToken.payload.rolId,
+            merchantSelectedId: awsCognitoData.user.signInUserSession.idToken.payload.merchantSelectedId,
           },
         },
       };
@@ -440,7 +444,11 @@ const AwsAuthProvider = ({children}) => {
       });
       /* .then((data) => console.log('changePassword Data', data))
         .catch((err) => console.log('changePassword Error', err)); */
-      history.replace('/sample/home');
+      if(getRolUserRes.merchantSelected.firstPlanDefault || getRolUserRes.merchantSelected.upgradeToNewPlan){
+        history.replace('/sample/planRegistration');
+      } else {
+        history.replace('/sample/home');
+      }
       dispatch({
         type: SHOW_MESSAGE,
         payload: 'Congratulations, password changed',

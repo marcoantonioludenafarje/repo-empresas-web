@@ -113,6 +113,8 @@ const AppHeader = () => {
           <Link
             sx={{
               ml: 5,
+              position: 'relative',
+              bottom: -15,
               '& svg': {
                 height: 35,
                 width: 35,
@@ -125,6 +127,25 @@ const AppHeader = () => {
           </Link>
         </Box>
         {/* whatever is on the right side */}
+        <Hidden smDown>
+          {JSON.parse(localStorage.getItem('payload')).profile ==
+            'INVENTORY_BUSINESS_ADMIN' &&
+          userDataRes &&
+          userDataRes.merchantSelected.isEcommerceEnabled == true ? (
+            <Button
+              sx={{
+                position: 'relative',
+                bottom: -5,
+                minWidth: 100,
+              }}
+              color='secondary'
+              variant='contained'
+              onClick={() => window.open(`https://dev.ecommerce.tunexo.pe/negocio/${userDataRes.merchantSelected.ecommerceMerchantSlug}`)}
+            >
+              <IntlMessages id='common.eCommerceBusiness' />
+            </Button>
+          ) : null}
+        </Hidden>
         <IconButton
           sx={{
             mt: 1,
@@ -252,7 +273,7 @@ const AppHeader = () => {
           {JSON.parse(localStorage.getItem('payload')).profile ==
             'INVENTORY_BUSINESS_ADMIN' &&
           userDataRes &&
-          userDataRes.merchantSelected.typeMerchant == 'UAT' ? (
+          userDataRes.merchantSelected.firstPlanDefault == true ? (
             <Button
               sx={{
                 position: 'relative',

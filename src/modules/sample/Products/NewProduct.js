@@ -353,9 +353,7 @@ const NewProduct = (props) => {
       toGetUserData(getUserDataPayload);
     } else {
       if (
-        userDataRes.merchantSelected.plans.find(
-          (element) => element.active == true,
-        ).description == 'eCommerce'
+        userDataRes.merchantSelected.isEcommerceEnabled == true
       ) {
         setSectionEcommerce(true);
       }
@@ -871,13 +869,7 @@ const NewProduct = (props) => {
                           );
                         })
                       ) : (
-                        <MenuItem
-                          key={0}
-                          value={'noCategories'}
-                          style={{fontWeight: 200}}
-                        >
-                          <IntlMessages id='common.noCategories' />
-                        </MenuItem>
+                        null
                       )}
                     </Select>
                   </FormControl>

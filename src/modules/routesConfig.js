@@ -32,6 +32,13 @@ const rolesRoutesConfig = {
       url: '/sample/subscription/active',
     }, */
     {
+      id: 'planRegistration',
+      title: 'planRegistration',
+      messageId: 'sidebar.sample.planRegistration',
+      type: 'item',
+      url: '/sample/planRegistration',
+    },
+    {
       id: 'billing',
       title: 'billing',
       messageId: 'sidebar.sample.billing',

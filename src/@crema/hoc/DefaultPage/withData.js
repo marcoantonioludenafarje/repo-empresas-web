@@ -30,9 +30,18 @@ const withData = (ComposedComponent) => (props) => {
   }, [userDataRes]); */
 
   useEffect(() => {
-    if (user) {
-      Router.push(initialUrl + (queryParams ? '?' + queryParams : ''));
-    } /* else if (!completeData) {
+    if(userDataRes){
+      if (userDataRes.merchantSelected.isEcommerceEnabled) {
+        Router.push("sample/planRegistration");
+      } else if (user){
+        Router.push(initialUrl + (queryParams ? '?' + queryParams : ''));
+
+      }
+    } else {
+      if (user) {
+        Router.push(initialUrl + (queryParams ? '?' + queryParams : ''));
+      } 
+    }/* else if (!completeData) {
       Router.push('/my-account');
     } */
   }, [user /* , completeData */]);

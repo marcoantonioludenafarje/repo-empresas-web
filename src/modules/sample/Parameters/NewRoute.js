@@ -21,6 +21,9 @@ import {
   Select,
   MenuItem,
   ButtonGroup,
+  FormControlLabel,
+  FormGroup,
+  Switch
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
@@ -101,7 +104,8 @@ const Distribution = () => {
   const [defaultWeight, setDefaultWeight] = React.useState('KG');
   const [defaultIgvActivation, setDefaultIgvActivation] = React.useState(0);
   const [defaultPriceRange, setDefaultPriceRange] = React.useState([0, 1000]);
-  const [sectionEcommerce, setSectionEcommerce] = React.useState(true);
+  const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
+  const [publish, setPublish] = React.useState(false);
   const {listProducts} = useSelector(({products}) => products);
   console.log('products', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -176,6 +180,9 @@ const Distribution = () => {
         ).description == 'eCommerce'
       ) {
         setSectionEcommerce(true);
+      }
+      if(userDataRes.merchantSelected.isEcommerceEnabled){
+        setPublish(true)
       }
     }
   }, [userDataRes]);
@@ -253,15 +260,20 @@ const Distribution = () => {
       toGetUserData(getUserDataPayload);
     } else {
       if (
-        userDataRes.merchantSelected.plans.find(
-          (element) => element.active == true,
-        ).description == 'eCommerce'
+        userDataRes.merchantSelected.isEcommerceEnabled == true
       ) {
         setSectionEcommerce(true);
       }
+      
+      if(userDataRes.merchantSelected.isEcommerceEnabled){
+        setPublish(true)
+      }
     }
   }, []);
-
+  const handlePublicChange = (event) => {
+    console.log('Switch ecommerce cambio', event);
+    setPublish(event.target.checked);
+  };
   const setRouteIndex = (index, obj) => {
     let changedRoutes = routes;
     changedRoutes[index] = obj;
@@ -387,6 +399,7 @@ const Distribution = () => {
           price: defaultPriceRange,
           filters: filters,
           categories: finalCategories,
+          isEcommerceEnabled: publish
         },
       },
     };
@@ -843,6 +856,31 @@ const Distribution = () => {
               </Box>
             </Card>
           ))}
+      </Box>
+      
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          mb: 5,
+        }}
+      >
+        <FormGroup
+          sx={{
+            ml: 2,
+          }}
+        >
+          <FormControlLabel
+            control={
+              <Switch
+                checked={publish}
+                onChange={handlePublicChange}
+              />
+            }
+            label='Dejar público Ecommerce'
+          />
+        </FormGroup>
       </Box>
 
       <ButtonGroup

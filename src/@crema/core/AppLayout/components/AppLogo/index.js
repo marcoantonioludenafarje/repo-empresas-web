@@ -4,10 +4,12 @@ import PropTypes from 'prop-types';
 import {alpha, Box} from '@mui/material';
 import Logo from '../../../../../assets/icon/bannerTuNexoInventarios.svg';
 import LogoText from '../../../../../assets/icon/logo_text.svg';
+import {useRouter} from 'next/router';
 
 const AppLogo = () => {
   const {theme} = useThemeContext();
 
+  const history = useRouter();
   return (
     <Box
       sx={
@@ -34,6 +36,7 @@ const AppLogo = () => {
             width: 150,
           },
         }}
+        onClick={() => history.replace('/sample/home')}
       >
         <Logo />
       </Box>
