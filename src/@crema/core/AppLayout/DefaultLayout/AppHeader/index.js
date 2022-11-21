@@ -140,7 +140,11 @@ const AppHeader = () => {
               }}
               color='secondary'
               variant='contained'
-              onClick={() => window.open(`https://dev.ecommerce.tunexo.pe/negocio/${userDataRes.merchantSelected.ecommerceMerchantSlug}`)}
+              onClick={() =>
+                window.open(
+                  `https://dev.ecommerce.tunexo.pe/negocio/${userDataRes.merchantSelected.ecommerceMerchantSlug}`,
+                )
+              }
             >
               <IntlMessages id='common.eCommerceBusiness' />
             </Button>

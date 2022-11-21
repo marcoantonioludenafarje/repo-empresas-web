@@ -12,7 +12,7 @@ import {
   IconButton,
   Card,
   FormGroup,
-  Switch
+  Switch,
 } from '@mui/material';
 import {blue, green, red} from '@mui/material/colors';
 import Avatar from '@mui/material/Avatar';
@@ -80,7 +80,7 @@ const UpgradeBusinessForm = ({
   updateFilters,
   execAll,
   handlePublicChange,
-  publish
+  publish,
 }) => {
   console.log('valores', values);
   const dispatch = useDispatch();
@@ -247,11 +247,11 @@ const UpgradeBusinessForm = ({
           {getBusinessPlanRes ? (
             <>
               <Grid item xs={12} md={12}>
-              <FormControlLabel
-                control={<Checkbox />}
-                label='Declaro bajo mi responsabilidad haber dado de alta y mantenerme activo en la SUNAT para efectos de la generación de facturación electrónica'
-              />
-            </Grid>
+                <FormControlLabel
+                  control={<Checkbox />}
+                  label='Declaro bajo mi responsabilidad haber dado de alta y mantenerme activo en la SUNAT para efectos de la generación de facturación electrónica'
+                />
+              </Grid>
             </>
           ) : (
             <></>
@@ -700,10 +700,7 @@ const UpgradeBusinessForm = ({
             >
               <FormControlLabel
                 control={
-                  <Switch
-                    checked={publish}
-                    onChange={handlePublicChange}
-                  />
+                  <Switch checked={publish} onChange={handlePublicChange} />
                 }
                 label='Dejar público Ecommerce'
               />
@@ -772,5 +769,5 @@ UpgradeBusinessForm.propTypes = {
   updateFilters: PropTypes.func,
   execAll: PropTypes.bool.isRequired,
   handlePublicChange: PropTypes.func,
-  publish: PropTypes.bool.isRequired
+  publish: PropTypes.bool.isRequired,
 };

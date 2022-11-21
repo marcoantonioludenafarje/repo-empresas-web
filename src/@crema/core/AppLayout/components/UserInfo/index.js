@@ -41,8 +41,8 @@ const UserInfo = ({color}) => {
   };
 
   const finalLogout = () => {
-    console.log("Aqui imagino que si sale de la sesion")
-    logout()
+    console.log('Aqui imagino que si sale de la sesion');
+    logout();
     //dispatch({type: GET_USER_DATA, payload: undefined});
   };
 

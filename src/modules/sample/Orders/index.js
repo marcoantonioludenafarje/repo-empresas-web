@@ -609,20 +609,34 @@ const OrderTable = (arrayObjs, props) => {
                               <TableBody>
                                 <TableRow key={index} sx={{cursor: 'pointer'}}>
                                   <TableCell>
-                                    {deliveryAddress.documentType || ''}
+                                    {deliveryAddress
+                                      ? deliveryAddress.documentType
+                                      : ''}
                                   </TableCell>
                                   <TableCell>
-                                    {deliveryAddress.nroDocument}
-                                  </TableCell>
-                                  <TableCell>{deliveryAddress.name}</TableCell>
-                                  <TableCell>
-                                    {deliveryAddress.addressProvider}
+                                    {deliveryAddress
+                                      ? deliveryAddress.nroDocument
+                                      : ''}
                                   </TableCell>
                                   <TableCell>
-                                    {deliveryAddress.numberContact}
+                                    {deliveryAddress
+                                      ? deliveryAddress.name
+                                      : ''}
                                   </TableCell>
                                   <TableCell>
-                                    {deliveryAddress.addressProvider}
+                                    {deliveryAddress
+                                      ? deliveryAddress.addressProvider
+                                      : ''}
+                                  </TableCell>
+                                  <TableCell>
+                                    {deliveryAddress
+                                      ? deliveryAddress.numberContact
+                                      : ''}
+                                  </TableCell>
+                                  <TableCell>
+                                    {deliveryAddress
+                                      ? deliveryAddress.addressProvider
+                                      : ''}
                                   </TableCell>
                                 </TableRow>
                               </TableBody>
@@ -805,7 +819,8 @@ const OrderTable = (arrayObjs, props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/utility/listObjectsPathMerchant') === true ? (
+          .includes('/utility/listObjectsPathMerchant') === true &&
+        selectedOrder.paymentType == 'CVIRTUAL' ? (
           <MenuItem onClick={goToFile}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Ver Comprobante

@@ -118,8 +118,11 @@ const AwsAuthProvider = ({children}) => {
           }
         }
       }
-      if(getRolUserRes.merchantSelected.firstPlanDefault || getRolUserRes.merchantSelected.upgradeToNewPlan){
-        listPrivileges.push("planRegistration")
+      if (
+        getRolUserRes.merchantSelected.firstPlanDefault ||
+        getRolUserRes.merchantSelected.upgradeToNewPlan
+      ) {
+        listPrivileges.push('planRegistration');
       }
       //AQUÍ se pondría el listado de paths back
       let pathsBack;
@@ -202,7 +205,9 @@ const AwsAuthProvider = ({children}) => {
         request: {
           payload: {
             rolId: awsCognitoData.user.signInUserSession.idToken.payload.rolId,
-            merchantSelectedId: awsCognitoData.user.signInUserSession.idToken.payload.merchantSelectedId,
+            merchantSelectedId:
+              awsCognitoData.user.signInUserSession.idToken.payload
+                .merchantSelectedId,
           },
         },
       };
@@ -481,7 +486,7 @@ const AwsAuthProvider = ({children}) => {
 
   const logout = async () => {
     setAwsCognitoData({...awsCognitoData, isLoading: true});
-    console.log("Cerrando sesión")
+    console.log('Cerrando sesión');
     try {
       await auth.signOut();
       localStorage.setItem('routesAndPrivileges', false);
@@ -498,7 +503,7 @@ const AwsAuthProvider = ({children}) => {
         isLoading: false,
         isAuthenticated: false,
       });
-      console.log("Cerrando sesión")
+      console.log('Cerrando sesión');
     } catch (error) {
       setAwsCognitoData({
         user: null,

@@ -23,7 +23,7 @@ import {
   ButtonGroup,
   FormControlLabel,
   FormGroup,
-  Switch
+  Switch,
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
@@ -103,6 +103,8 @@ const Distribution = () => {
   const [defaultMoney, setDefaultMoney] = React.useState('PEN');
   const [defaultWeight, setDefaultWeight] = React.useState('KG');
   const [defaultIgvActivation, setDefaultIgvActivation] = React.useState(0);
+  const [defaultProductsPayDetail, setDefaultProductsPayDetail] =
+    React.useState('');
   const [defaultPriceRange, setDefaultPriceRange] = React.useState([0, 1000]);
   const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
   const [publish, setPublish] = React.useState(false);
@@ -158,6 +160,7 @@ const Distribution = () => {
     defaultWeight: 'KG',
     defaultMoney: 'PEN',
     defaultIgvActivation: 0,
+    defaultProductsPayDetail: '',
   };
   useEffect(() => {
     if (
@@ -181,8 +184,8 @@ const Distribution = () => {
       ) {
         setSectionEcommerce(true);
       }
-      if(userDataRes.merchantSelected.isEcommerceEnabled){
-        setPublish(true)
+      if (userDataRes.merchantSelected.isEcommerceEnabled) {
+        setPublish(true);
       }
     }
   }, [userDataRes]);
@@ -224,10 +227,17 @@ const Distribution = () => {
       setDefaultMoney(defaultMoneyParameter);
       setDefaultWeight(defaultWeightParameter);
       setDefaultIgvActivation(Number(defaultIgvParameter));
+      setDefaultProductsPayDetail(
+        ecommerceProductParameter.defaultProductsPayDetail,
+      );
       setCategories(categoriesProductParameter);
       changeValue('defaultWeight', defaultWeightParameter);
       changeValue('defaultMoney', defaultMoneyParameter);
       changeValue('defaultIgvActivation', Number(defaultIgvParameter));
+      changeValue(
+        'defaultProductsPayDetail',
+        ecommerceProductParameter.defaultProductsPayDetail,
+      );
       changeValue(
         'defaultMinPrice',
         Number(ecommerceProductParameter.price.min),
@@ -259,14 +269,12 @@ const Distribution = () => {
 
       toGetUserData(getUserDataPayload);
     } else {
-      if (
-        userDataRes.merchantSelected.isEcommerceEnabled == true
-      ) {
+      if (userDataRes.merchantSelected.isEcommerceEnabled == true) {
         setSectionEcommerce(true);
       }
-      
-      if(userDataRes.merchantSelected.isEcommerceEnabled){
-        setPublish(true)
+
+      if (userDataRes.merchantSelected.isEcommerceEnabled) {
+        setPublish(true);
       }
     }
   }, []);
@@ -396,10 +404,11 @@ const Distribution = () => {
           defaultMoneyMetadata4: defaultMoney2.metadata4,
           defaultWeightValue: defaultWeight,
           defaultIgvValue: defaultIgvActivation,
+          defaultProductsPayDetail: defaultProductsPayDetail,
           price: defaultPriceRange,
           filters: filters,
           categories: finalCategories,
-          isEcommerceEnabled: publish
+          isEcommerceEnabled: publish,
         },
       },
     };
@@ -426,6 +435,10 @@ const Distribution = () => {
     if (event.target.name == 'defaultIgvActivation') {
       setDefaultIgvActivation(event.target.value);
       console.log('Es el activation IGV: ', event.target.value);
+    }
+    if (event.target.name == 'defaultProductsPayDetail') {
+      setDefaultProductsPayDetail(event.target.value);
+      console.log('Es defaultProductsPayDetail: ', event.target.value);
     }
     if (event.target.name == 'defaultMinPrice') {
       let priceRange = defaultPriceRange;
@@ -521,6 +534,10 @@ const Distribution = () => {
     if (event.target.name == 'defaultIgvActivation') {
       setDefaultIgvActivation(event.target.value);
       console.log('Es el activation IGV: ', event.target.value);
+    }
+    if (event.target.name == 'defaultProductsPayDetail') {
+      setDefaultProductsPayDetail(event.target.value);
+      console.log('Es el setDefaultProductsPayDetail: ', event.target.value);
     }
     if (event.target.name == 'defaultMinPrice') {
       let priceRange = defaultPriceRange;
@@ -646,6 +663,15 @@ const Distribution = () => {
                 </Grid>
                 {sectionEcommerce === true ? (
                   <>
+                    <Grid sx={{mb: 3, my: 2}} item xs={12} md={12}>
+                      <AppTextField
+                        name='defaultProductsPayDetail'
+                        value={defaultProductsPayDetail}
+                        fullWidth
+                        multiline
+                        label={'Detalle de Pago de Productos'}
+                      />
+                    </Grid>
                     <Grid sx={{mb: 3}} item xs={12} md={12}>
                       <InputLabel id='price' style={{fontWeight: 800}}>
                         Precio
@@ -857,7 +883,7 @@ const Distribution = () => {
             </Card>
           ))}
       </Box>
-      
+
       <Box
         sx={{
           flex: 1,
@@ -872,12 +898,7 @@ const Distribution = () => {
           }}
         >
           <FormControlLabel
-            control={
-              <Switch
-                checked={publish}
-                onChange={handlePublicChange}
-              />
-            }
+            control={<Switch checked={publish} onChange={handlePublicChange} />}
             label='Dejar público Ecommerce'
           />
         </FormGroup>

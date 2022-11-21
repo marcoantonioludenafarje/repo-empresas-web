@@ -4,8 +4,12 @@ import * as yup from 'yup';
 import {Form, Formik} from 'formik';
 import AppPage from '../../../@crema/hoc/AppPage';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 
 import {Fonts} from '../../../shared/constants/AppEnums';
+
+import {orange} from '@mui/material/colors';
+
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 
@@ -51,6 +55,8 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
+  GET_PRESIGNED,
+  UPDATE_PRODUCT,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
 import {useHistory} from 'react-router-dom';
@@ -163,6 +169,16 @@ function getBase64(file, cb) {
     console.log('Error: ', error);
   };
 }
+
+const toBase64 = (file) => {
+  console.log('toBase64 file', file);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
 const useForceUpdate = () => {
   const [reload, setReload] = React.useState(0); // integer state
   return () => setReload((value) => value + 1); // update the state to force render
@@ -176,9 +192,11 @@ let objSelects = {
   unitMeasure: 'NIU',
   unitMeasureWeight: null,
   unitMeasureMoney: null,
+  tags: {},
 };
 
 const UpdateProduct = (props) => {
+  let changeValue;
   const router = useRouter();
   const {query} = router; //query es el objeto seleccionado
   console.log('query', query);
@@ -189,9 +207,10 @@ const UpdateProduct = (props) => {
   let errorToRegister = false;
   const [lengthProducts, setLengthProducts] = React.useState(0);
   const [showAlert, setShowAlert] = React.useState(false);
-  const [selectedCategory, setSelectedCategory] = React.useState(
-    query.categoryId,
-  );
+  const [selectedCategory, setSelectedCategory] = React.useState({
+    description: query.category,
+    productCategoryId: query.categoryId,
+  });
 
   const [typeProduct, setTypeProduct] = React.useState(query.typeProduct);
   const [openSelect, setOpenSelect] = React.useState(false);
@@ -200,11 +219,15 @@ const UpdateProduct = (props) => {
   const [open2, setOpen2] = React.useState(false);
   const [typeAlert, setTypeAlert] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [selectedFilters, setSelectedFilters] = React.useState({});
+  const [selectedFilters, setSelectedFilters] = React.useState(
+    originalProduct.tags || {},
+  );
   const [publish, setPublish] = React.useState(true);
   const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
   const [selectedImages, setSelectedImages] = React.useState([]);
+  const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
+  const [typeIcon, setTypeIcon] = React.useState('2');
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
   });
@@ -215,8 +238,8 @@ const UpdateProduct = (props) => {
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
   };
-  const toCreatePresigned = (payload) => {
-    dispatch(createPresigned(payload));
+  const toCreatePresigned = (payload, file) => {
+    dispatch(createPresigned(payload, file));
   };
   const toUpdateProduct = (payload) => {
     dispatch(updateProduct(payload));
@@ -235,8 +258,8 @@ const UpdateProduct = (props) => {
   console.log('createPresigned', presigned);
   const {updateProductRes} = useSelector(({products}) => products);
   console.log('updateProduct', updateProductRes);
-  const {getCategoriesRes} = useSelector(({products}) => products);
-  console.log('getCategoriesRes', getCategoriesRes);
+  // const {getCategoriesRes} = useSelector(({products}) => products);
+  // console.log('getCategoriesRes', getCategoriesRes);
   const {successMessage} = useSelector(({products}) => products);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({products}) => products);
@@ -299,11 +322,17 @@ const UpdateProduct = (props) => {
     referecialPriceSell: Number(query.sellPriceUnit),
     costPriceUnit: Number(query.costPriceUnit),
     weight: Number(query.weight),
-    category: query.category,
+    category: {
+      description: query.category,
+      productCategoryId: query.categoryId,
+    },
     typeProduct: query.typeProduct,
     initialStock: Number(query.initialStock),
     merchantId: userDataRes.merchantSelected.merchantId,
     imgKey: null,
+    title: query.title,
+    commercialDescription: query.commercialDescription,
+    selectedFilters: originalProduct.tags,
   };
 
   useEffect(() => {
@@ -323,12 +352,41 @@ const UpdateProduct = (props) => {
       };
 
       toGetUserData(getUserDataPayload);
+    } else {
+      if (userDataRes.merchantSelected.isEcommerceEnabled == true) {
+        setSectionEcommerce(true);
+      }
     }
+    dispatch({
+      type: GET_PRESIGNED,
+      payload: undefined,
+    });
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     setTimeout(() => {
       setMinTutorial(true);
+      setTypeIcon('1');
+
+      changeValue('category', {
+        description: query.category,
+        productCategoryId: query.categoryId,
+      });
     }, 2000);
   }, []);
-
+  useEffect(() => {
+    if (presigned) {
+      console.log('useEffect presigned', presigned);
+      let actualSelectedJsonImages = selectedJsonImages;
+      const newJsonImages = {
+        keyMaster: presigned.keymaster,
+        nameFile: imagePayload.request.payload.name || presigned.name,
+      };
+      console.log('newJsonImages', newJsonImages);
+      actualSelectedJsonImages.push(newJsonImages);
+      console.log('actualSelectedJsonImages', actualSelectedJsonImages);
+      setSelectedJsonImages(actualSelectedJsonImages);
+    }
+  }, [presigned]);
   useEffect(() => {
     if (userDataRes) {
       defaultValues.merchantId = userDataRes.merchantSelected.merchantId;
@@ -336,13 +394,6 @@ const UpdateProduct = (props) => {
         userDataRes.merchantSelected.plans.find(
           (element) => element.active == true,
         ).description == 'eCommerce'
-      ) {
-        setSectionEcommerce(true);
-      }
-      if (
-        userDataRes.rolSelected.modules.find(
-          (element) => element.moduleName == 'Ecommerce',
-        ).idFront == 'ecommerce'
       ) {
         setSectionEcommerce(true);
       }
@@ -358,7 +409,6 @@ const UpdateProduct = (props) => {
       ecommerce_params.map((filter) => {
         filters[filter.featureName] = [];
       });
-      setSelectedFilters(filters);
       console.log('selectedFilters', selectedFilters);
 
       let categoriesProductParameter = businessParameter.find(
@@ -383,17 +433,16 @@ const UpdateProduct = (props) => {
     objSelects.unitMeasureMoney = money_unit;
   }
   useEffect(() => {
-    if (categories !== undefined && categories.length >= 1) {
-      let defaultCategory = categories.find(
-        (obj) => obj.productCategoryId == query.categoryId,
-      );
-      console.log('defaultCategory', defaultCategory);
-      setSelectedCategory(defaultCategory);
-      console.log('selectedCategory', selectedCategory);
-    } else {
-      setSelectedCategory('noCategory');
-    }
+    // if (categories !== undefined && categories.length >= 1) {
+    //   let defaultCategory = categories.find((obj) => obj.default == true);
+    //   console.log('defaultCategory', defaultCategory);
+    //   setSelectedCategory(defaultCategory);
+    //   console.log('selectedCategory', selectedCategory);
+    // } else {
+    //   setSelectedCategory('noCategory');
+    // }
   }, [categories]);
+
   useEffect(() => {
     if (listProducts != undefined) {
       originalProduct = listProducts.find(
@@ -412,10 +461,27 @@ const UpdateProduct = (props) => {
           priceUnit: obj.priceUnit,
         });
       });
+
       console.log('selectedProducts', selectedProducts);
     }
   }, [listProducts != undefined]);
+  useEffect(() => {
+    console.log('CUAL ES EL originalProduct', originalProduct);
+    if (originalProduct && originalProduct.active) {
+      originalProduct.images = originalProduct.images.map((image) => {
+        image.isSaved = true;
+        return image;
+      });
+      console.log('selectedFilters de original', originalProduct.tags);
+      console.log('selectedImages de original', originalProduct.images);
+      setSelectedFilters(originalProduct.tags);
+      setSelectedImages(originalProduct.images);
+      setSelectedJsonImages(originalProduct.images);
 
+      console.log('selectedFilters', selectedFilters);
+      console.log('selectedImages', selectedImages);
+    }
+  }, [originalProduct]);
   /* useEffect(() => {
     if (getCategoriesRes != undefined) {
       let defaultId = getCategoriesRes.payload.find(
@@ -477,29 +543,35 @@ const UpdateProduct = (props) => {
   const getImage = (event) => {
     console.log('Archivo recogido ', event.target.files[0]);
     selectedFile = event.target.files[0];
-    const [file] = imgInp.files;
-    imagePayload.request.payload.contentType = file.type;
-    imagePayload.request.payload.name = file.name;
-    if (file) {
-      // preview.src = URL.createObjectURL(file);
-      console.log('Cuál es el imagePayload', imagePayload);
-      toCreatePresigned(imagePayload, {
-        image: file,
-        type: file?.type || null,
-      });
-    } else {
-      event = null;
-      console.log('no se selecciono un archivo');
-    }
+    // const [file] = imgInp.files;
+    // imagePayload.request.payload.contentType = file.type;
+    // imagePayload.request.payload.name = file.name;
+    // if (file) {
+    //   // preview.src = URL.createObjectURL(file);
+    //   console.log('Cuál es el imagePayload', imagePayload);
+    //   toCreatePresigned(imagePayload, {
+    //     image: file,
+    //     type: file?.type || null,
+    //   });
+    // } else {
+    //   event = null;
+    //   console.log('no se selecciono un archivo');
+    // }
     if (event.target.files) {
-      const fileArray = Array.from(event.target.files).map((file) =>
-        URL.createObjectURL(file),
-      );
-      // console.log("este es el fileArray", fileArray)
+      const fileArray = Array.from(event.target.files).map((file) => {
+        imagePayload.request.payload.contentType = file.type;
+        imagePayload.request.payload.name = file.name;
+        toCreatePresigned(imagePayload, {
+          image: file,
+          type: file?.type || null,
+        });
+        return URL.createObjectURL(file);
+      });
+      console.log('este es el fileArray', fileArray);
       // setSelectedImages((prevImages)=>prevImages.concat(fileArray))
 
-      setSelectedImages((prevImages) => prevImages.concat(fileArray));
-
+      setSelectedImages(selectedImages.concat(fileArray));
+      console.log('Esto es selectedImages', selectedImages);
       Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
     }
   };
@@ -513,6 +585,7 @@ const UpdateProduct = (props) => {
     Router.push('/sample/products/table');
   };
   const handleData = (data, {setSubmitting}) => {
+    setShowAlert(false);
     setSubmitting(true);
     /* if (selectedFile) { */ //PARA LA TOMA DE IMAGEN
     delete data.category;
@@ -537,11 +610,21 @@ const UpdateProduct = (props) => {
             quantity: obj.count,
             priceUnit: obj.priceUnit,
             description: obj.description,
+            weight: obj.weight,
+            unitMeasure: obj.unitMeasure,
+            customCodeProduct: obj.customCodeProduct || '',
           });
         });
       }
       console.log(cleanProducts);
       /* console.log('finalPayload', { */
+      dispatch({
+        type: GET_PRESIGNED,
+        payload: undefined,
+      });
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      dispatch({type: UPDATE_PRODUCT, payload: undefined});
       toUpdateProduct({
         request: {
           payload: {
@@ -553,15 +636,20 @@ const UpdateProduct = (props) => {
             initialStock: parseInt(Number(data.initialStock)),
             imgKey: null,
             customCodeProduct: data.customCodeProduct,
+            title: data.title,
+            commercialDescription: data.commercialDescription,
             unitMeasureWeight: weight_unit,
             unitMeasureMoney: money_unit,
             category: selectedCategory,
+            tags: selectedFilters,
             typeProduct: typeProduct,
+            imgKeys: selectedJsonImages,
             unitMeasure: objSelects.unitMeasure,
             unitsToProduce: 1,
             merchantId: userDataRes.merchantSelected.merchantId,
             inputsProduct: cleanProducts,
             inputsProductHistory: originalProduct.inputsProductHistory,
+            publish: publish,
           },
         },
       });
@@ -666,7 +754,23 @@ const UpdateProduct = (props) => {
     console.log('estado de cuentas', status);
     return status;
   };
-
+  const changeIcon = () => {
+    setTypeIcon('2');
+  };
+  const changeIcon2 = () => {
+    setTypeIcon('1');
+  };
+  const iconSelected = () => {
+    if (typeIcon == '1') {
+      return (
+        <>
+          <YouTubeIcon fontSize='inherit' />
+        </>
+      );
+    } else if (typeIcon == '2') {
+      return <>VER TUTORIAL</>;
+    }
+  };
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -693,465 +797,481 @@ const UpdateProduct = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting}) => (
-            <Form style={{textAlign: 'left'}} noValidate autoComplete='on'>
-              <Grid container spacing={2} sx={{width: 500, mx: 'auto', mb: 4}}>
-                <Grid item xs={12}>
-                  <AppTextField
-                    label='Código'
-                    disabled
-                    name='businessProductCode'
-                    variant='outlined'
-                    onChange={handleFieldProduct}
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AppTextField
-                    label='Descripción'
-                    name='description'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AppTextField
-                    label='Código aduanero'
-                    name='customCodeProduct'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                  <Typography
-                    sx={{
-                      mx: 2,
-                      mb: 3,
-                      cursor: 'pointer',
-                      color: '#5194c4',
-                      textDecoration: 'underline',
-                    }}
-                    onClick={() =>
-                      window.open(
-                        'https://colombiacompra.gov.co/clasificador-de-bienes-y-Servicios',
-                      )
-                    }
-                  >
-                    Consúltalo aquí
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth sx={{my: 2}}>
-                    <InputLabel id='categoria-label' style={{fontWeight: 200}}>
-                      Categoría
-                    </InputLabel>
-                    <Select
-                      defaultValue={query.categoryId /* selectedCategory */}
-                      name='category'
-                      labelId='categoria-label'
-                      label='Categoría'
-                      onChange={handleFieldCategory}
-                    >
-                      {categories && typeof categories !== 'string' ? (
-                        categories.map((obj, index) => {
-                          return (
-                            <MenuItem
-                              key={index}
-                              value={obj}
-                              style={{fontWeight: 200}}
-                            >
-                              {obj.description}
-                            </MenuItem>
-                          );
-                        })
-                      ) : (
-                        <></>
-                      )}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <AppTextField
-                    label={`Peso (${weight_unit})`}
-                    name='weight'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AppTextField
-                    label={`Precio costo sugerido (${money_unit})`}
-                    name='costPriceUnit'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AppTextField
-                    label={`Precio venta sugerido (${money_unit})`}
-                    name='referecialPriceSell'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AppTextField
-                    disabled
-                    label='Stock inicial'
-                    name='initialStock'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth sx={{my: 2}}>
-                    <InputLabel
-                      id='typeProduct-label'
-                      style={{fontWeight: 200}}
-                    >
-                      Tipo de producto
-                    </InputLabel>
-                    <Select
-                      defaultValue={query.typeProduct}
-                      name='typeProduct'
-                      labelId='typeProduct-label'
-                      label='Tipo de producto'
+          {({isSubmitting, setFieldValue}) => {
+            changeValue = setFieldValue;
+            return (
+              <Form style={{textAlign: 'left'}} noValidate autoComplete='on'>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{width: 500, mx: 'auto', mb: 4}}
+                >
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Código'
                       disabled
-                      onChange={handleFieldType}
+                      name='businessProductCode'
+                      variant='outlined'
+                      onChange={handleFieldProduct}
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Descripción'
+                      name='description'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Código aduanero'
+                      name='customCodeProduct'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        mx: 2,
+                        mb: 3,
+                        cursor: 'pointer',
+                        color: '#5194c4',
+                        textDecoration: 'underline',
+                      }}
+                      onClick={() =>
+                        window.open(
+                          'https://colombiacompra.gov.co/clasificador-de-bienes-y-Servicios',
+                        )
+                      }
                     >
-                      <MenuItem value='rawMaterial' style={{fontWeight: 200}}>
-                        <IntlMessages id='product.type.rawMaterial' />
-                      </MenuItem>
-                      <MenuItem
-                        value='intermediateProduct'
+                      Consúltalo aquí
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='categoria-label'
                         style={{fontWeight: 200}}
                       >
-                        <IntlMessages id='product.type.intermediateProduct' />
-                      </MenuItem>
-                      <MenuItem value='endProduct' style={{fontWeight: 200}}>
-                        <IntlMessages id='product.type.endProduct' />
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                {sectionEcommerce === true ? (
-                  <>
-                    <Typography
-                      component='h3'
+                        Categoría
+                      </InputLabel>
+                      <Select
+                        defaultValue={selectedCategory}
+                        value={selectedCategory}
+                        name='category'
+                        labelId='categoria-label'
+                        label='Categoría'
+                        onChange={handleFieldCategory}
+                      >
+                        {categories &&
+                        Array.isArray(categories) &&
+                        categories.length >= 1
+                          ? categories.map((obj, index) => {
+                              return (
+                                <MenuItem
+                                  key={index}
+                                  value={obj}
+                                  style={{fontWeight: 200}}
+                                >
+                                  {obj.description}
+                                </MenuItem>
+                              );
+                            })
+                          : null}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={`Peso (${weight_unit})`}
+                      name='weight'
+                      variant='outlined'
                       sx={{
-                        fontSize: 12,
-                        fontWeight: Fonts.BOLD,
-                        ml: {xs: 3, lg: 4},
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
                       }}
-                    >
-                      Sección ecommerce
-                    </Typography>
-                    <Grid item xs={12}>
-                      <AppTextField
-                        label='Título del Producto de forma pública'
-                        name='title'
-                        variant='outlined'
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={`Precio costo sugerido (${money_unit})`}
+                      name='costPriceUnit'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={`Precio venta sugerido (${money_unit})`}
+                      name='referecialPriceSell'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      disabled
+                      label='Stock inicial'
+                      name='initialStock'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='typeProduct-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Tipo de producto
+                      </InputLabel>
+                      <Select
+                        defaultValue={query.typeProduct}
+                        name='typeProduct'
+                        labelId='typeProduct-label'
+                        label='Tipo de producto'
+                        disabled
+                        onChange={handleFieldType}
+                      >
+                        <MenuItem value='rawMaterial' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.type.rawMaterial' />
+                        </MenuItem>
+                        <MenuItem
+                          value='intermediateProduct'
+                          style={{fontWeight: 200}}
+                        >
+                          <IntlMessages id='product.type.intermediateProduct' />
+                        </MenuItem>
+                        <MenuItem value='endProduct' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.type.endProduct' />
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  {sectionEcommerce === true ? (
+                    <>
+                      <Typography
+                        component='h3'
                         sx={{
-                          width: '100%',
-                          '& .MuiInputBase-input': {
-                            fontSize: 14,
-                          },
-                          my: 2,
+                          fontSize: 12,
+                          fontWeight: Fonts.BOLD,
+                          ml: {xs: 3, lg: 4},
                         }}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <AppTextField
-                        label='Descripción de forma pública'
-                        name='commercialDescription'
-                        multiline
-                        rows={4}
-                        variant='outlined'
-                        sx={{
-                          width: '100%',
-                          '& .MuiInputBase-input': {
-                            fontSize: 14,
-                          },
-                          my: 2,
-                        }}
-                      />
-                    </Grid>
-                    {ecommerce_params &&
-                    Array.isArray(ecommerce_params) &&
-                    ecommerce_params.length >= 1 ? (
-                      ecommerce_params.map((obj, index) => {
-                        return (
-                          <Grid key={index} item xs={12}>
-                            <FormControl fullWidth sx={{my: 2}}>
-                              <InputLabel
-                                id='categoria-label'
-                                style={{fontWeight: 200}}
-                              >
-                                {obj.featureName}
-                              </InputLabel>
-                              <Select
-                                key={'SelectFilter' + index}
-                                value={selectedFilters[obj.featureName]}
-                                name={obj.featureName}
-                                labelId={obj.featureName + '-label'}
-                                label={obj.featureName}
-                                onChange={handleFieldFilter}
-                              >
-                                {obj.values &&
-                                Array.isArray(obj.values) &&
-                                obj.values.length >= 1 ? (
-                                  obj.values.map((obj, index) => {
-                                    return (
-                                      <MenuItem
-                                        key={index + 1}
-                                        value={index + 1}
-                                        style={{fontWeight: 200}}
-                                      >
-                                        {obj.name}
-                                      </MenuItem>
-                                    );
-                                  })
-                                ) : (
+                      >
+                        Sección ecommerce (opcional)
+                      </Typography>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Título del Producto de forma pública'
+                          name='title'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Descripción de forma pública'
+                          name='commercialDescription'
+                          multiline
+                          rows={4}
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                      {ecommerce_params &&
+                      Array.isArray(ecommerce_params) &&
+                      ecommerce_params.length >= 1 ? (
+                        ecommerce_params.map((obj, index) => {
+                          return (
+                            <Grid key={index} item xs={12}>
+                              <FormControl fullWidth sx={{my: 2}}>
+                                <InputLabel
+                                  id='categoria-label'
+                                  style={{fontWeight: 200}}
+                                >
+                                  {obj.featureName}
+                                </InputLabel>
+                                <Select
+                                  key={'SelectFilter' + index}
+                                  value={selectedFilters[obj.featureName]}
+                                  name={obj.featureName}
+                                  labelId={obj.featureName + '-label'}
+                                  label={obj.featureName}
+                                  onChange={handleFieldFilter}
+                                >
+                                  {obj.values &&
+                                  Array.isArray(obj.values) &&
+                                  obj.values.length >= 1 ? (
+                                    obj.values.map((obj, index) => {
+                                      return (
+                                        <MenuItem
+                                          key={index + 1}
+                                          value={index + 1}
+                                          style={{fontWeight: 200}}
+                                        >
+                                          {obj.name}
+                                        </MenuItem>
+                                      );
+                                    })
+                                  ) : (
+                                    <MenuItem
+                                      key={1}
+                                      value={'noFilters'}
+                                      style={{fontWeight: 200}}
+                                    >
+                                      <IntlMessages id='common.undefinedFilter' />
+                                    </MenuItem>
+                                  )}
                                   <MenuItem
-                                    key={1}
+                                    key={0}
                                     value={'noFilters'}
                                     style={{fontWeight: 200}}
                                   >
                                     <IntlMessages id='common.undefinedFilter' />
                                   </MenuItem>
-                                )}
-                                <MenuItem
-                                  key={0}
-                                  value={'noFilters'}
-                                  style={{fontWeight: 200}}
-                                >
-                                  <IntlMessages id='common.undefinedFilter' />
-                                </MenuItem>
-                              </Select>
-                            </FormControl>
-                          </Grid>
-                        );
-                      })
-                    ) : (
-                      <></>
-                    )}
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                          );
+                        })
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  ) : (
+                    <></>
+                  )}
 
-                    {/* IMPORTANTE NO BORRAR */}
-                    <Grid item xs={12} md={12}>
-                      <Button
-                        variant='contained'
-                        color='secondary'
-                        component='label'
-                      >
-                        Subir imagen
-                        <input
-                          type='file'
-                          hidden
-                          multiple
-                          onChange={getImage}
-                          id='imgInp'
-                          name='imgInp'
-                          accept='.png, .jpeg, .jpg'
-                        />
-                      </Button>
-                    </Grid>
-                    {/* <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
-                      <img id='preview' className={classes.img} src=''></img>
-                    </Box> */}
-                    {/* {selectedImages ? (
-                      selectedImages.map((photo) => {
-                        return (
-                          <Grid item xs={12}  md={4}>
-                            <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
-                            <Badge className={classes.img} color="secondary" badgeContent=" ">
-                               <img className={classes.img} src={photo} key={photo}></img>
-                            </Badge>
-
-                            </Box>
-                          </Grid>
-                        )
-                      })
-                    ) : (
-                      <></>
-                    )} */}
-                    <ImageList
-                      sx={{
-                        width: 500,
-                        height: 450,
-                        // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
-                        transform: 'translateZ(0)',
-                        my: 1,
-                        p: 4,
-                      }}
-                      rowHeight={200}
-                      gap={1}
+                  {/* IMPORTANTE NO BORRAR */}
+                  <Grid item xs={12} md={12}>
+                    <Button
+                      variant='contained'
+                      color='secondary'
+                      component='label'
                     >
-                      {selectedImages.map((item, index) => {
-                        const cols = item.featured ? 2 : 1;
-                        const rows = item.featured ? 2 : 1;
+                      Subir imagen
+                      <input
+                        type='file'
+                        hidden
+                        multiple
+                        onChange={getImage}
+                        id='imgInp'
+                        name='imgInp'
+                        accept='.png, .jpeg, .jpg'
+                      />
+                    </Button>
+                  </Grid>
+                  {/* <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                  <img id='preview' className={classes.img} src=''></img>
+                </Box> */}
+                  {/* {selectedImages ? (
+                  selectedImages.map((photo) => {
+                    return (
+                      <Grid item xs={12}  md={4}>
+                        <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                        <Badge className={classes.img} color="secondary" badgeContent=" ">
+                            <img className={classes.img} src={photo} key={photo}></img>
+                        </Badge>
 
-                        return (
-                          <ImageListItem key={item} cols={cols} rows={rows}>
-                            <img
-                              className={classes.img}
-                              src={item}
-                              key={item}
-                            ></img>
-                            <ImageListItemBar
-                              sx={{
-                                background:
-                                  'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-                                  'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-                              }}
-                              // title={"Prueba"}
-                              position='top'
-                              actionIcon={
-                                <IconButton
-                                  sx={{color: 'white'}}
-                                  aria-label={`star prueba`}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              }
-                              actionPosition='left'
-                            />
-                          </ImageListItem>
-                        );
-                      })}
-                    </ImageList>
-                    <Grid item xs={12} md={12}>
-                      <FormGroup
-                        sx={{
-                          ml: 2,
-                        }}
-                      >
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={publish}
-                              onChange={handlePublicChange}
-                            />
-                          }
-                          label='Mantener Público en Ecommerce'
-                        />
-                      </FormGroup>
-                    </Grid>
-                  </>
+                        </Box>
+                      </Grid>
+                    )
+                  })
+                ) : (
+                  <></>
+                )} */}
+                  <ImageList
+                    sx={{
+                      width: 500,
+                      height: 450,
+                      // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
+                      transform: 'translateZ(0)',
+                      my: 1,
+                      p: 4,
+                    }}
+                    rowHeight={200}
+                    gap={1}
+                  >
+                    {selectedImages.map((item, index) => {
+                      const cols = item.featured ? 2 : 1;
+                      const rows = item.featured ? 2 : 1;
+
+                      return (
+                        <ImageListItem key={item} cols={cols} rows={rows}>
+                          <img
+                            className={classes.img}
+                            src={item.src ? item.src : item}
+                            key={item}
+                          ></img>
+                          <ImageListItemBar
+                            sx={{
+                              background:
+                                'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+                                'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                            }}
+                            // title={"Prueba"}
+                            position='top'
+                            actionIcon={
+                              <IconButton
+                                sx={{color: 'white'}}
+                                aria-label={`star prueba`}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            }
+                            actionPosition='left'
+                          />
+                        </ImageListItem>
+                      );
+                    })}
+                  </ImageList>
+                  {sectionEcommerce === true ? (
+                    <>
+                      <Grid item xs={12} md={12}>
+                        <FormGroup
+                          sx={{
+                            ml: 2,
+                          }}
+                        >
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={publish}
+                                onChange={handlePublicChange}
+                              />
+                            }
+                            label='Mantener Público en Ecommerce'
+                          />
+                        </FormGroup>
+                      </Grid>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </Grid>
+
+                {typeProduct != 'rawMaterial' ? (
+                  <Box sx={{textAlign: 'center'}}>
+                    <Button
+                      sx={{width: 1 / 2, mb: 4}}
+                      variant='outlined'
+                      onClick={handleClickOpen}
+                    >
+                      Añade productos
+                    </Button>
+                    <SubProducts
+                      arrayObjs={selectedProducts}
+                      toDelete={removeProduct}
+                    />
+                  </Box>
                 ) : (
                   <></>
                 )}
-              </Grid>
 
-              {typeProduct != 'rawMaterial' ? (
-                <Box sx={{textAlign: 'center'}}>
-                  <Button
-                    sx={{width: 1 / 2, mb: 4}}
-                    variant='outlined'
-                    onClick={handleClickOpen}
+                <Collapse in={showAlert}>
+                  <Alert
+                    severity='error'
+                    action={
+                      <IconButton
+                        aria-label='close'
+                        color='inherit'
+                        size='small'
+                        onClick={() => {
+                          setShowAlert(false);
+                        }}
+                      >
+                        <CloseIcon fontSize='inherit' />
+                      </IconButton>
+                    }
+                    sx={{mb: 2}}
                   >
-                    Añade productos
+                    {typeAlert == 'noImage' ? (
+                      'Selecciona una cantidad menor al stock existente.'
+                    ) : (
+                      <></>
+                    )}
+                    {typeAlert == 'faltaProduct' ? (
+                      'Selecciona un producto.'
+                    ) : (
+                      <></>
+                    )}
+                    {typeAlert == 'maxStock' ? (
+                      'No puedes sobrepasar el stock.'
+                    ) : (
+                      <></>
+                    )}
+                  </Alert>
+                </Collapse>
+                <ButtonGroup
+                  orientation='vertical'
+                  variant='outlined'
+                  sx={{width: 1, my: 3}}
+                  aria-label='outlined button group'
+                >
+                  <Button
+                    color='primary'
+                    type='submit'
+                    sx={{mx: 'auto', width: '50%', py: 3}}
+                    variant='contained'
+                    size='medium'
+                    disabled={isSubmitting}
+                    startIcon={<SaveAltOutlinedIcon />}
+                  >
+                    Finalizar
                   </Button>
-                  <SubProducts
-                    arrayObjs={selectedProducts}
-                    toDelete={removeProduct}
-                  />
-                </Box>
-              ) : (
-                <></>
-              )}
-
-              <Collapse in={showAlert}>
-                <Alert
-                  severity='error'
-                  action={
-                    <IconButton
-                      aria-label='close'
-                      color='inherit'
-                      size='small'
-                      onClick={() => {
-                        setShowAlert(false);
-                      }}
-                    >
-                      <CloseIcon fontSize='inherit' />
-                    </IconButton>
-                  }
-                  sx={{mb: 2}}
-                >
-                  {typeAlert == 'noImage' ? (
-                    'Selecciona una cantidad menor al stock existente.'
-                  ) : (
-                    <></>
-                  )}
-                  {typeAlert == 'faltaProduct' ? (
-                    'Selecciona un producto.'
-                  ) : (
-                    <></>
-                  )}
-                  {typeAlert == 'maxStock' ? (
-                    'No puedes sobrepasar el stock.'
-                  ) : (
-                    <></>
-                  )}
-                </Alert>
-              </Collapse>
-              <ButtonGroup
-                orientation='vertical'
-                variant='outlined'
-                sx={{width: 1, my: 3}}
-                aria-label='outlined button group'
-              >
-                <Button
-                  color='primary'
-                  type='submit'
-                  sx={{mx: 'auto', width: '50%', py: 3}}
-                  variant='contained'
-                  size='medium'
-                  disabled={isSubmitting}
-                  startIcon={<SaveAltOutlinedIcon />}
-                >
-                  Finalizar
-                </Button>
-                {/* <Button
+                  {/* <Button
                   sx={{mx: 'auto', width: 1 / 2}}
                   variant='outlined'
                   size='large'
@@ -1159,18 +1279,117 @@ const UpdateProduct = (props) => {
                 >
                   Guardar y registrar nuevo
                 </Button> */}
-                <Button
-                  sx={{mx: 'auto', width: '50%', py: 3}}
-                  variant='outlined'
-                  size='medium'
-                  startIcon={<ArrowCircleLeftOutlinedIcon />}
-                  onClick={cancel}
-                >
-                  Cancelar
-                </Button>
-              </ButtonGroup>
-            </Form>
-          )}
+                  <Button
+                    sx={{mx: 'auto', width: '50%', py: 3}}
+                    variant='outlined'
+                    size='medium'
+                    startIcon={<ArrowCircleLeftOutlinedIcon />}
+                    onClick={cancel}
+                  >
+                    Cancelar
+                  </Button>
+                </ButtonGroup>
+                {minTutorial ? (
+                  <Box
+                    sx={{
+                      position: 'fixed',
+                      right: 0,
+                      top: {xs: 325, xl: 305},
+                      zIndex: 1110,
+                    }}
+                    className='customizerOption'
+                  >
+                    <Box
+                      sx={{
+                        borderRadius: '30px 0 0 30px',
+                        mb: 1,
+                        backgroundColor: orange[500],
+                        '&:hover': {
+                          backgroundColor: orange[700],
+                        },
+                        '& button': {
+                          borderRadius: '30px 0 0 30px',
+
+                          '&:focus': {
+                            borderRadius: '30px 0 0 30px',
+                          },
+                        },
+                      }}
+                    >
+                      <IconButton
+                        sx={{
+                          mt: 1,
+                          '& svg': {
+                            height: 35,
+                            width: 35,
+                          },
+                          color: 'white',
+                          pr: 5,
+                        }}
+                        edge='end'
+                        color='inherit'
+                        aria-label='open drawer'
+                        onMouseOver={() => changeIcon()}
+                        onMouseLeave={() => changeIcon2()}
+                        onClick={() =>
+                          window.open('https://youtu.be/bjjUFNapWiY/')
+                        }
+                      >
+                        {iconSelected()}
+                      </IconButton>
+                    </Box>
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      position: 'fixed',
+                      right: 0,
+                      top: {xs: 325, xl: 305},
+                      zIndex: 1110,
+                    }}
+                    className='customizerOption'
+                  >
+                    <Box
+                      sx={{
+                        borderRadius: '30px 0 0 30px',
+                        mb: 1,
+                        backgroundColor: orange[500],
+                        '&:hover': {
+                          backgroundColor: orange[700],
+                        },
+                        '& button': {
+                          borderRadius: '30px 0 0 30px',
+
+                          '&:focus': {
+                            borderRadius: '30px 0 0 30px',
+                          },
+                        },
+                      }}
+                    >
+                      <IconButton
+                        sx={{
+                          mt: 1,
+                          '& svg': {
+                            height: 35,
+                            width: 35,
+                          },
+                          color: 'white',
+                        }}
+                        edge='end'
+                        color='inherit'
+                        aria-label='open drawer'
+                        onClick={() =>
+                          window.open('https://youtu.be/bjjUFNapWiY/')
+                        }
+                      >
+                        {iconSelected()}
+                      </IconButton>
+                    </Box>
+                  </Box>
+                )}
+              </Form>
+            );
+          }}
         </Formik>
         <Dialog
           open={open}

@@ -129,7 +129,7 @@ const JWTAuthAuthProvider = ({children}) => {
 
   const logout = async () => {
     localStorage.removeItem('token');
-    console.log("El verdadero cerrar sesion")
+    console.log('El verdadero cerrar sesion');
     setAuthToken();
     setJWTAuthData({
       user: null,

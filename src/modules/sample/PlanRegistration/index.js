@@ -20,7 +20,7 @@ import {
   AppPageMeta,
   AppAnimate,
   AccountTabsWrapper,
-  Card
+  Card,
 } from '@mui/material';
 import {Fonts} from '../../../shared/constants/AppEnums';
 import {useDispatch, useSelector} from 'react-redux';
@@ -114,7 +114,7 @@ const UpgradeBusiness = () => {
     eMerchantSlugName: '',
     defaultMaxPrice: 1000,
     defaultMinPrice: 0,
-    isEcommerceEnabled: true
+    isEcommerceEnabled: true,
   };
   const registerSuccess = () => {
     return (
@@ -234,18 +234,22 @@ const UpgradeBusiness = () => {
                     payload: {
                       merchantId: userDataRes.merchantSelected.merchantId,
                       planDesiredId: userDataRes.merchantSelected.planDesiredId,
-                      promotionCodeId: userDataRes.merchantSelected.promotionCodeId,
+                      promotionCodeId:
+                        userDataRes.merchantSelected.promotionCodeId,
                       serieDocumenteBilling: data.serieDocumenteBilling || '',
-                      serieBackDocumenteBilling: data.serieBackDocumenteBilling || '',
+                      serieBackDocumenteBilling:
+                        data.serieBackDocumenteBilling || '',
                       serieDocumenteReceipt: data.serieDocumenteReceipt || '',
-                      serieBackDocumenteReceipt: data.serieBackDocumenteReceipt || '',
+                      serieBackDocumenteReceipt:
+                        data.serieBackDocumenteReceipt || '',
                       serieDocumenteReferralGuide:
                         data.serieDocumenteReferralGuide || '',
                       serieBackDocumenteReferralGuide:
                         data.serieBackDocumenteReferralGuide || '',
                       eMerchantSlugName: data.eMerchantSlugName || '',
                       merchantMasterId: userDataRes.merchantMasterId,
-                      firstPlanDefault: userDataRes.merchantSelected.firstPlanDefault,
+                      firstPlanDefault:
+                        userDataRes.merchantSelected.firstPlanDefault,
                       typeMerchant: userDataRes.merchantSelected.typeMerchant,
                       categories: initialCategories,
                       filters: filters,
@@ -259,18 +263,22 @@ const UpgradeBusiness = () => {
                     payload: {
                       merchantId: userDataRes.merchantSelected.merchantId,
                       planDesiredId: userDataRes.merchantSelected.planDesiredId,
-                      promotionCodeId: userDataRes.merchantSelected.promotionCodeId,
+                      promotionCodeId:
+                        userDataRes.merchantSelected.promotionCodeId,
                       serieDocumenteBilling: data.serieDocumenteBilling || '',
-                      serieBackDocumenteBilling: data.serieBackDocumenteBilling || '',
+                      serieBackDocumenteBilling:
+                        data.serieBackDocumenteBilling || '',
                       serieDocumenteReceipt: data.serieDocumenteReceipt || '',
-                      serieBackDocumenteReceipt: data.serieBackDocumenteReceipt || '',
+                      serieBackDocumenteReceipt:
+                        data.serieBackDocumenteReceipt || '',
                       serieDocumenteReferralGuide:
                         data.serieDocumenteReferralGuide || '',
                       serieBackDocumenteReferralGuide:
                         data.serieBackDocumenteReferralGuide || '',
                       eMerchantSlugName: data.eMerchantSlugName || '',
                       merchantMasterId: userDataRes.merchantMasterId,
-                      firstPlanDefault: userDataRes.merchantSelected.firstPlanDefault,
+                      firstPlanDefault:
+                        userDataRes.merchantSelected.firstPlanDefault,
                       typeMerchant: userDataRes.merchantSelected.typeMerchant,
                       categories: initialCategories,
                       filters: filters,
@@ -316,9 +324,7 @@ const UpgradeBusiness = () => {
           </Box>
         </Box>
       </Card>
-      
     </>
-    
   );
 };
 

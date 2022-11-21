@@ -246,6 +246,7 @@ const NewProduct = (props) => {
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
+  const [typeIcon, setTypeIcon] = React.useState('2');
 
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
@@ -352,9 +353,7 @@ const NewProduct = (props) => {
 
       toGetUserData(getUserDataPayload);
     } else {
-      if (
-        userDataRes.merchantSelected.isEcommerceEnabled == true
-      ) {
+      if (userDataRes.merchantSelected.isEcommerceEnabled == true) {
         setSectionEcommerce(true);
       }
     }
@@ -366,6 +365,7 @@ const NewProduct = (props) => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     setTimeout(() => {
       setMinTutorial(true);
+      setTypeIcon('1');
     }, 2000);
   }, []);
 
@@ -493,24 +493,30 @@ const NewProduct = (props) => {
   const getImage = (event) => {
     console.log('Archivo recogido ', event.target.files[0]);
     selectedFile = event.target.files[0];
-    const [file] = imgInp.files;
-    imagePayload.request.payload.contentType = file.type;
-    imagePayload.request.payload.name = file.name;
-    if (file) {
-      // preview.src = URL.createObjectURL(file);
-      console.log('Cuál es el imagePayload', imagePayload);
-      toCreatePresigned(imagePayload, {
-        image: file,
-        type: file?.type || null,
-      });
-    } else {
-      event = null;
-      console.log('no se selecciono un archivo');
-    }
+    // const [file] = imgInp.files;
+    // imagePayload.request.payload.contentType = file.type;
+    // imagePayload.request.payload.name = file.name;
+    // if (file) {
+    //   // preview.src = URL.createObjectURL(file);
+    //   console.log('Cuál es el imagePayload', imagePayload);
+    //   toCreatePresigned(imagePayload, {
+    //     image: file,
+    //     type: file?.type || null,
+    //   });
+    // } else {
+    //   event = null;
+    //   console.log('no se selecciono un archivo');
+    // }
     if (event.target.files) {
-      const fileArray = Array.from(event.target.files).map((file) =>
-        URL.createObjectURL(file),
-      );
+      const fileArray = Array.from(event.target.files).map((file) => {
+        imagePayload.request.payload.contentType = file.type;
+        imagePayload.request.payload.name = file.name;
+        toCreatePresigned(imagePayload, {
+          image: file,
+          type: file?.type || null,
+        });
+        return URL.createObjectURL(file);
+      });
       // console.log("este es el fileArray", fileArray)
       // setSelectedImages((prevImages)=>prevImages.concat(fileArray))
 
@@ -530,17 +536,6 @@ const NewProduct = (props) => {
     Router.push('/sample/products/table');
   };
   const handleData = (data, {setSubmitting}) => {
-    console.log(
-      'Número de productos actual: ',
-      businessParameter.find(
-        (obj) => obj.abreParametro == 'CURRENT_COUNT_MOVEMENT',
-      ).catalogNumberProducts,
-    );
-    console.log(
-      'Número de productos límite: ',
-      userDataRes.merchantSelected.plans.find((obj) => obj.active == true)
-        .limits.catalogNumberProducts,
-    );
     if (
       businessParameter.find(
         (obj) => obj.abreParametro == 'CURRENT_COUNT_MOVEMENT',
@@ -744,6 +739,23 @@ const NewProduct = (props) => {
     console.log('estado de cuentas', status);
     return status;
   };
+  const changeIcon = () => {
+    setTypeIcon('2');
+  };
+  const changeIcon2 = () => {
+    setTypeIcon('1');
+  };
+  const iconSelected = () => {
+    if (typeIcon == '1') {
+      return (
+        <>
+          <YouTubeIcon fontSize='inherit' />
+        </>
+      );
+    } else if (typeIcon == '2') {
+      return <>VER TUTORIAL</>;
+    }
+  };
 
   function srcset(image, width, height, rows = 1, cols = 1) {
     return {
@@ -856,21 +868,19 @@ const NewProduct = (props) => {
                     >
                       {categories &&
                       Array.isArray(categories) &&
-                      categories.length >= 1 ? (
-                        categories.map((obj, index) => {
-                          return (
-                            <MenuItem
-                              key={index}
-                              value={obj}
-                              style={{fontWeight: 200}}
-                            >
-                              {obj.description}
-                            </MenuItem>
-                          );
-                        })
-                      ) : (
-                        null
-                      )}
+                      categories.length >= 1
+                        ? categories.map((obj, index) => {
+                            return (
+                              <MenuItem
+                                key={index}
+                                value={obj}
+                                style={{fontWeight: 200}}
+                              >
+                                {obj.description}
+                              </MenuItem>
+                            );
+                          })
+                        : null}
                     </Select>
                   </FormControl>
                 </Grid>
@@ -1301,11 +1311,13 @@ const NewProduct = (props) => {
                       edge='end'
                       color='inherit'
                       aria-label='open drawer'
+                      onMouseOver={() => changeIcon()}
+                      onMouseLeave={() => changeIcon2()}
                       onClick={() =>
                         window.open('https://youtu.be/bjjUFNapWiY/')
                       }
                     >
-                      <YouTubeIcon fontSize='inherit' />
+                      {iconSelected()}
                     </IconButton>
                   </Box>
                 </Box>
@@ -1352,7 +1364,7 @@ const NewProduct = (props) => {
                         window.open('https://youtu.be/bjjUFNapWiY/')
                       }
                     >
-                      VER TUTORIAL
+                      {iconSelected()}
                     </IconButton>
                   </Box>
                 </Box>
