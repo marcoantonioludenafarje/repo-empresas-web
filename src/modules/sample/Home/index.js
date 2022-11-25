@@ -5,7 +5,7 @@ import AppInfoView from '@crema/core/AppInfoView';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import {red} from '@mui/material/colors';
-
+import {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -26,6 +26,8 @@ const Home = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const router = useRouter();
+  const {getRolUserRes} = useSelector(({general}) => general);
   console.log('Iniciando Home');
   //API RESPONSES
   const {businessParameter} = useSelector(({general}) => general);
@@ -40,6 +42,22 @@ const Home = (props) => {
     ).value;
     console.log("ecommerceParameterState", ecommerceParameterState)
   }
+
+
+  useEffect(() => {
+    console.log("Veamos que hay previo",getRolUserRes )
+    if ( getRolUserRes && getRolUserRes.merchantSelected &&
+      (getRolUserRes.merchantSelected.firstPlanDefault ||
+      getRolUserRes.merchantSelected.upgradeToNewPlan)
+    ) {
+        console.log("Veamos que hay")
+        router.push('/sample/planRegistration')
+    }
+  
+
+  }, [getRolUserRes]);
+
+
   return (
     <Card sx={{px: 4, py: 20}}>
       <Typography

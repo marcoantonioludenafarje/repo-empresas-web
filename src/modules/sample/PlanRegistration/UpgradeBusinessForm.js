@@ -116,7 +116,7 @@ const UpgradeBusinessForm = ({
     productCategoryId: '',
   };
   useEffect(() => {
-    if (!getBusinessPlanRes) {
+    if (!getBusinessPlanRes & !(userDataRes === undefined)) {
       console.log('Plan de negocio');
 
       const toGetBusinessPlan = (payload) => {
@@ -132,7 +132,7 @@ const UpgradeBusinessForm = ({
 
       toGetBusinessPlan(getBusinessPlanPayload);
     }
-  }, []);
+  }, [userDataRes]);
   useEffect(() => {
     updateCategories(initialCategories);
   }, [initialCategories]);
@@ -224,7 +224,8 @@ const UpgradeBusinessForm = ({
     //   setTotalAmountWithConcepts(event.target.value);
     // }
   };
-  return getBusinessPlanRes || userDataRes.merchantSelected.firstPlanDefault ? (
+  console.log("Aca ps userDataRes", userDataRes)
+  return getBusinessPlanRes || ( !(userDataRes === undefined) && userDataRes.merchantSelected && userDataRes.merchantSelected.firstPlanDefault) ? (
     <>
       <Form
         noValidate

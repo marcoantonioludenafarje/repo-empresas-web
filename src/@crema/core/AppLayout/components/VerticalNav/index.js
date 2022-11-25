@@ -9,14 +9,13 @@ import {useRouter} from 'next/router';
 import {useAuthMethod, useAuthUser} from '../../../../utility/AuthHooks';
 import {getRolUser} from '../../../../../redux/actions/General';
 import {useDispatch, useSelector} from 'react-redux';
+import { useState } from 'react';
 const VerticalNav = () => {
   const router = useRouter();
   const {user, isLoading, isAuthenticated} = useAuthUser();
-  console.log('Usuario', user);
-  console.log('aca ps amiguo', rolesRoutesConfig, user);
   const {getRolUserRes} = useSelector(({general}) => general);
-  let routesRolGeneral = rolesRoutesConfig[user.role[0]];
-  const [menuItems, setMenuItems] = React.useState('');
+
+  const [routesRolGeneral, setRoutesRolGeneral]=useState([])
 
   function checkAvailability(arr, val) {
     return arr.some((arrVal) => val === arrVal);
@@ -35,7 +34,38 @@ const VerticalNav = () => {
     return pathsBack;
   }
 
+
   useEffect(() => {
+  
+    if(rolesRoutesConfig[user.role[0]] && rolesRoutesConfig[user.role[0]].length >0 &&
+       getRolUserRes && getRolUserRes.merchantSelected ){
+      if ( getRolUserRes.merchantSelected.firstPlanDefault ||
+        getRolUserRes.merchantSelected.upgradeToNewPlan  ){
+          console.log("Las cositas", rolesRoutesConfig[user.role[0]])
+          let cositas = rolesRoutesConfig[user.role[0]].map(item=>{
+            if(item.children && item.children.length >0){
+              
+              return {...item, children:item.children.map(
+                elem =>({...elem,urlRedirect: "/sample/planRegistration", isProtected:true }))}
+            }else{
+              return {...item,urlRedirect:"/sample/planRegistration", isProtected:true,}
+            }
+          
+          })
+          console.log("Entro aca papu yeah", cositas)
+          setRoutesRolGeneral(cositas)
+
+        }else{
+          console.log("Ya volvio a las rutas normales")
+          setRoutesRolGeneral(rolesRoutesConfig[user.role[0]])
+        }
+
+
+
+    }
+
+
+    
     // let listPrivileges = [];
 
     // if (getRolUserRes) {
@@ -82,15 +112,12 @@ const VerticalNav = () => {
     //     }
     //   }
     // }
-    routesRolGeneral = localStorage.getItem('routesRolGeneral2');
-    localStorage.setItem('routesAndPrivileges', true);
-  }, []);
+    // routesRolGeneral = localStorage.getItem('routesRolGeneral2');
+    // localStorage.setItem('routesAndPrivileges', true);
+  }, [rolesRoutesConfig, getRolUserRes]);
 
-  console.log('Final de rutas final: ', routesRolGeneral);
-  console.log('LocalStoragr Routes', localStorage.getItem('routesRolGeneral2'));
-  return localStorage.getItem('routesRolGeneral2') !== false &&
-    !isLoading &&
-    isAuthenticated ? (
+
+  return  (!isLoading && isAuthenticated && routesRolGeneral && routesRolGeneral.length >0 )? (
     <List
       sx={{
         position: 'relative',
@@ -100,6 +127,7 @@ const VerticalNav = () => {
     >
       {routesRolGeneral.map((item) => (
         <React.Fragment key={item.id}>
+          {/* <span key={item.id + "blue"}>{JSON.stringify(item)}</span> */}
           {item.type === 'group' && (
             <NavVerticalGroup item={item} level={0} router={router} />
           )}

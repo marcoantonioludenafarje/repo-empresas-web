@@ -61,6 +61,7 @@ const AwsAuthProvider = ({children}) => {
   console.log('businessParameter', businessParameter);
   // const {userDataRes} = useSelector(({user}) => user);
   const {getRolUserRes} = useSelector(({general}) => general);
+  console.log("Esto es getRolUserRes", getRolUserRes)
   let listPayload;
   let businessPayload;
   let dataBusinessPayload;

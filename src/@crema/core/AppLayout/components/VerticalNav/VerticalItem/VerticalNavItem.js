@@ -29,7 +29,7 @@ const VerticalNavItem = ({
         'rounded-menu-reverse': menuStyle === MenuStyle.ROUNDED_REVERSE,
         'standard-menu': menuStyle === MenuStyle.STANDARD,
         'curved-menu': menuStyle === MenuStyle.CURVED_MENU,
-        active: item.url === pathname,
+        active:  item.url === pathname ,
       })}
       sx={{
         height: 40,

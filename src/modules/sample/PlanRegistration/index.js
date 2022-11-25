@@ -39,6 +39,7 @@ import {
   onGetBusinessParameter,
   upgradeToNewPlan,
 } from '../../../redux/actions/General';
+import { useEffect } from 'react';
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 const validationSchema = yup.object({
@@ -100,22 +101,29 @@ const UpgradeBusiness = () => {
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
   const {userDataRes} = useSelector(({user}) => user);
-  console.log('userDataRes', userDataRes);
-  const initialValues = {
-    planDesired: userDataRes.merchantSelected.planDesired,
-    planDesiredId: userDataRes.merchantSelected.planDesiredId,
-    documentType: docType /* userAttributes['custom:businessDocumentType'] */,
-    serieDocumenteBilling: '',
-    serieBackDocumenteBilling: '',
-    serieDocumenteReceipt: '',
-    serieBackDocumenteReceipt: '',
-    serieDocumenteReferralGuide: '',
-    serieBackDocumenteReferralGuide: '',
-    eMerchantSlugName: '',
-    defaultMaxPrice: 1000,
-    defaultMinPrice: 0,
-    isEcommerceEnabled: true,
-  };
+  const [initialValues, setInitialValues] = React.useState({});
+
+
+  useEffect(() => {
+    if(userDataRes && userDataRes.merchantSelected){
+      setInitialValues ({
+        planDesired: userDataRes.merchantSelected.planDesired,
+        planDesiredId: userDataRes.merchantSelected.planDesiredId,
+        documentType: docType /* userAttributes['custom:businessDocumentType'] */,
+        serieDocumenteBilling: '',
+        serieBackDocumenteBilling: '',
+        serieDocumenteReceipt: '',
+        serieBackDocumenteReceipt: '',
+        serieDocumenteReferralGuide: '',
+        serieBackDocumenteReferralGuide: '',
+        eMerchantSlugName: '',
+        defaultMaxPrice: 1000,
+        defaultMinPrice: 0,
+        isEcommerceEnabled: true,
+      })
+    }
+  }, [userDataRes]);
+
   const registerSuccess = () => {
     return (
       successMessage != undefined && upgradeToNewPlanRes != undefined
@@ -206,124 +214,133 @@ const UpgradeBusiness = () => {
   };
   return (
     <>
-      <Card sx={{p: 4}}>
-        <Box className='account-tabs-content'>
-          <Box
-            sx={{
-              position: 'relative',
-              maxWidth: 750,
-            }}
-          >
-            <Formik
-              validateOnChange={false}
-              validateOnBlur={true}
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={(data, {setSubmitting}) => {
-                setSubmitting(true);
-                console.log('data: ', {...data, documentType: docType});
-                // TODO Api Call here to save user info
-                dispatch({type: FETCH_SUCCESS, payload: undefined});
-                dispatch({type: FETCH_ERROR, payload: undefined});
-                dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
+            {(initialValues != {}) ? (
 
-                setExecAll(true);
-                setExecAll(false);
-                toUpgradeToNewPlan({
-                  request: {
-                    payload: {
-                      merchantId: userDataRes.merchantSelected.merchantId,
-                      planDesiredId: userDataRes.merchantSelected.planDesiredId,
-                      promotionCodeId:
-                        userDataRes.merchantSelected.promotionCodeId,
-                      serieDocumenteBilling: data.serieDocumenteBilling || '',
-                      serieBackDocumenteBilling:
-                        data.serieBackDocumenteBilling || '',
-                      serieDocumenteReceipt: data.serieDocumenteReceipt || '',
-                      serieBackDocumenteReceipt:
-                        data.serieBackDocumenteReceipt || '',
-                      serieDocumenteReferralGuide:
-                        data.serieDocumenteReferralGuide || '',
-                      serieBackDocumenteReferralGuide:
-                        data.serieBackDocumenteReferralGuide || '',
-                      eMerchantSlugName: data.eMerchantSlugName || '',
-                      merchantMasterId: userDataRes.merchantMasterId,
-                      firstPlanDefault:
-                        userDataRes.merchantSelected.firstPlanDefault,
-                      typeMerchant: userDataRes.merchantSelected.typeMerchant,
-                      categories: initialCategories,
-                      filters: filters,
-                      price: [data.defaultMinPrice, data.defaultMaxPrice],
-                      isEcommerceEnabled: publish,
-                    },
-                  },
-                });
-                console.log('Esto se envia', {
-                  request: {
-                    payload: {
-                      merchantId: userDataRes.merchantSelected.merchantId,
-                      planDesiredId: userDataRes.merchantSelected.planDesiredId,
-                      promotionCodeId:
-                        userDataRes.merchantSelected.promotionCodeId,
-                      serieDocumenteBilling: data.serieDocumenteBilling || '',
-                      serieBackDocumenteBilling:
-                        data.serieBackDocumenteBilling || '',
-                      serieDocumenteReceipt: data.serieDocumenteReceipt || '',
-                      serieBackDocumenteReceipt:
-                        data.serieBackDocumenteReceipt || '',
-                      serieDocumenteReferralGuide:
-                        data.serieDocumenteReferralGuide || '',
-                      serieBackDocumenteReferralGuide:
-                        data.serieBackDocumenteReferralGuide || '',
-                      eMerchantSlugName: data.eMerchantSlugName || '',
-                      merchantMasterId: userDataRes.merchantMasterId,
-                      firstPlanDefault:
-                        userDataRes.merchantSelected.firstPlanDefault,
-                      typeMerchant: userDataRes.merchantSelected.typeMerchant,
-                      categories: initialCategories,
-                      filters: filters,
-                      price: [
-                        Number(data.defaultMinPrice),
-                        Number(data.defaultMaxPrice),
-                      ],
-                    },
-                  },
-                });
-                setOpenStatus(true);
-                setSubmitting(false);
-              }}
-            >
-              {({values, setFieldValue}) => {
-                return (
-                  <UpgradeBusinessForm
-                    values={values}
-                    setFieldValue={setFieldValue}
-                    moveData={getDocumentType}
-                    updateCategories={updateCategories}
-                    updateFilters={updateFilters}
-                    handlePublicChange={handlePublicChange}
-                    execAll={execAll}
-                    publish={publish}
-                  />
-                );
-              }}
-            </Formik>
+          <Card sx={{p: 4}}>
+            <Box className='account-tabs-content'>
+              <Box
+                sx={{
+                  position: 'relative',
+                  maxWidth: 750,
+                }}
+              >
 
-            <Dialog
-              open={openStatus}
-              onClose={sendStatus}
-              sx={{textAlign: 'center'}}
-              aria-labelledby='alert-dialog-title'
-              aria-describedby='alert-dialog-description'
-            >
-              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Alta de plan'}
-              </DialogTitle>
-              {showMessage()}
-            </Dialog>
-          </Box>
-        </Box>
-      </Card>
+
+                <Formik
+                  validateOnChange={false}
+                  validateOnBlur={true}
+                  initialValues={initialValues}
+                  validationSchema={validationSchema}
+                  onSubmit={(data, {setSubmitting}) => {
+                    setSubmitting(true);
+                    console.log('data: ', {...data, documentType: docType});
+                    // TODO Api Call here to save user info
+                    dispatch({type: FETCH_SUCCESS, payload: undefined});
+                    dispatch({type: FETCH_ERROR, payload: undefined});
+                    dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
+
+                    setExecAll(true);
+                    setExecAll(false);
+                    toUpgradeToNewPlan({
+                      request: {
+                        payload: {
+                          merchantId: userDataRes.merchantSelected.merchantId,
+                          planDesiredId: userDataRes.merchantSelected.planDesiredId,
+                          promotionCodeId:
+                            userDataRes.merchantSelected.promotionCodeId,
+                          serieDocumenteBilling: data.serieDocumenteBilling || '',
+                          serieBackDocumenteBilling:
+                            data.serieBackDocumenteBilling || '',
+                          serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                          serieBackDocumenteReceipt:
+                            data.serieBackDocumenteReceipt || '',
+                          serieDocumenteReferralGuide:
+                            data.serieDocumenteReferralGuide || '',
+                          serieBackDocumenteReferralGuide:
+                            data.serieBackDocumenteReferralGuide || '',
+                          eMerchantSlugName: data.eMerchantSlugName || '',
+                          merchantMasterId: userDataRes.merchantMasterId,
+                          firstPlanDefault:
+                            userDataRes.merchantSelected.firstPlanDefault,
+                          typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                          categories: initialCategories,
+                          filters: filters,
+                          price: [data.defaultMinPrice, data.defaultMaxPrice],
+                          isEcommerceEnabled: publish,
+                        },
+                      },
+                    });
+                    console.log('Esto se envia', {
+                      request: {
+                        payload: {
+                          merchantId: userDataRes.merchantSelected.merchantId,
+                          planDesiredId: userDataRes.merchantSelected.planDesiredId,
+                          promotionCodeId:
+                            userDataRes.merchantSelected.promotionCodeId,
+                          serieDocumenteBilling: data.serieDocumenteBilling || '',
+                          serieBackDocumenteBilling:
+                            data.serieBackDocumenteBilling || '',
+                          serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                          serieBackDocumenteReceipt:
+                            data.serieBackDocumenteReceipt || '',
+                          serieDocumenteReferralGuide:
+                            data.serieDocumenteReferralGuide || '',
+                          serieBackDocumenteReferralGuide:
+                            data.serieBackDocumenteReferralGuide || '',
+                          eMerchantSlugName: data.eMerchantSlugName || '',
+                          merchantMasterId: userDataRes.merchantMasterId,
+                          firstPlanDefault:
+                            userDataRes.merchantSelected.firstPlanDefault,
+                          typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                          categories: initialCategories,
+                          filters: filters,
+                          price: [
+                            Number(data.defaultMinPrice),
+                            Number(data.defaultMaxPrice),
+                          ],
+                        },
+                      },
+                    });
+                    setOpenStatus(true);
+                    setSubmitting(false);
+                  }}
+                >
+                  {({values, setFieldValue}) => {
+                    return (
+                      <UpgradeBusinessForm
+                        values={values}
+                        setFieldValue={setFieldValue}
+                        moveData={getDocumentType}
+                        updateCategories={updateCategories}
+                        updateFilters={updateFilters}
+                        handlePublicChange={handlePublicChange}
+                        execAll={execAll}
+                        publish={publish}
+                      />
+                    );
+                  }}
+                </Formik>
+
+                <Dialog
+                  open={openStatus}
+                  onClose={sendStatus}
+                  sx={{textAlign: 'center'}}
+                  aria-labelledby='alert-dialog-title'
+                  aria-describedby='alert-dialog-description'
+                >
+                  <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                    {'Alta de plan'}
+                  </DialogTitle>
+                  {showMessage()}
+                </Dialog>
+              </Box>
+            </Box>
+          </Card>
+
+
+            ): null  }
+
+
     </>
   );
 };
