@@ -1,8 +1,12 @@
-import React from 'react';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {makeStyles} from '@mui/styles';
-import {Card, Typography, Box, Stack, Grid, styled, Paper} from '@mui/material';
+import {Card, Typography, Box, Stack, Grid, styled, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Divider} from '@mui/material';
 import AppInfoView from '@crema/core/AppInfoView';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import {red} from '@mui/material/colors';
 
+import {useDispatch, useSelector} from 'react-redux';
 const useStyles = makeStyles((theme) => ({
   header: {
     fontSize: '2.5em',
@@ -15,7 +19,27 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = (props) => {
   const classes = useStyles(props);
+  
+  let currentCountMovement;
+  let ecommerceParameterState;
+  const [open, setOpen] = React.useState(true);
+  const handleClose = () => {
+    setOpen(false);
+  };
   console.log('Iniciando Home');
+  //API RESPONSES
+  const {businessParameter} = useSelector(({general}) => general);
+  console.log('businessParameter en Home', businessParameter);
+  if (businessParameter) {
+    currentCountMovement = businessParameter.find(
+      (obj) => obj.abreParametro == "CURRENT_COUNT_MOVEMENT",
+    );
+    console.log("currentCountMovement", currentCountMovement)
+    ecommerceParameterState = businessParameter.find(
+      (obj) => obj.abreParametro == "ECOMMERCE_PRODUCT_PARAMETERS",
+    ).value;
+    console.log("ecommerceParameterState", ecommerceParameterState)
+  }
   return (
     <Card sx={{px: 4, py: 20}}>
       <Typography
@@ -49,7 +73,216 @@ const Home = (props) => {
           Powered by
         </Grid>
       </Grid> */}
-      <AppInfoView />
+      {businessParameter && currentCountMovement && ecommerceParameterState ? (
+        <>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            sx={{textAlign: 'center'}}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Empezando en Tunexo'}
+            </DialogTitle>
+            <DialogContent sx={{display: 'flex'}}>
+              <Box
+                sx={{
+                  m: 0,
+                  textAlign: 'left',
+                  position: 'relative',
+                  '& img': {
+                    maxHeight: '100%',
+                    maxWidth: '100%',
+                  },
+                  display: 'flex',
+                  flexDirection: "column"
+                }}
+              >
+                  <Box
+                    sx={{
+                      m: 0,
+                      textAlign: 'left',
+                      position: 'relative',
+                      '& img': {
+                        maxHeight: '100%',
+                        maxWidth: '100%',
+                      },
+                      display: 'flex',
+                      flexDirection: "row",
+                      fontSize: 18
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        m: 0,
+                      }}
+                    >
+                      Tener Parámetros Listos
+                    </Box>
+                    <Box
+                      sx={{
+                        m: 0,
+                      }}
+                    >
+                      {ecommerceParameterState === "UPDATED" ? (
+                        <>
+                          <CheckCircleOutlineOutlinedIcon
+                            color='success'
+                            sx={{fontSize: '1.5em', mx: 2}}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <CancelOutlinedIcon sx={{fontSize: '1.5em', mx: 2, color: red[500]}} />
+                        </>
+                      )}
+                      
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      m: 0,
+                      textAlign: 'left',
+                      position: 'relative',
+                      '& img': {
+                        maxHeight: '100%',
+                        maxWidth: '100%',
+                      },
+                      display: 'flex',
+                      flexDirection: "row",
+                      fontSize: 18
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        m: 0,
+                      }}
+                    >
+                      Tener al menos un producto a vender
+                    </Box>
+                    <Box
+                      sx={{
+                        m: 0,
+                      }}
+                    >
+                      {currentCountMovement.catalogNumberProducts > 0 ? (
+                        <>
+                          <CheckCircleOutlineOutlinedIcon
+                            color='success'
+                            sx={{fontSize: '1.5em', mx: 2}}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <CancelOutlinedIcon sx={{fontSize: '1.5em', mx: 2, color: red[500]}} />
+                        </>
+                      )}
+                      
+                    </Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      m: 0,
+                      textAlign: 'left',
+                      position: 'relative',
+                      '& img': {
+                        maxHeight: '100%',
+                        maxWidth: '100%',
+                      },
+                      display: 'flex',
+                      flexDirection: "row",
+                      fontSize: 18
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        m: 0,
+                      }}
+                    >
+                      Tener al menos una entrada si es que esta con stock 0
+                    </Box>
+                    <Box
+                      sx={{
+                        m: 0,
+                      }}
+                    >
+                      {currentCountMovement.transactionalInput > 0 ? (
+                        <>
+                          <CheckCircleOutlineOutlinedIcon
+                            color='success'
+                            sx={{fontSize: '1.5em', mx: 2}}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <CancelOutlinedIcon sx={{fontSize: '1.5em', mx: 2, color: red[500]}} />
+                        </>
+                      )}
+                      
+                    </Box>
+                  </Box>
+                  <Divider sx={{mt: 2, mb: 4}} />
+                  <Box
+                    sx={{
+                      m: 0,
+                      textAlign: 'left',
+                      position: 'relative',
+                      fontWeight: '700'
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        m: 0,
+                      }}
+                    >
+                      Si quieres vender un producto en tu tienda, dale check en <span style={{color: red[500]}}>
+                      "Publicar en ecommerce"
+                  </span>  al registrar o actualizar *
+                    </Box>
+                  </Box>
+                  {/* <Box
+                    sx={{
+                      m: 0,
+                      textAlign: 'left',
+                      position: 'relative',
+                      '& img': {
+                        maxHeight: '100%',
+                        maxWidth: '100%',
+                      },
+                      display: 'flex',
+                      flexDirection: "row",
+                      fontWeight: '700'
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        m: 0,
+                      }}
+                    >
+                      Puedes acceder a tu ecommerce en la sgte ruta *
+                    </Box>
+                  </Box> */}
+              </Box>
+              
+              <AppInfoView />
+            </DialogContent>
+            <DialogActions sx={{justifyContent: 'center'}}>
+              <Button
+                variant='outlined'
+                onClick={handleClose}
+              >
+                Aceptar
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      ) : (
+        <>
+          
+        </>
+      )}
+      
     </Card>
   );
 };

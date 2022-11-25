@@ -520,7 +520,7 @@ const OrderTable = (arrayObjs, props) => {
               <TableCell>Número de Orden</TableCell>
               <TableCell>Productos</TableCell>
               <TableCell>Cliente</TableCell>
-              <TableCell>Total IGV</TableCell>
+              {/* <TableCell>Total IGV</TableCell> */}
               <TableCell>Total</TableCell>
               <TableCell>Tipo de Pago</TableCell>
               <TableCell>Estado</TableCell>
@@ -565,8 +565,8 @@ const OrderTable = (arrayObjs, props) => {
                           <></>
                         )}
                       </TableCell>
-                      <TableCell>{obj.totalIgv}</TableCell>
-                      <TableCell>{obj.total}</TableCell>
+                      {/* <TableCell>{obj.totalIgv}</TableCell> */}
+                      <TableCell>{Math.round((obj.total + Number.EPSILON) * 100) / 100}</TableCell>
                       <TableCell>{obj.paymentType}</TableCell>
                       <TableCell align='center'>
                         {showIconStatus(obj.status)}

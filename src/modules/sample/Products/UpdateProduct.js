@@ -576,6 +576,19 @@ const UpdateProduct = (props) => {
     }
   };
 
+  const deleteImage = (index, itemSelected) => {
+    console.log('delete la imagen de index: ', index);
+    // setSelectedImages(selectedImages.splice(index,1))
+    setSelectedImages((oldState) => oldState.filter((item) => item !== itemSelected));
+    let newImagesJson = selectedJsonImages;
+    delete newImagesJson[index]
+    setSelectedJsonImages(newImagesJson)
+    setTimeout(() => {
+      console.log("Imagenes luego de eliminar ", selectedImages)
+      console.log("Imagenes luego de eliminar 2", selectedJsonImages)
+    }, 2000);
+  };
+
   const cancel = () => {
     setOpen2(true);
   };
@@ -1167,6 +1180,7 @@ const UpdateProduct = (props) => {
                               <IconButton
                                 sx={{color: 'white'}}
                                 aria-label={`star prueba`}
+                                onClick={() => {deleteImage(index, item)}}
                               >
                                 <DeleteIcon />
                               </IconButton>

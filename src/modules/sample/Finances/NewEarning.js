@@ -134,6 +134,7 @@ const NewEarning = (props) => {
     React.useState(0);
   const [totalAmountOfConcepts, setTotalAmountOfConcepts] = React.useState(0);
   const [minTutorial, setMinTutorial] = React.useState(false);
+  const [typeIcon, setTypeIcon] = React.useState('2');
   let changeValueField;
   const dispatch = useDispatch();
   const {getMovementsRes} = useSelector(({movements}) => movements);
@@ -153,8 +154,9 @@ const NewEarning = (props) => {
     listOtherPayConcepts = [];
     console.log('selectedClient', selectedClient);
     setTimeout(() => {
-      setMinTutorial(true);
-    }, 2000);
+      // setMinTutorial(true);
+      setTypeIcon('1')
+    }, 4000);
   }, []);
   if (!isObjEmpty(query) && getMovementsRes != undefined) {
     selectedOutput = getMovementsRes.find(
@@ -190,6 +192,23 @@ const NewEarning = (props) => {
       : parseToGoodDate(bill.issueDate),
   );
 
+  const changeIcon = () => {
+    setTypeIcon('2');
+  };
+  const changeIcon2 = () => {
+    setTypeIcon('1');
+  };
+  const iconSelected = () => {
+    if (typeIcon == '1') {
+      return (
+        <>
+          <YouTubeIcon fontSize='inherit' />
+        </>
+      );
+    } else if (typeIcon == '2') {
+      return <>VER TUTORIAL</>;
+    }
+  };
   const toAddFinance = (payload) => {
     dispatch(addFinance(payload));
   };
@@ -885,100 +904,55 @@ const NewEarning = (props) => {
                     Cancelar
                   </Button>
                 </ButtonGroup>
-                {minTutorial ? (
+                <Box
+                  sx={{
+                    position: 'fixed',
+                    right: 0,
+                    top: {xs: 325, xl: 305},
+                    zIndex: 1110,
+                  }}
+                  className='customizerOption'
+                >
                   <Box
                     sx={{
-                      position: 'fixed',
-                      right: 0,
-                      top: {xs: 325, xl: 305},
-                      zIndex: 1110,
-                    }}
-                    className='customizerOption'
-                  >
-                    <Box
-                      sx={{
+                      borderRadius: '30px 0 0 30px',
+                      mb: 1,
+                      backgroundColor: orange[500],
+                      '&:hover': {
+                        backgroundColor: orange[700],
+                      },
+                      '& button': {
                         borderRadius: '30px 0 0 30px',
-                        mb: 1,
-                        backgroundColor: orange[500],
-                        '&:hover': {
-                          backgroundColor: orange[700],
-                        },
-                        '& button': {
-                          borderRadius: '30px 0 0 30px',
 
-                          '&:focus': {
-                            borderRadius: '30px 0 0 30px',
-                          },
+                        '&:focus': {
+                          borderRadius: '30px 0 0 30px',
                         },
-                      }}
-                    >
-                      <IconButton
-                        sx={{
-                          mt: 1,
-                          '& svg': {
-                            height: 35,
-                            width: 35,
-                          },
-                          color: 'white',
-                          pr: 5,
-                        }}
-                        edge='end'
-                        color='inherit'
-                        aria-label='open drawer'
-                        onClick={() =>
-                          window.open('https://youtu.be/U1Bnwa1G_ts/')
-                        }
-                      >
-                        <YouTubeIcon fontSize='inherit' />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                ) : (
-                  <Box
-                    sx={{
-                      position: 'fixed',
-                      right: 0,
-                      top: {xs: 325, xl: 305},
-                      zIndex: 1110,
+                      },
                     }}
-                    className='customizerOption'
                   >
-                    <Box
+                    <IconButton
                       sx={{
-                        borderRadius: '30px 0 0 30px',
-                        mb: 1,
-                        backgroundColor: orange[500],
-                        '&:hover': {
-                          backgroundColor: orange[700],
+                        mt: 1,
+                        '& svg': {
+                          height: 35,
+                          width: 35,
                         },
-                        '& button': {
-                          borderRadius: '30px 0 0 30px',
-
-                          '&:focus': {
-                            borderRadius: '30px 0 0 30px',
-                          },
-                        },
+                        color: 'white',
+                        pr: 5,
                       }}
+                      edge='end'
+                      color='inherit'
+                      aria-label='open drawer'
+                      onMouseOver={() => changeIcon()}
+                      onMouseLeave={() => changeIcon2()}
+                      onClick={() =>
+                        window.open('https://youtu.be/U1Bnwa1G_ts/')
+                      }
                     >
-                      <IconButton
-                        sx={{
-                          mt: 1,
-                          '& svg': {
-                            height: 35,
-                            width: 35,
-                          },
-                          color: 'white',
-                        }}
-                        edge='end'
-                        color='inherit'
-                        aria-label='open drawer'
-                        onClick={() => window.open('https://www.youtube.com/')}
-                      >
-                        VER TUTORIAL
-                      </IconButton>
-                    </Box>
+                      {iconSelected()}
+                    </IconButton>
                   </Box>
-                )}
+                </Box>
               </Form>
             );
           }}

@@ -47,6 +47,9 @@ import {
   ImageList,
   ImageListItem,
   ImageListItemBar,
+  FormLabel,
+  Checkbox,
+  FormHelperText
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
@@ -486,6 +489,30 @@ const NewProduct = (props) => {
     setSelectedFilters(newSelectedFilters);
     console.log('selectedFilters actualizados', selectedFilters);
   };
+  const handleFieldFilter2 = (event) => {
+    console.log('event.target.value', event.target.value);
+    console.log('event.target.name', event.target.name);
+    console.log('event.target.checked', event.target.checked);
+    if(event.target.checked){
+      setSelectedFilters({
+        ...selectedFilters,
+        [event.target.name]: selectedFilters[event.target.name].concat([Number(event.target.value)]),
+      });
+    } else {
+      // const index = selectedFilters[event.target.name].indexOf(Number(event.target.value));
+      const newFilters = selectedFilters
+      newFilters[event.target.name] = newFilters[event.target.name].filter(item => item !== Number(event.target.value))
+      setSelectedFilters({
+        ...selectedFilters,
+        [event.target.name]: newFilters[event.target.name],
+      });
+      
+    }
+  };
+  useEffect(() => {
+    console.log('selectedFilters actualizados', selectedFilters);
+
+  }, [selectedFilters]);
   const handlePublicChange = (event) => {
     console.log('Switch cambio', event);
     setPublish(event.target.checked);
@@ -590,6 +617,36 @@ const NewProduct = (props) => {
           payload: undefined,
         });
         /* console.log('finalPayload', { */
+        console.log("Este es el payload de registrar producto", {
+          request: {
+            payload: {
+              products: [
+                {
+                  businessProductCode: data.businessProductCode,
+                  description: data.description,
+                  costPriceUnit: Number(data.costPriceUnit),
+                  sellPriceUnit: Number(data.referecialPriceSell),
+                  weight: Number(data.weight),
+                  initialStock: parseInt(Number(data.initialStock)),
+                  customCodeProduct: data.customCodeProduct,
+                  title: data.title,
+                  commercialDescription: data.commercialDescription,
+                  unitMeasureWeight: weight_unit,
+                  unitMeasureMoney: money_unit,
+                  category: selectedCategory,
+                  tags: selectedFilters,
+                  typeProduct: objSelects.typeProduct,
+                  imgKeys: selectedJsonImages,
+                  unitMeasure: objSelects.unitMeasure,
+                  unitsToProduce: 1,
+                  inputsProduct: cleanProducts,
+                  publish: publish,
+                },
+              ],
+              merchantId: userDataRes.merchantSelected.merchantId,
+            },
+          },
+        })
         toAddProduct({
           request: {
             payload: {
@@ -723,8 +780,17 @@ const NewProduct = (props) => {
   const your_function = () => {
     console.log('hola your_function');
   };
-  const deleteImage = (index) => {
-    console.log('hola your_function', index);
+  const deleteImage = (index, itemSelected) => {
+    console.log('delete la imagen de index: ', index);
+    // setSelectedImages(selectedImages.splice(index,1))
+    setSelectedImages((oldState) => oldState.filter((item) => item !== itemSelected));
+    let newImagesJson = selectedJsonImages;
+    delete newImagesJson[index]
+    setSelectedJsonImages(newImagesJson)
+    setTimeout(() => {
+      console.log("Imagenes luego de eliminar ", selectedImages)
+      console.log("Imagenes luego de eliminar 2", selectedJsonImages)
+    }, 2000);
   };
   const allCountsRigth = (countProducts) => {
     let status = true;
@@ -1021,13 +1087,8 @@ const NewProduct = (props) => {
                       ecommerce_params.map((obj, index) => {
                         return (
                           <Grid key={index} item xs={12}>
-                            <FormControl fullWidth sx={{my: 2}}>
-                              <InputLabel
-                                id='categoria-label'
-                                style={{fontWeight: 200}}
-                              >
-                                {obj.featureName}
-                              </InputLabel>
+                            {/* <FormControl fullWidth sx={{my: 2}}>
+                              <FormLabel component="legend"> {obj.featureName}</FormLabel>
                               <Select
                                 key={'SelectFilter' + index}
                                 value={selectedFilters[obj.featureName]}
@@ -1051,13 +1112,8 @@ const NewProduct = (props) => {
                                     );
                                   })
                                 ) : (
-                                  <MenuItem
-                                    key={1}
-                                    value={'noFilters'}
-                                    style={{fontWeight: 200}}
-                                  >
-                                    <IntlMessages id='common.undefinedFilter' />
-                                  </MenuItem>
+                                  <>
+                                  </>
                                 )}
                                 <MenuItem
                                   key={0}
@@ -1067,6 +1123,29 @@ const NewProduct = (props) => {
                                   <IntlMessages id='common.undefinedFilter' />
                                 </MenuItem>
                               </Select>
+                            </FormControl> */}
+                            <FormControl sx={{ m: 3 }} component="fieldset" variant="standard">
+                              <FormLabel sx={{ml: -3}} component="legend">{obj.featureName}</FormLabel>
+                              <FormGroup>
+                                {obj.values &&
+                                  Array.isArray(obj.values) &&
+                                  obj.values.length >= 1 ? (
+                                    obj.values.map((objV, index) => {
+                                      return (
+                                        <FormControlLabel
+                                          control={
+                                            <Checkbox value={Number(index)+1} checked={selectedFilters[obj.featureName].includes(Number(index)+1)} onChange={handleFieldFilter2} name={obj.featureName} />
+                                          }
+                                          label={objV.name}
+                                        />
+                                      );
+                                    })
+                                  ) : (
+                                    <>
+                                    </>
+                                  )}
+                              </FormGroup>
+                              {/* <FormHelperText>Be careful</FormHelperText> */}
                             </FormControl>
                           </Grid>
                         );
@@ -1150,6 +1229,7 @@ const NewProduct = (props) => {
                             <IconButton
                               sx={{color: 'white'}}
                               aria-label={`star prueba`}
+                              onClick={() => {deleteImage(index, item)}}
                             >
                               <DeleteIcon />
                             </IconButton>
