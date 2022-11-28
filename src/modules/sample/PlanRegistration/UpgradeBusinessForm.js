@@ -224,8 +224,11 @@ const UpgradeBusinessForm = ({
     //   setTotalAmountWithConcepts(event.target.value);
     // }
   };
-  console.log("Aca ps userDataRes", userDataRes)
-  return getBusinessPlanRes || ( !(userDataRes === undefined) && userDataRes.merchantSelected && userDataRes.merchantSelected.firstPlanDefault) ? (
+  console.log('Aca ps userDataRes', userDataRes);
+  return getBusinessPlanRes ||
+    (!(userDataRes === undefined) &&
+      userDataRes.merchantSelected &&
+      userDataRes.merchantSelected.firstPlanDefault) ? (
     <>
       <Form
         noValidate

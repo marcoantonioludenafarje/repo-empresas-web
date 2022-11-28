@@ -11,7 +11,16 @@ import {
 } from '../../../../@crema/core/AppThemeSetting/index.style';
 
 import clsx from 'clsx';
-import {FormControl, InputLabel, Select, MenuItem, ImageList, ImageListItem, ImageListItemBar, IconButton} from '@mui/material';
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  ImageList,
+  ImageListItem,
+  ImageListItemBar,
+  IconButton,
+} from '@mui/material';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import {useDropzone} from 'react-dropzone';
 import {Form} from 'formik';
@@ -23,12 +32,8 @@ import {styled} from '@mui/material/styles';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@mui/styles';
 
-import {
-  createPresigned,
-} from '../../../../redux/actions/General';
-import {
-  updateUser,
-} from '../../../../redux/actions/User';
+import {createPresigned} from '../../../../redux/actions/General';
+import {updateUser} from '../../../../redux/actions/User';
 const AvatarViewWrapper = styled('div')(({theme}) => {
   return {
     position: 'relative',
@@ -95,9 +100,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 let fileToUpload;
-const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
+const BusinessInfoForm = ({
+  values,
+  setFieldValue,
+  moveData,
+  moveLogo,
+  logoImage,
+}) => {
   const dispatch = useDispatch();
-  const classes = useStyles({values, setFieldValue, moveData});
+  const classes = useStyles({values, setFieldValue, moveData, moveLogo});
   let imagePayload = {
     request: {
       payload: {
@@ -110,11 +121,13 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
 
   console.log('valores', values);
   const [typeDocument, setTypeDocument] = React.useState(values.documentType);
-  const [selectedImages, setSelectedImages] = React.useState([]);
-  const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
+  const [selectedImages, setSelectedImages] = React.useState(logoImage);
+  const [selectedJsonImages, setSelectedJsonImages] = React.useState(logoImage);
   const [typeFile, setTypeFile] = React.useState('');
   const [nameFile, setNameFile] = React.useState('');
   const [base64, setBase64] = React.useState('');
+  const {presigned} = useSelector(({general}) => general);
+  console.log('createPresigned', presigned);
   console.log('Valores', values);
   const {getRootProps, getInputProps} = useDropzone({
     accept: 'image/*',
@@ -125,6 +138,26 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
   const toCreatePresigned = (payload, file) => {
     dispatch(createPresigned(payload, file));
   };
+
+  useEffect(() => {
+    if (presigned) {
+      console.log('useEffect presigned', presigned);
+      let actualSelectedJsonImages = selectedJsonImages;
+      const newJsonImages = {
+        keyMaster: presigned.keymaster,
+        nameFile: imagePayload.request.payload.name || presigned.name,
+      };
+      console.log('newJsonImages', newJsonImages);
+      actualSelectedJsonImages.push(newJsonImages);
+      console.log('actualSelectedJsonImages', actualSelectedJsonImages);
+      setSelectedJsonImages(actualSelectedJsonImages);
+    }
+  }, [presigned]);
+  useEffect(() => {
+    if (selectedJsonImages) {
+      moveLogo(selectedJsonImages);
+    }
+  }, [selectedJsonImages]);
   const handleField = (event) => {
     console.log('evento', event);
     console.log('valor', event.target.value);
@@ -147,13 +180,15 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
   const deleteImage = (index, itemSelected) => {
     console.log('delete la imagen de index: ', index);
     // setSelectedImages(selectedImages.splice(index,1))
-    setSelectedImages((oldState) => oldState.filter((item) => item !== itemSelected));
+    setSelectedImages((oldState) =>
+      oldState.filter((item) => item !== itemSelected),
+    );
     let newImagesJson = selectedJsonImages;
-    delete newImagesJson[index]
-    setSelectedJsonImages(newImagesJson)
+    delete newImagesJson[index];
+    setSelectedJsonImages(newImagesJson);
     setTimeout(() => {
-      console.log("Imagenes luego de eliminar ", selectedImages)
-      console.log("Imagenes luego de eliminar 2", selectedJsonImages)
+      console.log('Imagenes luego de eliminar ', selectedImages);
+      console.log('Imagenes luego de eliminar 2', selectedJsonImages);
     }, 2000);
   };
   const getImage = (event) => {
@@ -239,7 +274,6 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
         <Grid item xs={12} md={12}>
           <AppTextField
             name='documentNumber'
-            disabled
             fullWidth
             label={<IntlMessages id='common.busines.documentNumber' />}
           />
@@ -254,7 +288,6 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
         <Grid item xs={12} md={12}>
           <AppTextField
             name='eMerchantSlugName'
-            disabled
             fullWidth
             label={<IntlMessages id='common.slug' />}
           />
@@ -288,11 +321,7 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
           />
         </Grid>
         <Grid item xs={12} md={12}>
-          <Button
-            variant='contained'
-            color='secondary'
-            component='label'
-          >
+          <Button variant='contained' color='secondary' component='label'>
             Subir Logo Empresarial
             <input
               type='file'
@@ -340,7 +369,9 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
                       <IconButton
                         sx={{color: 'white'}}
                         aria-label={`star prueba`}
-                        onClick={() => {deleteImage(index, item)}}
+                        onClick={() => {
+                          deleteImage(index, item);
+                        }}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -352,10 +383,9 @@ const BusinessInfoForm = ({values, setFieldValue, moveData}) => {
             })}
           </ImageList>
         ) : (
-          <>
-          </>
+          <></>
         )}
-        
+
         <Grid item xs={12} md={12}>
           <Box
             sx={{
@@ -398,4 +428,6 @@ BusinessInfoForm.propTypes = {
   setFieldValue: PropTypes.func,
   moveData: PropTypes.func,
   values: PropTypes.object,
+  moveLogo: PropTypes.func,
+  logoImage: PropTypes.array,
 };

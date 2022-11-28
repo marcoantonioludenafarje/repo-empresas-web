@@ -17,6 +17,8 @@ import {
   MONEY_SYMBOL,
   UPGRADE_TO_NEW_PLAN,
   UPDATE_ALL_BUSINESS_PARAMETER,
+  UPDATE_ROL_USER_FIRST_PLAN,
+  UPDATE_DATA_BUSINESS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -73,6 +75,12 @@ const generalReducer = (state = INIT_STATE, action) => {
         ...state,
         dataBusinessRes: action.payload,
       };
+    case UPDATE_DATA_BUSINESS:
+      console.log('data de reducer UPDATE_DATA_BUSINESS', action.payload);
+      return {
+        ...state,
+        updateBusinessRes: action.payload,
+      };
     case GET_VERIFICATION_CODE:
       console.log('data de reducer GET_VERIFICATION_CODE', action.payload);
       return {
@@ -96,6 +104,18 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         getRolUserRes: action.payload,
+      };
+    case UPDATE_ROL_USER_FIRST_PLAN:
+      console.log('data de reducer UPDATE_ROL_USER_FIRST_PLAN', action.payload);
+      return {
+        ...state,
+        getRolUserRes: {
+          ...getRolUserRes,
+          merchantSelected: {
+            ...getRolUserRes.merchantSelected,
+            firstPlanDefault: false,
+          },
+        },
       };
     case WEIGHT_BUSINESS:
       console.log('data de reducer WEIGHT_BUSINESS', action.payload);

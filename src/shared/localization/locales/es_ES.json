@@ -1,4 +1,5 @@
 {
+  "alert.configurationParameters.existProductsWithThisCategory": "Existen productos con esta categoría establecida.",
   "button.click_me": "Haz click en mi",
   "dashboard.quickStats": "Estadísticas rápidas",
   "dashboard.totalClients": "Clientes totales",
@@ -639,6 +640,7 @@
   "message.register.newDistribution": "Registro de nueva distribución",
   "message.register.data.success": "Se ha registrado la información correctamente.",
   "message.register.data.error": "Se ha producido un error al registrar.",
+  "message.alert.configurationParameters": "Lista de productos con esta categoría",
   "message.update.configurationParameters": "Actualización de parámetros",
   "message.update.data.success": "Se ha actualizado la información correctamente.",
   "message.update.data.error": "Se ha producido un error al actualizar.",

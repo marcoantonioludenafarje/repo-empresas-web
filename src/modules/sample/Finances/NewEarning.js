@@ -155,7 +155,7 @@ const NewEarning = (props) => {
     console.log('selectedClient', selectedClient);
     setTimeout(() => {
       // setMinTutorial(true);
-      setTypeIcon('1')
+      setTypeIcon('1');
     }, 4000);
   }, []);
   if (!isObjEmpty(query) && getMovementsRes != undefined) {

@@ -566,7 +566,9 @@ const OrderTable = (arrayObjs, props) => {
                         )}
                       </TableCell>
                       {/* <TableCell>{obj.totalIgv}</TableCell> */}
-                      <TableCell>{Math.round((obj.total + Number.EPSILON) * 100) / 100}</TableCell>
+                      <TableCell>
+                        {Math.round((obj.total + Number.EPSILON) * 100) / 100}
+                      </TableCell>
                       <TableCell>{obj.paymentType}</TableCell>
                       <TableCell align='center'>
                         {showIconStatus(obj.status)}

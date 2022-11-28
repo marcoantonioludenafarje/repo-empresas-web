@@ -41,6 +41,8 @@ import {
   Switch,
   ImageListItem,
   ImageListItemBar,
+  FormLabel,
+  Checkbox,
 } from '@mui/material';
 
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -211,7 +213,13 @@ const UpdateProduct = (props) => {
     description: query.category,
     productCategoryId: query.categoryId,
   });
-
+  const [selectedNonJsonCategory, setSelectedNonJsonCategory] = React.useState(
+    query.category,
+  );
+  let categoryJson = {
+    description: query.category,
+    productCategoryId: query.categoryId,
+  };
   const [typeProduct, setTypeProduct] = React.useState(query.typeProduct);
   const [openSelect, setOpenSelect] = React.useState(false);
   const prevSelectedCategoryRef = useRef();
@@ -405,11 +413,11 @@ const UpdateProduct = (props) => {
   }, [userDataRes]);
   useEffect(() => {
     if (businessParameter) {
-      let filters = {};
-      ecommerce_params.map((filter) => {
-        filters[filter.featureName] = [];
-      });
-      console.log('selectedFilters', selectedFilters);
+      // let filters = {};
+      // ecommerce_params.map((filter) => {
+      //   filters[filter.featureName] = [];
+      // });
+      // console.log('selectedFilters', selectedFilters);
 
       let categoriesProductParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'DEFAULT_CATEGORIES_PRODUCTS',
@@ -429,7 +437,10 @@ const UpdateProduct = (props) => {
     ecommerce_params = businessParameter.find(
       (obj) => obj.abreParametro == 'ECOMMERCE_PRODUCT_PARAMETERS',
     ).tags;
-
+    objSelects.category = {
+      description: query.category,
+      productCategoryId: query.categoryId,
+    };
     objSelects.unitMeasureMoney = money_unit;
   }
   useEffect(() => {
@@ -517,8 +528,12 @@ const UpdateProduct = (props) => {
   };
   const handleFieldCategory = (event) => {
     console.log('evento', event);
-    setSelectedCategory(event.target.value);
+    //setSelectedCategory(event.target.value);
+    setSelectedNonJsonCategory(event.target.value);
     console.log('ocjSelects', objSelects);
+    setSelectedCategory(
+      categories.find((element) => element.description == event.target.value),
+    );
     Object.keys(objSelects).map((key) => {
       if (key == event.target.name) {
         objSelects[key] = event.target.value;
@@ -535,6 +550,29 @@ const UpdateProduct = (props) => {
     }
     setSelectedFilters(newSelectedFilters);
     console.log('selectedFilters actualizados', selectedFilters);
+  };
+  const handleFieldFilter2 = (event) => {
+    console.log('event.target.value', event.target.value);
+    console.log('event.target.name', event.target.name);
+    console.log('event.target.checked', event.target.checked);
+    if (event.target.checked) {
+      setSelectedFilters({
+        ...selectedFilters,
+        [event.target.name]: selectedFilters[event.target.name].concat([
+          Number(event.target.value),
+        ]),
+      });
+    } else {
+      // const index = selectedFilters[event.target.name].indexOf(Number(event.target.value));
+      const newFilters = selectedFilters;
+      newFilters[event.target.name] = newFilters[event.target.name].filter(
+        (item) => item !== Number(event.target.value),
+      );
+      setSelectedFilters({
+        ...selectedFilters,
+        [event.target.name]: newFilters[event.target.name],
+      });
+    }
   };
   const handlePublicChange = (event) => {
     console.log('Switch cambio', event);
@@ -579,13 +617,15 @@ const UpdateProduct = (props) => {
   const deleteImage = (index, itemSelected) => {
     console.log('delete la imagen de index: ', index);
     // setSelectedImages(selectedImages.splice(index,1))
-    setSelectedImages((oldState) => oldState.filter((item) => item !== itemSelected));
+    setSelectedImages((oldState) =>
+      oldState.filter((item) => item !== itemSelected),
+    );
     let newImagesJson = selectedJsonImages;
-    delete newImagesJson[index]
-    setSelectedJsonImages(newImagesJson)
+    delete newImagesJson[index];
+    setSelectedJsonImages(newImagesJson);
     setTimeout(() => {
-      console.log("Imagenes luego de eliminar ", selectedImages)
-      console.log("Imagenes luego de eliminar 2", selectedJsonImages)
+      console.log('Imagenes luego de eliminar ', selectedImages);
+      console.log('Imagenes luego de eliminar 2', selectedJsonImages);
     }, 2000);
   };
 
@@ -879,7 +919,7 @@ const UpdateProduct = (props) => {
                       Consúltalo aquí
                     </Typography>
                   </Grid>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='categoria-label'
@@ -888,7 +928,8 @@ const UpdateProduct = (props) => {
                         Categoría
                       </InputLabel>
                       <Select
-                        defaultValue={selectedCategory}
+                        //defaultValue={prevSelectedCategory}
+                        defaultValue="Perecible"
                         value={selectedCategory}
                         name='category'
                         labelId='categoria-label'
@@ -903,6 +944,41 @@ const UpdateProduct = (props) => {
                                 <MenuItem
                                   key={index}
                                   value={obj}
+                                  style={{fontWeight: 200}}
+                                >
+                                  {obj.description}
+                                </MenuItem>
+                              );
+                            })
+                          : null}
+                      </Select>
+                    </FormControl>
+                  </Grid> */}
+                  <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='categoria-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Categoría
+                      </InputLabel>
+                      <Select
+                        //defaultValue={prevSelectedCategory}
+                        defaultValue={query.category}
+                        value={selectedNonJsonCategory}
+                        name='category'
+                        labelId='categoria-label'
+                        label='Categoría'
+                        onChange={handleFieldCategory}
+                      >
+                        {categories &&
+                        Array.isArray(categories) &&
+                        categories.length >= 1
+                          ? categories.map((obj, index) => {
+                              return (
+                                <MenuItem
+                                  key={index}
+                                  value={obj.description}
                                   style={{fontWeight: 200}}
                                 >
                                   {obj.description}
@@ -1049,7 +1125,7 @@ const UpdateProduct = (props) => {
                         ecommerce_params.map((obj, index) => {
                           return (
                             <Grid key={index} item xs={12}>
-                              <FormControl fullWidth sx={{my: 2}}>
+                              {/* <FormControl fullWidth sx={{my: 2}}>
                                 <InputLabel
                                   id='categoria-label'
                                   style={{fontWeight: 200}}
@@ -1095,6 +1171,42 @@ const UpdateProduct = (props) => {
                                     <IntlMessages id='common.undefinedFilter' />
                                   </MenuItem>
                                 </Select>
+                              </FormControl> */}
+                              <FormControl
+                                sx={{m: 3}}
+                                component='fieldset'
+                                variant='standard'
+                              >
+                                <FormLabel sx={{ml: -3}} component='legend'>
+                                  {obj.featureName}
+                                </FormLabel>
+                                <FormGroup>
+                                  {obj.values &&
+                                  Array.isArray(obj.values) &&
+                                  obj.values.length >= 1 ? (
+                                    obj.values.map((objV, index) => {
+                                      return (
+                                        <FormControlLabel
+                                          key={`featureOption-${index}`}
+                                          control={
+                                            <Checkbox
+                                              value={Number(index) + 1}
+                                              checked={selectedFilters[
+                                                obj.featureName
+                                              ].includes(Number(index) + 1)}
+                                              onChange={handleFieldFilter2}
+                                              name={obj.featureName}
+                                            />
+                                          }
+                                          label={objV.name}
+                                        />
+                                      );
+                                    })
+                                  ) : (
+                                    <></>
+                                  )}
+                                </FormGroup>
+                                {/* <FormHelperText>Be careful</FormHelperText> */}
                               </FormControl>
                             </Grid>
                           );
@@ -1145,52 +1257,58 @@ const UpdateProduct = (props) => {
                 ) : (
                   <></>
                 )} */}
-                  <ImageList
-                    sx={{
-                      width: 500,
-                      height: 450,
-                      // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
-                      transform: 'translateZ(0)',
-                      my: 1,
-                      p: 4,
-                    }}
-                    rowHeight={200}
-                    gap={1}
-                  >
-                    {selectedImages.map((item, index) => {
-                      const cols = item.featured ? 2 : 1;
-                      const rows = item.featured ? 2 : 1;
+                  {selectedImages.length > 0 ? (
+                    <ImageList
+                      sx={{
+                        width: 500,
+                        height: 450,
+                        // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
+                        transform: 'translateZ(0)',
+                        my: 1,
+                        p: 4,
+                      }}
+                      rowHeight={200}
+                      gap={1}
+                    >
+                      {selectedImages.map((item, index) => {
+                        const cols = item.featured ? 2 : 1;
+                        const rows = item.featured ? 2 : 1;
 
-                      return (
-                        <ImageListItem key={item} cols={cols} rows={rows}>
-                          <img
-                            className={classes.img}
-                            src={item.src ? item.src : item}
-                            key={item}
-                          ></img>
-                          <ImageListItemBar
-                            sx={{
-                              background:
-                                'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-                                'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-                            }}
-                            // title={"Prueba"}
-                            position='top'
-                            actionIcon={
-                              <IconButton
-                                sx={{color: 'white'}}
-                                aria-label={`star prueba`}
-                                onClick={() => {deleteImage(index, item)}}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            }
-                            actionPosition='left'
-                          />
-                        </ImageListItem>
-                      );
-                    })}
-                  </ImageList>
+                        return (
+                          <ImageListItem key={item} cols={cols} rows={rows}>
+                            <img
+                              className={classes.img}
+                              src={item.src ? item.src : item}
+                              key={item}
+                            ></img>
+                            <ImageListItemBar
+                              sx={{
+                                background:
+                                  'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+                                  'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                              }}
+                              // title={"Prueba"}
+                              position='top'
+                              actionIcon={
+                                <IconButton
+                                  sx={{color: 'white'}}
+                                  aria-label={`star prueba`}
+                                  onClick={() => {
+                                    deleteImage(index, item);
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              }
+                              actionPosition='left'
+                            />
+                          </ImageListItem>
+                        );
+                      })}
+                    </ImageList>
+                  ) : (
+                    <></>
+                  )}
                   {sectionEcommerce === true ? (
                     <>
                       <Grid item xs={12} md={12}>

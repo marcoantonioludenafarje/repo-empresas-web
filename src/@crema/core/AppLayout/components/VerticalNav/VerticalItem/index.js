@@ -21,7 +21,7 @@ const VerticalItem = ({level, router, item}) => {
   }
 
   return (
-    <Link href={item.isProtected ? item.urlRedirect :  item.url} as={item.as}>
+    <Link href={item.isProtected ? item.urlRedirect : item.url} as={item.as}>
       <a style={{textDecoration: 'none'}}>
         <VerticalNavItem
           item={item}
@@ -72,6 +72,8 @@ VerticalItem.propTypes = {
     url: PropTypes.string,
     color: PropTypes.string,
     as: PropTypes.string,
+    isProtected: PropTypes.bool,
+    urlRedirect: PropTypes.string,
   }),
   level: PropTypes.number,
   router: PropTypes.object,

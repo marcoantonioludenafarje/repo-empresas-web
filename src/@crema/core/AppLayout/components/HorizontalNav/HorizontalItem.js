@@ -41,7 +41,7 @@ function HorizontalItem(props) {
   }
 
   return (
-    <Link href={item.isProtected ? item.urlRedirect :  item.url} as={item.as}>
+    <Link href={item.isProtected ? item.urlRedirect : item.url} as={item.as}>
       <ListItem
         className={clsx('navItemSubmenu', dense && 'dense', {
           active: item.url === props.router.pathname,

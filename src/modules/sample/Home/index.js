@@ -1,6 +1,20 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import {makeStyles} from '@mui/styles';
-import {Card, Typography, Box, Stack, Grid, styled, Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, Divider} from '@mui/material';
+import {
+  Card,
+  Typography,
+  Box,
+  Stack,
+  Grid,
+  styled,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Divider,
+} from '@mui/material';
 import AppInfoView from '@crema/core/AppInfoView';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -19,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = (props) => {
   const classes = useStyles(props);
-  
+
   let currentCountMovement;
   let ecommerceParameterState;
   const [open, setOpen] = React.useState(true);
@@ -34,31 +48,29 @@ const Home = (props) => {
   console.log('businessParameter en Home', businessParameter);
   if (businessParameter) {
     currentCountMovement = businessParameter.find(
-      (obj) => obj.abreParametro == "CURRENT_COUNT_MOVEMENT",
+      (obj) => obj.abreParametro == 'CURRENT_COUNT_MOVEMENT',
     );
-    console.log("currentCountMovement", currentCountMovement)
+    console.log('currentCountMovement', currentCountMovement);
     ecommerceParameterState = businessParameter.find(
-      (obj) => obj.abreParametro == "ECOMMERCE_PRODUCT_PARAMETERS",
+      (obj) => obj.abreParametro == 'ECOMMERCE_PRODUCT_PARAMETERS',
     ).value;
-    console.log("ecommerceParameterState", ecommerceParameterState)
+    console.log('ecommerceParameterState', ecommerceParameterState);
   }
 
-
   useEffect(() => {
-    console.log("Veamos que hay previo",getRolUserRes )
-    if ( getRolUserRes && getRolUserRes.merchantSelected &&
+    console.log('Veamos que hay previo', getRolUserRes);
+    if (
+      getRolUserRes &&
+      getRolUserRes.merchantSelected &&
       (getRolUserRes.merchantSelected.firstPlanDefault ||
-      getRolUserRes.merchantSelected.upgradeToNewPlan)
+        getRolUserRes.merchantSelected.upgradeToNewPlan)
     ) {
-        console.log("Veamos que hay")
-        router.push('/sample/planRegistration')
+      console.log('Veamos que hay');
+      router.push('/sample/planRegistration');
     }
-  
-
   }, [getRolUserRes]);
 
-
-  return (
+  return currentCountMovement ? (
     <Card sx={{px: 4, py: 20}}>
       <Typography
         variant='h1'
@@ -67,13 +79,220 @@ const Home = (props) => {
         component='div'
         gutterBottom
       >
-        Bienvenidos al <br />
-        Dashboard
+        Empezando en Tunexo
       </Typography>
-      <Box sx={{textAlign: 'center', my: 20, fontSize: '1.3em'}}>
+      {/* <Box sx={{textAlign: 'center', my: 20, fontSize: '1.3em'}}>
         Seleccione una opción <br />
         del menú para comenzar
+      </Box> */}
+      <Box
+        sx={{
+          ml: {md: 18, lg: 20, xl: 24},
+          mr: {md: 18, lg: 20, xl: 24},
+          textAlign: 'left',
+          position: 'relative',
+          '& img': {
+            maxHeight: '100%',
+            maxWidth: '100%',
+          },
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Divider sx={{mt: 2, mb: 4}} />
+        <Box
+          sx={{
+            m: 0,
+            textAlign: 'left',
+            position: 'relative',
+            '& img': {
+              maxHeight: '100%',
+              maxWidth: '100%',
+            },
+            display: 'flex',
+            flexDirection: 'row',
+            fontSize: 18,
+          }}
+        >
+          <Box
+            sx={{
+              m: 0,
+            }}
+          >
+            Tener Parámetros Listos
+          </Box>
+          <Box
+            sx={{
+              m: 0,
+            }}
+          >
+            {ecommerceParameterState === 'UPDATED' ? (
+              <>
+                <CheckCircleOutlineOutlinedIcon
+                  color='success'
+                  sx={{fontSize: '1.5em', mx: 2}}
+                />
+              </>
+            ) : (
+              <>
+                <CancelOutlinedIcon
+                  sx={{fontSize: '1.5em', mx: 2, color: red[500]}}
+                />
+              </>
+            )}
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            m: 0,
+            textAlign: 'left',
+            position: 'relative',
+            '& img': {
+              maxHeight: '100%',
+              maxWidth: '100%',
+            },
+            display: 'flex',
+            flexDirection: 'row',
+            fontSize: 18,
+          }}
+        >
+          <Box
+            sx={{
+              m: 0,
+            }}
+          >
+            Tener al menos un producto a vender
+          </Box>
+          <Box
+            sx={{
+              m: 0,
+            }}
+          >
+            {currentCountMovement.catalogNumberProducts > 0 ? (
+              <>
+                <CheckCircleOutlineOutlinedIcon
+                  color='success'
+                  sx={{fontSize: '1.5em', mx: 2}}
+                />
+              </>
+            ) : (
+              <>
+                <CancelOutlinedIcon
+                  sx={{fontSize: '1.5em', mx: 2, color: red[500]}}
+                />
+              </>
+            )}
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            m: 0,
+            textAlign: 'left',
+            position: 'relative',
+            '& img': {
+              maxHeight: '100%',
+              maxWidth: '100%',
+            },
+            display: 'flex',
+            flexDirection: 'row',
+            fontSize: 18,
+          }}
+        >
+          <Box
+            sx={{
+              m: 0,
+            }}
+          >
+            Tener al menos una entrada si es que esta con stock 0
+          </Box>
+          <Box
+            sx={{
+              m: 0,
+            }}
+          >
+            {currentCountMovement.transactionalInput > 0 ? (
+              <>
+                <CheckCircleOutlineOutlinedIcon
+                  color='success'
+                  sx={{fontSize: '1.5em', mx: 2}}
+                />
+              </>
+            ) : (
+              <>
+                <CancelOutlinedIcon
+                  sx={{fontSize: '1.5em', mx: 2, color: red[500]}}
+                />
+              </>
+            )}
+          </Box>
+        </Box>
+        <Divider sx={{mt: 2, mb: 4}} />
+        <Box
+          sx={{
+            m: 0,
+            textAlign: 'left',
+            position: 'relative',
+            fontWeight: '700',
+          }}
+        >
+          <Box
+            sx={{
+              m: 0,
+            }}
+          >
+            Si quieres vender un producto en tu tienda, dale check en el botón
+            superior{' '}
+            <span style={{color: red[500]}}>Publicar en ecommerce</span> al
+            registrar o actualizar *
+          </Box>
+        </Box>
+        {/* <Box
+            sx={{
+              m: 0,
+              textAlign: 'left',
+              position: 'relative',
+              '& img': {
+                maxHeight: '100%',
+                maxWidth: '100%',
+              },
+              display: 'flex',
+              flexDirection: "row",
+              fontWeight: '700'
+            }}
+          >
+            <Box
+              sx={{
+                m: 0,
+              }}
+            >
+              Puedes acceder a tu ecommerce en la sgte ruta *
+            </Box>
+          </Box> */}
       </Box>
+
+      {/* <Box
+        sx={{
+          m: 0,
+          textAlign: 'left',
+          position: 'relative',
+          '& img': {
+            maxHeight: '100%',
+            maxWidth: '100%',
+          },
+          display: 'flex',
+          flexDirection: "row",
+          fontWeight: '700'
+        }}
+      >
+        <Box
+          sx={{
+            m: 0,
+          }}
+        >
+          Puedes acceder a tu ecommerce en la sgte ruta *
+        </Box>
+      </Box> */}
+      <AppInfoView />
       <Stack
         direction='row'
         spacing={6}
@@ -91,7 +310,7 @@ const Home = (props) => {
           Powered by
         </Grid>
       </Grid> */}
-      {businessParameter && currentCountMovement && ecommerceParameterState ? (
+      {/* {businessParameter && currentCountMovement && ecommerceParameterState ? (
         <>
           <Dialog
             open={open}
@@ -259,28 +478,6 @@ const Home = (props) => {
                   </span>  al registrar o actualizar *
                     </Box>
                   </Box>
-                  {/* <Box
-                    sx={{
-                      m: 0,
-                      textAlign: 'left',
-                      position: 'relative',
-                      '& img': {
-                        maxHeight: '100%',
-                        maxWidth: '100%',
-                      },
-                      display: 'flex',
-                      flexDirection: "row",
-                      fontWeight: '700'
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        m: 0,
-                      }}
-                    >
-                      Puedes acceder a tu ecommerce en la sgte ruta *
-                    </Box>
-                  </Box> */}
               </Box>
               
               <AppInfoView />
@@ -299,10 +496,9 @@ const Home = (props) => {
         <>
           
         </>
-      )}
-      
+      )} */}
     </Card>
-  );
+  ) : null;
 };
 
 export default Home;

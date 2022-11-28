@@ -39,7 +39,8 @@ import {
   onGetBusinessParameter,
   upgradeToNewPlan,
 } from '../../../redux/actions/General';
-import { useEffect } from 'react';
+import {GET_ROL_USER} from 'shared/constants/ActionTypes';
+import {useEffect} from 'react';
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 const validationSchema = yup.object({
@@ -77,6 +78,7 @@ const UpgradeBusiness = () => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({user}) => user);
   console.log('errorMessage', errorMessage);
+  const {getRolUserRes} = useSelector(({general}) => general);
   const [docType, setDocType] = React.useState(
     userAttributes['custom:businessDocumentType'],
   );
@@ -103,13 +105,13 @@ const UpgradeBusiness = () => {
   const {userDataRes} = useSelector(({user}) => user);
   const [initialValues, setInitialValues] = React.useState({});
 
-
   useEffect(() => {
-    if(userDataRes && userDataRes.merchantSelected){
-      setInitialValues ({
+    if (userDataRes && userDataRes.merchantSelected) {
+      setInitialValues({
         planDesired: userDataRes.merchantSelected.planDesired,
         planDesiredId: userDataRes.merchantSelected.planDesiredId,
-        documentType: docType /* userAttributes['custom:businessDocumentType'] */,
+        documentType:
+          docType /* userAttributes['custom:businessDocumentType'] */,
         serieDocumenteBilling: '',
         serieBackDocumenteBilling: '',
         serieDocumenteReceipt: '',
@@ -120,7 +122,7 @@ const UpgradeBusiness = () => {
         defaultMaxPrice: 1000,
         defaultMinPrice: 0,
         isEcommerceEnabled: true,
-      })
+      });
     }
   }, [userDataRes]);
 
@@ -140,6 +142,12 @@ const UpgradeBusiness = () => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
+      let getRolUserRes2 = getRolUserRes;
+      getRolUserRes2.merchantSelected.firstPlanDefault = false;
+      dispatch({
+        type: GET_ROL_USER,
+        payload: getRolUserRes2,
+      });
       setOpenStatus(false);
       Router.push('/sample/home');
     } else if (registerError()) {
@@ -214,133 +222,128 @@ const UpgradeBusiness = () => {
   };
   return (
     <>
-            {(initialValues != {}) ? (
+      {initialValues != {} ? (
+        <Card sx={{p: 4}}>
+          <Box className='account-tabs-content'>
+            <Box
+              sx={{
+                position: 'relative',
+                maxWidth: 750,
+              }}
+            >
+              <Formik
+                validateOnChange={false}
+                validateOnBlur={true}
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={(data, {setSubmitting}) => {
+                  setSubmitting(true);
+                  console.log('data: ', {...data, documentType: docType});
+                  // TODO Api Call here to save user info
+                  dispatch({type: FETCH_SUCCESS, payload: undefined});
+                  dispatch({type: FETCH_ERROR, payload: undefined});
+                  dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
 
-          <Card sx={{p: 4}}>
-            <Box className='account-tabs-content'>
-              <Box
-                sx={{
-                  position: 'relative',
-                  maxWidth: 750,
+                  setExecAll(true);
+                  setExecAll(false);
+                  toUpgradeToNewPlan({
+                    request: {
+                      payload: {
+                        merchantId: userDataRes.merchantSelected.merchantId,
+                        planDesiredId:
+                          userDataRes.merchantSelected.planDesiredId,
+                        promotionCodeId:
+                          userDataRes.merchantSelected.promotionCodeId,
+                        serieDocumenteBilling: data.serieDocumenteBilling || '',
+                        serieBackDocumenteBilling:
+                          data.serieBackDocumenteBilling || '',
+                        serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                        serieBackDocumenteReceipt:
+                          data.serieBackDocumenteReceipt || '',
+                        serieDocumenteReferralGuide:
+                          data.serieDocumenteReferralGuide || '',
+                        serieBackDocumenteReferralGuide:
+                          data.serieBackDocumenteReferralGuide || '',
+                        eMerchantSlugName: data.eMerchantSlugName || '',
+                        merchantMasterId: userDataRes.merchantMasterId,
+                        firstPlanDefault:
+                          userDataRes.merchantSelected.firstPlanDefault,
+                        typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                        categories: initialCategories,
+                        filters: filters,
+                        price: [data.defaultMinPrice, data.defaultMaxPrice],
+                        isEcommerceEnabled: publish,
+                      },
+                    },
+                  });
+                  console.log('Esto se envia', {
+                    request: {
+                      payload: {
+                        merchantId: userDataRes.merchantSelected.merchantId,
+                        planDesiredId:
+                          userDataRes.merchantSelected.planDesiredId,
+                        promotionCodeId:
+                          userDataRes.merchantSelected.promotionCodeId,
+                        serieDocumenteBilling: data.serieDocumenteBilling || '',
+                        serieBackDocumenteBilling:
+                          data.serieBackDocumenteBilling || '',
+                        serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                        serieBackDocumenteReceipt:
+                          data.serieBackDocumenteReceipt || '',
+                        serieDocumenteReferralGuide:
+                          data.serieDocumenteReferralGuide || '',
+                        serieBackDocumenteReferralGuide:
+                          data.serieBackDocumenteReferralGuide || '',
+                        eMerchantSlugName: data.eMerchantSlugName || '',
+                        merchantMasterId: userDataRes.merchantMasterId,
+                        firstPlanDefault:
+                          userDataRes.merchantSelected.firstPlanDefault,
+                        typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                        categories: initialCategories,
+                        filters: filters,
+                        price: [
+                          Number(data.defaultMinPrice),
+                          Number(data.defaultMaxPrice),
+                        ],
+                      },
+                    },
+                  });
+                  setOpenStatus(true);
+                  setSubmitting(false);
                 }}
               >
+                {({values, setFieldValue}) => {
+                  return (
+                    <UpgradeBusinessForm
+                      values={values}
+                      setFieldValue={setFieldValue}
+                      moveData={getDocumentType}
+                      updateCategories={updateCategories}
+                      updateFilters={updateFilters}
+                      handlePublicChange={handlePublicChange}
+                      execAll={execAll}
+                      publish={publish}
+                    />
+                  );
+                }}
+              </Formik>
 
-
-                <Formik
-                  validateOnChange={false}
-                  validateOnBlur={true}
-                  initialValues={initialValues}
-                  validationSchema={validationSchema}
-                  onSubmit={(data, {setSubmitting}) => {
-                    setSubmitting(true);
-                    console.log('data: ', {...data, documentType: docType});
-                    // TODO Api Call here to save user info
-                    dispatch({type: FETCH_SUCCESS, payload: undefined});
-                    dispatch({type: FETCH_ERROR, payload: undefined});
-                    dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
-
-                    setExecAll(true);
-                    setExecAll(false);
-                    toUpgradeToNewPlan({
-                      request: {
-                        payload: {
-                          merchantId: userDataRes.merchantSelected.merchantId,
-                          planDesiredId: userDataRes.merchantSelected.planDesiredId,
-                          promotionCodeId:
-                            userDataRes.merchantSelected.promotionCodeId,
-                          serieDocumenteBilling: data.serieDocumenteBilling || '',
-                          serieBackDocumenteBilling:
-                            data.serieBackDocumenteBilling || '',
-                          serieDocumenteReceipt: data.serieDocumenteReceipt || '',
-                          serieBackDocumenteReceipt:
-                            data.serieBackDocumenteReceipt || '',
-                          serieDocumenteReferralGuide:
-                            data.serieDocumenteReferralGuide || '',
-                          serieBackDocumenteReferralGuide:
-                            data.serieBackDocumenteReferralGuide || '',
-                          eMerchantSlugName: data.eMerchantSlugName || '',
-                          merchantMasterId: userDataRes.merchantMasterId,
-                          firstPlanDefault:
-                            userDataRes.merchantSelected.firstPlanDefault,
-                          typeMerchant: userDataRes.merchantSelected.typeMerchant,
-                          categories: initialCategories,
-                          filters: filters,
-                          price: [data.defaultMinPrice, data.defaultMaxPrice],
-                          isEcommerceEnabled: publish,
-                        },
-                      },
-                    });
-                    console.log('Esto se envia', {
-                      request: {
-                        payload: {
-                          merchantId: userDataRes.merchantSelected.merchantId,
-                          planDesiredId: userDataRes.merchantSelected.planDesiredId,
-                          promotionCodeId:
-                            userDataRes.merchantSelected.promotionCodeId,
-                          serieDocumenteBilling: data.serieDocumenteBilling || '',
-                          serieBackDocumenteBilling:
-                            data.serieBackDocumenteBilling || '',
-                          serieDocumenteReceipt: data.serieDocumenteReceipt || '',
-                          serieBackDocumenteReceipt:
-                            data.serieBackDocumenteReceipt || '',
-                          serieDocumenteReferralGuide:
-                            data.serieDocumenteReferralGuide || '',
-                          serieBackDocumenteReferralGuide:
-                            data.serieBackDocumenteReferralGuide || '',
-                          eMerchantSlugName: data.eMerchantSlugName || '',
-                          merchantMasterId: userDataRes.merchantMasterId,
-                          firstPlanDefault:
-                            userDataRes.merchantSelected.firstPlanDefault,
-                          typeMerchant: userDataRes.merchantSelected.typeMerchant,
-                          categories: initialCategories,
-                          filters: filters,
-                          price: [
-                            Number(data.defaultMinPrice),
-                            Number(data.defaultMaxPrice),
-                          ],
-                        },
-                      },
-                    });
-                    setOpenStatus(true);
-                    setSubmitting(false);
-                  }}
-                >
-                  {({values, setFieldValue}) => {
-                    return (
-                      <UpgradeBusinessForm
-                        values={values}
-                        setFieldValue={setFieldValue}
-                        moveData={getDocumentType}
-                        updateCategories={updateCategories}
-                        updateFilters={updateFilters}
-                        handlePublicChange={handlePublicChange}
-                        execAll={execAll}
-                        publish={publish}
-                      />
-                    );
-                  }}
-                </Formik>
-
-                <Dialog
-                  open={openStatus}
-                  onClose={sendStatus}
-                  sx={{textAlign: 'center'}}
-                  aria-labelledby='alert-dialog-title'
-                  aria-describedby='alert-dialog-description'
-                >
-                  <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                    {'Alta de plan'}
-                  </DialogTitle>
-                  {showMessage()}
-                </Dialog>
-              </Box>
+              <Dialog
+                open={openStatus}
+                onClose={sendStatus}
+                sx={{textAlign: 'center'}}
+                aria-labelledby='alert-dialog-title'
+                aria-describedby='alert-dialog-description'
+              >
+                <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                  {'Alta de plan'}
+                </DialogTitle>
+                {showMessage()}
+              </Dialog>
             </Box>
-          </Card>
-
-
-            ): null  }
-
-
+          </Box>
+        </Card>
+      ) : null}
     </>
   );
 };

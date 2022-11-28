@@ -163,6 +163,7 @@ export const GET_CURRENT_MOVEMENTS_DOCUMENTS =
   'get_current_movements_documents';
 //ROL USER
 export const GET_ROL_USER = 'get_rol_user';
+export const UPDATE_ROL_USER_FIRST_PLAN = 'update_rol_user_first_plan';
 export const LIST_ROL = 'list_rol';
 
 //PARAMETERS
@@ -177,6 +178,7 @@ export const MONEY_SYMBOL = 'money_symbol';
 export const GET_PRESIGNED = 'get_presigned';
 export const UPLOAD_IMAGE = 'upload_image';
 export const GET_DATA_BUSINESS = 'get_data_business';
+export const UPDATE_DATA_BUSINESS = 'update_data_business';
 export const GET_VERIFICATION_CODE = 'get_verification_code';
 export const CANCEL_COMPLETE_BUSINESS = 'cancel_complete_business';
 

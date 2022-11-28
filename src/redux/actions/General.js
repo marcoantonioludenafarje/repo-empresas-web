@@ -13,6 +13,8 @@ import {
   GET_ROL_USER,
   UPGRADE_TO_NEW_PLAN,
   UPDATE_ALL_BUSINESS_PARAMETER,
+  UPDATE_ROL_USER_FIRST_PLAN,
+  UPDATE_DATA_BUSINESS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -95,6 +97,24 @@ export const getDataBusiness = (payload) => {
       });
   };
 };
+export const updateDataBusiness = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/business/update', {body: payload})
+      .then((data) => {
+        console.log('updateDataBusiness resultado', data);
+        dispatch({
+          type: UPDATE_DATA_BUSINESS,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+      })
+      .catch((error) => {
+        console.log('updateDataBusiness error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
 export const uploadFile = (payload, url) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -105,7 +125,7 @@ export const uploadFile = (payload, url) => {
           type: GET_PRESIGNED,
           payload: data.response.payload,
         });
-        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
         console.log('uploadFile error', error);

@@ -24,6 +24,14 @@ import {
   FormControlLabel,
   FormGroup,
   Switch,
+  Alert,
+  Paper,
+  TableCell,
+  TableRow,
+  TableBody,
+  TableContainer,
+  TableHead,
+  Table,
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
@@ -33,6 +41,7 @@ import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveIcon from '@mui/icons-material/Remove';
+import CloseIcon from '@mui/icons-material/Close';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -47,7 +56,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {generatePredefinedRoute} from '../../../redux/actions/Movements';
 import {onGetProducts} from '../../../redux/actions/Products';
 import {getCarriers} from '../../../redux/actions/Carriers';
-import {red} from '@mui/material/colors';
+import {blue, green, red} from '@mui/material/colors';
 
 import {getUserData} from '../../../redux/actions/User';
 import {completeWithZeros} from '../../../Utils/utils';
@@ -92,6 +101,7 @@ const Distribution = () => {
     description: '',
     productCategoryId: '',
   };
+  let typeAlert = 'existProductsWithThisCategory';
   const dispatch = useDispatch();
   const [routes, setRoutes] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
@@ -99,6 +109,7 @@ const Distribution = () => {
   const [reload, setReload] = React.useState(false);
   const [execAll, setExecAll] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [openAlert, setOpenAlert] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [defaultMoney, setDefaultMoney] = React.useState('PEN');
   const [defaultWeight, setDefaultWeight] = React.useState('KG');
@@ -108,8 +119,12 @@ const Distribution = () => {
   const [defaultPriceRange, setDefaultPriceRange] = React.useState([0, 1000]);
   const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
   const [publish, setPublish] = React.useState(false);
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [typeIcon, setTypeIcon] = React.useState('2');
+  const [productsSelected, setProductsSelected] = React.useState([]);
+  const [moneyUnit, setMoneyUnit] = React.useState('');
   const {listProducts} = useSelector(({products}) => products);
-  console.log('products', listProducts);
+  console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
   console.log('globalParameter123', businessParameter);
   const {userAttributes} = useSelector(({user}) => user);
@@ -187,6 +202,16 @@ const Distribution = () => {
       if (userDataRes.merchantSelected.isEcommerceEnabled) {
         setPublish(true);
       }
+      let listPayload = {
+        request: {
+          payload: {
+            businessProductCode: null,
+            description: null,
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
+      getProducts(listPayload);
     }
   }, [userDataRes]);
   useEffect(() => {
@@ -206,6 +231,10 @@ const Distribution = () => {
       let defaultWeightParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
       ).value;
+      let obtainedMoneyUnit = businessParameter.find(
+        (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
+      ).value;
+      console.log('moneyUnit desde selectProducts', moneyUnit);
       console.log('categoriesProductParameter', categoriesProductParameter);
       console.log(
         'ecommerceTagsProductParameter',
@@ -231,6 +260,7 @@ const Distribution = () => {
         ecommerceProductParameter.defaultProductsPayDetail,
       );
       setCategories(categoriesProductParameter);
+      setMoneyUnit(obtainedMoneyUnit);
       changeValue('defaultWeight', defaultWeightParameter);
       changeValue('defaultMoney', defaultMoneyParameter);
       changeValue('defaultIgvActivation', Number(defaultIgvParameter));
@@ -277,6 +307,11 @@ const Distribution = () => {
         setPublish(true);
       }
     }
+
+    setTimeout(() => {
+      setMinTutorial(true);
+      setTypeIcon('1');
+    }, 2000);
   }, []);
   const handlePublicChange = (event) => {
     console.log('Switch ecommerce cambio', event);
@@ -459,11 +494,31 @@ const Distribution = () => {
     console.log('function', changedRoutes[index].submit);
     setRoutes(changedRoutes);
   };
-
+  const changeIcon = () => {
+    setTypeIcon('2');
+  };
+  const changeIcon2 = () => {
+    setTypeIcon('1');
+  };
+  const iconSelected = () => {
+    if (typeIcon == '1') {
+      return (
+        <>
+          <YouTubeIcon fontSize='inherit' />
+        </>
+      );
+    } else if (typeIcon == '2') {
+      return <>VER TUTORIAL</>;
+    }
+  };
   const reloadPage = () => {
     setReload(!reload);
   };
-
+  const parseTo3Decimals = (number) => {
+    let newValue = number + Number.EPSILON;
+    newValue = Math.round(newValue * 1000) / 1000;
+    return newValue;
+  };
   const registerSuccess = () => {
     console.log('Registro Exitoso?', generalSuccess);
     console.log('El res de updateParameters', updateAllBusinessParameterRes);
@@ -490,6 +545,9 @@ const Distribution = () => {
     } else {
       setOpenStatus(false);
     }
+  };
+  const sendAlert = () => {
+    setOpenAlert(false);
   };
   const showMessage = () => {
     if (registerSuccess()) {
@@ -849,41 +907,104 @@ const Distribution = () => {
       >
         {categories &&
           categories.map((category, index) => (
-            <Card key={index} sx={{p: 2}}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <CategoryCard
-                  key={index}
-                  order={index}
-                  execFunctions={execAll}
-                  newValuesData={setCategoryIndex}
-                  initialValues={category}
-                />
-
-                <IconButton
-                  onClick={() => {
-                    console.log('categories', categories);
-                    let newCategories = categories;
-                    newCategories = newCategories.filter(
-                      (item) =>
-                        item.productCategoryId !== category.productCategoryId,
-                    );
-                    setCategories(newCategories);
-                    reloadPage();
+            <>
+              <Card key={index} sx={{p: 2}}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
                   }}
-                  aria-label='delete'
                 >
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
-            </Card>
+                  <CategoryCard
+                    key={index}
+                    order={index}
+                    execFunctions={execAll}
+                    newValuesData={setCategoryIndex}
+                    initialValues={category}
+                  />
+
+                  <IconButton
+                    onClick={() => {
+                      const productsWithThisCategory = listProducts.filter(
+                        (element) =>
+                          element.category == category.description ||
+                          element.categoryId == category.productCategoryId,
+                      );
+                      console.log(
+                        'productsWithThisCategory',
+                        productsWithThisCategory,
+                      );
+                      if (productsWithThisCategory.length > 0) {
+                        typeAlert = 'existProductsWithThisCategory';
+                        setProductsSelected(productsWithThisCategory);
+                        setShowAlert(true);
+                      } else {
+                        console.log('categories', categories);
+                        let newCategories = categories;
+                        newCategories = newCategories.filter(
+                          (item) =>
+                            item.productCategoryId !==
+                            category.productCategoryId,
+                        );
+                        setCategories(newCategories);
+                        reloadPage();
+                      }
+                    }}
+                    aria-label='delete'
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              </Card>
+            </>
           ))}
       </Box>
-
+      <Collapse in={showAlert}>
+        <Alert
+          severity='error'
+          action={
+            <>
+              <IconButton
+                aria-label='close'
+                color='inherit'
+                size='small'
+                onClick={() => {
+                  setOpenAlert(true);
+                }}
+              >
+                <Button color='primary' variant='contained' sx={{p: '4px'}}>
+                  Productos
+                </Button>
+              </IconButton>
+              <IconButton
+                aria-label='close'
+                color='inherit'
+                size='small'
+                onClick={() => {
+                  setShowAlert(false);
+                }}
+                sx={{height: '100%'}}
+              >
+                <Button
+                  color='secondary'
+                  variant='contained'
+                  sx={{p: '9px', height: '100%'}}
+                >
+                  <CloseIcon fontSize='inherit' />
+                </Button>
+                {/* <CloseIcon fontSize='inherit' /> */}
+              </IconButton>
+            </>
+          }
+          sx={{mb: 1, pt: 0, alignItems: 'center', height: '100%'}}
+        >
+          {typeAlert == 'existProductsWithThisCategory' ? (
+            <IntlMessages id='alert.configurationParameters.existProductsWithThisCategory' />
+          ) : (
+            <></>
+          )}
+        </Alert>
+      </Collapse>
       <Box
         sx={{
           flex: 1,
@@ -961,9 +1082,11 @@ const Distribution = () => {
               edge='end'
               color='inherit'
               aria-label='open drawer'
+              onMouseOver={() => changeIcon()}
+              onMouseLeave={() => changeIcon2()}
               onClick={() => window.open('https://www.youtube.com/')}
             >
-              <YouTubeIcon fontSize='inherit' />
+              {iconSelected()}
             </IconButton>
           </Box>
         </Box>
@@ -1008,12 +1131,11 @@ const Distribution = () => {
               aria-label='open drawer'
               onClick={() => window.open('https://www.youtube.com/')}
             >
-              VER TUTORIAL
+              {iconSelected()}
             </IconButton>
           </Box>
         </Box>
       )}
-
       <Dialog
         open={openStatus}
         onClose={sendStatus}
@@ -1029,6 +1151,76 @@ const Distribution = () => {
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openAlert}
+        onClose={sendAlert}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {<IntlMessages id='message.alert.configurationParameters' />}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <>
+            <TableContainer component={Paper}>
+              <Table sx={{minWidth: 650}} aria-label='simple table'>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Código</TableCell>
+                    <TableCell>Descripción</TableCell>
+                    <TableCell>Cantidad</TableCell>
+                    <TableCell>Precio compra sugerido</TableCell>
+                    <TableCell>Precio venta sugerido</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {productsSelected && Array.isArray(productsSelected) ? (
+                    productsSelected.map((obj) => {
+                      return (
+                        <TableRow
+                          sx={{
+                            '&:last-child td, &:last-child th': {border: 0},
+                            cursor: 'pointer',
+                          }}
+                          key={obj.product}
+                          id={obj.product}
+                          hover
+                          onClick={() => {}}
+                        >
+                          <TableCell>{obj.product}</TableCell>
+                          <TableCell>{obj.description}</TableCell>
+                          <TableCell>{obj.stock}</TableCell>
+                          <TableCell>
+                            {`${parseTo3Decimals(
+                              Number(obj.costPriceUnit),
+                            ).toFixed(3)} ${moneyUnit}`}
+                          </TableCell>
+                          <TableCell>
+                            {`${parseTo3Decimals(
+                              Number(obj.priceBusinessMoneyWithIgv),
+                            ).toFixed(3)} ${moneyUnit}`}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                  ) : (
+                    <CircularProgress
+                      disableShrink
+                      sx={{m: '10px', position: 'relative'}}
+                    />
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendAlert}>
             Aceptar
           </Button>
         </DialogActions>
