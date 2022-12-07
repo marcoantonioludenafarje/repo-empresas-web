@@ -1076,9 +1076,78 @@ const UpdateProduct = (props) => {
                         </MenuItem>
                       </Select>
                     </FormControl>
+                    {typeProduct != 'rawMaterial' ? (
+                      <Box sx={{textAlign: 'center'}}>
+                        <Button
+                          sx={{width: 1 / 2, mb: 4}}
+                          variant='outlined'
+                          onClick={handleClickOpen}
+                        >
+                          Añade productos
+                        </Button>
+                        <SubProducts
+                          arrayObjs={selectedProducts}
+                          toDelete={removeProduct}
+                        />
+                      </Box>
+                    ) : (
+                      <></>
+                    )}
+
+                    <Collapse in={showAlert}>
+                      <Alert
+                        severity='error'
+                        action={
+                          <IconButton
+                            aria-label='close'
+                            color='inherit'
+                            size='small'
+                            onClick={() => {
+                              setShowAlert(false);
+                            }}
+                          >
+                            <CloseIcon fontSize='inherit' />
+                          </IconButton>
+                        }
+                        sx={{mb: 2}}
+                      >
+                        {typeAlert == 'noImage' ? (
+                          'Selecciona una cantidad menor al stock existente.'
+                        ) : (
+                          <></>
+                        )}
+                        {typeAlert == 'faltaProduct' ? (
+                          'Selecciona un producto.'
+                        ) : (
+                          <></>
+                        )}
+                        {typeAlert == 'maxStock' ? (
+                          'No puedes sobrepasar el stock.'
+                        ) : (
+                          <></>
+                        )}
+                      </Alert>
+                    </Collapse>
                   </Grid>
                   {sectionEcommerce === true ? (
                     <>
+                      <Grid item xs={12} md={12}>
+                        <FormGroup
+                          sx={{
+                            ml: 2,
+                          }}
+                        >
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={publish}
+                                onChange={handlePublicChange}
+                              />
+                            }
+                            label='Mantener Público en Ecommerce'
+                          />
+                        </FormGroup>
+                      </Grid>
                       <Typography
                         component='h3'
                         sx={{
@@ -1087,7 +1156,7 @@ const UpdateProduct = (props) => {
                           ml: {xs: 3, lg: 4},
                         }}
                       >
-                        Sección ecommerce (opcional)
+                        Sección Ecommerce (opcional)
                       </Typography>
                       <Grid item xs={12}>
                         <AppTextField
@@ -1193,7 +1262,7 @@ const UpdateProduct = (props) => {
                                               value={Number(index) + 1}
                                               checked={selectedFilters[
                                                 obj.featureName
-                                              ].includes(Number(index) + 1)}
+                                              ] ? selectedFilters[obj.featureName].includes(Number(index) + 1) : false}
                                               onChange={handleFieldFilter2}
                                               name={obj.featureName}
                                             />
@@ -1309,83 +1378,10 @@ const UpdateProduct = (props) => {
                   ) : (
                     <></>
                   )}
-                  {sectionEcommerce === true ? (
-                    <>
-                      <Grid item xs={12} md={12}>
-                        <FormGroup
-                          sx={{
-                            ml: 2,
-                          }}
-                        >
-                          <FormControlLabel
-                            control={
-                              <Switch
-                                checked={publish}
-                                onChange={handlePublicChange}
-                              />
-                            }
-                            label='Mantener Público en Ecommerce'
-                          />
-                        </FormGroup>
-                      </Grid>
-                    </>
-                  ) : (
-                    <></>
-                  )}
+                  
                 </Grid>
 
-                {typeProduct != 'rawMaterial' ? (
-                  <Box sx={{textAlign: 'center'}}>
-                    <Button
-                      sx={{width: 1 / 2, mb: 4}}
-                      variant='outlined'
-                      onClick={handleClickOpen}
-                    >
-                      Añade productos
-                    </Button>
-                    <SubProducts
-                      arrayObjs={selectedProducts}
-                      toDelete={removeProduct}
-                    />
-                  </Box>
-                ) : (
-                  <></>
-                )}
-
-                <Collapse in={showAlert}>
-                  <Alert
-                    severity='error'
-                    action={
-                      <IconButton
-                        aria-label='close'
-                        color='inherit'
-                        size='small'
-                        onClick={() => {
-                          setShowAlert(false);
-                        }}
-                      >
-                        <CloseIcon fontSize='inherit' />
-                      </IconButton>
-                    }
-                    sx={{mb: 2}}
-                  >
-                    {typeAlert == 'noImage' ? (
-                      'Selecciona una cantidad menor al stock existente.'
-                    ) : (
-                      <></>
-                    )}
-                    {typeAlert == 'faltaProduct' ? (
-                      'Selecciona un producto.'
-                    ) : (
-                      <></>
-                    )}
-                    {typeAlert == 'maxStock' ? (
-                      'No puedes sobrepasar el stock.'
-                    ) : (
-                      <></>
-                    )}
-                  </Alert>
-                </Collapse>
+                
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'

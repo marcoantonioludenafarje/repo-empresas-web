@@ -285,13 +285,35 @@ const BusinessInfoForm = ({
             label={<IntlMessages id='common.busines.direction' />}
           />
         </Grid>
-        <Grid item xs={12} md={12}>
+        <Grid item xs={7} md={7}>
+          <Box sx={{textAlign: 'left'}}>
+            <Typography 
+              variant='h4'
+              sx={{
+                fontSize: 12,
+                textAlign: 'left',
+              }}
+              paragraph='true'
+            >
+              {process.env.REACT_APP_ECOMMERCE_URL}{values.eMerchantSlugName}
+            </Typography>
+          </Box>
+          
+        </Grid>
+        <Grid item xs={5} md={5}>
           <AppTextField
             name='eMerchantSlugName'
             fullWidth
-            label={<IntlMessages id='common.slug' />}
+            label={`Ruta del Comercio`}
           />
         </Grid>
+        {/* <Grid item xs={12} md={12}>
+          <AppTextField
+            name='eMerchantSlugName'
+            fullWidth
+            label={`Ruta del Comercio: ${process.env.REACT_APP_ECOMMERCE_URL}${values.eMerchantSlugName}`}
+          />
+        </Grid> */}
         <Grid item xs={12} md={12}>
           <AppTextField
             name='facebook'

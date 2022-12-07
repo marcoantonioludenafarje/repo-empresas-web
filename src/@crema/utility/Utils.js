@@ -190,3 +190,24 @@ export const request = (method, path, payload) => {
   //   },
   // })
 };
+
+export const request2 = (method, path, payload) => {
+  console.log('Ahora axios');
+  return axios[method](
+    `https://hkqbuc22u9.execute-api.us-east-1.amazonaws.com/DEV${path}`,
+    payload,
+    {
+      headers: {
+        'Content-type': 'application/json',
+      },
+    },
+  );
+  // return API[method](api,path , {
+  //   body: payload,
+  //   headers: {
+  //     authorization: "allow",
+  //     "Content-type": "application/json",
+  //     // localStorage.getItem("jwt")
+  //   },
+  // })
+};

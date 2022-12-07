@@ -187,7 +187,7 @@ const DeliveryCard = ({
       let newOption = {
         products: newProducts,
       };
-      console.log('nueva ruta', newRoute);
+      console.log('Nueva ruta 1', newRoute);
       newValuesData(order, newOption);
     }
     setSubmitting(false);
@@ -200,7 +200,7 @@ const DeliveryCard = ({
       filterName: data.observationDelivery,
       options: productsList,
     };
-    console.log('Nueva opción', newOption);
+    console.log('Nueva ruta 2', newOption);
     newValuesData(order, newOption);
     setSubmitting(false);
   };
@@ -329,7 +329,7 @@ const DeliveryCard = ({
     let newProds = productsList;
     console.log('lista antes', newProds);
     newProds.push({...emptyProduct, rowId: counter});
-    console.log('lista despues', newProds);
+    console.log('lista despues add', newProds);
     setCounter(counter + 1);
     setProductsList(newProds);
     reloadPage();

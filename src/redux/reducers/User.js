@@ -9,6 +9,7 @@ import {
   LIST_ROL,
   LIST_USER,
   UPDATE_USER,
+  GET_SHOP_PRODUCTS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -18,6 +19,12 @@ const INIT_STATE = {
 
 const userReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
+    case GET_SHOP_PRODUCTS:
+      console.log('data de reducer GET_SHOP_PRODUCTS', action.payload);
+      return {
+        ...state,
+        getShopProductRes: action.payload,
+      };
     case GET_USER_DATA:
       console.log('data de reducer GET_USER_DATA', action.payload);
       return {

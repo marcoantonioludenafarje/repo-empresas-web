@@ -213,9 +213,11 @@ const PredefinedRoutes = () => {
                                     Ubigeo de punto de llegada
                                   </TableCell>
                                   <TableCell>
-                                    Documento de transportista
+                                    Documento de conductor
                                   </TableCell>
-                                  <TableCell>Nombre de transportista</TableCell>
+                                  <TableCell>Nombre de conductor</TableCell>
+                                  <TableCell>Apellidos de conductor</TableCell>
+                                  <TableCell>Licencia de conductor</TableCell>
                                   <TableCell>Placa</TableCell>
                                   <TableCell>Productos</TableCell>
                                   <TableCell>Observaciones</TableCell>
@@ -252,6 +254,12 @@ const PredefinedRoutes = () => {
                                             </TableCell>
                                             <TableCell>
                                               {route.driverDenomination}
+                                            </TableCell>
+                                            <TableCell>
+                                              {route.driverLastName}
+                                            </TableCell>
+                                            <TableCell>
+                                              {route.driverLicenseNumber}
                                             </TableCell>
                                             <TableCell>
                                               {route.carrierPlateNumber}

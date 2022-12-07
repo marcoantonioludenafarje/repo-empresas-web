@@ -113,7 +113,9 @@ const DeliveryCard = ({
     startingAddress: '',
     arrivalAddress: '',
     driverName: '',
+    driverLastName: '',
     driverDocumentNumber: '',
+    driverLicenseNumber: '',
     plate: '',
     totalWeight: '',
     numberPackages: 1,
@@ -203,6 +205,14 @@ const DeliveryCard = ({
         'driverName',
         initialValues.driverDenomination || initialValues.driverName,
       );
+      changeValue(
+        'driverLastName',
+        initialValues.driverLastName ? initialValues.driverLastName : "",
+      );
+      changeValue(
+        'driverLicenseNumber',
+        initialValues.driverLicenseNumber ? initialValues.driverLicenseNumber : "",
+      );
       changeValue('driverDocumentNumber', initialValues.driverDocumentNumber);
       changeValue(
         'plate',
@@ -290,6 +300,14 @@ const DeliveryCard = ({
       .string()
       .typeError(<IntlMessages id='validation.string' />)
       .required(<IntlMessages id='validation.required' />),
+    driverLastName: yup
+      .string()
+      .typeError(<IntlMessages id='validation.string' />)
+      .required(<IntlMessages id='validation.required' />),
+    driverLicenseNumber: yup
+      .string()
+      .typeError(<IntlMessages id='validation.string' />)
+      .required(<IntlMessages id='validation.required' />),
     driverDocumentNumber: yup
       .string()
       .typeError(<IntlMessages id='validation.string' />)
@@ -346,7 +364,9 @@ const DeliveryCard = ({
         arrivalPointUbigeo: ubigeoArrivalPoint.toString(),
         arrivalAddress: data.arrivalAddress,
         driverName: data.driverName,
+        driverLastName: data.driverLastName,
         driverDocumentType: typeDocument.toLowerCase(),
+        driverLicenseNumber: data.driverLicenseNumber,
         driverDocumentNumber: data.driverDocumentNumber,
         plate: data.plate,
         totalWeight: data.totalWeight,
@@ -387,8 +407,10 @@ const DeliveryCard = ({
         arrivalPointUbigeo: ubigeoArrivalPoint.toString(),
         arrivalAddress: data.arrivalAddress,
         driverName: data.driverName,
+        driverLastName: data.driverLastName,
         driverDocumentType: typeDocument.toLowerCase(),
         driverDocumentNumber: data.driverDocumentNumber,
+        driverLicenseNumber: data.driverLicenseNumber,
         plate: data.plate,
         totalWeight: data.totalWeight,
         numberPackages: data.numberPackages,
@@ -827,6 +849,20 @@ const DeliveryCard = ({
                   </Grid>
 
                   <Grid item xs={3}>
+                    <AppTextField
+                      label={<IntlMessages id='common.busines.driver.lastName' />}
+                      name='driverLastName'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={3}>
                     <FormControl fullWidth>
                       <InputLabel
                         id='documentType-label'
@@ -874,6 +910,21 @@ const DeliveryCard = ({
                       }}
                     />
                   </Grid>
+
+                  <Grid item xs={3}>
+                    <AppTextField
+                      label={<IntlMessages id='common.busines.driver.licenseNumber' />}
+                      name='driverLicenseNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                      }}
+                    />
+                  </Grid>
+
                   <Grid item xs={3}>
                     <AppTextField
                       label={<IntlMessages id='common.busines.plate' />}

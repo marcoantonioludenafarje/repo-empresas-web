@@ -87,6 +87,7 @@ const UpgradeBusiness = () => {
   const [initialCategories, setInitialCategories] = React.useState([]);
   const [publish, setPublish] = React.useState(true);
   const [execAll, setExecAll] = React.useState(false);
+  const [typeDialog, setTypeDialog] = React.useState("darDeAlta");
   const toUpgradeToNewPlan = (payload) => {
     dispatch(upgradeToNewPlan(payload));
   };
@@ -237,79 +238,117 @@ const UpgradeBusiness = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(data, {setSubmitting}) => {
-                  setSubmitting(true);
-                  console.log('data: ', {...data, documentType: docType});
-                  // TODO Api Call here to save user info
-                  dispatch({type: FETCH_SUCCESS, payload: undefined});
-                  dispatch({type: FETCH_ERROR, payload: undefined});
-                  dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
+                  console.log("Este es initialCategories", initialCategories)
+                  console.log("Este es filters", filters)
+                  
+                  if(!data.eMerchantSlugName){
+                    setTypeDialog("nonSlug")
+                    setOpenStatus(true);
+                  } else if(!data.defaultMaxPrice || !data.defaultMinPrice) {
+                    setTypeDialog("nonPriceRange")
+                    setOpenStatus(true);
+                  } else if((Number(data.defaultMinPrice) < 0) && (Number(data.defaultMaxPrice) < 0)) {
+                    setTypeDialog("priceIsMoreThanZero")
+                    setOpenStatus(true);
+                  } else if(Number(data.defaultMaxPrice) < Number(data.defaultMinPrice) ) { 
+                    setTypeDialog("maxPriceIsLessThanMinPrice")
+                    setOpenStatus(true);
+                  } else if(initialCategories.length == 0 || (!initialCategories) || initialCategories === []) {
+                    setTypeDialog("nonCategories")
+                    setOpenStatus(true);
+                  } else if(initialCategories.some(arrVal => "" === arrVal.description)) {
+                    setTypeDialog("someCategoriesAreEmpty")
+                    setOpenStatus(true);
+                  } else if(filters.length == 0 || (!filters) || filters === []) {
+                    setTypeDialog("nonFilters")
+                    setOpenStatus(true);
+                  } else if(filters.some(arrVal => "" === arrVal.filterName)) {
+                    setTypeDialog("someFiltersAreEmpty")
+                    setOpenStatus(true);
+                  } else if(filters.some(arrVal => 0 === arrVal.options.length)) {
+                    setTypeDialog("someFiltersAreEmpty")
+                    setOpenStatus(true);
+                  } else if(filters.some(arrVal => undefined === arrVal.filterName)) {
+                    setTypeDialog("someFiltersAreEmpty")
+                    setOpenStatus(true);
+                  } else {
+                    setTypeDialog("darDeAlta")
+                    setSubmitting(true);
+                    console.log('data filters: ', {filters: filters});
+                    console.log('data planRegistration: ', {...data, documentType: docType, filters: filters});
+                    // TODO Api Call here to save user info
+                    // dispatch({type: FETCH_SUCCESS, payload: undefined});
+                    // dispatch({type: FETCH_ERROR, payload: undefined});
+                    // dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
 
-                  setExecAll(true);
-                  setExecAll(false);
-                  toUpgradeToNewPlan({
-                    request: {
-                      payload: {
-                        merchantId: userDataRes.merchantSelected.merchantId,
-                        planDesiredId:
-                          userDataRes.merchantSelected.planDesiredId,
-                        promotionCodeId:
-                          userDataRes.merchantSelected.promotionCodeId,
-                        serieDocumenteBilling: data.serieDocumenteBilling || '',
-                        serieBackDocumenteBilling:
-                          data.serieBackDocumenteBilling || '',
-                        serieDocumenteReceipt: data.serieDocumenteReceipt || '',
-                        serieBackDocumenteReceipt:
-                          data.serieBackDocumenteReceipt || '',
-                        serieDocumenteReferralGuide:
-                          data.serieDocumenteReferralGuide || '',
-                        serieBackDocumenteReferralGuide:
-                          data.serieBackDocumenteReferralGuide || '',
-                        eMerchantSlugName: data.eMerchantSlugName || '',
-                        merchantMasterId: userDataRes.merchantMasterId,
-                        firstPlanDefault:
-                          userDataRes.merchantSelected.firstPlanDefault,
-                        typeMerchant: userDataRes.merchantSelected.typeMerchant,
-                        categories: initialCategories,
-                        filters: filters,
-                        price: [data.defaultMinPrice, data.defaultMaxPrice],
-                        isEcommerceEnabled: publish,
+                    setExecAll(true);
+                    setExecAll(false);
+                    // toUpgradeToNewPlan({
+                    //   request: {
+                    //     payload: {
+                    //       merchantId: userDataRes.merchantSelected.merchantId,
+                    //       planDesiredId:
+                    //         userDataRes.merchantSelected.planDesiredId,
+                    //       promotionCodeId:
+                    //         userDataRes.merchantSelected.promotionCodeId,
+                    //       serieDocumenteBilling: data.serieDocumenteBilling || '',
+                    //       serieBackDocumenteBilling:
+                    //         data.serieBackDocumenteBilling || '',
+                    //       serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                    //       serieBackDocumenteReceipt:
+                    //         data.serieBackDocumenteReceipt || '',
+                    //       serieDocumenteReferralGuide:
+                    //         data.serieDocumenteReferralGuide || '',
+                    //       serieBackDocumenteReferralGuide:
+                    //         data.serieBackDocumenteReferralGuide || '',
+                    //       eMerchantSlugName: data.eMerchantSlugName || '',
+                    //       merchantMasterId: userDataRes.merchantMasterId,
+                    //       firstPlanDefault:
+                    //         userDataRes.merchantSelected.firstPlanDefault,
+                    //       typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                    //       categories: initialCategories,
+                    //       filters: filters,
+                    //       price: [data.defaultMinPrice, data.defaultMaxPrice],
+                    //       isEcommerceEnabled: publish,
+                    //     },
+                    //   },
+                    // });
+                    console.log('Esto se envia', {
+                      request: {
+                        payload: {
+                          merchantId: userDataRes.merchantSelected.merchantId,
+                          planDesiredId:
+                            userDataRes.merchantSelected.planDesiredId,
+                          promotionCodeId:
+                            userDataRes.merchantSelected.promotionCodeId,
+                          serieDocumenteBilling: data.serieDocumenteBilling || '',
+                          serieBackDocumenteBilling:
+                            data.serieBackDocumenteBilling || '',
+                          serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                          serieBackDocumenteReceipt:
+                            data.serieBackDocumenteReceipt || '',
+                          serieDocumenteReferralGuide:
+                            data.serieDocumenteReferralGuide || '',
+                          serieBackDocumenteReferralGuide:
+                            data.serieBackDocumenteReferralGuide || '',
+                          eMerchantSlugName: data.eMerchantSlugName || '',
+                          merchantMasterId: userDataRes.merchantMasterId,
+                          firstPlanDefault:
+                            userDataRes.merchantSelected.firstPlanDefault,
+                          typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                          categories: initialCategories,
+                          filters: filters,
+                          price: [
+                            Number(data.defaultMinPrice),
+                            Number(data.defaultMaxPrice),
+                          ],
+                        },
                       },
-                    },
-                  });
-                  console.log('Esto se envia', {
-                    request: {
-                      payload: {
-                        merchantId: userDataRes.merchantSelected.merchantId,
-                        planDesiredId:
-                          userDataRes.merchantSelected.planDesiredId,
-                        promotionCodeId:
-                          userDataRes.merchantSelected.promotionCodeId,
-                        serieDocumenteBilling: data.serieDocumenteBilling || '',
-                        serieBackDocumenteBilling:
-                          data.serieBackDocumenteBilling || '',
-                        serieDocumenteReceipt: data.serieDocumenteReceipt || '',
-                        serieBackDocumenteReceipt:
-                          data.serieBackDocumenteReceipt || '',
-                        serieDocumenteReferralGuide:
-                          data.serieDocumenteReferralGuide || '',
-                        serieBackDocumenteReferralGuide:
-                          data.serieBackDocumenteReferralGuide || '',
-                        eMerchantSlugName: data.eMerchantSlugName || '',
-                        merchantMasterId: userDataRes.merchantMasterId,
-                        firstPlanDefault:
-                          userDataRes.merchantSelected.firstPlanDefault,
-                        typeMerchant: userDataRes.merchantSelected.typeMerchant,
-                        categories: initialCategories,
-                        filters: filters,
-                        price: [
-                          Number(data.defaultMinPrice),
-                          Number(data.defaultMaxPrice),
-                        ],
-                      },
-                    },
-                  });
-                  setOpenStatus(true);
-                  setSubmitting(false);
+                    });
+                    setOpenStatus(true);
+                    setSubmitting(false);
+                    }
+                  
                 }}
               >
                 {({values, setFieldValue}) => {
@@ -335,10 +374,110 @@ const UpgradeBusiness = () => {
                 aria-labelledby='alert-dialog-title'
                 aria-describedby='alert-dialog-description'
               >
-                <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                  {'Alta de plan'}
-                </DialogTitle>
-                {showMessage()}
+                {typeDialog == 'darDeAlta' ? (
+                  <>
+                    <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                      {'Alta de plan'}
+                    </DialogTitle>
+                    {showMessage()}
+                  </>
+                ) : (
+                  <>
+                    {typeDialog == 'nonSlug' ? (
+                      <>
+                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                          {'Falta llenar la ruta del comercio'}
+                          
+                        </DialogTitle>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {typeDialog == 'nonPriceRange' ? (
+                      <>
+                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                          {'Falta llenar algunos de los límites de precio'}
+                          
+                        </DialogTitle>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {typeDialog == 'nonCategories' ? (
+                      <>
+                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                          {'Llene al menos una categoría'}
+                          
+                        </DialogTitle>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {typeDialog == 'nonFilters' ? (
+                      <>
+                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                          {'Llene al menos un filtro y una opción'}
+                          
+                        </DialogTitle>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {typeDialog == 'priceIsMoreThanZero' ? (
+                      <>
+                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                          {'Los límites de precio tienen que ser mayores o iguales a cero'}
+                          
+                        </DialogTitle>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {typeDialog == 'maxPriceIsLessThanMinPrice' ? (
+                      <>
+                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                          {'El precio mínimo tiene que ser menor que el precio máximo'}
+                        </DialogTitle>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {typeDialog == 'someCategoriesAreEmpty' ? (
+                      <>
+                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                          {'No pueden haber categorías vacías'}
+                        </DialogTitle>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    {typeDialog == 'someFiltersAreEmpty' ? (
+                      <>
+                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                          {'No pueden haber filtros o sus opciones vacías'}
+                        </DialogTitle>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    <DialogContent>
+                      <CancelOutlinedIcon
+                        //onClick={setOpen.bind(this, false)}
+                        sx={{fontSize: '6em', mx: 2, color: red[500]}}
+                      />
+                      <DialogContentText
+                        sx={{fontSize: '1.2em', m: 'auto'}}
+                        id='alert-dialog-description'
+                      >
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions sx={{justifyContent: 'center'}}>
+                      <Button variant='outlined'  onClick={() => setOpenStatus(false)}>
+                        Aceptar
+                      </Button>
+                    </DialogActions>
+                  </>
+                )}
               </Dialog>
             </Box>
           </Box>

@@ -10,10 +10,27 @@ import {
   LIST_ROL,
   LIST_USER,
   UPDATE_USER,
+  GET_SHOP_PRODUCTS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
-
+import {request2} from '../../@crema/utility/Utils';
+export const getShopProducts = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    request2('post', '/gofast/products/list', payload)
+      .then((data) => {
+        console.log('getShopProducts resultado', data);
+        console.log('getShopProducts resultado', data.response.payload);
+        dispatch({type: GET_SHOP_PRODUCTS, payload: data.response.payload});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getShopProducts error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
 export const getUserData = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});

@@ -91,6 +91,10 @@ const validationSchema = yup.object({
     .string()
     .required(<IntlMessages id='validation.required' />)
     .typeError(<IntlMessages id='validation.string' />),
+  driverLastName: yup
+    .string()
+    .required(<IntlMessages id='validation.required' />)
+    .typeError(<IntlMessages id='validation.string' />),
   totalWeight: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
@@ -105,6 +109,10 @@ const validationSchema = yup.object({
     .typeError(<IntlMessages id='validation.number' />)
     .required(<IntlMessages id='validation.required' />)
     .integer(<IntlMessages id='validation.number.integer' />),
+  driverLicenseNumber: yup
+    .string()
+    .required(<IntlMessages id='validation.required' />)
+    .typeError(<IntlMessages id='validation.string' />),
   driverDocumentNumber: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
@@ -369,6 +377,7 @@ const GetReferralGuide = () => {
           routeToReferralGuide.carrierPlateNumber,
         );
         changeValueField('driverName', routeToReferralGuide.driverDenomination);
+        changeValueField('driverLastName', routeToReferralGuide.driverLastName ? routeToReferralGuide.driverLastName : "");
         if (
           routeToReferralGuide.carrierDocumentType &&
           typeof routeToReferralGuide.carrierDocumentType === 'string'
@@ -380,6 +389,10 @@ const GetReferralGuide = () => {
         changeValueField(
           'driverDocumentNumber',
           routeToReferralGuide.driverDocumentNumber,
+        );
+        changeValueField(
+          'driverLicenseNumber',
+          routeToReferralGuide.driverLicenseNumber ? routeToReferralGuide.driverLicenseNumber : "",
         );
         changeValueField('observation', routeToReferralGuide.observation);
       }
@@ -460,7 +473,9 @@ const GetReferralGuide = () => {
     arrivalPoint: '',
     licensePlate: '',
     driverName: '',
+    driverLastName: '',
     driverDocumentNumber: '',
+    driverLicenseNumber: '',
     observation: '',
     clientEmail: '',
   };
@@ -537,7 +552,9 @@ const GetReferralGuide = () => {
               /* selectedCarrier.plateNumberCarrier */ data.licensePlate,
             driverDocumentType: driverDocumentType.toLowerCase(),
             driverDocumentNumber: data.driverDocumentNumber,
+            driverLicenseNumber: data.driverLicenseNumber,
             driverDenomination: data.driverName,
+            driverLastName: data.driverLastName,
             startingPointUbigeo: ubigeoStartingPoint.toString(),
             startingPointAddress: data.startingPoint,
             arrivalPointUbigeo: ubigeoArrivalPoint.toString(),
@@ -1243,8 +1260,23 @@ const GetReferralGuide = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label='Nombre de conductor'
+                      label='Nombre del conductor'
                       name='driverName'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Apellidos del conductor'
+                      name='driverLastName'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -1287,6 +1319,21 @@ const GetReferralGuide = () => {
                     <AppTextField
                       label='Número identificador del conductor'
                       name='driverDocumentNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Licencia del conductor'
+                      name='driverLicenseNumber'
                       variant='outlined'
                       sx={{
                         width: '100%',

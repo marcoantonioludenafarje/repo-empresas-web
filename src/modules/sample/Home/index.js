@@ -79,7 +79,7 @@ const Home = (props) => {
         component='div'
         gutterBottom
       >
-        Empezando en Tunexo
+        Empezando en TuNexo
       </Typography>
       {/* <Box sx={{textAlign: 'center', my: 20, fontSize: '1.3em'}}>
         Seleccione una opción <br />
@@ -119,7 +119,7 @@ const Home = (props) => {
               m: 0,
             }}
           >
-            Tener Parámetros Listos
+            Tener Parámetros Listos (Configuraciones / Parámetros)
           </Box>
           <Box
             sx={{
@@ -161,7 +161,7 @@ const Home = (props) => {
               m: 0,
             }}
           >
-            Tener al menos un producto a vender
+            Tener al menos un producto a vender (Configuraciones / Productos)
           </Box>
           <Box
             sx={{
@@ -203,7 +203,7 @@ const Home = (props) => {
               m: 0,
             }}
           >
-            Tener al menos una entrada si es que esta con stock 0
+            Tener al menos una entrada de producto si es que no tiene stock (Inventario / Entradas)
           </Box>
           <Box
             sx={{
@@ -240,10 +240,10 @@ const Home = (props) => {
               m: 0,
             }}
           >
-            Si quieres vender un producto en tu tienda, dale check en el botón
+            "Si quieres vender un producto en tu tienda, dale check en el botón
             superior{' '}
             <span style={{color: red[500]}}>Publicar en ecommerce</span> al
-            registrar o actualizar *
+            registrar o actualizar *"
           </Box>
         </Box>
         {/* <Box

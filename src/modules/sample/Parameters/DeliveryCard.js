@@ -190,7 +190,7 @@ const DeliveryCard = ({
       let newOption = {
         products: newProducts,
       };
-      console.log('nueva ruta', newRoute);
+      console.log('Nueva ruta 1', newRoute);
       newValuesData(order, newOption);
     }
     setSubmitting(false);
@@ -203,7 +203,7 @@ const DeliveryCard = ({
       filterName: data.observationDelivery,
       options: productsList,
     };
-    console.log('Nueva opción', newOption);
+    console.log('Nueva ruta 2', newOption);
     newValuesData(order, newOption);
     setSubmitting(false);
   };

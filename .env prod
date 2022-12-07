@@ -4,5 +4,5 @@ REACT_APP_IDENTITY_POOL_ID=us-east-1:621f1573-44ba-4f77-94e0-2ef277f123fd
 REACT_APP_APP_CLIENT_ID=5vsj2g4nhosel0i89pas17pcn4
 REACT_APP_ENDPOINT_NAME=tunexo
 REACT_APP_ENDPOINT_GATEWAY_URL=https://5qf2zpy7c5.execute-api.us-east-1.amazonaws.com/PROD
-REACT_APP_ECOMMERCE_URL=https://ecommerce.tunexo.pe/negocio/
+REACT_APP_ECOMMERCE_URL=https://dev.ecommerce.tunexo.pe/ecommerce?business=
 

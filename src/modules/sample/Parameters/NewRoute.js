@@ -45,7 +45,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
+import PriorityHighIcon  from '@mui/icons-material/PriorityHigh';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import Router, {useRouter} from 'next/router';
@@ -54,7 +56,7 @@ import CategoryCard from './CategoryCard';
 import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useDispatch, useSelector} from 'react-redux';
 import {generatePredefinedRoute} from '../../../redux/actions/Movements';
-import {onGetProducts} from '../../../redux/actions/Products';
+import {onGetProducts, deleteProduct} from '../../../redux/actions/Products';
 import {getCarriers} from '../../../redux/actions/Carriers';
 import {blue, green, red} from '@mui/material/colors';
 
@@ -108,7 +110,9 @@ const Distribution = () => {
   const [categories, setCategories] = React.useState([]);
   const [reload, setReload] = React.useState(false);
   const [execAll, setExecAll] = React.useState(false);
+  const [openDelete, setOpenDelete] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [openDeleteStatus, setOpenDeleteStatus] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [defaultMoney, setDefaultMoney] = React.useState('PEN');
@@ -123,6 +127,8 @@ const Distribution = () => {
   const [typeIcon, setTypeIcon] = React.useState('2');
   const [productsSelected, setProductsSelected] = React.useState([]);
   const [moneyUnit, setMoneyUnit] = React.useState('');
+  const [selectedProduct, setSelectedProduct] = React.useState({});
+  const [listProductsState, setListProductsState] = React.useState({});
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -140,16 +146,18 @@ const Distribution = () => {
   const {generalError} = useSelector(({general}) => general);
   console.log('generalError', generalError);
   const {jwtToken} = useSelector(({general}) => general);
+  const {successMessage} = useSelector(({products}) => products);
+  console.log('successMessage', successMessage);
+  const {errorMessage} = useSelector(({products}) => products);
+  console.log('errorMessage', errorMessage);
 
-  listPayload.request.payload.merchantId =
-    userDataRes.merchantSelected.merchantId;
-  let listCarriersPayload = {
+
+  let deletePayload = {
     request: {
       payload: {
-        typeDocumentCarrier: '',
-        numberDocumentCarrier: '',
-        denominationCarrier: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
+        productId: null,
+        businessProductCode: null,
+        merchantId: '',
       },
     },
   };
@@ -159,14 +167,11 @@ const Distribution = () => {
   const updateParameters = (payload) => {
     dispatch(updateAllBusinessParameter(payload));
   };
-  const toGetCarriers = (payload, token) => {
-    dispatch(getCarriers(payload, token));
-  };
-  const generateRoute = (payload) => {
-    dispatch(generatePredefinedRoute(payload));
-  };
   const getProducts = (payload) => {
     dispatch(onGetProducts(payload));
+  };
+  const toDeleteProduct = (payload) => {
+    dispatch(deleteProduct(payload));
   };
   let defaultValues = {
     routeName: '',
@@ -211,9 +216,31 @@ const Distribution = () => {
           },
         },
       };
-      getProducts(listPayload);
+      console.log("listProducts1", listProducts)
+      if(!listProducts || listProducts.length === 0){
+        getProducts(listPayload);
+      }
+    }
+    if(userDataRes){
+      deletePayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
+      listPayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
+      console.log("listProducts2", listProducts)
+      if(!listProducts || listProducts.length === 0){
+        getProducts(listPayload);
+      }
     }
   }, [userDataRes]);
+  useEffect(() => {
+    if(listProducts){
+      setListProductsState(listProducts);
+      // console.log("cual es listProducts", listProducts);
+      // console.log("cual es productsSelected", productsSelected);
+      // const newProductsSelected = listProducts.filter(x => productsSelected.includes(x))
+      // setProductsSelected(newProductsSelected)
+    }
+  }, [listProducts]);
   useEffect(() => {
     if (businessParameter !== undefined && businessParameter.length >= 1) {
       let ecommerceProductParameter = businessParameter.find(
@@ -302,9 +329,16 @@ const Distribution = () => {
       if (userDataRes.merchantSelected.isEcommerceEnabled == true) {
         setSectionEcommerce(true);
       }
-
+      deletePayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
       if (userDataRes.merchantSelected.isEcommerceEnabled) {
         setPublish(true);
+      }
+      listPayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
+      console.log("listProducts3", listProducts)
+      if(!listProducts || listProducts.length === 0){
+        getProducts(listPayload);
       }
     }
 
@@ -433,7 +467,7 @@ const Distribution = () => {
     const finalPayload = {
       request: {
         payload: {
-          merchantId: userDataRes.merchantSelected.merchantId,
+          merchantId: userDataRes ? userDataRes.merchantSelected.merchantId : null,
           defaultMoneyValue: defaultMoney2.value,
           defaultMoneyMetadata2: defaultMoney2.metadata2,
           defaultMoneyMetadata4: defaultMoney2.metadata4,
@@ -587,6 +621,71 @@ const Distribution = () => {
     } else {
       return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
     }
+  };
+  const showMessageDelete = () => {
+    if (successMessage != undefined) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha eliminado la información correctamente.
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage != undefined) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al eliminar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
+  };
+  const setDeleteState = () => {
+    setOpenDelete(true);
+  };
+  const handleClose2 = () => {
+    setOpenDelete(false);
+  };
+  const confirmDelete = (obj) => {
+    deletePayload.request.payload.merchantId =
+    obj.merchantId;
+    deletePayload.request.payload.productId = obj.productId;
+    deletePayload.request.payload.businessProductCode = obj.product;
+    toDeleteProduct(deletePayload);
+    setOpenDelete(false);
+    setOpenDeleteStatus(true);
+  };
+  const sendDeleteStatus = () => {
+    setOpenDeleteStatus(false);
+    setOpenDelete(false);
+    setOpenAlert(false);
+    setShowAlert(false);
+    setTimeout(() => {
+      listPayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
+      getProducts(listPayload);
+    }, 200);
+  };
+  const goToUpdate = (obj) => {
+    console.log('Actualizando', obj);
+    Router.push({
+      pathname: '/sample/products/update',
+      query: obj,
+    });
   };
   const handleChange = (event) => {
     if (event.target.name == 'defaultIgvActivation') {
@@ -925,7 +1024,7 @@ const Distribution = () => {
 
                   <IconButton
                     onClick={() => {
-                      const productsWithThisCategory = listProducts.filter(
+                      const productsWithThisCategory = listProductsState.filter(
                         (element) =>
                           element.category == category.description ||
                           element.categoryId == category.productCategoryId,
@@ -1176,6 +1275,16 @@ const Distribution = () => {
                     <TableCell>Cantidad</TableCell>
                     <TableCell>Precio compra sugerido</TableCell>
                     <TableCell>Precio venta sugerido</TableCell>
+                    {localStorage
+                      .getItem('pathsBack')
+                      .includes('/inventory/products/update') === true ? (
+                    <TableCell>Editar</TableCell>
+                    ) : null}
+                    {localStorage
+                            .getItem('pathsBack')
+                            .includes('/inventory/products/delete') === true ? (
+                    <TableCell>Eliminar</TableCell>
+                    ) : null}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -1205,6 +1314,36 @@ const Distribution = () => {
                               Number(obj.priceBusinessMoneyWithIgv),
                             ).toFixed(3)} ${moneyUnit}`}
                           </TableCell>
+                          {localStorage
+                            .getItem('pathsBack')
+                            .includes('/inventory/products/update') === true ? (
+                          <TableCell>
+                            <IconButton
+                              onClick={() => {
+                                goToUpdate(obj);
+                              }}
+                              size='small'
+                            >
+                              <BorderColorOutlinedIcon fontSize='small' />
+                            </IconButton>
+                          </TableCell>
+                          ) : null}
+                          {localStorage
+                            .getItem('pathsBack')
+                            .includes('/inventory/products/delete') === true ? (
+                          <TableCell>
+                            <IconButton
+                              disabled
+                              onClick={() => {
+                                setSelectedProduct(obj)
+                                setDeleteState();
+                              }}
+                              size='small'
+                            >
+                              <DeleteOutlineOutlinedIcon fontSize='small' />
+                            </IconButton>
+                          </TableCell>
+                          ) : null}
                         </TableRow>
                       );
                     })
@@ -1221,6 +1360,55 @@ const Distribution = () => {
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button variant='outlined' onClick={sendAlert}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openDelete}
+        onClose={handleClose2}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar producto'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea eliminar realmente la información seleccionada?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={() => {
+                                confirmDelete(selectedProduct);
+                              }}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openDeleteStatus}
+        onClose={sendDeleteStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar Producto'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessageDelete()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendDeleteStatus}>
             Aceptar
           </Button>
         </DialogActions>

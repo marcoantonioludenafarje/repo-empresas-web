@@ -257,10 +257,12 @@ const FinancesTable = (props) => {
                                     Ubigeo de punto de llegada
                                   </TableCell>
                                   <TableCell>
-                                    Documento de transportista
+                                    Documento de conductor
                                   </TableCell>
-                                  <TableCell>Nombre de transportista</TableCell>
-                                  <TableCell>Placa</TableCell>
+                                  <TableCell>Nombre de conductor</TableCell>
+                                  <TableCell>Apellidos de conductor</TableCell>
+                                  <TableCell>Licencia de conductor</TableCell>
+                                  <TableCell>Placa del vehículo</TableCell>
                                   <TableCell>Productos</TableCell>
                                   <TableCell>Observaciones</TableCell>
                                   <TableCell>Peso total</TableCell>
@@ -300,6 +302,12 @@ const FinancesTable = (props) => {
                                             </TableCell>
                                             <TableCell>
                                               {route.driverDenomination}
+                                            </TableCell>
+                                            <TableCell>
+                                              {route.driverLastName}
+                                            </TableCell>
+                                            <TableCell>
+                                              {route.driverLicenseNumber}
                                             </TableCell>
                                             <TableCell>
                                               {route.carrierPlateNumber}

@@ -107,7 +107,8 @@ const UpgradeBusinessForm = ({
     setReload(!reload);
   };
   const emptyFilter = {
-    products: [],
+    filterName: "",
+    options: []
   };
   const emptyCategory = {
     active: true,
@@ -282,259 +283,295 @@ const UpgradeBusinessForm = ({
               <Grid item xs={12} md={12}>
                 <Box
                   sx={{
+                    flex: 1,
                     display: 'flex',
-                    alignItems: 'center',
+                    flexDirection: 'column',
+                    mb: 5,
+                    mx: 'auto',
                   }}
                 >
-                  <Typography
-                    component='h3'
+                  <Box
                     sx={{
-                      fontSize: 16,
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      mb: 5,
                     }}
                   >
-                    Rango de Precio de Productos:
-                  </Typography>
-                  <Grid item xs={4} md={4} sx={{mr: 2}}>
-                    <AppTextField
-                      name='defaultMinPrice'
-                      value={defaultPriceRange[0]}
-                      fullWidth
-                      label={'Mínimo'}
-                    />
-                  </Grid>
-                  <Grid item xs={4} md={4}>
-                    <AppTextField
-                      name='defaultMaxPrice'
-                      variant='outlined'
-                      value={defaultPriceRange[1]}
-                      fullWidth
-                      label={'Máximo'}
-                    />
-                  </Grid>
-                </Box>
-              </Grid>
-              {businessParameter ? (
-                <>
-                  {/* */}
-                  <Grid item xs={12} md={12}>
-                    <Box
-                      sx={{
-                        flex: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        mb: 5,
-                        mx: 'auto',
-                      }}
+                    <Stack
+                      direction='row'
+                      divider={<Divider orientation='vertical' flexItem />}
+                      spacing={2}
                     >
-                      <Box
+                      <Typography
                         sx={{
-                          flex: 1,
+                          fontWeight: 600,
+                          fontSize: 20,
                           display: 'flex',
-                          flexDirection: 'column',
-                          mb: 5,
+                          alignItems: 'center',
                         }}
                       >
-                        <Stack
-                          direction='row'
-                          divider={<Divider orientation='vertical' flexItem />}
-                          spacing={2}
-                        >
-                          <Typography
+                        <IntlMessages id='common.productCategories' />
+                      </Typography>
+                      <IconButton
+                        onClick={() => {
+                          console.log(
+                            'initialCategories',
+                            initialCategories,
+                          );
+                          let newCategories = initialCategories;
+                          let newEmptyCategory = {
+                            active: true,
+                            default: false,
+                            description: '',
+                            productCategoryId: uuidv4(),
+                          };
+                          if (newCategories.length < 1) {
+                            console.log(
+                              'newCategories.length',
+                              newCategories.length,
+                            );
+                            newEmptyCategory.default = true;
+                          } else {
+                            console.log(
+                              'newCategories.length',
+                              newCategories.length,
+                            );
+
+                            newEmptyCategory.default = false;
+                          }
+                          console.log('newEmptyCategory', newEmptyCategory);
+                          newCategories.push(newEmptyCategory);
+                          setInitialCategories(newCategories);
+
+                          console.log('initialCategories2', newCategories);
+                          reloadPage();
+                        }}
+                        aria-label='delete'
+                        size='large'
+                      >
+                        <AddIcon fontSize='inherit' />
+                      </IconButton>
+                      {/* <IconButton
+                        onClick={() => {
+                          console.log(
+                            'initialCategories',
+                            initialCategories,
+                          );
+                          let newCategories = initialCategories;
+                          newCategories.pop();
+                          setInitialCategories(newCategories);
+                          reloadPage();
+                        }}
+                        aria-label='delete'
+                        size='large'
+                      >
+                        <RemoveIcon fontSize='inherit' />
+                      </IconButton> */}
+                    </Stack>
+                  </Box>
+                  <Box
+                    sx={{
+                      m: 'auto',
+                      border: '1px solid grey',
+                      borderRadius: '10px',
+                      width: '100%',
+                    }}
+                  >
+                    {initialCategories &&
+                      initialCategories.map((category, index) => (
+                        <Card key={index} sx={{p: 2}}>
+                          <Box
                             sx={{
-                              fontWeight: 600,
-                              fontSize: 20,
                               display: 'flex',
                               alignItems: 'center',
                             }}
                           >
-                            <IntlMessages id='common.productTags' />
-                          </Typography>
-                          <IconButton
-                            onClick={() => {
-                              console.log('filters', filters);
-                              let newFilters = filters;
-                              newFilters.push(emptyFilter);
-                              setFilters(newFilters);
-                              reloadPage();
-                              updateFilters(filters);
-                            }}
-                            aria-label='delete'
-                            size='large'
-                          >
-                            <AddIcon fontSize='inherit' />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => {
-                              console.log('filters', filters);
-                              let newFilters = filters;
-                              newFilters.pop();
-                              setFilters(newFilters);
-                              reloadPage();
-                              updateFilters(filters);
-                            }}
-                            aria-label='delete'
-                            size='large'
-                          >
-                            <RemoveIcon fontSize='inherit' />
-                          </IconButton>
-                        </Stack>
-                      </Box>
-
-                      <Box
-                        sx={{
-                          m: 'auto',
-                          mb: 5,
-                          border: '1px solid grey',
-                          borderRadius: '10px',
-                          width: '100%',
-                        }}
-                      >
-                        {filters &&
-                          filters.map((filter, index) => (
-                            <DeliveryCard
-                              // key={`count${index}`}
+                            <CategoryCard
                               key={index}
                               order={index}
                               execFunctions={execAll}
-                              newValuesData={setFilterIndex}
-                              initialValues={filter}
+                              newValuesData={setCategoryIndex}
+                              initialValues={category}
                             />
-                          ))}
-                      </Box>
+
+                            <IconButton
+                              onClick={() => {
+                                console.log(
+                                  'initialCategories',
+                                  initialCategories,
+                                );
+                                let newCategories = initialCategories;
+                                newCategories = newCategories.filter(
+                                  (item) =>
+                                    item.productCategoryId !==
+                                    category.productCategoryId,
+                                );
+                                setInitialCategories(newCategories);
+                                reloadPage();
+                              }}
+                              aria-label='delete'
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Box>
+                        </Card>
+                      ))}
+                  </Box>
+
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <FormGroup
+                  sx={{
+                    ml: 2,
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Switch checked={publish} onChange={handlePublicChange} />
+                    }
+                    label='Dejar público Ecommerce'
+                  />
+                </FormGroup>
+              </Grid>
+              
+              {publish && 
+              <> 
+                <Grid item xs={12} md={12}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Typography
+                      component='h3'
+                      sx={{
+                        fontSize: 16,
+                      }}
+                    >
+                      Rango de Precio de Productos:
+                    </Typography>
+                    <Grid item xs={4} md={4} sx={{mr: 2}}>
+                      <AppTextField
+                        name='defaultMinPrice'
+                        value={defaultPriceRange[0]}
+                        fullWidth
+                        label={<IntlMessages id='common.price.min' />}
+                        labelId={<IntlMessages id='common.price.min' />}
+                      />
+                    </Grid>
+                    <Grid item xs={4} md={4}>
+                      <AppTextField
+                        name='defaultMaxPrice'
+                        variant='outlined'
+                        value={defaultPriceRange[1]}
+                        fullWidth
+                        label={<IntlMessages id='common.price.max' />}
+                        labelId={<IntlMessages id='common.price.max' />}
+                      />
+                    </Grid>
+                  </Box>
+                </Grid>
+                {businessParameter ? (
+                  <>
+                    {/* */}
+                    <Grid item xs={12} md={12}>
                       <Box
                         sx={{
                           flex: 1,
                           display: 'flex',
                           flexDirection: 'column',
                           mb: 5,
+                          mx: 'auto',
                         }}
                       >
-                        <Stack
-                          direction='row'
-                          divider={<Divider orientation='vertical' flexItem />}
-                          spacing={2}
+                        <Box
+                          sx={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            mb: 5,
+                          }}
                         >
-                          <Typography
-                            sx={{
-                              fontWeight: 600,
-                              fontSize: 20,
-                              display: 'flex',
-                              alignItems: 'center',
-                            }}
+                          <Stack
+                            direction='row'
+                            divider={<Divider orientation='vertical' flexItem />}
+                            spacing={2}
                           >
-                            <IntlMessages id='common.productCategories' />
-                          </Typography>
-                          <IconButton
-                            onClick={() => {
-                              console.log(
-                                'initialCategories',
-                                initialCategories,
-                              );
-                              let newCategories = initialCategories;
-                              let newEmptyCategory = {
-                                active: true,
-                                default: false,
-                                description: '',
-                                productCategoryId: uuidv4(),
-                              };
-                              if (newCategories.length < 1) {
-                                console.log(
-                                  'newCategories.length',
-                                  newCategories.length,
-                                );
-                                newEmptyCategory.default = true;
-                              } else {
-                                console.log(
-                                  'newCategories.length',
-                                  newCategories.length,
-                                );
+                            <Typography
+                              sx={{
+                                fontWeight: 600,
+                                fontSize: 20,
+                                display: 'flex',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <IntlMessages id='common.productTags' />
+                            </Typography>
+                            <IconButton
+                              onClick={() => {
+                                console.log('filters', filters);
+                                let newFilters = filters;
+                                newFilters.push(emptyFilter);
+                                setFilters(newFilters);
+                                reloadPage();
+                                updateFilters(filters);
+                              }}
+                              aria-label='delete'
+                              size='large'
+                            >
+                              <AddIcon fontSize='inherit' />
+                            </IconButton>
+                            <IconButton
+                              onClick={() => {
+                                console.log('filters', filters);
+                                let newFilters = filters;
+                                newFilters.pop();
+                                setFilters(newFilters);
+                                reloadPage();
+                                updateFilters(filters);
+                              }}
+                              aria-label='delete'
+                              size='large'
+                            >
+                              <RemoveIcon fontSize='inherit' />
+                            </IconButton>
+                          </Stack>
+                        </Box>
 
-                                newEmptyCategory.default = false;
-                              }
-                              console.log('newEmptyCategory', newEmptyCategory);
-                              newCategories.push(newEmptyCategory);
-                              setInitialCategories(newCategories);
-
-                              console.log('initialCategories2', newCategories);
-                              reloadPage();
-                            }}
-                            aria-label='delete'
-                            size='large'
-                          >
-                            <AddIcon fontSize='inherit' />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => {
-                              console.log(
-                                'initialCategories',
-                                initialCategories,
-                              );
-                              let newCategories = initialCategories;
-                              newCategories.pop();
-                              setInitialCategories(newCategories);
-                              reloadPage();
-                            }}
-                            aria-label='delete'
-                            size='large'
-                          >
-                            <RemoveIcon fontSize='inherit' />
-                          </IconButton>
-                        </Stack>
+                        <Box
+                          sx={{
+                            m: 'auto',
+                            mb: 5,
+                            border: '1px solid grey',
+                            borderRadius: '10px',
+                            width: '100%',
+                          }}
+                        >
+                          {filters &&
+                            filters.map((filter, index) => (
+                              <DeliveryCard
+                                // key={`count${index}`}
+                                key={`filter${index}`}
+                                order={index}
+                                execFunctions={execAll}
+                                newValuesData={setFilterIndex}
+                                initialValues={filter}
+                              />
+                            ))}
+                        </Box>
+                        
                       </Box>
-                      <Box
-                        sx={{
-                          m: 'auto',
-                          border: '1px solid grey',
-                          borderRadius: '10px',
-                          width: '100%',
-                        }}
-                      >
-                        {initialCategories &&
-                          initialCategories.map((category, index) => (
-                            <Card key={index} sx={{p: 2}}>
-                              <Box
-                                sx={{
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                <CategoryCard
-                                  key={index}
-                                  order={index}
-                                  execFunctions={execAll}
-                                  newValuesData={setCategoryIndex}
-                                  initialValues={category}
-                                />
-
-                                <IconButton
-                                  onClick={() => {
-                                    console.log(
-                                      'initialCategories',
-                                      initialCategories,
-                                    );
-                                    let newCategories = initialCategories;
-                                    newCategories = newCategories.filter(
-                                      (item) =>
-                                        item.productCategoryId !==
-                                        category.productCategoryId,
-                                    );
-                                    setInitialCategories(newCategories);
-                                    reloadPage();
-                                  }}
-                                  aria-label='delete'
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Box>
-                            </Card>
-                          ))}
-                      </Box>
-                    </Box>
-                  </Grid>
-                </>
-              ) : (
-                <></>
-              )}
+                    </Grid>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </>
+              } 
+              
             </>
           ) : (
             <></>
@@ -696,20 +733,6 @@ const UpgradeBusinessForm = ({
           ) : (
             <></>
           )}
-          <Grid item xs={12} md={12}>
-            <FormGroup
-              sx={{
-                ml: 2,
-              }}
-            >
-              <FormControlLabel
-                control={
-                  <Switch checked={publish} onChange={handlePublicChange} />
-                }
-                label='Dejar público Ecommerce'
-              />
-            </FormGroup>
-          </Grid>
           <Grid item xs={12} md={12}>
             <Typography
               component='h3'

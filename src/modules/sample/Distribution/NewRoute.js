@@ -167,9 +167,11 @@ const Distribution = () => {
                   6,
                 ),
                 driverDenomination: obj.driverName,
+                driverLastName: obj.driverLastName,
                 driverDocumentType: obj.driverDocumentType,
                 driverDocumentNumber: obj.driverDocumentNumber,
                 driverId: '',
+                driverLicenseNumber: obj.driverLicenseNumber,
                 carrierPlateNumber: obj.plate,
                 productsInfo: obj.products.map((prod) => {
                   return {

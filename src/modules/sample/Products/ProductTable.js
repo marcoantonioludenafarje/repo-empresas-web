@@ -68,6 +68,7 @@ import {
   GET_MOVEMENTS,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
+import {getShopProducts} from '../../../redux/actions/User';
 
 let selectedProduct = {};
 const useStyles = makeStyles((theme) => ({
@@ -293,6 +294,21 @@ const ProductTable = (arrayObjs, props) => {
   const searchProducts = () => {
     getProducts(listPayload);
   };
+  // const goApiGofast = () => {
+    
+  //   const toGetShopProducts = (payload) => {
+  //     dispatch(getShopProducts(payload));
+  //   };
+  //   let getShopProductsPayload = {
+  //       "request": {
+  //           "payload": {
+  //               "idTienda": 3
+  //           }
+  //       }
+  //   };
+    
+  //   toGetShopProducts(getShopProductsPayload);
+  // };
   const newProduct = () => {
     console.log(
       'Número de productos actual: ',
@@ -435,6 +451,8 @@ const ProductTable = (arrayObjs, props) => {
   };
   const confirmDelete = () => {
     deletePayload.request.payload.productId = selectedProduct.productId;
+    deletePayload.request.payload.merchantId = selectedProduct.merchantId;
+    deletePayload.request.payload.businessProductCode = selectedProduct.product;
     toDeleteProduct(deletePayload);
     setOpen2(false);
     setOpenStatus(true);
@@ -583,7 +601,9 @@ const ProductTable = (arrayObjs, props) => {
           onChange={handleSearchValues}
         />
 
-        <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
+        <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined' 
+          // onClick={goApiGofast}
+          >
           Más filtros
         </Button>
         <Button

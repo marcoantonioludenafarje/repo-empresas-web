@@ -1042,134 +1042,208 @@ const NewProduct = (props) => {
                       </MenuItem>
                     </Select>
                   </FormControl>
+                  {typeProduct != 'rawMaterial' ? (
+                    <Box sx={{textAlign: 'center'}}>
+                      <Button
+                        sx={{width: 1 / 2, mb: 4}}
+                        variant='outlined'
+                        onClick={handleClickOpen}
+                      >
+                        Añade productos
+                      </Button>
+                      <SubProducts
+                        arrayObjs={selectedProducts}
+                        toDelete={removeProduct}
+                      />
+                    </Box>
+                  ) : (
+                    <></>
+                  )}
+
+                  <Collapse in={showAlert}>
+                    <Alert
+                      severity='error'
+                      action={
+                        <IconButton
+                          aria-label='close'
+                          color='inherit'
+                          size='small'
+                          onClick={() => {
+                            setShowAlert(false);
+                          }}
+                        >
+                          <CloseIcon fontSize='inherit' />
+                        </IconButton>
+                      }
+                      sx={{mb: 2}}
+                    >
+                      {typeAlert == 'faltaProduct' ? (
+                        'Selecciona un producto.'
+                      ) : (
+                        <></>
+                      )}
+                      {typeAlert == 'maxStock' ? (
+                        'No puedes sobrepasar el stock.'
+                      ) : (
+                        <></>
+                      )}
+                      {typeAlert == 'limitCatalog' ? (
+                        'Se alcanzó el límite de registros de productos.'
+                      ) : (
+                        <></>
+                      )}
+                    </Alert>
+                  </Collapse>
                 </Grid>
                 {sectionEcommerce === true ? (
                   <>
-                    <Typography
-                      component='h3'
-                      sx={{
-                        fontSize: 16,
-                        fontWeight: Fonts.BOLD,
-                        ml: {xs: 3, lg: 4},
-                      }}
-                    >
-                      Sección ecommerce (opcional)
-                    </Typography>
-                    <Grid item xs={12}>
-                      <AppTextField
-                        label='Título del Producto de forma pública'
-                        name='title'
-                        variant='outlined'
+                    <Grid item xs={12} md={12}>
+                      <FormGroup
                         sx={{
-                          width: '100%',
-                          '& .MuiInputBase-input': {
-                            fontSize: 14,
-                          },
-                          my: 2,
+                          ml: 2,
                         }}
-                      />
+                      >
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={publish}
+                              onChange={handlePublicChange}
+                            />
+                          }
+                          label='Mantener Público en Ecommerce'
+                        />
+                      </FormGroup>
                     </Grid>
-                    <Grid item xs={12}>
-                      <AppTextField
-                        label='Descripción de forma pública'
-                        name='commercialDescription'
-                        multiline
-                        rows={4}
-                        variant='outlined'
-                        sx={{
-                          width: '100%',
-                          '& .MuiInputBase-input': {
-                            fontSize: 14,
-                          },
-                          my: 2,
-                        }}
-                      />
-                    </Grid>
-                    {ecommerce_params &&
-                    Array.isArray(ecommerce_params) &&
-                    ecommerce_params.length >= 1 ? (
-                      ecommerce_params.map((obj, index) => {
-                        return (
-                          <Grid key={index} item xs={12}>
-                            {/* <FormControl fullWidth sx={{my: 2}}>
-                              <FormLabel component="legend"> {obj.featureName}</FormLabel>
-                              <Select
-                                key={'SelectFilter' + index}
-                                value={selectedFilters[obj.featureName]}
-                                name={obj.featureName}
-                                labelId={obj.featureName + '-label'}
-                                label={obj.featureName}
-                                onChange={handleFieldFilter}
-                              >
-                                {obj.values &&
-                                Array.isArray(obj.values) &&
-                                obj.values.length >= 1 ? (
-                                  obj.values.map((obj, index) => {
-                                    return (
-                                      <MenuItem
-                                        key={index + 1}
-                                        value={index + 1}
-                                        style={{fontWeight: 200}}
-                                      >
-                                        {obj.name}
-                                      </MenuItem>
-                                    );
-                                  })
-                                ) : (
-                                  <>
-                                  </>
-                                )}
-                                <MenuItem
-                                  key={0}
-                                  value={'noFilters'}
-                                  style={{fontWeight: 200}}
+                    {publish && 
+                      <>
+                        <Typography
+                          component='h3'
+                          sx={{
+                            fontSize: 16,
+                            fontWeight: Fonts.BOLD,
+                            ml: {xs: 3, lg: 4},
+                          }}
+                        >
+                          Sección Ecommerce (opcional)
+                        </Typography>
+                        <Grid item xs={12}>
+                          <AppTextField
+                            label='Título del Producto de forma pública'
+                            name='title'
+                            variant='outlined'
+                            sx={{
+                              width: '100%',
+                              '& .MuiInputBase-input': {
+                                fontSize: 14,
+                              },
+                              my: 2,
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <AppTextField
+                            label='Descripción de forma pública'
+                            name='commercialDescription'
+                            multiline
+                            rows={4}
+                            variant='outlined'
+                            sx={{
+                              width: '100%',
+                              '& .MuiInputBase-input': {
+                                fontSize: 14,
+                              },
+                              my: 2,
+                            }}
+                          />
+                        </Grid>
+                        {ecommerce_params &&
+                        Array.isArray(ecommerce_params) &&
+                        ecommerce_params.length >= 1 ? (
+                          ecommerce_params.map((obj, index) => {
+                            return (
+                              <Grid key={index} item xs={12}>
+                                {/* <FormControl fullWidth sx={{my: 2}}>
+                                  <FormLabel component="legend"> {obj.featureName}</FormLabel>
+                                  <Select
+                                    key={'SelectFilter' + index}
+                                    value={selectedFilters[obj.featureName]}
+                                    name={obj.featureName}
+                                    labelId={obj.featureName + '-label'}
+                                    label={obj.featureName}
+                                    onChange={handleFieldFilter}
+                                  >
+                                    {obj.values &&
+                                    Array.isArray(obj.values) &&
+                                    obj.values.length >= 1 ? (
+                                      obj.values.map((obj, index) => {
+                                        return (
+                                          <MenuItem
+                                            key={index + 1}
+                                            value={index + 1}
+                                            style={{fontWeight: 200}}
+                                          >
+                                            {obj.name}
+                                          </MenuItem>
+                                        );
+                                      })
+                                    ) : (
+                                      <>
+                                      </>
+                                    )}
+                                    <MenuItem
+                                      key={0}
+                                      value={'noFilters'}
+                                      style={{fontWeight: 200}}
+                                    >
+                                      <IntlMessages id='common.undefinedFilter' />
+                                    </MenuItem>
+                                  </Select>
+                                </FormControl> */}
+                                <FormControl
+                                  sx={{m: 3}}
+                                  component='fieldset'
+                                  variant='standard'
                                 >
-                                  <IntlMessages id='common.undefinedFilter' />
-                                </MenuItem>
-                              </Select>
-                            </FormControl> */}
-                            <FormControl
-                              sx={{m: 3}}
-                              component='fieldset'
-                              variant='standard'
-                            >
-                              <FormLabel sx={{ml: -3}} component='legend'>
-                                {obj.featureName}
-                              </FormLabel>
-                              <FormGroup>
-                                {obj.values &&
-                                Array.isArray(obj.values) &&
-                                obj.values.length >= 1 ? (
-                                  obj.values.map((objV, index) => {
-                                    return (
-                                      <FormControlLabel
-                                        key={`featureOption-${index}`}
-                                        control={
-                                          <Checkbox
-                                            value={Number(index) + 1}
-                                            checked={selectedFilters[
-                                              obj.featureName
-                                            ].includes(Number(index) + 1)}
-                                            onChange={handleFieldFilter2}
-                                            name={obj.featureName}
+                                  <FormLabel sx={{ml: -3}} component='legend'>
+                                    {obj.featureName}
+                                  </FormLabel>
+                                  <FormGroup>
+                                    {obj.values &&
+                                    Array.isArray(obj.values) &&
+                                    obj.values.length >= 1 ? (
+                                      obj.values.map((objV, index) => {
+                                        return (
+                                          <FormControlLabel
+                                            key={`featureOption-${index}`}
+                                            control={
+                                              <Checkbox
+                                                value={Number(index) + 1}
+                                                checked={selectedFilters[
+                                                  obj.featureName
+                                                ].includes(Number(index) + 1)}
+                                                onChange={handleFieldFilter2}
+                                                name={obj.featureName}
+                                              />
+                                            }
+                                            label={objV.name}
                                           />
-                                        }
-                                        label={objV.name}
-                                      />
-                                    );
-                                  })
-                                ) : (
-                                  <></>
-                                )}
-                              </FormGroup>
-                              {/* <FormHelperText>Be careful</FormHelperText> */}
-                            </FormControl>
-                          </Grid>
-                        );
-                      })
-                    ) : (
-                      <></>
-                    )}
+                                        );
+                                      })
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </FormGroup>
+                                  {/* <FormHelperText>Be careful</FormHelperText> */}
+                                </FormControl>
+                              </Grid>
+                            );
+                          })
+                        ) : (
+                          <></>
+                        )}
+                      </>
+                    } 
+                    
                   </>
                 ) : (
                   <></>
@@ -1263,82 +1337,9 @@ const NewProduct = (props) => {
                 ) : (
                   <></>
                 )}
-                {sectionEcommerce === true ? (
-                  <>
-                    <Grid item xs={12} md={12}>
-                      <FormGroup
-                        sx={{
-                          ml: 2,
-                        }}
-                      >
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={publish}
-                              onChange={handlePublicChange}
-                            />
-                          }
-                          label='Mantener Público en Ecommerce'
-                        />
-                      </FormGroup>
-                    </Grid>
-                  </>
-                ) : (
-                  <></>
-                )}
+                
               </Grid>
-              {typeProduct != 'rawMaterial' ? (
-                <Box sx={{textAlign: 'center'}}>
-                  <Button
-                    sx={{width: 1 / 2, mb: 4}}
-                    variant='outlined'
-                    onClick={handleClickOpen}
-                  >
-                    Añade productos
-                  </Button>
-                  <SubProducts
-                    arrayObjs={selectedProducts}
-                    toDelete={removeProduct}
-                  />
-                </Box>
-              ) : (
-                <></>
-              )}
-
-              <Collapse in={showAlert}>
-                <Alert
-                  severity='error'
-                  action={
-                    <IconButton
-                      aria-label='close'
-                      color='inherit'
-                      size='small'
-                      onClick={() => {
-                        setShowAlert(false);
-                      }}
-                    >
-                      <CloseIcon fontSize='inherit' />
-                    </IconButton>
-                  }
-                  sx={{mb: 2}}
-                >
-                  {typeAlert == 'faltaProduct' ? (
-                    'Selecciona un producto.'
-                  ) : (
-                    <></>
-                  )}
-                  {typeAlert == 'maxStock' ? (
-                    'No puedes sobrepasar el stock.'
-                  ) : (
-                    <></>
-                  )}
-                  {typeAlert == 'limitCatalog' ? (
-                    'Se alcanzó el límite de registros de productos.'
-                  ) : (
-                    <></>
-                  )}
-                </Alert>
-              </Collapse>
+              
               <ButtonGroup
                 orientation='vertical'
                 variant='outlined'
