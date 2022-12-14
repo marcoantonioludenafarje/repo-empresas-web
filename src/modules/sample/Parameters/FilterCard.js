@@ -37,6 +37,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddExisingProduct from '../AddExisingProduct';
 import SelectProduct from '../AddExisingProduct/SelectProduct';
 import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import {useIntl} from 'react-intl';
 
 import {Form, Formik, useFormikContext} from 'formik';
@@ -51,12 +52,13 @@ import SelectCarrier from '../ReferralGuide/SelectCarrier';
 import {FETCH_ERROR} from '../../../shared/constants/ActionTypes';
 import {loadingButtonClasses} from '@mui/lab';
 
-const DeliveryCard = ({
+const FilterCard = ({
   order,
   newValuesData,
   execFunctions,
   initialValues,
   useReferralGuide,
+  deleteFilter
 }) => {
   let changeValue;
   let valuesForm;
@@ -65,31 +67,17 @@ const DeliveryCard = ({
   const formRef = useRef();
   const emptyProduct = {};
   const [counter, setCounter] = React.useState(1);
-  const [dateStartTransfer, setDateStartTransfer] = React.useState(Date.now());
-  const [typeDocument, setTypeDocument] = React.useState('DNI');
   const [productsList, setProductsList] = React.useState([]);
-  const [selectedCarrier, setSelectedCarrier] = React.useState({});
-  const [existCarrier, setExistCarrier] = React.useState(false);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
   const [ubigeoStartingPoint, setUbigeoStartingPoint] = React.useState(0);
   const [existStartingUbigeo, setExistStartingUbigeo] = React.useState(true);
-  const [startingObjUbigeo, setStartingObjUbigeo] = React.useState({});
   const [ubigeoArrivalPoint, setUbigeoArrivalPoint] = React.useState(0);
   const [existArrivalUbigeo, setExistArrivalUbigeo] = React.useState(true);
-  const [arrivalObjUbigeo, setArrivalObjUbigeo] = React.useState({});
   const [indexProduct, setIndexProduct] = React.useState(null);
   const [reload, setReload] = React.useState(false);
   const [openSelectProduct, setOpenSelectProduct] = React.useState(false);
-  const [makeReferralGuide, setMakeReferralGuide] = React.useState(false);
   const [readyData, setReadyData] = React.useState(false);
   const counts = {};
-
-  const {getCarriersRes} = useSelector(({carriers}) => carriers);
-  const {jwtToken} = useSelector(({general}) => general);
-  const {listProducts} = useSelector(({products}) => products);
-  const {userAttributes} = useSelector(({user}) => user);
-  const {userDataRes} = useSelector(({user}) => user);
 
   let defaultValues = {
     startingAddress: '',
@@ -146,7 +134,7 @@ const DeliveryCard = ({
       setProductsList([]);
       setReadyData(true);
     }
-  }, [initialValues, listProducts]);
+  }, [initialValues]);
 
   // COMPROBAR LAS VALIDACIONES DE LAS CANTIDADES
   const validationSchema = yup.object({
@@ -207,9 +195,10 @@ const DeliveryCard = ({
     newValuesData(order, newOption);
     setSubmitting(false);
   };
-
-  const handleField = (event) => {
-    setTypeDocument(event.target.value);
+  const deleteFilterCard = (dataFilter, order) => {
+    console.log('dataFilter', dataFilter);
+    console.log('order', order)
+    deleteFilter(dataFilter.observationDelivery, order);
   };
 
   const getNewProduct = (product) => {
@@ -270,57 +259,9 @@ const DeliveryCard = ({
       setCountOfProduct(rowId, event.target.value);
     }
   };
-  const showTotalWeight = (weight, count) => {
-    if (weight && count) return fixDecimals(weight * count);
-  };
-  const invalidateProduct = (rowId) => {
-    const newProds = productsList;
-    const foundIndex = newProds.findIndex((prod) => prod.rowId == rowId);
-    console.log('lista antes', newProds);
-    newProds[foundIndex].invalidate = true;
-    console.log('lista despues', newProds);
-    setProductsList(newProds);
-  };
-
-  const addInputToProducts = (preCount, rowId, newProducts) => {
-    let newProds = productsList; /* .map((obj) => (obj.invalidate = true)) */
-    console.log('lista antes', newProds);
-    let inputsProducts = [];
-    let valToMultiply = 1;
-    if (!isNaN(preCount) && preCount !== '' && preCount !== 0) {
-      valToMultiply *= preCount;
-    }
-    console.log(`preCount ${preCount} valToMultiply ${valToMultiply}`);
-    let internCounter = counter;
-    newProducts.map((prod) => {
-      inputsProducts.push({
-        rowId: internCounter,
-        count: prod.quantity,
-        value: prod.quantity,
-      });
-      internCounter += 1;
-    });
-    setCounter(internCounter);
-    console.log('inputsProducts', inputsProducts);
-    newProds.push(...inputsProducts);
-    console.log('lista despues', newProds);
-    setProductsList(newProds);
-    reloadPage();
-
-    inputsProducts.map((prod) => {
-      changeValue(`count${prod.rowId}`, prod.count);
-    });
-    reloadPage();
-  };
-  const toInputs = (index, rowId, inputsProduct) => {
-    const preCount = productsList.find((prod) => prod.rowId == rowId).count;
-    addInputToProducts(preCount, rowId, inputsProduct);
-    invalidateProduct(rowId);
-    deleteDuplicate();
-    reloadPage();
-  };
   const deleteProduct = (rowId) => {
     let newProds = productsList;
+    console.log('rowId', rowId)
     console.log('lista antes', newProds);
     newProds = newProds.filter((item) => item.rowId !== rowId);
     console.log('lista despues', newProds);
@@ -337,35 +278,19 @@ const DeliveryCard = ({
     setProductsList(newProds);
     reloadPage();
   };
-
-  const deleteDuplicate = () => {
-    const arr = productsList;
-    let newProds = [];
-    arr.map((obj, indexObj) => {
-      let product = newProds.findIndex(
-        (prod, indexProd) => prod.productId === obj.productId,
-      );
-      console.log('product', product);
-      if (product == -1) {
-        newProds.push(obj);
-      } else {
-        newProds[product].count += obj.count;
-      }
-      console.log(newProds);
-    });
-    setProductsList(newProds);
-    newProds.map((newProd) => {
-      changeValue(`count${newProd.rowId}`, fixDecimals(Number(newProd.count)));
-    });
-    setTotalWeight(newProds);
-  };
-
-  const getOriginalProduct = (productId) => {
-    return listProducts.find((prod) => prod.productId == productId);
+  const assignFilter = () => {
+    setCounter(1);
+    let newOption = {
+      filterName: formRef.current.values,
+      options: productsList,
+    };
+    console.log('Nueva ruta 2', newOption);
+    newValuesData(order, newOption);
+    console.log('Funcionando');
   };
 
   return (
-    <Card sx={{p: 4}}>
+    <Card sx={{p: 4, mb: 1}}>
       <Box
         sx={{
           flex: 1,
@@ -393,11 +318,12 @@ const DeliveryCard = ({
                 autoComplete='on'
               >
                 <Grid container spacing={2} sx={{width: 'auto'}}>
-                  <Grid item xs={12}>
+                  <Grid item xs={11}>
                     <AppTextField
                       label='Nombre del Filtro'
                       name='observationDelivery'
                       variant='outlined'
+                      onChange={()=>assignFilter()}
                       multiline
                       sx={{
                         width: '100%',
@@ -407,6 +333,15 @@ const DeliveryCard = ({
                         my: 2,
                       }}
                     />
+                  </Grid>
+                  <Grid item xs={1}>
+                  <IconButton
+                    onClick={() => deleteFilterCard(formRef.current.values, order)}
+                    aria-label='delete'
+                    size='large'
+                  >
+                    <DeleteIcon fontSize='inherit' />
+                  </IconButton>
                   </Grid>
                   <Grid item xs={12}>
                     <Typography sx={{m: 2}}>
@@ -513,12 +448,13 @@ const DeliveryCard = ({
   );
 };
 
-export default DeliveryCard;
+export default FilterCard;
 
-DeliveryCard.propTypes = {
+FilterCard.propTypes = {
   newValuesData: PropTypes.func.isRequired,
   execFunctions: PropTypes.bool.isRequired,
   order: PropTypes.number.isRequired,
   initialValues: PropTypes.object,
   useReferralGuide: PropTypes.bool,
+  deleteFilter: PropTypes.func.isRequired,
 };

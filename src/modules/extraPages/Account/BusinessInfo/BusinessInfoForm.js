@@ -148,7 +148,7 @@ const BusinessInfoForm = ({
         nameFile: imagePayload.request.payload.name || presigned.name,
       };
       console.log('newJsonImages', newJsonImages);
-      actualSelectedJsonImages.push(newJsonImages);
+      actualSelectedJsonImages = [newJsonImages];
       console.log('actualSelectedJsonImages', actualSelectedJsonImages);
       setSelectedJsonImages(actualSelectedJsonImages);
     }

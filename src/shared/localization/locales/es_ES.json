@@ -1,5 +1,6 @@
 {
   "alert.configurationParameters.existProductsWithThisCategory": "Existen productos con esta categoría establecida.",
+  "alert.configurationParameters.existProductsWithThisFilter": "Existen productos con este filtro.",
   "button.click_me": "Haz click en mi",
   "dashboard.quickStats": "Estadísticas rápidas",
   "dashboard.totalClients": "Clientes totales",

@@ -178,7 +178,7 @@ const BusinessInfo = () => {
           console.log('payload actualizarInfo: ', {
             ...data,
             documentType: docType,
-            logo: selectedJsonImages[0],
+            logo: selectedJsonImages,
           });
           // TODO Api Call here to save user info
           dispatch({

@@ -31,7 +31,7 @@ import {
   TableBody,
   TableContainer,
   TableHead,
-  Table,
+  Table
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
@@ -51,7 +51,7 @@ import PriorityHighIcon  from '@mui/icons-material/PriorityHigh';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import Router, {useRouter} from 'next/router';
-import DeliveryCard from './DeliveryCard';
+import FilterCard from './FilterCard';
 import CategoryCard from './CategoryCard';
 import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useDispatch, useSelector} from 'react-redux';
@@ -95,7 +95,8 @@ const Distribution = () => {
     products: [],
   };
   const emptyFilter = {
-    products: [],
+    featureName: '',
+    values: []
   };
   const emptyCategory = {
     active: true,
@@ -103,8 +104,8 @@ const Distribution = () => {
     description: '',
     productCategoryId: '',
   };
-  let typeAlert = 'existProductsWithThisCategory';
   const dispatch = useDispatch();
+  const [typeAlert, setTypeAlert] = React.useState("existProductsWithThisCategory");
   const [routes, setRoutes] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
@@ -203,6 +204,7 @@ const Distribution = () => {
         ).description == 'eCommerce'
       ) {
         setSectionEcommerce(true);
+        setPublish(true);
       }
       if (userDataRes.merchantSelected.isEcommerceEnabled) {
         setPublish(true);
@@ -328,6 +330,7 @@ const Distribution = () => {
     } else {
       if (userDataRes.merchantSelected.isEcommerceEnabled == true) {
         setSectionEcommerce(true);
+        setPublish(true);
       }
       deletePayload.request.payload.merchantId =
       userDataRes.merchantSelected.merchantId;
@@ -366,6 +369,39 @@ const Distribution = () => {
     console.log('changedFilters', changedFilters);
     console.log('filters', filters);
   };
+  const deleteFilter = (filterName, order) => {
+    console.log('filterName: ', filterName);
+    console.log('filters', filters);
+    console.log('order en newRoute', order)
+    let productsWithThisFilter = listProductsState.filter(
+      (element) => {
+          let response = false;
+          Object.entries(element.tags).forEach(([key, value]) => {
+            if(filters[filters.length - 1].featureName === key){
+              console.log(value)
+              response = true;
+            }
+          })
+          return response
+        },
+    );
+    console.log("Longitud productos con el filtro", productsWithThisFilter.length)
+    if (productsWithThisFilter.length > 0) {
+      setTypeAlert("existProductsWithThisFilter");
+      setProductsSelected(productsWithThisFilter);
+      setShowAlert(true);
+    } else {
+      console.log("Llego aquí?", filterName)
+      let newFilters = filters;
+      // newFilters = newFilters.filter(
+      //   (element) =>(element.featureName !== filterName
+      // ));;
+      newFilters.splice(order, 1)
+      console.log("nuevosFiltros", newFilters)
+      setFilters(newFilters);
+      reloadPage();
+    }
+  };
   const setCategoryIndex = (index, obj) => {
     console.log('obj: ', obj);
     let changedCategories = categories;
@@ -386,58 +422,9 @@ const Distribution = () => {
     setExecAll(true);
     setExecAll(false);
     console.log('data final', {...data, filters: filters});
-    setFilters();
-    setCategories();
-    // const finalPayload = {
-    //   request: {
-    //     payload: {
-    //       userActor: userAttributes['sub'],
-    //       merchantId: userDataRes.merchantSelected.merchantId,
-    //       routeName: data.routeName,
-    //       deliveries: routes.map((obj) => {
-    //         if (obj !== undefined) {
-    //           return {
-    //             carrierDocumentType: obj.carrierDocumentType,
-    //             carrierDocumentNumber: obj.carrierDocumentNumber,
-    //             carrierDenomination: obj.carrierDenomination,
-    //             totalGrossWeight: obj.totalWeight,
-    //             numberOfPackages: obj.numberPackages,
-    //             observationDelivery: obj.observationDelivery,
-    //             startingPointAddress: obj.startingAddress,
-    //             startingPointUbigeo: completeWithZeros(
-    //               obj.startingPointUbigeo,
-    //               6,
-    //             ),
-    //             arrivalPointAddress: obj.arrivalAddress,
-    //             arrivalPointUbigeo: completeWithZeros(
-    //               obj.arrivalPointUbigeo,
-    //               6,
-    //             ),
-    //             driverDenomination: obj.driverName,
-    //             driverDocumentType: obj.driverDocumentType,
-    //             driverDocumentNumber: obj.driverDocumentNumber,
-    //             driverId: '',
-    //             carrierPlateNumber: obj.plate,
-    //             productsInfo: obj.products.map((prod) => {
-    //               return {
-    //                 productId: prod.productId,
-    //                 product: prod.product,
-    //                 description: prod.description,
-    //                 unitMeasure: prod.unitMeasure,
-    //                 quantityMovement: prod.count,
-    //               };
-    //             }),
-    //           };
-    //         }
-    //       }),
-    //     },
-    //   },
-    // };
-    // console.log('finalPayload', finalPayload);
-    // dispatch({type: FETCH_SUCCESS, payload: undefined});
-    // dispatch({type: FETCH_ERROR, payload: undefined});
-    // dispatch({type: GENERATE_ROUTE, payload: undefined});
-    // generateRoute(finalPayload);
+    // setFilters();
+    // setCategories();
+    
     console.log('sacarlo', defaultMoney);
     let defaultMoney2;
     if (defaultMoney == 'PEN') {
@@ -473,9 +460,9 @@ const Distribution = () => {
           defaultMoneyMetadata4: defaultMoney2.metadata4,
           defaultWeightValue: defaultWeight,
           defaultIgvValue: defaultIgvActivation,
-          defaultProductsPayDetail: defaultProductsPayDetail,
+          defaultProductsPayDetail: defaultProductsPayDetail || "",
           price: defaultPriceRange,
-          filters: filters,
+          filters: publish ? filters : [],
           categories: finalCategories,
           isEcommerceEnabled: publish,
         },
@@ -818,7 +805,7 @@ const Distribution = () => {
                     label={'IGV'}
                   />
                 </Grid>
-                {sectionEcommerce === true ? (
+                {publish && 
                   <>
                     <Grid sx={{mb: 3, my: 2}} item xs={12} md={12}>
                       <AppTextField
@@ -852,15 +839,14 @@ const Distribution = () => {
                       />
                     </Grid>
                   </>
-                ) : (
-                  <></>
-                )}
+                }
+                
               </Form>
             );
           }}
         </Formik>
       </Box>
-      {sectionEcommerce === true ? (
+      {publish && 
         <>
           <Box
             sx={{
@@ -898,19 +884,37 @@ const Distribution = () => {
               >
                 <AddIcon fontSize='inherit' />
               </IconButton>
-              <IconButton
+              {/* <IconButton
                 onClick={() => {
                   console.log('filters', filters);
-                  let newFilters = filters;
-                  newFilters.pop();
-                  setFilters(newFilters);
-                  reloadPage();
+                  let productsWithThisFilter = listProductsState.filter(
+                    (element) => {
+                        let response = false;
+                        Object.entries(element.tags).forEach(([key, value]) => {
+                          if(filters[filters.length - 1].featureName === key){
+                            console.log(value)
+                            response = true;
+                          }
+                        })
+                        return response
+                      },
+                  );
+                  if (productsWithThisFilter.length > 0) {
+                    setTypeAlert("existProductsWithThisFilter");
+                    setProductsSelected(productsWithThisFilter);
+                    setShowAlert(true);
+                  } else {
+                    let newFilters = filters;
+                    newFilters.pop();
+                    setFilters(newFilters);
+                    reloadPage();
+                  }
                 }}
                 aria-label='delete'
                 size='large'
               >
                 <RemoveIcon fontSize='inherit' />
-              </IconButton>
+              </IconButton> */}
             </Stack>
           </Box>
 
@@ -925,19 +929,44 @@ const Distribution = () => {
           >
             {filters &&
               filters.map((filter, index) => (
-                <DeliveryCard
+                <>
+                <FilterCard
                   key={index}
                   order={index}
                   execFunctions={execAll}
                   newValuesData={setFilterIndex}
                   initialValues={filter}
+                  deleteFilter={deleteFilter}
                 />
+                <Divider sx={{my: 0}} />
+                <ButtonGroup
+                  orientation='vertical'
+                  sx={{width: 1}}
+                  aria-label='outlined button group'
+                >
+                  <Button
+                    color='primary'
+                    sx={{mx: 'auto', my: 2, py: 1}}
+                    form='principal-form'
+                    variant='contained'
+                    onClick={() => {
+                      console.log('filters', filters);
+                      let newFilters = filters;
+                      newFilters.splice(index+1, 0, emptyFilter)
+                      setFilters(newFilters);
+                      reloadPage();
+                    }}
+                  >
+                    Añadir Nuevo Filtro
+                  </Button>
+                </ButtonGroup>
+                
+                </>
               ))}
           </Box>
         </>
-      ) : (
-        <></>
-      )}
+      }
+      
 
       <Box
         sx={{
@@ -1034,7 +1063,7 @@ const Distribution = () => {
                         productsWithThisCategory,
                       );
                       if (productsWithThisCategory.length > 0) {
-                        typeAlert = 'existProductsWithThisCategory';
+                        setTypeAlert("existProductsWithThisCategory");
                         setProductsSelected(productsWithThisCategory);
                         setShowAlert(true);
                       } else {
@@ -1099,6 +1128,11 @@ const Distribution = () => {
         >
           {typeAlert == 'existProductsWithThisCategory' ? (
             <IntlMessages id='alert.configurationParameters.existProductsWithThisCategory' />
+          ) : (
+            <></>
+          )}
+          {typeAlert == 'existProductsWithThisFilter' ? (
+            <IntlMessages id='alert.configurationParameters.existProductsWithThisFilter' />
           ) : (
             <></>
           )}

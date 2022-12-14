@@ -233,7 +233,9 @@ const NewProduct = (props) => {
   const router = useRouter();
   let errorToRegister = false;
   const [lengthProducts, setLengthProducts] = React.useState(0);
+  const [openStatus, setOpenStatus] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
+  const [typeDialog, setTypeDialog] = React.useState("registrarProducto");
   const [selectedCategory, setSelectedCategory] =
     React.useState('noCategories');
   const [typeProduct, setTypeProduct] = React.useState('rawMaterial');
@@ -244,7 +246,7 @@ const NewProduct = (props) => {
   const [typeAlert, setTypeAlert] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [selectedFilters, setSelectedFilters] = React.useState({});
-  const [publish, setPublish] = React.useState(true);
+  const [publish, setPublish] = React.useState(false);
   const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
   const [selectedImages, setSelectedImages] = React.useState([]);
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
@@ -358,6 +360,7 @@ const NewProduct = (props) => {
     } else {
       if (userDataRes.merchantSelected.isEcommerceEnabled == true) {
         setSectionEcommerce(true);
+        setPublish(true);
       }
     }
     dispatch({
@@ -389,12 +392,10 @@ const NewProduct = (props) => {
   useEffect(() => {
     if (userDataRes) {
       defaultValues.merchantId = userDataRes.merchantSelected.merchantId;
-      if (
-        userDataRes.merchantSelected.plans.find(
-          (element) => element.active == true,
-        ).description == 'eCommerce'
-      ) {
+      if (userDataRes.merchantSelected.isEcommerceEnabled == true) {
         setSectionEcommerce(true);
+        
+        setPublish(true);
       }
       getProducts(listPayload);
       getBusinessParameter(parameterPayload);
@@ -572,130 +573,139 @@ const NewProduct = (props) => {
       userDataRes.merchantSelected.plans.find((obj) => obj.active == true)
         .limits.catalogNumberProducts
     ) {
-      setShowAlert(false);
-      setSubmitting(true);
-      /* if (selectedFile) { */ //PARA LA TOMA DE IMAGEN
-      delete data.category;
-      delete data.typeProduct;
-      console.log('data', {...data, ...objSelects});
-      console.log(
-        'resultado del registro antes del registro',
-        addProductResponse,
-      );
-      console.log('Data recibida', {...data, ...objSelects});
-      console.log('selectedProducts', selectedProducts);
-      let goodStockComplexProducts = allCountsRigth(data.initialStock);
-      console.log('goodStockComplexProducts', goodStockComplexProducts);
-      console.log('selectedProducts.length', selectedProducts.length);
-      console.log('typeProduct', typeProduct);
-      if (
-        (goodStockComplexProducts &&
-          selectedProducts.length > 0 &&
-          typeProduct != 'rawMaterial') ||
-        typeProduct == 'rawMaterial'
-      ) {
-        console.log('Todo correcto');
-        let cleanProducts = [];
-        if (typeProduct != 'rawMaterial') {
-          selectedProducts.map((obj, index) => {
-            console.log('Producto', index, obj);
-            cleanProducts.push({
-              productId: obj.productId,
-              quantity: obj.count,
-              priceUnit: obj.costPriceUnit,
-              description: obj.description,
-              weight: obj.weight,
-              unitMeasure: obj.unitMeasure,
-              customCodeProduct: obj.customCodeProduct || '',
-            });
-          });
-        }
-        console.log(cleanProducts);
-        console.log('Esta es la imagen seleccionada', selectedFile);
-        console.log('Cuál es el selectedJsonImages', selectedJsonImages);
-
-        dispatch({
-          type: GET_PRESIGNED,
-          payload: undefined,
-        });
-        /* console.log('finalPayload', { */
-        console.log('Este es el payload de registrar producto', {
-          request: {
-            payload: {
-              products: [
-                {
-                  businessProductCode: data.businessProductCode,
-                  description: data.description,
-                  costPriceUnit: Number(data.costPriceUnit),
-                  sellPriceUnit: Number(data.referecialPriceSell),
-                  weight: Number(data.weight),
-                  initialStock: parseInt(Number(data.initialStock)),
-                  customCodeProduct: data.customCodeProduct,
-                  title: data.title,
-                  commercialDescription: data.commercialDescription,
-                  unitMeasureWeight: weight_unit,
-                  unitMeasureMoney: money_unit,
-                  category: selectedCategory,
-                  tags: selectedFilters,
-                  typeProduct: objSelects.typeProduct,
-                  imgKeys: selectedJsonImages,
-                  unitMeasure: objSelects.unitMeasure,
-                  unitsToProduce: 1,
-                  inputsProduct: cleanProducts,
-                  publish: publish,
-                },
-              ],
-              merchantId: userDataRes.merchantSelected.merchantId,
-            },
-          },
-        });
-        toAddProduct({
-          request: {
-            payload: {
-              products: [
-                {
-                  businessProductCode: data.businessProductCode,
-                  description: data.description,
-                  costPriceUnit: Number(data.costPriceUnit),
-                  sellPriceUnit: Number(data.referecialPriceSell),
-                  weight: Number(data.weight),
-                  initialStock: parseInt(Number(data.initialStock)),
-                  customCodeProduct: data.customCodeProduct,
-                  title: data.title,
-                  commercialDescription: data.commercialDescription,
-                  unitMeasureWeight: weight_unit,
-                  unitMeasureMoney: money_unit,
-                  category: selectedCategory,
-                  tags: selectedFilters,
-                  typeProduct: objSelects.typeProduct,
-                  imgKeys: selectedJsonImages,
-                  unitMeasure: objSelects.unitMeasure,
-                  unitsToProduce: 1,
-                  inputsProduct: cleanProducts,
-                  publish: publish,
-                },
-              ],
-              merchantId: userDataRes.merchantSelected.merchantId,
-            },
-          },
-        });
-        console.log('resultado del registro', addProductResponse);
+      if(!data.title){
+        setTypeDialog("nonTitle");
+        setOpen(true);
+      } else if(!data.commercialDescription) {
+        setTypeDialog("nonCommercialDescription");
         setOpen(true);
       } else {
-        if (selectedProducts.length === 0) {
-          setTypeAlert('faltaProduct');
-        } else if (!goodStockComplexProducts) {
-          setTypeAlert('maxStock');
+        setTypeDialog("registrarProducto");
+        setShowAlert(false);
+        setSubmitting(true);
+        /* if (selectedFile) { */ //PARA LA TOMA DE IMAGEN
+        delete data.category;
+        delete data.typeProduct;
+        console.log('data', {...data, ...objSelects});
+        console.log(
+          'resultado del registro antes del registro',
+          addProductResponse,
+        );
+        console.log('Data recibida', {...data, ...objSelects});
+        console.log('selectedProducts', selectedProducts);
+        let goodStockComplexProducts = allCountsRigth(data.initialStock);
+        console.log('goodStockComplexProducts', goodStockComplexProducts);
+        console.log('selectedProducts.length', selectedProducts.length);
+        console.log('typeProduct', typeProduct);
+        if (
+          (goodStockComplexProducts &&
+            selectedProducts.length > 0 &&
+            typeProduct != 'rawMaterial') ||
+          typeProduct == 'rawMaterial'
+        ) {
+          console.log('Todo correcto');
+          let cleanProducts = [];
+          if (typeProduct != 'rawMaterial') {
+            selectedProducts.map((obj, index) => {
+              console.log('Producto', index, obj);
+              cleanProducts.push({
+                productId: obj.productId,
+                quantity: obj.count,
+                priceUnit: obj.costPriceUnit,
+                description: obj.description,
+                weight: obj.weight,
+                unitMeasure: obj.unitMeasure,
+                customCodeProduct: obj.customCodeProduct || '',
+              });
+            });
+          }
+          console.log(cleanProducts);
+          console.log('Esta es la imagen seleccionada', selectedFile);
+          console.log('Cuál es el selectedJsonImages', selectedJsonImages);
+
+          dispatch({
+            type: GET_PRESIGNED,
+            payload: undefined,
+          });
+          /* console.log('finalPayload', { */
+          console.log('Este es el payload de registrar producto', {
+            request: {
+              payload: {
+                products: [
+                  {
+                    businessProductCode: data.businessProductCode,
+                    description: data.description,
+                    costPriceUnit: Number(data.costPriceUnit),
+                    sellPriceUnit: Number(data.referecialPriceSell),
+                    weight: Number(data.weight),
+                    initialStock: parseInt(Number(data.initialStock)),
+                    customCodeProduct: data.customCodeProduct,
+                    title: data.title,
+                    commercialDescription: data.commercialDescription,
+                    unitMeasureWeight: weight_unit,
+                    unitMeasureMoney: money_unit,
+                    category: selectedCategory,
+                    tags: selectedFilters,
+                    typeProduct: objSelects.typeProduct,
+                    imgKeys: selectedJsonImages,
+                    unitMeasure: objSelects.unitMeasure,
+                    unitsToProduce: 1,
+                    inputsProduct: cleanProducts,
+                    publish: publish,
+                  },
+                ],
+                merchantId: userDataRes.merchantSelected.merchantId,
+              },
+            },
+          });
+          toAddProduct({
+            request: {
+              payload: {
+                products: [
+                  {
+                    businessProductCode: data.businessProductCode,
+                    description: data.description,
+                    costPriceUnit: Number(data.costPriceUnit),
+                    sellPriceUnit: Number(data.referecialPriceSell),
+                    weight: Number(data.weight),
+                    initialStock: parseInt(Number(data.initialStock)),
+                    customCodeProduct: data.customCodeProduct,
+                    title: data.title,
+                    commercialDescription: data.commercialDescription,
+                    unitMeasureWeight: weight_unit,
+                    unitMeasureMoney: money_unit,
+                    category: selectedCategory,
+                    tags: selectedFilters,
+                    typeProduct: objSelects.typeProduct,
+                    imgKeys: selectedJsonImages,
+                    unitMeasure: objSelects.unitMeasure,
+                    unitsToProduce: 1,
+                    inputsProduct: cleanProducts,
+                    publish: publish,
+                  },
+                ],
+                merchantId: userDataRes.merchantSelected.merchantId,
+              },
+            },
+          });
+          console.log('resultado del registro', addProductResponse);
+          setOpen(true);
         } else {
-          setTypeAlert('');
+          if (selectedProducts.length === 0) {
+            setTypeAlert('faltaProduct');
+          } else if (!goodStockComplexProducts) {
+            setTypeAlert('maxStock');
+          } else {
+            setTypeAlert('');
+          }
+          setShowAlert(true);
         }
-        setShowAlert(true);
+        /* } else {
+          console.log('NoImagen');
+          typeAlert = 'noImage';
+        } */
+        setSubmitting(false);
       }
-      /* } else {
-        console.log('NoImagen');
-        typeAlert = 'noImage';
-      } */
-      setSubmitting(false);
     } else {
       setTypeAlert('limitCatalog');
       setShowAlert(true);
@@ -1352,7 +1362,7 @@ const NewProduct = (props) => {
                   sx={{mx: 'auto', width: '50%', py: 3}}
                   variant='contained'
                   size='medium'
-                  disabled={isSubmitting}
+                  //disabled={isSubmitting}
                   startIcon={<SaveAltOutlinedIcon />}
                 >
                   Finalizar
@@ -1483,17 +1493,75 @@ const NewProduct = (props) => {
           aria-labelledby='alert-dialog-title'
           aria-describedby='alert-dialog-description'
         >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Producto'}
-          </DialogTitle>
-          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            {showMessage()}
-          </DialogContent>
-          <DialogActions sx={{justifyContent: 'center'}}>
-            <Button variant='outlined' onClick={handleClose}>
-              Aceptar
-            </Button>
-          </DialogActions>
+          {typeDialog == 'registrarProducto' ? (
+            <>
+              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                {'Registro de Producto'}
+              </DialogTitle>
+              <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+                {showMessage()}
+              </DialogContent>
+              <DialogActions sx={{justifyContent: 'center'}}>
+                <Button variant='outlined' onClick={handleClose}>
+                  Aceptar
+                </Button>
+              </DialogActions>
+            </>
+          ) : (
+            <></>
+          )}
+          {typeDialog == 'nonTitle' ? (
+            <>
+              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                {'Falta indicar el título comercial'}
+                
+              </DialogTitle>
+              <DialogContent>
+                <CancelOutlinedIcon
+                  //onClick={setOpen.bind(this, false)}
+                  sx={{fontSize: '6em', mx: 2, color: red[500]}}
+                />
+                <DialogContentText
+                  sx={{fontSize: '1.2em', m: 'auto'}}
+                  id='alert-dialog-description'
+                >
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions sx={{justifyContent: 'center'}}>
+                <Button variant='outlined' onClick={() => setOpen(false)}>
+                  Aceptar
+                </Button>
+              </DialogActions>
+            </>
+          ) : (
+            <></>
+          )}
+          {typeDialog == 'nonCommercialDescription' ? (
+            <>
+              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                {'Falta llenar la descripción comercial'}
+                
+              </DialogTitle>
+              <DialogContent>
+                <CancelOutlinedIcon
+                  //onClick={setOpen.bind(this, false)}
+                  sx={{fontSize: '6em', mx: 2, color: red[500]}}
+                />
+                <DialogContentText
+                  sx={{fontSize: '1.2em', m: 'auto'}}
+                  id='alert-dialog-description'
+                >
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions sx={{justifyContent: 'center'}}>
+                <Button variant='outlined' onClick={() => setOpen(false)}>
+                  Aceptar
+                </Button>
+              </DialogActions>
+            </>
+          ) : (
+            <></>
+          )}
         </Dialog>
       </Box>
 
