@@ -451,11 +451,11 @@ const ProductMovementTable = (props) => {
     switch (movementType) {
       case 'INPUT':
         return <Box sx={{display:'flex'}}>
-          {partialStock ? partialStock : null}<ArrowCircleUpIcon fontSize='small' sx={{ml: 1, color: green[500]}} />
+          {partialStock ? partialStock : 0}<ArrowCircleUpIcon fontSize='small' sx={{ml: 1, color: green[500]}} />
         </Box>;
       case 'OUTPUT':
         return <Box sx={{display:'flex'}}>
-        {partialStock ? partialStock : null}<ArrowCircleDownIcon fontSize='small' sx={{ml: 1, color: red[500]}} />
+        {partialStock ? partialStock : 0}<ArrowCircleDownIcon fontSize='small' sx={{ml: 1, color: red[500]}} />
       </Box>;
       default:
         return null;
