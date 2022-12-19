@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useLayoutEffect} from 'react';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
+import {red, green} from '@mui/material/colors';
 const XLSX = require('xlsx');
 import {
   Table,
@@ -26,7 +27,8 @@ import {makeStyles} from '@mui/styles';
 
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
-
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import * as yup from 'yup';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -67,7 +69,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
 }));
-
+import {
+  GET_MOVEMENTS,
+} from '../../../shared/constants/ActionTypes';
 let listPayload = {
   request: {
     payload: {
@@ -183,6 +187,7 @@ const ProductMovementTable = (props) => {
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
       listPayload.request.payload.businessProductCode = query.product;
+      dispatch({type: GET_MOVEMENTS, payload: undefined});
 
       console.log('ejecutando123', query.productId);
       console.log('ejecutando123', query.productId);
@@ -237,6 +242,7 @@ const ProductMovementTable = (props) => {
     console.log('El loading en pleno cambio', loading);
     if (
       !loading &&
+      getMovementsRes &&
       getMovementsRes.originalMovements &&
       getMovementsRes.originalMovements.length > 0
     ) {
@@ -319,7 +325,7 @@ const ProductMovementTable = (props) => {
         },
       });
     }
-  }, [loading]);
+  }, [loading, getMovementsRes]);
   //BUTTONS BAR FUNCTIONS
   const searchProducts = () => {
     // toGetInventoryProducts(listPayload);
@@ -441,8 +447,21 @@ const ProductMovementTable = (props) => {
     XLSX.utils.sheet_add_aoa(ws, [headersExcel], {origin: 'A1'});
     XLSX.writeFile(wb, 'Inventory.xlsx');
   };
-
-  return (
+  const showPartialStock = (partialStock, movementType) => {
+    switch (movementType) {
+      case 'INPUT':
+        return <Box sx={{display:'flex'}}>
+          {partialStock ? partialStock : null}<ArrowCircleUpIcon fontSize='small' sx={{ml: 1, color: green[500]}} />
+        </Box>;
+      case 'OUTPUT':
+        return <Box sx={{display:'flex'}}>
+        {partialStock ? partialStock : null}<ArrowCircleDownIcon fontSize='small' sx={{ml: 1, color: red[500]}} />
+      </Box>;
+      default:
+        return null;
+    }
+  };
+  return getMovementsRes ? (
     <Grid container spacing={2} sx={{p: 2}}>
       <Grid item xs={width > 780 ? 12 : 12} sx={{width: '100%'}}>
         <TotalBalance totalBalanceData={totalBalanceData} />
@@ -467,6 +486,7 @@ const ProductMovementTable = (props) => {
                   <TableCell>SubTipo</TableCell>
                   <TableCell>Precio unitario</TableCell>
                   <TableCell>Cantidad</TableCell>
+                  <TableCell>Stock parcial</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -488,6 +508,7 @@ const ProductMovementTable = (props) => {
                       </TableCell>
                       <TableCell>{obj.priceUnit}</TableCell>
                       <TableCell>{obj.quantity}</TableCell>
+                      <TableCell>{showPartialStock(obj.partialStock, obj.movementType)}</TableCell>
                       {/* <TableCell>{obj.numOutputs}</TableCell>
                     <TableCell>{obj.stock}</TableCell> */}
                     </TableRow>
@@ -644,6 +665,8 @@ const ProductMovementTable = (props) => {
         </Card>
       </Grid> */}
     </Grid>
+  ) : (
+    <></>
   );
 };
 

@@ -248,7 +248,11 @@ const ReferralGuidesTable = (props) => {
 
       if (Object.keys(query).length !== 0) {
         console.log('Query con datos', query);
-        listPayload.request.payload.outputId = query.movementHeaderId;
+        if(query.movementHeaderId){
+          listPayload.request.payload.outputId = query.movementHeaderId;
+        }else if (query.referralGuideId){
+          listPayload.request.payload.movementHeaderId = query.referralGuideId;
+        }
       }
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {

@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
 let listPayload = {
   request: {
     payload: {
-      typeDocumentClient: '',
+      typeDocumentClient: 'RUC',
       numberDocumentClient: '',
       denominationClient: '',
       merchantId: '',
@@ -163,7 +163,7 @@ const ClientTable = (arrayObjs, props) => {
           },
         },
       };
-
+      listPayload.request.payload.typeDocumentClient = 'RUC';
       toGetUserData(getUserDataPayload);
     }
   }, []);
@@ -358,7 +358,7 @@ const ClientTable = (arrayObjs, props) => {
             labelId='documentType-label'
             label='Identificador'
             onChange={(event) => {
-              console.log(event.target.value);
+              console.log("Está pasando por aquí?", event.target.value);
               listPayload.request.payload.typeDocumentClient =
                 event.target.value;
             }}

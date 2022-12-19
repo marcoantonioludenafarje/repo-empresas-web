@@ -597,7 +597,21 @@ const InputsTable = (props) => {
         return null;
     }
   };
-
+  const showObject = (cod, type) => {
+    if (type == 'expense') {
+      Router.push({
+        pathname: '/sample/finances/table',
+        query: {contableMovementId: cod},
+      });
+    } else if (type == 'bill') {
+      Router.push({
+        pathname: '/sample/bills/table',
+        query: {billId: cod},
+      });
+    } else {
+      return null;
+    }
+  };
   const showIconStatus = (isSale, existExpense, obj, index, mintype, cod) => {
     if (isSale == 'buys') {
       if (existExpense) {
@@ -607,7 +621,7 @@ const InputsTable = (props) => {
               variant='secondary'
               sx={{fontSize: '1em'}}
               /* disabled={type == 'referralGuide'} */
-              onClick={() => showObject(obj.movementHeaderId, type)}
+              onClick={() => showObject(obj.contableMovementId, "expense")}
             >
               {`${mintype} - ${cod}`}
             </Button>
@@ -618,7 +632,7 @@ const InputsTable = (props) => {
               variant='secondary'
               sx={{fontSize: '1em'}}
               /* disabled={type == 'referralGuide'} */
-              onClick={() => showObject(obj.movementHeaderId, type)}
+              onClick={() => showObject(obj.contableMovementId, "expense")}
             >
               Generado
             </Button>

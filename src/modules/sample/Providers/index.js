@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
 let listPayload = {
   request: {
     payload: {
-      typeDocumentProvider: '',
+      typeDocumentProvider: 'RUC',
       numberDocumentProvider: '',
       denominationProvider: '',
       merchantId: '',

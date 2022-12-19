@@ -179,11 +179,40 @@ const FinancesTable = (props) => {
       },
     });
   };
-
-  const showIconStatus = (bool) => {
+  const showObject = (codOutput, type) => {
+    // if (type == 'income') {
+    //   Router.push({
+    //     pathname: '/sample/finances/table',
+    //     query: {contableMovementId: selectedOutput.contableMovementId},
+    //   });
+    // } else if (type == 'bill') {
+    //   Router.push({
+    //     pathname: '/sample/bills/table',
+    //     query: {billId: selectedOutput.billId},
+    //   });
+    // } else 
+    
+    if (type == 'referralGuide') {
+      console.log("Esta es la id de la guia", codOutput)
+      Router.push({
+        pathname: '/sample/referral-guide/table',
+        query: {referralGuideId: codOutput},
+      });
+    } else {
+      return null;
+    }
+  };
+  const showIconStatus = (bool, obj) => {
     switch (bool) {
       case true:
-        return <CheckCircleIcon color='success' />;
+        return <Button
+              variant='secondary'
+              sx={{fontSize: '1em'}}
+              /* disabled={type == 'referralGuide'} */
+              onClick={() => showObject(obj.referralGuideMovementHeaderId, 'referralGuide')}
+            >
+              <CheckCircleIcon color='success' />
+            </Button>
         break;
       case false:
         return <CancelIcon sx={{color: red[500]}} />;
@@ -337,6 +366,7 @@ const FinancesTable = (props) => {
                                             <TableCell align='center'>
                                               {showIconStatus(
                                                 route.generateReferralGuide,
+                                                route
                                               )}
                                             </TableCell>
                                             <TableCell>

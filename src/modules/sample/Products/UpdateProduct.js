@@ -479,18 +479,23 @@ const UpdateProduct = (props) => {
   useEffect(() => {
     console.log('CUAL ES EL originalProduct', originalProduct);
     if (originalProduct && originalProduct.active) {
-      originalProduct.images = originalProduct.images.map((image) => {
-        image.isSaved = true;
-        return image;
-      });
-      console.log('selectedFilters de original', originalProduct.tags);
+      if(originalProduct.images){
+        originalProduct.images = originalProduct.images.map((image) => {
+          image.isSaved = true;
+          return image;
+        });
+        setSelectedImages(originalProduct.images);
+        setSelectedJsonImages(originalProduct.images);
+        console.log('selectedImages', selectedImages);
+
+      }
+
       console.log('selectedImages de original', originalProduct.images);
+
+      console.log('selectedFilters de original', originalProduct.tags);
       setSelectedFilters(originalProduct.tags);
-      setSelectedImages(originalProduct.images);
-      setSelectedJsonImages(originalProduct.images);
 
       console.log('selectedFilters', selectedFilters);
-      console.log('selectedImages', selectedImages);
     }
   }, [originalProduct]);
   /* useEffect(() => {
