@@ -244,7 +244,7 @@ const UpgradeBusiness = () => {
                   if(!data.eMerchantSlugName){
                     setTypeDialog("nonSlug")
                     setOpenStatus(true);
-                  } else if(!data.defaultMaxPrice || !data.defaultMinPrice) {
+                  } else if(!data.defaultMaxPrice || (data.defaultMinPrice == undefined)) {
                     setTypeDialog("nonPriceRange")
                     setOpenStatus(true);
                   } else if((Number(data.defaultMinPrice) < 0) && (Number(data.defaultMaxPrice) < 0)) {
