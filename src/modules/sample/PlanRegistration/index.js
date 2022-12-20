@@ -262,12 +262,12 @@ const UpgradeBusiness = () => {
                   } else if(filters.length == 0 || (!filters) || filters === []) {
                     setTypeDialog("nonFilters")
                     setOpenStatus(true);
-                  } else if(filters.some(arrVal => "" === arrVal.filterName)) {
-                    setTypeDialog("someFiltersAreEmpty")
-                    setOpenStatus(true);
-                  } else if(filters.some(arrVal => 0 === arrVal.options.length)) {
-                    setTypeDialog("someFiltersAreEmpty")
-                    setOpenStatus(true);
+                  // } else if(filters.some(arrVal => "" === arrVal.filterName)) {
+                  //   setTypeDialog("someFiltersAreEmpty")
+                  //   setOpenStatus(true);
+                  // } else if(filters.some(arrVal => 0 === arrVal.options.length)) {
+                  //   setTypeDialog("someFiltersAreEmpty")
+                  //   setOpenStatus(true);
                   } else if(filters.some(arrVal => undefined === arrVal.filterName)) {
                     setTypeDialog("someFiltersAreEmpty")
                     setOpenStatus(true);
