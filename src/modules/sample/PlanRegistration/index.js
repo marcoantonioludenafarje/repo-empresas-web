@@ -277,42 +277,42 @@ const UpgradeBusiness = () => {
                     console.log('data filters: ', {filters: filters});
                     console.log('data planRegistration: ', {...data, documentType: docType, filters: filters});
                     // TODO Api Call here to save user info
-                    // dispatch({type: FETCH_SUCCESS, payload: undefined});
-                    // dispatch({type: FETCH_ERROR, payload: undefined});
-                    // dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
+                    dispatch({type: FETCH_SUCCESS, payload: undefined});
+                    dispatch({type: FETCH_ERROR, payload: undefined});
+                    dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
 
                     setExecAll(true);
                     setExecAll(false);
-                    // toUpgradeToNewPlan({
-                    //   request: {
-                    //     payload: {
-                    //       merchantId: userDataRes.merchantSelected.merchantId,
-                    //       planDesiredId:
-                    //         userDataRes.merchantSelected.planDesiredId,
-                    //       promotionCodeId:
-                    //         userDataRes.merchantSelected.promotionCodeId,
-                    //       serieDocumenteBilling: data.serieDocumenteBilling || '',
-                    //       serieBackDocumenteBilling:
-                    //         data.serieBackDocumenteBilling || '',
-                    //       serieDocumenteReceipt: data.serieDocumenteReceipt || '',
-                    //       serieBackDocumenteReceipt:
-                    //         data.serieBackDocumenteReceipt || '',
-                    //       serieDocumenteReferralGuide:
-                    //         data.serieDocumenteReferralGuide || '',
-                    //       serieBackDocumenteReferralGuide:
-                    //         data.serieBackDocumenteReferralGuide || '',
-                    //       eMerchantSlugName: data.eMerchantSlugName || '',
-                    //       merchantMasterId: userDataRes.merchantMasterId,
-                    //       firstPlanDefault:
-                    //         userDataRes.merchantSelected.firstPlanDefault,
-                    //       typeMerchant: userDataRes.merchantSelected.typeMerchant,
-                    //       categories: initialCategories,
-                    //       filters: filters,
-                    //       price: [data.defaultMinPrice, data.defaultMaxPrice],
-                    //       isEcommerceEnabled: publish,
-                    //     },
-                    //   },
-                    // });
+                    toUpgradeToNewPlan({
+                      request: {
+                        payload: {
+                          merchantId: userDataRes.merchantSelected.merchantId,
+                          planDesiredId:
+                            userDataRes.merchantSelected.planDesiredId,
+                          promotionCodeId:
+                            userDataRes.merchantSelected.promotionCodeId,
+                          serieDocumenteBilling: data.serieDocumenteBilling || '',
+                          serieBackDocumenteBilling:
+                            data.serieBackDocumenteBilling || '',
+                          serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                          serieBackDocumenteReceipt:
+                            data.serieBackDocumenteReceipt || '',
+                          serieDocumenteReferralGuide:
+                            data.serieDocumenteReferralGuide || '',
+                          serieBackDocumenteReferralGuide:
+                            data.serieBackDocumenteReferralGuide || '',
+                          eMerchantSlugName: data.eMerchantSlugName || '',
+                          merchantMasterId: userDataRes.merchantMasterId,
+                          firstPlanDefault:
+                            userDataRes.merchantSelected.firstPlanDefault,
+                          typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                          categories: initialCategories,
+                          filters: filters,
+                          price: [data.defaultMinPrice, data.defaultMaxPrice],
+                          isEcommerceEnabled: publish,
+                        },
+                      },
+                    });
                     console.log('Esto se envia', {
                       request: {
                         payload: {
