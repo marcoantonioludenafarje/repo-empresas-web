@@ -123,6 +123,10 @@ const FilterCard = ({
           })
         : null;
       setProductsList(newProds);
+      if(newProds.length > 0){
+        const [lastOption] = newProds.slice(-1);
+        setCounter(lastOption.rowId+1);
+      }
       newProds.map((prod) => {
         changeValue(`count${prod.rowId}`, prod.count);
       });

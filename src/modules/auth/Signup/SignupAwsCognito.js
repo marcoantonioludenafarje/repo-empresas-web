@@ -10,6 +10,7 @@ import Link from 'next/link';
 import {FaFacebookF} from 'react-icons/fa';
 import {AiOutlineGoogle} from 'react-icons/ai';
 import originalUbigeos from '../../../Utils/ubigeo.json';
+import AppGridContainer from '../../../@crema/core/AppGridContainer';
 import {
   Table,
   TableBody,
@@ -49,13 +50,13 @@ const validationSchema = yup.object({
   confirmPassword: yup
     .string()
     .required(<IntlMessages id='validation.reTypePassword' />),
-  name: yup.string().required(<IntlMessages id='validation.nameRequired' />),
+  name: yup.string().required(<IntlMessages id='validation.required' />),
   lastName: yup
     .string()
-    .required(<IntlMessages id='validation.nameRequired' />),
+    .required(<IntlMessages id='validation.required' />),
   cellphone: yup
-    .string()
-    .required(<IntlMessages id='validation.nameRequired' />),
+    .number()
+    .required(<IntlMessages id='validation.cellphone' />),
   businessSocialReason: yup
     .string()
     .required(<IntlMessages id='validation.required' />),
@@ -132,6 +133,7 @@ const SignupAwsCognito = () => {
           validationSchema={validationSchema}
           onSubmit={(data, {setSubmitting, setErrors}) => {
             setSubmitting(true);
+            data.cellphone = data.cellphone.toString();
             if (data.password !== data.confirmPassword) {
               console.log('No coincidieron', data);
               setErrors({
@@ -238,20 +240,28 @@ const SignupAwsCognito = () => {
                   }}
                 />
               </Box>
-
-              <Box sx={{mb: {xs: 4, xl: 5}}}>
-                <AppTextField
-                  label={<IntlMessages id='common.cellphone' />}
-                  name='cellphone'
-                  variant='outlined'
-                  sx={{
-                    width: '100%',
-                    '& .MuiInputBase-input': {
-                      fontSize: 14,
-                    },
-                  }}
-                />
-              </Box>
+                      
+              <AppGridContainer spacing={4}>
+                <Grid item xs={2} md={2}>
+                  <TextField disabled defaultValue={'+51'} label={<IntlMessages id='common.cellphoneCountryCod' />} variant="filled" color="success" focused />
+                </Grid>
+                <Grid item xs={10} md={10}>
+                  <Box sx={{mb: {xs: 4, xl: 5}}}>
+                    <AppTextField
+                      label={<IntlMessages id='common.cellphone' />}
+                      name='cellphone'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                      }}
+                    />
+                  </Box>
+                </Grid>
+              </AppGridContainer>
+              
 
               {/* <Box
                 sx={{

@@ -142,7 +142,7 @@ const AppHeader = () => {
               variant='contained'
               onClick={() =>
                 window.open(
-                  `https://dev.ecommerce.tunexo.pe/negocio/${userDataRes.merchantSelected.ecommerceMerchantSlug}`,
+                  `https://dev.ecommerce.tunexo.pe/ecommerce?business=${userDataRes.merchantSelected.ecommerceMerchantSlug}`,
                 )
               }
             >

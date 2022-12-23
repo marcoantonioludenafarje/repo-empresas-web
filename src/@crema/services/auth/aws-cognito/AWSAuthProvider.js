@@ -42,6 +42,7 @@ const AwsCognitoActionsContext = createContext();
 export const useAwsCognito = () => useContext(AwsCognitoContext);
 export const useAwsCognitoActions = () => useContext(AwsCognitoActionsContext);
 
+import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import rolesRoutesConfig from '../../../../modules/routesConfig';
 
 const AwsAuthProvider = ({children}) => {
@@ -366,7 +367,7 @@ const AwsAuthProvider = ({children}) => {
       dispatch({
         type: SHOW_MESSAGE,
         payload:
-          'A code has been sent to your registered email address, Enter the code to complete the signup process!',
+          'Se ha enviado un código a su dirección de correo electrónico registrada. ¡Ingrese el código para completar el proceso!',
       });
     } catch (error) {
       console.log('El error', error);
@@ -392,7 +393,7 @@ const AwsAuthProvider = ({children}) => {
       dispatch({
         type: SHOW_MESSAGE,
         payload:
-          'Congratulations, Signup process is complete, You can now Sign in by entering correct credentials!',
+          '¡Felicitaciones, el proceso de registro se ha completado, ahora puede iniciar sesión ingresando las credenciales correctas!',
       });
     } catch (error) {
       setAwsCognitoData({

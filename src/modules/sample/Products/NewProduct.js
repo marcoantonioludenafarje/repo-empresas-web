@@ -600,8 +600,8 @@ const NewProduct = (props) => {
         if (
           (goodStockComplexProducts &&
             selectedProducts.length > 0 &&
-            typeProduct != 'rawMaterial') ||
-          typeProduct == 'rawMaterial'
+            typeProduct == 'intermediateProduct') ||
+          typeProduct !== 'intermediateProduct'
         ) {
           console.log('Todo correcto');
           let cleanProducts = [];
@@ -691,7 +691,7 @@ const NewProduct = (props) => {
           console.log('resultado del registro', addProductResponse);
           setOpen(true);
         } else {
-          if (selectedProducts.length === 0) {
+          if (selectedProducts.length === 0 && typeProduct == 'intermediateProduct') {
             setTypeAlert('faltaProduct');
           } else if (!goodStockComplexProducts) {
             setTypeAlert('maxStock');

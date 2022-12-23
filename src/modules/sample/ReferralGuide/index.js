@@ -429,9 +429,12 @@ const ReferralGuidesTable = (props) => {
           </TableHead>
           <TableBody>
             {getMovementsRes &&
-            Array.isArray(getMovementsRes) &&
-            getMovementsRes[0] &&
-            getMovementsRes[0].movementType == 'REFERRAL_GUIDE' ? (
+            Array.isArray(getMovementsRes) 
+            // &&
+            // getMovementsRes[0] &&
+            // getMovementsRes[0].movementType == 'REFERRAL_GUIDE' 
+            
+            ? (
               getMovementsRes.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}

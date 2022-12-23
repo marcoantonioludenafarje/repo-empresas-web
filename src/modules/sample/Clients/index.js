@@ -422,7 +422,12 @@ const ClientTable = (arrayObjs, props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listClients && listClients.length > 0 ? (
+            {listClients
+             && 
+             Array.isArray(listClients) 
+            //  &&
+            //  listClients.length > 0 
+             ? (
               listClients.map((obj, index) => {
                 let parsedId = obj.clientId.split('-');
                 return (

@@ -185,8 +185,7 @@ const Distribution = () => {
   };
   useEffect(() => {
     if (
-      userDataRes &&
-      (businessParameter == undefined || businessParameter == [])
+      userDataRes 
     ) {
       let parameterPayload = {
         request: {

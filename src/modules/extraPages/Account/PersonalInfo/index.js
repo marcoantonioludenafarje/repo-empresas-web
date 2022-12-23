@@ -97,7 +97,7 @@ const PersonalInfo = () => {
     email: userDataRes ? userDataRes.email : '',
     name: userDataRes ? userDataRes.nombres : '',
     lastName: userDataRes ? userDataRes.apellidoPat : '',
-    cellphone: userDataRes ? userDataRes.cellphone : '',
+    cellphone: userDataRes ? (userDataRes.cellphone.replace('+51', '')) : '',
   };
 
   useEffect(() => {
@@ -195,7 +195,7 @@ const PersonalInfo = () => {
           userId: user.uid,
           nombres: data.name,
           apellidos: data.lastName,
-          cellphone: data.cellphone,
+          cellphone: '+51'+data.cellphone,
         },
       },
     };
@@ -240,7 +240,7 @@ const PersonalInfo = () => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {<IntlMessages id='message.register.newRoute' />}
+          {<IntlMessages id='message.update.user' />}
         </DialogTitle>
         {showMessage()}
         <DialogActions sx={{justifyContent: 'center'}}>

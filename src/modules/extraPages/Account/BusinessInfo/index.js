@@ -62,30 +62,33 @@ const BusinessInfo = () => {
   const [docType, setDocType] = React.useState(
     userAttributes['custom:businessDocumentType'],
   );
+  const [initialValues, setInitialValues] = React.useState({
+    companyName: userAttributes['custom:businessSocialReason'],
+    documentNumber: userAttributes['custom:businessDocumentNum'],
+    direction: userAttributes['custom:businessDirection'],
+    documentType: docType /* userAttributes['custom:businessDocumentType'] */,
+  });
   const [open, setOpen] = React.useState(false);
 
   const toUpdateDataBusiness = (payload) => {
     dispatch(updateDataBusiness(payload));
   };
-
   useEffect(() => {
-    if (!userDataRes) {
-      console.log('Esto se ejecuta?');
+    console.log('Esto se ejecuta?');
 
-      dispatch({type: GET_USER_DATA, payload: undefined});
-      const toGetUserData = (payload) => {
-        dispatch(getUserData(payload));
-      };
-      let getUserDataPayload = {
-        request: {
-          payload: {
-            userId: JSON.parse(localStorage.getItem('payload')).sub,
-          },
+    dispatch({type: GET_USER_DATA, payload: undefined});
+    const toGetUserData = (payload) => {
+      dispatch(getUserData(payload));
+    };
+    let getUserDataPayload = {
+      request: {
+        payload: {
+          userId: JSON.parse(localStorage.getItem('payload')).sub,
         },
-      };
+      },
+    };
 
-      toGetUserData(getUserDataPayload);
-    }
+    toGetUserData(getUserDataPayload);
     dispatch({
       type: GET_PRESIGNED,
       payload: undefined,
@@ -94,17 +97,20 @@ const BusinessInfo = () => {
     dispatch({type: FETCH_ERROR, payload: undefined});
   }, []);
 
-  const initialValues = {
-    companyName: userAttributes['custom:businessSocialReason'],
-    documentNumber: userAttributes['custom:businessDocumentNum'],
-    direction: userAttributes['custom:businessDirection'],
-    documentType: docType /* userAttributes['custom:businessDocumentType'] */,
-    eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
-    facebook: userDataRes.merchantSelected.facebookUrl,
-    instagram: userDataRes.merchantSelected.instagramUrl,
-    twitter: userDataRes.merchantSelected.twitterUrl,
-    youtube: userDataRes.merchantSelected.youtubeUrl,
-  };
+  useEffect(() => {
+    if(userDataRes){
+      setInitialValues({
+        ...initialValues,
+        eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
+        facebook: userDataRes.merchantSelected.facebookUrl,
+        instagram: userDataRes.merchantSelected.instagramUrl,
+        twitter: userDataRes.merchantSelected.twitterUrl,
+        youtube: userDataRes.merchantSelected.youtubeUrl,
+      });
+    }
+  }, [userDataRes]);
+
+
 
   const getDocumentType = (value) => {
     console.log('tipo desde index', value);

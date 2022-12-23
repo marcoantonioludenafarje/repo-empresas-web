@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = (props) => {
   const classes = useStyles(props);
-
   let currentCountMovement;
   let ecommerceParameterState;
   const [open, setOpen] = React.useState(true);
@@ -42,10 +41,16 @@ const Home = (props) => {
   };
   const router = useRouter();
   const {getRolUserRes} = useSelector(({general}) => general);
+  console.log('getRolUserRes en Home', getRolUserRes);
   console.log('Iniciando Home');
   //API RESPONSES
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter en Home', businessParameter);
+
+  //Dispatch
+  const toGetRolUser = (payload) => {
+    dispatch(getRolUser(payload));
+  };
   if (businessParameter) {
     currentCountMovement = businessParameter.find(
       (obj) => obj.abreParametro == 'CURRENT_COUNT_MOVEMENT',
@@ -70,7 +75,7 @@ const Home = (props) => {
     }
   }, [getRolUserRes]);
 
-  return currentCountMovement ? (
+  return currentCountMovement && getRolUserRes ? (
     <Card sx={{px: 4, py: 20}}>
       <Typography
         variant='h1'
@@ -112,12 +117,17 @@ const Home = (props) => {
             display: 'flex',
             flexDirection: 'row',
             fontSize: 18,
+            '&:hover': {
+              color: "#f00",
+              cursor: 'pointer'
+            },
           }}
         >
           <Box
             sx={{
               m: 0,
             }}
+            onClick={() => router.replace('/sample/parameters/update')}
           >
             Tener Parámetros Listos (Configuraciones / Parámetros)
           </Box>
@@ -154,12 +164,17 @@ const Home = (props) => {
             display: 'flex',
             flexDirection: 'row',
             fontSize: 18,
+            '&:hover': {
+              color: "#f00",
+              cursor: 'pointer'
+            },
           }}
         >
           <Box
             sx={{
               m: 0,
             }}
+            onClick={() => router.replace('/sample/products/table')}
           >
             Tener al menos un producto a vender (Configuraciones / Productos)
           </Box>
@@ -196,14 +211,19 @@ const Home = (props) => {
             display: 'flex',
             flexDirection: 'row',
             fontSize: 18,
+            '&:hover': {
+              color: "#f00",
+              cursor: 'pointer'
+            },
           }}
         >
           <Box
             sx={{
               m: 0,
             }}
+            onClick={() => router.replace('/sample/inputs/table')}
           >
-            Tener al menos una entrada de producto si es que no tiene stock (Inventario / Entradas)
+            Tener al menos una entrada de producto (Inventario / Entradas)
           </Box>
           <Box
             sx={{
@@ -226,6 +246,60 @@ const Home = (props) => {
             )}
           </Box>
         </Box>
+        {getRolUserRes.merchantSelected.isEcommerceEnabled ? (
+        <Box
+          sx={{
+            m: 0,
+            textAlign: 'left',
+            position: 'relative',
+            '& img': {
+              maxHeight: '100%',
+              maxWidth: '100%',
+            },
+            display: 'flex',
+            flexDirection: 'row',
+            fontSize: 18,
+            '&:hover': {
+              color: "#f00",
+              cursor: 'pointer'
+            },
+          }}
+        >
+          <Box
+            sx={{
+              m: 0,
+            }}
+            onClick={() => router.replace('/my-account')}
+          >
+            Subir links de redes sociales y foto del negocio
+          </Box>
+          <Box
+            sx={{
+              m: 0,
+            }}
+          >
+            {getRolUserRes.merchantSelected.imgUrlLogo && getRolUserRes.merchantSelected.facebookUrl
+                && getRolUserRes.merchantSelected.instagramUrl
+                ? (
+              <>
+                <CheckCircleOutlineOutlinedIcon
+                  color='success'
+                  sx={{fontSize: '1.5em', mx: 2}}
+                />
+              </>
+            ) : (
+              <>
+                <CancelOutlinedIcon
+                  sx={{fontSize: '1.5em', mx: 2, color: red[500]}}
+                />
+              </>
+            )}
+          </Box>
+        </Box>
+        ) : (
+          <>
+          </>
+        )}
         <Divider sx={{mt: 2, mb: 4}} />
         <Box
           sx={{

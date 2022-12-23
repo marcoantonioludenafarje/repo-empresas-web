@@ -251,6 +251,7 @@
   "common.name": "Nombres",
   "common.lastName": "Apellidos",
   "common.cellphone": "Celular",
+  "common.cellphoneCountryCod": "País",
   "common.progress": "Progreso",
   "common.amount": "Cantidad",
   "common.category": "Categoría",
@@ -422,7 +423,6 @@
   "validation.cellphone": "¡Ingrese un número de celular!",
   "validation.passwordRequired": "¡Por favor, ingrese contraseña!",
   "validation.selectProduct": "¡Por favor, selecciona un producto!",
-
   "validation.reTypePassword": "Por favor, vuelva a ingresar la contraseña!",
   "validation.passwordMisMatch": "¡Las dos contraseñas que ha introducido no coinciden!",
   "validation.enterOldPassword": "Por favor ingrese la contraseña anterior!",
@@ -640,6 +640,7 @@
   "message.readStatus": "¡Estado de lectura cambiado!",
   "message.register.newRoute": "Registro de nueva ruta",
   "message.update.newRoute": "Actualización de nueva ruta",
+  "message.update.user": "Actualizar Información Personal",
   "message.register.newDistribution": "Registro de nueva distribución",
   "message.register.data.success": "Se ha registrado la información correctamente.",
   "message.register.data.error": "Se ha producido un error al registrar.",

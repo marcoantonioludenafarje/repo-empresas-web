@@ -529,7 +529,10 @@ const OrderTable = (arrayObjs, props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listOrders && listOrders.length > 0 ? (
+            {listOrders 
+            // && listOrders.length > 0 
+            && Array.isArray(listOrders)
+            ? (
               listOrders.map((obj, index) => {
                 const deliveryAddress = obj.deliveryAddress;
                 const items = obj.items;

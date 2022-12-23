@@ -360,7 +360,10 @@ const InventoryTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getInventoryProductsRes && getInventoryProductsRes.length > 0 ? (
+            {getInventoryProductsRes 
+            // && getInventoryProductsRes.length > 0 
+            && Array.isArray(getInventoryProductsRes)
+            ? (
               getInventoryProductsRes.map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}

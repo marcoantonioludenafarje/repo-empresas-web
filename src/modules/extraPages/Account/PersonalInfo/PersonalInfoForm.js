@@ -1,5 +1,5 @@
 import React from 'react';
-import {alpha, Box, Button, Typography} from '@mui/material';
+import {alpha, Box, Button, Typography, TextField} from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import AppGridContainer from '../../../../@crema/core/AppGridContainer';
 import Grid from '@mui/material/Grid';
@@ -153,7 +153,11 @@ const PersonalInfoForm = ({values, setFieldValue}) => {
             label={<IntlMessages id='common.company' />}
           />
         </Grid> */}
-        <Grid item xs={12} md={12}>
+        <Grid item xs={2} md={2}>
+          <TextField disabled defaultValue={'+51'} label={<IntlMessages id='common.cellphoneCountryCod' />} variant="filled" color="success" focused />
+
+        </Grid>
+        <Grid item xs={10} md={10}>
           <AppTextField
             name='cellphone'
             fullWidth
