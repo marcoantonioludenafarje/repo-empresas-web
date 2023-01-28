@@ -529,7 +529,7 @@ const GetReceipt = (props) => {
 
   const registerError = () => {
     return (
-      (successMessage != undefined && 'error' in addReceiptRes) ||
+      (successMessage != undefined && addReceiptRes !== undefined && 'error' in addReceiptRes) ||
       errorMessage != undefined
     );
   };

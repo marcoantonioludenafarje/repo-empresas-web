@@ -454,7 +454,7 @@ const ReceiptsTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* {getMovementsRes && Array.isArray(getMovementsRes) ? (
+            {getMovementsRes && Array.isArray(getMovementsRes) ? (
               getMovementsRes.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -502,7 +502,7 @@ const ReceiptsTable = (props) => {
               ))
             ) : (
               <CircularProgress disableShrink sx={{m: '10px'}} />
-            )} */}
+            )}
           </TableBody>
         </Table>
       </TableContainer>
