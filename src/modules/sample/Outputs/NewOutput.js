@@ -73,6 +73,7 @@ import {
   FETCH_SUCCESS,
   GET_MOVEMENTS,
   ADD_MOVEMENT,
+  ACTUAL_DATE,
 } from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
@@ -633,13 +634,15 @@ const NewOutput = (props) => {
     setHasBill(isBill);
     listDocuments = [];
     console.log('isBill', isBill);
+    dispatch({type: ACTUAL_DATE, payload: Date.now()});
     if (
       newMovementRes !== undefined &&
       !('error' in newMovementRes) &&
       !(isBill.includes('bill') && isBill.includes('referralGuide')) &&
       typeDocument === 'sales'
     ) {
-      dispatch({type: GET_MOVEMENTS, payload: []});
+      //dispatch({type: GET_MOVEMENTS, payload: []});
+      console.log("Este es el listPayload NewOutput", listPayload)
       toGetMovements(listPayload);
       setShowForms(true);
     } else {

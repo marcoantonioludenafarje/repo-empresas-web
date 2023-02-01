@@ -19,6 +19,7 @@ import {
   UPDATE_ALL_BUSINESS_PARAMETER,
   UPDATE_ROL_USER_FIRST_PLAN,
   UPDATE_DATA_BUSINESS,
+  ACTUAL_DATE
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -134,6 +135,12 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         moneySymbol: action.payload,
+      };
+    case ACTUAL_DATE:
+      console.log('data de reducer ACTUAL_DATE', action.payload);
+      return {
+        ...state,
+        actualDateRes: action.payload,
       };
     case UPGRADE_TO_NEW_PLAN:
       console.log('data de reducer UPGRADE_TO_NEW_PLAN', action.payload);

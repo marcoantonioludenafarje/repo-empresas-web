@@ -213,8 +213,15 @@ let selectedOutput = {};
 let redirect = false;
 
 const OutputsTable = (props) => {
+  //Dependencias
   const classes = useStyles(props);
   const dispatch = useDispatch();
+  let popUp = false;
+  const router = useRouter();
+  const {query} = router;
+  console.log('query', query);
+
+  //UseStates
   const [openStatus, setOpenStatus] = React.useState(false);
   const [eliminated, setEliminated] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -224,10 +231,12 @@ const OutputsTable = (props) => {
   const [openDocuments, setOpenDocuments] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
   const [moreFilters, setMoreFilters] = React.useState(false);
-  let popUp = false;
-  const router = useRouter();
-  const {query} = router;
-  console.log('query', query);
+  //MENU ANCHOR
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  //FECHAS
+  //SELECCIÓN CALENDARIO
+  const [value, setValue] = React.useState(Date.now() - 2678400000);
+  const [value2, setValue2] = React.useState(Date.now());
   // setOpen3(query.operationBack)
   //API FUNCTIONS
   const getBusinessParameter = (payload) => {
@@ -267,9 +276,13 @@ const OutputsTable = (props) => {
   console.log('getFinancesRes', getFinancesRes);
   const {generateInvoiceRes} = useSelector(({movements}) => movements);
   console.log('generateInvoiceRes', generateInvoiceRes);
+  const {actualDateRes} = useSelector(({general}) => general);
+  console.log('actualDateRes', actualDateRes);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  //GET APIS RES
+  const {listProducts} = useSelector(({products}) => products);
+  console.log('products123', listProducts);
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -312,7 +325,26 @@ const OutputsTable = (props) => {
       getGlobalParameter(globalParameterPayload);
     }
   }, [userDataRes]);
-
+  useEffect(()=>{
+    setValue2(Date.now())
+    listPayload.request.payload.finalTime = toEpoch(Date.now());
+    console.log("Se ejecuta esto?")
+    if (userDataRes) {
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});  
+      listPayload.request.payload.finalTime = toEpoch(Date.now());
+      listPayload.request.payload.merchantId =
+        userDataRes.merchantSelected.merchantId;
+      if (Object.keys(query).length !== 0) {
+        console.log('Query con datos', query);
+        listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+      }
+      toGetMovements(listPayload);
+      if (Object.keys(query).length !== 0) {
+        listPayload.request.payload.movementHeaderId = null;
+      }
+    }
+  },[actualDateRes])
   /* listFinancesPayload.request.payload.merchantId =
     userAttributes['custom:businessId']; */
 
@@ -344,9 +376,7 @@ const OutputsTable = (props) => {
   const newOutput = () => {
     Router.push('/sample/outputs/new');
   };
-  //GET APIS RES
-  const {listProducts} = useSelector(({products}) => products);
-  console.log('products123', listProducts);
+  
 
   //BUSQUEDA
   const handleSearchValues = (event) => {
@@ -367,7 +397,6 @@ const OutputsTable = (props) => {
   };
 
   //FUNCIONES MENU
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
   const handleClick = (codOutput, event) => {
     setAnchorEl(event.currentTarget);
@@ -415,9 +444,7 @@ const OutputsTable = (props) => {
     console.log('Llendo a movimientos');
   };
 
-  //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 2678400000);
-  const [value2, setValue2] = React.useState(Date.now());
+
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
     let someDate = new Date(strDate);

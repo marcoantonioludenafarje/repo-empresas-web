@@ -165,6 +165,16 @@ const InputsTable = (props) => {
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openDocuments, setOpenDocuments] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
+  //SELECCIÓN CALENDARIO
+  const [value, setValue] = React.useState(Date.now() - 2678400000);
+  const [value2, setValue2] = React.useState(Date.now());
+  //MANEJO DE FECHAS
+  const toEpoch = (strDate) => {
+    let someDate = new Date(strDate);
+    someDate = someDate.getTime();
+    return someDate;
+  };
+  
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -207,6 +217,8 @@ const InputsTable = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {actualDateRes} = useSelector(({general}) => general);
+  console.log('actualDateRes', actualDateRes);
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -251,6 +263,26 @@ const InputsTable = (props) => {
       getGlobalParameter(globalParameterPayload);
     }
   }, [userDataRes]);
+  useEffect(()=>{
+    setValue2(Date.now())
+    listPayload.request.payload.finalTime = toEpoch(Date.now());
+    console.log("Se ejecuta esto?")
+    if (userDataRes) {
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});  
+      listPayload.request.payload.finalTime = toEpoch(Date.now());
+      listPayload.request.payload.merchantId =
+        userDataRes.merchantSelected.merchantId;
+      if (Object.keys(query).length !== 0) {
+        console.log('Query con datos', query);
+        listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+      }
+      toGetMovements(listPayload);
+      if (Object.keys(query).length !== 0) {
+        listPayload.request.payload.movementHeaderId = null;
+      }
+    }
+  },[actualDateRes])
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
       (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
@@ -384,15 +416,6 @@ const InputsTable = (props) => {
     console.log('Llendo a movimientos');
   };
 
-  //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 2678400000);
-  const [value2, setValue2] = React.useState(Date.now());
-  //MANEJO DE FECHAS
-  const toEpoch = (strDate) => {
-    let someDate = new Date(strDate);
-    someDate = someDate.getTime();
-    return someDate;
-  };
 
   const sendStatus = () => {
     setOpenStatus(false);

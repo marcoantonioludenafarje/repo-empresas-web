@@ -255,6 +255,7 @@ export const EMAIL_TO_SEND_CODE = 'email_to_send_code';
 export const ROUTE_TO_REFERRAL_GUIDE = 'route_to_referral_guide';
 export const UPDATE_GENERATE_REFERRAL_GUIDE_VALUE =
   'update_generate_referral_guide_value';
+export const ACTUAL_DATE = 'actual_date';
 
 //REQUESTS
 export const NEW_REQUEST = 'new_request';

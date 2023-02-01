@@ -72,6 +72,7 @@ import {
   RES_ADD_MOVEMENT,
   ADD_MOVEMENT,
   GET_MOVEMENTS,
+  ACTUAL_DATE,
 } from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
@@ -594,6 +595,7 @@ const NewInput = (props) => {
     });
     setHasBill(isBill);
     listDocuments = [];
+    dispatch({type: ACTUAL_DATE, payload: Date.now()});
     if (
       newMovementRes !== undefined &&
       successMessage !== undefined &&
