@@ -244,13 +244,13 @@ const UpgradeBusiness = () => {
                   if(!data.eMerchantSlugName){
                     setTypeDialog("nonSlug")
                     setOpenStatus(true);
-                  } else if(!data.defaultMaxPrice || (data.defaultMinPrice == undefined)) {
+                  } else if(publish && (!data.defaultMaxPrice || (data.defaultMinPrice == undefined))) {
                     setTypeDialog("nonPriceRange")
                     setOpenStatus(true);
-                  } else if((Number(data.defaultMinPrice) < 0) && (Number(data.defaultMaxPrice) < 0)) {
+                  } else if(publish && ((Number(data.defaultMinPrice) < 0) && (Number(data.defaultMaxPrice) < 0))) {
                     setTypeDialog("priceIsMoreThanZero")
                     setOpenStatus(true);
-                  } else if(Number(data.defaultMaxPrice) < Number(data.defaultMinPrice) ) { 
+                  } else if(publish && (Number(data.defaultMaxPrice) < Number(data.defaultMinPrice))) { 
                     setTypeDialog("maxPriceIsLessThanMinPrice")
                     setOpenStatus(true);
                   } else if(initialCategories.length == 0 || (!initialCategories) || initialCategories === []) {
@@ -259,7 +259,7 @@ const UpgradeBusiness = () => {
                   } else if(initialCategories.some(arrVal => "" === arrVal.description)) {
                     setTypeDialog("someCategoriesAreEmpty")
                     setOpenStatus(true);
-                  } else if(filters.length == 0 || (!filters) || filters === []) {
+                  } else if(publish && (filters.length == 0 || (!filters) || filters === [])) {
                     setTypeDialog("nonFilters")
                     setOpenStatus(true);
                   // } else if(filters.some(arrVal => "" === arrVal.filterName)) {
@@ -268,7 +268,7 @@ const UpgradeBusiness = () => {
                   // } else if(filters.some(arrVal => 0 === arrVal.options.length)) {
                   //   setTypeDialog("someFiltersAreEmpty")
                   //   setOpenStatus(true);
-                  } else if(filters.some(arrVal => undefined === arrVal.filterName)) {
+                  } else if(publish && (filters.some(arrVal => undefined === arrVal.filterName))) {
                     setTypeDialog("someFiltersAreEmpty")
                     setOpenStatus(true);
                   } else {
