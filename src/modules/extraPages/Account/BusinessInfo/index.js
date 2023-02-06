@@ -57,7 +57,10 @@ const BusinessInfo = () => {
   console.log('generalError', generalError);
   const {updateBusinessRes} = useSelector(({general}) => general);
   console.log('updateBusinessRes', updateBusinessRes);
-  const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
+  const [selectedJsonImages, setSelectedJsonImages] = React.useState(userDataRes
+    ? [userDataRes.merchantSelected.logoImage]
+    : []);
+  const [certified, setCertified] = React.useState(userDataRes ? userDataRes.merchantSelected.billingCertified : "");
   console.log('userAttributes', userAttributes);
   const [docType, setDocType] = React.useState(
     userAttributes['custom:businessDocumentType'],
@@ -106,6 +109,7 @@ const BusinessInfo = () => {
         instagram: userDataRes.merchantSelected.instagramUrl,
         twitter: userDataRes.merchantSelected.twitterUrl,
         youtube: userDataRes.merchantSelected.youtubeUrl,
+        comercialName: userDataRes.merchantSelected.comercialName ? userDataRes.merchantSelected.comercialName : "",
       });
     }
   }, [userDataRes]);
@@ -120,6 +124,10 @@ const BusinessInfo = () => {
   const getLogo = (value) => {
     console.log('tipo desde index', value);
     setSelectedJsonImages(value);
+  };
+  const getCertified = (value) => {
+    console.log('tipo desde index', value);
+    setCertified(value);
   };
   const handleClose = () => {
     setOpen(false);
@@ -185,29 +193,32 @@ const BusinessInfo = () => {
             ...data,
             documentType: docType,
             logo: selectedJsonImages,
+            digitalCertified: certified,
           });
           // TODO Api Call here to save user info
           dispatch({
             type: GET_PRESIGNED,
             payload: undefined,
           });
-          toUpdateDataBusiness({
-            request: {
-              payload: {
-                merchantId: userDataRes.merchantSelected.merchantId,
-                denominationMerchant: data.companyName,
-                typeDocumentMerchant: docType,
-                numberDocumentMerchant: data.documentNumber,
-                addressMerchant: data.direction,
-                ecommerceMerchantSlug: data.eMerchantSlugName,
-                facebookUrl: data.facebook,
-                twitterUrl: data.twitter,
-                instagramUrl: data.instagram,
-                youtubeUrl: data.youtube,
-                logo: selectedJsonImages[0],
-              },
-            },
-          });
+          // toUpdateDataBusiness({
+          //   request: {
+          //     payload: {
+          //       merchantId: userDataRes.merchantSelected.merchantId,
+          //       denominationMerchant: data.companyName,
+          //       typeDocumentMerchant: docType,
+          //       numberDocumentMerchant: data.documentNumber,
+          //       addressMerchant: data.direction,
+          //       ecommerceMerchantSlug: data.eMerchantSlugName,
+          //       facebookUrl: data.facebook,
+          //       twitterUrl: data.twitter,
+          //       instagramUrl: data.instagram,
+          //       youtubeUrl: data.youtube,
+          //       logo: selectedJsonImages[0],
+          //       comercialName: data.comercialName,
+          //       digitalCertified: certified,
+          //     },
+          //   },
+          // });
           setSubmitting(false);
           setOpen(true);
         }}
@@ -219,11 +230,14 @@ const BusinessInfo = () => {
               setFieldValue={setFieldValue}
               moveData={getDocumentType}
               moveLogo={getLogo}
+              moveCertified={getCertified}
               logoImage={
                 userDataRes.merchantSelected.logoImage
                   ? [userDataRes.merchantSelected.logoImage]
                   : []
               }
+              billingCertified={userDataRes.merchantSelected.billingCertified ? userDataRes.merchantSelected.billingCertified : ""}
+              isBilling={userDataRes.merchantSelected.isBillingEnabled}
             />
           );
         }}

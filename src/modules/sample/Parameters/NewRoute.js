@@ -450,6 +450,7 @@ const Distribution = () => {
     if (finalCategories.length >= 1) {
       finalCategories[0].default = true;
     }
+    
     const finalPayload = {
       request: {
         payload: {
@@ -470,6 +471,13 @@ const Distribution = () => {
     console.log('finalPayload', finalPayload);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GET_USER_DATA, payload: {
+      ...userDataRes,
+      merchantSelected: {
+        ...userDataRes.merchantSelected,
+        isEcommerceEnabled: publish
+      }
+    }});
     dispatch({type: UPDATE_ALL_BUSINESS_PARAMETER, payload: undefined});
     updateParameters(finalPayload);
     setOpenStatus(true);

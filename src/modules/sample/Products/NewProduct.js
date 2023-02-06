@@ -573,10 +573,10 @@ const NewProduct = (props) => {
       userDataRes.merchantSelected.plans.find((obj) => obj.active == true)
         .limits.catalogNumberProducts
     ) {
-      if(!data.title){
+      if(publish && !data.title){
         setTypeDialog("nonTitle");
         setOpen(true);
-      } else if(!data.commercialDescription) {
+      } else if(publish && !data.commercialDescription) {
         setTypeDialog("nonCommercialDescription");
         setOpen(true);
       } else {

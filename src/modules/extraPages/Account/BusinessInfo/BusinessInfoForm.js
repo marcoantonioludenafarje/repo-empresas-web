@@ -20,8 +20,12 @@ import {
   ImageListItem,
   ImageListItemBar,
   IconButton,
+  Collapse,
+  Alert
 } from '@mui/material';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
+
+import CloseIcon from '@mui/icons-material/Close';
 import {useDropzone} from 'react-dropzone';
 import {Form} from 'formik';
 import PropTypes from 'prop-types';
@@ -31,7 +35,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {styled} from '@mui/material/styles';
 import {Fonts} from '../../../../shared/constants/AppEnums';
 import {makeStyles} from '@mui/styles';
-
+import FilePresentIcon from '@mui/icons-material/FilePresent';
 import {createPresigned} from '../../../../redux/actions/General';
 import {updateUser} from '../../../../redux/actions/User';
 const AvatarViewWrapper = styled('div')(({theme}) => {
@@ -105,10 +109,13 @@ const BusinessInfoForm = ({
   setFieldValue,
   moveData,
   moveLogo,
+  moveCertified,
   logoImage,
+  billingCertified,
+  isBilling
 }) => {
   const dispatch = useDispatch();
-  const classes = useStyles({values, setFieldValue, moveData, moveLogo});
+  const classes = useStyles({values, setFieldValue, moveData, moveLogo, moveCertified, logoImage, billingCertified, isBilling});
   let imagePayload = {
     request: {
       payload: {
@@ -125,8 +132,12 @@ const BusinessInfoForm = ({
   const [selectedJsonImages, setSelectedJsonImages] = React.useState(logoImage);
   const [typeFile, setTypeFile] = React.useState('');
   const [nameFile, setNameFile] = React.useState('');
+  const [typeFileCertified, setTypeFileCertified] = React.useState('');
+  const [nameFileCertified, setNameFileCertified] = React.useState('');
   const [base64, setBase64] = React.useState('');
   const {presigned} = useSelector(({general}) => general);
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [certified, setCertified] = React.useState(billingCertified);
   console.log('createPresigned', presigned);
   console.log('Valores', values);
   const {getRootProps, getInputProps} = useDropzone({
@@ -138,7 +149,7 @@ const BusinessInfoForm = ({
   const toCreatePresigned = (payload, file) => {
     dispatch(createPresigned(payload, file));
   };
-
+  let typeAlert = 'sizeOverWeightLimit';
   useEffect(() => {
     if (presigned) {
       console.log('useEffect presigned', presigned);
@@ -158,6 +169,17 @@ const BusinessInfoForm = ({
       moveLogo(selectedJsonImages);
     }
   }, [selectedJsonImages]);
+  useEffect(()=>{
+    if(base64){
+      setCertified({base64: base64, name: nameFileCertified, type:typeFileCertified});
+    }
+  },[base64])
+  useEffect(()=>{
+    if(certified){
+      moveCertified(certified);
+      console.log('certified', certified);
+    }
+  }, [certified])
   const handleField = (event) => {
     console.log('evento', event);
     console.log('valor', event.target.value);
@@ -191,11 +213,13 @@ const BusinessInfoForm = ({
       console.log('Imagenes luego de eliminar 2', selectedJsonImages);
     }, 2000);
   };
+  const deleteFile = (index, itemSelected) => {
+    setSelectedImages((oldState) => oldState.filter((item) => item !== itemSelected));
+  };
   const getImage = (event) => {
     if (event.target.value !== '') {
       console.log('archivo', event.target.files[0]);
       fileToUpload = event.target.files[0];
-      getBase64(fileToUpload);
       console.log('fileToUpload', fileToUpload);
       console.log(
         'nombre de archivo',
@@ -220,6 +244,37 @@ const BusinessInfoForm = ({
       setNameFile(fileToUpload.name);
 
       /* setOpenStatus(true); */
+    } else {
+      event = null;
+      console.log('no se selecciono un archivo');
+    }
+  };
+  const uploadNewFile1 = (event) => {
+    if (event.target.value !== '') {
+      console.log('archivo', event.target.files[0]);
+      var imgsize = event.target.files[0].size;
+      console.log("Cuánto es el imgsize", imgsize)
+      if(imgsize > 3000000){
+        typeAlert = "sizeOverWeightLimit"
+        setShowAlert(true);
+      } else {
+         uploadNewFile2(event)
+      }
+    }
+
+  };
+  const uploadNewFile2 = (event) => {
+    if (event.target.value !== '') {
+      fileToUpload = event.target.files[0];
+      getBase64(fileToUpload);
+      console.log('fileToUpload', fileToUpload);
+      console.log(
+        'nombre de archivo',
+        fileToUpload.name.split('.').slice(0, -1).join('.'),
+      );
+      setTypeFileCertified(fileToUpload.type);
+      setNameFileCertified(fileToUpload.name);
+      
     } else {
       event = null;
       console.log('no se selecciono un archivo');
@@ -414,7 +469,41 @@ const BusinessInfoForm = ({
         ) : (
           <></>
         )}
-
+        {isBilling ? (
+          <>
+            <Button variant='contained' color='primary' component='label'>
+              Adjuntar certificado digital
+              <input
+                type='file'
+                hidden
+                onChange={uploadNewFile1}
+                id='newFile'
+                name='newfile'
+                accept='.pem, .pfx'
+              />
+            </Button>
+            {billingCertified ? (
+              <Grid item xs={12} md={8}>
+                <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                  <Box>
+                    <IconButton
+                      onClick={uploadNewFile2}
+                    >
+                      <FilePresentIcon
+                        color='success'
+                        sx={{fontSize: '2em', mx: 2}}
+                      />
+                    </IconButton>
+                  </Box>
+                </Box>
+              </Grid>
+            ) : (
+              <></>
+            )}
+          </>
+        ) : (
+          <></>
+        )}
         <Grid item xs={12} md={12}>
           <Box
             sx={{
@@ -446,6 +535,30 @@ const BusinessInfoForm = ({
               <IntlMessages id='common.cancel' />
             </Button>
           </Box>
+          <Collapse in={showAlert}>
+            <Alert
+              severity='error'
+              action={
+                <IconButton
+                  aria-label='close'
+                  color='inherit'
+                  size='small'
+                  onClick={() => {
+                    setShowAlert(false);
+                  }}
+                >
+                  <CloseIcon fontSize='inherit' />
+                </IconButton>
+              }
+              sx={{mb: 2}}
+            >
+              {typeAlert == 'sizeOverWeightLimit' ? (
+                'El archivo supera los 3Mb.'
+              ) : (
+                <></>
+              )}
+            </Alert>
+          </Collapse>
         </Grid>
       </AppGridContainer>
     </Form>
@@ -458,5 +571,8 @@ BusinessInfoForm.propTypes = {
   moveData: PropTypes.func,
   values: PropTypes.object,
   moveLogo: PropTypes.func,
+  moveCertified: PropTypes.func,
   logoImage: PropTypes.array,
+  billingCertified: PropTypes.string,
+  isBilling: PropTypes.bool
 };
