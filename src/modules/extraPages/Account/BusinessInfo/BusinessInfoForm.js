@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {alpha, Box, Button, Typography} from '@mui/material';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { alpha, Box, Button, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import AppGridContainer from '../../../../@crema/core/AppGridContainer';
 import Grid from '@mui/material/Grid';
@@ -21,24 +21,26 @@ import {
   ImageListItemBar,
   IconButton,
   Collapse,
-  Alert
+  Alert,
+  Autocomplete,
+  TextField
 } from '@mui/material';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
-
+import originalUbigeos from '../../../../Utils/ubigeo.json';
 import CloseIcon from '@mui/icons-material/Close';
-import {useDropzone} from 'react-dropzone';
-import {Form} from 'formik';
+import { useDropzone } from 'react-dropzone';
+import { Form } from 'formik';
 import PropTypes from 'prop-types';
 import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {styled} from '@mui/material/styles';
-import {Fonts} from '../../../../shared/constants/AppEnums';
-import {makeStyles} from '@mui/styles';
+import { styled } from '@mui/material/styles';
+import { Fonts } from '../../../../shared/constants/AppEnums';
+import { makeStyles } from '@mui/styles';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
-import {createPresigned} from '../../../../redux/actions/General';
-import {updateUser} from '../../../../redux/actions/User';
-const AvatarViewWrapper = styled('div')(({theme}) => {
+import { createPresigned } from '../../../../redux/actions/General';
+import { updateUser } from '../../../../redux/actions/User';
+const AvatarViewWrapper = styled('div')(({ theme }) => {
   return {
     position: 'relative',
     cursor: 'pointer',
@@ -112,10 +114,12 @@ const BusinessInfoForm = ({
   moveCertified,
   logoImage,
   billingCertified,
-  isBilling
+  isBilling,
+  baseUbigeo,
+  moveUbigeo
 }) => {
   const dispatch = useDispatch();
-  const classes = useStyles({values, setFieldValue, moveData, moveLogo, moveCertified, logoImage, billingCertified, isBilling});
+  const classes = useStyles({ values, setFieldValue, moveData, moveLogo, moveCertified, logoImage, billingCertified, isBilling, baseUbigeo, moveUbigeo });
   let imagePayload = {
     request: {
       payload: {
@@ -135,12 +139,18 @@ const BusinessInfoForm = ({
   const [typeFileCertified, setTypeFileCertified] = React.useState('');
   const [nameFileCertified, setNameFileCertified] = React.useState('');
   const [base64, setBase64] = React.useState('');
-  const {presigned} = useSelector(({general}) => general);
+  const { presigned } = useSelector(({ general }) => general);
   const [showAlert, setShowAlert] = React.useState(false);
   const [certified, setCertified] = React.useState(billingCertified);
+
+  const [ubigeo, setUbigeo] = React.useState(baseUbigeo);
+  const [existUbigeo, setExistUbigeo] = React.useState(true);
+  const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
+  const [readyData, setReadyData] = React.useState(false);
+  const [objUbigeo, setObjUbigeo] = React.useState(false);
   console.log('createPresigned', presigned);
   console.log('Valores', values);
-  const {getRootProps, getInputProps} = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
     onDrop: (acceptedFiles) => {
       setFieldValue('photoURL', URL.createObjectURL(acceptedFiles[0]));
@@ -150,6 +160,28 @@ const BusinessInfoForm = ({
     dispatch(createPresigned(payload, file));
   };
   let typeAlert = 'sizeOverWeightLimit';
+
+  useEffect(() => {
+    const ubigeos = originalUbigeos.map((obj, index) => {
+      return {
+        label: `${obj.descripcion} - ${obj.ubigeo}`,
+        ...obj,
+      };
+    });
+    console.log("baseUbigeo", baseUbigeo)
+    const initialUbigeo = ubigeos.find(obj => obj.ubigeo == baseUbigeo);
+    setObjUbigeo(initialUbigeo)
+    setUbigeo(initialUbigeo.ubigeo)
+    setParsedUbigeos(ubigeos);
+    if (readyData) {
+      setObjUbigeo(ubigeos[0]);
+      setUbigeo(ubigeos[0].ubigeo.toString());
+      moveUbigeo(ubigeos[0].ubigeo.toString());
+      setExistUbigeo(true);
+      setReadyData(true);
+    }
+  }, [readyData]);
+
   useEffect(() => {
     if (presigned) {
       console.log('useEffect presigned', presigned);
@@ -169,13 +201,18 @@ const BusinessInfoForm = ({
       moveLogo(selectedJsonImages);
     }
   }, [selectedJsonImages]);
-  useEffect(()=>{
-    if(base64){
-      setCertified({base64: base64, name: nameFileCertified, type:typeFileCertified});
+  useEffect(() => {
+    if (ubigeo) {
+      moveUbigeo(ubigeo);
     }
-  },[base64])
-  useEffect(()=>{
-    if(certified){
+  }, [ubigeo]);
+  useEffect(() => {
+    if (base64) {
+      setCertified({ base64: base64, name: nameFileCertified, type: typeFileCertified });
+    }
+  }, [base64])
+  useEffect(() => {
+    if (certified) {
       moveCertified(certified);
       console.log('certified', certified);
     }
@@ -254,11 +291,11 @@ const BusinessInfoForm = ({
       console.log('archivo', event.target.files[0]);
       var imgsize = event.target.files[0].size;
       console.log("Cuánto es el imgsize", imgsize)
-      if(imgsize > 3000000){
+      if (imgsize > 3000000) {
         typeAlert = "sizeOverWeightLimit"
         setShowAlert(true);
       } else {
-         uploadNewFile2(event)
+        uploadNewFile2(event)
       }
     }
 
@@ -274,20 +311,20 @@ const BusinessInfoForm = ({
       );
       setTypeFileCertified(fileToUpload.type);
       setNameFileCertified(fileToUpload.name);
-      
+
     } else {
       event = null;
       console.log('no se selecciono un archivo');
     }
   };
-  return (
+  return objUbigeo.ubigeo ? (
     <Form noValidate autoComplete='off'>
       <Typography
         component='h3'
         sx={{
           fontSize: 16,
           fontWeight: Fonts.BOLD,
-          mb: {xs: 3, lg: 4},
+          mb: { xs: 3, lg: 4 },
         }}
       >
         <IntlMessages id='common.businessInfo' />
@@ -309,8 +346,8 @@ const BusinessInfoForm = ({
           />
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth sx={{my: 2}}>
-            <InputLabel id='documentType-label' style={{fontWeight: 200}}>
+          <FormControl fullWidth sx={{ my: 2 }}>
+            <InputLabel id='documentType-label' style={{ fontWeight: 200 }}>
               <IntlMessages id='common.busines.documentType' />
             </InputLabel>
             <Select
@@ -321,13 +358,13 @@ const BusinessInfoForm = ({
               onChange={handleField}
               value={typeDocument}
             >
-              <MenuItem value='RUC' style={{fontWeight: 200}}>
+              <MenuItem value='RUC' style={{ fontWeight: 200 }}>
                 RUC
               </MenuItem>
-              <MenuItem value='DNI' style={{fontWeight: 200}}>
+              <MenuItem value='DNI' style={{ fontWeight: 200 }}>
                 DNI
               </MenuItem>
-              <MenuItem value='CE' style={{fontWeight: 200}}>
+              <MenuItem value='CE' style={{ fontWeight: 200 }}>
                 CE
               </MenuItem>
             </Select>
@@ -341,6 +378,47 @@ const BusinessInfoForm = ({
           />
         </Grid>
         <Grid item xs={12} md={12}>
+          <Autocomplete
+            disablePortal
+            id='combo-box-demo'
+            value={objUbigeo}
+            isOptionEqualToValue={(option, value) =>
+              option.ubigeo === value.ubigeo.toString()
+            }
+            getOptionLabel={(option) => option.label || ''}
+            onChange={(option, value) => {
+              if (
+                typeof value === 'object' &&
+                value != null &&
+                value !== ''
+              ) {
+                console.log('objeto ubigeo', value);
+                setObjUbigeo(value);
+                setUbigeo(value.ubigeo.toString());
+                moveUbigeo(value.ubigeo.toString());
+                setExistUbigeo(true);
+              } else {
+                setExistUbigeo(false);
+              }
+              console.log('ubigeo, punto de partida', value);
+            }}
+            options={parsedUbigeos}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={<IntlMessages id='ubigeo.signUp' />}
+                onChange={(event) => {
+                  console.log('event field', event.target.value);
+                  if (event.target.value === '') {
+                    console.log('si se cambia a null');
+                    setExistUbigeo(false);
+                  }
+                }}
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} md={12}>
           <AppTextField
             name='direction'
             fullWidth
@@ -348,8 +426,8 @@ const BusinessInfoForm = ({
           />
         </Grid>
         <Grid item xs={7} md={7}>
-          <Box sx={{textAlign: 'left'}}>
-            <Typography 
+          <Box sx={{ textAlign: 'left' }}>
+            <Typography
               variant='h4'
               sx={{
                 fontSize: 12,
@@ -360,7 +438,7 @@ const BusinessInfoForm = ({
               {process.env.REACT_APP_ECOMMERCE_URL}{values.eMerchantSlugName}
             </Typography>
           </Box>
-          
+
         </Grid>
         <Grid item xs={5} md={5}>
           <AppTextField
@@ -451,7 +529,7 @@ const BusinessInfoForm = ({
                     position='top'
                     actionIcon={
                       <IconButton
-                        sx={{color: 'white'}}
+                        sx={{ color: 'white' }}
                         aria-label={`star prueba`}
                         onClick={() => {
                           deleteImage(index, item);
@@ -471,6 +549,7 @@ const BusinessInfoForm = ({
         )}
         {isBilling ? (
           <>
+            <Grid item xs={12} md={12}>
             <Button variant='contained' color='primary' component='label'>
               Adjuntar certificado digital
               <input
@@ -483,23 +562,26 @@ const BusinessInfoForm = ({
               />
             </Button>
             {billingCertified ? (
-              <Grid item xs={12} md={8}>
-                <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
-                  <Box>
-                    <IconButton
-                      onClick={uploadNewFile2}
-                    >
-                      <FilePresentIcon
-                        color='success'
-                        sx={{fontSize: '2em', mx: 2}}
-                      />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </Grid>
+              <IconButton
+                onClick={uploadNewFile2}
+              >
+                <FilePresentIcon
+                  color='success'
+                  sx={{ fontSize: '2em', mx: 2 }}
+                />
+                {billingCertified.name}
+              </IconButton>
             ) : (
               <></>
             )}
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <AppTextField
+                name='passwordCertified'
+                fullWidth
+                label={<IntlMessages id='common.passwordCertified' />}
+              />
+            </Grid>
           </>
         ) : (
           <></>
@@ -550,7 +632,7 @@ const BusinessInfoForm = ({
                   <CloseIcon fontSize='inherit' />
                 </IconButton>
               }
-              sx={{mb: 2}}
+              sx={{ mb: 2 }}
             >
               {typeAlert == 'sizeOverWeightLimit' ? (
                 'El archivo supera los 3Mb.'
@@ -562,7 +644,7 @@ const BusinessInfoForm = ({
         </Grid>
       </AppGridContainer>
     </Form>
-  );
+  ) : null;
 };
 
 export default BusinessInfoForm;
@@ -574,5 +656,7 @@ BusinessInfoForm.propTypes = {
   moveCertified: PropTypes.func,
   logoImage: PropTypes.array,
   billingCertified: PropTypes.string,
-  isBilling: PropTypes.bool
+  isBilling: PropTypes.bool,
+  ubigeo: PropTypes.string,
+  moveUbigeo: PropTypes.func
 };

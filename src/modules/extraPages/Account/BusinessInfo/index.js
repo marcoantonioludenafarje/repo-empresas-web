@@ -22,12 +22,14 @@ import {
   GET_USER_DATA,
   FETCH_SUCCESS,
   FETCH_ERROR,
+  UPDATE_DATA_BUSINESS
 } from '../../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../../redux/actions/User';
 import {updateDataBusiness} from '../../../../redux/actions/General';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import Router, {useRouter} from 'next/router';
+import update from 'pages/sample/carriers/update';
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 const validationSchema = yup.object({
@@ -41,6 +43,10 @@ const validationSchema = yup.object({
     .integer(<IntlMessages id='validation.number.integer' />)
     .required(<IntlMessages id='validation.required' />),
   direction: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  passwordCertified: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
@@ -65,12 +71,9 @@ const BusinessInfo = () => {
   const [docType, setDocType] = React.useState(
     userAttributes['custom:businessDocumentType'],
   );
-  const [initialValues, setInitialValues] = React.useState({
-    companyName: userAttributes['custom:businessSocialReason'],
-    documentNumber: userAttributes['custom:businessDocumentNum'],
-    direction: userAttributes['custom:businessDirection'],
-    documentType: docType /* userAttributes['custom:businessDocumentType'] */,
-  });
+  const [ubigeo, setUbigeo] = React.useState(userDataRes ? userDataRes.merchantSelected.ubigeo : "");
+  const [passwordCertified, setPasswordCertified] = React.useState(userDataRes ? userDataRes.merchantSelected.passwordCertified : "");
+
   const [open, setOpen] = React.useState(false);
 
   const toUpdateDataBusiness = (payload) => {
@@ -100,33 +103,21 @@ const BusinessInfo = () => {
     dispatch({type: FETCH_ERROR, payload: undefined});
   }, []);
 
-  useEffect(() => {
-    if(userDataRes){
-      setInitialValues({
-        ...initialValues,
-        eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
-        facebook: userDataRes.merchantSelected.facebookUrl,
-        instagram: userDataRes.merchantSelected.instagramUrl,
-        twitter: userDataRes.merchantSelected.twitterUrl,
-        youtube: userDataRes.merchantSelected.youtubeUrl,
-        comercialName: userDataRes.merchantSelected.comercialName ? userDataRes.merchantSelected.comercialName : "",
-      });
-    }
-  }, [userDataRes]);
-
-
 
   const getDocumentType = (value) => {
     console.log('tipo desde index', value);
     setDocType(value);
   };
-
   const getLogo = (value) => {
-    console.log('tipo desde index', value);
+    console.log('logo desde index', value);
     setSelectedJsonImages(value);
   };
+  const getUbigeo = (value) => {
+    console.log('ubigeo desde index', value);
+    setUbigeo(value);
+  };
   const getCertified = (value) => {
-    console.log('tipo desde index', value);
+    console.log('certified desde index', value);
     setCertified(value);
   };
   const handleClose = () => {
@@ -185,40 +176,69 @@ const BusinessInfo = () => {
     >
       <Formik
         validateOnBlur={true}
-        initialValues={initialValues}
+        initialValues={{
+          companyName: userAttributes['custom:businessSocialReason'],
+          documentNumber: userAttributes['custom:businessDocumentNum'],
+          direction: userAttributes['custom:businessDirection'],
+          documentType: docType, /* userAttributes['custom:businessDocumentType'] */
+          eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
+          facebook: userDataRes.merchantSelected.facebookUrl,
+          instagram: userDataRes.merchantSelected.instagramUrl,
+          twitter: userDataRes.merchantSelected.twitterUrl,
+          youtube: userDataRes.merchantSelected.youtubeUrl,
+          comercialName: userDataRes.merchantSelected.comercialName ? userDataRes.merchantSelected.comercialName : "",
+          passwordCertified: userDataRes.merchantSelected.passwordCertified ? userDataRes.merchantSelected.passwordCertified : "",
+        }}
         validationSchema={validationSchema}
         onSubmit={(data, {setSubmitting}) => {
           setSubmitting(true);
           console.log('payload actualizarInfo: ', {
-            ...data,
-            documentType: docType,
-            logo: selectedJsonImages,
-            digitalCertified: certified,
-          });
+              request: {
+                payload: {
+                  merchantId: userDataRes.merchantSelected.merchantId,
+                  denominationMerchant: data.companyName,
+                  typeDocumentMerchant: docType,
+                  numberDocumentMerchant: data.documentNumber,
+                  addressMerchant: data.direction,
+                  ecommerceMerchantSlug: data.eMerchantSlugName,
+                  facebookUrl: data.facebook,
+                  twitterUrl: data.twitter,
+                  instagramUrl: data.instagram,
+                  youtubeUrl: data.youtube,
+                  logo: selectedJsonImages[0],
+                  comercialName: data.comercialName,
+                  digitalCertified: certified,
+                  ubigeo: ubigeo,
+                  passwordCertified: data.passwordCertified
+                },
+              },
+            });
           // TODO Api Call here to save user info
           dispatch({
             type: GET_PRESIGNED,
             payload: undefined,
           });
-          // toUpdateDataBusiness({
-          //   request: {
-          //     payload: {
-          //       merchantId: userDataRes.merchantSelected.merchantId,
-          //       denominationMerchant: data.companyName,
-          //       typeDocumentMerchant: docType,
-          //       numberDocumentMerchant: data.documentNumber,
-          //       addressMerchant: data.direction,
-          //       ecommerceMerchantSlug: data.eMerchantSlugName,
-          //       facebookUrl: data.facebook,
-          //       twitterUrl: data.twitter,
-          //       instagramUrl: data.instagram,
-          //       youtubeUrl: data.youtube,
-          //       logo: selectedJsonImages[0],
-          //       comercialName: data.comercialName,
-          //       digitalCertified: certified,
-          //     },
-          //   },
-          // });
+          toUpdateDataBusiness({
+            request: {
+              payload: {
+                merchantId: userDataRes.merchantSelected.merchantId,
+                denominationMerchant: data.companyName,
+                typeDocumentMerchant: docType,
+                numberDocumentMerchant: data.documentNumber,
+                addressMerchant: data.direction,
+                ecommerceMerchantSlug: data.eMerchantSlugName,
+                facebookUrl: data.facebook,
+                twitterUrl: data.twitter,
+                instagramUrl: data.instagram,
+                youtubeUrl: data.youtube,
+                logo: selectedJsonImages[0],
+                comercialName: data.comercialName,
+                digitalCertified: certified,
+                ubigeo: ubigeo,
+                passwordCertified: data.passwordCertified
+              },
+            },
+          });
           setSubmitting(false);
           setOpen(true);
         }}
@@ -236,8 +256,10 @@ const BusinessInfo = () => {
                   ? [userDataRes.merchantSelected.logoImage]
                   : []
               }
-              billingCertified={userDataRes.merchantSelected.billingCertified ? userDataRes.merchantSelected.billingCertified : ""}
+              billingCertified={userDataRes.merchantSelected.digitalCertified ? userDataRes.merchantSelected.digitalCertified : ""}
               isBilling={userDataRes.merchantSelected.isBillingEnabled}
+              baseUbigeo={userDataRes.merchantSelected.ubigeo}
+              moveUbigeo={getUbigeo}
             />
           );
         }}
