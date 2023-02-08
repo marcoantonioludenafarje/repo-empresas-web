@@ -157,6 +157,7 @@ const GetReceipt = (props) => {
   let objSelects = {};
 
   /* const [exchangeRate, setExchangeRate] = React.useState(); */
+  const [igvDefault, setIgvDefault] = React.useState(0);
   const [addIgv, setAddIgv] = React.useState(false);
   const [sendClient, setSendClient] = React.useState(false);
   const [sendSunat, setSendSunat] = React.useState(false);
@@ -296,6 +297,10 @@ const GetReceipt = (props) => {
       let obtainedMoneyUnit = businessParameter.find(
         (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
       ).value;
+      let igvDefault = businessParameter.find(
+        (obj) => obj.abreParametro == 'IGV',
+      ).value;
+      setIgvDefault(igvDefault);
       setMoneyUnit(obtainedMoneyUnit);
       setMoneyToConvert(obtainedMoneyUnit);
       console.log('moneyUnit', moneyUnit);
@@ -806,6 +811,7 @@ const GetReceipt = (props) => {
                         />
                       }
                     />
+                    {igvDefault}
                   </Grid>
                   {/* <Grid item xs={4}>
                     <AppTextField

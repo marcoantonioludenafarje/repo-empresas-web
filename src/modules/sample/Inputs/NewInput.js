@@ -192,6 +192,8 @@ const NewInput = (props) => {
   //VARIABLES DE PARAMETROS
   let weight_unit;
   let changeValueField;
+  const [igvDefault, setIgvDefault] = React.useState(0);
+  const [isIgvChecked, setIsIgvChecked] = React.useState(false);
   const [addIgv, setAddIgv] = React.useState(false);
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -254,6 +256,12 @@ const NewInput = (props) => {
       let obtainedMoneyUnit = businessParameter.find(
         (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
       ).value;
+      let igvInitialDefault = businessParameter.find(
+        (obj) => obj.abreParametro == 'IGV',
+      ).value;
+      setIgvDefault(igvInitialDefault);
+      setAddIgv(Number(igvInitialDefault) > 0 ? true : false);
+      setIsIgvChecked(Number(igvInitialDefault) > 0 ? true : false);
       setMoneyUnit(obtainedMoneyUnit);
       setMoneyToConvert(obtainedMoneyUnit);
       console.log('moneyUnit', moneyUnit);
@@ -294,7 +302,7 @@ const NewInput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(total * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (total * 1.18).toFixed(3));
+      changeValueField('totalFieldIgv', (total *  (1 + Number(igvDefault))).toFixed(3));
     }
     setTimeout(() => {
       setMinTutorial(true);
@@ -392,7 +400,7 @@ const NewInput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total * 1.18).toFixed(3));
+    changeValueField('totalFieldIgv', (total *  (1 + Number(igvDefault))).toFixed(3));
   };
   const getProvider = (provider) => {
     selectedProvider = provider;
@@ -427,7 +435,7 @@ const NewInput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total * 1.18).toFixed(3));
+    changeValueField('totalFieldIgv', (total *  (1 + Number(igvDefault))).toFixed(3));
     forceUpdate();
   };
 
@@ -535,7 +543,7 @@ const NewInput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(event.target.value * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (event.target.value * 1.18).toFixed(3));
+      changeValueField('totalFieldIgv', (event.target.value * (1+Number(igvDefault))).toFixed(3));
     }
     console.log('actualValues', actualValues);
   };
@@ -643,6 +651,7 @@ const NewInput = (props) => {
   };
 
   const handleIGV = (event, isInputChecked) => {
+    setIsIgvChecked(isInputChecked);
     setAddIgv(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
@@ -851,9 +860,12 @@ const NewInput = (props) => {
                     sx={{display: 'flex', alignItems: 'center'}}
                   >
                     <FormControlLabel
+                      disabled={Number(igvDefault) > 0 ? false : true}
+                      checked={isIgvChecked}
                       control={<Checkbox onChange={handleIGV} />}
                       label='IGV'
                     />
+                    {igvDefault}
                   </Grid>
 
                   {/* <Grid

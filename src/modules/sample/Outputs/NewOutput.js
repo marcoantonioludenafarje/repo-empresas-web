@@ -259,12 +259,12 @@ const NewOutput = (props) => {
       let obtainedMoneyUnit = businessParameter.find(
         (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
       ).value;
-      let igvDefault = businessParameter.find(
+      let igvInitialDefault = businessParameter.find(
         (obj) => obj.abreParametro == 'IGV',
       ).value;
-      setIgvDefault(igvDefault);
-      setAddIgv(Number(igvDefault) > 0 ? true : false)
-      setIsIgvChecked(Number(igvDefault) > 0 ? true : false)
+      setIgvDefault(igvInitialDefault);
+      setAddIgv(Number(igvInitialDefault) > 0 ? true : false);
+      setIsIgvChecked(Number(igvInitialDefault) > 0 ? true : false);
       setMoneyUnit(obtainedMoneyUnit);
       setMoneyToConvert(obtainedMoneyUnit);
       console.log('moneyUnit', moneyUnit);
@@ -873,7 +873,7 @@ const NewOutput = (props) => {
                     >
                       <FormControlLabel
                         disabled={Number(igvDefault) > 0 ? false : true}
-                        checked={isIgvChecked}
+                        checked={true}
                         control={<Checkbox onChange={handleIGV} />}
                         label='IGV'
                       />

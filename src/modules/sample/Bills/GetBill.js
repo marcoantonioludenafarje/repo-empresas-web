@@ -164,6 +164,7 @@ const NewOutput = (props) => {
   let objSelects = {};
 
   /* const [exchangeRate, setExchangeRate] = React.useState(); */
+  const [igvDefault, setIgvDefault] = React.useState(0);
   const [addIgv, setAddIgv] = React.useState(false);
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -246,6 +247,11 @@ const NewOutput = (props) => {
       let serieParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'SERIES_BILL',
       );
+      
+      let igvDefault = businessParameter.find(
+        (obj) => obj.abreParametro == 'IGV',
+      ).value;
+      setIgvDefault(igvDefault);
       console.log('serieParameter', serieParameter);
       console.log('serieParameter.metadata', serieParameter.metadata);
       setSerial(serieParameter.metadata ? serieParameter.metadata : '');
@@ -836,6 +842,7 @@ const NewOutput = (props) => {
                         />
                       }
                     />
+                    {igvDefault}
                   </Grid>
                   {/* <Grid item xs={4}>
                     <AppTextField
