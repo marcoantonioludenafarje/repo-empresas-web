@@ -177,9 +177,9 @@ const BusinessInfo = () => {
       <Formik
         validateOnBlur={true}
         initialValues={{
-          companyName: userAttributes['custom:businessSocialReason'],
-          documentNumber: userAttributes['custom:businessDocumentNum'],
-          direction: userAttributes['custom:businessDirection'],
+          companyName: userDataRes.merchantSelected.denominationMerchant,
+          documentNumber: userDataRes.merchantSelected.numberDocumentMerchant,
+          direction: userDataRes.merchantSelected.addressMerchant,
           documentType: docType, /* userAttributes['custom:businessDocumentType'] */
           eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
           facebook: userDataRes.merchantSelected.facebookUrl,

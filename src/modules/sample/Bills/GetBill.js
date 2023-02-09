@@ -512,6 +512,7 @@ const NewOutput = (props) => {
           },
         },
       };
+      console.log("getAddInvoice payload", finalPayload)
       getAddInvoice(finalPayload);
       setOpenStatus(true);
     } catch (error) {
