@@ -71,7 +71,7 @@ import { getCarriers } from '../../../redux/actions/Carriers';
 import { red } from '@mui/material/colors';
 import { completeWithZeros } from '../../../Utils/utils';
 
-
+const Excel = require('exceljs');
 const XLSX = require('xlsx');
 import {
   FETCH_SUCCESS,
@@ -114,25 +114,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 let selectedDelivery = {};
-// const style = {
-//   backgroundColor: 'white',
-//   border: '2px solid #000',
-//   boxShadow: '0px 3px 5px -1px rgba(0,0,0,0.2), 0px 5px 8px 0px rgba(0,0,0,0.14), 0px 1px 14px 0px rgba(0,0,0,0.12)',
-//   padding: '32px',
-//   width: '60%',
-//   [theme.breakpoints.down('xs')]: {
-//     width: '80%',
-//   },
-//   [theme.breakpoints.between('sm', 'md')]: {
-//     width: '70%',
-//   },
-//   [theme.breakpoints.between('md', 'lg')]: {
-//     width: '60%',
-//   },
-//   [theme.breakpoints.between('lg', 'xl')]: {
-//     width: '50%',
-//   },
-// };
 let selectedDistribution = '';
 let selectedRoute = '';
 const Distribution = (props) => {
@@ -306,11 +287,8 @@ const Distribution = (props) => {
                 carrierPlateNumber: obj.plate,
                 productsInfo: obj.products.map((prod) => {
                   return {
-                    productId: prod.productId,
-                    product: prod.product,
-                    description: prod.description,
-                    unitMeasure: prod.unitMeasure,
-                    quantityMovement: prod.count,
+                    ...prod,
+                    quantityMovement: prod.count
                   };
                 }),
               };
@@ -319,7 +297,7 @@ const Distribution = (props) => {
         },
       },
     };
-    console.log('finalPayload', finalPayload);
+    console.log('finalPayload NewRoute', finalPayload);
     dispatch({ type: FETCH_SUCCESS, payload: undefined });
     dispatch({ type: FETCH_ERROR, payload: undefined });
     dispatch({ type: GENERATE_ROUTE, payload: undefined });
@@ -675,65 +653,103 @@ const Distribution = (props) => {
     let newRoutes = routes.filter((item, index) => index !== rowNumber2);
     setRoutes(newRoutes);
     reloadPage();
-};
+  };
   const exportToExcel = () => {
-    const workbook = XLSX.utils.book_new();
+    // Crear un nuevo libro de Excel
+    const workbook = new Excel.Workbook();
     const products = [
       {
+        id: 1,
         name: 'Product 1',
         price: 10,
-        stock: 20
+        category: 'Category A'
       },
       {
+        id: 2,
         name: 'Product 2',
-        price: 15,
-        stock: 30
+        price: 20,
+        category: 'Category B'
       },
       {
+        id: 3,
         name: 'Product 3',
-        price: 20,
-        stock: 25
+        price: 30,
+        category: 'Category C'
       }
     ];
     
     const deliveries = [
       {
-        deliveryId: 'D001',
-        deliveryDate: '2022-01-01',
-        products: [
-          {
-            name: 'Product 1',
-            quantity: 10
-          },
-          {
-            name: 'Product 2',
-            quantity: 5
-          }
-        ]
+        id: 1,
+        date: '2022-01-01',
+        productId: 1,
+        quantity: 10
       },
       {
-        deliveryId: 'D002',
-        deliveryDate: '2022-01-02',
-        products: [
-          {
-            name: 'Product 2',
-            quantity: 10
-          },
-          {
-            name: 'Product 3',
-            quantity: 15
-          }
-        ]
+        id: 2,
+        date: '2022-01-02',
+        productId: 2,
+        quantity: 20
+      },
+      {
+        id: 3,
+        date: '2022-01-03',
+        productId: 3,
+        quantity: 30
       }
     ];
-    
-    const productsSheet = XLSX.utils.json_to_sheet(products);
-    XLSX.utils.book_append_sheet(workbook, productsSheet, 'PRODUCTOS');
-  
-    const deliveriesSheet = XLSX.utils.json_to_sheet(deliveries);
-    XLSX.utils.book_append_sheet(workbook, deliveriesSheet, 'ENTREGAS');
-  
-    XLSX.writeFile(workbook, 'data.xlsx');
+
+    // Agregar una hoja para los productos
+    const productsSheet = workbook.addWorksheet('Productos');
+    // Definir las columnas de la hoja de productos
+    productsSheet.columns = [
+      { header: 'ID', key: 'id', width: 10 },
+      { header: 'Nombre', key: 'name', width: 30 },
+      { header: 'Descripción', key: 'description', width: 50 },
+      { header: 'Precio', key: 'price', width: 20 }
+    ];
+    // Agregar los datos de los productos a la hoja
+    products.forEach(product => {
+      productsSheet.addRow({
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          price: product.price
+      });
+    });
+
+    // Agregar una hoja para las entregas
+    const deliveriesSheet = workbook.addWorksheet('Entregas');
+
+    // Definir las columnas de la hoja de entregas
+    deliveriesSheet.columns = [
+        { header: 'ID', key: 'id', width: 10 },
+        { header: 'Producto', key: 'product', width: 30, dataValidation: {
+            type: 'list',
+            allowBlank: false,
+            formulae: `Products!A2:A${products.length + 1}`
+        }},
+        { header: 'Cantidad', key: 'quantity', width: 20 },
+        { header: 'Fecha', key: 'date', width: 30 }
+    ];
+
+
+    // Agregar los datos de las entregas a la hoja
+    deliveries.forEach(delivery => {
+      deliveriesSheet.addRow({
+          id: delivery.id,
+          product: delivery.product,
+          quantity: delivery.quantity,
+          date: delivery.date
+      });
+    });
+    //XLSX.writeFile(workbook, 'data.xlsx');
+    // Devolver el libro de Excel como un archivo
+    workbook.xlsx.writeFile('multiple-sheets.xlsx')
+    .then(function() {
+      console.log("Archivo de Excel escrito con éxito.");
+    });
+
   };
 
   const handleExport = () => {
@@ -833,7 +849,7 @@ const Distribution = (props) => {
           Procesar
         </Button>
         <Button
-          startIcon={<FileDownloadOutlinedIcon/>}
+          startIcon={<FileDownloadOutlinedIcon />}
           variant='outlined'
           color='secondary'
           onClick={exportToExcel}

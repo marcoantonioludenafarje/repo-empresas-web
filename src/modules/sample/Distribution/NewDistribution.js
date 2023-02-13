@@ -21,16 +21,43 @@ import {
   IconButton,
   Button,
   ButtonGroup,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TableContainer,
+  Paper,
+  Fade,
+  Backdrop,
+  useMediaQuery,
+  useTheme,
+  Modal,
+  Menu
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
+import ArrowDownwardOutlinedIcon from '@mui/icons-material/ArrowDownwardOutlined';
+import EditDistributionDeliveryModal from './editDistributionDeliveryModal';
+import EditLocationOutlinedIcon from '@mui/icons-material/EditLocationOutlined';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import DataSaverOffOutlinedIcon from '@mui/icons-material/DataSaverOffOutlined';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import CachedIcon from '@mui/icons-material/Cached';
 
+
+import { makeStyles, } from '@mui/styles';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import DeliveryCard from './DeliveryCard';
@@ -62,27 +89,59 @@ import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import {maxHeight} from '@mui/system';
 
-const Distribution = () => {
+const useStyles = makeStyles((theme) => ({
+  table: {
+    minWidth: 650,
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+    width: '90%',
+    height: '80vh',
+    overflowY: 'scroll',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%',
+    },
+    [theme.breakpoints.between('sm', 'md')]: {
+      width: '94%',
+    },
+    [theme.breakpoints.between('md', 'lg')]: {
+      width: '85%',
+    },
+    [theme.breakpoints.between('lg', 'xl')]: {
+      width: '80%',
+    },
+  }
+}));
+let selectedDelivery = {};
+let selectedDistribution = '';
+const Distribution = (props) => {
   const {listRoute} = useSelector(({movements}) => movements);
   const emptyRoute = {
     empty: true,
-    carrierDocumentType: '',
-    carrierDocumentNumber: '',
-    carrierDenomination: '',
-    carrierDenomination: '',
-    startingPointUbigeo: '',
-    arrivalPointUbigeo: '',
-    startingPointUbigeo: '',
-    arrivalPointUbigeo: '',
-    startingPointAddress: '',
-    arrivalPointAddress: '',
-    driverDenomination: '',
-    driverLastName: '',
-    driverDocumentNumber: '',
-    driverLicenseNumber: '',
-    carrierPlateNumber: '',
-    totalGrossWeight: '',
-    numberOfPackages: '',
+    carrierDocumentType: 'Vacío',
+    carrierDocumentNumber: 'Vacío',
+    carrierDenomination: 'Vacío',
+    startingPointUbigeo: 'Vacío',
+    arrivalPointUbigeo: 'Vacío',
+    startingPointAddress: 'Vacío',
+    arrivalPointAddress: 'Vacío',
+    driverDenomination: 'Vacío',
+    driverLastName: 'Vacío',
+    driverDocumentType: 'Vacío',
+    driverDocumentNumber: 'Vacío',
+    driverLicenseNumber: 'Vacío',
+    carrierPlateNumber: 'Vacío',
+    totalGrossWeight: 'Vacío',
+    numberOfPackages: 'Vacío',
+    totalWeight: 0,
     products: [],
   };
   const [initialDate, setInitialDate] = React.useState(new Date());
@@ -101,7 +160,25 @@ const Distribution = () => {
   );
   const [minTutorial, setMinTutorial] = React.useState(false);
 
+  const [deliveriesData, setDeliveriesData] = React.useState([]);
+  const [driversData, setDriversData] = React.useState([]);
+  const [excelOrCsv, setExcelOrCsv] = React.useState("");
+  const [excelOrCsvName, setExcelOrCsvName] = React.useState("");
+
+  const [openProducts, setOpenProducts] = React.useState(false);
+  const [rowNumber, setRowNumber] = React.useState(0);
+  const [rowNumber2, setRowNumber2] = React.useState(0);
+
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [openDelivery, setOpenDelivery] = React.useState(false);
+  const [selectedDeliveryState, setSelectedDeliveryState] = React.useState({});
+
+  const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
+  const classes = useStyles(props);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -191,6 +268,14 @@ const Distribution = () => {
       setSelectedRoute(initialRoute);
       let deliveries = initialRoute.deliveries.map((obj) => {
         obj.products = obj.productsInfo;
+        obj.totalWeight = obj.totalGrossWeight;
+        obj.numberPackages = obj.numberOfPackages;
+        obj.startingAddress = obj.startingPointAddress;
+        obj.arrivalAddress = obj.arrivalPointAddress;
+        obj.driverName = obj.driverDenomination;
+        obj.plate = obj.carrierPlateNumber;
+        obj.transferStartDate = dateWithHyphen(Date.now());
+        obj.generateReferralGuide = true;
         return obj;
       });
       console.log('initial deliveries', deliveries);
@@ -263,7 +348,7 @@ const Distribution = () => {
             if (route !== undefined) {
               return {
                 destination: route.startingAddress,
-                transferStartDate: toDateAndHOurs(route.transferStartDate),
+                //transferStartDate: toDateAndHOurs(route.transferStartDate),
                 totalGrossWeight: route.totalWeight,
                 numberOfPackages: route.numberPackages,
                 observationDelivery: route.observationDelivery,
@@ -288,7 +373,7 @@ const Distribution = () => {
                 driverId: '',
                 carrierPlateNumber: route.plate,
                 generateReferralGuide: route.generateReferralGuide,
-                transferStartDate: dateWithHyphen(route.transferStartDate),
+                transferStartDate: typeof route.transferStartDate == "number" ? dateWithHyphen(route.transferStartDate) : route.transferStartDate,
                 productsInfo: route.products.map((prod) => {
                   return {
                     productId: prod.productId,
@@ -400,6 +485,7 @@ const Distribution = () => {
 
   const selectRoute = (event) => {
     console.log('Id ruta', event.target.value);
+    console.log('selectedRoutePredefined', selectedRoute);
     const selectedRoute = listRoute.find(
       (obj) => obj.routePredefinedId == event.target.value,
     );
@@ -407,7 +493,6 @@ const Distribution = () => {
       obj.products = obj.productsInfo;
       return obj;
     });
-    console.log('selectedRoute', selectedRoute);
     setSelectedRouteId(selectedRoute.routePredefinedId);
     setSelectedRoute(selectedRoute);
     console.log('deliveries', selectedRoute.deliveries);
@@ -415,6 +500,88 @@ const Distribution = () => {
     reloadPage();
   };
 
+  const showIconStatus = (bool, obj) => {
+    switch (bool) {
+      case true:
+        return <Button
+          variant='secondary'
+          sx={{ fontSize: '1em' }}
+        >
+          <CheckCircleIcon color='success' />
+        </Button>
+        break;
+      case false:
+        return <CancelIcon sx={{ color: red[500] }} />;
+        break;
+      default:
+        return null;
+    }
+  };
+  const checkProducts = (delivery, index) => {
+    selectedDelivery = delivery;
+    console.log('selectedDelivery', selectedDelivery);
+    setOpenProducts(false);
+    setOpenProducts(true);
+    if (openProducts == true && rowNumber2 == index) {
+      setOpenProducts(false);
+    }
+    setRowNumber2(index);
+  };
+  const handleClick = (route, event) => {
+    setAnchorEl(event.currentTarget);
+    setRowNumber2(route.localRouteId);
+    setSelectedDeliveryState(route);
+    console.log('selectedRoute', route);
+  };
+  const sendStatus2 = () => {
+    if (openDelivery) {
+      setOpenDelivery(false)
+
+    } else {
+      setOpenDelivery(true)
+
+    }
+  };
+  const handleClose = () => {
+    console.log("se está ejecutando?")
+    setOpenDelivery(false)
+    console.log("openDelivery", openDelivery)
+  };
+  const updateDelivery2 = (newDelivery, index2) => {
+    handleClose();
+    console.log("newDelivery", newDelivery)
+    const updatedDeliveries = routes.map((route, index) => {
+      if (index === index2) {
+        return {
+          ...newDelivery
+        };
+      }
+      return route;
+    });
+    setRoutes(updatedDeliveries);
+
+  };
+  function swapRowsUp() {
+    let newRoutes = routes;
+    const temp = newRoutes[rowNumber2];
+    newRoutes[rowNumber2] = newRoutes[rowNumber2 - 1];
+    newRoutes[rowNumber2 - 1] = temp;
+    setRoutes(newRoutes);
+    reloadPage();
+  }
+  function swapRowsDown() {
+    let newRoutes = routes;
+    const temp = newRoutes[rowNumber2];
+    newRoutes[rowNumber2] = newRoutes[rowNumber2 + 1];
+    newRoutes[rowNumber2 + 1] = temp;
+    setRoutes(newRoutes);
+    reloadPage();
+  }
+  const deleteRoute = () => {
+    let newRoutes = routes.filter((item, index) => index !== rowNumber2);
+    setRoutes(newRoutes);
+    reloadPage();
+  };
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -686,7 +853,236 @@ const Distribution = () => {
         </Stack>
       </Box>
 
-      <Box
+      <Box sx={{ margin: 0 }}>
+        <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+          <Table stickyHeader size='small' aria-label='purchases'>
+            <TableHead sx={{ backgroundColor: '#ededed' }}>
+              <TableRow>
+                <TableCell>
+                  Nro
+                </TableCell>
+                <TableCell>
+                  Dirección de punto de partida
+                </TableCell>
+                <TableCell>
+                  Ubigeo de punto de partida
+                </TableCell>
+                <TableCell>
+                  Dirección de punto de llegada
+                </TableCell>
+                <TableCell>
+                  Ubigeo de punto de llegada
+                </TableCell>
+                <TableCell>
+                  Empresa Transportista
+                </TableCell>
+                <TableCell>
+                  Documento de conductor
+                </TableCell>
+                <TableCell>Nombre de conductor</TableCell>
+                <TableCell>Apellidos de conductor</TableCell>
+                <TableCell>Licencia de conductor</TableCell>
+                <TableCell>Placa del vehículo</TableCell>
+                <TableCell>Productos</TableCell>
+                <TableCell>Observaciones</TableCell>
+                <TableCell>Peso total</TableCell>
+                <TableCell>Número de paquetes</TableCell>
+                <TableCell>Fecha de Entrega</TableCell>
+                <TableCell>
+                  Guía de Remisión Generada
+                </TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {routes && routes.length !== 0
+                ? routes.map((route, index2) => {
+                  const products = route.products;
+                  return (
+                    <>
+                      <TableRow key={index2}>
+                        <TableCell>
+                          {index2 + 1}
+                        </TableCell>
+                        <TableCell>
+                          {route.arrivalAddress || route.arrivalPointAddress}
+                        </TableCell>
+                        <TableCell>
+                          {route.arrivalPointUbigeo}
+                        </TableCell>
+                        <TableCell>
+                          {route.startingAddress || route.startingPointAddress}
+                        </TableCell>
+                        <TableCell>
+                          {route.startingPointUbigeo}
+                        </TableCell>
+                        <TableCell>
+                          {route.carrierDenomination}
+                        </TableCell>
+                        <TableCell>
+                          {route.driverDocumentType &&
+                            route.driverDocumentNumber
+                            ? `${route.driverDocumentType.toUpperCase()} - ${route.driverDocumentNumber
+                            }`
+                            : null}
+                        </TableCell>
+                        <TableCell>
+                          {route.driverName || route.driverDenomination}
+                        </TableCell>
+                        <TableCell>
+                          {route.driverLastName}
+                        </TableCell>
+                        <TableCell>
+                          {route.driverLicenseNumber}
+                        </TableCell>
+                        <TableCell>
+                          {route.plate || route.carrierPlateNumber}
+                        </TableCell>
+                        <TableCell>
+                          {products &&
+                            products.length !== 0 ? (
+                            <IconButton
+                              onClick={() =>
+                                checkProducts(route, index2)
+                              }
+                              size='small'
+                            >
+                              <FormatListBulletedIcon fontSize='small' />
+                            </IconButton>
+                          ) : null}
+                        </TableCell>
+                        <TableCell>
+                          {route.observationDelivery}
+                        </TableCell>
+                        <TableCell>
+                          {route.totalWeight || route.totalGrossWeight}
+                        </TableCell>
+                        <TableCell>
+                          {route.numberPackages || route.numberOfPackages}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {route.transferStartDate}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {showIconStatus(
+                            route.generateReferralGuide,
+                            route
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            id='basic-button'
+                            aria-controls={
+                              openMenu
+                                ? 'basic-menu'
+                                : undefined
+                            }
+                            aria-haspopup='true'
+                            aria-expanded={
+                              openMenu ? 'true' : undefined
+                            }
+                            onClick={handleClick.bind(
+                              this,
+                              {
+                                ...route,
+                                localRouteId: index2,
+                              },
+                            )}
+                          >
+                            <KeyboardArrowDownIcon />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow key={`sub-${index2}`}>
+                        <TableCell sx={{ p: 0 }} colSpan={10}>
+                          <Collapse
+                            in={
+                              openProducts &&
+                              index2 === rowNumber2
+                            }
+                            timeout='auto'
+                            unmountOnExit
+                          >
+                            <Box sx={{ margin: 0 }}>
+                              <Table
+                                size='small'
+                                aria-label='purchases'
+                              >
+                                <TableHead
+                                  sx={{
+                                    backgroundColor:
+                                      '#ededed',
+                                  }}
+                                >
+                                  <TableRow>
+                                    <TableCell>
+                                      Código
+                                    </TableCell>
+                                    <TableCell>
+                                      Descripción
+                                    </TableCell>
+                                    <TableCell>
+                                      Cantidad
+                                    </TableCell>
+                                    <TableCell>
+                                      Peso Unitario
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {products &&
+                                    products.length !== 0
+                                    ? products.map(
+                                      (
+                                        product,
+                                        index3,
+                                      ) => {
+                                        return (
+                                          <TableRow
+                                            key={`${index3}-${index3}`}
+                                          >
+                                            <TableCell>
+                                              {
+                                                product.product
+                                              }
+                                            </TableCell>
+                                            <TableCell>
+                                              {
+                                                product.description
+                                              }
+                                            </TableCell>
+                                            <TableCell>
+                                              {
+                                                product.count
+                                              }
+                                            </TableCell>
+                                            <TableCell>
+                                              {
+                                                product.weight
+                                              }
+                                            </TableCell>
+                                          </TableRow>
+                                        );
+                                      },
+                                    )
+                                    : null}
+                                </TableBody>
+                              </Table>
+                            </Box>
+                          </Collapse>
+                        </TableCell>
+                      </TableRow>
+
+                    </>
+                  );
+                })
+                : null}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      {/* <Box
         sx={{
           m: 'auto',
           border: '1px solid grey',
@@ -708,7 +1104,7 @@ const Distribution = () => {
               />
             );
           })}
-      </Box>
+      </Box> */}
 
       <ButtonGroup
         orientation='vertical'
@@ -828,7 +1224,7 @@ const Distribution = () => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {<IntlMessages id='message.register.newRoute' />}
+          {<IntlMessages id='message.register.newDistribution' />}
         </DialogTitle>
         {showMessage()}
         <DialogActions sx={{justifyContent: 'center'}}>
@@ -837,7 +1233,63 @@ const Distribution = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <AppInfoView />
+
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openDelivery}
+        onClose={handleClose}
+        closeAfterTransition
+        // BackdropComponent={Backdrop}
+        // BackdropProps={{
+        //   classes: {
+        //     root: classes.backdrop
+        //   },
+        //   timeout: 500,
+        // }}
+        className={classes.modal}
+      >
+        <Fade in={openDelivery}>
+          <Box className={classes.paper}>
+            <Typography id="transition-modal-title" variant="h2" component="h2">
+              Editar Entrega
+            </Typography>
+
+            <EditDistributionDeliveryModal
+              selectedDeliveryState={selectedDeliveryState}
+              editFunction={updateDelivery2}
+            />
+          </Box>
+        </Fade>
+      </Modal>
+      <Menu
+        id='basic-menu'
+        anchorEl={anchorEl}
+        open={openMenu}
+        onClose={() => setAnchorEl(null)}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={sendStatus2}>
+          <CachedIcon sx={{ mr: 1, my: 'auto' }} />
+          Actualizar
+        </MenuItem>
+        <MenuItem disabled={!(rowNumber2 != 0)} onClick={swapRowsUp}>
+          <ArrowUpwardOutlinedIcon sx={{ mr: 1, my: 'auto' }} />
+          Subir
+        </MenuItem>
+        <MenuItem disabled={routes ? !(rowNumber2 != (routes.length - 1)) : false} onClick={swapRowsDown}>
+          <ArrowDownwardOutlinedIcon sx={{ mr: 1, my: 'auto' }} />
+          Bajar
+        </MenuItem>
+        <MenuItem onClick={deleteRoute}>
+          <DeleteOutlinedIcon sx={{ mr: 1, my: 'auto' }} />
+          Eliminar
+        </MenuItem>
+
+      </Menu>
+      {/* <AppInfoView /> */}
     </Card>
   );
 };

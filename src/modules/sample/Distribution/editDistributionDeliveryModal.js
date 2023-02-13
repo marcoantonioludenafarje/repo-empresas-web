@@ -25,7 +25,9 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    Paper
+    Paper,
+    FormControlLabel,
+    Checkbox
 } from '@mui/material';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -42,6 +44,7 @@ import originalUbigeos from '../../../Utils/ubigeo.json';
 import SelectCarrier from '../ReferralGuide/SelectCarrier';
 import SelectProduct from '../AddExisingProduct/SelectProduct';
 
+import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 
 import { fixDecimals, isEmpty, dateWithHyphen } from '../../../Utils/utils';
 import { FETCH_ERROR } from '../../../shared/constants/ActionTypes';
@@ -55,6 +58,9 @@ const EditDistributionDeliveryModal = ({
     const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
 
     const [temporaryDelivery, setTemporaryDelivery] = React.useState("");
+
+    const [dateStartTransfer, setDateStartTransfer] = React.useState(Date.now());
+    const [makeReferralGuide, setMakeReferralGuide] = React.useState(false);
 
     const [openCarrierDialog, setOpenCarrierDialog] = React.useState(false);
     const [openSelectProductDialog, setOpenSelectProductDialog] = React.useState(false);
@@ -121,7 +127,7 @@ const EditDistributionDeliveryModal = ({
                 startingObjUbigeo: startingObjUbigeo,
                 arrivalObjUbigeo: arrivalObjUbigeo,
             }
-
+            setMakeReferralGuide(selectedDeliveryState.generateReferralGuide);
             setTemporaryDelivery(newSelectedDeliveryState);
         }
     }, []);
@@ -175,9 +181,12 @@ const EditDistributionDeliveryModal = ({
             products: productsList,
             numberPackages: event.target.numberPackages.value,
             observationDelivery: event.target.observationDelivery.value,
+            generateReferralGuide: makeReferralGuide,
+            transferStartDate: dateWithHyphen(dateStartTransfer),
         }
+        console.log("transferStartDate", newTemporaryDelivery.transferStartDate)
         setTemporaryDelivery(newTemporaryDelivery);
-        editFunction(newTemporaryDelivery);
+        editFunction(newTemporaryDelivery, newTemporaryDelivery.localRouteId);
     };
     const handleDriverDocumentField = (event) => {
         setTemporaryDelivery({
@@ -429,7 +438,54 @@ const EditDistributionDeliveryModal = ({
                             }}
                         />
                     </Grid>
-
+                    <Grid item xs={6}>
+                        <DateTimePicker
+                        renderInput={(params) => (
+                            <TextField
+                            fullWidth
+                            sx={{position: 'relative', bottom: '-8px'}}
+                            {...params}
+                            />
+                        )}
+                        required
+                        value={dateStartTransfer}
+                        label='Fecha inicio traslado'
+                        inputFormat='dd/MM/yyyy hh:mm a'
+                        name='dateStartTransfer'
+                        onChange={(newValue) => {
+                            setDateStartTransfer(newValue);
+                            console.log('Nueva fecha', newValue);
+                            console.log(
+                            'Fecha de inicio de traslado',
+                            dateStartTransfer,
+                            );
+                        }}
+                        />
+                    </Grid>
+                    <Grid
+                        item
+                        xs={6}
+                        sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        mt: '10px',
+                        }}
+                    >
+                        <FormControlLabel
+                        sx={{m: 0}}
+                        control={
+                            <Checkbox
+                            checked={makeReferralGuide}
+                            onChange={(event, isInputChecked) =>
+                                setMakeReferralGuide(isInputChecked)
+                            }
+                            />
+                        }
+                        label={
+                            <IntlMessages id='message.generate.referralGuide' />
+                        }
+                        />
+                    </Grid>
                     <Grid item xs={12}>
                         <Typography sx={{ m: 2 }}>
                             <IntlMessages id='common.driver.data' />
