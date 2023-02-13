@@ -1332,7 +1332,7 @@ const Distribution = (props) => {
           <ArrowUpwardOutlinedIcon sx={{ mr: 1, my: 'auto' }} />
           Subir
         </MenuItem>
-        <MenuItem disabled={!(rowNumber2 != (routes.length - 1))} onClick={swapRowsDown}>
+        <MenuItem disabled={routes ? !(rowNumber2 != (routes.length - 1)) : false} onClick={swapRowsDown}>
           <ArrowDownwardOutlinedIcon sx={{ mr: 1, my: 'auto' }} />
           Bajar
         </MenuItem>
