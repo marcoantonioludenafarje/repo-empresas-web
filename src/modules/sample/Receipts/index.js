@@ -598,12 +598,12 @@ const ReceiptsTable = (props) => {
         {/* <MenuItem disabled>
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Reenviar
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={() => window.open(selectedReceipt.linkPdf)}>
           <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
           Ver PDF
         </MenuItem>
-        <MenuItem
+        {/* <MenuItem
           disabled={!dataBusinessRes.isReceiptingEnabled}
           onClick={() =>
             Router.push({
