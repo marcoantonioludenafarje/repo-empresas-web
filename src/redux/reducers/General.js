@@ -19,7 +19,8 @@ import {
   UPDATE_ALL_BUSINESS_PARAMETER,
   UPDATE_ROL_USER_FIRST_PLAN,
   UPDATE_DATA_BUSINESS,
-  ACTUAL_DATE
+  ACTUAL_DATE,
+  GENERATE_EXCEL_TEMPLATE_TO_ROUTES
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -156,6 +157,12 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         updateAllBusinessParameterRes: action.payload,
+      };
+    case GENERATE_EXCEL_TEMPLATE_TO_ROUTES:
+      console.log('data de reducer GENERATE_EXCEL_TEMPLATE_TO_ROUTES', action.payload);
+      return {
+        ...state,
+        excelTemplateGeneratedToRoute: action.payload,
       };
     default:
       return state;

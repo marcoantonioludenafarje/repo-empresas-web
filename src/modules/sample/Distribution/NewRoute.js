@@ -68,6 +68,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { generatePredefinedRoute } from '../../../redux/actions/Movements';
 import { onGetProducts } from '../../../redux/actions/Products';
 import { getCarriers } from '../../../redux/actions/Carriers';
+import {exportExcelTemplateToGenerateRoute} from '../../../redux/actions/General';
 import { red } from '@mui/material/colors';
 import { completeWithZeros } from '../../../Utils/utils';
 
@@ -79,6 +80,7 @@ import {
   GET_PRODUCTS,
   GET_CARRIERS,
   GENERATE_ROUTE,
+  GENERATE_EXCEL_TEMPLATE_TO_ROUTES
 } from '../../../shared/constants/ActionTypes';
 import { Download } from '@mui/icons-material';
 const useStyles = makeStyles((theme) => ({
@@ -186,7 +188,8 @@ const Distribution = (props) => {
   const { errorMessage } = useSelector(({ movements }) => movements);
   console.log('errorMessage', errorMessage);
   const { jwtToken } = useSelector(({ general }) => general);
-
+  const { excelTemplateGeneratedToRoute } = useSelector(({ general }) => general);
+  
   listPayload.request.payload.merchantId =
     userDataRes.merchantSelected.merchantId;
   let listCarriersPayload = {
@@ -208,6 +211,9 @@ const Distribution = (props) => {
   };
   const getProducts = (payload) => {
     dispatch(onGetProducts(payload));
+  };
+  const toExportExcelTemplateToGenerateRoute = (payload) => {
+    dispatch(exportExcelTemplateToGenerateRoute(payload));
   };
 
   useEffect(() => {
@@ -537,6 +543,10 @@ const Distribution = (props) => {
 
         console.log("productsDataV2", productsDataV2)
         console.log("routesDataV2", routesDataV2)
+        console.log("carriersDataV2", carriersDataV2)
+        console.log("driversDataV2", driversDataV2)
+        console.log("originalPointsDataV2", originalPointsDataV2)
+        console.log("arrivalPointsDataV2", arrivalPointsDataV2)
         const deliveriesFinished = formatData(routesDataV2, originalPointsDataV2, arrivalPointsDataV2, driversDataV2, carriersDataV2, productsDataV2);
 
         setDriversData(driversData);
@@ -655,102 +665,26 @@ const Distribution = (props) => {
     reloadPage();
   };
   const exportToExcel = () => {
-    // Crear un nuevo libro de Excel
-    const workbook = new Excel.Workbook();
-    const products = [
-      {
-        id: 1,
-        name: 'Product 1',
-        price: 10,
-        category: 'Category A'
+    const excelPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
       },
-      {
-        id: 2,
-        name: 'Product 2',
-        price: 20,
-        category: 'Category B'
-      },
-      {
-        id: 3,
-        name: 'Product 3',
-        price: 30,
-        category: 'Category C'
-      }
-    ];
-    
-    const deliveries = [
-      {
-        id: 1,
-        date: '2022-01-01',
-        productId: 1,
-        quantity: 10
-      },
-      {
-        id: 2,
-        date: '2022-01-02',
-        productId: 2,
-        quantity: 20
-      },
-      {
-        id: 3,
-        date: '2022-01-03',
-        productId: 3,
-        quantity: 30
-      }
-    ];
-
-    // Agregar una hoja para los productos
-    const productsSheet = workbook.addWorksheet('Productos');
-    // Definir las columnas de la hoja de productos
-    productsSheet.columns = [
-      { header: 'ID', key: 'id', width: 10 },
-      { header: 'Nombre', key: 'name', width: 30 },
-      { header: 'Descripción', key: 'description', width: 50 },
-      { header: 'Precio', key: 'price', width: 20 }
-    ];
-    // Agregar los datos de los productos a la hoja
-    products.forEach(product => {
-      productsSheet.addRow({
-          id: product.id,
-          name: product.name,
-          description: product.description,
-          price: product.price
-      });
-    });
-
-    // Agregar una hoja para las entregas
-    const deliveriesSheet = workbook.addWorksheet('Entregas');
-
-    // Definir las columnas de la hoja de entregas
-    deliveriesSheet.columns = [
-        { header: 'ID', key: 'id', width: 10 },
-        { header: 'Producto', key: 'product', width: 30, dataValidation: {
-            type: 'list',
-            allowBlank: false,
-            formulae: `Products!A2:A${products.length + 1}`
-        }},
-        { header: 'Cantidad', key: 'quantity', width: 20 },
-        { header: 'Fecha', key: 'date', width: 30 }
-    ];
-
-
-    // Agregar los datos de las entregas a la hoja
-    deliveries.forEach(delivery => {
-      deliveriesSheet.addRow({
-          id: delivery.id,
-          product: delivery.product,
-          quantity: delivery.quantity,
-          date: delivery.date
-      });
-    });
-    //XLSX.writeFile(workbook, 'data.xlsx');
-    // Devolver el libro de Excel como un archivo
-    workbook.xlsx.writeFile('multiple-sheets.xlsx')
-    .then(function() {
-      console.log("Archivo de Excel escrito con éxito.");
-    });
+    };
+    console.log('excelPayload', excelPayload);
+    dispatch({ type: FETCH_SUCCESS, payload: undefined });
+    dispatch({ type: FETCH_ERROR, payload: undefined });
+    dispatch({ type: GENERATE_EXCEL_TEMPLATE_TO_ROUTES, payload: undefined });
+    toExportExcelTemplateToGenerateRoute(excelPayload);
 
   };
+
+  useEffect(() => {
+    if(excelTemplateGeneratedToRoute){
+      
+    }
+  }, [excelTemplateGeneratedToRoute])
 
   const handleExport = () => {
     exportToExcel(products, deliveries);
