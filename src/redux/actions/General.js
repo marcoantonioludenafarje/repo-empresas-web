@@ -15,7 +15,7 @@ import {
   UPDATE_ALL_BUSINESS_PARAMETER,
   UPDATE_ROL_USER_FIRST_PLAN,
   UPDATE_DATA_BUSINESS,
-  ACTUAL_DATE
+  ACTUAL_DATE,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -285,8 +285,7 @@ export const updateAllBusinessParameter = (payload) => {
   };
 };
 
-
-export const updateCatalogs= (payload) => {
+export const updateCatalogs = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     API.post('tunexo', '/inventory/parameters/update', {body: payload})
@@ -304,7 +303,6 @@ export const updateCatalogs= (payload) => {
       });
   };
 };
-
 
 export const actualDate = () => {
   return (dispatch) => dispatch({type: ACTUAL_DATE});
