@@ -16,7 +16,7 @@ import {
   UPDATE_ROL_USER_FIRST_PLAN,
   UPDATE_DATA_BUSINESS,
   ACTUAL_DATE,
-  GENERATE_EXCEL_TEMPLATE_TO_ROUTES
+  GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -301,6 +301,25 @@ export const exportExcelTemplateToGenerateRoute = (payload) => {
       })
       .catch((error) => {
         console.log('onExportExcelTemplateToGenerateRoute error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const updateCatalogs = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/parameters/update', {body: payload})
+      .then((data) => {
+        console.log('updateAllBusinessParameter resultado', data);
+        dispatch({
+          type: UPDATE_ALL_BUSINESS_PARAMETER,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('updateAllBusinessParameter error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

@@ -31,7 +31,7 @@ import {
   TableBody,
   TableContainer,
   TableHead,
-  Table
+  Table,
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
@@ -47,7 +47,7 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
-import PriorityHighIcon  from '@mui/icons-material/PriorityHigh';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import Router, {useRouter} from 'next/router';
@@ -59,7 +59,8 @@ import {generatePredefinedRoute} from '../../../redux/actions/Movements';
 import {onGetProducts, deleteProduct} from '../../../redux/actions/Products';
 import {getCarriers} from '../../../redux/actions/Carriers';
 import {blue, green, red} from '@mui/material/colors';
-
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {getUserData} from '../../../redux/actions/User';
 import {completeWithZeros} from '../../../Utils/utils';
 import {
@@ -75,6 +76,8 @@ import {
   GENERATE_ROUTE,
   UPDATE_ALL_BUSINESS_PARAMETER,
 } from '../../../shared/constants/ActionTypes';
+
+const XLSX = require('xlsx');
 
 const Distribution = () => {
   let changeValue;
@@ -96,7 +99,7 @@ const Distribution = () => {
   };
   const emptyFilter = {
     featureName: '',
-    values: []
+    values: [],
   };
   const emptyCategory = {
     active: true,
@@ -105,7 +108,9 @@ const Distribution = () => {
     productCategoryId: '',
   };
   const dispatch = useDispatch();
-  const [typeAlert, setTypeAlert] = React.useState("existProductsWithThisCategory");
+  const [typeAlert, setTypeAlert] = React.useState(
+    'existProductsWithThisCategory',
+  );
   const [routes, setRoutes] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
@@ -151,7 +156,8 @@ const Distribution = () => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({products}) => products);
   console.log('errorMessage', errorMessage);
-
+  const [excelOrCsv, setExcelOrCsv] = React.useState('');
+  const [excelOrCsvName, setExcelOrCsvName] = React.useState('');
 
   let deletePayload = {
     request: {
@@ -174,6 +180,88 @@ const Distribution = () => {
   const toDeleteProduct = (payload) => {
     dispatch(deleteProduct(payload));
   };
+
+  const updateCatalogs = (payload) => {
+    dispatch(updateAllBusinessParameter(payload));
+  };
+
+  const processData = (data) => {
+    const keys = data[0];
+    const datav2 = data
+      .slice(1)
+      .filter((row) => row[0] !== undefined && row[0] !== null)
+      .map((row) =>
+        keys.reduce((obj, key, i) => {
+          obj[key] = row[i];
+          return obj;
+        }, {}),
+      );
+    return datav2;
+  };
+
+  const onChangeHandler = (event) => {
+    if (excelOrCsv.target.files) {
+      const reader = new FileReader();
+      reader.onload = (excelOrCsv) => {
+        const bstr = excelOrCsv.target.result;
+        const wb = XLSX.read(bstr, {type: 'binary'});
+        console.log('wb', wb);
+
+        const productsSheet = wb.Sheets['PRODUCTOS'];
+        const productsData = XLSX.utils.sheet_to_json(productsSheet, {
+          header: 1,
+        });
+        const productsDataV2 = processData(productsData);
+
+        const clientsSheet = wb.Sheets['CLIENTES'];
+        const clientsData = XLSX.utils.sheet_to_json(clientsSheet, {header: 1});
+        const clientsDataV2 = processData(clientsData);
+
+        const arrivalPointsSheet = wb.Sheets['PUNTOS_ENTREGA'];
+        const arrivalPointsData = XLSX.utils.sheet_to_json(arrivalPointsSheet, {
+          header: 1,
+        });
+        const arrivalPointsDataV2 = processData(arrivalPointsData);
+
+        const originalPointsSheet = wb.Sheets['PUNTOS_ORIGEN'];
+        const originalPointsData = XLSX.utils.sheet_to_json(
+          originalPointsSheet,
+          {header: 1},
+        );
+        const originalPointsDataV2 = processData(originalPointsData);
+
+        const driversSheet = wb.Sheets['CHOFERES'];
+        const driversData = XLSX.utils.sheet_to_json(driversSheet, {header: 1});
+        const driversDataV2 = processData(driversData);
+
+        const carriersSheet = wb.Sheets['EMPRESA TRANSPORTISTA'];
+        const carriersData = XLSX.utils.sheet_to_json(carriersSheet, {
+          header: 1,
+        });
+        const carriersDataV2 = processData(carriersData);
+
+        console.log('productsDataV2', productsDataV2);
+        console.log('routesDataV2', clientsDataV2);
+
+        const payloadCatalogs = {
+          merchantId: '2738219821',
+          data: {
+            arrivalPointsDataV2,
+            originalPointsDataV2,
+            driversSheet,
+          },
+        };
+
+        // const deliveriesFinished = formatData(routesDataV2, originalPointsDataV2, arrivalPointsDataV2, driversDataV2, carriersDataV2, productsDataV2);
+
+        // setDriversData(driversData);
+        // setDeliveriesData(deliveriesFinished);
+        // setRoutes(deliveriesFinished)
+      };
+      reader.readAsBinaryString(excelOrCsv.target.files[0]);
+    }
+  };
+
   let defaultValues = {
     routeName: '',
     defaultMinPrice: 0,
@@ -184,9 +272,7 @@ const Distribution = () => {
     defaultProductsPayDetail: '',
   };
   useEffect(() => {
-    if (
-      userDataRes 
-    ) {
+    if (userDataRes) {
       let parameterPayload = {
         request: {
           payload: {
@@ -217,24 +303,24 @@ const Distribution = () => {
           },
         },
       };
-      console.log("listProducts1", listProducts)
-      if(!listProducts || listProducts.length === 0){
+      console.log('listProducts1', listProducts);
+      if (!listProducts || listProducts.length === 0) {
         getProducts(listPayload);
       }
     }
-    if(userDataRes){
+    if (userDataRes) {
       deletePayload.request.payload.merchantId =
-      userDataRes.merchantSelected.merchantId;
+        userDataRes.merchantSelected.merchantId;
       listPayload.request.payload.merchantId =
-      userDataRes.merchantSelected.merchantId;
-      console.log("listProducts2", listProducts)
-      if(!listProducts || listProducts.length === 0){
+        userDataRes.merchantSelected.merchantId;
+      console.log('listProducts2', listProducts);
+      if (!listProducts || listProducts.length === 0) {
         getProducts(listPayload);
       }
     }
   }, [userDataRes]);
   useEffect(() => {
-    if(listProducts){
+    if (listProducts) {
       setListProductsState(listProducts);
       // console.log("cual es listProducts", listProducts);
       // console.log("cual es productsSelected", productsSelected);
@@ -332,14 +418,14 @@ const Distribution = () => {
         setPublish(true);
       }
       deletePayload.request.payload.merchantId =
-      userDataRes.merchantSelected.merchantId;
+        userDataRes.merchantSelected.merchantId;
       if (userDataRes.merchantSelected.isEcommerceEnabled) {
         setPublish(true);
       }
       listPayload.request.payload.merchantId =
-      userDataRes.merchantSelected.merchantId;
-      console.log("listProducts3", listProducts)
-      if(!listProducts || listProducts.length === 0){
+        userDataRes.merchantSelected.merchantId;
+      console.log('listProducts3', listProducts);
+      if (!listProducts || listProducts.length === 0) {
         getProducts(listPayload);
       }
     }
@@ -371,32 +457,33 @@ const Distribution = () => {
   const deleteFilter = (filterName, order) => {
     console.log('filterName: ', filterName);
     console.log('filters', filters);
-    console.log('order en newRoute', order)
-    let productsWithThisFilter = listProductsState.filter(
-      (element) => {
-          let response = false;
-          Object.entries(element.tags).forEach(([key, value]) => {
-            if(filters[filters.length - 1].featureName === key){
-              console.log(value)
-              response = true;
-            }
-          })
-          return response
-        },
+    console.log('order en newRoute', order);
+    let productsWithThisFilter = listProductsState.filter((element) => {
+      let response = false;
+      Object.entries(element.tags).forEach(([key, value]) => {
+        if (filters[filters.length - 1].featureName === key) {
+          console.log(value);
+          response = true;
+        }
+      });
+      return response;
+    });
+    console.log(
+      'Longitud productos con el filtro',
+      productsWithThisFilter.length,
     );
-    console.log("Longitud productos con el filtro", productsWithThisFilter.length)
     if (productsWithThisFilter.length > 0) {
-      setTypeAlert("existProductsWithThisFilter");
+      setTypeAlert('existProductsWithThisFilter');
       setProductsSelected(productsWithThisFilter);
       setShowAlert(true);
     } else {
-      console.log("Llego aquí?", filterName)
+      console.log('Llego aquí?', filterName);
       let newFilters = filters;
       // newFilters = newFilters.filter(
       //   (element) =>(element.featureName !== filterName
       // ));;
-      newFilters.splice(order, 1)
-      console.log("nuevosFiltros", newFilters)
+      newFilters.splice(order, 1);
+      console.log('nuevosFiltros', newFilters);
       setFilters(newFilters);
       reloadPage();
     }
@@ -423,7 +510,7 @@ const Distribution = () => {
     console.log('data final', {...data, filters: filters});
     // setFilters();
     // setCategories();
-    
+
     console.log('sacarlo', defaultMoney);
     let defaultMoney2;
     if (defaultMoney == 'PEN') {
@@ -450,17 +537,19 @@ const Distribution = () => {
     if (finalCategories.length >= 1) {
       finalCategories[0].default = true;
     }
-    
+
     const finalPayload = {
       request: {
         payload: {
-          merchantId: userDataRes ? userDataRes.merchantSelected.merchantId : null,
+          merchantId: userDataRes
+            ? userDataRes.merchantSelected.merchantId
+            : null,
           defaultMoneyValue: defaultMoney2.value,
           defaultMoneyMetadata2: defaultMoney2.metadata2,
           defaultMoneyMetadata4: defaultMoney2.metadata4,
           defaultWeightValue: defaultWeight,
           defaultIgvValue: defaultIgvActivation,
-          defaultProductsPayDetail: defaultProductsPayDetail || "",
+          defaultProductsPayDetail: defaultProductsPayDetail || '',
           price: defaultPriceRange,
           filters: publish ? filters : [],
           categories: finalCategories,
@@ -471,13 +560,16 @@ const Distribution = () => {
     console.log('finalPayload', finalPayload);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GET_USER_DATA, payload: {
-      ...userDataRes,
-      merchantSelected: {
-        ...userDataRes.merchantSelected,
-        isEcommerceEnabled: publish
-      }
-    }});
+    dispatch({
+      type: GET_USER_DATA,
+      payload: {
+        ...userDataRes,
+        merchantSelected: {
+          ...userDataRes.merchantSelected,
+          isEcommerceEnabled: publish,
+        },
+      },
+    });
     dispatch({type: UPDATE_ALL_BUSINESS_PARAMETER, payload: undefined});
     updateParameters(finalPayload);
     setOpenStatus(true);
@@ -654,9 +746,17 @@ const Distribution = () => {
   const handleClose2 = () => {
     setOpenDelete(false);
   };
+
+  const handleFile = (event) => {
+    console.log('evento', event);
+    setExcelOrCsvName(
+      event.target.files[0].name.split('.').slice(0, -1).join('.'),
+    );
+    setExcelOrCsv(event);
+  };
+
   const confirmDelete = (obj) => {
-    deletePayload.request.payload.merchantId =
-    obj.merchantId;
+    deletePayload.request.payload.merchantId = obj.merchantId;
     deletePayload.request.payload.productId = obj.productId;
     deletePayload.request.payload.businessProductCode = obj.product;
     toDeleteProduct(deletePayload);
@@ -670,7 +770,7 @@ const Distribution = () => {
     setShowAlert(false);
     setTimeout(() => {
       listPayload.request.payload.merchantId =
-      userDataRes.merchantSelected.merchantId;
+        userDataRes.merchantSelected.merchantId;
       getProducts(listPayload);
     }, 200);
   };
@@ -812,7 +912,7 @@ const Distribution = () => {
                     label={'IGV'}
                   />
                 </Grid>
-                {publish && 
+                {publish && (
                   <>
                     <Grid sx={{mb: 3, my: 2}} item xs={12} md={12}>
                       <AppTextField
@@ -846,14 +946,13 @@ const Distribution = () => {
                       />
                     </Grid>
                   </>
-                }
-                
+                )}
               </Form>
             );
           }}
         </Formik>
       </Box>
-      {publish && 
+      {publish && (
         <>
           <Box
             sx={{
@@ -937,43 +1036,41 @@ const Distribution = () => {
             {filters &&
               filters.map((filter, index) => (
                 <>
-                <FilterCard
-                  key={index}
-                  order={index}
-                  execFunctions={execAll}
-                  newValuesData={setFilterIndex}
-                  initialValues={filter}
-                  deleteFilter={deleteFilter}
-                />
-                <Divider sx={{my: 0}} />
-                <ButtonGroup
-                  orientation='vertical'
-                  sx={{width: 1}}
-                  aria-label='outlined button group'
-                >
-                  <Button
-                    color='primary'
-                    sx={{mx: 'auto', my: 2, py: 1}}
-                    form='principal-form'
-                    variant='contained'
-                    onClick={() => {
-                      console.log('filters', filters);
-                      let newFilters = filters;
-                      newFilters.splice(index+1, 0, emptyFilter)
-                      setFilters(newFilters);
-                      reloadPage();
-                    }}
+                  <FilterCard
+                    key={index}
+                    order={index}
+                    execFunctions={execAll}
+                    newValuesData={setFilterIndex}
+                    initialValues={filter}
+                    deleteFilter={deleteFilter}
+                  />
+                  <Divider sx={{my: 0}} />
+                  <ButtonGroup
+                    orientation='vertical'
+                    sx={{width: 1}}
+                    aria-label='outlined button group'
                   >
-                    Añadir Nuevo Filtro
-                  </Button>
-                </ButtonGroup>
-                
+                    <Button
+                      color='primary'
+                      sx={{mx: 'auto', my: 2, py: 1}}
+                      form='principal-form'
+                      variant='contained'
+                      onClick={() => {
+                        console.log('filters', filters);
+                        let newFilters = filters;
+                        newFilters.splice(index + 1, 0, emptyFilter);
+                        setFilters(newFilters);
+                        reloadPage();
+                      }}
+                    >
+                      Añadir Nuevo Filtro
+                    </Button>
+                  </ButtonGroup>
                 </>
               ))}
           </Box>
         </>
-      }
-      
+      )}
 
       <Box
         sx={{
@@ -1070,7 +1167,7 @@ const Distribution = () => {
                         productsWithThisCategory,
                       );
                       if (productsWithThisCategory.length > 0) {
-                        setTypeAlert("existProductsWithThisCategory");
+                        setTypeAlert('existProductsWithThisCategory');
                         setProductsSelected(productsWithThisCategory);
                         setShowAlert(true);
                       } else {
@@ -1164,6 +1261,31 @@ const Distribution = () => {
           />
         </FormGroup>
       </Box>
+
+      <Button
+        variant='outlined'
+        component='label'
+        endIcon={!excelOrCsvName ? <FileUploadOutlinedIcon /> : null}
+      >
+        {excelOrCsvName || 'Subir archivo'}
+        <input
+          type='file'
+          hidden
+          onChange={handleFile}
+          on
+          id='imgInp'
+          name='imgInp'
+          accept='.xlsx, .csv'
+        />
+      </Button>
+      <Button
+        startIcon={<SettingsIcon />}
+        variant='contained'
+        color='primary'
+        onClick={onChangeHandler}
+      >
+        Procesar
+      </Button>
 
       <ButtonGroup
         orientation='vertical'
@@ -1319,12 +1441,12 @@ const Distribution = () => {
                     {localStorage
                       .getItem('pathsBack')
                       .includes('/inventory/products/update') === true ? (
-                    <TableCell>Editar</TableCell>
+                      <TableCell>Editar</TableCell>
                     ) : null}
                     {localStorage
-                            .getItem('pathsBack')
-                            .includes('/inventory/products/delete') === true ? (
-                    <TableCell>Eliminar</TableCell>
+                      .getItem('pathsBack')
+                      .includes('/inventory/products/delete') === true ? (
+                      <TableCell>Eliminar</TableCell>
                     ) : null}
                   </TableRow>
                 </TableHead>
@@ -1358,32 +1480,32 @@ const Distribution = () => {
                           {localStorage
                             .getItem('pathsBack')
                             .includes('/inventory/products/update') === true ? (
-                          <TableCell>
-                            <IconButton
-                              onClick={() => {
-                                goToUpdate(obj);
-                              }}
-                              size='small'
-                            >
-                              <BorderColorOutlinedIcon fontSize='small' />
-                            </IconButton>
-                          </TableCell>
+                            <TableCell>
+                              <IconButton
+                                onClick={() => {
+                                  goToUpdate(obj);
+                                }}
+                                size='small'
+                              >
+                                <BorderColorOutlinedIcon fontSize='small' />
+                              </IconButton>
+                            </TableCell>
                           ) : null}
                           {localStorage
                             .getItem('pathsBack')
                             .includes('/inventory/products/delete') === true ? (
-                          <TableCell>
-                            <IconButton
-                              disabled
-                              onClick={() => {
-                                setSelectedProduct(obj)
-                                setDeleteState();
-                              }}
-                              size='small'
-                            >
-                              <DeleteOutlineOutlinedIcon fontSize='small' />
-                            </IconButton>
-                          </TableCell>
+                            <TableCell>
+                              <IconButton
+                                disabled
+                                onClick={() => {
+                                  setSelectedProduct(obj);
+                                  setDeleteState();
+                                }}
+                                size='small'
+                              >
+                                <DeleteOutlineOutlinedIcon fontSize='small' />
+                              </IconButton>
+                            </TableCell>
                           ) : null}
                         </TableRow>
                       );
@@ -1425,9 +1547,12 @@ const Distribution = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={() => {
-                                confirmDelete(selectedProduct);
-                              }}>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              confirmDelete(selectedProduct);
+            }}
+          >
             Sí
           </Button>
           <Button variant='outlined' onClick={handleClose2}>
