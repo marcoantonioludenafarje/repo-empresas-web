@@ -59,7 +59,8 @@ import {generatePredefinedRoute} from '../../../redux/actions/Movements';
 import {onGetProducts, deleteProduct} from '../../../redux/actions/Products';
 import {getCarriers} from '../../../redux/actions/Carriers';
 import {blue, green, red} from '@mui/material/colors';
-
+import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {getUserData} from '../../../redux/actions/User';
 import {completeWithZeros} from '../../../Utils/utils';
 import {
@@ -75,6 +76,9 @@ import {
   GENERATE_ROUTE,
   UPDATE_ALL_BUSINESS_PARAMETER,
 } from '../../../shared/constants/ActionTypes';
+
+
+const XLSX = require('xlsx');
 
 const Distribution = () => {
   let changeValue;
@@ -151,6 +155,8 @@ const Distribution = () => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({products}) => products);
   console.log('errorMessage', errorMessage);
+  const [excelOrCsv, setExcelOrCsv] = React.useState("");
+  const [excelOrCsvName, setExcelOrCsvName] = React.useState("");
 
 
   let deletePayload = {
@@ -174,6 +180,85 @@ const Distribution = () => {
   const toDeleteProduct = (payload) => {
     dispatch(deleteProduct(payload));
   };
+
+  const updateCatalogs = (payload) => {
+    dispatch(updateAllBusinessParameter(payload));
+  };
+
+
+  const processData = (data) => {
+    const keys = data[0];
+    const datav2 = data
+      .slice(1)
+      .filter(row => row[0] !== undefined && row[0] !== null)
+      .map(row =>
+        keys.reduce((obj, key, i) => {
+          obj[key] = row[i];
+          return obj;
+        }, {})
+      );
+    return datav2;
+  };
+
+  const onChangeHandler = (event) => {
+
+    if (excelOrCsv.target.files) {
+      const reader = new FileReader();
+      reader.onload = (excelOrCsv) => {
+        const bstr = excelOrCsv.target.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        console.log("wb", wb);
+
+        const productsSheet = wb.Sheets["PRODUCTOS"];
+        const productsData = XLSX.utils.sheet_to_json(productsSheet, { header: 1 });
+        const productsDataV2 = processData(productsData);
+
+        const clientsSheet = wb.Sheets["CLIENTES"];
+        const clientsData = XLSX.utils.sheet_to_json(clientsSheet, { header: 1 });
+        const clientsDataV2 = processData(clientsData);
+
+        const arrivalPointsSheet = wb.Sheets["PUNTOS_ENTREGA"];
+        const arrivalPointsData = XLSX.utils.sheet_to_json(arrivalPointsSheet, { header: 1 });
+        const arrivalPointsDataV2 = processData(arrivalPointsData);
+
+        const originalPointsSheet = wb.Sheets["PUNTOS_ORIGEN"];
+        const originalPointsData = XLSX.utils.sheet_to_json(originalPointsSheet, { header: 1 });
+        const originalPointsDataV2 = processData(originalPointsData);
+
+        const driversSheet = wb.Sheets["CHOFERES"];
+        const driversData = XLSX.utils.sheet_to_json(driversSheet, { header: 1 });
+        const driversDataV2 = processData(driversData);
+
+        const carriersSheet = wb.Sheets["EMPRESA TRANSPORTISTA"];
+        const carriersData = XLSX.utils.sheet_to_json(carriersSheet, { header: 1 });
+        const carriersDataV2 = processData(carriersData);
+
+        console.log("productsDataV2", productsDataV2)
+        console.log("routesDataV2", clientsDataV2)
+
+        const payloadCatalogs = {
+          merchantId: "2738219821" , 
+          data : {
+            arrivalPointsDataV2,
+            originalPointsDataV2,
+            driversSheet
+          }
+        }
+
+
+
+        // const deliveriesFinished = formatData(routesDataV2, originalPointsDataV2, arrivalPointsDataV2, driversDataV2, carriersDataV2, productsDataV2);
+      
+        // setDriversData(driversData);
+        // setDeliveriesData(deliveriesFinished);
+        // setRoutes(deliveriesFinished)
+      };
+      reader.readAsBinaryString(excelOrCsv.target.files[0]);
+    }
+
+  };
+
+
   let defaultValues = {
     routeName: '',
     defaultMinPrice: 0,
@@ -654,6 +739,13 @@ const Distribution = () => {
   const handleClose2 = () => {
     setOpenDelete(false);
   };
+
+  const handleFile = (event) => {
+    console.log('evento', event);
+    setExcelOrCsvName(event.target.files[0].name.split('.').slice(0, -1).join('.'));
+    setExcelOrCsv(event);
+  };
+
   const confirmDelete = (obj) => {
     deletePayload.request.payload.merchantId =
     obj.merchantId;
@@ -1164,6 +1256,34 @@ const Distribution = () => {
           />
         </FormGroup>
       </Box>
+
+
+        <Button
+          variant='outlined'
+          component='label'
+          endIcon={!excelOrCsvName ? <FileUploadOutlinedIcon /> : null}
+        >
+          {excelOrCsvName || "Subir archivo"}
+          <input
+            type='file'
+            hidden
+            onChange={handleFile}
+            on
+            id='imgInp'
+            name='imgInp'
+            accept='.xlsx, .csv'
+          />
+        </Button>
+        <Button
+          startIcon={<SettingsIcon />}
+          variant='contained'
+          color='primary'
+          onClick={onChangeHandler}
+        >
+          Procesar
+        </Button>
+
+
 
       <ButtonGroup
         orientation='vertical'
