@@ -1272,7 +1272,7 @@ const Distribution = () => {
         </FormGroup>
       </Box>
 
-      <Button
+      {/* <Button
         variant='outlined'
         component='label'
         endIcon={!excelOrCsvName ? <FileUploadOutlinedIcon /> : null}
@@ -1296,7 +1296,7 @@ const Distribution = () => {
       >
         Procesar
       </Button>
-      {(updateCatalogsRes && generalSuccess) ? (
+      {(updateCatalogsRes && generalSuccess && !updateCatalogsRes.error) ? (
         <>
           <CheckCircleOutlineOutlinedIcon
             color='success'
@@ -1307,17 +1307,17 @@ const Distribution = () => {
         <>
         </>
       )}
-      {(updateCatalogsRes && generalError) ? (
+      {((updateCatalogsRes && updateCatalogsRes.error) || generalError) ? (
         <>
           <CancelOutlinedIcon
             sx={{ fontSize: '1.5em', mx: 2, color: red[500] }}
           />
-          {updateCatalogsRes}
+          {updateCatalogsRes ? updateCatalogsRes.error : "Hubo un error durante el proceso"}
         </>
       ) : (
         <>
         </>
-      )}
+      )} */}
 
       <ButtonGroup
         orientation='vertical'

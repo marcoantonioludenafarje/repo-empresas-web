@@ -233,6 +233,14 @@ const rolesRoutesConfig = {
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/parameters/update',
         },
+        {
+          id: 'bulkLoad',
+          title: 'BulkLoad Table',
+          messageId: 'sidebar.sample.bulkLoad',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/bulkLoad/index',
+        },
       ],
     },
     {
