@@ -45,7 +45,7 @@ const rolesRoutesConfig = {
       type: 'item',
       url: '/sample/myBilling',
     },
-    
+
     {
       id: 'ecommerce',
       title: 'ecommerce',

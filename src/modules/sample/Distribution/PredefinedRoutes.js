@@ -212,9 +212,7 @@ const PredefinedRoutes = () => {
                                   <TableCell>
                                     Ubigeo de punto de llegada
                                   </TableCell>
-                                  <TableCell>
-                                    Documento de conductor
-                                  </TableCell>
+                                  <TableCell>Documento de conductor</TableCell>
                                   <TableCell>Nombre de conductor</TableCell>
                                   <TableCell>Apellidos de conductor</TableCell>
                                   <TableCell>Licencia de conductor</TableCell>

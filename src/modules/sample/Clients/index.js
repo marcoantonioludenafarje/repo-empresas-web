@@ -358,7 +358,7 @@ const ClientTable = (arrayObjs, props) => {
             labelId='documentType-label'
             label='Identificador'
             onChange={(event) => {
-              console.log("Está pasando por aquí?", event.target.value);
+              console.log('Está pasando por aquí?', event.target.value);
               listPayload.request.payload.typeDocumentClient =
                 event.target.value;
             }}
@@ -422,12 +422,9 @@ const ClientTable = (arrayObjs, props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listClients
-             && 
-             Array.isArray(listClients) 
-            //  &&
-            //  listClients.length > 0 
-             ? (
+            {listClients && Array.isArray(listClients) ? (
+              //  &&
+              //  listClients.length > 0
               listClients.map((obj, index) => {
                 let parsedId = obj.clientId.split('-');
                 return (

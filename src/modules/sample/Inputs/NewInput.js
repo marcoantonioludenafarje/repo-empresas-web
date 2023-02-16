@@ -302,7 +302,10 @@ const NewInput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(total * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (total *  (1 + Number(igvDefault))).toFixed(3));
+      changeValueField(
+        'totalFieldIgv',
+        (total * (1 + Number(igvDefault))).toFixed(3),
+      );
     }
     setTimeout(() => {
       setMinTutorial(true);
@@ -400,7 +403,10 @@ const NewInput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total *  (1 + Number(igvDefault))).toFixed(3));
+    changeValueField(
+      'totalFieldIgv',
+      (total * (1 + Number(igvDefault))).toFixed(3),
+    );
   };
   const getProvider = (provider) => {
     selectedProvider = provider;
@@ -435,7 +441,10 @@ const NewInput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total *  (1 + Number(igvDefault))).toFixed(3));
+    changeValueField(
+      'totalFieldIgv',
+      (total * (1 + Number(igvDefault))).toFixed(3),
+    );
     forceUpdate();
   };
 
@@ -543,7 +552,10 @@ const NewInput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(event.target.value * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (event.target.value * (1+Number(igvDefault))).toFixed(3));
+      changeValueField(
+        'totalFieldIgv',
+        (event.target.value * (1 + Number(igvDefault))).toFixed(3),
+      );
     }
     console.log('actualValues', actualValues);
   };

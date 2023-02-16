@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { alpha, Box, Button, Typography } from '@mui/material';
+import React, {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {alpha, Box, Button, Typography} from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import AppGridContainer from '../../../../@crema/core/AppGridContainer';
 import Grid from '@mui/material/Grid';
@@ -23,24 +23,24 @@ import {
   Collapse,
   Alert,
   Autocomplete,
-  TextField
+  TextField,
 } from '@mui/material';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import originalUbigeos from '../../../../Utils/ubigeo.json';
 import CloseIcon from '@mui/icons-material/Close';
-import { useDropzone } from 'react-dropzone';
-import { Form } from 'formik';
+import {useDropzone} from 'react-dropzone';
+import {Form} from 'formik';
 import PropTypes from 'prop-types';
 import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { styled } from '@mui/material/styles';
-import { Fonts } from '../../../../shared/constants/AppEnums';
-import { makeStyles } from '@mui/styles';
+import {styled} from '@mui/material/styles';
+import {Fonts} from '../../../../shared/constants/AppEnums';
+import {makeStyles} from '@mui/styles';
 import FilePresentIcon from '@mui/icons-material/FilePresent';
-import { createPresigned } from '../../../../redux/actions/General';
-import { updateUser } from '../../../../redux/actions/User';
-const AvatarViewWrapper = styled('div')(({ theme }) => {
+import {createPresigned} from '../../../../redux/actions/General';
+import {updateUser} from '../../../../redux/actions/User';
+const AvatarViewWrapper = styled('div')(({theme}) => {
   return {
     position: 'relative',
     cursor: 'pointer',
@@ -116,10 +116,21 @@ const BusinessInfoForm = ({
   billingCertified,
   isBilling,
   baseUbigeo,
-  moveUbigeo
+  moveUbigeo,
 }) => {
   const dispatch = useDispatch();
-  const classes = useStyles({ values, setFieldValue, moveData, moveLogo, moveCertified, logoImage, billingCertified, isBilling, baseUbigeo, moveUbigeo });
+  const classes = useStyles({
+    values,
+    setFieldValue,
+    moveData,
+    moveLogo,
+    moveCertified,
+    logoImage,
+    billingCertified,
+    isBilling,
+    baseUbigeo,
+    moveUbigeo,
+  });
   let imagePayload = {
     request: {
       payload: {
@@ -139,7 +150,7 @@ const BusinessInfoForm = ({
   const [typeFileCertified, setTypeFileCertified] = React.useState('');
   const [nameFileCertified, setNameFileCertified] = React.useState('');
   const [base64, setBase64] = React.useState('');
-  const { presigned } = useSelector(({ general }) => general);
+  const {presigned} = useSelector(({general}) => general);
   const [showAlert, setShowAlert] = React.useState(false);
   const [certified, setCertified] = React.useState(billingCertified);
 
@@ -150,7 +161,7 @@ const BusinessInfoForm = ({
   const [objUbigeo, setObjUbigeo] = React.useState(false);
   console.log('createPresigned', presigned);
   console.log('Valores', values);
-  const { getRootProps, getInputProps } = useDropzone({
+  const {getRootProps, getInputProps} = useDropzone({
     accept: 'image/*',
     onDrop: (acceptedFiles) => {
       setFieldValue('photoURL', URL.createObjectURL(acceptedFiles[0]));
@@ -168,10 +179,10 @@ const BusinessInfoForm = ({
         ...obj,
       };
     });
-    console.log("baseUbigeo", baseUbigeo)
-    const initialUbigeo = ubigeos.find(obj => obj.ubigeo == baseUbigeo);
-    setObjUbigeo(initialUbigeo)
-    setUbigeo(initialUbigeo.ubigeo)
+    console.log('baseUbigeo', baseUbigeo);
+    const initialUbigeo = ubigeos.find((obj) => obj.ubigeo == baseUbigeo);
+    setObjUbigeo(initialUbigeo);
+    setUbigeo(initialUbigeo.ubigeo);
     setParsedUbigeos(ubigeos);
     if (readyData) {
       setObjUbigeo(ubigeos[0]);
@@ -208,15 +219,19 @@ const BusinessInfoForm = ({
   }, [ubigeo]);
   useEffect(() => {
     if (base64) {
-      setCertified({ base64: base64, name: nameFileCertified, type: typeFileCertified });
+      setCertified({
+        base64: base64,
+        name: nameFileCertified,
+        type: typeFileCertified,
+      });
     }
-  }, [base64])
+  }, [base64]);
   useEffect(() => {
     if (certified) {
       moveCertified(certified);
       console.log('certified', certified);
     }
-  }, [certified])
+  }, [certified]);
   const handleField = (event) => {
     console.log('evento', event);
     console.log('valor', event.target.value);
@@ -251,7 +266,9 @@ const BusinessInfoForm = ({
     }, 2000);
   };
   const deleteFile = (index, itemSelected) => {
-    setSelectedImages((oldState) => oldState.filter((item) => item !== itemSelected));
+    setSelectedImages((oldState) =>
+      oldState.filter((item) => item !== itemSelected),
+    );
   };
   const getImage = (event) => {
     if (event.target.value !== '') {
@@ -290,15 +307,14 @@ const BusinessInfoForm = ({
     if (event.target.value !== '') {
       console.log('archivo', event.target.files[0]);
       var imgsize = event.target.files[0].size;
-      console.log("Cuánto es el imgsize", imgsize)
+      console.log('Cuánto es el imgsize', imgsize);
       if (imgsize > 3000000) {
-        typeAlert = "sizeOverWeightLimit"
+        typeAlert = 'sizeOverWeightLimit';
         setShowAlert(true);
       } else {
-        uploadNewFile2(event)
+        uploadNewFile2(event);
       }
     }
-
   };
   const uploadNewFile2 = (event) => {
     if (event.target.value !== '') {
@@ -311,7 +327,6 @@ const BusinessInfoForm = ({
       );
       setTypeFileCertified(fileToUpload.type);
       setNameFileCertified(fileToUpload.name);
-
     } else {
       event = null;
       console.log('no se selecciono un archivo');
@@ -324,7 +339,7 @@ const BusinessInfoForm = ({
         sx={{
           fontSize: 16,
           fontWeight: Fonts.BOLD,
-          mb: { xs: 3, lg: 4 },
+          mb: {xs: 3, lg: 4},
         }}
       >
         <IntlMessages id='common.businessInfo' />
@@ -346,8 +361,8 @@ const BusinessInfoForm = ({
           />
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth sx={{ my: 2 }}>
-            <InputLabel id='documentType-label' style={{ fontWeight: 200 }}>
+          <FormControl fullWidth sx={{my: 2}}>
+            <InputLabel id='documentType-label' style={{fontWeight: 200}}>
               <IntlMessages id='common.busines.documentType' />
             </InputLabel>
             <Select
@@ -358,13 +373,13 @@ const BusinessInfoForm = ({
               onChange={handleField}
               value={typeDocument}
             >
-              <MenuItem value='RUC' style={{ fontWeight: 200 }}>
+              <MenuItem value='RUC' style={{fontWeight: 200}}>
                 RUC
               </MenuItem>
-              <MenuItem value='DNI' style={{ fontWeight: 200 }}>
+              <MenuItem value='DNI' style={{fontWeight: 200}}>
                 DNI
               </MenuItem>
-              <MenuItem value='CE' style={{ fontWeight: 200 }}>
+              <MenuItem value='CE' style={{fontWeight: 200}}>
                 CE
               </MenuItem>
             </Select>
@@ -387,11 +402,7 @@ const BusinessInfoForm = ({
             }
             getOptionLabel={(option) => option.label || ''}
             onChange={(option, value) => {
-              if (
-                typeof value === 'object' &&
-                value != null &&
-                value !== ''
-              ) {
+              if (typeof value === 'object' && value != null && value !== '') {
                 console.log('objeto ubigeo', value);
                 setObjUbigeo(value);
                 setUbigeo(value.ubigeo.toString());
@@ -426,7 +437,7 @@ const BusinessInfoForm = ({
           />
         </Grid>
         <Grid item xs={7} md={7}>
-          <Box sx={{ textAlign: 'left' }}>
+          <Box sx={{textAlign: 'left'}}>
             <Typography
               variant='h4'
               sx={{
@@ -435,10 +446,10 @@ const BusinessInfoForm = ({
               }}
               paragraph='true'
             >
-              {process.env.REACT_APP_ECOMMERCE_URL}{values.eMerchantSlugName}
+              {process.env.REACT_APP_ECOMMERCE_URL}
+              {values.eMerchantSlugName}
             </Typography>
           </Box>
-
         </Grid>
         <Grid item xs={5} md={5}>
           <AppTextField
@@ -529,7 +540,7 @@ const BusinessInfoForm = ({
                     position='top'
                     actionIcon={
                       <IconButton
-                        sx={{ color: 'white' }}
+                        sx={{color: 'white'}}
                         aria-label={`star prueba`}
                         onClick={() => {
                           deleteImage(index, item);
@@ -550,30 +561,28 @@ const BusinessInfoForm = ({
         {isBilling ? (
           <>
             <Grid item xs={12} md={12}>
-            <Button variant='contained' color='primary' component='label'>
-              Adjuntar certificado digital
-              <input
-                type='file'
-                hidden
-                onChange={uploadNewFile1}
-                id='newFile'
-                name='newfile'
-                accept='.pem, .pfx'
-              />
-            </Button>
-            {billingCertified ? (
-              <IconButton
-                onClick={uploadNewFile2}
-              >
-                <FilePresentIcon
-                  color='success'
-                  sx={{ fontSize: '2em', mx: 2 }}
+              <Button variant='contained' color='primary' component='label'>
+                Adjuntar certificado digital
+                <input
+                  type='file'
+                  hidden
+                  onChange={uploadNewFile1}
+                  id='newFile'
+                  name='newfile'
+                  accept='.pem, .pfx'
                 />
-                {billingCertified.name}
-              </IconButton>
-            ) : (
-              <></>
-            )}
+              </Button>
+              {billingCertified ? (
+                <IconButton onClick={uploadNewFile2}>
+                  <FilePresentIcon
+                    color='success'
+                    sx={{fontSize: '2em', mx: 2}}
+                  />
+                  {billingCertified.name}
+                </IconButton>
+              ) : (
+                <></>
+              )}
             </Grid>
             <Grid item xs={12} md={12}>
               <AppTextField
@@ -632,7 +641,7 @@ const BusinessInfoForm = ({
                   <CloseIcon fontSize='inherit' />
                 </IconButton>
               }
-              sx={{ mb: 2 }}
+              sx={{mb: 2}}
             >
               {typeAlert == 'sizeOverWeightLimit' ? (
                 'El archivo supera los 3Mb.'
@@ -658,5 +667,6 @@ BusinessInfoForm.propTypes = {
   billingCertified: PropTypes.string,
   isBilling: PropTypes.bool,
   ubigeo: PropTypes.string,
-  moveUbigeo: PropTypes.func
+  moveUbigeo: PropTypes.func,
+  baseUbigeo: PropTypes.any,
 };

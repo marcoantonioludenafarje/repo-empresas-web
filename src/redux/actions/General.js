@@ -287,11 +287,12 @@ export const updateAllBusinessParameter = (payload) => {
   };
 };
 
-
 export const exportExcelTemplateToGenerateRoute = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/exportExcelTemplateToGenerateRoute', {body: payload})
+    API.post('tunexo', '/facturacion/exportExcelTemplateToGenerateRoute', {
+      body: payload,
+    })
       .then((data) => {
         console.log('onExportExcelTemplateToGenerateRoute resultado', data);
         dispatch({

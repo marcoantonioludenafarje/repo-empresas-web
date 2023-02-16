@@ -235,7 +235,7 @@ const NewProduct = (props) => {
   const [lengthProducts, setLengthProducts] = React.useState(0);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
-  const [typeDialog, setTypeDialog] = React.useState("registrarProducto");
+  const [typeDialog, setTypeDialog] = React.useState('registrarProducto');
   const [selectedCategory, setSelectedCategory] =
     React.useState('noCategories');
   const [typeProduct, setTypeProduct] = React.useState('rawMaterial');
@@ -394,7 +394,7 @@ const NewProduct = (props) => {
       defaultValues.merchantId = userDataRes.merchantSelected.merchantId;
       if (userDataRes.merchantSelected.isEcommerceEnabled == true) {
         setSectionEcommerce(true);
-        
+
         setPublish(true);
       }
       getProducts(listPayload);
@@ -573,14 +573,14 @@ const NewProduct = (props) => {
       userDataRes.merchantSelected.plans.find((obj) => obj.active == true)
         .limits.catalogNumberProducts
     ) {
-      if(publish && !data.title){
-        setTypeDialog("nonTitle");
+      if (publish && !data.title) {
+        setTypeDialog('nonTitle');
         setOpen(true);
-      } else if(publish && !data.commercialDescription) {
-        setTypeDialog("nonCommercialDescription");
+      } else if (publish && !data.commercialDescription) {
+        setTypeDialog('nonCommercialDescription');
         setOpen(true);
       } else {
-        setTypeDialog("registrarProducto");
+        setTypeDialog('registrarProducto');
         setShowAlert(false);
         setSubmitting(true);
         /* if (selectedFile) { */ //PARA LA TOMA DE IMAGEN
@@ -691,7 +691,10 @@ const NewProduct = (props) => {
           console.log('resultado del registro', addProductResponse);
           setOpen(true);
         } else {
-          if (selectedProducts.length === 0 && typeProduct == 'intermediateProduct') {
+          if (
+            selectedProducts.length === 0 &&
+            typeProduct == 'intermediateProduct'
+          ) {
             setTypeAlert('faltaProduct');
           } else if (!goodStockComplexProducts) {
             setTypeAlert('maxStock');
@@ -1124,7 +1127,7 @@ const NewProduct = (props) => {
                         />
                       </FormGroup>
                     </Grid>
-                    {publish && 
+                    {publish && (
                       <>
                         <Typography
                           component='h3'
@@ -1252,8 +1255,7 @@ const NewProduct = (props) => {
                           <></>
                         )}
                       </>
-                    } 
-                    
+                    )}
                   </>
                 ) : (
                   <></>
@@ -1347,9 +1349,8 @@ const NewProduct = (props) => {
                 ) : (
                   <></>
                 )}
-                
               </Grid>
-              
+
               <ButtonGroup
                 orientation='vertical'
                 variant='outlined'
@@ -1514,7 +1515,6 @@ const NewProduct = (props) => {
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
                 {'Falta indicar el título comercial'}
-                
               </DialogTitle>
               <DialogContent>
                 <CancelOutlinedIcon
@@ -1524,8 +1524,7 @@ const NewProduct = (props) => {
                 <DialogContentText
                   sx={{fontSize: '1.2em', m: 'auto'}}
                   id='alert-dialog-description'
-                >
-                </DialogContentText>
+                ></DialogContentText>
               </DialogContent>
               <DialogActions sx={{justifyContent: 'center'}}>
                 <Button variant='outlined' onClick={() => setOpen(false)}>
@@ -1540,7 +1539,6 @@ const NewProduct = (props) => {
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
                 {'Falta llenar la descripción comercial'}
-                
               </DialogTitle>
               <DialogContent>
                 <CancelOutlinedIcon
@@ -1550,8 +1548,7 @@ const NewProduct = (props) => {
                 <DialogContentText
                   sx={{fontSize: '1.2em', m: 'auto'}}
                   id='alert-dialog-description'
-                >
-                </DialogContentText>
+                ></DialogContentText>
               </DialogContent>
               <DialogActions sx={{justifyContent: 'center'}}>
                 <Button variant='outlined' onClick={() => setOpen(false)}>

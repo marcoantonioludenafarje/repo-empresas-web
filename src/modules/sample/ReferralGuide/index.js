@@ -248,9 +248,9 @@ const ReferralGuidesTable = (props) => {
 
       if (Object.keys(query).length !== 0) {
         console.log('Query con datos', query);
-        if(query.movementHeaderId){
+        if (query.movementHeaderId) {
           listPayload.request.payload.outputId = query.movementHeaderId;
-        }else if (query.referralGuideId){
+        } else if (query.referralGuideId) {
           listPayload.request.payload.movementHeaderId = query.referralGuideId;
         }
       }
@@ -428,13 +428,11 @@ const ReferralGuidesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes &&
-            Array.isArray(getMovementsRes) 
-            // &&
-            // getMovementsRes[0] &&
-            // getMovementsRes[0].movementType == 'REFERRAL_GUIDE' 
-            
-            ? (
+            {getMovementsRes && Array.isArray(getMovementsRes) ? (
+              // &&
+              // getMovementsRes[0] &&
+              // getMovementsRes[0].movementType == 'REFERRAL_GUIDE'
+
               getMovementsRes.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}

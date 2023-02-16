@@ -295,7 +295,7 @@ const ProductTable = (arrayObjs, props) => {
     getProducts(listPayload);
   };
   // const goApiGofast = () => {
-    
+
   //   const toGetShopProducts = (payload) => {
   //     dispatch(getShopProducts(payload));
   //   };
@@ -306,7 +306,7 @@ const ProductTable = (arrayObjs, props) => {
   //           }
   //       }
   //   };
-    
+
   //   toGetShopProducts(getShopProductsPayload);
   // };
   const newProduct = () => {
@@ -601,9 +601,11 @@ const ProductTable = (arrayObjs, props) => {
           onChange={handleSearchValues}
         />
 
-        <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined' 
+        <Button
+          startIcon={<FilterAltOutlinedIcon />}
+          variant='outlined'
           // onClick={goApiGofast}
-          >
+        >
           Más filtros
         </Button>
         <Button

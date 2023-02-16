@@ -51,12 +51,8 @@ const validationSchema = yup.object({
     .string()
     .required(<IntlMessages id='validation.reTypePassword' />),
   name: yup.string().required(<IntlMessages id='validation.required' />),
-  lastName: yup
-    .string()
-    .required(<IntlMessages id='validation.required' />),
-  cellphone: yup
-    .number()
-    .required(<IntlMessages id='validation.cellphone' />),
+  lastName: yup.string().required(<IntlMessages id='validation.required' />),
+  cellphone: yup.number().required(<IntlMessages id='validation.cellphone' />),
   businessSocialReason: yup
     .string()
     .required(<IntlMessages id='validation.required' />),
@@ -240,10 +236,17 @@ const SignupAwsCognito = () => {
                   }}
                 />
               </Box>
-                      
+
               <AppGridContainer spacing={4}>
                 <Grid item xs={2} md={2}>
-                  <TextField disabled defaultValue={'+51'} label={<IntlMessages id='common.cellphoneCountryCod' />} variant="filled" color="success" focused />
+                  <TextField
+                    disabled
+                    defaultValue={'+51'}
+                    label={<IntlMessages id='common.cellphoneCountryCod' />}
+                    variant='filled'
+                    color='success'
+                    focused
+                  />
                 </Grid>
                 <Grid item xs={10} md={10}>
                   <Box sx={{mb: {xs: 4, xl: 5}}}>
@@ -261,7 +264,6 @@ const SignupAwsCognito = () => {
                   </Box>
                 </Grid>
               </AppGridContainer>
-              
 
               {/* <Box
                 sx={{

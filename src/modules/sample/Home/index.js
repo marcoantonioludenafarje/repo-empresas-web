@@ -118,8 +118,8 @@ const Home = (props) => {
             flexDirection: 'row',
             fontSize: 18,
             '&:hover': {
-              color: "#f00",
-              cursor: 'pointer'
+              color: '#f00',
+              cursor: 'pointer',
             },
           }}
         >
@@ -165,8 +165,8 @@ const Home = (props) => {
             flexDirection: 'row',
             fontSize: 18,
             '&:hover': {
-              color: "#f00",
-              cursor: 'pointer'
+              color: '#f00',
+              cursor: 'pointer',
             },
           }}
         >
@@ -212,8 +212,8 @@ const Home = (props) => {
             flexDirection: 'row',
             fontSize: 18,
             '&:hover': {
-              color: "#f00",
-              cursor: 'pointer'
+              color: '#f00',
+              cursor: 'pointer',
             },
           }}
         >
@@ -247,58 +247,57 @@ const Home = (props) => {
           </Box>
         </Box>
         {getRolUserRes.merchantSelected.isEcommerceEnabled ? (
-        <Box
-          sx={{
-            m: 0,
-            textAlign: 'left',
-            position: 'relative',
-            '& img': {
-              maxHeight: '100%',
-              maxWidth: '100%',
-            },
-            display: 'flex',
-            flexDirection: 'row',
-            fontSize: 18,
-            '&:hover': {
-              color: "#f00",
-              cursor: 'pointer'
-            },
-          }}
-        >
           <Box
             sx={{
               m: 0,
+              textAlign: 'left',
+              position: 'relative',
+              '& img': {
+                maxHeight: '100%',
+                maxWidth: '100%',
+              },
+              display: 'flex',
+              flexDirection: 'row',
+              fontSize: 18,
+              '&:hover': {
+                color: '#f00',
+                cursor: 'pointer',
+              },
             }}
-            onClick={() => router.replace('/my-account')}
           >
-            Subir links de redes sociales y foto del negocio
+            <Box
+              sx={{
+                m: 0,
+              }}
+              onClick={() => router.replace('/my-account')}
+            >
+              Subir links de redes sociales y foto del negocio
+            </Box>
+            <Box
+              sx={{
+                m: 0,
+              }}
+            >
+              {getRolUserRes.merchantSelected.imgUrlLogo &&
+              getRolUserRes.merchantSelected.facebookUrl &&
+              getRolUserRes.merchantSelected.instagramUrl ? (
+                <>
+                  <CheckCircleOutlineOutlinedIcon
+                    color='success'
+                    sx={{fontSize: '1.5em', mx: 2}}
+                  />
+                </>
+              ) : (
+                <>
+                  <CancelOutlinedIcon
+                    sx={{fontSize: '1.5em', mx: 2, color: red[500]}}
+                  />
+                </>
+              )}
+            </Box>
           </Box>
-          <Box
-            sx={{
-              m: 0,
-            }}
-          >
-            {getRolUserRes.merchantSelected.imgUrlLogo && getRolUserRes.merchantSelected.facebookUrl
-                && getRolUserRes.merchantSelected.instagramUrl
-                ? (
-              <>
-                <CheckCircleOutlineOutlinedIcon
-                  color='success'
-                  sx={{fontSize: '1.5em', mx: 2}}
-                />
-              </>
-            ) : (
-              <>
-                <CancelOutlinedIcon
-                  sx={{fontSize: '1.5em', mx: 2, color: red[500]}}
-                />
-              </>
-            )}
-          </Box>
-        </Box>
         ) : (
-          <>
-          </>
+          <></>
         )}
         <Divider sx={{mt: 2, mb: 4}} />
         <Box
@@ -314,10 +313,12 @@ const Home = (props) => {
               m: 0,
             }}
           >
-            "Si quieres vender un producto en tu tienda, dale check en el botón
-            superior{' '}
-            <span style={{color: red[500]}}>Publicar en ecommerce</span> al
-            registrar o actualizar *"
+            {'"'}Si quieres vender un producto en tu tienda, dale check en el
+            botón superior{' '}
+            <span style={{color: red[500]}}>
+              &ldquo;Publicar en ecommerce&rdquo;
+            </span>{' '}
+            al registrar o actualizar *{'"'}
           </Box>
         </Box>
         {/* <Box

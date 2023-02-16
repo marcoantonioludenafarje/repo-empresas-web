@@ -174,7 +174,7 @@ const InputsTable = (props) => {
     someDate = someDate.getTime();
     return someDate;
   };
-  
+
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -263,13 +263,13 @@ const InputsTable = (props) => {
       getGlobalParameter(globalParameterPayload);
     }
   }, [userDataRes]);
-  useEffect(()=>{
-    setValue2(Date.now())
+  useEffect(() => {
+    setValue2(Date.now());
     listPayload.request.payload.finalTime = toEpoch(Date.now());
-    console.log("Se ejecuta esto?")
+    console.log('Se ejecuta esto?');
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
-      dispatch({type: FETCH_ERROR, payload: undefined});  
+      dispatch({type: FETCH_ERROR, payload: undefined});
       listPayload.request.payload.finalTime = toEpoch(Date.now());
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
@@ -282,7 +282,7 @@ const InputsTable = (props) => {
         listPayload.request.payload.movementHeaderId = null;
       }
     }
-  },[actualDateRes])
+  }, [actualDateRes]);
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
       (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
@@ -415,7 +415,6 @@ const InputsTable = (props) => {
   const goToMoves = () => {
     console.log('Llendo a movimientos');
   };
-
 
   const sendStatus = () => {
     setOpenStatus(false);
@@ -644,7 +643,7 @@ const InputsTable = (props) => {
               variant='secondary'
               sx={{fontSize: '1em'}}
               /* disabled={type == 'referralGuide'} */
-              onClick={() => showObject(obj.contableMovementId, "expense")}
+              onClick={() => showObject(obj.contableMovementId, 'expense')}
             >
               {`${mintype} - ${cod}`}
             </Button>
@@ -655,7 +654,7 @@ const InputsTable = (props) => {
               variant='secondary'
               sx={{fontSize: '1em'}}
               /* disabled={type == 'referralGuide'} */
-              onClick={() => showObject(obj.contableMovementId, "expense")}
+              onClick={() => showObject(obj.contableMovementId, 'expense')}
             >
               Generado
             </Button>

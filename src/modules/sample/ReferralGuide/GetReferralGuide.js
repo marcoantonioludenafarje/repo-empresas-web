@@ -377,7 +377,12 @@ const GetReferralGuide = () => {
           routeToReferralGuide.carrierPlateNumber,
         );
         changeValueField('driverName', routeToReferralGuide.driverDenomination);
-        changeValueField('driverLastName', routeToReferralGuide.driverLastName ? routeToReferralGuide.driverLastName : "");
+        changeValueField(
+          'driverLastName',
+          routeToReferralGuide.driverLastName
+            ? routeToReferralGuide.driverLastName
+            : '',
+        );
         if (
           routeToReferralGuide.carrierDocumentType &&
           typeof routeToReferralGuide.carrierDocumentType === 'string'
@@ -392,7 +397,9 @@ const GetReferralGuide = () => {
         );
         changeValueField(
           'driverLicenseNumber',
-          routeToReferralGuide.driverLicenseNumber ? routeToReferralGuide.driverLicenseNumber : "",
+          routeToReferralGuide.driverLicenseNumber
+            ? routeToReferralGuide.driverLicenseNumber
+            : '',
         );
         changeValueField('observation', routeToReferralGuide.observation);
       }

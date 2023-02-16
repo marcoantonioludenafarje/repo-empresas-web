@@ -58,7 +58,7 @@ const FilterCard = ({
   execFunctions,
   initialValues,
   useReferralGuide,
-  deleteFilter
+  deleteFilter,
 }) => {
   let changeValue;
   let valuesForm;
@@ -123,9 +123,9 @@ const FilterCard = ({
           })
         : null;
       setProductsList(newProds);
-      if(newProds.length > 0){
+      if (newProds.length > 0) {
         const [lastOption] = newProds.slice(-1);
-        setCounter(lastOption.rowId+1);
+        setCounter(lastOption.rowId + 1);
       }
       newProds.map((prod) => {
         changeValue(`count${prod.rowId}`, prod.count);
@@ -201,7 +201,7 @@ const FilterCard = ({
   };
   const deleteFilterCard = (dataFilter, order) => {
     console.log('dataFilter', dataFilter);
-    console.log('order', order)
+    console.log('order', order);
     deleteFilter(dataFilter.observationDelivery, order);
   };
 
@@ -265,7 +265,7 @@ const FilterCard = ({
   };
   const deleteProduct = (rowId) => {
     let newProds = productsList;
-    console.log('rowId', rowId)
+    console.log('rowId', rowId);
     console.log('lista antes', newProds);
     newProds = newProds.filter((item) => item.rowId !== rowId);
     console.log('lista despues', newProds);
@@ -327,7 +327,7 @@ const FilterCard = ({
                       label='Nombre del Filtro'
                       name='observationDelivery'
                       variant='outlined'
-                      onChange={()=>assignFilter()}
+                      onChange={() => assignFilter()}
                       multiline
                       sx={{
                         width: '100%',
@@ -339,13 +339,15 @@ const FilterCard = ({
                     />
                   </Grid>
                   <Grid item xs={1}>
-                  <IconButton
-                    onClick={() => deleteFilterCard(formRef.current.values, order)}
-                    aria-label='delete'
-                    size='large'
-                  >
-                    <DeleteIcon fontSize='inherit' />
-                  </IconButton>
+                    <IconButton
+                      onClick={() =>
+                        deleteFilterCard(formRef.current.values, order)
+                      }
+                      aria-label='delete'
+                      size='large'
+                    >
+                      <DeleteIcon fontSize='inherit' />
+                    </IconButton>
                   </Grid>
                   <Grid item xs={12}>
                     <Typography sx={{m: 2}}>

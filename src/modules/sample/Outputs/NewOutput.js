@@ -304,7 +304,10 @@ const NewOutput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(total * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (total * (1 + Number(igvDefault))).toFixed(3));
+      changeValueField(
+        'totalFieldIgv',
+        (total * (1 + Number(igvDefault))).toFixed(3),
+      );
     }
     setTimeout(() => {
       setMinTutorial(true);
@@ -402,7 +405,10 @@ const NewOutput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total * (1 + Number(igvDefault))).toFixed(3));
+    changeValueField(
+      'totalFieldIgv',
+      (total * (1 + Number(igvDefault))).toFixed(3),
+    );
   };
   const getClient = (client) => {
     selectedClient = client;
@@ -436,7 +442,10 @@ const NewOutput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total * (1 + Number(igvDefault))).toFixed(3));
+    changeValueField(
+      'totalFieldIgv',
+      (total * (1 + Number(igvDefault))).toFixed(3),
+    );
     forceUpdate();
   };
 
@@ -562,7 +571,10 @@ const NewOutput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(event.target.value * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (event.target.value * (1+Number(igvDefault))).toFixed(3));
+      changeValueField(
+        'totalFieldIgv',
+        (event.target.value * (1 + Number(igvDefault))).toFixed(3),
+      );
     }
     console.log('actualValues', actualValues);
   };
@@ -650,7 +662,7 @@ const NewOutput = (props) => {
       typeDocument === 'sales'
     ) {
       //dispatch({type: GET_MOVEMENTS, payload: []});
-      console.log("Este es el listPayload NewOutput", listPayload)
+      console.log('Este es el listPayload NewOutput', listPayload);
       toGetMovements(listPayload);
       setShowForms(true);
     } else {

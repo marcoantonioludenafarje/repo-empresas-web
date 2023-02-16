@@ -160,7 +160,10 @@ const generalReducer = (state = INIT_STATE, action) => {
         updateAllBusinessParameterRes: action.payload,
       };
     case GENERATE_EXCEL_TEMPLATE_TO_ROUTES:
-      console.log('data de reducer GENERATE_EXCEL_TEMPLATE_TO_ROUTES', action.payload);
+      console.log(
+        'data de reducer GENERATE_EXCEL_TEMPLATE_TO_ROUTES',
+        action.payload,
+      );
       return {
         ...state,
         excelTemplateGeneratedToRouteRes: action.payload,

@@ -87,7 +87,7 @@ const UpgradeBusiness = () => {
   const [initialCategories, setInitialCategories] = React.useState([]);
   const [publish, setPublish] = React.useState(true);
   const [execAll, setExecAll] = React.useState(false);
-  const [typeDialog, setTypeDialog] = React.useState("darDeAlta");
+  const [typeDialog, setTypeDialog] = React.useState('darDeAlta');
   const toUpgradeToNewPlan = (payload) => {
     dispatch(upgradeToNewPlan(payload));
   };
@@ -238,44 +238,72 @@ const UpgradeBusiness = () => {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={(data, {setSubmitting}) => {
-                  console.log("Este es initialCategories", initialCategories)
-                  console.log("Este es filters", filters)
-                  
-                  if(!data.eMerchantSlugName){
-                    setTypeDialog("nonSlug")
+                  console.log('Este es initialCategories', initialCategories);
+                  console.log('Este es filters', filters);
+
+                  if (!data.eMerchantSlugName) {
+                    setTypeDialog('nonSlug');
                     setOpenStatus(true);
-                  } else if(publish && (!data.defaultMaxPrice || (data.defaultMinPrice == undefined))) {
-                    setTypeDialog("nonPriceRange")
+                  } else if (
+                    publish &&
+                    (!data.defaultMaxPrice || data.defaultMinPrice == undefined)
+                  ) {
+                    setTypeDialog('nonPriceRange');
                     setOpenStatus(true);
-                  } else if(publish && ((Number(data.defaultMinPrice) < 0) && (Number(data.defaultMaxPrice) < 0))) {
-                    setTypeDialog("priceIsMoreThanZero")
+                  } else if (
+                    publish &&
+                    Number(data.defaultMinPrice) < 0 &&
+                    Number(data.defaultMaxPrice) < 0
+                  ) {
+                    setTypeDialog('priceIsMoreThanZero');
                     setOpenStatus(true);
-                  } else if(publish && (Number(data.defaultMaxPrice) < Number(data.defaultMinPrice))) { 
-                    setTypeDialog("maxPriceIsLessThanMinPrice")
+                  } else if (
+                    publish &&
+                    Number(data.defaultMaxPrice) < Number(data.defaultMinPrice)
+                  ) {
+                    setTypeDialog('maxPriceIsLessThanMinPrice');
                     setOpenStatus(true);
-                  } else if(initialCategories.length == 0 || (!initialCategories) || initialCategories === []) {
-                    setTypeDialog("nonCategories")
+                  } else if (
+                    initialCategories.length == 0 ||
+                    !initialCategories ||
+                    initialCategories === []
+                  ) {
+                    setTypeDialog('nonCategories');
                     setOpenStatus(true);
-                  } else if(initialCategories.some(arrVal => "" === arrVal.description)) {
-                    setTypeDialog("someCategoriesAreEmpty")
+                  } else if (
+                    initialCategories.some(
+                      (arrVal) => '' === arrVal.description,
+                    )
+                  ) {
+                    setTypeDialog('someCategoriesAreEmpty');
                     setOpenStatus(true);
-                  } else if(publish && (filters.length == 0 || (!filters) || filters === [])) {
-                    setTypeDialog("nonFilters")
+                  } else if (
+                    publish &&
+                    (filters.length == 0 || !filters || filters === [])
+                  ) {
+                    setTypeDialog('nonFilters');
                     setOpenStatus(true);
-                  // } else if(filters.some(arrVal => "" === arrVal.filterName)) {
-                  //   setTypeDialog("someFiltersAreEmpty")
-                  //   setOpenStatus(true);
-                  // } else if(filters.some(arrVal => 0 === arrVal.options.length)) {
-                  //   setTypeDialog("someFiltersAreEmpty")
-                  //   setOpenStatus(true);
-                  } else if(publish && (filters.some(arrVal => undefined === arrVal.filterName))) {
-                    setTypeDialog("someFiltersAreEmpty")
+                    // } else if(filters.some(arrVal => "" === arrVal.filterName)) {
+                    //   setTypeDialog("someFiltersAreEmpty")
+                    //   setOpenStatus(true);
+                    // } else if(filters.some(arrVal => 0 === arrVal.options.length)) {
+                    //   setTypeDialog("someFiltersAreEmpty")
+                    //   setOpenStatus(true);
+                  } else if (
+                    publish &&
+                    filters.some((arrVal) => undefined === arrVal.filterName)
+                  ) {
+                    setTypeDialog('someFiltersAreEmpty');
                     setOpenStatus(true);
                   } else {
-                    setTypeDialog("darDeAlta")
+                    setTypeDialog('darDeAlta');
                     setSubmitting(true);
                     console.log('data filters: ', {filters: filters});
-                    console.log('data planRegistration: ', {...data, documentType: docType, filters: filters});
+                    console.log('data planRegistration: ', {
+                      ...data,
+                      documentType: docType,
+                      filters: filters,
+                    });
                     // TODO Api Call here to save user info
                     dispatch({type: FETCH_SUCCESS, payload: undefined});
                     dispatch({type: FETCH_ERROR, payload: undefined});
@@ -291,10 +319,12 @@ const UpgradeBusiness = () => {
                             userDataRes.merchantSelected.planDesiredId,
                           promotionCodeId:
                             userDataRes.merchantSelected.promotionCodeId,
-                          serieDocumenteBilling: data.serieDocumenteBilling || '',
+                          serieDocumenteBilling:
+                            data.serieDocumenteBilling || '',
                           serieBackDocumenteBilling:
                             data.serieBackDocumenteBilling || '',
-                          serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                          serieDocumenteReceipt:
+                            data.serieDocumenteReceipt || '',
                           serieBackDocumenteReceipt:
                             data.serieBackDocumenteReceipt || '',
                           serieDocumenteReferralGuide:
@@ -305,7 +335,8 @@ const UpgradeBusiness = () => {
                           merchantMasterId: userDataRes.merchantMasterId,
                           firstPlanDefault:
                             userDataRes.merchantSelected.firstPlanDefault,
-                          typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                          typeMerchant:
+                            userDataRes.merchantSelected.typeMerchant,
                           categories: initialCategories,
                           filters: filters,
                           price: [data.defaultMinPrice, data.defaultMaxPrice],
@@ -321,10 +352,12 @@ const UpgradeBusiness = () => {
                             userDataRes.merchantSelected.planDesiredId,
                           promotionCodeId:
                             userDataRes.merchantSelected.promotionCodeId,
-                          serieDocumenteBilling: data.serieDocumenteBilling || '',
+                          serieDocumenteBilling:
+                            data.serieDocumenteBilling || '',
                           serieBackDocumenteBilling:
                             data.serieBackDocumenteBilling || '',
-                          serieDocumenteReceipt: data.serieDocumenteReceipt || '',
+                          serieDocumenteReceipt:
+                            data.serieDocumenteReceipt || '',
                           serieBackDocumenteReceipt:
                             data.serieBackDocumenteReceipt || '',
                           serieDocumenteReferralGuide:
@@ -335,7 +368,8 @@ const UpgradeBusiness = () => {
                           merchantMasterId: userDataRes.merchantMasterId,
                           firstPlanDefault:
                             userDataRes.merchantSelected.firstPlanDefault,
-                          typeMerchant: userDataRes.merchantSelected.typeMerchant,
+                          typeMerchant:
+                            userDataRes.merchantSelected.typeMerchant,
                           categories: initialCategories,
                           filters: filters,
                           price: [
@@ -347,8 +381,7 @@ const UpgradeBusiness = () => {
                     });
                     setOpenStatus(true);
                     setSubmitting(false);
-                    }
-                  
+                  }
                 }}
               >
                 {({values, setFieldValue}) => {
@@ -376,7 +409,10 @@ const UpgradeBusiness = () => {
               >
                 {typeDialog == 'darDeAlta' ? (
                   <>
-                    <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                    <DialogTitle
+                      sx={{fontSize: '1.5em'}}
+                      id='alert-dialog-title'
+                    >
                       {'Alta de plan'}
                     </DialogTitle>
                     {showMessage()}
@@ -385,9 +421,11 @@ const UpgradeBusiness = () => {
                   <>
                     {typeDialog == 'nonSlug' ? (
                       <>
-                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                        <DialogTitle
+                          sx={{fontSize: '1.5em'}}
+                          id='alert-dialog-title'
+                        >
                           {'Falta llenar la ruta del comercio'}
-                          
                         </DialogTitle>
                       </>
                     ) : (
@@ -395,9 +433,11 @@ const UpgradeBusiness = () => {
                     )}
                     {typeDialog == 'nonPriceRange' ? (
                       <>
-                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                        <DialogTitle
+                          sx={{fontSize: '1.5em'}}
+                          id='alert-dialog-title'
+                        >
                           {'Falta llenar algunos de los límites de precio'}
-                          
                         </DialogTitle>
                       </>
                     ) : (
@@ -405,9 +445,11 @@ const UpgradeBusiness = () => {
                     )}
                     {typeDialog == 'nonCategories' ? (
                       <>
-                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                        <DialogTitle
+                          sx={{fontSize: '1.5em'}}
+                          id='alert-dialog-title'
+                        >
                           {'Llene al menos una categoría'}
-                          
                         </DialogTitle>
                       </>
                     ) : (
@@ -415,9 +457,11 @@ const UpgradeBusiness = () => {
                     )}
                     {typeDialog == 'nonFilters' ? (
                       <>
-                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                        <DialogTitle
+                          sx={{fontSize: '1.5em'}}
+                          id='alert-dialog-title'
+                        >
                           {'Llene al menos un filtro y una opción'}
-                          
                         </DialogTitle>
                       </>
                     ) : (
@@ -425,9 +469,13 @@ const UpgradeBusiness = () => {
                     )}
                     {typeDialog == 'priceIsMoreThanZero' ? (
                       <>
-                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                          {'Los límites de precio tienen que ser mayores o iguales a cero'}
-                          
+                        <DialogTitle
+                          sx={{fontSize: '1.5em'}}
+                          id='alert-dialog-title'
+                        >
+                          {
+                            'Los límites de precio tienen que ser mayores o iguales a cero'
+                          }
                         </DialogTitle>
                       </>
                     ) : (
@@ -435,8 +483,13 @@ const UpgradeBusiness = () => {
                     )}
                     {typeDialog == 'maxPriceIsLessThanMinPrice' ? (
                       <>
-                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                          {'El precio mínimo tiene que ser menor que el precio máximo'}
+                        <DialogTitle
+                          sx={{fontSize: '1.5em'}}
+                          id='alert-dialog-title'
+                        >
+                          {
+                            'El precio mínimo tiene que ser menor que el precio máximo'
+                          }
                         </DialogTitle>
                       </>
                     ) : (
@@ -444,7 +497,10 @@ const UpgradeBusiness = () => {
                     )}
                     {typeDialog == 'someCategoriesAreEmpty' ? (
                       <>
-                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                        <DialogTitle
+                          sx={{fontSize: '1.5em'}}
+                          id='alert-dialog-title'
+                        >
                           {'No pueden haber categorías vacías'}
                         </DialogTitle>
                       </>
@@ -453,7 +509,10 @@ const UpgradeBusiness = () => {
                     )}
                     {typeDialog == 'someFiltersAreEmpty' ? (
                       <>
-                        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                        <DialogTitle
+                          sx={{fontSize: '1.5em'}}
+                          id='alert-dialog-title'
+                        >
                           {'No pueden haber filtros o sus opciones vacías'}
                         </DialogTitle>
                       </>
@@ -468,11 +527,13 @@ const UpgradeBusiness = () => {
                       <DialogContentText
                         sx={{fontSize: '1.2em', m: 'auto'}}
                         id='alert-dialog-description'
-                      >
-                      </DialogContentText>
+                      ></DialogContentText>
                     </DialogContent>
                     <DialogActions sx={{justifyContent: 'center'}}>
-                      <Button variant='outlined'  onClick={() => setOpenStatus(false)}>
+                      <Button
+                        variant='outlined'
+                        onClick={() => setOpenStatus(false)}
+                      >
                         Aceptar
                       </Button>
                     </DialogActions>

@@ -325,13 +325,13 @@ const OutputsTable = (props) => {
       getGlobalParameter(globalParameterPayload);
     }
   }, [userDataRes]);
-  useEffect(()=>{
-    setValue2(Date.now())
+  useEffect(() => {
+    setValue2(Date.now());
     listPayload.request.payload.finalTime = toEpoch(Date.now());
-    console.log("Se ejecuta esto?")
+    console.log('Se ejecuta esto?');
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
-      dispatch({type: FETCH_ERROR, payload: undefined});  
+      dispatch({type: FETCH_ERROR, payload: undefined});
       listPayload.request.payload.finalTime = toEpoch(Date.now());
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
@@ -344,7 +344,7 @@ const OutputsTable = (props) => {
         listPayload.request.payload.movementHeaderId = null;
       }
     }
-  },[actualDateRes])
+  }, [actualDateRes]);
   /* listFinancesPayload.request.payload.merchantId =
     userAttributes['custom:businessId']; */
 
@@ -376,7 +376,6 @@ const OutputsTable = (props) => {
   const newOutput = () => {
     Router.push('/sample/outputs/new');
   };
-  
 
   //BUSQUEDA
   const handleSearchValues = (event) => {
@@ -443,7 +442,6 @@ const OutputsTable = (props) => {
   const goToMoves = () => {
     console.log('Llendo a movimientos');
   };
-
 
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {

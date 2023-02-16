@@ -247,7 +247,7 @@ const NewOutput = (props) => {
       let serieParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'SERIES_BILL',
       );
-      
+
       let igvDefault = businessParameter.find(
         (obj) => obj.abreParametro == 'IGV',
       ).value;
@@ -512,7 +512,7 @@ const NewOutput = (props) => {
           },
         },
       };
-      console.log("getAddInvoice payload", finalPayload)
+      console.log('getAddInvoice payload', finalPayload);
       getAddInvoice(finalPayload);
       setOpenStatus(true);
     } catch (error) {

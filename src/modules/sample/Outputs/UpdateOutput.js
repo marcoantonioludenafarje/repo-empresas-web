@@ -669,7 +669,9 @@ const UpdateOutput = (props) => {
         </>
       );
     } else if (
-      (errorMessage != undefined && cancelInvoiceRes !== undefined && 'error' in cancelInvoiceRes) ||
+      (errorMessage != undefined &&
+        cancelInvoiceRes !== undefined &&
+        'error' in cancelInvoiceRes) ||
       errorMessage !== undefined
     ) {
       return (

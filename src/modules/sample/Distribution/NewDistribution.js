@@ -33,7 +33,7 @@ import {
   useMediaQuery,
   useTheme,
   Modal,
-  Menu
+  Menu,
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
@@ -56,8 +56,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CachedIcon from '@mui/icons-material/Cached';
 
-
-import { makeStyles, } from '@mui/styles';
+import {makeStyles} from '@mui/styles';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import DeliveryCard from './DeliveryCard';
@@ -118,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.between('lg', 'xl')]: {
       width: '80%',
     },
-  }
+  },
 }));
 let selectedDelivery = {};
 let selectedDistribution = '';
@@ -162,13 +161,12 @@ const Distribution = (props) => {
 
   const [deliveriesData, setDeliveriesData] = React.useState([]);
   const [driversData, setDriversData] = React.useState([]);
-  const [excelOrCsv, setExcelOrCsv] = React.useState("");
-  const [excelOrCsvName, setExcelOrCsvName] = React.useState("");
+  const [excelOrCsv, setExcelOrCsv] = React.useState('');
+  const [excelOrCsvName, setExcelOrCsvName] = React.useState('');
 
   const [openProducts, setOpenProducts] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
   const [rowNumber2, setRowNumber2] = React.useState(0);
-
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openDelivery, setOpenDelivery] = React.useState(false);
@@ -373,7 +371,10 @@ const Distribution = (props) => {
                 driverId: '',
                 carrierPlateNumber: route.plate,
                 generateReferralGuide: route.generateReferralGuide,
-                transferStartDate: typeof route.transferStartDate == "number" ? dateWithHyphen(route.transferStartDate) : route.transferStartDate,
+                transferStartDate:
+                  typeof route.transferStartDate == 'number'
+                    ? dateWithHyphen(route.transferStartDate)
+                    : route.transferStartDate,
                 productsInfo: route.products.map((prod) => {
                   return {
                     productId: prod.productId,
@@ -503,15 +504,14 @@ const Distribution = (props) => {
   const showIconStatus = (bool, obj) => {
     switch (bool) {
       case true:
-        return <Button
-          variant='secondary'
-          sx={{ fontSize: '1em' }}
-        >
-          <CheckCircleIcon color='success' />
-        </Button>
+        return (
+          <Button variant='secondary' sx={{fontSize: '1em'}}>
+            <CheckCircleIcon color='success' />
+          </Button>
+        );
         break;
       case false:
-        return <CancelIcon sx={{ color: red[500] }} />;
+        return <CancelIcon sx={{color: red[500]}} />;
         break;
       default:
         return null;
@@ -535,31 +535,28 @@ const Distribution = (props) => {
   };
   const sendStatus2 = () => {
     if (openDelivery) {
-      setOpenDelivery(false)
-
+      setOpenDelivery(false);
     } else {
-      setOpenDelivery(true)
-
+      setOpenDelivery(true);
     }
   };
   const handleClose = () => {
-    console.log("se está ejecutando?")
-    setOpenDelivery(false)
-    console.log("openDelivery", openDelivery)
+    console.log('se está ejecutando?');
+    setOpenDelivery(false);
+    console.log('openDelivery', openDelivery);
   };
   const updateDelivery2 = (newDelivery, index2) => {
     handleClose();
-    console.log("newDelivery", newDelivery)
+    console.log('newDelivery', newDelivery);
     const updatedDeliveries = routes.map((route, index) => {
       if (index === index2) {
         return {
-          ...newDelivery
+          ...newDelivery,
         };
       }
       return route;
     });
     setRoutes(updatedDeliveries);
-
   };
   function swapRowsUp() {
     let newRoutes = routes;
@@ -853,32 +850,18 @@ const Distribution = (props) => {
         </Stack>
       </Box>
 
-      <Box sx={{ margin: 0 }}>
-        <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+      <Box sx={{margin: 0}}>
+        <TableContainer component={Paper} sx={{maxHeight: 440}}>
           <Table stickyHeader size='small' aria-label='purchases'>
-            <TableHead sx={{ backgroundColor: '#ededed' }}>
+            <TableHead sx={{backgroundColor: '#ededed'}}>
               <TableRow>
-                <TableCell>
-                  Nro
-                </TableCell>
-                <TableCell>
-                  Dirección de punto de partida
-                </TableCell>
-                <TableCell>
-                  Ubigeo de punto de partida
-                </TableCell>
-                <TableCell>
-                  Dirección de punto de llegada
-                </TableCell>
-                <TableCell>
-                  Ubigeo de punto de llegada
-                </TableCell>
-                <TableCell>
-                  Empresa Transportista
-                </TableCell>
-                <TableCell>
-                  Documento de conductor
-                </TableCell>
+                <TableCell>Nro</TableCell>
+                <TableCell>Dirección de punto de partida</TableCell>
+                <TableCell>Ubigeo de punto de partida</TableCell>
+                <TableCell>Dirección de punto de llegada</TableCell>
+                <TableCell>Ubigeo de punto de llegada</TableCell>
+                <TableCell>Empresa Transportista</TableCell>
+                <TableCell>Documento de conductor</TableCell>
                 <TableCell>Nombre de conductor</TableCell>
                 <TableCell>Apellidos de conductor</TableCell>
                 <TableCell>Licencia de conductor</TableCell>
@@ -888,194 +871,137 @@ const Distribution = (props) => {
                 <TableCell>Peso total</TableCell>
                 <TableCell>Número de paquetes</TableCell>
                 <TableCell>Fecha de Entrega</TableCell>
-                <TableCell>
-                  Guía de Remisión Generada
-                </TableCell>
+                <TableCell>Guía de Remisión Generada</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {routes && routes.length !== 0
                 ? routes.map((route, index2) => {
-                  const products = route.products;
-                  return (
-                    <>
-                      <TableRow key={index2}>
-                        <TableCell>
-                          {index2 + 1}
-                        </TableCell>
-                        <TableCell>
-                          {route.arrivalAddress || route.arrivalPointAddress}
-                        </TableCell>
-                        <TableCell>
-                          {route.arrivalPointUbigeo}
-                        </TableCell>
-                        <TableCell>
-                          {route.startingAddress || route.startingPointAddress}
-                        </TableCell>
-                        <TableCell>
-                          {route.startingPointUbigeo}
-                        </TableCell>
-                        <TableCell>
-                          {route.carrierDenomination}
-                        </TableCell>
-                        <TableCell>
-                          {route.driverDocumentType &&
+                    const products = route.products;
+                    return (
+                      <>
+                        <TableRow key={index2}>
+                          <TableCell>{index2 + 1}</TableCell>
+                          <TableCell>
+                            {route.arrivalAddress || route.arrivalPointAddress}
+                          </TableCell>
+                          <TableCell>{route.arrivalPointUbigeo}</TableCell>
+                          <TableCell>
+                            {route.startingAddress ||
+                              route.startingPointAddress}
+                          </TableCell>
+                          <TableCell>{route.startingPointUbigeo}</TableCell>
+                          <TableCell>{route.carrierDenomination}</TableCell>
+                          <TableCell>
+                            {route.driverDocumentType &&
                             route.driverDocumentNumber
-                            ? `${route.driverDocumentType.toUpperCase()} - ${route.driverDocumentNumber
-                            }`
-                            : null}
-                        </TableCell>
-                        <TableCell>
-                          {route.driverName || route.driverDenomination}
-                        </TableCell>
-                        <TableCell>
-                          {route.driverLastName}
-                        </TableCell>
-                        <TableCell>
-                          {route.driverLicenseNumber}
-                        </TableCell>
-                        <TableCell>
-                          {route.plate || route.carrierPlateNumber}
-                        </TableCell>
-                        <TableCell>
-                          {products &&
-                            products.length !== 0 ? (
-                            <IconButton
-                              onClick={() =>
-                                checkProducts(route, index2)
+                              ? `${route.driverDocumentType.toUpperCase()} - ${
+                                  route.driverDocumentNumber
+                                }`
+                              : null}
+                          </TableCell>
+                          <TableCell>
+                            {route.driverName || route.driverDenomination}
+                          </TableCell>
+                          <TableCell>{route.driverLastName}</TableCell>
+                          <TableCell>{route.driverLicenseNumber}</TableCell>
+                          <TableCell>
+                            {route.plate || route.carrierPlateNumber}
+                          </TableCell>
+                          <TableCell>
+                            {products && products.length !== 0 ? (
+                              <IconButton
+                                onClick={() => checkProducts(route, index2)}
+                                size='small'
+                              >
+                                <FormatListBulletedIcon fontSize='small' />
+                              </IconButton>
+                            ) : null}
+                          </TableCell>
+                          <TableCell>{route.observationDelivery}</TableCell>
+                          <TableCell>
+                            {route.totalWeight || route.totalGrossWeight}
+                          </TableCell>
+                          <TableCell>
+                            {route.numberPackages || route.numberOfPackages}
+                          </TableCell>
+                          <TableCell align='center'>
+                            {route.transferStartDate}
+                          </TableCell>
+                          <TableCell align='center'>
+                            {showIconStatus(route.generateReferralGuide, route)}
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              id='basic-button'
+                              aria-controls={
+                                openMenu ? 'basic-menu' : undefined
                               }
-                              size='small'
-                            >
-                              <FormatListBulletedIcon fontSize='small' />
-                            </IconButton>
-                          ) : null}
-                        </TableCell>
-                        <TableCell>
-                          {route.observationDelivery}
-                        </TableCell>
-                        <TableCell>
-                          {route.totalWeight || route.totalGrossWeight}
-                        </TableCell>
-                        <TableCell>
-                          {route.numberPackages || route.numberOfPackages}
-                        </TableCell>
-                        <TableCell align='center'>
-                          {route.transferStartDate}
-                        </TableCell>
-                        <TableCell align='center'>
-                          {showIconStatus(
-                            route.generateReferralGuide,
-                            route
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            id='basic-button'
-                            aria-controls={
-                              openMenu
-                                ? 'basic-menu'
-                                : undefined
-                            }
-                            aria-haspopup='true'
-                            aria-expanded={
-                              openMenu ? 'true' : undefined
-                            }
-                            onClick={handleClick.bind(
-                              this,
-                              {
+                              aria-haspopup='true'
+                              aria-expanded={openMenu ? 'true' : undefined}
+                              onClick={handleClick.bind(this, {
                                 ...route,
                                 localRouteId: index2,
-                              },
-                            )}
-                          >
-                            <KeyboardArrowDownIcon />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow key={`sub-${index2}`}>
-                        <TableCell sx={{ p: 0 }} colSpan={10}>
-                          <Collapse
-                            in={
-                              openProducts &&
-                              index2 === rowNumber2
-                            }
-                            timeout='auto'
-                            unmountOnExit
-                          >
-                            <Box sx={{ margin: 0 }}>
-                              <Table
-                                size='small'
-                                aria-label='purchases'
-                              >
-                                <TableHead
-                                  sx={{
-                                    backgroundColor:
-                                      '#ededed',
-                                  }}
-                                >
-                                  <TableRow>
-                                    <TableCell>
-                                      Código
-                                    </TableCell>
-                                    <TableCell>
-                                      Descripción
-                                    </TableCell>
-                                    <TableCell>
-                                      Cantidad
-                                    </TableCell>
-                                    <TableCell>
-                                      Peso Unitario
-                                    </TableCell>
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {products &&
-                                    products.length !== 0
-                                    ? products.map(
-                                      (
-                                        product,
-                                        index3,
-                                      ) => {
-                                        return (
-                                          <TableRow
-                                            key={`${index3}-${index3}`}
-                                          >
-                                            <TableCell>
-                                              {
-                                                product.product
-                                              }
-                                            </TableCell>
-                                            <TableCell>
-                                              {
-                                                product.description
-                                              }
-                                            </TableCell>
-                                            <TableCell>
-                                              {
-                                                product.count
-                                              }
-                                            </TableCell>
-                                            <TableCell>
-                                              {
-                                                product.weight
-                                              }
-                                            </TableCell>
-                                          </TableRow>
-                                        );
-                                      },
-                                    )
-                                    : null}
-                                </TableBody>
-                              </Table>
-                            </Box>
-                          </Collapse>
-                        </TableCell>
-                      </TableRow>
-
-                    </>
-                  );
-                })
+                              })}
+                            >
+                              <KeyboardArrowDownIcon />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow key={`sub-${index2}`}>
+                          <TableCell sx={{p: 0}} colSpan={10}>
+                            <Collapse
+                              in={openProducts && index2 === rowNumber2}
+                              timeout='auto'
+                              unmountOnExit
+                            >
+                              <Box sx={{margin: 0}}>
+                                <Table size='small' aria-label='purchases'>
+                                  <TableHead
+                                    sx={{
+                                      backgroundColor: '#ededed',
+                                    }}
+                                  >
+                                    <TableRow>
+                                      <TableCell>Código</TableCell>
+                                      <TableCell>Descripción</TableCell>
+                                      <TableCell>Cantidad</TableCell>
+                                      <TableCell>Peso Unitario</TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {products && products.length !== 0
+                                      ? products.map((product, index3) => {
+                                          return (
+                                            <TableRow
+                                              key={`${index3}-${index3}`}
+                                            >
+                                              <TableCell>
+                                                {product.product}
+                                              </TableCell>
+                                              <TableCell>
+                                                {product.description}
+                                              </TableCell>
+                                              <TableCell>
+                                                {product.count}
+                                              </TableCell>
+                                              <TableCell>
+                                                {product.weight}
+                                              </TableCell>
+                                            </TableRow>
+                                          );
+                                        })
+                                      : null}
+                                  </TableBody>
+                                </Table>
+                              </Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    );
+                  })
                 : null}
             </TableBody>
           </Table>
@@ -1235,8 +1161,8 @@ const Distribution = (props) => {
       </Dialog>
 
       <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
+        aria-labelledby='transition-modal-title'
+        aria-describedby='transition-modal-description'
         open={openDelivery}
         onClose={handleClose}
         closeAfterTransition
@@ -1251,7 +1177,7 @@ const Distribution = (props) => {
       >
         <Fade in={openDelivery}>
           <Box className={classes.paper}>
-            <Typography id="transition-modal-title" variant="h2" component="h2">
+            <Typography id='transition-modal-title' variant='h2' component='h2'>
               Editar Entrega
             </Typography>
 
@@ -1272,22 +1198,24 @@ const Distribution = (props) => {
         }}
       >
         <MenuItem onClick={sendStatus2}>
-          <CachedIcon sx={{ mr: 1, my: 'auto' }} />
+          <CachedIcon sx={{mr: 1, my: 'auto'}} />
           Actualizar
         </MenuItem>
         <MenuItem disabled={!(rowNumber2 != 0)} onClick={swapRowsUp}>
-          <ArrowUpwardOutlinedIcon sx={{ mr: 1, my: 'auto' }} />
+          <ArrowUpwardOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Subir
         </MenuItem>
-        <MenuItem disabled={routes ? !(rowNumber2 != (routes.length - 1)) : false} onClick={swapRowsDown}>
-          <ArrowDownwardOutlinedIcon sx={{ mr: 1, my: 'auto' }} />
+        <MenuItem
+          disabled={routes ? !(rowNumber2 != routes.length - 1) : false}
+          onClick={swapRowsDown}
+        >
+          <ArrowDownwardOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Bajar
         </MenuItem>
         <MenuItem onClick={deleteRoute}>
-          <DeleteOutlinedIcon sx={{ mr: 1, my: 'auto' }} />
+          <DeleteOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Eliminar
         </MenuItem>
-
       </Menu>
       {/* <AppInfoView /> */}
     </Card>

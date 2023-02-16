@@ -210,7 +210,8 @@ export const ADD_RECEIPT = 'add_receipt';
 export const GENERATE_ROUTE = 'generate_route';
 export const UPDATE_ROUTE = 'update_route';
 export const LIST_ROUTE = 'list_route';
-export const GENERATE_EXCEL_TEMPLATE_TO_ROUTES = 'generate_excel_template_to_routes';
+export const GENERATE_EXCEL_TEMPLATE_TO_ROUTES =
+  'generate_excel_template_to_routes';
 
 //DISTRIBUTIONS
 export const LIST_DISTRIBUTION = 'list_distribution';

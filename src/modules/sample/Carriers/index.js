@@ -440,10 +440,9 @@ const CarrierTable = (arrayObjs, props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getCarriersRes 
-            // && getCarriersRes.length > 0 
-            && Array.isArray(getCarriersRes) 
-            ? (
+            {getCarriersRes &&
+            // && getCarriersRes.length > 0
+            Array.isArray(getCarriersRes) ? (
               getCarriersRes.sort(compare).map((obj, index) => {
                 let parsedId = obj.carrierId.split('-');
                 return (

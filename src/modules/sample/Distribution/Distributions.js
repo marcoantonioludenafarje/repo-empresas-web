@@ -190,10 +190,10 @@ const FinancesTable = (props) => {
     //     pathname: '/sample/bills/table',
     //     query: {billId: selectedOutput.billId},
     //   });
-    // } else 
-    
+    // } else
+
     if (type == 'referralGuide') {
-      console.log("Esta es la id de la guia", codOutput)
+      console.log('Esta es la id de la guia', codOutput);
       Router.push({
         pathname: '/sample/referral-guide/table',
         query: {referralGuideId: codOutput},
@@ -205,14 +205,18 @@ const FinancesTable = (props) => {
   const showIconStatus = (bool, obj) => {
     switch (bool) {
       case true:
-        return <Button
-              variant='secondary'
-              sx={{fontSize: '1em'}}
-              /* disabled={type == 'referralGuide'} */
-              onClick={() => showObject(obj.referralGuideMovementHeaderId, 'referralGuide')}
-            >
-              <CheckCircleIcon color='success' />
-            </Button>
+        return (
+          <Button
+            variant='secondary'
+            sx={{fontSize: '1em'}}
+            /* disabled={type == 'referralGuide'} */
+            onClick={() =>
+              showObject(obj.referralGuideMovementHeaderId, 'referralGuide')
+            }
+          >
+            <CheckCircleIcon color='success' />
+          </Button>
+        );
         break;
       case false:
         return <CancelIcon sx={{color: red[500]}} />;
@@ -285,9 +289,7 @@ const FinancesTable = (props) => {
                                   <TableCell>
                                     Ubigeo de punto de llegada
                                   </TableCell>
-                                  <TableCell>
-                                    Documento de conductor
-                                  </TableCell>
+                                  <TableCell>Documento de conductor</TableCell>
                                   <TableCell>Nombre de conductor</TableCell>
                                   <TableCell>Apellidos de conductor</TableCell>
                                   <TableCell>Licencia de conductor</TableCell>
@@ -366,7 +368,7 @@ const FinancesTable = (props) => {
                                             <TableCell align='center'>
                                               {showIconStatus(
                                                 route.generateReferralGuide,
-                                                route
+                                                route,
                                               )}
                                             </TableCell>
                                             <TableCell>

@@ -69,9 +69,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
 }));
-import {
-  GET_MOVEMENTS,
-} from '../../../shared/constants/ActionTypes';
+import {GET_MOVEMENTS} from '../../../shared/constants/ActionTypes';
 let listPayload = {
   request: {
     payload: {
@@ -450,13 +448,25 @@ const ProductMovementTable = (props) => {
   const showPartialStock = (partialStock, movementType) => {
     switch (movementType) {
       case 'INPUT':
-        return <Box sx={{display:'flex'}}>
-          {partialStock ? partialStock : 0}<ArrowCircleUpIcon fontSize='small' sx={{ml: 1, color: green[500]}} />
-        </Box>;
+        return (
+          <Box sx={{display: 'flex'}}>
+            {partialStock ? partialStock : 0}
+            <ArrowCircleUpIcon
+              fontSize='small'
+              sx={{ml: 1, color: green[500]}}
+            />
+          </Box>
+        );
       case 'OUTPUT':
-        return <Box sx={{display:'flex'}}>
-        {partialStock ? partialStock : 0}<ArrowCircleDownIcon fontSize='small' sx={{ml: 1, color: red[500]}} />
-      </Box>;
+        return (
+          <Box sx={{display: 'flex'}}>
+            {partialStock ? partialStock : 0}
+            <ArrowCircleDownIcon
+              fontSize='small'
+              sx={{ml: 1, color: red[500]}}
+            />
+          </Box>
+        );
       default:
         return null;
     }
@@ -508,7 +518,9 @@ const ProductMovementTable = (props) => {
                       </TableCell>
                       <TableCell>{obj.priceUnit}</TableCell>
                       <TableCell>{obj.quantity}</TableCell>
-                      <TableCell>{showPartialStock(obj.partialStock, obj.movementType)}</TableCell>
+                      <TableCell>
+                        {showPartialStock(obj.partialStock, obj.movementType)}
+                      </TableCell>
                       {/* <TableCell>{obj.numOutputs}</TableCell>
                     <TableCell>{obj.stock}</TableCell> */}
                     </TableRow>

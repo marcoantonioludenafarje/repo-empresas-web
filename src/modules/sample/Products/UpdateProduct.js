@@ -479,7 +479,7 @@ const UpdateProduct = (props) => {
   useEffect(() => {
     console.log('CUAL ES EL originalProduct', originalProduct);
     if (originalProduct && originalProduct.active) {
-      if(originalProduct.images){
+      if (originalProduct.images) {
         originalProduct.images = originalProduct.images.map((image) => {
           image.isSaved = true;
           return image;
@@ -487,7 +487,6 @@ const UpdateProduct = (props) => {
         setSelectedImages(originalProduct.images);
         setSelectedJsonImages(originalProduct.images);
         console.log('selectedImages', selectedImages);
-
       }
 
       console.log('selectedImages de original', originalProduct.images);
@@ -1265,9 +1264,15 @@ const UpdateProduct = (props) => {
                                           control={
                                             <Checkbox
                                               value={Number(index) + 1}
-                                              checked={selectedFilters[
-                                                obj.featureName
-                                              ] ? selectedFilters[obj.featureName].includes(Number(index) + 1) : false}
+                                              checked={
+                                                selectedFilters[obj.featureName]
+                                                  ? selectedFilters[
+                                                      obj.featureName
+                                                    ].includes(
+                                                      Number(index) + 1,
+                                                    )
+                                                  : false
+                                              }
                                               onChange={handleFieldFilter2}
                                               name={obj.featureName}
                                             />
@@ -1383,10 +1388,8 @@ const UpdateProduct = (props) => {
                   ) : (
                     <></>
                   )}
-                  
                 </Grid>
 
-                
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
