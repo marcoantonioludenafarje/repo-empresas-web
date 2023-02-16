@@ -188,7 +188,7 @@ const Distribution = (props) => {
   const { errorMessage } = useSelector(({ movements }) => movements);
   console.log('errorMessage', errorMessage);
   const { jwtToken } = useSelector(({ general }) => general);
-  const { excelTemplateGeneratedToRoute } = useSelector(({ general }) => general);
+  const { excelTemplateGeneratedToRouteRes } = useSelector(({ general }) => general);
   
   listPayload.request.payload.merchantId =
     userDataRes.merchantSelected.merchantId;
@@ -681,10 +681,10 @@ const Distribution = (props) => {
   };
 
   useEffect(() => {
-    if(excelTemplateGeneratedToRoute){
+    if(excelTemplateGeneratedToRouteRes){
       
     }
-  }, [excelTemplateGeneratedToRoute])
+  }, [excelTemplateGeneratedToRouteRes])
 
   const handleExport = () => {
     exportToExcel(products, deliveries);

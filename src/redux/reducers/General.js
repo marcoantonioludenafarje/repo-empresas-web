@@ -20,7 +20,8 @@ import {
   UPDATE_ROL_USER_FIRST_PLAN,
   UPDATE_DATA_BUSINESS,
   ACTUAL_DATE,
-  GENERATE_EXCEL_TEMPLATE_TO_ROUTES
+  GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
+  UPDATE_CATALOGS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -162,7 +163,13 @@ const generalReducer = (state = INIT_STATE, action) => {
       console.log('data de reducer GENERATE_EXCEL_TEMPLATE_TO_ROUTES', action.payload);
       return {
         ...state,
-        excelTemplateGeneratedToRoute: action.payload,
+        excelTemplateGeneratedToRouteRes: action.payload,
+      };
+    case UPDATE_CATALOGS:
+      console.log('data de reducer UPDATE_CATALOGS', action.payload);
+      return {
+        ...state,
+        updateCatalogsRes: action.payload,
       };
     default:
       return state;

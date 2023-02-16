@@ -173,6 +173,7 @@ export const UPDATE_ALL_BUSINESS_PARAMETER = 'update_all_business_parameter';
 export const WEIGHT_BUSINESS = 'weight_business';
 export const MONEY_UNIT_BUSINESS = 'money_unit_business';
 export const MONEY_SYMBOL = 'money_symbol';
+export const UPDATE_CATALOGS = 'update_catalogs';
 
 //IMAGE
 export const GET_PRESIGNED = 'get_presigned';
@@ -204,10 +205,15 @@ export const ADD_INVOICE = 'add_invoice';
 export const CANCEL_INVOICE = 'cancel_invoice';
 export const ADD_CREDIT_NOTE = 'add_credit_note';
 export const ADD_RECEIPT = 'add_receipt';
-export const LIST_ROUTE = 'list_route';
-export const LIST_DISTRIBUTION = 'list_distribution';
+
+//ROUTES
 export const GENERATE_ROUTE = 'generate_route';
 export const UPDATE_ROUTE = 'update_route';
+export const LIST_ROUTE = 'list_route';
+export const GENERATE_EXCEL_TEMPLATE_TO_ROUTES = 'generate_excel_template_to_routes';
+
+//DISTRIBUTIONS
+export const LIST_DISTRIBUTION = 'list_distribution';
 export const GENERATE_DISTRIBUTION = 'generate_distribution';
 
 //PROVIDERS

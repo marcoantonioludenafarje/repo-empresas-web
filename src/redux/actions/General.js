@@ -17,6 +17,7 @@ import {
   UPDATE_DATA_BUSINESS,
   ACTUAL_DATE,
   GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
+  UPDATE_CATALOGS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -309,17 +310,17 @@ export const exportExcelTemplateToGenerateRoute = (payload) => {
 export const updateCatalogs = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/inventory/parameters/update', {body: payload})
+    API.post('tunexo', '/inventory/parameter/catalog', {body: payload})
       .then((data) => {
-        console.log('updateAllBusinessParameter resultado', data);
+        console.log('updateCatalogs resultado', data);
         dispatch({
-          type: UPDATE_ALL_BUSINESS_PARAMETER,
+          type: UPDATE_CATALOGS,
           payload: data.response.payload,
         });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
-        console.log('updateAllBusinessParameter error', error);
+        console.log('updateCatalogs error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
