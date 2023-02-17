@@ -156,6 +156,7 @@ const Distribution = (props) => {
   const [execAll, setExecAll] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
   const {listProducts} = useSelector(({products}) => products);
 
   const [deliveriesData, setDeliveriesData] = React.useState([]);
@@ -722,17 +723,21 @@ const Distribution = (props) => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_ROUTES, payload: undefined});
     toExportExcelTemplateToGenerateRoute(excelPayload);
+    setDownloadExcel(true);
   };
 
   useEffect(() => {
-    if (excelTemplateGeneratedToRouteRes) {
+    if (excelTemplateGeneratedToRouteRes && downloadExcel) {
+      setDownloadExcel(false);
       const byteCharacters = atob(excelTemplateGeneratedToRouteRes);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.charCodeAt(i);
       }
       const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -741,9 +746,7 @@ const Distribution = (props) => {
       link.click();
       document.body.removeChild(link);
     }
-  }, [excelTemplateGeneratedToRouteRes]);
-  
-  
+  }, [excelTemplateGeneratedToRouteRes, downloadExcel]);
 
   const handleExport = () => {
     exportToExcel(products, deliveries);
