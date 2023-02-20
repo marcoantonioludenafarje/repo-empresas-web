@@ -427,7 +427,7 @@ const Distribution = (props) => {
       );
       const matchArrival = arrivalPoints.find((d) => d.LUGAR === arrivalPoint);
       const matchDriver = drivers.find(
-        (d) => d['NRO IDENTIFICADOR'] == driver.split('-')[1].trim(),
+        (d) => d['NRO IDENTIFICADOR'] == driver.split('-')[2].trim(),
       );
       const matchCarrier = carriers.find(
         (d) => d['NRO IDENTIFICADOR'] == carrier.split('-')[1].trim(),
@@ -538,7 +538,7 @@ const Distribution = (props) => {
         products: productsInfo,
         numberPackages: '1',
         totalWeight: totalWeight,
-        observationDelivery: '',
+        observationDelivery: item['OBSERVACION'],
         generateReferralGuide:
           item['DESEA GENERAR GUIA REMISION?'] == 'SI' ? true : false,
         transferStartDate: 1676155434735,
@@ -968,7 +968,7 @@ const Distribution = (props) => {
                             ) : null}
                           </TableCell>
                           <TableCell>{route.observationDelivery}</TableCell>
-                          <TableCell>{route.totalWeight}</TableCell>
+                          <TableCell>{route.totalWeight.toFixed(2)}</TableCell>
                           <TableCell>{route.numberPackages}</TableCell>
                           {/* <TableCell align='center'>
                           {showIconStatus(
