@@ -171,14 +171,6 @@ const BulkLoad = (props) => {
       };
 
       toGetUserData(getUserDataPayload);
-    } else {
-      console.log(
-        'Por que no me quiere',
-        userDataRes.merchantSelected.businessDebt,
-      );
-      const deuda = userDataRes.merchantSelected.businessDebt;
-      setBusinessDebt(deuda);
-      // setBusinessDebt(userDataRes.merchantSelected.businessDebt)
     }
   }, []);
 

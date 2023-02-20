@@ -239,7 +239,7 @@ const rolesRoutesConfig = {
           messageId: 'sidebar.sample.bulkLoad',
           type: 'item',
           icon: <TableRowsOutlinedIcon fontSize='small' />,
-          url: '/sample/bulkLoad/index',
+          url: '/sample/bulkLoad',
         },
       ],
     },
