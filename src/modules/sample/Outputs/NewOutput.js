@@ -885,7 +885,7 @@ const NewOutput = (props) => {
                     >
                       <FormControlLabel
                         disabled={Number(igvDefault) > 0 ? false : true}
-                        checked={true}
+                        checked={isIgvChecked}
                         control={<Checkbox onChange={handleIGV} />}
                         label='IGV'
                       />
