@@ -921,7 +921,7 @@ const Distribution = (props) => {
                           </TableCell>
                           <TableCell>{route.observationDelivery}</TableCell>
                           <TableCell>
-                            {route.totalWeight || route.totalGrossWeight}
+                            {(route.totalWeight || route.totalGrossWeight).toFixed(2)}
                           </TableCell>
                           <TableCell>
                             {route.numberPackages || route.numberOfPackages}
