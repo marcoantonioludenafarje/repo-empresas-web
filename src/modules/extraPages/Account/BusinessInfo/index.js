@@ -48,8 +48,7 @@ const validationSchema = yup.object({
     .required(<IntlMessages id='validation.required' />),
   passwordCertified: yup
     .string()
-    .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
+    .typeError(<IntlMessages id='validation.string' />),
 });
 const BusinessInfo = () => {
   const {user} = useAuthUser();

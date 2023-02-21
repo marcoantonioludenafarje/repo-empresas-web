@@ -181,7 +181,7 @@ const EditDistributionDeliveryModal = ({
     let newTemporaryDelivery = {
       ...temporaryDelivery,
       startingAddress: event.target.startingAddress.value,
-      arrivalAddress: event.target.startingAddress.value,
+      arrivalAddress: event.target.arrivalAddress.value,
       driverDocumentNumber: event.target.driverDocumentNumber.value,
       driverName: event.target.driverName.value,
       driverLastName: event.target.driverLastName.value,
