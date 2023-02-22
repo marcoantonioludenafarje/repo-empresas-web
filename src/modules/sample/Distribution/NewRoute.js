@@ -423,9 +423,9 @@ const Distribution = (props) => {
       const {CHOFER: driver} = item;
       const {'EMPRESA TRANSPORTISTA': carrier} = item;
       const matchOriginal = originalPoints.find(
-        (d) => d.LUGAR === originalPoint,
+        (d) => d.LUGAR == originalPoint,
       );
-      const matchArrival = arrivalPoints.find((d) => d.LUGAR === arrivalPoint);
+      const matchArrival = arrivalPoints.find((d) => d.LUGAR == arrivalPoint);
       const matchDriver = drivers.find(
         (d) => d['NRO IDENTIFICADOR'] == driver.split('-')[2].trim(),
       );
@@ -518,7 +518,10 @@ const Distribution = (props) => {
           }
         }
       });
+      if(!matchArrival){
+        console.log("Este es", item)
 
+      }
       return {
         ...item,
         startingPointUbigeo: matchOriginal['UBIGEO'],
