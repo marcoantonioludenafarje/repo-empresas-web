@@ -55,6 +55,7 @@ import DataSaverOffOutlinedIcon from '@mui/icons-material/DataSaverOffOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CachedIcon from '@mui/icons-material/Cached';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import {makeStyles} from '@mui/styles';
 import {Form, Formik} from 'formik';
@@ -500,7 +501,20 @@ const Distribution = (props) => {
     setRoutes(deliveries);
     reloadPage();
   };
+  
 
+  const onChangeInitialDate = (event) => {
+
+    const fecha = new Date(initialDate);
+    const timestamp = fecha.getTime();
+    console.log("newDeliveries", timestamp)
+    const newDeliveries = routes.map((delivery)=> {
+      console.log("holi madafaca")
+      delivery.transferStartDate = dateWithHyphen(timestamp);
+      return delivery
+    })
+    setRoutes(newDeliveries);
+  };
   const showIconStatus = (bool, obj) => {
     switch (bool) {
       case true:
@@ -660,7 +674,7 @@ const Distribution = (props) => {
                     70
                   </Grid> */}
 
-                  <Grid item xs={12} sx={{mt: 4}}>
+                  <Grid item xs={8} sx={{mt: 4}}>
                     <DateTimePicker
                       renderInput={(params) => (
                         <TextField {...params} sx={{width: 1}} />
@@ -673,6 +687,17 @@ const Distribution = (props) => {
                         console.log('initial date', newDate);
                       }}
                     />
+                  </Grid>
+
+                  <Grid item xs={4} sx={{mt: 4}}>
+                    <Button
+                      startIcon={<SettingsIcon />}
+                      variant='contained'
+                      color='primary'
+                      onClick={onChangeInitialDate}
+                    >
+                      Procesar
+                    </Button>
                   </Grid>
 
                   <Grid item xs={12} sx={{my: 4}}>

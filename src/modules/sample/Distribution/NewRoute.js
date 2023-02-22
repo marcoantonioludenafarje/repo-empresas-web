@@ -443,13 +443,13 @@ const Distribution = (props) => {
       let productsInfo = [];
       productsSelected.forEach((product) => {
         let productInfo = products.find(
-          (item2) => item2['DESCRIPCION'] === product.product,
+          (item2) => item2['DESCRIPCION'].trim() === product.product.trim(),
         );
         if (productInfo['DOSIFICACION']) {
           productInfo['DOSIFICACION'].split('|').forEach((inputProduct) => {
             let productInfo2 = products.find(
               (item3) =>
-                item3['DESCRIPCION'] === inputProduct.split('-')[0].trim(),
+                item3['DESCRIPCION'].trim() === inputProduct.split('-')[0].trim(),
             );
             if (productInfo2) {
               let existingProduct = productsInfo.find(
@@ -465,7 +465,7 @@ const Distribution = (props) => {
                     userDataRes.merchantSelected.merchantId
                   }`,
                   product: productInfo2['CODIGO'],
-                  description: productInfo2['DESCRIPCION'],
+                  description: productInfo2['DESCRIPCION'].trim(),
                   unitMeasure: productInfo2['UNIDAD DE MEDIDA'],
                   typeProduct:
                     productInfo['TIPO PRODUCTO'] === 'Producto intermedio'
@@ -500,7 +500,7 @@ const Distribution = (props) => {
                   userDataRes.merchantSelected.merchantId
                 }`,
                 product: productInfo['CODIGO'],
-                description: productInfo['DESCRIPCION'],
+                description: productInfo['DESCRIPCION'].trim(),
                 unitMeasure: productInfo['UNIDAD DE MEDIDA'],
                 typeProduct:
                   productInfo['TIPO PRODUCTO'] === 'Producto intermedio'
