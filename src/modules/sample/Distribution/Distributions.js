@@ -278,6 +278,9 @@ const FinancesTable = (props) => {
                               <TableHead sx={{backgroundColor: '#ededed'}}>
                                 <TableRow>
                                   <TableCell>
+                                    Serie-Número
+                                  </TableCell>
+                                  <TableCell>
                                     Dirección de punto de partida
                                   </TableCell>
                                   <TableCell>
@@ -311,6 +314,9 @@ const FinancesTable = (props) => {
                                       return (
                                         <>
                                           <TableRow key={index2}>
+                                            <TableCell>
+                                              {route.serialNumber}
+                                            </TableCell>
                                             <TableCell>
                                               {route.arrivalPointAddress}
                                             </TableCell>
