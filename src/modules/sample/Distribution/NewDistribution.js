@@ -139,7 +139,7 @@ const Distribution = (props) => {
     driverDocumentNumber: 'Vacío',
     driverLicenseNumber: 'Vacío',
     carrierPlateNumber: 'Vacío',
-    totalGrossWeight: 'Vacío',
+    totalGrossWeight: 0,
     numberOfPackages: 'Vacío',
     totalWeight: 0,
     products: [],
@@ -946,7 +946,7 @@ const Distribution = (props) => {
                           </TableCell>
                           <TableCell>{route.observationDelivery}</TableCell>
                           <TableCell>
-                            {(route.totalWeight || route.totalGrossWeight).toFixed(2)}
+                            {(route.totalWeight ? Number.parseFloat(route.totalWeight).toFixed(3) : route.totalGrossWeight ? Number.parseFloat(route.totalGrossWeight).toFixed(3) : 0)}
                           </TableCell>
                           <TableCell>
                             {route.numberPackages || route.numberOfPackages}

@@ -971,7 +971,7 @@ const Distribution = (props) => {
                             ) : null}
                           </TableCell>
                           <TableCell>{route.observationDelivery}</TableCell>
-                          <TableCell>{route.totalWeight.toFixed(2)}</TableCell>
+                          <TableCell>{route.totalWeight ? Number.parseFloat(route.totalWeight).toFixed(3): 0}</TableCell>
                           <TableCell>{route.numberPackages}</TableCell>
                           {/* <TableCell align='center'>
                           {showIconStatus(

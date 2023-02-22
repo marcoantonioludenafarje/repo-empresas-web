@@ -388,7 +388,7 @@ const GetReferralGuide = () => {
           typeof routeToReferralGuide.carrierDocumentType === 'string'
         ) {
           setDriverDocumentType(
-            routeToReferralGuide.carrierDocumentType.toString().toUpperCase(),
+            routeToReferralGuide.driverDocumentType.toString().toUpperCase(),
           );
         }
         changeValueField(

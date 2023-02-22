@@ -360,7 +360,7 @@ const FinancesTable = (props) => {
                                               {route.observationDelivery}
                                             </TableCell>
                                             <TableCell>
-                                              {route.totalGrossWeight.toFixed(2)}
+                                              {Number.parseFloat(route.totalGrossWeight).toFixed(3)}
                                             </TableCell>
                                             <TableCell>
                                               {route.numberOfPackages}
