@@ -128,6 +128,27 @@ const useForceUpdate = () => {
   return () => setReload((value) => value + 1); // update the state to force render
 };
 
+const objectsAreEqual = (a, b) => {
+  // Comprobar si los dos valores son objetos
+  if (typeof a === 'object' && typeof b === 'object') {
+    // Comprobar si los objetos tienen las mismas propiedades
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) {
+      return false;
+    }
+    // Comparar el valor de cada propiedad de forma recursiva
+    for (const key of aKeys) {
+      if (!objectsAreEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  // Comparar los valores directamente
+  return a === b;
+}
+
 let selectedProducts = [];
 let selectedOutput;
 let listDocuments = [];
@@ -546,15 +567,15 @@ const NewOutput = (props) => {
   const registerSuccess = () => {
     return (
       successMessage != undefined &&
-      addInvoiceRes != undefined &&
-      !('error' in addInvoiceRes)
+      addInvoiceRes != undefined && (
+      !('error' in addInvoiceRes) || objectsAreEqual(addInvoiceRes.error, {}))
     );
   };
   const registerError = () => {
     return (
-      (successMessage != undefined &&
-        addInvoiceRes &&
-        'error' in addInvoiceRes) ||
+      (successMessage != undefined && addInvoiceRes && 
+        ('error' in addInvoiceRes && !objectsAreEqual(addInvoiceRes.error, {}))
+      ) ||
       errorMessage != undefined
     );
   };

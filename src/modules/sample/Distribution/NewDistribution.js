@@ -311,14 +311,12 @@ const Distribution = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GENERATE_DISTRIBUTION, payload: undefined});
-    setOpenStatus(true);
     setExecAll(true);
     setExecAll(false);
     console.log(`inicio ${initialDate}, final ${finalDate}`);
     console.log('final estado', status);
     console.log('final data', data);
     console.log('final routes', routes);
-    setSubmitting(false);
     const finalPayload = {
       request: {
         payload: {
@@ -394,6 +392,7 @@ const Distribution = (props) => {
     };
     console.log('finalPayload', finalPayload);
     toGenerateDistribution(finalPayload);
+    setOpenStatus(true);
     setSubmitting(false);
   };
 
