@@ -431,33 +431,36 @@ const GetReferralGuide = () => {
           quantityMovement: prod.quantityMovement,
         };
       });
-      let changedDelivery = {
-        destination: dataFinal.arrivalPointAddress,
-        transferStartDate: dataFinal.transferStartDate,
-        totalGrossWeight: dataFinal.totalGrossWeight,
-        numberOfPackages: dataFinal.numberOfPackages,
-        startingPointAddress: dataFinal.startingPointAddress,
-        startingPointUbigeo: dataFinal.startingPointUbigeo,
-        arrivalPointAddress: dataFinal.arrivalPointAddress,
-        arrivalPointUbigeo: dataFinal.arrivalPointUbigeo,
-        carrierDocumentType: dataFinal.carrierDocumentType,
-        carrierDocumentNumber: dataFinal.carrierDocumentNumber,
-        carrierDenomination: dataFinal.carrierDenomination,
-        driverDenomination: dataFinal.driverDenomination,
-        driverLastName: dataFinal.driverLastName,
-        driverLicenseNumber: dataFinal.driverLicenseNumber,
-        driverDocumentType: dataFinal.driverDocumentType,
-        driverDocumentNumber: dataFinal.driverDocumentNumber,
-        driverId: '',
-        serialNumber: dataFinal.serialNumber,
-        carrierPlateNumber: dataFinal.carrierPlateNumber,
-        generateReferralGuide: true,
-        productsInfo: parsedProducts,
-      };
+
       const indexDelivery = routeToReferralGuide.deliveries.findIndex(
         (delivery) =>
           delivery.localRouteId === routeToReferralGuide.localRouteId,
       );
+      let changedDelivery = {
+        arrivalPointAddress: dataFinal.arrivalPointAddress,
+        serialNumber: addReferralGuideRes.serialNumber,
+        arrivalPointUbigeo: dataFinal.arrivalPointUbigeo,
+        generateReferralGuide: true,
+        localRouteId: routeToReferralGuide.localRouteId,
+        destination: dataFinal.arrivalPointAddress,
+        driverDocumentNumber: dataFinal.driverDocumentNumber,
+        driverDenomination: dataFinal.driverDenomination,
+        productsInfo: parsedProducts,
+        numberOfPackages: dataFinal.numberOfPackages,
+        carrierDenomination: dataFinal.carrierDenomination,
+        driverDocumentType: dataFinal.driverDocumentType,
+        totalGrossWeight: dataFinal.totalGrossWeight,
+        referralGuideMovementHeaderId: addReferralGuideRes.referralGuideMovementHeaderId,
+        driverLicenseNumber: dataFinal.driverLicenseNumber,
+        driverId: '',
+        carrierPlateNumber: dataFinal.carrierPlateNumber,
+        carrierDocumentType: dataFinal.carrierDocumentType,
+        transferStartDate: dataFinal.transferStartDate,
+        driverLastName: dataFinal.driverLastName,
+        carrierDocumentNumber: dataFinal.carrierDocumentNumber,
+        startingPointUbigeo: dataFinal.startingPointUbigeo,
+        startingPointAddress: dataFinal.startingPointAddress,
+      };
       let parsedDeliveries = routeToReferralGuide.deliveries;
       parsedDeliveries[indexDelivery] = changedDelivery;
       let payloadUpdateRF = {
@@ -538,6 +541,7 @@ const GetReferralGuide = () => {
         request: {
           payload: {
             merchantId: userDataRes.merchantSelected.merchantId,
+            deliveryDistributionId: routeToReferralGuide ? routeToReferralGuide.deliveryDistributionId : "",
             movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
             movementHeaderId: selectedOutput.movementHeaderId,
             contableMovementId: selectedOutput.contableMovementId || '',
