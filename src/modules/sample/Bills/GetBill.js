@@ -147,7 +147,7 @@ const objectsAreEqual = (a, b) => {
   }
   // Comparar los valores directamente
   return a === b;
-}
+};
 
 let selectedProducts = [];
 let selectedOutput;
@@ -567,15 +567,16 @@ const NewOutput = (props) => {
   const registerSuccess = () => {
     return (
       successMessage != undefined &&
-      addInvoiceRes != undefined && (
-      !('error' in addInvoiceRes) || objectsAreEqual(addInvoiceRes.error, {}))
+      addInvoiceRes != undefined &&
+      (!('error' in addInvoiceRes) || objectsAreEqual(addInvoiceRes.error, {}))
     );
   };
   const registerError = () => {
     return (
-      (successMessage != undefined && addInvoiceRes && 
-        ('error' in addInvoiceRes && !objectsAreEqual(addInvoiceRes.error, {}))
-      ) ||
+      (successMessage != undefined &&
+        addInvoiceRes &&
+        'error' in addInvoiceRes &&
+        !objectsAreEqual(addInvoiceRes.error, {})) ||
       errorMessage != undefined
     );
   };

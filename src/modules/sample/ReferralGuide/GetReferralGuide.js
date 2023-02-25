@@ -125,6 +125,27 @@ const validationSchema = yup.object({
     .required(<IntlMessages id='validation.required' />),
 });
 
+const objectsAreEqual = (a, b) => {
+  // Comprobar si los dos valores son objetos
+  if (typeof a === 'object' && typeof b === 'object') {
+    // Comprobar si los objetos tienen las mismas propiedades
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) {
+      return false;
+    }
+    // Comparar el valor de cada propiedad de forma recursiva
+    for (const key of aKeys) {
+      if (!objectsAreEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  // Comparar los valores directamente
+  return a === b;
+};
+
 const useForceUpdate = () => {
   const [reload, setReload] = React.useState(0); // integer state
   return () => setReload((value) => value + 1); // update the state to force render
@@ -450,7 +471,8 @@ const GetReferralGuide = () => {
         carrierDenomination: dataFinal.carrierDenomination,
         driverDocumentType: dataFinal.driverDocumentType,
         totalGrossWeight: dataFinal.totalGrossWeight,
-        referralGuideMovementHeaderId: addReferralGuideRes.referralGuideMovementHeaderId,
+        referralGuideMovementHeaderId:
+          addReferralGuideRes.referralGuideMovementHeaderId,
         driverLicenseNumber: dataFinal.driverLicenseNumber,
         driverId: '',
         carrierPlateNumber: dataFinal.carrierPlateNumber,
@@ -541,7 +563,9 @@ const GetReferralGuide = () => {
         request: {
           payload: {
             merchantId: userDataRes.merchantSelected.merchantId,
-            deliveryDistributionId: routeToReferralGuide ? routeToReferralGuide.deliveryDistributionId : "",
+            deliveryDistributionId: routeToReferralGuide
+              ? routeToReferralGuide.deliveryDistributionId
+              : '',
             movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
             movementHeaderId: selectedOutput.movementHeaderId,
             contableMovementId: selectedOutput.contableMovementId || '',
@@ -625,13 +649,15 @@ const GetReferralGuide = () => {
       return (
         successMessage != undefined &&
         updateGenerateReferralGuideRes != undefined &&
-        !('error' in updateGenerateReferralGuideRes)
+        (!('error' in updateGenerateReferralGuideRes) ||
+          objectsAreEqual(updateGenerateReferralGuideRes.error, {}))
       );
     } else {
       return (
         successMessage != undefined &&
         addReferralGuideRes != undefined &&
-        !('error' in addReferralGuideRes)
+        (!('error' in addReferralGuideRes) ||
+          objectsAreEqual(addReferralGuideRes.error, {}))
       );
     }
   };
@@ -641,14 +667,16 @@ const GetReferralGuide = () => {
       return (
         (successMessage != undefined &&
           updateGenerateReferralGuideRes &&
-          'error' in updateGenerateReferralGuideRes) ||
+          'error' in updateGenerateReferralGuideRes &&
+          !objectsAreEqual(updateGenerateReferralGuideRes.error, {})) ||
         errorMessage != undefined
       );
     } else {
       return (
         (successMessage != undefined &&
           addReferralGuideRes &&
-          'error' in addReferralGuideRes) ||
+          'error' in addReferralGuideRes &&
+          !objectsAreEqual(addReferralGuideRes.error, {})) ||
         errorMessage != undefined
       );
     }

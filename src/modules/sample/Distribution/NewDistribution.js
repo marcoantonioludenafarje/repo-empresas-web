@@ -500,18 +500,16 @@ const Distribution = (props) => {
     setRoutes(deliveries);
     reloadPage();
   };
-  
 
   const onChangeInitialDate = (event) => {
-
     const fecha = new Date(initialDate);
     const timestamp = fecha.getTime();
-    console.log("newDeliveries", timestamp)
-    const newDeliveries = routes.map((delivery)=> {
-      console.log("holi madafaca")
+    console.log('newDeliveries', timestamp);
+    const newDeliveries = routes.map((delivery) => {
+      console.log('holi madafaca');
       delivery.transferStartDate = dateWithHyphen(timestamp);
-      return delivery
-    })
+      return delivery;
+    });
     setRoutes(newDeliveries);
   };
   const showIconStatus = (bool, obj) => {
@@ -945,7 +943,13 @@ const Distribution = (props) => {
                           </TableCell>
                           <TableCell>{route.observationDelivery}</TableCell>
                           <TableCell>
-                            {(route.totalWeight ? Number.parseFloat(route.totalWeight).toFixed(3) : route.totalGrossWeight ? Number.parseFloat(route.totalGrossWeight).toFixed(3) : 0)}
+                            {route.totalWeight
+                              ? Number.parseFloat(route.totalWeight).toFixed(3)
+                              : route.totalGrossWeight
+                              ? Number.parseFloat(
+                                  route.totalGrossWeight,
+                                ).toFixed(3)
+                              : 0}
                           </TableCell>
                           <TableCell>
                             {route.numberPackages || route.numberOfPackages}

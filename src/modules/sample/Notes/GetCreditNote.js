@@ -98,6 +98,27 @@ let listOutputsPayload = {
   },
 };
 
+const objectsAreEqual = (a, b) => {
+  // Comprobar si los dos valores son objetos
+  if (typeof a === 'object' && typeof b === 'object') {
+    // Comprobar si los objetos tienen las mismas propiedades
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) {
+      return false;
+    }
+    // Comparar el valor de cada propiedad de forma recursiva
+    for (const key of aKeys) {
+      if (!objectsAreEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  // Comparar los valores directamente
+  return a === b;
+};
+
 const GetCreditNote = () => {
   const [issueDate, setIssueDate] = React.useState(Date.now());
   const [addIgv, setAddIgv] = React.useState(false);
@@ -595,7 +616,8 @@ const GetCreditNote = () => {
     if (
       successMessage != undefined &&
       addCreditNoteRes !== undefined &&
-      !('error' in addCreditNoteRes)
+      (!('error' in addCreditNoteRes) ||
+        objectsAreEqual(addCreditNoteRes.error, {}))
     ) {
       return (
         <>
@@ -622,7 +644,8 @@ const GetCreditNote = () => {
     } else if (
       (successMessage != undefined &&
         addCreditNoteRes &&
-        'error' in addCreditNoteRes) ||
+        'error' in addCreditNoteRes &&
+        !objectsAreEqual(addCreditNoteRes.error, {})) ||
       errorMessage != undefined
     ) {
       return (

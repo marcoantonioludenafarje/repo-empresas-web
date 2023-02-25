@@ -80,7 +80,6 @@ let producePayload = {
   },
 };
 
-
 const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -93,13 +92,15 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
   const [stockProducts, setStockProducts] = React.useState([]);
 
   useEffect(() => {
-    setStockProducts(product.inputsProduct.map((obj) => {
-      let ogProduct;
-      ogProduct = listProducts.find(
-        (objProd) => obj.productId == objProd.productId,
-      );
-      return ogProduct;
-    }));
+    setStockProducts(
+      product.inputsProduct.map((obj) => {
+        let ogProduct;
+        ogProduct = listProducts.find(
+          (objProd) => obj.productId == objProd.productId,
+        );
+        return ogProduct;
+      }),
+    );
     console.log('stockProducts', stockProducts);
   }, []);
 
@@ -188,7 +189,9 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
         </>
       );
     } else if (
-      (successMessage != undefined && produceProductRes && 'error' in produceProductRes) ||
+      (successMessage != undefined &&
+        produceProductRes &&
+        'error' in produceProductRes) ||
       errorMessage != undefined
     ) {
       return (
@@ -303,7 +306,6 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
                     my: 2,
                   }}
                 />
-                
               </Grid>
               {/* <Grid item xs={12}>
               <AppTextField
@@ -362,7 +364,9 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
                     {product.inputsProduct &&
                     typeof product.inputsProduct !== 'string' ? (
                       product.inputsProduct.map((obj, index) => {
-                        const productSelected = stockProducts.find(element => element.productId == obj.productId);
+                        const productSelected = stockProducts.find(
+                          (element) => element.productId == obj.productId,
+                        );
 
                         return (
                           <TableRow
@@ -381,7 +385,15 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
                             <TableCell sx={{width: '10px'}}>
                               {obj.quantity}
                             </TableCell>
-                            <TableCell style={{ color: obj.quantity*amount > productSelected.stock ? 'red' : 'inherit' }} sx={{width: '10px'}}>
+                            <TableCell
+                              style={{
+                                color:
+                                  obj.quantity * amount > productSelected.stock
+                                    ? 'red'
+                                    : 'inherit',
+                              }}
+                              sx={{width: '10px'}}
+                            >
                               {obj.quantity * amount}
                             </TableCell>
                             <TableCell sx={{width: '10px'}}>
@@ -403,26 +415,26 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
               </TableContainer>
             </Box>
             <Grid item xs={12}>
-            <Collapse in={showAlert}>
-                  <Alert
-                    severity='error'
-                    action={
-                      <IconButton
-                        aria-label='close'
-                        color='inherit'
-                        size='small'
-                        onClick={() => {
-                          setShowAlert(false);
-                        }}
-                      >
-                        <CloseIcon fontSize='inherit' />
-                      </IconButton>
-                    }
-                    sx={{mb: 2}}
-                  >
-                    No se cuenta con stock disponible en los insumos.
-                  </Alert>
-                </Collapse>
+              <Collapse in={showAlert}>
+                <Alert
+                  severity='error'
+                  action={
+                    <IconButton
+                      aria-label='close'
+                      color='inherit'
+                      size='small'
+                      onClick={() => {
+                        setShowAlert(false);
+                      }}
+                    >
+                      <CloseIcon fontSize='inherit' />
+                    </IconButton>
+                  }
+                  sx={{mb: 2}}
+                >
+                  No se cuenta con stock disponible en los insumos.
+                </Alert>
+              </Collapse>
             </Grid>
             <ButtonGroup
               orientation='vertical'

@@ -277,9 +277,7 @@ const FinancesTable = (props) => {
                             <Table size='small' aria-label='purchases'>
                               <TableHead sx={{backgroundColor: '#ededed'}}>
                                 <TableRow>
-                                  <TableCell>
-                                    Serie-Número
-                                  </TableCell>
+                                  <TableCell>Serie-Número</TableCell>
                                   <TableCell>
                                     Dirección de punto de partida
                                   </TableCell>
@@ -366,7 +364,9 @@ const FinancesTable = (props) => {
                                               {route.observationDelivery}
                                             </TableCell>
                                             <TableCell>
-                                              {Number.parseFloat(route.totalGrossWeight).toFixed(3)}
+                                              {Number.parseFloat(
+                                                route.totalGrossWeight,
+                                              ).toFixed(3)}
                                             </TableCell>
                                             <TableCell>
                                               {route.numberOfPackages}

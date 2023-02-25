@@ -279,7 +279,9 @@ const PredefinedRoutes = () => {
                                               {route.observationDelivery}
                                             </TableCell>
                                             <TableCell>
-                                              {Number.parseFloat(route.totalGrossWeight).toFixed(3)}
+                                              {Number.parseFloat(
+                                                route.totalGrossWeight,
+                                              ).toFixed(3)}
                                             </TableCell>
                                             <TableCell>
                                               {route.numberOfPackages}

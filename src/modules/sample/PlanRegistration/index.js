@@ -1,11 +1,11 @@
 import React from 'react';
-import { useAuthUser } from '@crema/utility/AuthHooks';
-import { Formik } from 'formik';
+import {useAuthUser} from '@crema/utility/AuthHooks';
+import {Formik} from 'formik';
 import * as yup from 'yup';
 import UpgradeBusinessForm from './UpgradeBusinessForm';
-import { blue, green, red } from '@mui/material/colors';
+import {blue, green, red} from '@mui/material/colors';
 
-import Router, { useRouter } from 'next/router';
+import Router, {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {
   Box,
@@ -22,8 +22,8 @@ import {
   AccountTabsWrapper,
   Card,
 } from '@mui/material';
-import { Fonts } from '../../../shared/constants/AppEnums';
-import { useDispatch, useSelector } from 'react-redux';
+import {Fonts} from '../../../shared/constants/AppEnums';
+import {useDispatch, useSelector} from 'react-redux';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -39,8 +39,8 @@ import {
   onGetBusinessParameter,
   upgradeToNewPlan,
 } from '../../../redux/actions/General';
-import { GET_ROL_USER } from 'shared/constants/ActionTypes';
-import { useEffect } from 'react';
+import {GET_ROL_USER} from 'shared/constants/ActionTypes';
+import {useEffect} from 'react';
 const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 const validationSchema = yup.object({
@@ -68,17 +68,17 @@ const validationSchema = yup.object({
 });
 const UpgradeBusiness = () => {
   const [openStatus, setOpenStatus] = React.useState(false);
-  const { user } = useAuthUser();
+  const {user} = useAuthUser();
   console.log('datos user', user);
-  const { userAttributes } = useSelector(({ user }) => user);
+  const {userAttributes} = useSelector(({user}) => user);
   console.log('userAttributes', userAttributes);
-  const { upgradeToNewPlanRes } = useSelector(({ general }) => general);
+  const {upgradeToNewPlanRes} = useSelector(({general}) => general);
   console.log('registerUserRes', upgradeToNewPlanRes);
-  const { successMessage } = useSelector(({ user }) => user);
+  const {successMessage} = useSelector(({user}) => user);
   console.log('successMessage', successMessage);
-  const { errorMessage } = useSelector(({ user }) => user);
+  const {errorMessage} = useSelector(({user}) => user);
   console.log('errorMessage', errorMessage);
-  const { getRolUserRes } = useSelector(({ general }) => general);
+  const {getRolUserRes} = useSelector(({general}) => general);
   const [docType, setDocType] = React.useState(
     userAttributes['custom:businessDocumentType'],
   );
@@ -101,9 +101,9 @@ const UpgradeBusiness = () => {
 
   const dispatch = useDispatch();
 
-  const { dataBusinessRes } = useSelector(({ general }) => general);
+  const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
-  const { userDataRes } = useSelector(({ user }) => user);
+  const {userDataRes} = useSelector(({user}) => user);
   const [initialValues, setInitialValues] = React.useState({});
 
   useEffect(() => {
@@ -161,19 +161,19 @@ const UpgradeBusiness = () => {
     if (registerSuccess()) {
       return (
         <>
-          <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
             <CheckCircleOutlineOutlinedIcon
               color='success'
-              sx={{ fontSize: '6em', mx: 2 }}
+              sx={{fontSize: '6em', mx: 2}}
             />
             <DialogContentText
-              sx={{ fontSize: '1.2em', m: 'auto' }}
+              sx={{fontSize: '1.2em', m: 'auto'}}
               id='alert-dialog-description'
             >
               Se ha dado de alta, cierre sesión <br />y vuelva a ingresar.
             </DialogContentText>
           </DialogContent>
-          <DialogActions sx={{ justifyContent: 'center' }}>
+          <DialogActions sx={{justifyContent: 'center'}}>
             <Button variant='outlined' onClick={sendStatus}>
               Aceptar
             </Button>
@@ -183,19 +183,19 @@ const UpgradeBusiness = () => {
     } else if (registerError()) {
       return (
         <>
-          <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
             <CancelOutlinedIcon
-              sx={{ fontSize: '6em', mx: 2, color: red[500] }}
+              sx={{fontSize: '6em', mx: 2, color: red[500]}}
             />
             <DialogContentText
-              sx={{ fontSize: '1.2em', m: 'auto' }}
+              sx={{fontSize: '1.2em', m: 'auto'}}
               id='alert-dialog-description'
             >
               Se ha producido un error al dar de alta. <br />
               {/* {registerError() ? registerUserRes : null} */}
             </DialogContentText>
           </DialogContent>
-          <DialogActions sx={{ justifyContent: 'center' }}>
+          <DialogActions sx={{justifyContent: 'center'}}>
             <Button variant='outlined' onClick={() => setOpenStatus(false)}>
               Aceptar
             </Button>
@@ -203,7 +203,7 @@ const UpgradeBusiness = () => {
         </>
       );
     } else {
-      return <CircularProgress disableShrink sx={{ mx: 'auto', my: '20px' }} />;
+      return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
     }
   };
   const updateCategories = (newCategories) => {
@@ -224,7 +224,7 @@ const UpgradeBusiness = () => {
   return (
     <>
       {initialValues != {} ? (
-        <Card sx={{ p: 4 }}>
+        <Card sx={{p: 4}}>
           <Box className='account-tabs-content'>
             <Box
               sx={{
@@ -237,18 +237,18 @@ const UpgradeBusiness = () => {
                 validateOnBlur={true}
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                onSubmit={(data, { setSubmitting }) => {
+                onSubmit={(data, {setSubmitting}) => {
                   console.log('Este es initialCategories', initialCategories);
                   console.log('Este es filters', filters);
 
                   if (!userDataRes.merchantSelected.planDesiredId) {
-
                     if (!data.eMerchantSlugName) {
                       setTypeDialog('nonSlug');
                       setOpenStatus(true);
                     } else if (
                       publish &&
-                      (!data.defaultMaxPrice || data.defaultMinPrice == undefined)
+                      (!data.defaultMaxPrice ||
+                        data.defaultMinPrice == undefined)
                     ) {
                       setTypeDialog('nonPriceRange');
                       setOpenStatus(true);
@@ -261,7 +261,8 @@ const UpgradeBusiness = () => {
                       setOpenStatus(true);
                     } else if (
                       publish &&
-                      Number(data.defaultMaxPrice) < Number(data.defaultMinPrice)
+                      Number(data.defaultMaxPrice) <
+                        Number(data.defaultMinPrice)
                     ) {
                       setTypeDialog('maxPriceIsLessThanMinPrice');
                       setOpenStatus(true);
@@ -300,16 +301,16 @@ const UpgradeBusiness = () => {
                     } else {
                       setTypeDialog('darDeAlta');
                       setSubmitting(true);
-                      console.log('data filters: ', { filters: filters });
+                      console.log('data filters: ', {filters: filters});
                       console.log('data planRegistration: ', {
                         ...data,
                         documentType: docType,
                         filters: filters,
                       });
                       // TODO Api Call here to save user info
-                      dispatch({ type: FETCH_SUCCESS, payload: undefined });
-                      dispatch({ type: FETCH_ERROR, payload: undefined });
-                      dispatch({ type: UPGRADE_TO_NEW_PLAN, payload: undefined });
+                      dispatch({type: FETCH_SUCCESS, payload: undefined});
+                      dispatch({type: FETCH_ERROR, payload: undefined});
+                      dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
 
                       setExecAll(true);
                       setExecAll(false);
@@ -386,90 +387,89 @@ const UpgradeBusiness = () => {
                     }
                   } else {
                     //Falta Validaciones para este apartado
-                      setTypeDialog('darDeAlta');
-                      setSubmitting(true);
-                      // TODO Api Call here to save user info
-                      dispatch({ type: FETCH_SUCCESS, payload: undefined });
-                      dispatch({ type: FETCH_ERROR, payload: undefined });
-                      dispatch({ type: UPGRADE_TO_NEW_PLAN, payload: undefined });
+                    setTypeDialog('darDeAlta');
+                    setSubmitting(true);
+                    // TODO Api Call here to save user info
+                    dispatch({type: FETCH_SUCCESS, payload: undefined});
+                    dispatch({type: FETCH_ERROR, payload: undefined});
+                    dispatch({type: UPGRADE_TO_NEW_PLAN, payload: undefined});
 
-                      setExecAll(true);
-                      setExecAll(false);
-                      toUpgradeToNewPlan({
-                        request: {
-                          payload: {
-                            merchantId: userDataRes.merchantSelected.merchantId,
-                            planDesiredId:
-                              userDataRes.merchantSelected.planDesiredId,
-                            promotionCodeId:
-                              userDataRes.merchantSelected.promotionCodeId,
-                            serieDocumenteBilling:
-                              data.serieDocumenteBilling || '',
-                            serieBackDocumenteBilling:
-                              data.serieBackDocumenteBilling || '',
-                            serieDocumenteReceipt:
-                              data.serieDocumenteReceipt || '',
-                            serieBackDocumenteReceipt:
-                              data.serieBackDocumenteReceipt || '',
-                            serieDocumenteReferralGuide:
-                              data.serieDocumenteReferralGuide || '',
-                            serieBackDocumenteReferralGuide:
-                              data.serieBackDocumenteReferralGuide || '',
-                            eMerchantSlugName: data.eMerchantSlugName || '',
-                            merchantMasterId: userDataRes.merchantMasterId,
-                            firstPlanDefault:
-                              userDataRes.merchantSelected.firstPlanDefault,
-                            typeMerchant:
-                              userDataRes.merchantSelected.typeMerchant,
-                            //categories: initialCategories,
-                            //filters: filters,
-                            //price: [data.defaultMinPrice, data.defaultMaxPrice],
-                            //isEcommerceEnabled: publish,
-                          },
+                    setExecAll(true);
+                    setExecAll(false);
+                    toUpgradeToNewPlan({
+                      request: {
+                        payload: {
+                          merchantId: userDataRes.merchantSelected.merchantId,
+                          planDesiredId:
+                            userDataRes.merchantSelected.planDesiredId,
+                          promotionCodeId:
+                            userDataRes.merchantSelected.promotionCodeId,
+                          serieDocumenteBilling:
+                            data.serieDocumenteBilling || '',
+                          serieBackDocumenteBilling:
+                            data.serieBackDocumenteBilling || '',
+                          serieDocumenteReceipt:
+                            data.serieDocumenteReceipt || '',
+                          serieBackDocumenteReceipt:
+                            data.serieBackDocumenteReceipt || '',
+                          serieDocumenteReferralGuide:
+                            data.serieDocumenteReferralGuide || '',
+                          serieBackDocumenteReferralGuide:
+                            data.serieBackDocumenteReferralGuide || '',
+                          eMerchantSlugName: data.eMerchantSlugName || '',
+                          merchantMasterId: userDataRes.merchantMasterId,
+                          firstPlanDefault:
+                            userDataRes.merchantSelected.firstPlanDefault,
+                          typeMerchant:
+                            userDataRes.merchantSelected.typeMerchant,
+                          //categories: initialCategories,
+                          //filters: filters,
+                          //price: [data.defaultMinPrice, data.defaultMaxPrice],
+                          //isEcommerceEnabled: publish,
                         },
-                      });
-                      console.log('Esto se envia', {
-                        request: {
-                          payload: {
-                            merchantId: userDataRes.merchantSelected.merchantId,
-                            planDesiredId:
-                              userDataRes.merchantSelected.planDesiredId,
-                            promotionCodeId:
-                              userDataRes.merchantSelected.promotionCodeId,
-                            serieDocumenteBilling:
-                              data.serieDocumenteBilling || '',
-                            serieBackDocumenteBilling:
-                              data.serieBackDocumenteBilling || '',
-                            serieDocumenteReceipt:
-                              data.serieDocumenteReceipt || '',
-                            serieBackDocumenteReceipt:
-                              data.serieBackDocumenteReceipt || '',
-                            serieDocumenteReferralGuide:
-                              data.serieDocumenteReferralGuide || '',
-                            serieBackDocumenteReferralGuide:
-                              data.serieBackDocumenteReferralGuide || '',
-                            eMerchantSlugName: data.eMerchantSlugName || '',
-                            merchantMasterId: userDataRes.merchantMasterId,
-                            firstPlanDefault:
-                              userDataRes.merchantSelected.firstPlanDefault,
-                            typeMerchant:
-                              userDataRes.merchantSelected.typeMerchant,
-                            // categories: initialCategories,
-                            // filters: filters,
-                            // price: [
-                            //   Number(data.defaultMinPrice),
-                            //   Number(data.defaultMaxPrice),
-                            // ],
-                          },
+                      },
+                    });
+                    console.log('Esto se envia', {
+                      request: {
+                        payload: {
+                          merchantId: userDataRes.merchantSelected.merchantId,
+                          planDesiredId:
+                            userDataRes.merchantSelected.planDesiredId,
+                          promotionCodeId:
+                            userDataRes.merchantSelected.promotionCodeId,
+                          serieDocumenteBilling:
+                            data.serieDocumenteBilling || '',
+                          serieBackDocumenteBilling:
+                            data.serieBackDocumenteBilling || '',
+                          serieDocumenteReceipt:
+                            data.serieDocumenteReceipt || '',
+                          serieBackDocumenteReceipt:
+                            data.serieBackDocumenteReceipt || '',
+                          serieDocumenteReferralGuide:
+                            data.serieDocumenteReferralGuide || '',
+                          serieBackDocumenteReferralGuide:
+                            data.serieBackDocumenteReferralGuide || '',
+                          eMerchantSlugName: data.eMerchantSlugName || '',
+                          merchantMasterId: userDataRes.merchantMasterId,
+                          firstPlanDefault:
+                            userDataRes.merchantSelected.firstPlanDefault,
+                          typeMerchant:
+                            userDataRes.merchantSelected.typeMerchant,
+                          // categories: initialCategories,
+                          // filters: filters,
+                          // price: [
+                          //   Number(data.defaultMinPrice),
+                          //   Number(data.defaultMaxPrice),
+                          // ],
                         },
-                      });
-                      setOpenStatus(true);
-                      setSubmitting(false);
+                      },
+                    });
+                    setOpenStatus(true);
+                    setSubmitting(false);
                   }
-
                 }}
               >
-                {({ values, setFieldValue }) => {
+                {({values, setFieldValue}) => {
                   return (
                     <UpgradeBusinessForm
                       values={values}
@@ -488,14 +488,14 @@ const UpgradeBusiness = () => {
               <Dialog
                 open={openStatus}
                 onClose={sendStatus}
-                sx={{ textAlign: 'center' }}
+                sx={{textAlign: 'center'}}
                 aria-labelledby='alert-dialog-title'
                 aria-describedby='alert-dialog-description'
               >
                 {typeDialog == 'darDeAlta' ? (
                   <>
                     <DialogTitle
-                      sx={{ fontSize: '1.5em' }}
+                      sx={{fontSize: '1.5em'}}
                       id='alert-dialog-title'
                     >
                       {'Alta de plan'}
@@ -507,7 +507,7 @@ const UpgradeBusiness = () => {
                     {typeDialog == 'nonSlug' ? (
                       <>
                         <DialogTitle
-                          sx={{ fontSize: '1.5em' }}
+                          sx={{fontSize: '1.5em'}}
                           id='alert-dialog-title'
                         >
                           {'Falta llenar la ruta del comercio'}
@@ -519,7 +519,7 @@ const UpgradeBusiness = () => {
                     {typeDialog == 'nonPriceRange' ? (
                       <>
                         <DialogTitle
-                          sx={{ fontSize: '1.5em' }}
+                          sx={{fontSize: '1.5em'}}
                           id='alert-dialog-title'
                         >
                           {'Falta llenar algunos de los límites de precio'}
@@ -531,7 +531,7 @@ const UpgradeBusiness = () => {
                     {typeDialog == 'nonCategories' ? (
                       <>
                         <DialogTitle
-                          sx={{ fontSize: '1.5em' }}
+                          sx={{fontSize: '1.5em'}}
                           id='alert-dialog-title'
                         >
                           {'Llene al menos una categoría'}
@@ -543,7 +543,7 @@ const UpgradeBusiness = () => {
                     {typeDialog == 'nonFilters' ? (
                       <>
                         <DialogTitle
-                          sx={{ fontSize: '1.5em' }}
+                          sx={{fontSize: '1.5em'}}
                           id='alert-dialog-title'
                         >
                           {'Llene al menos un filtro y una opción'}
@@ -555,7 +555,7 @@ const UpgradeBusiness = () => {
                     {typeDialog == 'priceIsMoreThanZero' ? (
                       <>
                         <DialogTitle
-                          sx={{ fontSize: '1.5em' }}
+                          sx={{fontSize: '1.5em'}}
                           id='alert-dialog-title'
                         >
                           {
@@ -569,7 +569,7 @@ const UpgradeBusiness = () => {
                     {typeDialog == 'maxPriceIsLessThanMinPrice' ? (
                       <>
                         <DialogTitle
-                          sx={{ fontSize: '1.5em' }}
+                          sx={{fontSize: '1.5em'}}
                           id='alert-dialog-title'
                         >
                           {
@@ -583,7 +583,7 @@ const UpgradeBusiness = () => {
                     {typeDialog == 'someCategoriesAreEmpty' ? (
                       <>
                         <DialogTitle
-                          sx={{ fontSize: '1.5em' }}
+                          sx={{fontSize: '1.5em'}}
                           id='alert-dialog-title'
                         >
                           {'No pueden haber categorías vacías'}
@@ -595,7 +595,7 @@ const UpgradeBusiness = () => {
                     {typeDialog == 'someFiltersAreEmpty' ? (
                       <>
                         <DialogTitle
-                          sx={{ fontSize: '1.5em' }}
+                          sx={{fontSize: '1.5em'}}
                           id='alert-dialog-title'
                         >
                           {'No pueden haber filtros o sus opciones vacías'}
@@ -607,14 +607,14 @@ const UpgradeBusiness = () => {
                     <DialogContent>
                       <CancelOutlinedIcon
                         //onClick={setOpen.bind(this, false)}
-                        sx={{ fontSize: '6em', mx: 2, color: red[500] }}
+                        sx={{fontSize: '6em', mx: 2, color: red[500]}}
                       />
                       <DialogContentText
-                        sx={{ fontSize: '1.2em', m: 'auto' }}
+                        sx={{fontSize: '1.2em', m: 'auto'}}
                         id='alert-dialog-description'
                       ></DialogContentText>
                     </DialogContent>
-                    <DialogActions sx={{ justifyContent: 'center' }}>
+                    <DialogActions sx={{justifyContent: 'center'}}>
                       <Button
                         variant='outlined'
                         onClick={() => setOpenStatus(false)}

@@ -445,14 +445,15 @@ const Distribution = (props) => {
         let productInfo = products.find(
           (item2) => item2['DESCRIPCION'].trim() === product.product.trim(),
         );
-        if(!productInfo){
-          console.log("No identificado", product.product.trim())
+        if (!productInfo) {
+          console.log('No identificado', product.product.trim());
         }
         if (productInfo['DOSIFICACION']) {
           productInfo['DOSIFICACION'].split('|').forEach((inputProduct) => {
             let productInfo2 = products.find(
               (item3) =>
-                item3['DESCRIPCION'].trim() === inputProduct.split('-')[0].trim(),
+                item3['DESCRIPCION'].trim() ===
+                inputProduct.split('-')[0].trim(),
             );
             if (productInfo2) {
               let existingProduct = productsInfo.find(
@@ -521,9 +522,8 @@ const Distribution = (props) => {
           }
         }
       });
-      if(!matchArrival){
-        console.log("Este es", item)
-
+      if (!matchArrival) {
+        console.log('Este es', item);
       }
       return {
         ...item,
@@ -974,7 +974,11 @@ const Distribution = (props) => {
                             ) : null}
                           </TableCell>
                           <TableCell>{route.observationDelivery}</TableCell>
-                          <TableCell>{route.totalWeight ? Number.parseFloat(route.totalWeight).toFixed(3): 0}</TableCell>
+                          <TableCell>
+                            {route.totalWeight
+                              ? Number.parseFloat(route.totalWeight).toFixed(3)
+                              : 0}
+                          </TableCell>
                           <TableCell>{route.numberPackages}</TableCell>
                           {/* <TableCell align='center'>
                           {showIconStatus(
