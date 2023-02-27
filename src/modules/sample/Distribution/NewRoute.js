@@ -31,7 +31,7 @@ import {
   Backdrop,
   useMediaQuery,
   useTheme,
-  Alert
+  Alert,
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
@@ -119,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
 let selectedDelivery = {};
 let selectedDistribution = '';
 let selectedRoute = '';
-let typeAlert = "";
+let typeAlert = '';
 const Distribution = (props) => {
   let listPayload = {
     request: {
@@ -446,17 +446,21 @@ const Distribution = (props) => {
       let totalWeight = 0;
       let productsInfo = [];
       productsSelected.forEach((product) => {
-        let productInfo = products.find(
-          (item2) => {
-            if(item2['DESCRIPCION'].includes("-") || item2['DESCRIPCION'].includes("|")){
-              setShowAlert(true);
-              typeAlert = "stickSymbolPresenced";
-            }
-            if(item2['DESCRIPCION'].trim().replace(/ /g, "").toUpperCase() === product.product.trim().replace(/ /g, "").toUpperCase()){
-              return true
-            }
+        let productInfo = products.find((item2) => {
+          if (
+            item2['DESCRIPCION'].includes('-') ||
+            item2['DESCRIPCION'].includes('|')
+          ) {
+            setShowAlert(true);
+            typeAlert = 'stickSymbolPresenced';
           }
-        );
+          if (
+            item2['DESCRIPCION'].trim().replace(/ /g, '').toUpperCase() ===
+            product.product.trim().replace(/ /g, '').toUpperCase()
+          ) {
+            return true;
+          }
+        });
         if (!productInfo) {
           console.log('No identificado', product.product.trim());
         }
@@ -464,8 +468,12 @@ const Distribution = (props) => {
           productInfo['DOSIFICACION'].split('|').forEach((inputProduct) => {
             let productInfo2 = products.find(
               (item3) =>
-                item3['DESCRIPCION'].trim().replace(/ /g, "").toUpperCase() ===
-                inputProduct.split('-')[0].trim().replace(/ /g, "").toUpperCase(),
+                item3['DESCRIPCION'].trim().replace(/ /g, '').toUpperCase() ===
+                inputProduct
+                  .split('-')[0]
+                  .trim()
+                  .replace(/ /g, '')
+                  .toUpperCase(),
             );
             if (productInfo2) {
               let existingProduct = productsInfo.find(
@@ -872,29 +880,29 @@ const Distribution = (props) => {
         </Button>
       </Stack>
       <Collapse in={showAlert}>
-            <Alert
-              severity='error'
-              action={
-                <IconButton
-                  aria-label='close'
-                  color='inherit'
-                  size='small'
-                  onClick={() => {
-                    setShowAlert(false);
-                  }}
-                >
-                  <CloseIcon fontSize='inherit' />
-                </IconButton>
-              }
-              sx={{mb: 2}}
+        <Alert
+          severity='error'
+          action={
+            <IconButton
+              aria-label='close'
+              color='inherit'
+              size='small'
+              onClick={() => {
+                setShowAlert(false);
+              }}
             >
-              {typeAlert == 'stickSymbolPresenced' ? (
-                'Alguno de los productos tiene el símbolo | o el - en su descripción, por favor evitarlos para un procesamiento correcto'
-              ) : (
-                <></>
-              )}
-            </Alert>
-          </Collapse>
+              <CloseIcon fontSize='inherit' />
+            </IconButton>
+          }
+          sx={{mb: 2}}
+        >
+          {typeAlert == 'stickSymbolPresenced' ? (
+            'Alguno de los productos tiene el símbolo | o el - en su descripción, por favor evitarlos para un procesamiento correcto'
+          ) : (
+            <></>
+          )}
+        </Alert>
+      </Collapse>
       <Box
         sx={{
           flex: 1,

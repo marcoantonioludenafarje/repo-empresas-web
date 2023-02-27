@@ -101,7 +101,6 @@ const objectsAreEqual = (a, b) => {
   return a === b;
 };
 
-
 const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -186,7 +185,12 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
     if (
       successMessage != undefined &&
       produceProductRes !== undefined &&
-      (!(typeof tuVariable === "object" && tuVariable !== null && 'error' in produceProductRes) || objectsAreEqual(produceProductRes.error, {}))
+      (!(
+        typeof tuVariable === 'object' &&
+        tuVariable !== null &&
+        'error' in produceProductRes
+      ) ||
+        objectsAreEqual(produceProductRes.error, {}))
     ) {
       return (
         <>
