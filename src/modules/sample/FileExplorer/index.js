@@ -830,27 +830,6 @@ const FileExplorer = (props) => {
                       {localStorage
                         .getItem('pathsBack')
                         .includes(
-                          '/utility/deleteObjectsPathMerchant?path=/*',
-                        ) === true ? (
-                        <TableCell align='right' sx={{textAlign: 'center'}}>
-                          <IconButton
-                            disabled={
-                              !localStorage
-                                .getItem('pathsBack')
-                                .includes(
-                                  '/utility/deleteObjectsPathMerchant?path=/*',
-                                )
-                            }
-                            onClick={setDeleteState.bind(this, obj)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      ) : null}
-
-                      {localStorage
-                        .getItem('pathsBack')
-                        .includes(
                           '/utility/changeNameObjectsPathMerchant?path=/*',
                         ) === true ? (
                         <TableCell align='right' sx={{textAlign: 'center'}}>
@@ -865,6 +844,27 @@ const FileExplorer = (props) => {
                             onClick={changeName.bind(this, obj)}
                           >
                             <EditIcon />
+                          </IconButton>
+                        </TableCell>
+                      ) : null}
+
+                      {localStorage
+                        .getItem('pathsBack')
+                        .includes(
+                          '/utility/deleteObjectsPathMerchant?path=/*',
+                        ) === true ? (
+                        <TableCell align='right' sx={{textAlign: 'center'}}>
+                          <IconButton
+                            disabled={
+                              !localStorage
+                                .getItem('pathsBack')
+                                .includes(
+                                  '/utility/deleteObjectsPathMerchant?path=/*',
+                                )
+                            }
+                            onClick={setDeleteState.bind(this, obj)}
+                          >
+                            <DeleteIcon />
                           </IconButton>
                         </TableCell>
                       ) : null}
@@ -914,7 +914,7 @@ const FileExplorer = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Nombre'}
+          {'Cambiar Nombre'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <Formik
@@ -938,7 +938,7 @@ const FileExplorer = (props) => {
                       className={classes.stack}
                     >
                       <AppTextField
-                        label='name'
+                        label='Nombre de archivo'
                         name='name'
                         htmlFor='filled-adornment-password'
                         variant='outlined'
