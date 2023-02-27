@@ -341,10 +341,11 @@ const Distribution = (props) => {
           routerId: selectedRoute.routePredefinedId,
           typeOfTransport: transportModeVal,
           observation: data.observation,
-          deliveries: routes.map((route) => {
+          deliveries: routes.map((route, index) => {
             if (route !== undefined) {
               return {
                 destination: route.startingAddress,
+                localRouteId: index,
                 //transferStartDate: toDateAndHOurs(route.transferStartDate),
                 totalGrossWeight: route.totalWeight,
                 numberOfPackages: route.numberPackages,
