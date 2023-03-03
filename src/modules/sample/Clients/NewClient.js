@@ -292,7 +292,7 @@ const NewClient = () => {
                           DNI
                         </MenuItem>
                         <MenuItem
-                          value='foreignerscard'
+                          value='CE'
                           style={{fontWeight: 200}}
                         >
                           CE

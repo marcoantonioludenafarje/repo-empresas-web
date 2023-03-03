@@ -701,6 +701,8 @@
   "sidebar.sample.billing": "Ver mi Facturación",
   "sidebar.sample.bills": "Facturas",
   "sidebar.sample.carriersTable": "Transportistas",
+  "sidebar.sample.driversTable": "Conductores",
+  "sidebar.sample.locationsTable": "Locaciones",
   "sidebar.sample.clientsTable": "Clientes",
   "sidebar.sample.clients": "Clientes",
   "sidebar.sample.configuration": "Configuraciones",

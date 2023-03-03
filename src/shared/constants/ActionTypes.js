@@ -235,6 +235,18 @@ export const NEW_CARRIER = 'new_carrier';
 export const DELETE_CARRIER = 'delete_carrier';
 export const UPDATE_CARRIER = 'update_carrier';
 
+//DRIVERS
+export const GET_DRIVERS = 'get_drivers';
+export const NEW_DRIVER = 'new_driver';
+export const DELETE_DRIVER = 'delete_driver';
+export const UPDATE_DRIVER = 'update_driver';
+
+//LOCATIONS
+export const GET_LOCATIONS = 'get_locations';
+export const NEW_LOCATION = 'new_location';
+export const DELETE_LOCATION = 'delete_location';
+export const UPDATE_LOCATION = 'update_location';
+
 //FILE_EXPLORER
 export const GET_DATA = 'get_data';
 export const GENERATE_PRESIGNED = 'generate_presigned';

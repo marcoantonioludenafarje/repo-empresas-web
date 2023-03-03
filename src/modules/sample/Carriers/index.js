@@ -387,7 +387,7 @@ const CarrierTable = (arrayObjs, props) => {
             <MenuItem value='DNI' style={{fontWeight: 200}}>
               DNI
             </MenuItem>
-            <MenuItem value='foreignerscard' style={{fontWeight: 200}}>
+            <MenuItem value='CE' style={{fontWeight: 200}}>
               CE
             </MenuItem>
           </Select>

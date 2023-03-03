@@ -226,6 +226,22 @@ const rolesRoutesConfig = {
           url: '/sample/carriers/table',
         },
         {
+          id: 'driversTable',
+          title: 'Drivers Table',
+          messageId: 'sidebar.sample.driversTable',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/drivers/table',
+        },
+        {
+          id: 'locationsTable',
+          title: 'Locations Table',
+          messageId: 'sidebar.sample.locationsTable',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/locations/table',
+        },
+        {
           id: 'parametersTable',
           title: 'Parameters Table',
           messageId: 'sidebar.sample.parametersTable',

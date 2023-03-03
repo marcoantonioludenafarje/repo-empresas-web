@@ -41,7 +41,7 @@ import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {newCarrier} from '../../../redux/actions/Carriers';
+import {newDriver} from '../../../redux/actions/Drivers';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -56,55 +56,43 @@ const validationSchema = yup.object({
     .required(<IntlMessages id='validation.required' />)
     .integer(<IntlMessages id='validation.number.integer' />)
     .max(100000000000, 'Se puede ingresar como maximo 11 caracteres'),
-  name: yup
+  firstName: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-  addressCarrier: yup
+  lastName: yup
     .string()
-    .typeError(<IntlMessages id='validation.string' />),
-  emailContact: yup
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  license: yup
     .string()
-    .typeError(<IntlMessages id='validation.number' />)
-    .email('Formato de correo invalido'),
-  nameContact: yup.string().typeError(<IntlMessages id='validation.string' />),
-  numberContact: yup
-    .number()
-    .typeError(<IntlMessages id='validation.number' />)
-    .max(1000000000, 'Se puede ingresar como maximo 11 caracteres'),
-  extraInformationCarrier: yup
-    .string()
-    .typeError(<IntlMessages id='validation.string' />),
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
 });
 const defaultValues = {
   nroDocument: '',
-  name: '',
-  addressCarrier: '',
-  emailContact: '',
-  nameContact: '',
-  numberContact: '',
-  extraInformationCarrier: '',
+  firstName: '',
+  lastName: '',
+  license: '',
 };
-let newCarrierPayload = {
+let newDriverPayload = {
   request: {
     payload: {
-      carriers: [
+      drivers: [
         {
-          typeDocumentCarrier: '',
-          numberDocumentCarrier: '',
-          denominationCarrier: '',
-          addressCarrier: '',
-          nameContact: '',
-          numberContact: '',
-          emailContact: '',
-          extraInformationCarrier: '',
+          typeDocumentDriver: '',
+          numberDocumentDriver: '',
+          firstName: '',
+          lastName: '',
+          fullName: '',
+          license: '',          
         },
       ],
       merchantId: '',
     },
   },
 };
-const NewCarrier = () => {
+const NewDriver = () => {
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
@@ -112,19 +100,19 @@ const NewCarrier = () => {
   const router = useRouter();
 
   let objSelects = {
-    documentType: 'RUC',
+    documentType: 'DNI',
   };
 
   //APIS
-  const toNewCarrier = (payload) => {
-    dispatch(newCarrier(payload));
+  const toNewDriver = (payload) => {
+    dispatch(newDriver(payload));
   };
   //GET_VALUES_APIS
-  const {newCarrierRes} = useSelector(({carriers}) => carriers);
-  console.log('newCarrierRes', newCarrierRes);
-  const {successMessage} = useSelector(({carriers}) => carriers);
+  const {newDriverRes} = useSelector(({drivers}) => drivers);
+  console.log('newDriverRes', newDriverRes);
+  const {successMessage} = useSelector(({drivers}) => drivers);
   console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({carriers}) => carriers);
+  const {errorMessage} = useSelector(({drivers}) => drivers);
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
@@ -154,7 +142,7 @@ const NewCarrier = () => {
 
   useEffect(() => {
     if (userDataRes) {
-      newCarrierPayload.request.payload.merchantId =
+      newDriverPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
     }
   }, [userDataRes]);
@@ -172,23 +160,19 @@ const NewCarrier = () => {
     delete data.documentType;
     console.log('Data', data);
     console.log('objSelects', objSelects);
-    newCarrierPayload.request.payload.carriers[0].typeDocumentCarrier =
+    newDriverPayload.request.payload.drivers[0].typeDocumentDriver =
       objSelects.documentType;
-    newCarrierPayload.request.payload.carriers[0].numberDocumentCarrier =
+    newDriverPayload.request.payload.drivers[0].numberDocumentDriver =
       data.nroDocument;
-    newCarrierPayload.request.payload.carriers[0].denominationCarrier =
-      data.name;
-    newCarrierPayload.request.payload.carriers[0].addressCarrier =
-      data.addressCarrier;
-    newCarrierPayload.request.payload.carriers[0].nameContact =
-      data.nameContact;
-    newCarrierPayload.request.payload.carriers[0].numberContact =
-      data.numberContact;
-    newCarrierPayload.request.payload.carriers[0].emailContact =
-      data.emailContact;
-    newCarrierPayload.request.payload.carriers[0].extraInformationCarrier =
-      data.extraInformationCarrier;
-    toNewCarrier(newCarrierPayload);
+    newDriverPayload.request.payload.drivers[0].firstName =
+      data.firstName;
+    newDriverPayload.request.payload.drivers[0].lastName =
+      data.lastName;
+    newDriverPayload.request.payload.drivers[0].fullName =
+      data.firstName+' '+data.lastName;
+      newDriverPayload.request.payload.drivers[0].license =
+      data.license;
+    toNewDriver(newDriverPayload);
     setSubmitting(false);
     setOpenStatus(true);
   };
@@ -196,16 +180,16 @@ const NewCarrier = () => {
   const registerSuccess = () => {
     return (
       successMessage != undefined &&
-      newCarrierRes != undefined && // TO DO
-      !('error' in newCarrierRes)
+      newDriverRes != undefined && // TO DO
+      !('error' in newDriverRes)
     );
   };
 
   const registerError = () => {
     return (
       (successMessage != undefined &&
-        newCarrierRes &&
-        'error' in newCarrierRes) ||
+        newDriverRes &&
+        'error' in newDriverRes) ||
       errorMessage != undefined
     );
   };
@@ -246,7 +230,7 @@ const NewCarrier = () => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      Router.push('/sample/carriers/table');
+      Router.push('/sample/drivers/table');
       setOpenStatus(false);
     } else if (registerError()) {
       setOpenStatus(false);
@@ -267,7 +251,7 @@ const NewCarrier = () => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          REGISTRO DE TRANSPORTISTA
+          REGISTRO DE CONDUCTOR
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -298,21 +282,18 @@ const NewCarrier = () => {
                   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
-                        id='categoria-label'
+                        id='documentType-label'
                         style={{fontWeight: 200}}
                       >
                         Identificador
                       </InputLabel>
                       <Select
-                        defaultValue='RUC'
+                        defaultValue='DNI'
                         name='documentType'
                         labelId='documentType-label'
                         label='Identificador'
                         onChange={handleField}
                       >
-                        <MenuItem value='RUC' style={{fontWeight: 200}}>
-                          RUC
-                        </MenuItem>
                         <MenuItem value='DNI' style={{fontWeight: 200}}>
                           DNI
                         </MenuItem>
@@ -342,8 +323,8 @@ const NewCarrier = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label='Nombre / Razón Social *'
-                      name='name'
+                      label='Nombres *'
+                      name='firstName'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -357,8 +338,8 @@ const NewCarrier = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label='Dirección'
-                      name='addressCarrier'
+                      label='Apellidos *'
+                      name='lastName'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -372,55 +353,8 @@ const NewCarrier = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label='Nombre de contacto'
-                      name='nameContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Telefono fijo o celular de contacto'
-                      name='numberContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Correo de contacto'
-                      name='emailContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Información adicional'
-                      multiline
-                      rows={4}
-                      name='extraInformationCarrier'
+                      label='Licencia *'
+                      name='license'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -576,7 +510,7 @@ const NewCarrier = () => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Transportista'}
+          {'Registro de Conductores'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -593,7 +527,7 @@ const NewCarrier = () => {
             variant='outlined'
             onClick={() => {
               setOpen(false);
-              Router.push('/sample/carriers/table');
+              Router.push('/sample/drivers/table');
             }}
           >
             Sí
@@ -612,7 +546,7 @@ const NewCarrier = () => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de transportista'}
+          {'Registro de Conductor'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -627,4 +561,4 @@ const NewCarrier = () => {
   );
 };
 
-export default NewCarrier;
+export default NewDriver;

@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
 const XLSX = require('xlsx');
 import {
+  FormControl,
+  InputLabel,
+  Select,
   Table,
   TableBody,
-  FormControl,
-  Select,
-  InputLabel,
   TableCell,
   TableContainer,
   TableHead,
@@ -26,6 +26,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 
+import {SET_JWT_TOKEN} from '../../../shared/constants/ActionTypes';
+
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -38,20 +40,26 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import {red} from '@mui/material/colors';
 
 import {makeStyles} from '@mui/styles';
 import {useHistory, BrowserRouter, Route, Switch, Link} from 'react-router-dom';
-import {getUserData} from '../../../redux/actions/User';
 
 import Router from 'next/router';
 import {
-  onGetClients,
-  deleteClient,
-  updateClient,
-} from '../../../redux/actions/Clients';
+  getLocations,
+  deleteLocation,
+  updateLocation,
+} from '../../../redux/actions/Locations';
+import {getUserData} from '../../../redux/actions/User';
+import {
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+  GET_USER_DATA,
+  GET_LOCATIONS,
+} from '../../../shared/constants/ActionTypes';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   toEpoch,
@@ -59,13 +67,8 @@ import {
   parseTo3Decimals,
   toSimpleDate,
 } from '../../../Utils/utils';
-import {
-  FETCH_SUCCESS,
-  FETCH_ERROR,
-  GET_USER_DATA,
-  GET_CLIENTS,
-} from '../../../shared/constants/ActionTypes';
-let selectedClient = {};
+
+let selectedLocation = {};
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
     marginTop: '2rem',
@@ -83,9 +86,9 @@ const useStyles = makeStyles((theme) => ({
 let listPayload = {
   request: {
     payload: {
-      typeDocumentClient: 'RUC',
-      numberDocumentClient: '',
-      denominationClient: '',
+      locationName: '',
+      type: '',
+      ubigeo: '',
       merchantId: '',
     },
   },
@@ -93,12 +96,12 @@ let listPayload = {
 let deletePayload = {
   request: {
     payload: {
-      clientId: '',
+      locationId: '',
     },
   },
 };
 
-const ClientTable = (arrayObjs, props) => {
+const LocationTable = (arrayObjs, props) => {
   const classes = useStyles(props);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -112,11 +115,11 @@ const ClientTable = (arrayObjs, props) => {
   let codProdSelected = '';
 
   //API FUNCTIONSupdateMovement
-  const getClients = (payload) => {
-    dispatch(onGetClients(payload));
+  const toGetLocations = (payload, jwtToken) => {
+    dispatch(getLocations(payload, jwtToken));
   };
-  const toDeleteClient = (payload) => {
-    dispatch(deleteClient(payload));
+  const toDeleteLocation = (payload) => {
+    dispatch(deleteLocation(payload));
   };
 
   const useForceUpdate = () => {
@@ -124,30 +127,34 @@ const ClientTable = (arrayObjs, props) => {
   };
 
   //GET APIS RES
-  const {listClients} = useSelector(({clients}) => clients);
-  console.log('clients123', listClients);
-  const {deleteProviderRes} = useSelector(({providers}) => providers);
-  console.log('deleteProviderRes', deleteProviderRes);
-  const {successMessage} = useSelector(({clients}) => clients);
+  const {getLocationsRes} = useSelector(({locations}) => locations);
+  console.log('Locations123', getLocationsRes);
+  const {deleteLocationRes} = useSelector(({locations}) => locations);
+  console.log('deleteLocationRes', deleteLocationRes);
+  const {successMessage} = useSelector(({locations}) => locations);
   console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({clients}) => clients);
+  const {errorMessage} = useSelector(({locations}) => locations);
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+
+  const {jwtToken} = useSelector(({general}) => general);
+  console.log('Quiero usar jwtToken', jwtToken);
 
   useEffect(() => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_CLIENTS, payload: undefined});
-
+      dispatch({type: GET_LOCATIONS, payload: undefined});
+      console.log('Esto por que no funciona');
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
 
-      getClients(listPayload);
+      toGetLocations(listPayload, jwtToken);
       setFirstload(false);
     }
   }, [userDataRes]);
+
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -163,7 +170,7 @@ const ClientTable = (arrayObjs, props) => {
           },
         },
       };
-      listPayload.request.payload.typeDocumentClient = 'RUC';
+
       toGetUserData(getUserDataPayload);
     }
   }, []);
@@ -196,42 +203,55 @@ const ClientTable = (arrayObjs, props) => {
   //BUSQUEDA
   const handleSearchValues = (event) => {
     console.log('Evento', event);
-    if (event.target.name == 'docToSearch') {
-      if (event.target.value == '') {
-        listPayload.request.payload.numberDocumentClient = '';
-      } else {
-        listPayload.request.payload.numberDocumentClient = event.target.value;
-      }
-    }
     if (event.target.name == 'nameToSearch') {
       if (event.target.value == '') {
-        listPayload.request.payload.denominationClient = '';
+        listPayload.request.payload.locationName = '';
       } else {
-        listPayload.request.payload.denominationClient = event.target.value;
+        listPayload.request.payload.locationName = event.target.value;
+      }
+    }
+    if (event.target.name == 'typeToSearch') {
+      if (event.target.value == '') {
+        listPayload.request.payload.type = '';
+      } else {
+        listPayload.request.payload.type = event.target.value;
+      }
+    }
+    if (event.target.name == 'ubigeoToSearch') {
+      if (event.target.value == '') {
+        listPayload.request.payload.ubigeo = '';
+      } else {
+        listPayload.request.payload.ubigeo = event.target.value;
       }
     }
   };
 
-  const cleanList = () => {
+  //BUTTONS BAR FUNCTIONS
+  const searchLocations = () => {
+    toGetLocations(listPayload, jwtToken);
+  };
+  const newLocation = () => {
+    console.log('Para redireccionar a nuevo locación');
+    Router.push('/sample/locations/new');
+  };
+
+  const cleaneList = () => {
     let listResult = [];
-    listClients.map((obj) => {
-      let parsedId = obj.clientId.split('-');
-      obj['type'] = parsedId[0];
-      obj['nroDocument'] = parsedId[1];
+    getLocationsRes.map((obj) => {
       obj.updatedDate = convertToDate(obj.updatedDate);
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
         (({
+          locationName,
+          locationDetail,
+          ubigeo,
           type,
-          nroDocument,
-          denominationClient,
-          nameContact,
           updatedDate,
         }) => ({
+          locationName,
+          locationDetail,
+          ubigeo,
           type,
-          nroDocument,
-          denominationClient,
-          nameContact,
           updatedDate,
         }))(obj),
       );
@@ -239,26 +259,18 @@ const ClientTable = (arrayObjs, props) => {
     return listResult;
   };
   const headersExcel = [
+    'Nombre',
+    'Dirección',
+    'Ubicación',
     'Tipo',
-    'Número Documento',
-    'Nombre / Razón social',
-    'Nombre Contacto',
-    'Ultima actualización',
+    'Última actualización',
   ];
-  //BUTTONS BAR FUNCTIONS
-  const searchClients = () => {
-    getClients(listPayload);
-  };
-  const newClient = () => {
-    console.log('Para redireccionar a nuevo cliente');
-    Router.push('/sample/clients/new');
-  };
   const exportDoc = () => {
-    var ws = XLSX.utils.json_to_sheet(cleanList());
+    var ws = XLSX.utils.json_to_sheet(cleaneList());
     var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Clients');
+    XLSX.utils.book_append_sheet(wb, ws, 'Locations');
     XLSX.utils.sheet_add_aoa(ws, [headersExcel], {origin: 'A1'});
-    XLSX.writeFile(wb, 'Clients.xlsx');
+    XLSX.writeFile(wb, 'Locations.xlsx');
   };
 
   //FUNCIONES MENU
@@ -270,18 +282,18 @@ const ClientTable = (arrayObjs, props) => {
     console.log('index del map', codPro);
     setAnchorEl(event.currentTarget);
     codProdSelected = codPro;
-    selectedClient =
-      listClients[codPro]; /* .find((obj) => obj.client == codPro); */
-    console.log('selectedClient', selectedClient);
+    selectedLocation =
+      getLocationsRes[codPro]; /* .find((obj) => obj.carrier == codPro); */
+    console.log('selectedLocation', selectedLocation);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
   const goToUpdate = () => {
-    console.log('Actualizando', selectedClient);
+    console.log('Actualizando', selectedLocation);
     Router.push({
-      pathname: '/sample/clients/update',
-      query: selectedClient,
+      pathname: '/sample/locations/update',
+      query: selectedLocation,
     });
   };
 
@@ -321,7 +333,7 @@ const ClientTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
-      getClients(listPayload);
+      toGetLocations(listPayload, jwtToken);
     }, 2000);
   };
 
@@ -331,67 +343,90 @@ const ClientTable = (arrayObjs, props) => {
   };
 
   const confirmDelete = () => {
-    deletePayload.request.payload.clientId = selectedClient.clientId;
-    toDeleteClient(deletePayload);
+    deletePayload.request.payload.locationId = selectedLocation.locationId;
+    toDeleteLocation(deletePayload);
     setOpen2(false);
     setOpenStatus(true);
+  };
+
+  const onChangeHandler = (e) => {
+    Router.push('/sample/drivers/bulk-load');
   };
 
   const handleClose2 = () => {
     setOpen2(false);
   };
 
-  const onChangeHandler = (e) => {
-    Router.push('/sample/clients/bulk-load');
+  const compare = (a, b) => {
+    if (a.createdDate < b.createdDate) {
+      return 1;
+    }
+    if (a.createdDate > b.createdDate) {
+      return -1;
+    }
+    return 0;
   };
 
   return (
     <Card sx={{p: 4}}>
       <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
-        <FormControl sx={{my: 0, width: 100}}>
-          <InputLabel id='categoria-label' style={{fontWeight: 200}}>
-            Identificador
-          </InputLabel>
-          <Select
-            defaultValue='RUC'
-            name='typeDocumentClient'
-            labelId='documentType-label'
-            label='Identificador'
-            onChange={(event) => {
-              console.log('Está pasando por aquí?', event.target.value);
-              listPayload.request.payload.typeDocumentClient =
-                event.target.value;
-            }}
-          >
-            <MenuItem value='RUC' style={{fontWeight: 200}}>
-              RUC
-            </MenuItem>
-            <MenuItem value='DNI' style={{fontWeight: 200}}>
-              DNI
-            </MenuItem>
-            <MenuItem value='CE' style={{fontWeight: 200}}>
-              CE
-            </MenuItem>
-          </Select>
-        </FormControl>
         <TextField
-          label='Nro Identificador'
-          variant='outlined'
-          name='numberDocumentClient'
-          size='small'
-          onChange={(event) => {
-            console.log(event.target.value);
-            listPayload.request.payload.numberDocumentClient =
-              event.target.value;
-          }}
-        />
-        <TextField
-          label='Nombre / Razón social'
+          label='Nombre'
           variant='outlined'
           name='nameToSearch'
           size='small'
-          onChange={handleSearchValues}
+          onChange={(event) => {
+            console.log(event.target.value);
+            listPayload.request.payload.locationName =
+              event.target.value;
+          }}
         />
+        <FormControl sx={{my: 0, width: 100}}>
+          <InputLabel id='type-label' style={{fontWeight: 200}}>
+            Tipo
+          </InputLabel>
+          <Select
+            defaultValue=''
+            name='typeToSearch'
+            labelId='type-label'
+            label='Tipo'
+            onChange={(event) => {
+              console.log(event.target.value);
+              listPayload.request.payload.type =
+                event.target.value;
+            }}
+          >
+            <MenuItem value='PUNTO LLEGADA' style={{fontWeight: 200}}>
+              PUNTO LLEGADA
+            </MenuItem>
+            <MenuItem value='PUNTO PARTIDA' style={{fontWeight: 200}}>
+              PUNTO PARTIDA
+            </MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl sx={{my: 0, width: 100}}>
+          <InputLabel id='ubigeo-label' style={{fontWeight: 200}}>
+            Ubicación
+          </InputLabel>
+          <Select
+            defaultValue=''
+            name='ubigeoToSearch'
+            labelId='ubigeo-label'
+            label='Ubicación'
+            onChange={(event) => {
+              console.log(event.target.value);
+              listPayload.request.payload.type =
+                event.target.value;
+            }}
+          >
+            <MenuItem value='010705' style={{fontWeight: 200}}>
+              010705D
+            </MenuItem>
+            <MenuItem value='010701' style={{fontWeight: 200}}>
+              010701D
+            </MenuItem>
+          </Select>
+        </FormControl>
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
         </Button>
@@ -399,7 +434,7 @@ const ClientTable = (arrayObjs, props) => {
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          onClick={searchClients}
+          onClick={searchLocations}
         >
           Buscar
         </Button>
@@ -413,30 +448,32 @@ const ClientTable = (arrayObjs, props) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell>Identificador</TableCell>
-              <TableCell>Número Identificador</TableCell>
-              <TableCell>Nombre / Razón social</TableCell>
-              <TableCell>Nombre Contacto</TableCell>
+              <TableCell>Nombre</TableCell>
+              <TableCell>Dirección</TableCell>
+              <TableCell>Ubicación</TableCell>
+              <TableCell>Tipo</TableCell>
               <TableCell>Última actualización</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {listClients && Array.isArray(listClients) ? (
-              //  &&
-              //  listClients.length > 0
-              listClients.map((obj, index) => {
-                let parsedId = obj.clientId.split('-');
+            {getLocationsRes &&
+            // && getCarriersRes.length > 0
+            Array.isArray(getLocationsRes) ? (
+              getLocationsRes.sort(compare).map((obj, index) => {
                 return (
                   <TableRow
                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                     key={index}
                   >
-                    <TableCell>{parsedId[0]}</TableCell>
-                    <TableCell>{parsedId[1]}</TableCell>
-                    <TableCell>{obj.denominationClient}</TableCell>
-                    <TableCell>{obj.nameContact}</TableCell>
+                    <TableCell>{obj.locationName}</TableCell>
+                    <TableCell>{obj.locationDetail}</TableCell>
+                    <TableCell>{obj.ubigeo}</TableCell>
+                    <TableCell>{obj.type}</TableCell>
                     <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
+                    {/* <TableCell>{obj.priceWithoutIgv.toFixed(2)}</TableCell>
+                    <TableCell>{obj.stock}</TableCell>
+                    <TableCell>{obj.costPriceUnit.toFixed(2)}</TableCell> */}
                     <TableCell>
                       <Button
                         id='basic-button'
@@ -464,11 +501,11 @@ const ClientTable = (arrayObjs, props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/clients/register') === true ? (
+          .includes('/facturacion/locations/register') === true ? (
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={newClient}
+            onClick={newLocation}
           >
             Nuevo
           </Button>
@@ -490,7 +527,7 @@ const ClientTable = (arrayObjs, props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar Cliente'}
+          {'Eliminar localización'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -510,7 +547,7 @@ const ClientTable = (arrayObjs, props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar cliente'}
+          {'Eliminar localización'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -540,15 +577,16 @@ const ClientTable = (arrayObjs, props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/clients/update') === true ? (
+          .includes('/facturacion/locations/update') === true ? (
           <MenuItem onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Actualizar
           </MenuItem>
         ) : null}
+
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/clients/delete') === true ? (
+          .includes('/facturacion/locations/delete') === true ? (
           <MenuItem onClick={setDeleteState}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Eliminar
@@ -559,4 +597,4 @@ const ClientTable = (arrayObjs, props) => {
   );
 };
 
-export default ClientTable;
+export default LocationTable

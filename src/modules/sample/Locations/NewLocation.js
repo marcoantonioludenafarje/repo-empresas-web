@@ -41,7 +41,7 @@ import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {newCarrier} from '../../../redux/actions/Carriers';
+import {newLocation} from '../../../redux/actions/Locations';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -50,61 +50,46 @@ const validationSchema = yup.object({
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />)
     .max(maxLength, 'Se puede ingresar como maximo 10 caracteres'), */
-  nroDocument: yup
-    .number()
-    .typeError(<IntlMessages id='validation.number' />)
-    .required(<IntlMessages id='validation.required' />)
-    .integer(<IntlMessages id='validation.number.integer' />)
-    .max(100000000000, 'Se puede ingresar como maximo 11 caracteres'),
-  name: yup
+  locatioName: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-  addressCarrier: yup
+  locationDetail: yup
     .string()
-    .typeError(<IntlMessages id='validation.string' />),
-  emailContact: yup
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  ubigeo: yup
     .string()
-    .typeError(<IntlMessages id='validation.number' />)
-    .email('Formato de correo invalido'),
-  nameContact: yup.string().typeError(<IntlMessages id='validation.string' />),
-  numberContact: yup
-    .number()
-    .typeError(<IntlMessages id='validation.number' />)
-    .max(1000000000, 'Se puede ingresar como maximo 11 caracteres'),
-  extraInformationCarrier: yup
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  type: yup
     .string()
-    .typeError(<IntlMessages id='validation.string' />),
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
 });
 const defaultValues = {
-  nroDocument: '',
-  name: '',
-  addressCarrier: '',
-  emailContact: '',
-  nameContact: '',
-  numberContact: '',
-  extraInformationCarrier: '',
+  locationName: '',
+  locationDetail: '',
+  ubigeo: '',
+  type: '',
 };
-let newCarrierPayload = {
+let newLocationPayload = {
   request: {
     payload: {
-      carriers: [
+      locations: [
         {
-          typeDocumentCarrier: '',
-          numberDocumentCarrier: '',
-          denominationCarrier: '',
-          addressCarrier: '',
-          nameContact: '',
-          numberContact: '',
-          emailContact: '',
-          extraInformationCarrier: '',
+          coordenates: '',
+          locationDetail: '',
+          locationName: '',
+          type: '',
+          ubigeo: '',
         },
       ],
       merchantId: '',
     },
   },
 };
-const NewCarrier = () => {
+const NewLocation = () => {
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
@@ -112,19 +97,19 @@ const NewCarrier = () => {
   const router = useRouter();
 
   let objSelects = {
-    documentType: 'RUC',
+    type: ['PUNTO LLEGADA','PUNTO PARTIDA'],
   };
 
   //APIS
-  const toNewCarrier = (payload) => {
-    dispatch(newCarrier(payload));
+  const toNewLocation = (payload) => {
+    dispatch(newLocation(payload));
   };
   //GET_VALUES_APIS
-  const {newCarrierRes} = useSelector(({carriers}) => carriers);
-  console.log('newCarrierRes', newCarrierRes);
-  const {successMessage} = useSelector(({carriers}) => carriers);
+  const {newLocationRes} = useSelector(({locations}) => locations);
+  console.log('newLocationRes', newLocationRes);
+  const {successMessage} = useSelector(({locations}) => locations);
   console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({carriers}) => carriers);
+  const {errorMessage} = useSelector(({locations}) => locations);
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
@@ -154,7 +139,7 @@ const NewCarrier = () => {
 
   useEffect(() => {
     if (userDataRes) {
-      newCarrierPayload.request.payload.merchantId =
+      newLocationPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
     }
   }, [userDataRes]);
@@ -169,26 +154,20 @@ const NewCarrier = () => {
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
-    delete data.documentType;
+    delete data.type;
     console.log('Data', data);
     console.log('objSelects', objSelects);
-    newCarrierPayload.request.payload.carriers[0].typeDocumentCarrier =
-      objSelects.documentType;
-    newCarrierPayload.request.payload.carriers[0].numberDocumentCarrier =
-      data.nroDocument;
-    newCarrierPayload.request.payload.carriers[0].denominationCarrier =
-      data.name;
-    newCarrierPayload.request.payload.carriers[0].addressCarrier =
-      data.addressCarrier;
-    newCarrierPayload.request.payload.carriers[0].nameContact =
-      data.nameContact;
-    newCarrierPayload.request.payload.carriers[0].numberContact =
-      data.numberContact;
-    newCarrierPayload.request.payload.carriers[0].emailContact =
-      data.emailContact;
-    newCarrierPayload.request.payload.carriers[0].extraInformationCarrier =
-      data.extraInformationCarrier;
-    toNewCarrier(newCarrierPayload);
+    newLocationPayload.request.payload.locations[0].locationName =
+      data.locationName;
+    newLocationPayload.request.payload.locations[0].locationDetail =
+      data.locationDetail;
+    newLocationPayload.request.payload.locations[0].ubigeo =
+      data.ubigeo;
+    newLocationPayload.request.payload.locations[0].type =
+      data.type;
+     newLocationPayload.request.payload.locations[0].coordenates =
+      {"lat":{"S":""},"long":{"S":""}};
+    toNewLocation(newLocationPayload);
     setSubmitting(false);
     setOpenStatus(true);
   };
@@ -196,16 +175,16 @@ const NewCarrier = () => {
   const registerSuccess = () => {
     return (
       successMessage != undefined &&
-      newCarrierRes != undefined && // TO DO
-      !('error' in newCarrierRes)
+      newLocationRes != undefined && // TO DO
+      !('error' in newLocationRes)
     );
   };
 
   const registerError = () => {
     return (
       (successMessage != undefined &&
-        newCarrierRes &&
-        'error' in newCarrierRes) ||
+        newLocationRes &&
+        'error' in newLocationRes) ||
       errorMessage != undefined
     );
   };
@@ -246,7 +225,7 @@ const NewCarrier = () => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      Router.push('/sample/carriers/table');
+      Router.push('/sample/locations/table');
       setOpenStatus(false);
     } else if (registerError()) {
       setOpenStatus(false);
@@ -267,7 +246,7 @@ const NewCarrier = () => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          REGISTRO DE TRANSPORTISTA
+          REGISTRO DE LOCACIÓN
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -296,141 +275,88 @@ const NewCarrier = () => {
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={12}>
+                    <AppTextField
+                      label='Nombre *'
+                      name='locationName'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Dirección *'
+                      name='locationDetail'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>                  
+                  <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
-                        id='categoria-label'
+                        id='ubigeo-label'
                         style={{fontWeight: 200}}
                       >
-                        Identificador
+                        Ubicación
                       </InputLabel>
                       <Select
-                        defaultValue='RUC'
-                        name='documentType'
-                        labelId='documentType-label'
-                        label='Identificador'
+                        defaultValue=''
+                        name='ubigeo'
+                        labelId='ubigeo-label'
+                        label='Ubicación'
                         onChange={handleField}
                       >
-                        <MenuItem value='RUC' style={{fontWeight: 200}}>
-                          RUC
-                        </MenuItem>
-                        <MenuItem value='DNI' style={{fontWeight: 200}}>
-                          DNI
+                        <MenuItem value='010705' style={{fontWeight: 200}}>
+                          010705D
                         </MenuItem>
                         <MenuItem
-                          value='CE'
+                          value='010701'
                           style={{fontWeight: 200}}
                         >
-                          CE
+                          010701D
                         </MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
-                      label='Número Identificador *'
-                      name='nroDocument'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Nombre / Razón Social *'
-                      name='name'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Dirección'
-                      name='addressCarrier'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Nombre de contacto'
-                      name='nameContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Telefono fijo o celular de contacto'
-                      name='numberContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Correo de contacto'
-                      name='emailContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Información adicional'
-                      multiline
-                      rows={4}
-                      name='extraInformationCarrier'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='type-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Tipo
+                      </InputLabel>
+                      <Select
+                        defaultValue=''
+                        name='type'
+                        labelId='type-label'
+                        label='Tipo'
+                        onChange={handleField}
+                      >
+                        <MenuItem value='PUNTO LLEGADA' style={{fontWeight: 200}}>
+                          PUNTO LLEGADA
+                        </MenuItem>
+                        <MenuItem
+                          value='PUNTO PARTIDA'
+                          style={{fontWeight: 200}}
+                        >
+                          PUNTO PARTIDA
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
                   </Grid>
                 </Grid>
 
@@ -576,7 +502,7 @@ const NewCarrier = () => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Transportista'}
+          {'Registro de Conductores'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -593,7 +519,7 @@ const NewCarrier = () => {
             variant='outlined'
             onClick={() => {
               setOpen(false);
-              Router.push('/sample/carriers/table');
+              Router.push('/sample/locations/table');
             }}
           >
             Sí
@@ -612,7 +538,7 @@ const NewCarrier = () => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de transportista'}
+          {'Registro de Locación'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -627,4 +553,4 @@ const NewCarrier = () => {
   );
 };
 
-export default NewCarrier;
+export default NewLocation;

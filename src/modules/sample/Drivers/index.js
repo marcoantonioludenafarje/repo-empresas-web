@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
 const XLSX = require('xlsx');
 import {
+  FormControl,
+  InputLabel,
+  Select,
   Table,
   TableBody,
-  FormControl,
-  Select,
-  InputLabel,
   TableCell,
   TableContainer,
   TableHead,
@@ -26,6 +26,8 @@ import {
   CircularProgress,
 } from '@mui/material';
 
+import {SET_JWT_TOKEN} from '../../../shared/constants/ActionTypes';
+
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -38,20 +40,26 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
-import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import {red} from '@mui/material/colors';
 
 import {makeStyles} from '@mui/styles';
 import {useHistory, BrowserRouter, Route, Switch, Link} from 'react-router-dom';
-import {getUserData} from '../../../redux/actions/User';
 
 import Router from 'next/router';
 import {
-  onGetClients,
-  deleteClient,
-  updateClient,
-} from '../../../redux/actions/Clients';
+  getDrivers,
+  deleteDriver,
+  updateDriver,
+} from '../../../redux/actions/Drivers';
+import {getUserData} from '../../../redux/actions/User';
+import {
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+  GET_USER_DATA,
+  GET_DRIVERS,
+} from '../../../shared/constants/ActionTypes';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   toEpoch,
@@ -59,13 +67,8 @@ import {
   parseTo3Decimals,
   toSimpleDate,
 } from '../../../Utils/utils';
-import {
-  FETCH_SUCCESS,
-  FETCH_ERROR,
-  GET_USER_DATA,
-  GET_CLIENTS,
-} from '../../../shared/constants/ActionTypes';
-let selectedClient = {};
+
+let selectedDriver = {};
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
     marginTop: '2rem',
@@ -83,9 +86,9 @@ const useStyles = makeStyles((theme) => ({
 let listPayload = {
   request: {
     payload: {
-      typeDocumentClient: 'RUC',
-      numberDocumentClient: '',
-      denominationClient: '',
+      typeDocumentDriver: '',
+      numberDocumentDriver: '',
+      fullName: '',
       merchantId: '',
     },
   },
@@ -93,12 +96,12 @@ let listPayload = {
 let deletePayload = {
   request: {
     payload: {
-      clientId: '',
+      driverId: '',
     },
   },
 };
 
-const ClientTable = (arrayObjs, props) => {
+const DriverTable = (arrayObjs, props) => {
   const classes = useStyles(props);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -112,11 +115,11 @@ const ClientTable = (arrayObjs, props) => {
   let codProdSelected = '';
 
   //API FUNCTIONSupdateMovement
-  const getClients = (payload) => {
-    dispatch(onGetClients(payload));
+  const toGetDrivers = (payload, jwtToken) => {
+    dispatch(getDrivers(payload, jwtToken));
   };
-  const toDeleteClient = (payload) => {
-    dispatch(deleteClient(payload));
+  const toDeleteDriver = (payload) => {
+    dispatch(deleteDriver(payload));
   };
 
   const useForceUpdate = () => {
@@ -124,30 +127,34 @@ const ClientTable = (arrayObjs, props) => {
   };
 
   //GET APIS RES
-  const {listClients} = useSelector(({clients}) => clients);
-  console.log('clients123', listClients);
-  const {deleteProviderRes} = useSelector(({providers}) => providers);
-  console.log('deleteProviderRes', deleteProviderRes);
-  const {successMessage} = useSelector(({clients}) => clients);
+  const {getDriversRes} = useSelector(({drivers}) => drivers);
+  console.log('Drivers123', getDriversRes);
+  const {deleteDriverRes} = useSelector(({drivers}) => drivers);
+  console.log('deleteDriverRes', deleteDriverRes);
+  const {successMessage} = useSelector(({drivers}) => drivers);
   console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({clients}) => clients);
+  const {errorMessage} = useSelector(({drivers}) => drivers);
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+
+  const {jwtToken} = useSelector(({general}) => general);
+  console.log('Quiero usar jwtToken', jwtToken);
 
   useEffect(() => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_CLIENTS, payload: undefined});
-
+      dispatch({type: GET_DRIVERS, payload: undefined});
+      console.log('Esto por que no funciona');
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
 
-      getClients(listPayload);
+      toGetDrivers(listPayload, jwtToken);
       setFirstload(false);
     }
   }, [userDataRes]);
+
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -163,7 +170,7 @@ const ClientTable = (arrayObjs, props) => {
           },
         },
       };
-      listPayload.request.payload.typeDocumentClient = 'RUC';
+
       toGetUserData(getUserDataPayload);
     }
   }, []);
@@ -198,24 +205,33 @@ const ClientTable = (arrayObjs, props) => {
     console.log('Evento', event);
     if (event.target.name == 'docToSearch') {
       if (event.target.value == '') {
-        listPayload.request.payload.numberDocumentClient = '';
+        listPayload.request.payload.numberDocumentDriver = '';
       } else {
-        listPayload.request.payload.numberDocumentClient = event.target.value;
+        listPayload.request.payload.numberDocumentDriver = event.target.value;
       }
     }
     if (event.target.name == 'nameToSearch') {
       if (event.target.value == '') {
-        listPayload.request.payload.denominationClient = '';
+        listPayload.request.payload.fullName = '';
       } else {
-        listPayload.request.payload.denominationClient = event.target.value;
+        listPayload.request.payload.fullName = event.target.value;
       }
     }
   };
 
-  const cleanList = () => {
+  //BUTTONS BAR FUNCTIONS
+  const searchDrivers = () => {
+    toGetDrivers(listPayload, jwtToken);
+  };
+  const newDriver = () => {
+    console.log('Para redireccionar a nuevo conductor');
+    Router.push('/sample/drivers/new');
+  };
+
+  const cleaneList = () => {
     let listResult = [];
-    listClients.map((obj) => {
-      let parsedId = obj.clientId.split('-');
+    getDriversRes.map((obj) => {
+      let parsedId = obj.driverId.split('-');
       obj['type'] = parsedId[0];
       obj['nroDocument'] = parsedId[1];
       obj.updatedDate = convertToDate(obj.updatedDate);
@@ -224,14 +240,14 @@ const ClientTable = (arrayObjs, props) => {
         (({
           type,
           nroDocument,
-          denominationClient,
-          nameContact,
+          fullName,
+          license,
           updatedDate,
         }) => ({
           type,
           nroDocument,
-          denominationClient,
-          nameContact,
+          fullName,
+          license,
           updatedDate,
         }))(obj),
       );
@@ -241,24 +257,16 @@ const ClientTable = (arrayObjs, props) => {
   const headersExcel = [
     'Tipo',
     'Número Documento',
-    'Nombre / Razón social',
-    'Nombre Contacto',
-    'Ultima actualización',
+    'Nombre Completo',
+    'Licencia',
+    'Última actualización',
   ];
-  //BUTTONS BAR FUNCTIONS
-  const searchClients = () => {
-    getClients(listPayload);
-  };
-  const newClient = () => {
-    console.log('Para redireccionar a nuevo cliente');
-    Router.push('/sample/clients/new');
-  };
   const exportDoc = () => {
-    var ws = XLSX.utils.json_to_sheet(cleanList());
+    var ws = XLSX.utils.json_to_sheet(cleaneList());
     var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Clients');
+    XLSX.utils.book_append_sheet(wb, ws, 'Drivers');
     XLSX.utils.sheet_add_aoa(ws, [headersExcel], {origin: 'A1'});
-    XLSX.writeFile(wb, 'Clients.xlsx');
+    XLSX.writeFile(wb, 'Drivers.xlsx');
   };
 
   //FUNCIONES MENU
@@ -270,18 +278,18 @@ const ClientTable = (arrayObjs, props) => {
     console.log('index del map', codPro);
     setAnchorEl(event.currentTarget);
     codProdSelected = codPro;
-    selectedClient =
-      listClients[codPro]; /* .find((obj) => obj.client == codPro); */
-    console.log('selectedClient', selectedClient);
+    selectedDriver =
+      getDriversRes[codPro]; /* .find((obj) => obj.carrier == codPro); */
+    console.log('selectedDriver', selectedDriver);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
   const goToUpdate = () => {
-    console.log('Actualizando', selectedClient);
+    console.log('Actualizando', selectedDriver);
     Router.push({
-      pathname: '/sample/clients/update',
-      query: selectedClient,
+      pathname: '/sample/drivers/update',
+      query: selectedDriver,
     });
   };
 
@@ -321,7 +329,7 @@ const ClientTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
-      getClients(listPayload);
+      toGetDrivers(listPayload, jwtToken);
     }, 2000);
   };
 
@@ -331,18 +339,28 @@ const ClientTable = (arrayObjs, props) => {
   };
 
   const confirmDelete = () => {
-    deletePayload.request.payload.clientId = selectedClient.clientId;
-    toDeleteClient(deletePayload);
+    deletePayload.request.payload.driverId = selectedDriver.driverId;
+    toDeleteDriver(deletePayload);
     setOpen2(false);
     setOpenStatus(true);
+  };
+
+  const onChangeHandler = (e) => {
+    Router.push('/sample/drivers/bulk-load');
   };
 
   const handleClose2 = () => {
     setOpen2(false);
   };
 
-  const onChangeHandler = (e) => {
-    Router.push('/sample/clients/bulk-load');
+  const compare = (a, b) => {
+    if (a.createdDate < b.createdDate) {
+      return 1;
+    }
+    if (a.createdDate > b.createdDate) {
+      return -1;
+    }
+    return 0;
   };
 
   return (
@@ -353,19 +371,16 @@ const ClientTable = (arrayObjs, props) => {
             Identificador
           </InputLabel>
           <Select
-            defaultValue='RUC'
-            name='typeDocumentClient'
+            defaultValue=''
+            name='typeDocumentDriver'
             labelId='documentType-label'
             label='Identificador'
             onChange={(event) => {
-              console.log('Está pasando por aquí?', event.target.value);
-              listPayload.request.payload.typeDocumentClient =
+              console.log(event.target.value);
+              listPayload.request.payload.typeDocumentDriver =
                 event.target.value;
             }}
           >
-            <MenuItem value='RUC' style={{fontWeight: 200}}>
-              RUC
-            </MenuItem>
             <MenuItem value='DNI' style={{fontWeight: 200}}>
               DNI
             </MenuItem>
@@ -377,16 +392,16 @@ const ClientTable = (arrayObjs, props) => {
         <TextField
           label='Nro Identificador'
           variant='outlined'
-          name='numberDocumentClient'
+          name='numberDocumentDriver'
           size='small'
           onChange={(event) => {
             console.log(event.target.value);
-            listPayload.request.payload.numberDocumentClient =
+            listPayload.request.payload.numberDocumentDriver =
               event.target.value;
           }}
         />
         <TextField
-          label='Nombre / Razón social'
+          label='Nombre Completo'
           variant='outlined'
           name='nameToSearch'
           size='small'
@@ -399,7 +414,7 @@ const ClientTable = (arrayObjs, props) => {
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          onClick={searchClients}
+          onClick={searchDrivers}
         >
           Buscar
         </Button>
@@ -415,18 +430,18 @@ const ClientTable = (arrayObjs, props) => {
             <TableRow>
               <TableCell>Identificador</TableCell>
               <TableCell>Número Identificador</TableCell>
-              <TableCell>Nombre / Razón social</TableCell>
-              <TableCell>Nombre Contacto</TableCell>
+              <TableCell>Nombre Conductor</TableCell>
+              <TableCell>Licencia</TableCell>
               <TableCell>Última actualización</TableCell>
               <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {listClients && Array.isArray(listClients) ? (
-              //  &&
-              //  listClients.length > 0
-              listClients.map((obj, index) => {
-                let parsedId = obj.clientId.split('-');
+            {getDriversRes &&
+            // && getCarriersRes.length > 0
+            Array.isArray(getDriversRes) ? (
+              getDriversRes.sort(compare).map((obj, index) => {
+                let parsedId = obj.driverId.split('-');
                 return (
                   <TableRow
                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -434,9 +449,12 @@ const ClientTable = (arrayObjs, props) => {
                   >
                     <TableCell>{parsedId[0]}</TableCell>
                     <TableCell>{parsedId[1]}</TableCell>
-                    <TableCell>{obj.denominationClient}</TableCell>
-                    <TableCell>{obj.nameContact}</TableCell>
+                    <TableCell>{obj.fullName}</TableCell>
+                    <TableCell>{obj.license}</TableCell>
                     <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
+                    {/* <TableCell>{obj.priceWithoutIgv.toFixed(2)}</TableCell>
+                    <TableCell>{obj.stock}</TableCell>
+                    <TableCell>{obj.costPriceUnit.toFixed(2)}</TableCell> */}
                     <TableCell>
                       <Button
                         id='basic-button'
@@ -464,11 +482,11 @@ const ClientTable = (arrayObjs, props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/clients/register') === true ? (
+          .includes('/facturacion/drivers/register') === true ? (
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={newClient}
+            onClick={newDriver}
           >
             Nuevo
           </Button>
@@ -490,7 +508,7 @@ const ClientTable = (arrayObjs, props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar Cliente'}
+          {'Eliminar conductor'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -510,7 +528,7 @@ const ClientTable = (arrayObjs, props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar cliente'}
+          {'Eliminar conductor'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -540,15 +558,16 @@ const ClientTable = (arrayObjs, props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/clients/update') === true ? (
+          .includes('/facturacion/drivers/update') === true ? (
           <MenuItem onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Actualizar
           </MenuItem>
         ) : null}
+
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/clients/delete') === true ? (
+          .includes('/facturacion/drivers/delete') === true ? (
           <MenuItem onClick={setDeleteState}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Eliminar
@@ -559,4 +578,4 @@ const ClientTable = (arrayObjs, props) => {
   );
 };
 
-export default ClientTable;
+export default DriverTable;
