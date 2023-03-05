@@ -24,6 +24,8 @@ import {
   Stack,
   TextField,
   CircularProgress,
+  Autocomplete,
+  Grid,
 } from '@mui/material';
 
 import {SET_JWT_TOKEN} from '../../../shared/constants/ActionTypes';
@@ -67,6 +69,8 @@ import {
   parseTo3Decimals,
   toSimpleDate,
 } from '../../../Utils/utils';
+import originalUbigeos from '../../../Utils/ubigeo.json';
+import IntlMessages from '../../../@crema/utility/IntlMessages';
 
 let selectedLocation = {};
 const useStyles = makeStyles((theme) => ({
@@ -101,6 +105,10 @@ let deletePayload = {
   },
 };
 
+let objSelectsU = {
+  ubigeo: '150101',
+};
+
 const LocationTable = (arrayObjs, props) => {
   const classes = useStyles(props);
   const history = useHistory();
@@ -111,6 +119,15 @@ const LocationTable = (arrayObjs, props) => {
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [ubigeo, setUbigeo] = React.useState('150101');
+  const [existUbigeo, setExistUbigeo] = React.useState(true);
+  const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
+  const [readyData, setReadyData] = React.useState(false);
+  const [objUbigeo, setObjUbigeo] = React.useState({
+    descripcion: 'LIMA / LIMA / LIMA',
+    label: 'LIMA / LIMA / LIMA - 150101',
+    ubigeo: '150101',
+  });
   let popUp = false;
   let codProdSelected = '';
 
@@ -221,7 +238,7 @@ const LocationTable = (arrayObjs, props) => {
       if (event.target.value == '') {
         listPayload.request.payload.ubigeo = '';
       } else {
-        listPayload.request.payload.ubigeo = event.target.value;
+        listPayload.request.payload.ubigeo = objUbigeo.ubigeo;
       }
     }
   };
@@ -367,6 +384,30 @@ const LocationTable = (arrayObjs, props) => {
     return 0;
   };
 
+  const pintaCancha = (ubi) => {
+    console.log("cancha: "+ubi)
+    //originalUbigeos.find(o => o.ubigeo == ubi).descripcion
+    return ubi;
+  };
+
+  useEffect(() => {
+    const ubigeos = originalUbigeos.map((obj, index) => {
+      return {
+        label: `${obj.descripcion} - ${obj.ubigeo}`,
+        ...obj,
+      };
+    });
+    
+  setParsedUbigeos(ubigeos);
+    if (readyData) {
+      setObjUbigeo(ubigeos[0]);
+      setUbigeo(ubigeos[0].ubigeo.toString());
+      objSelectU.ubigeo = ubigeos[0].ubigeo.toString();
+      setExistUbigeo(true);
+      setReadyData(true);
+    }
+  }, [readyData]);
+
   return (
     <Card sx={{p: 4}}>
       <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
@@ -404,29 +445,47 @@ const LocationTable = (arrayObjs, props) => {
             </MenuItem>
           </Select>
         </FormControl>
-        <FormControl sx={{my: 0, width: 100}}>
-          <InputLabel id='ubigeo-label' style={{fontWeight: 200}}>
-            Ubicación
-          </InputLabel>
-          <Select
-            defaultValue=''
-            name='ubigeoToSearch'
-            labelId='ubigeo-label'
-            label='Ubicación'
-            onChange={(event) => {
-              console.log(event.target.value);
-              listPayload.request.payload.type =
-                event.target.value;
+        <Grid item xs={12}>
+          <Autocomplete
+            disablePortal
+            id='ubigeoToSearch'
+            value={objUbigeo}
+            isOptionEqualToValue={(option, value) =>
+              option.ubigeo === value.ubigeo.toString()
+            }
+            getOptionLabel={(option) => option.label || ''}
+            onChange={(option, value) => {
+              if (
+                typeof value === 'object' &&
+                value != null &&
+                value !== ''
+              ) {
+                console.log('objeto ubigeo', value);
+                setObjUbigeo(value);
+                setUbigeo(value.ubigeo.toString());
+                objSelectsU.ubigeo = value.ubigeo.toString();
+                setExistUbigeo(true);
+              } else {
+                setExistUbigeo(false);
+              }
+              console.log('ubigeo, punto de partida', value);
             }}
-          >
-            <MenuItem value='010705' style={{fontWeight: 200}}>
-              010705D
-            </MenuItem>
-            <MenuItem value='010701' style={{fontWeight: 200}}>
-              010701D
-            </MenuItem>
-          </Select>
-        </FormControl>
+            options={parsedUbigeos}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={<IntlMessages id='ubigeo.signUp' />}
+                onChange={(event) => {
+                  console.log('event field', event.target.value);
+                  if (event.target.value === '') {
+                    console.log('si se cambia a null');
+                    setExistUbigeo(false);
+                  }
+                }}
+              />
+            )}
+          />                    
+        </Grid>
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
         </Button>
@@ -468,7 +527,7 @@ const LocationTable = (arrayObjs, props) => {
                   >
                     <TableCell>{obj.locationName}</TableCell>
                     <TableCell>{obj.locationDetail}</TableCell>
-                    <TableCell>{obj.ubigeo}</TableCell>
+                    <TableCell>{pintaCancha(obj.ubigeo)}</TableCell>
                     <TableCell>{obj.type}</TableCell>
                     <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
                     {/* <TableCell>{obj.priceWithoutIgv.toFixed(2)}</TableCell>

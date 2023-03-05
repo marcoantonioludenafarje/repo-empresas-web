@@ -7,9 +7,9 @@ const SITE_URL =
     ? 'http://localhost:3000'
     : 'https://qa-blog.mastersindia.co';
 
-const defaultTitle = 'Crema- React Material Admin Template';
+const defaultTitle = 'TuNexo - Facturación Digital e Inventarios';
 const defaultDescription =
-  'Crema is purely based on Material UI components and follows Google’s Material Design guidelines.';
+  'Software para la administración de inventarios, e-commerce y facturación electrónica';
 const defaultImage =
   'https://cdn.mastersindia.co/custom_pages/img/Masters India_GST_Software.svg';
 const defaultTwitter = '@crema';
@@ -31,8 +31,8 @@ const AppPage = ({children, ...rest}) => {
   const theDescription = description
     ? description.substring(0, 155)
     : defaultDescription;
-  const theImage = image ? `${SITE_URL}${image}` : defaultImage;
-
+  const theImage = "https://www.tunexo.pe/img/acerca_TuNexo.png";//image ? `${SITE_URL}${image}` : defaultImage;
+  console.log("theImage:"+theImage);
   return (
     <>
       <NextSeo

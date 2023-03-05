@@ -9,6 +9,8 @@ import {
   Select,
   MenuItem,
   Grid,
+  TextField,
+  Autocomplete,
   Button,
   ButtonGroup,
   Dialog,
@@ -42,6 +44,7 @@ import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newLocation} from '../../../redux/actions/Locations';
+import originalUbigeos from '../../../Utils/ubigeo.json';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -50,7 +53,7 @@ const validationSchema = yup.object({
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />)
     .max(maxLength, 'Se puede ingresar como maximo 10 caracteres'), */
-  locatioName: yup
+  locationName: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
@@ -58,14 +61,8 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-  ubigeo: yup
-    .string()
-    .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
-  type: yup
-    .string()
-    .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
+    ubigeo: yup.string(),
+    type: yup.string(),
 });
 const defaultValues = {
   locationName: '',
@@ -95,9 +92,22 @@ const NewLocation = () => {
   const [minTutorial, setMinTutorial] = React.useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [ubigeo, setUbigeo] = React.useState('150101');
+  const [existUbigeo, setExistUbigeo] = React.useState(true);
+  const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
+  const [readyData, setReadyData] = React.useState(false);
+  const [objUbigeo, setObjUbigeo] = React.useState({
+    descripcion: 'LIMA / LIMA / LIMA',
+    label: 'LIMA / LIMA / LIMA - 150101',
+    ubigeo: '150101',
+  });
 
-  let objSelects = {
-    type: ['PUNTO LLEGADA','PUNTO PARTIDA'],
+  let objSelectsT = {
+    type: 'PUNTO LLEGADA',
+  };
+
+  let objSelectsU = {
+    ubigeo: '150101',
   };
 
   //APIS
@@ -154,17 +164,17 @@ const NewLocation = () => {
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
+    delete data.ubigeo;
     delete data.type;
     console.log('Data', data);
-    console.log('objSelects', objSelects);
     newLocationPayload.request.payload.locations[0].locationName =
       data.locationName;
     newLocationPayload.request.payload.locations[0].locationDetail =
       data.locationDetail;
     newLocationPayload.request.payload.locations[0].ubigeo =
-      data.ubigeo;
+      objUbigeo.ubigeo;
     newLocationPayload.request.payload.locations[0].type =
-      data.type;
+      objSelectsT.type;
      newLocationPayload.request.payload.locations[0].coordenates =
       {"lat":{"S":""},"long":{"S":""}};
     toNewLocation(newLocationPayload);
@@ -236,9 +246,27 @@ const NewLocation = () => {
 
   const handleField = (event) => {
     console.log('evento', event);
-    objSelects[event.target.name] = event.target.value;
-    console.log('ocjSelects', objSelects);
+    objSelectsT[event.target.name] = event.target.value;
+    console.log('ocjSelects', objSelectsT);
   };
+
+  useEffect(() => {
+    const ubigeos = originalUbigeos.map((obj, index) => {
+      return {
+        label: `${obj.descripcion} - ${obj.ubigeo}`,
+        ...obj,
+      };
+    });
+    
+  setParsedUbigeos(ubigeos);
+    if (readyData) {
+      setObjUbigeo(ubigeos[0]);
+      setUbigeo(ubigeos[0].ubigeo.toString());
+      objSelectU.ubigeo = ubigeos[0].ubigeo.toString();
+      setExistUbigeo(true);
+      setReadyData(true);
+    }
+  }, [readyData]);
 
   return (
     <Card sx={{p: 4}}>
@@ -303,33 +331,48 @@ const NewLocation = () => {
                         mx: 0,
                       }}
                     />
-                  </Grid>                  
+                  </Grid>
+
                   <Grid item xs={12}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel
-                        id='ubigeo-label'
-                        style={{fontWeight: 200}}
-                      >
-                        Ubicación
-                      </InputLabel>
-                      <Select
-                        defaultValue=''
-                        name='ubigeo'
-                        labelId='ubigeo-label'
-                        label='Ubicación'
-                        onChange={handleField}
-                      >
-                        <MenuItem value='010705' style={{fontWeight: 200}}>
-                          010705D
-                        </MenuItem>
-                        <MenuItem
-                          value='010701'
-                          style={{fontWeight: 200}}
-                        >
-                          010701D
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
+                    <Autocomplete
+                      disablePortal
+                      id='ubigeo'
+                      value={objUbigeo}
+                      isOptionEqualToValue={(option, value) =>
+                        option.ubigeo === value.ubigeo.toString()
+                      }
+                      getOptionLabel={(option) => option.label || ''}
+                      onChange={(option, value) => {
+                        if (
+                          typeof value === 'object' &&
+                          value != null &&
+                          value !== ''
+                        ) {
+                          console.log('objeto ubigeo', value);
+                          setObjUbigeo(value);
+                          setUbigeo(value.ubigeo.toString());
+                          objSelectsU.ubigeo = value.ubigeo.toString();
+                          setExistUbigeo(true);
+                        } else {
+                          setExistUbigeo(false);
+                        }
+                        console.log('ubigeo, punto de partida', value);
+                      }}
+                      options={parsedUbigeos}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label={<IntlMessages id='ubigeo.signUp' />}
+                          onChange={(event) => {
+                            console.log('event field', event.target.value);
+                            if (event.target.value === '') {
+                              console.log('si se cambia a null');
+                              setExistUbigeo(false);
+                            }
+                          }}
+                        />
+                      )}
+                    />                    
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>

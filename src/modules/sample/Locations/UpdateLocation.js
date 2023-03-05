@@ -26,6 +26,7 @@ import {
   Alert,
   Dialog,
   Grid,
+  Autocomplete,
   DialogActions,
   DialogContent,
   DialogContentText,
@@ -62,6 +63,7 @@ import {
 
 import {updateLocation, getLocations} from '../../../redux/actions/Locations';
 import {FETCH_SUCCESS} from '../../../shared/constants/ActionTypes';
+import originalUbigeos from '../../../Utils/ubigeo.json';
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -112,6 +114,15 @@ const UpdateLocation = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [ubigeo, setUbigeo] = React.useState('150101');
+  const [existUbigeo, setExistUbigeo] = React.useState(true);
+  const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
+  const [readyData, setReadyData] = React.useState(false);
+  const [objUbigeo, setObjUbigeo] = React.useState({
+    descripcion: 'LIMA / LIMA / LIMA',
+    label: 'LIMA / LIMA / LIMA - 150101',
+    ubigeo: '150101',
+  });
 
   const [showAlert, setShowAlert] = React.useState(false);
   const [statusLocation, setStatusLocation] = React.useState(query.status);
@@ -179,8 +190,13 @@ const UpdateLocation = (props) => {
     type: ['PUNTO LLEGADA','PUNTO PARTIDA'],
   };
 
+  let objSelectsU = {
+    ubigeo: '150101',
+  };
+
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
+    delete data.ubigeo;
     delete data.type;
     console.log('Data', data);
     console.log('objSelects', objSelects);
@@ -189,9 +205,9 @@ const UpdateLocation = (props) => {
     newLocationPayload.request.payload.locationDetail =
       data.locationDetail;
     newLocationPayload.request.payload.ubigeo =
-      data.ubigeo;
+      objUbigeo.ubigeo;
     newLocationPayload.request.payload.type =
-      data.type;
+      objSelectsT.type;
     newLocationPayload.request.payload.coordenates =
       {"lat":{"S":""},"long":{"S":""}};;
 
@@ -262,6 +278,24 @@ const UpdateLocation = (props) => {
     console.log('ocjSelects', objSelects);
   };
 
+  useEffect(() => {
+    const ubigeos = originalUbigeos.map((obj, index) => {
+      return {
+        label: `${obj.descripcion} - ${obj.ubigeo}`,
+        ...obj,
+      };
+    });
+    
+  setParsedUbigeos(ubigeos);
+    if (readyData) {
+      setObjUbigeo(ubigeos[0]);
+      setUbigeo(ubigeos[0].ubigeo.toString());
+      objSelectU.ubigeo = ubigeos[0].ubigeo.toString();
+      setExistUbigeo(true);
+      setReadyData(true);
+    }
+  }, [readyData]);
+
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -327,31 +361,45 @@ const UpdateLocation = (props) => {
                     />
                   </Grid>                  
                   <Grid item xs={12}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel
-                        id='ubigeo-label'
-                        style={{fontWeight: 200}}
-                      >
-                        Ubicación
-                      </InputLabel>
-                      <Select
-                        defaultValue=''
-                        name='ubigeo'
-                        labelId='ubigeo-label'
-                        label='Ubicación'
-                        onChange={handleField}
-                      >
-                        <MenuItem value='010705' style={{fontWeight: 200}}>
-                          010705D
-                        </MenuItem>
-                        <MenuItem
-                          value='010701'
-                          style={{fontWeight: 200}}
-                        >
-                          010701D
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
+                    <Autocomplete
+                      disablePortal
+                      id='ubigeo'
+                      value={objUbigeo}
+                      isOptionEqualToValue={(option, value) =>
+                        option.ubigeo === value.ubigeo.toString()
+                      }
+                      getOptionLabel={(option) => option.label || ''}
+                      onChange={(option, value) => {
+                        if (
+                          typeof value === 'object' &&
+                          value != null &&
+                          value !== ''
+                        ) {
+                          console.log('objeto ubigeo', value);
+                          setObjUbigeo(value);
+                          setUbigeo(value.ubigeo.toString());
+                          objSelectsU.ubigeo = value.ubigeo.toString();
+                          setExistUbigeo(true);
+                        } else {
+                          setExistUbigeo(false);
+                        }
+                        console.log('ubigeo, punto de partida', value);
+                      }}
+                      options={parsedUbigeos}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label={<IntlMessages id='ubigeo.signUp' />}
+                          onChange={(event) => {
+                            console.log('event field', event.target.value);
+                            if (event.target.value === '') {
+                              console.log('si se cambia a null');
+                              setExistUbigeo(false);
+                            }
+                          }}
+                        />
+                      )}
+                    />                    
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
