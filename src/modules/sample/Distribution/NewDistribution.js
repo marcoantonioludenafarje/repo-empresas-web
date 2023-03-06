@@ -488,16 +488,20 @@ const Distribution = (props) => {
   const selectRoute = (event) => {
     console.log('Id ruta', event.target.value);
     console.log('selectedRoutePredefined', selectedRoute);
-    const selectedRoute = listRoute.find(
+    const selectedNewRoute = listRoute.find(
       (obj) => obj.routePredefinedId == event.target.value,
     );
-    let deliveries = selectedRoute.deliveries.map((obj) => {
+    const fecha = new Date(initialDate);
+    const timestamp = fecha.getTime();
+    let deliveries = selectedNewRoute.deliveries.map((obj) => {
       obj.products = obj.productsInfo;
+      obj.transferStartDate = dateWithHyphen(timestamp);
+      obj.generateReferralGuide = true;
       return obj;
     });
-    setSelectedRouteId(selectedRoute.routePredefinedId);
-    setSelectedRoute(selectedRoute);
-    console.log('deliveries', selectedRoute.deliveries);
+    setSelectedRouteId(selectedNewRoute.routePredefinedId);
+    setSelectedRoute(selectedNewRoute);
+    console.log('deliveries', selectedNewRoute.deliveries);
     setRoutes(deliveries);
     reloadPage();
   };
@@ -894,7 +898,7 @@ const Distribution = (props) => {
                 <TableCell>Peso total</TableCell>
                 <TableCell>Número de paquetes</TableCell>
                 <TableCell>Fecha de Entrega</TableCell>
-                <TableCell>Guía de Remisión Generada</TableCell>
+                <TableCell>Generar Guía de Remisión?</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>

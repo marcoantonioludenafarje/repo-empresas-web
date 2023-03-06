@@ -303,9 +303,7 @@ const FinancesTable = (props) => {
                                   <TableCell>Observaciones</TableCell>
                                   <TableCell>Peso total</TableCell>
                                   <TableCell>Número de paquetes</TableCell>
-                                  <TableCell>
-                                    Guía de Remisión Generada
-                                  </TableCell>
+                                  <TableCell>Estado Guía Sunat</TableCell>
                                   <TableCell></TableCell>
                                 </TableRow>
                               </TableHead>
