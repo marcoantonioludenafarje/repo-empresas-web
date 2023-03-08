@@ -367,6 +367,9 @@ const ProviderTable = (arrayObjs, props) => {
                 event.target.value;
             }}
           >
+            <MenuItem value='' style={{fontWeight: 200}}>
+              Todos
+            </MenuItem>
             <MenuItem value='RUC' style={{fontWeight: 200}}>
               RUC
             </MenuItem>

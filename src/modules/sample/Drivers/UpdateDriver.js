@@ -74,16 +74,6 @@ const useStyles = makeStyles((theme) => ({
 
 const maxLengthNumber = 111111111111; //11 caracteres
 const validationSchema = yup.object({
-  /* name: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-    nroDocument: yup
-      .number()
-      .typeError(<IntlMessages id='validation.number' />)
-      .required(<IntlMessages id='validation.required' />)
-      .integer(<IntlMessages id='validation.number.integer' />)
-      .max(maxLengthNumber, 'Solo puedes ecribir 11 carácteres como máximo'), */
       numberDocumentDriver: yup
       .number()
       .typeError(<IntlMessages id='validation.number' />)

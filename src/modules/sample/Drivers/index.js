@@ -371,7 +371,7 @@ const DriverTable = (arrayObjs, props) => {
             Identificador
           </InputLabel>
           <Select
-            defaultValue=''
+            defaultValue='DNI'
             name='typeDocumentDriver'
             labelId='documentType-label'
             label='Identificador'
@@ -381,6 +381,9 @@ const DriverTable = (arrayObjs, props) => {
                 event.target.value;
             }}
           >
+            <MenuItem value='' style={{fontWeight: 200}}>
+              Todos
+            </MenuItem>
             <MenuItem value='DNI' style={{fontWeight: 200}}>
               DNI
             </MenuItem>

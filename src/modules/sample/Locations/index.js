@@ -94,6 +94,7 @@ let listPayload = {
       type: '',
       ubigeo: '',
       merchantId: '',
+      modularCode: '',
     },
   },
 };
@@ -124,9 +125,9 @@ const LocationTable = (arrayObjs, props) => {
   const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
   const [readyData, setReadyData] = React.useState(false);
   const [objUbigeo, setObjUbigeo] = React.useState({
-    descripcion: 'LIMA / LIMA / LIMA',
-    label: 'LIMA / LIMA / LIMA - 150101',
-    ubigeo: '150101',
+    descripcion: 'Todos',
+    label: 'Todos',
+    ubigeo: '',
   });
   let popUp = false;
   let codProdSelected = '';
@@ -221,6 +222,7 @@ const LocationTable = (arrayObjs, props) => {
   const handleSearchValues = (event) => {
     console.log('Evento', event);
     if (event.target.name == 'nameToSearch') {
+      console.log ('nameToSearch:'+event.target.value);
       if (event.target.value == '') {
         listPayload.request.payload.locationName = '';
       } else {
@@ -235,6 +237,7 @@ const LocationTable = (arrayObjs, props) => {
       }
     }
     if (event.target.name == 'ubigeoToSearch') {
+      console.log ('ubigeoToSearch:'+event.target.value+":"+objUbigeo.ubigeo);
       if (event.target.value == '') {
         listPayload.request.payload.ubigeo = '';
       } else {
@@ -259,12 +262,14 @@ const LocationTable = (arrayObjs, props) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
         (({
+          modularCode,
           locationName,
           locationDetail,
           ubigeo,
           type,
-          updatedDate,
+          updatedDate,          
         }) => ({
+          modularCode,
           locationName,
           locationDetail,
           ubigeo,
@@ -276,6 +281,7 @@ const LocationTable = (arrayObjs, props) => {
     return listResult;
   };
   const headersExcel = [
+    'Código',
     'Nombre',
     'Dirección',
     'Ubicación',
@@ -384,9 +390,13 @@ const LocationTable = (arrayObjs, props) => {
     return 0;
   };
 
-  const pintaCancha = (ubi) => {
-    console.log("cancha: "+ubi)
-    //originalUbigeos.find(o => o.ubigeo == ubi).descripcion
+  const setLabelUbigeo = (ubi) => {
+    const resultUbigeo = originalUbigeos.find(o => o.ubigeo == ubi);
+    if (!resultUbigeo){
+        ubi="Ubigeo no encontrado";
+    } else {
+        ubi=resultUbigeo.descripcion + ' - ' + resultUbigeo.ubigeo;
+    }
     return ubi;
   };
 
@@ -397,15 +407,19 @@ const LocationTable = (arrayObjs, props) => {
         ...obj,
       };
     });
+
+    ubigeos.push({
+      descripcion:'Todos', label:'Todos',ubigeo: ""
+    });
     
-  setParsedUbigeos(ubigeos);
-    if (readyData) {
-      setObjUbigeo(ubigeos[0]);
-      setUbigeo(ubigeos[0].ubigeo.toString());
-      objSelectU.ubigeo = ubigeos[0].ubigeo.toString();
-      setExistUbigeo(true);
-      setReadyData(true);
-    }
+    setParsedUbigeos(ubigeos);
+      if (readyData) {
+        setObjUbigeo(ubigeos[ubigeos.length-1]);
+        setUbigeo(ubigeos[ubigeos.length-1].ubigeo.toString());
+        objSelectU.ubigeo = ubigeos[ubigeos.length-1].ubigeo.toString();
+        setExistUbigeo(true);
+        setReadyData(true);
+      }
   }, [readyData]);
 
   return (
@@ -437,6 +451,9 @@ const LocationTable = (arrayObjs, props) => {
                 event.target.value;
             }}
           >
+            <MenuItem value='' style={{fontWeight: 200}}>
+              Todos
+            </MenuItem>
             <MenuItem value='PUNTO LLEGADA' style={{fontWeight: 200}}>
               PUNTO LLEGADA
             </MenuItem>
@@ -445,7 +462,7 @@ const LocationTable = (arrayObjs, props) => {
             </MenuItem>
           </Select>
         </FormControl>
-        <Grid item xs={12}>
+        <Grid item xs={12}> 
           <Autocomplete
             disablePortal
             id='ubigeoToSearch'
@@ -464,6 +481,7 @@ const LocationTable = (arrayObjs, props) => {
                 setObjUbigeo(value);
                 setUbigeo(value.ubigeo.toString());
                 objSelectsU.ubigeo = value.ubigeo.toString();
+                listPayload.request.payload.ubigeo = objSelectsU.ubigeo;
                 setExistUbigeo(true);
               } else {
                 setExistUbigeo(false);
@@ -507,6 +525,7 @@ const LocationTable = (arrayObjs, props) => {
         >
           <TableHead>
             <TableRow>
+              <TableCell>Código</TableCell>
               <TableCell>Nombre</TableCell>
               <TableCell>Dirección</TableCell>
               <TableCell>Ubicación</TableCell>
@@ -525,9 +544,10 @@ const LocationTable = (arrayObjs, props) => {
                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                     key={index}
                   >
+                    <TableCell>{obj.modularCode}</TableCell>
                     <TableCell>{obj.locationName}</TableCell>
                     <TableCell>{obj.locationDetail}</TableCell>
-                    <TableCell>{pintaCancha(obj.ubigeo)}</TableCell>
+                    <TableCell>{setLabelUbigeo(obj.ubigeo)}</TableCell>
                     <TableCell>{obj.type}</TableCell>
                     <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
                     {/* <TableCell>{obj.priceWithoutIgv.toFixed(2)}</TableCell>

@@ -48,11 +48,10 @@ import originalUbigeos from '../../../Utils/ubigeo.json';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
-  /* documentType: yup
+  modularCode: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />)
-    .max(maxLength, 'Se puede ingresar como maximo 10 caracteres'), */
+    .required(<IntlMessages id='validation.required' />),
   locationName: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
@@ -65,6 +64,7 @@ const validationSchema = yup.object({
     type: yup.string(),
 });
 const defaultValues = {
+  modularCode: '',
   locationName: '',
   locationDetail: '',
   ubigeo: '',
@@ -75,6 +75,7 @@ let newLocationPayload = {
     payload: {
       locations: [
         {
+          modularCode: '',
           coordenates: '',
           locationDetail: '',
           locationName: '',
@@ -167,6 +168,8 @@ const NewLocation = () => {
     delete data.ubigeo;
     delete data.type;
     console.log('Data', data);
+    newLocationPayload.request.payload.locations[0].modularCode =
+      data.modularCode;
     newLocationPayload.request.payload.locations[0].locationName =
       data.locationName;
     newLocationPayload.request.payload.locations[0].locationDetail =
@@ -302,6 +305,21 @@ const NewLocation = () => {
                 /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid item xs={12}>
+                    <AppTextField
+                      label='Código *'
+                      name='modularCode'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
                   <Grid item xs={12}>
                     <AppTextField
                       label='Nombre *'
@@ -383,7 +401,7 @@ const NewLocation = () => {
                         Tipo
                       </InputLabel>
                       <Select
-                        defaultValue=''
+                        defaultValue={objSelectsT.type}
                         name='type'
                         labelId='type-label'
                         label='Tipo'
@@ -545,7 +563,7 @@ const NewLocation = () => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Conductores'}
+          {'Registro de Locaciones'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />

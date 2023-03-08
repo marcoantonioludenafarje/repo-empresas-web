@@ -76,17 +76,11 @@ const useStyles = makeStyles((theme) => ({
 
 const maxLengthNumber = 111111111111; //11 caracteres
 const validationSchema = yup.object({
-  /* name: yup
+    modularCode: yup
       .string()
       .typeError(<IntlMessages id='validation.string' />)
       .required(<IntlMessages id='validation.required' />),
-    nroDocument: yup
-      .number()
-      .typeError(<IntlMessages id='validation.number' />)
-      .required(<IntlMessages id='validation.required' />)
-      .integer(<IntlMessages id='validation.number.integer' />)
-      .max(maxLengthNumber, 'Solo puedes ecribir 11 carácteres como máximo'), */
-      locatioName: yup
+    locatioName: yup
       .string()
       .typeError(<IntlMessages id='validation.string' />)
       .required(<IntlMessages id='validation.required' />),
@@ -159,10 +153,11 @@ const UpdateLocation = (props) => {
   }
 
   const defaultValues = {
-    locationName: '',
-    locationDetail: '',
-    ubigeo: '',
-    type: '',
+    modularCode: query.modularCode || '',
+    locationName: query.locationName || '',
+    locationDetail: query.locationDetail || '',
+    ubigeo: query.ubigeo || '',
+    type: query.type || '',
   };
   let businessParameterPayload = {
     request: {
@@ -177,6 +172,7 @@ const UpdateLocation = (props) => {
     request: {
       payload: {
         locationId: query.locationId,
+        modularCode: '',
         coordenates: '',
         locationDetail: '',
         locationName: '',
@@ -200,8 +196,10 @@ const UpdateLocation = (props) => {
     delete data.type;
     console.log('Data', data);
     console.log('objSelects', objSelects);
+    newLocationPayload.request.payload.modularCode =
+      data.modularCode;
     newLocationPayload.request.payload.locationName =
-      objSelects.locationName;
+      data.locationName;
     newLocationPayload.request.payload.locationDetail =
       data.locationDetail;
     newLocationPayload.request.payload.ubigeo =
@@ -286,15 +284,23 @@ const UpdateLocation = (props) => {
       };
     });
     
-  setParsedUbigeos(ubigeos);
-    if (readyData) {
-      setObjUbigeo(ubigeos[0]);
-      setUbigeo(ubigeos[0].ubigeo.toString());
-      objSelectU.ubigeo = ubigeos[0].ubigeo.toString();
-      setExistUbigeo(true);
-      setReadyData(true);
-    }
+    setParsedUbigeos(ubigeos);
+      if (readyData) {
+        setObjUbigeo(ubigeos[0]);
+        setUbigeo(ubigeos[0].ubigeo.toString());
+        objSelectU.ubigeo = ubigeos[0].ubigeo.toString();
+        setExistUbigeo(true);
+        setReadyData(true);
+      }
   }, [readyData]);
+
+  useEffect(() => {
+    const ubi = parsedUbigeos.find(o => o.ubigeo == query.ubigeo);
+    if (ubi){
+      setObjUbigeo(ubi);
+      setUbigeo(query.ubigeo.toString());
+    }    
+  }, [parsedUbigeos]);
 
   return (
     <Card sx={{p: 4}}>
@@ -332,6 +338,21 @@ const UpdateLocation = (props) => {
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={12}>
                     <AppTextField disabled
+                      label='Código *'
+                      name='modularCode'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField 
                       label='Nombre *'
                       name='locationName'
                       variant='outlined'
@@ -410,7 +431,7 @@ const UpdateLocation = (props) => {
                         Tipo
                       </InputLabel>
                       <Select
-                        defaultValue=''
+                        defaultValue={query.type}
                         name='type'
                         labelId='type-label'
                         label='Tipo'
