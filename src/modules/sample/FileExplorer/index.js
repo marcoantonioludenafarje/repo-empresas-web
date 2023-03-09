@@ -608,17 +608,17 @@ const FileExplorer = (props) => {
         </Stack>
         <Divider sx={{my: 2}} />
 
-        <Grid container spacing={2}>
-          <Grid item sx={12}>
-            <Stack direction='row' spacing={2}>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Stack direction="row" spacing={2} alignItems="center">
               <Button
                 disabled={
-                  !localStorage
-                    .getItem('pathsBack')
-                    .includes('/utility/preSignAnyPathMerchant?path=/*')
+                  !localStorage.getItem('pathsBack').includes(
+                    '/utility/preSignAnyPathMerchant?path=/*'
+                  )
                 }
-                variant='contained'
-                color='primary'
+                variant="contained"
+                color="primary"
                 onClick={() => {
                   typeForm = 'newFolder';
                   setOpen(true);
@@ -629,25 +629,43 @@ const FileExplorer = (props) => {
 
               <Button
                 disabled={
-                  !localStorage
-                    .getItem('pathsBack')
-                    .includes('/utility/preSignAnyPathMerchant?path=/*')
+                  !localStorage.getItem('pathsBack').includes(
+                    '/utility/preSignAnyPathMerchant?path=/*'
+                  )
                 }
-                variant='contained'
-                color='primary'
-                component='label'
+                variant="contained"
+                color="primary"
+                component="label"
               >
                 Nuevo Archivo
                 <input
-                  type='file'
+                  type="file"
                   hidden
                   onChange={uploadNewFile}
-                  id='newFile'
-                  name='newfile'
+                  id="newFile"
+                  name="newfile"
                 />
               </Button>
             </Stack>
           </Grid>
+
+          {getDataRes && getDataRes.objects && typeof getDataRes.objects !== 'string' ? (
+            <Grid item>
+              <Typography
+                sx={{
+                  letterSpacing: 2,
+                  fontWeight: 'medium',
+                  color: '#424242',
+                  textAlign: 'right',
+                  mr: 4
+                }}
+              >
+                {`Cantidad de archivos: ${
+                  getDataRes.objects.length ? getDataRes.objects.length - 1 : 0
+                }`}
+              </Typography>
+            </Grid>
+          ) : null}
         </Grid>
         <Divider sx={{my: 2}} />
 
@@ -785,93 +803,89 @@ const FileExplorer = (props) => {
             {getDataRes &&
             getDataRes.objects &&
             typeof getDataRes.objects !== 'string' ? (
-              getDataRes.objects.map((obj, index) => {
-                if (
-                  obj.nameFile !== 'initialFolder.txt' &&
-                  obj.nameFile !== 'initialFolder'
-                ) {
-                  return (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        '&:last-child td, &:last-child th': {border: 0},
-                        cursor: 'pointer',
-                      }}
-                      hover
-                    >
-                      {listGetFilesPath.some(function (arrVal) {
-                        return actualPath.split('/')[0] === arrVal;
-                      }) === true ||
-                      localStorage
-                        .getItem('pathsBack')
-                        .includes(
-                          '/utility/listObjectsPathMerchant?path=/*',
-                        ) ? (
-                        <TableCell
-                          sx={{alignItems: 'center'}}
-                          onClick={() => window.open(obj.UrlFile)}
-                        >
-                          <InsertDriveFileOutlinedIcon
-                            className={classes.icon}
+              getDataRes.objects
+                .filter((obj) => obj.nameFile !== 'initialFolder.txt' && obj.nameFile !== 'initialFolder')
+                .sort((a, b) => a.nameFile.localeCompare(b.nameFile)) // Ordena por el valor de nameFile
+                .map((obj, index) => (  
+                      <TableRow
+                        key={index}
+                        sx={{
+                          '&:last-child td, &:last-child th': {border: 0},
+                          cursor: 'pointer',
+                        }}
+                        hover
+                      >
+                        {listGetFilesPath.some(function (arrVal) {
+                          return actualPath.split('/')[0] === arrVal;
+                        }) === true ||
+                        localStorage
+                          .getItem('pathsBack')
+                          .includes(
+                            '/utility/listObjectsPathMerchant?path=/*',
+                          ) ? (
+                          <TableCell
+                            sx={{alignItems: 'center'}}
+                            onClick={() => window.open(obj.UrlFile)}
+                          >
+                            <InsertDriveFileOutlinedIcon
+                              className={classes.icon}
+                            />
+                            {obj.nameFile}
+                          </TableCell>
+                        ) : null}
+                        {/* <TableCell align='right' sx={{textAlign: 'center'}}>
+                          <FileDownloadIcon
+                            onClick={download.bind(this, obj.UrlFile)}
                           />
-                          {obj.nameFile}
-                        </TableCell>
-                      ) : null}
-                      {/* <TableCell align='right' sx={{textAlign: 'center'}}>
-                        <FileDownloadIcon
-                          onClick={download.bind(this, obj.UrlFile)}
-                        />
-                      </TableCell> */}
-                      <TableCell
-                        align='right'
-                        sx={{textAlign: 'center'}}
-                      ></TableCell>
+                        </TableCell> */}
+                        <TableCell
+                          align='right'
+                          sx={{textAlign: 'center'}}
+                        ></TableCell>
 
-                      {localStorage
-                        .getItem('pathsBack')
-                        .includes(
-                          '/utility/deleteObjectsPathMerchant?path=/*',
-                        ) === true ? (
-                        <TableCell align='right' sx={{textAlign: 'center'}}>
-                          <IconButton
-                            disabled={
-                              !localStorage
-                                .getItem('pathsBack')
-                                .includes(
-                                  '/utility/deleteObjectsPathMerchant?path=/*',
-                                )
-                            }
-                            onClick={setDeleteState.bind(this, obj)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      ) : null}
+                        {localStorage
+                          .getItem('pathsBack')
+                          .includes(
+                            '/utility/changeNameObjectsPathMerchant?path=/*',
+                          ) === true ? (
+                          <TableCell align='right' sx={{textAlign: 'center'}}>
+                            <IconButton
+                              disabled={
+                                !localStorage
+                                  .getItem('pathsBack')
+                                  .includes(
+                                    '/utility/changeNameObjectsPathMerchant?path=/*',
+                                  )
+                              }
+                              onClick={changeName.bind(this, obj)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </TableCell>
+                        ) : null}
 
-                      {localStorage
-                        .getItem('pathsBack')
-                        .includes(
-                          '/utility/changeNameObjectsPathMerchant?path=/*',
-                        ) === true ? (
-                        <TableCell align='right' sx={{textAlign: 'center'}}>
-                          <IconButton
-                            disabled={
-                              !localStorage
-                                .getItem('pathsBack')
-                                .includes(
-                                  '/utility/changeNameObjectsPathMerchant?path=/*',
-                                )
-                            }
-                            onClick={changeName.bind(this, obj)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        </TableCell>
-                      ) : null}
-                    </TableRow>
-                  );
-                }
-              })
+                        {localStorage
+                          .getItem('pathsBack')
+                          .includes(
+                            '/utility/deleteObjectsPathMerchant?path=/*',
+                          ) === true ? (
+                          <TableCell align='right' sx={{textAlign: 'center'}}>
+                            <IconButton
+                              disabled={
+                                !localStorage
+                                  .getItem('pathsBack')
+                                  .includes(
+                                    '/utility/deleteObjectsPathMerchant?path=/*',
+                                  )
+                              }
+                              onClick={setDeleteState.bind(this, obj)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        ) : null}
+                      </TableRow>
+                    ))
             ) : (
               <></>
             )}
@@ -914,7 +928,7 @@ const FileExplorer = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Nombre'}
+          {'Cambiar Nombre'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <Formik
@@ -938,7 +952,7 @@ const FileExplorer = (props) => {
                       className={classes.stack}
                     >
                       <AppTextField
-                        label='name'
+                        label='Nombre de archivo'
                         name='name'
                         htmlFor='filled-adornment-password'
                         variant='outlined'

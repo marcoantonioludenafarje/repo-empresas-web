@@ -80,6 +80,27 @@ let producePayload = {
   },
 };
 
+const objectsAreEqual = (a, b) => {
+  // Comprobar si los dos valores son objetos
+  if (typeof a === 'object' && typeof b === 'object') {
+    // Comprobar si los objetos tienen las mismas propiedades
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) {
+      return false;
+    }
+    // Comparar el valor de cada propiedad de forma recursiva
+    for (const key of aKeys) {
+      if (!objectsAreEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  // Comparar los valores directamente
+  return a === b;
+};
+
 const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -164,7 +185,12 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
     if (
       successMessage != undefined &&
       produceProductRes !== undefined &&
-      !('error' in produceProductRes)
+      (!(
+        typeof tuVariable === 'object' &&
+        tuVariable !== null &&
+        'error' in produceProductRes
+      ) ||
+        objectsAreEqual(produceProductRes.error, {}))
     ) {
       return (
         <>
@@ -191,7 +217,8 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
     } else if (
       (successMessage != undefined &&
         produceProductRes &&
-        'error' in produceProductRes) ||
+        'error' in produceProductRes &&
+        !objectsAreEqual(produceProductRes.error, {})) ||
       errorMessage != undefined
     ) {
       return (

@@ -43,10 +43,11 @@ import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import DataSaverOffOutlinedIcon from '@mui/icons-material/DataSaverOffOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PendingIcon from '@mui/icons-material/Pending';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
-import {red} from '@mui/material/colors';
+import {red, amber} from '@mui/material/colors';
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
@@ -352,6 +353,9 @@ const ReferralGuidesTable = (props) => {
   };
   const showIconStatus = (bool) => {
     switch (bool) {
+      case null:
+        return <PendingIcon sx={{color: amber[500]}} />;
+        break;
       case true:
         return <CheckCircleIcon color='success' />;
         break;

@@ -1352,7 +1352,11 @@ const OutputsTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/facturacion/deliveryDistribution/register') === true ? (
-          <MenuItem onClick={doDistribution}>
+          <MenuItem 
+            disabled={
+              selectedOutput.movementSubType !== "sales"
+            }
+            onClick={doDistribution}>
             <MapIcon sx={{mr: 1, my: 'auto'}} />
             Generar distribución
           </MenuItem>

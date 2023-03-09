@@ -25,7 +25,8 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import {red} from '@mui/material/colors';
+import PendingIcon from '@mui/icons-material/Pending';
+import {red, amber} from '@mui/material/colors';
 import {getUserData} from '../../../redux/actions/User';
 
 import {
@@ -204,6 +205,9 @@ const FinancesTable = (props) => {
   };
   const showIconStatus = (bool, obj) => {
     switch (bool) {
+      case null:
+        return <PendingIcon sx={{color: amber[500]}} />;
+        break;
       case true:
         return (
           <Button
@@ -299,9 +303,7 @@ const FinancesTable = (props) => {
                                   <TableCell>Observaciones</TableCell>
                                   <TableCell>Peso total</TableCell>
                                   <TableCell>Número de paquetes</TableCell>
-                                  <TableCell>
-                                    Guía de Remisión Generada
-                                  </TableCell>
+                                  <TableCell>Estado Guía Sunat</TableCell>
                                   <TableCell></TableCell>
                                 </TableRow>
                               </TableHead>
