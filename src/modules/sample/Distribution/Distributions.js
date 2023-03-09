@@ -205,7 +205,7 @@ const FinancesTable = (props) => {
   };
   const showIconStatus = (bool, obj) => {
     switch (bool) {
-      case null:
+      case ("waiting" || null):
         return <PendingIcon sx={{color: amber[500]}} />;
         break;
       case true:

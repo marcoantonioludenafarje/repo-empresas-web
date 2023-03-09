@@ -353,7 +353,7 @@ const ReferralGuidesTable = (props) => {
   };
   const showIconStatus = (bool) => {
     switch (bool) {
-      case null:
+      case ("waiting" || null):
         return <PendingIcon sx={{color: amber[500]}} />;
         break;
       case true:
