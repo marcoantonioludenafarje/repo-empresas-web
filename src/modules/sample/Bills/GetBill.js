@@ -59,7 +59,7 @@ import {
 } from '../../../Utils/utils';
 import AddProductForm from './AddProductForm';
 import AddDocumentForm from '../DocumentSelector/AddDocumentForm';
-import DocumentsTable from '../DocumentSelector/DocumentsTable';
+import DocumentsTableForBill from '../DocumentSelector/DocumentsTableForBill';
 import {
   FETCH_ERROR,
   FETCH_SUCCESS,
@@ -254,6 +254,7 @@ const NewOutput = (props) => {
           dateDocument: obj.issueDate,
           document: obj.serialDocument,
           typeDocument: obj.typeDocument,
+          isSelected: true,
         };
       });
       console.log('listDocuments', listDocuments);
@@ -443,13 +444,33 @@ const NewOutput = (props) => {
 
   //FUNCIONES DIALOG
   const [open, setOpen] = React.useState(false);
+  const [openReferralGuides, setOpenReferralGuides] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleCloseReferralGuides = () => {
+    setOpenReferralGuides(false);
   };
   const handleClickOpen = (type) => {
     setOpen(true);
     setTypeDialog(type);
     setShowAlert(false);
+  };
+
+  const handleClickOpenReferralGuides = (type) => {
+    setOpenReferralGuides(true);
+    setShowAlert(false);
+  };
+
+  const showListDocumentsSelected = () => {
+    const total = listDocuments.reduce((count, element) => {
+      if (element.isSelected) {
+        return count + 1;
+      } else {
+        return count;
+      }
+    }, 0)
+    return total > 1 ? `Hay ${total} guías de remisión asignadas` : total > 0 ? `Hay ${total} guía de remisión asignada` : `No hay guías de remisión asignadas`;
   };
 
   const removeProduct = (index) => {
@@ -481,10 +502,12 @@ const NewOutput = (props) => {
     dispatch({type: ADD_INVOICE, payload: undefined});
     console.log('listDocuments', listDocuments);
     let parsedDocuments = listDocuments.map((obj) => {
-      return {
-        issueDate: obj.dateDocument,
-        serialDocument: obj.document,
-      };
+      if(obj.isSelected){
+        return {
+          issueDate: obj.dateDocument,
+          serialDocument: obj.document,
+        };
+      }
     });
     console.log('parsedDocuments', parsedDocuments);
     let finalPayload;
@@ -702,6 +725,24 @@ const NewOutput = (props) => {
   };
   const removeDocument = (index) => {
     listDocuments.splice(index, 1);
+    forceUpdate();
+  };
+  const selectDocument = (index) => {
+    console.log("index document", index)
+    console.log("index document listDocument", listDocuments)
+    listDocuments[index].isSelected = !listDocuments[index].isSelected;
+    forceUpdate();
+  };
+  const selectAll = () => {
+    listDocuments = listDocuments.map((obj) => {
+      return { ...obj, isSelected: true };
+    });
+    forceUpdate();
+  };
+  const deselectAll = () => {
+    listDocuments = listDocuments.map((obj) => {
+      return { ...obj, isSelected: false };
+    });
     forceUpdate();
   };
 
@@ -968,23 +1009,22 @@ const NewOutput = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-
+                  <Grid item xs={12}>
+                    <Typography align="center">
+                      {showListDocumentsSelected()} de un total de {listDocuments.length}
+                    </Typography>
+                  </Grid>
                   <Grid item xs={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
-                      onClick={() => handleClickOpen('document')}
+                      onClick={() => handleClickOpenReferralGuides('referralGuides')}
                     >
-                      Añadir guía de remisión
+                      Ver guías de remisión asignadas
                     </Button>
                   </Grid>
                 </Grid>
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                  />
-                </Box>
+                
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   {/* <Grid item xs={4}>
                     <DateTimePicker
@@ -1259,6 +1299,51 @@ const NewOutput = (props) => {
             </DialogContent>
           </>
         ) : null}
+      </Dialog>
+      <Dialog
+        open={openReferralGuides}
+        onClose={handleCloseReferralGuides}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Guías de remisión'}
+          <CancelOutlinedIcon
+            onClick={setOpenReferralGuides.bind(this, false)}
+            className={classes.closeButton}
+          />
+        </DialogTitle>
+        <DialogContent>
+        <Box sx={{my: 5}}>
+              <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid item xs={12}>
+                  <Button
+                    sx={{width: 1}}
+                    variant='outlined'
+                    onClick={() => handleClickOpen('document')}
+                  >
+                    Añadir guía de remisión
+                  </Button>
+                </Grid>
+              </Grid>
+              <Button
+                onClick={selectAll}
+              >
+                Seleccionar todo
+              </Button>
+              <Button
+                onClick={deselectAll}
+              >
+                Deseleccionar todo
+              </Button>
+              <DocumentsTableForBill
+                arrayObjs={listDocuments}
+                toDelete={removeDocument}
+                toSelect={selectDocument}
+              />
+            </Box>
+        </DialogContent>
       </Dialog>
       <Dialog
         open={showDelete}
