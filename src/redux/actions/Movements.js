@@ -27,6 +27,7 @@ import API from '@aws-amplify/api';
 export const getMovements = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
+    console.log('/inventory/movementProducts/list', {body: payload});
     API.post('tunexo', '/inventory/movementProducts/list', {body: payload})
       .then((data) => {
         console.log('getMovements123 resultado', data);

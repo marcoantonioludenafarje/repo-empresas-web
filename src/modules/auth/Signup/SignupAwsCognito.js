@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useAuthMethod, useAuthUser} from '../../../@crema/utility/AuthHooks';
@@ -129,6 +130,7 @@ const SignupAwsCognito = () => {
           validationSchema={validationSchema}
           onSubmit={(data, {setSubmitting, setErrors}) => {
             setSubmitting(true);
+            data.email = data.email.toLowerCase();
             data.cellphone = data.cellphone.toString();
             if (data.password !== data.confirmPassword) {
               console.log('No coincidieron', data);
@@ -167,7 +169,7 @@ const SignupAwsCognito = () => {
                 <IntlMessages id='common.userData' />
               </Typography>
               <Box sx={{mb: {xs: 4, xl: 5}}}>
-                <AppTextField
+                <AppLowerCaseTextField
                   label={<IntlMessages id='common.email' />}
                   name='email'
                   variant='outlined'

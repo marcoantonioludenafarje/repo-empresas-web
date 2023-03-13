@@ -648,7 +648,7 @@ const ProductTable = (arrayObjs, props) => {
                       sx={{'&:last-child td, &:last-child th': {border: 0}}}
                       key={index}
                     >
-                      <TableCell>{obj.product}</TableCell>
+                      <TableCell>{obj.businessProductCode}</TableCell>
                       <TableCell
                         hover
                         sx={{
@@ -728,9 +728,9 @@ const ProductTable = (arrayObjs, props) => {
                                     <TableRow key={index}>
                                       <TableCell>
                                         {
-                                          subProduct.productId
+                                  (subProduct.businessProductCode!=null?subProduct.businessProductCode:subProduct.productId
                                             .replace(/^(0+)/g, '')
-                                            .split('-')[0]
+                                            .split('-')[0])
                                         }
                                       </TableCell>
                                       <TableCell>

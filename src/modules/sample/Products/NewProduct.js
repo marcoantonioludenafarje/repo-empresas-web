@@ -18,6 +18,7 @@ import {
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import {
   Button,
@@ -623,6 +624,7 @@ const NewProduct = (props) => {
                 weight: obj.weight,
                 unitMeasure: obj.unitMeasure,
                 customCodeProduct: obj.customCodeProduct || '',
+                businessProductCode: obj.businessProductCode,
               });
             });
           }
@@ -723,10 +725,13 @@ const NewProduct = (props) => {
   };
 
   const showMessage = () => {
+    console.log ("successMessage1:",successMessage)
+    console.log ("addProductResponse1:",addProductResponse)
+    console.log ("addProductResponse1:",addProductResponse)
     if (
       successMessage != undefined &&
       addProductResponse !== undefined &&
-      !('error' in addProductResponse)
+      'error' !== addProductResponse//!('error' in addProductResponse)
     ) {
       return (
         <>
@@ -886,7 +891,7 @@ const NewProduct = (props) => {
             <Form style={{textAlign: 'left'}} noValidate autoComplete='on'>
               <Grid container spacing={2} sx={{width: 500, mx: 'auto', mb: 4}}>
                 <Grid item xs={12}>
-                  <AppTextField
+                  <AppUpperCaseTextField
                     label='Código *'
                     name='businessProductCode'
                     variant='outlined'

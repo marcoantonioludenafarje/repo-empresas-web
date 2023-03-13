@@ -38,6 +38,7 @@ import {
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
@@ -62,6 +63,10 @@ const validationSchema = yup.object({
   addressProvider: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />),
+  emailProvider: yup
+    .string()
+    .typeError(<IntlMessages id='validation.number' />)
+    .email('Formato de correo invalido'),
   emailContact: yup
     .string()
     .typeError(<IntlMessages id='validation.number' />)
@@ -79,6 +84,7 @@ const defaultValues = {
   nroDocument: '',
   name: '',
   addressProvider: '',
+  emailProvider: '',
   emailContact: '',
   nameContact: '',
   numberContact: '',
@@ -94,6 +100,7 @@ let newProviderPayload = {
           denominationProvider: '',
           addressProvider: '',
           nameContact: '',
+          emailProvider: '',
           numberContact: '',
           emailContact: '',
           extraInformationProvider: '',
@@ -179,6 +186,8 @@ const NewProvider = () => {
       data.name;
     newProviderPayload.request.payload.providers[0].addressProvider =
       data.addressProvider;
+  newProviderPayload.request.payload.providers[0].emailProvider =
+      data.emailProvider;
     newProviderPayload.request.payload.providers[0].nameContact =
       data.nameContact;
     newProviderPayload.request.payload.providers[0].numberContact =
@@ -347,6 +356,21 @@ const NewProvider = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
+                    <AppLowerCaseTextField
+                      label='Correo de Empresa'
+                      name='emailProvider'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
                     <AppTextField
                       label='Nombre de contacto'
                       name='nameContact'
@@ -377,7 +401,7 @@ const NewProvider = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppLowerCaseTextField
                       label='Correo de contacto'
                       name='emailContact'
                       variant='outlined'

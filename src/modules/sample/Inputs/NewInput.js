@@ -379,7 +379,7 @@ const NewInput = (props) => {
   };
 
   const getNewProduct = (product) => {
-    console.log('nuevo producto', product);
+    console.log('nuevo producto1', product);
     if (selectedProducts && selectedProducts.length >= 1) {
       selectedProducts.map((obj, index) => {
         console.log('obj', obj);
@@ -508,7 +508,7 @@ const NewInput = (props) => {
               },
               products: selectedProducts.map((obj) => {
                 return {
-                  businessProductCode: obj.product,
+                  businessProductCode: obj.businessProductCode,
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
                 };

@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 import PropTypes from 'prop-types';
@@ -137,7 +138,7 @@ const MoreFilters = ({sendData}) => {
               </Grid>
 
               <Grid item xs={12}>
-                <AppTextField
+                <AppUpperCaseTextField
                   label={`Número de documento`}
                   name='nroDoc'
                   variant='outlined'

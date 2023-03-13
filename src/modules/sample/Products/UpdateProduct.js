@@ -324,7 +324,7 @@ const UpdateProduct = (props) => {
     },
   };
   let defaultValues = {
-    businessProductCode: query.product,
+    businessProductCode: query.businessProductCode,
     description: query.description,
     customCodeProduct: query.customCodeProduct,
     referecialPriceSell: Number(query.sellPriceUnit),
@@ -470,6 +470,7 @@ const UpdateProduct = (props) => {
           description: subProduct.description,
           count: obj.quantity,
           priceUnit: obj.priceUnit,
+          businessProductCode: obj.businessProductCode
         });
       });
 
@@ -670,6 +671,7 @@ const UpdateProduct = (props) => {
             weight: obj.weight,
             unitMeasure: obj.unitMeasure,
             customCodeProduct: obj.customCodeProduct || '',
+            businessProductCode: obj.businessProductCode,
           });
         });
       }

@@ -450,7 +450,7 @@ const FinancesTable = (props) => {
                                                                 >
                                                                   <TableCell>
                                                                     {
-                                                                      product.product
+                                                                      product.businessProductCode!=null?product.businessProductCode:product.product
                                                                     }
                                                                   </TableCell>
                                                                   <TableCell>

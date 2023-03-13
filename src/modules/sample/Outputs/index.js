@@ -1063,7 +1063,7 @@ const OutputsTable = (props) => {
                                       return (
                                         <TableRow key={index}>
                                           <TableCell>
-                                            {subProduct.product}
+                                            {subProduct.businessProductCode!=null?subProduct.businessProductCode:subProduct.product}
                                           </TableCell>
                                           <TableCell>
                                             {subProduct.description}

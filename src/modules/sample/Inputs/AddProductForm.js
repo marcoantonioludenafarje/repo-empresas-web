@@ -193,6 +193,7 @@ const AddProductForm = ({sendData, type}) => {
         description: selectedProduct.description,
         referencialPriceProduct: selectedProduct.costPriceUnit,
         subtotal: Number(data.count) * Number(data.priceProduct),
+        businessProductCode: selectedProduct.businessProductCode,
       };
       let requiredKeys = ['product', 'description', 'costPriceUnit'];
       let objCorrect = true;

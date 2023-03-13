@@ -73,7 +73,7 @@ const SubProducts = ({arrayObjs, toDelete}) => {
                   key={index}
                   id={index}
                 >
-                  <TableCell>{obj.product}</TableCell>
+                  <TableCell>{obj.businessProductCode}</TableCell>
                   <TableCell>{obj.description}</TableCell>
                   <TableCell>{obj.count}</TableCell>
                   <TableCell>

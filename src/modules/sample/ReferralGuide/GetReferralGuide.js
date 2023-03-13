@@ -450,6 +450,7 @@ const GetReferralGuide = () => {
           description: prod.description,
           unitMeasure: prod.unitMeasure,
           quantityMovement: prod.quantityMovement,
+          businessProductCode: prod.businessProductCode,
         };
       });
 
@@ -540,6 +541,7 @@ const GetReferralGuide = () => {
             customCodeProduct: obj.customCodeProduct,
             description: obj.description,
             unitMeasure: obj.unitMeasure,
+            businessProductCode: obj.businessProductCode,
           });
         });
       }

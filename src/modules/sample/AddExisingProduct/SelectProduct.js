@@ -191,7 +191,7 @@ const SelectProduct = ({fcData, search}) => {
                     sendData(obj);
                   }}
                 >
-                  <TableCell>{obj.product}</TableCell>
+                  <TableCell>{obj.businessProductCode}</TableCell>
                   <TableCell>{obj.description}</TableCell>
                   <TableCell>{obj.stock}</TableCell>
                   <TableCell>
