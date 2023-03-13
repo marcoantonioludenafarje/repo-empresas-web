@@ -393,7 +393,7 @@ const Distribution = (props) => {
       },
     };
     console.log('finalPayload', finalPayload);
-    //toGenerateDistribution(finalPayload);
+    toGenerateDistribution(finalPayload);
     setOpenStatus(true);
     setSubmitting(false);
   };
