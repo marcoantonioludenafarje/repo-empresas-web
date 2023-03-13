@@ -1498,7 +1498,7 @@ const Distribution = () => {
                           hover
                           onClick={() => {}}
                         >
-                          <TableCell>{obj.product}</TableCell>
+                          <TableCell>{obj.businessProductCode}</TableCell>
                           <TableCell>{obj.description}</TableCell>
                           <TableCell>{obj.stock}</TableCell>
                           <TableCell>

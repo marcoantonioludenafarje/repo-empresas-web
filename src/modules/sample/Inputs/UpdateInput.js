@@ -526,7 +526,7 @@ const UpdateInput = (props) => {
               },
               products: selectedProducts.map((obj) => {
                 return {
-                  businessProductCode: obj.product,
+                  businessProductCode: (obj.businessProductCode!=null?obj.businessProductCode:obj.product),//obj.businessProductCode,
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
                 };

@@ -525,7 +525,7 @@ const NewOutput = (props) => {
               },
               products: selectedProducts.map((obj) => {
                 return {
-                  businessProductCode: obj.product,
+                  businessProductCode: obj.businessProductCode,
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
                 };

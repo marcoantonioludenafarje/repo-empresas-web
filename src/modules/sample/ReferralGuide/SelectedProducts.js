@@ -84,7 +84,7 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
                   key={index}
                   id={index}
                 >
-                  <TableCell>{obj.product}</TableCell>
+                  <TableCell>{obj.businessProductCode!=null?obj.businessProductCode:obj.product}</TableCell>
                   <TableCell>{obj.description}</TableCell>
                   <TableCell>{obj.unitMeasure}</TableCell>
                   <TableCell>{obj.quantityMovement}</TableCell>

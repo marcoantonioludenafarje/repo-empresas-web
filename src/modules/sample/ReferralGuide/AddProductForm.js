@@ -227,6 +227,7 @@ const AddProductForm = ({sendData, type}) => {
           priceBusinessMoneyWithIgv: Number(data.priceProduct),
           weight: data.weight,
           subtotal: Number(data.count) * Number(data.priceProduct),
+          businessProductCode: selectedProduct.businessProductCode
         });
         actualValues.productSearch = '';
         actualValues.priceProduct = '';

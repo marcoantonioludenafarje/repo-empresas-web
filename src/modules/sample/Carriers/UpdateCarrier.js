@@ -7,6 +7,7 @@ import AppPageMeta from '../../../@crema/core/AppPageMeta';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
 console.log('Al menos aquí 1?');
 
 import {
@@ -383,7 +384,7 @@ const UpdateCarrier = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppLowerCaseTextField
                       label='Correo de Empresa'
                       name='emailCarrier'
                       variant='outlined'
@@ -428,7 +429,7 @@ const UpdateCarrier = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppLowerCaseTextField
                       label='Correo de contacto'
                       name='emailContact'
                       variant='outlined'

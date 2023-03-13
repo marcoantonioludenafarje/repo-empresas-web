@@ -517,6 +517,7 @@ const NewOutput = (props) => {
             observation: data.observation ? data.observation : '',
             igv: Number(query.igv),
             productsInfo: selectedProducts.map((obj) => {
+              console.log("facturabusinessProductCode",obj.businessProductCode)
               return {
                 product: obj.product,
                 quantityMovement: Number(obj.quantityMovement),
@@ -526,6 +527,7 @@ const NewOutput = (props) => {
                 customCodeProduct: obj.customCodeProduct,
                 description: obj.description,
                 unitMeasure: obj.unitMeasure,
+                businessProductCode: obj.businessProductCode
               };
             }),
             documentsMovement: selectedOutput.documentsMovement,
