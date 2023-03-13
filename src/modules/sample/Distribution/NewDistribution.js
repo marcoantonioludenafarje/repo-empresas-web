@@ -393,7 +393,7 @@ const Distribution = (props) => {
       },
     };
     console.log('finalPayload', finalPayload);
-    toGenerateDistribution(finalPayload);
+    //toGenerateDistribution(finalPayload);
     setOpenStatus(true);
     setSubmitting(false);
   };
@@ -496,6 +496,12 @@ const Distribution = (props) => {
     const timestamp = fecha.getTime();
     let deliveries = selectedNewRoute.deliveries.map((obj) => {
       obj.products = obj.productsInfo;
+      obj.totalWeight = obj.totalGrossWeight;
+      obj.numberPackages = obj.numberOfPackages;
+      obj.startingAddress = obj.startingPointAddress;
+      obj.arrivalAddress = obj.arrivalPointAddress;
+      obj.driverName = obj.driverDenomination;
+      obj.plate = obj.carrierPlateNumber;
       obj.transferStartDate = dateWithHyphen(timestamp);
       obj.generateReferralGuide = true;
       return obj;
