@@ -356,10 +356,19 @@ const ReferralGuidesTable = (props) => {
       case ("waiting" || null):
         return <PendingIcon sx={{color: amber[500]}} />;
         break;
-      case true:
+      case (null):
+        return <PendingIcon sx={{color: amber[500]}} />;
+        break;
+      case ("accepted" || true):
         return <CheckCircleIcon color='success' />;
         break;
-      case false:
+      case (true):
+        return <CheckCircleIcon color='success' />;
+        break;
+      case ("denied" || false):
+        return <CancelIcon sx={{color: red[500]}} />;
+        break;
+      case (false):
         return <CancelIcon sx={{color: red[500]}} />;
         break;
       default:

@@ -205,10 +205,13 @@ const FinancesTable = (props) => {
   };
   const showIconStatus = (bool, obj) => {
     switch (bool) {
-      case ("waiting" || null):
+      case ("waiting"):
         return <PendingIcon sx={{color: amber[500]}} />;
         break;
-      case true:
+      case (null):
+        return <PendingIcon sx={{color: amber[500]}} />;
+        break;
+      case ("accepted"):
         return (
           <Button
             variant='secondary'
@@ -222,7 +225,24 @@ const FinancesTable = (props) => {
           </Button>
         );
         break;
-      case false:
+      case (true):
+        return (
+          <Button
+            variant='secondary'
+            sx={{fontSize: '1em'}}
+            /* disabled={type == 'referralGuide'} */
+            onClick={() =>
+              showObject(obj.referralGuideMovementHeaderId, 'referralGuide')
+            }
+          >
+            <CheckCircleIcon color='success' />
+          </Button>
+        );
+        break;
+      case ("denied"):
+        return <CancelIcon sx={{color: red[500]}} />;
+        break;
+      case (false):
         return <CancelIcon sx={{color: red[500]}} />;
         break;
       default:
