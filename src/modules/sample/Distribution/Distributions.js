@@ -205,13 +205,13 @@ const FinancesTable = (props) => {
   };
   const showIconStatus = (bool, obj) => {
     switch (bool) {
-      case ("waiting"):
+      case 'waiting':
         return <PendingIcon sx={{color: amber[500]}} />;
         break;
-      case (null):
+      case null:
         return <PendingIcon sx={{color: amber[500]}} />;
         break;
-      case ("accepted"):
+      case 'accepted':
         return (
           <Button
             variant='secondary'
@@ -225,7 +225,7 @@ const FinancesTable = (props) => {
           </Button>
         );
         break;
-      case (true):
+      case true:
         return (
           <Button
             variant='secondary'
@@ -239,10 +239,10 @@ const FinancesTable = (props) => {
           </Button>
         );
         break;
-      case ("denied"):
+      case 'denied':
         return <CancelIcon sx={{color: red[500]}} />;
         break;
-      case (false):
+      case false:
         return <CancelIcon sx={{color: red[500]}} />;
         break;
       default:
@@ -469,9 +469,10 @@ const FinancesTable = (props) => {
                                                                   key={`${index3}-${index3}`}
                                                                 >
                                                                   <TableCell>
-                                                                    {
-                                                                      product.businessProductCode!=null?product.businessProductCode:product.product
-                                                                    }
+                                                                    {product.businessProductCode !=
+                                                                    null
+                                                                      ? product.businessProductCode
+                                                                      : product.product}
                                                                   </TableCell>
                                                                   <TableCell>
                                                                     {

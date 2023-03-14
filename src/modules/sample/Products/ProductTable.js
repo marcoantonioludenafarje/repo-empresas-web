@@ -727,11 +727,11 @@ const ProductTable = (arrayObjs, props) => {
                                   return (
                                     <TableRow key={index}>
                                       <TableCell>
-                                        {
-                                  (subProduct.businessProductCode!=null?subProduct.businessProductCode:subProduct.productId
-                                            .replace(/^(0+)/g, '')
-                                            .split('-')[0])
-                                        }
+                                        {subProduct.businessProductCode != null
+                                          ? subProduct.businessProductCode
+                                          : subProduct.productId
+                                              .replace(/^(0+)/g, '')
+                                              .split('-')[0]}
                                       </TableCell>
                                       <TableCell>
                                         {subProduct.description}

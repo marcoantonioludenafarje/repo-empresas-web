@@ -31,8 +31,8 @@ const AppPage = ({children, ...rest}) => {
   const theDescription = description
     ? description.substring(0, 155)
     : defaultDescription;
-  const theImage = "https://www.tunexo.pe/img/acerca_TuNexo.png";//image ? `${SITE_URL}${image}` : defaultImage;
-  console.log("theImage:"+theImage);
+  const theImage = 'https://www.tunexo.pe/img/acerca_TuNexo.png'; //image ? `${SITE_URL}${image}` : defaultImage;
+  console.log('theImage:' + theImage);
   return (
     <>
       <NextSeo

@@ -86,7 +86,11 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
                   key={index}
                   id={index}
                 >
-                  <TableCell>{obj.businessProductCode!=null?obj.businessProductCode:obj.product}</TableCell>
+                  <TableCell>
+                    {obj.businessProductCode != null
+                      ? obj.businessProductCode
+                      : obj.product}
+                  </TableCell>
                   <TableCell>{obj.description}</TableCell>
                   <TableCell>
                     {`${parseTo3Decimals(Number(obj.priceProduct)).toFixed(

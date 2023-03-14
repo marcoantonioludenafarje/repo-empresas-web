@@ -470,7 +470,7 @@ const UpdateProduct = (props) => {
           description: subProduct.description,
           count: obj.quantity,
           priceUnit: obj.priceUnit,
-          businessProductCode: obj.businessProductCode
+          businessProductCode: obj.businessProductCode,
         });
       });
 

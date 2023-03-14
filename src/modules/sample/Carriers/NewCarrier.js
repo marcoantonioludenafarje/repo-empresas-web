@@ -85,7 +85,7 @@ const defaultValues = {
   nroDocument: '',
   name: '',
   addressCarrier: '',
-  emailCarrier:'',
+  emailCarrier: '',
   emailContact: '',
   nameContact: '',
   numberContact: '',
@@ -325,10 +325,7 @@ const NewCarrier = () => {
                         <MenuItem value='DNI' style={{fontWeight: 200}}>
                           DNI
                         </MenuItem>
-                        <MenuItem
-                          value='CE'
-                          style={{fontWeight: 200}}
-                        >
+                        <MenuItem value='CE' style={{fontWeight: 200}}>
                           CE
                         </MenuItem>
                       </Select>

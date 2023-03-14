@@ -166,7 +166,7 @@ const AddExistingProduct = ({sendData, type}) => {
           subtotal: Number(
             Number(data.count) * Number(data.priceProduct).toFixed(3),
           ),
-          businessProductCode: selectedProduct.businessProductCode
+          businessProductCode: selectedProduct.businessProductCode,
         });
         actualValues.productSearch = '';
         actualValues.priceProduct = '';

@@ -85,7 +85,7 @@ let newDriverPayload = {
           firstName: '',
           lastName: '',
           fullName: '',
-          license: '',          
+          license: '',
         },
       ],
       merchantId: '',
@@ -164,14 +164,11 @@ const NewDriver = () => {
       objSelects.documentType;
     newDriverPayload.request.payload.drivers[0].numberDocumentDriver =
       data.nroDocument;
-    newDriverPayload.request.payload.drivers[0].firstName =
-      data.firstName;
-    newDriverPayload.request.payload.drivers[0].lastName =
-      data.lastName;
+    newDriverPayload.request.payload.drivers[0].firstName = data.firstName;
+    newDriverPayload.request.payload.drivers[0].lastName = data.lastName;
     newDriverPayload.request.payload.drivers[0].fullName =
-      data.firstName+' '+data.lastName;
-      newDriverPayload.request.payload.drivers[0].license =
-      data.license;
+      data.firstName + ' ' + data.lastName;
+    newDriverPayload.request.payload.drivers[0].license = data.license;
     toNewDriver(newDriverPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -297,10 +294,7 @@ const NewDriver = () => {
                         <MenuItem value='DNI' style={{fontWeight: 200}}>
                           DNI
                         </MenuItem>
-                        <MenuItem
-                          value='CE'
-                          style={{fontWeight: 200}}
-                        >
+                        <MenuItem value='CE' style={{fontWeight: 200}}>
                           CE
                         </MenuItem>
                       </Select>

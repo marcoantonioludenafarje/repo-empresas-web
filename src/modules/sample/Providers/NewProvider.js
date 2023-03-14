@@ -186,7 +186,7 @@ const NewProvider = () => {
       data.name;
     newProviderPayload.request.payload.providers[0].addressProvider =
       data.addressProvider;
-  newProviderPayload.request.payload.providers[0].emailProvider =
+    newProviderPayload.request.payload.providers[0].emailProvider =
       data.emailProvider;
     newProviderPayload.request.payload.providers[0].nameContact =
       data.nameContact;

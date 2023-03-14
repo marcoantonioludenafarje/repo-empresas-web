@@ -60,8 +60,8 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-    ubigeo: yup.string(),
-    type: yup.string(),
+  ubigeo: yup.string(),
+  type: yup.string(),
 });
 const defaultValues = {
   modularCode: '',
@@ -174,12 +174,12 @@ const NewLocation = () => {
       data.locationName;
     newLocationPayload.request.payload.locations[0].locationDetail =
       data.locationDetail;
-    newLocationPayload.request.payload.locations[0].ubigeo =
-      objUbigeo.ubigeo;
-    newLocationPayload.request.payload.locations[0].type =
-      objSelectsT.type;
-     newLocationPayload.request.payload.locations[0].coordenates =
-      {"lat":{"S":""},"long":{"S":""}};
+    newLocationPayload.request.payload.locations[0].ubigeo = objUbigeo.ubigeo;
+    newLocationPayload.request.payload.locations[0].type = objSelectsT.type;
+    newLocationPayload.request.payload.locations[0].coordenates = {
+      lat: {S: ''},
+      long: {S: ''},
+    };
     toNewLocation(newLocationPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -260,8 +260,8 @@ const NewLocation = () => {
         ...obj,
       };
     });
-    
-  setParsedUbigeos(ubigeos);
+
+    setParsedUbigeos(ubigeos);
     if (readyData) {
       setObjUbigeo(ubigeos[0]);
       setUbigeo(ubigeos[0].ubigeo.toString());
@@ -305,7 +305,7 @@ const NewLocation = () => {
                 /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                <Grid item xs={12}>
+                  <Grid item xs={12}>
                     <AppTextField
                       label='Código *'
                       name='modularCode'
@@ -390,14 +390,11 @@ const NewLocation = () => {
                           }}
                         />
                       )}
-                    />                    
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel
-                        id='type-label'
-                        style={{fontWeight: 200}}
-                      >
+                      <InputLabel id='type-label' style={{fontWeight: 200}}>
                         Tipo
                       </InputLabel>
                       <Select
@@ -407,7 +404,10 @@ const NewLocation = () => {
                         label='Tipo'
                         onChange={handleField}
                       >
-                        <MenuItem value='PUNTO LLEGADA' style={{fontWeight: 200}}>
+                        <MenuItem
+                          value='PUNTO LLEGADA'
+                          style={{fontWeight: 200}}
+                        >
                           PUNTO LLEGADA
                         </MenuItem>
                         <MenuItem

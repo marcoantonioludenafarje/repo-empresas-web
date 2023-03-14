@@ -222,7 +222,7 @@ const LocationTable = (arrayObjs, props) => {
   const handleSearchValues = (event) => {
     console.log('Evento', event);
     if (event.target.name == 'nameToSearch') {
-      console.log ('nameToSearch:'+event.target.value);
+      console.log('nameToSearch:' + event.target.value);
       if (event.target.value == '') {
         listPayload.request.payload.locationName = '';
       } else {
@@ -237,7 +237,9 @@ const LocationTable = (arrayObjs, props) => {
       }
     }
     if (event.target.name == 'ubigeoToSearch') {
-      console.log ('ubigeoToSearch:'+event.target.value+":"+objUbigeo.ubigeo);
+      console.log(
+        'ubigeoToSearch:' + event.target.value + ':' + objUbigeo.ubigeo,
+      );
       if (event.target.value == '') {
         listPayload.request.payload.ubigeo = '';
       } else {
@@ -267,7 +269,7 @@ const LocationTable = (arrayObjs, props) => {
           locationDetail,
           ubigeo,
           type,
-          updatedDate,          
+          updatedDate,
         }) => ({
           modularCode,
           locationName,
@@ -391,11 +393,11 @@ const LocationTable = (arrayObjs, props) => {
   };
 
   const setLabelUbigeo = (ubi) => {
-    const resultUbigeo = originalUbigeos.find(o => o.ubigeo == ubi);
-    if (!resultUbigeo){
-        ubi="Ubigeo no encontrado";
+    const resultUbigeo = originalUbigeos.find((o) => o.ubigeo == ubi);
+    if (!resultUbigeo) {
+      ubi = 'Ubigeo no encontrado';
     } else {
-        ubi=resultUbigeo.descripcion + ' - ' + resultUbigeo.ubigeo;
+      ubi = resultUbigeo.descripcion + ' - ' + resultUbigeo.ubigeo;
     }
     return ubi;
   };
@@ -409,17 +411,19 @@ const LocationTable = (arrayObjs, props) => {
     });
 
     ubigeos.push({
-      descripcion:'Todos', label:'Todos',ubigeo: ""
+      descripcion: 'Todos',
+      label: 'Todos',
+      ubigeo: '',
     });
-    
+
     setParsedUbigeos(ubigeos);
-      if (readyData) {
-        setObjUbigeo(ubigeos[ubigeos.length-1]);
-        setUbigeo(ubigeos[ubigeos.length-1].ubigeo.toString());
-        objSelectU.ubigeo = ubigeos[ubigeos.length-1].ubigeo.toString();
-        setExistUbigeo(true);
-        setReadyData(true);
-      }
+    if (readyData) {
+      setObjUbigeo(ubigeos[ubigeos.length - 1]);
+      setUbigeo(ubigeos[ubigeos.length - 1].ubigeo.toString());
+      objSelectU.ubigeo = ubigeos[ubigeos.length - 1].ubigeo.toString();
+      setExistUbigeo(true);
+      setReadyData(true);
+    }
   }, [readyData]);
 
   return (
@@ -432,8 +436,7 @@ const LocationTable = (arrayObjs, props) => {
           size='small'
           onChange={(event) => {
             console.log(event.target.value);
-            listPayload.request.payload.locationName =
-              event.target.value;
+            listPayload.request.payload.locationName = event.target.value;
           }}
         />
         <FormControl sx={{my: 0, width: 100}}>
@@ -447,8 +450,7 @@ const LocationTable = (arrayObjs, props) => {
             label='Tipo'
             onChange={(event) => {
               console.log(event.target.value);
-              listPayload.request.payload.type =
-                event.target.value;
+              listPayload.request.payload.type = event.target.value;
             }}
           >
             <MenuItem value='' style={{fontWeight: 200}}>
@@ -462,7 +464,7 @@ const LocationTable = (arrayObjs, props) => {
             </MenuItem>
           </Select>
         </FormControl>
-        <Grid item xs={12}> 
+        <Grid item xs={12}>
           <Autocomplete
             disablePortal
             id='ubigeoToSearch'
@@ -472,11 +474,7 @@ const LocationTable = (arrayObjs, props) => {
             }
             getOptionLabel={(option) => option.label || ''}
             onChange={(option, value) => {
-              if (
-                typeof value === 'object' &&
-                value != null &&
-                value !== ''
-              ) {
+              if (typeof value === 'object' && value != null && value !== '') {
                 console.log('objeto ubigeo', value);
                 setObjUbigeo(value);
                 setUbigeo(value.ubigeo.toString());
@@ -502,7 +500,7 @@ const LocationTable = (arrayObjs, props) => {
                 }}
               />
             )}
-          />                    
+          />
         </Grid>
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
@@ -676,4 +674,4 @@ const LocationTable = (arrayObjs, props) => {
   );
 };
 
-export default LocationTable
+export default LocationTable;

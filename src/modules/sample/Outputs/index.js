@@ -1063,7 +1063,10 @@ const OutputsTable = (props) => {
                                       return (
                                         <TableRow key={index}>
                                           <TableCell>
-                                            {subProduct.businessProductCode!=null?subProduct.businessProductCode:subProduct.product}
+                                            {subProduct.businessProductCode !=
+                                            null
+                                              ? subProduct.businessProductCode
+                                              : subProduct.product}
                                           </TableCell>
                                           <TableCell>
                                             {subProduct.description}
@@ -1352,11 +1355,10 @@ const OutputsTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/facturacion/deliveryDistribution/register') === true ? (
-          <MenuItem 
-            disabled={
-              selectedOutput.movementSubType !== "sales"
-            }
-            onClick={doDistribution}>
+          <MenuItem
+            disabled={selectedOutput.movementSubType !== 'sales'}
+            onClick={doDistribution}
+          >
             <MapIcon sx={{mr: 1, my: 'auto'}} />
             Generar distribución
           </MenuItem>

@@ -560,7 +560,10 @@ const UpdateOutput = (props) => {
               },
               products: selectedProducts.map((obj) => {
                 return {
-                  businessProductCode: (obj.businessProductCode!=null?obj.businessProductCode:obj.product),//obj.businessProductCode,
+                  businessProductCode:
+                    obj.businessProductCode != null
+                      ? obj.businessProductCode
+                      : obj.product, //obj.businessProductCode,
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
                 };
