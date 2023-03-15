@@ -505,14 +505,8 @@ const NewOutput = (props) => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: ADD_INVOICE, payload: undefined});
     console.log('listDocuments', listDocuments);
-    let parsedDocuments = listDocuments.map((obj) => {
-      if (obj.isSelected) {
-        return {
-          issueDate: obj.dateDocument,
-          serialDocument: obj.document,
-        };
-      }
-    });
+    let parsedDocuments = listDocuments.filter((obj) => obj.isSelected)
+                                   .map((obj) => ({issueDate: obj.dateDocument, serialDocument: obj.document}));
     console.log('parsedDocuments', parsedDocuments);
     let finalPayload;
     try {
