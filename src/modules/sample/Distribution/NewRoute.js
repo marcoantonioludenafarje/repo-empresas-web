@@ -465,6 +465,7 @@ const Distribution = (props) => {
           console.log('No identificado', product.product.trim());
         }
         if (productInfo['DOSIFICACION']) {
+          console.log("productInfo",productInfo)
           productInfo['DOSIFICACION'].split('|').forEach((inputProduct) => {
             let productInfo2 = products.find(
               (item3) =>
