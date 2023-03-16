@@ -353,11 +353,20 @@ const ReferralGuidesTable = (props) => {
   };
   const showIconStatus = (bool) => {
     switch (bool) {
-      case ("waiting" || null):
+      case 'waiting' || null:
         return <PendingIcon sx={{color: amber[500]}} />;
+        break;
+      case null:
+        return <PendingIcon sx={{color: amber[500]}} />;
+        break;
+      case 'accepted' || true:
+        return <CheckCircleIcon color='success' />;
         break;
       case true:
         return <CheckCircleIcon color='success' />;
+        break;
+      case 'denied' || false:
+        return <CancelIcon sx={{color: red[500]}} />;
         break;
       case false:
         return <CancelIcon sx={{color: red[500]}} />;

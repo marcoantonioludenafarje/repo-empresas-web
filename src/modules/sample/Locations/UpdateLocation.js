@@ -76,27 +76,26 @@ const useStyles = makeStyles((theme) => ({
 
 const maxLengthNumber = 111111111111; //11 caracteres
 const validationSchema = yup.object({
-    modularCode: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-    locatioName: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-    locationDetail: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-    ubigeo: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-    type: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-
+  modularCode: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  locatioName: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  locationDetail: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  ubigeo: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  type: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
 });
 let selectedLocation = {};
 let typeAlert = '';
@@ -183,7 +182,7 @@ const UpdateLocation = (props) => {
   };
 
   let objSelects = {
-    type: ['PUNTO LLEGADA','PUNTO PARTIDA'],
+    type: ['PUNTO LLEGADA', 'PUNTO PARTIDA'],
   };
 
   let objSelectsU = {
@@ -196,18 +195,15 @@ const UpdateLocation = (props) => {
     delete data.type;
     console.log('Data', data);
     console.log('objSelects', objSelects);
-    newLocationPayload.request.payload.modularCode =
-      data.modularCode;
-    newLocationPayload.request.payload.locationName =
-      data.locationName;
-    newLocationPayload.request.payload.locationDetail =
-      data.locationDetail;
-    newLocationPayload.request.payload.ubigeo =
-      objUbigeo.ubigeo;
-    newLocationPayload.request.payload.type =
-      objSelectsT.type;
-    newLocationPayload.request.payload.coordenates =
-      {"lat":{"S":""},"long":{"S":""}};;
+    newLocationPayload.request.payload.modularCode = data.modularCode;
+    newLocationPayload.request.payload.locationName = data.locationName;
+    newLocationPayload.request.payload.locationDetail = data.locationDetail;
+    newLocationPayload.request.payload.ubigeo = objUbigeo.ubigeo;
+    newLocationPayload.request.payload.type = objSelectsT.type;
+    newLocationPayload.request.payload.coordenates = {
+      lat: {S: ''},
+      long: {S: ''},
+    };
 
     toUpdateLocation(newLocationPayload);
     setSubmitting(false);
@@ -283,23 +279,23 @@ const UpdateLocation = (props) => {
         ...obj,
       };
     });
-    
+
     setParsedUbigeos(ubigeos);
-      if (readyData) {
-        setObjUbigeo(ubigeos[0]);
-        setUbigeo(ubigeos[0].ubigeo.toString());
-        objSelectU.ubigeo = ubigeos[0].ubigeo.toString();
-        setExistUbigeo(true);
-        setReadyData(true);
-      }
+    if (readyData) {
+      setObjUbigeo(ubigeos[0]);
+      setUbigeo(ubigeos[0].ubigeo.toString());
+      objSelectU.ubigeo = ubigeos[0].ubigeo.toString();
+      setExistUbigeo(true);
+      setReadyData(true);
+    }
   }, [readyData]);
 
   useEffect(() => {
-    const ubi = parsedUbigeos.find(o => o.ubigeo == query.ubigeo);
-    if (ubi){
+    const ubi = parsedUbigeos.find((o) => o.ubigeo == query.ubigeo);
+    if (ubi) {
       setObjUbigeo(ubi);
       setUbigeo(query.ubigeo.toString());
-    }    
+    }
   }, [parsedUbigeos]);
 
   return (
@@ -337,7 +333,8 @@ const UpdateLocation = (props) => {
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={12}>
-                    <AppTextField disabled
+                    <AppTextField
+                      disabled
                       label='Código *'
                       name='modularCode'
                       variant='outlined'
@@ -352,7 +349,7 @@ const UpdateLocation = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField 
+                    <AppTextField
                       label='Nombre *'
                       name='locationName'
                       variant='outlined'
@@ -380,7 +377,7 @@ const UpdateLocation = (props) => {
                         mx: 0,
                       }}
                     />
-                  </Grid>                  
+                  </Grid>
                   <Grid item xs={12}>
                     <Autocomplete
                       disablePortal
@@ -420,14 +417,11 @@ const UpdateLocation = (props) => {
                           }}
                         />
                       )}
-                    />                    
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel
-                        id='type-label'
-                        style={{fontWeight: 200}}
-                      >
+                      <InputLabel id='type-label' style={{fontWeight: 200}}>
                         Tipo
                       </InputLabel>
                       <Select
@@ -437,7 +431,10 @@ const UpdateLocation = (props) => {
                         label='Tipo'
                         onChange={handleField}
                       >
-                        <MenuItem value='PUNTO LLEGADA' style={{fontWeight: 200}}>
+                        <MenuItem
+                          value='PUNTO LLEGADA'
+                          style={{fontWeight: 200}}
+                        >
                           PUNTO LLEGADA
                         </MenuItem>
                         <MenuItem
@@ -448,7 +445,7 @@ const UpdateLocation = (props) => {
                         </MenuItem>
                       </Select>
                     </FormControl>
-                  </Grid>  
+                  </Grid>
                 </Grid>
 
                 <ButtonGroup

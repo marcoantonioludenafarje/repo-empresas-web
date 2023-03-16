@@ -237,13 +237,7 @@ const DriverTable = (arrayObjs, props) => {
       obj.updatedDate = convertToDate(obj.updatedDate);
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
-        (({
-          type,
-          nroDocument,
-          fullName,
-          license,
-          updatedDate,
-        }) => ({
+        (({type, nroDocument, fullName, license, updatedDate}) => ({
           type,
           nroDocument,
           fullName,

@@ -74,25 +74,24 @@ const useStyles = makeStyles((theme) => ({
 
 const maxLengthNumber = 111111111111; //11 caracteres
 const validationSchema = yup.object({
-      numberDocumentDriver: yup
-      .number()
-      .typeError(<IntlMessages id='validation.number' />)
-      .required(<IntlMessages id='validation.required' />)
-      .integer(<IntlMessages id='validation.number.integer' />)
-      .max(100000000000, 'Se puede ingresar como maximo 11 caracteres'),
-    firstName: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-    lastName: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-    license: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-
+  numberDocumentDriver: yup
+    .number()
+    .typeError(<IntlMessages id='validation.number' />)
+    .required(<IntlMessages id='validation.required' />)
+    .integer(<IntlMessages id='validation.number.integer' />)
+    .max(100000000000, 'Se puede ingresar como maximo 11 caracteres'),
+  firstName: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  lastName: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  license: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
 });
 let selectedDriver = {};
 let typeAlert = '';
@@ -180,14 +179,11 @@ const UpdateDriver = (props) => {
       objSelects.documentType;
     newDriverPayload.request.payload.numberDocumentDriver =
       data.numberDocumentDriver;
-    newDriverPayload.request.payload.firstName =
-      data.firstName;
-    newDriverPayload.request.payload.lastName =
-      data.lastName;
+    newDriverPayload.request.payload.firstName = data.firstName;
+    newDriverPayload.request.payload.lastName = data.lastName;
     newDriverPayload.request.payload.fullName =
-      data.firstName+' '+data.lastName;
-      newDriverPayload.request.payload.license =
-      data.license;
+      data.firstName + ' ' + data.lastName;
+    newDriverPayload.request.payload.license = data.license;
     toUpdateDriver(newDriverPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -307,10 +303,7 @@ const UpdateDriver = (props) => {
                         <MenuItem value='DNI' style={{fontWeight: 200}}>
                           DNI
                         </MenuItem>
-                        <MenuItem
-                          value='CE'
-                          style={{fontWeight: 200}}
-                        >
+                        <MenuItem value='CE' style={{fontWeight: 200}}>
                           CE
                         </MenuItem>
                       </Select>
@@ -376,7 +369,7 @@ const UpdateDriver = (props) => {
                         mx: 0,
                       }}
                     />
-                  </Grid>                  
+                  </Grid>
                 </Grid>
 
                 <ButtonGroup

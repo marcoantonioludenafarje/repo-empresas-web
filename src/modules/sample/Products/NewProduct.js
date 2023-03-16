@@ -725,13 +725,13 @@ const NewProduct = (props) => {
   };
 
   const showMessage = () => {
-    console.log ("successMessage1:",successMessage)
-    console.log ("addProductResponse1:",addProductResponse)
-    console.log ("addProductResponse1:",addProductResponse)
+    console.log('successMessage1:', successMessage);
+    console.log('addProductResponse1:', addProductResponse);
+    console.log('addProductResponse1:', addProductResponse);
     if (
       successMessage != undefined &&
       addProductResponse !== undefined &&
-      'error' !== addProductResponse//!('error' in addProductResponse)
+      'error' !== addProductResponse //!('error' in addProductResponse)
     ) {
       return (
         <>

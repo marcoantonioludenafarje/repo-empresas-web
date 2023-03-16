@@ -143,7 +143,7 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
       nameCarrier: isRefGuide ? data.nameCarrier : '',
       typeDocument: billType,
       dateDocument: toSimpleDate(dateRegister),
-      isSelected: true
+      isSelected: true,
     });
     setSubmitting(false);
   };

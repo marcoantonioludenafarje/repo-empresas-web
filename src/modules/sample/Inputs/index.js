@@ -950,7 +950,10 @@ const InputsTable = (props) => {
                                             } */
                                           >
                                             <TableCell>
-                                              {subProduct.businessProductCode!=null?subProduct.businessProductCode:subProduct.product}
+                                              {subProduct.businessProductCode !=
+                                              null
+                                                ? subProduct.businessProductCode
+                                                : subProduct.product}
                                             </TableCell>
                                             <TableCell>
                                               {subProduct.description}

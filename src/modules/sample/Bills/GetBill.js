@@ -469,8 +469,12 @@ const NewOutput = (props) => {
       } else {
         return count;
       }
-    }, 0)
-    return total > 1 ? `Hay ${total} guías de remisión asignadas` : total > 0 ? `Hay ${total} guía de remisión asignada` : `No hay guías de remisión asignadas`;
+    }, 0);
+    return total > 1
+      ? `Hay ${total} guías de remisión asignadas`
+      : total > 0
+      ? `Hay ${total} guía de remisión asignada`
+      : `No hay guías de remisión asignadas`;
   };
 
   const removeProduct = (index) => {
@@ -501,14 +505,8 @@ const NewOutput = (props) => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: ADD_INVOICE, payload: undefined});
     console.log('listDocuments', listDocuments);
-    let parsedDocuments = listDocuments.map((obj) => {
-      if(obj.isSelected){
-        return {
-          issueDate: obj.dateDocument,
-          serialDocument: obj.document,
-        };
-      }
-    });
+    let parsedDocuments = listDocuments.filter((obj) => obj.isSelected)
+                                   .map((obj) => ({issueDate: obj.dateDocument, serialDocument: obj.document}));
     console.log('parsedDocuments', parsedDocuments);
     let finalPayload;
     try {
@@ -540,7 +538,10 @@ const NewOutput = (props) => {
             observation: data.observation ? data.observation : '',
             igv: Number(query.igv),
             productsInfo: selectedProducts.map((obj) => {
-              console.log("facturabusinessProductCode",obj.businessProductCode)
+              console.log(
+                'facturabusinessProductCode',
+                obj.businessProductCode,
+              );
               return {
                 product: obj.product,
                 quantityMovement: Number(obj.quantityMovement),
@@ -550,7 +551,7 @@ const NewOutput = (props) => {
                 customCodeProduct: obj.customCodeProduct,
                 description: obj.description,
                 unitMeasure: obj.unitMeasure,
-                businessProductCode: obj.businessProductCode
+                businessProductCode: obj.businessProductCode,
               };
             }),
             documentsMovement: selectedOutput.documentsMovement,
@@ -728,20 +729,20 @@ const NewOutput = (props) => {
     forceUpdate();
   };
   const selectDocument = (index) => {
-    console.log("index document", index)
-    console.log("index document listDocument", listDocuments)
+    console.log('index document', index);
+    console.log('index document listDocument', listDocuments);
     listDocuments[index].isSelected = !listDocuments[index].isSelected;
     forceUpdate();
   };
   const selectAll = () => {
     listDocuments = listDocuments.map((obj) => {
-      return { ...obj, isSelected: true };
+      return {...obj, isSelected: true};
     });
     forceUpdate();
   };
   const deselectAll = () => {
     listDocuments = listDocuments.map((obj) => {
-      return { ...obj, isSelected: false };
+      return {...obj, isSelected: false};
     });
     forceUpdate();
   };
@@ -1010,21 +1011,24 @@ const NewOutput = (props) => {
                     </FormControl>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography align="center">
-                      {showListDocumentsSelected()} de un total de {listDocuments.length}
+                    <Typography align='center'>
+                      {showListDocumentsSelected()} de un total de{' '}
+                      {listDocuments.length}
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
-                      onClick={() => handleClickOpenReferralGuides('referralGuides')}
+                      onClick={() =>
+                        handleClickOpenReferralGuides('referralGuides')
+                      }
                     >
                       Ver guías de remisión asignadas
                     </Button>
                   </Grid>
                 </Grid>
-                
+
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   {/* <Grid item xs={4}>
                     <DateTimePicker
@@ -1315,34 +1319,26 @@ const NewOutput = (props) => {
           />
         </DialogTitle>
         <DialogContent>
-        <Box sx={{my: 5}}>
-              <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                <Grid item xs={12}>
-                  <Button
-                    sx={{width: 1}}
-                    variant='outlined'
-                    onClick={() => handleClickOpen('document')}
-                  >
-                    Añadir guía de remisión
-                  </Button>
-                </Grid>
+          <Box sx={{my: 5}}>
+            <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+              <Grid item xs={12}>
+                <Button
+                  sx={{width: 1}}
+                  variant='outlined'
+                  onClick={() => handleClickOpen('document')}
+                >
+                  Añadir guía de remisión
+                </Button>
               </Grid>
-              <Button
-                onClick={selectAll}
-              >
-                Seleccionar todo
-              </Button>
-              <Button
-                onClick={deselectAll}
-              >
-                Deseleccionar todo
-              </Button>
-              <DocumentsTableForBill
-                arrayObjs={listDocuments}
-                toDelete={removeDocument}
-                toSelect={selectDocument}
-              />
-            </Box>
+            </Grid>
+            <Button onClick={selectAll}>Seleccionar todo</Button>
+            <Button onClick={deselectAll}>Deseleccionar todo</Button>
+            <DocumentsTableForBill
+              arrayObjs={listDocuments}
+              toDelete={removeDocument}
+              toSelect={selectDocument}
+            />
+          </Box>
         </DialogContent>
       </Dialog>
       <Dialog

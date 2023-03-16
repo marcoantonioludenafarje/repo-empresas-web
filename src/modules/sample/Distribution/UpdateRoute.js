@@ -210,7 +210,7 @@ const Distribution = () => {
                     description: prod.description,
                     unitMeasure: prod.unitMeasure,
                     quantityMovement: prod.count,
-                    businessProductCode: prod.businessProductCode
+                    businessProductCode: prod.businessProductCode,
                   };
                 }),
               };

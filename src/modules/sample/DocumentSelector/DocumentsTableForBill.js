@@ -15,7 +15,7 @@ import {
   FormControl,
   FormGroup,
   FormControlLabel,
-  Checkbox
+  Checkbox,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -66,7 +66,7 @@ const DocumentsTableForBill = ({arrayObjs, toDelete, typeForm, toSelect}) => {
       <Table sx={{minWidth: 650}} size='small' aria-label='simple table'>
         <TableHead>
           <TableRow>
-            <TableCell style={{ width: '50px' }}></TableCell>
+            <TableCell style={{width: '50px'}}></TableCell>
             <TableCell>Tipo de documento</TableCell>
             <TableCell>Documento</TableCell>
             <TableCell>Fecha documento</TableCell>
@@ -83,19 +83,17 @@ const DocumentsTableForBill = ({arrayObjs, toDelete, typeForm, toSelect}) => {
                   key={index}
                   id={index}
                 >
-                  <TableCell style={{ width: '50px' }}>
+                  <TableCell style={{width: '50px'}}>
                     <FormControlLabel
-                          sx={{m: 0}}
-                          control={
-                            <Checkbox
-                              checked={isSelected}
-                              onChange={selectProduct.bind(this, index)}
-                            />
-                          }
-                          label={
-                            ""
-                          }
+                      sx={{m: 0}}
+                      control={
+                        <Checkbox
+                          checked={isSelected}
+                          onChange={selectProduct.bind(this, index)}
                         />
+                      }
+                      label={''}
+                    />
                   </TableCell>
                   <TableCell>{showType(obj.typeDocument)}</TableCell>
                   <TableCell>{obj.document}</TableCell>

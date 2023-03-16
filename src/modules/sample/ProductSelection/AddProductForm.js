@@ -224,7 +224,7 @@ const AddProductForm = ({sendData, type}) => {
         description: selectedProduct.description,
         referencialPriceProduct: data.unitPrice,
         subtotal: Number(data.unitPrice) * Number(data.count),
-        businessProductCode: selectedProduct.businessProductCode
+        businessProductCode: selectedProduct.businessProductCode,
       };
       console.log('Data recibida', finalObj);
       sendData(finalObj);

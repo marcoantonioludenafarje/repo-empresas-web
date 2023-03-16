@@ -1076,7 +1076,10 @@ const Distribution = (props) => {
                                               key={`${index3}-${index3}`}
                                             >
                                               <TableCell>
-                                                {product.businessProductCode!=null?product.businessProductCode:product.product}
+                                                {product.businessProductCode !=
+                                                null
+                                                  ? product.businessProductCode
+                                                  : product.product}
                                               </TableCell>
                                               <TableCell>
                                                 {product.description}

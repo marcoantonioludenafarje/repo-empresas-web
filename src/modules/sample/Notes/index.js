@@ -334,8 +334,14 @@ const CreditNotesTable = (props) => {
   };
   const showIconStatus = (bool) => {
     switch (bool) {
+      case "accepted":
+        return <CheckCircleIcon color='success' />;
+        break;
       case true:
         return <CheckCircleIcon color='success' />;
+        break;
+      case "denied":
+        return <CancelIcon sx={{color: red[500]}} />;
         break;
       case false:
         return <CancelIcon sx={{color: red[500]}} />;
