@@ -17,6 +17,7 @@ import {
   UPDATE_DATA_BUSINESS,
   ACTUAL_DATE,
   GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
+  GENERATE_EXCEL_TEMPLATE_TO_BULK_LOAD,
   UPDATE_CATALOGS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
@@ -303,6 +304,27 @@ export const exportExcelTemplateToGenerateRoute = (payload) => {
       })
       .catch((error) => {
         console.log('onExportExcelTemplateToGenerateRoute error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const exportExcelTemplateToBulkLoad = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/utility/exportExcelTemplateToBulkLoad', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('onExportExcelTemplateToBulkLoad resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_BULK_LOAD,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('onExportExcelTemplateToBulkLoad error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

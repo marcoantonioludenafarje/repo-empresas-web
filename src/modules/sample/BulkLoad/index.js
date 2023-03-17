@@ -45,6 +45,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import FolderZipIcon from '@mui/icons-material/FolderZip';
 import {red} from '@mui/material/colors';
@@ -56,6 +57,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {array} from 'prop-types';
 import {getUserData} from '../../../redux/actions/User';
 import {getCurrentMovementsDocumentsBusiness} from '../../../redux/actions/MyBilling';
+import {exportExcelTemplateToBulkLoad} from '../../../redux/actions/General';
 import {
   getYear,
   getActualMonth,
@@ -82,6 +84,7 @@ import {
   GET_BUSINESS_PARAMETER,
   GET_CURRENT_MOVEMENTS_DOCUMENTS,
   UPDATE_CATALOGS,
+  GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
 } from '../../../shared/constants/ActionTypes';
 import {
   onGetBusinessParameter,
@@ -141,6 +144,7 @@ const BulkLoad = (props) => {
   );
   const [excelOrCsv, setExcelOrCsv] = React.useState('');
   const [excelOrCsvName, setExcelOrCsvName] = React.useState('');
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
   //GET APIS RES
   const {userDataRes} = useSelector(({user}) => user);
   const {updateCatalogsRes} = useSelector(({general}) => general);
@@ -149,9 +153,16 @@ const BulkLoad = (props) => {
   console.log('generalSuccess', generalSuccess);
   const {generalError} = useSelector(({general}) => general);
   console.log('generalError', generalError);
+  const {excelTemplateGeneratedToBulkLoadRes} = useSelector(
+    ({general}) => general,
+  );
 
   const toUpdateCatalogs = (payload) => {
     dispatch(updateCatalogs(payload));
+  };
+
+  const toExportExcelTemplateToBulkLoad = (payload) => {
+    dispatch(exportExcelTemplateToBulkLoad(payload));
   };
 
   useEffect(() => {
@@ -265,6 +276,44 @@ const BulkLoad = (props) => {
     );
     setExcelOrCsv(event);
   };
+  const exportToExcel = () => {
+    const excelPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_ROUTES, payload: undefined});
+    toExportExcelTemplateToBulkLoad(excelPayload);
+    setDownloadExcel(true);
+  };
+
+  useEffect(() => {
+    if (excelTemplateGeneratedToBulkLoadRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelTemplateGeneratedToBulkLoadRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'bulkLoadTemplate.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelTemplateGeneratedToBulkLoadRes, downloadExcel]);
+
   return userDataRes ? (
     <>
       <Card sx={{p: 4}}>
@@ -309,6 +358,14 @@ const BulkLoad = (props) => {
             onClick={onChangeHandler}
           >
             Procesar
+          </Button>
+          <Button
+            startIcon={<FileDownloadOutlinedIcon />}
+            variant='outlined'
+            color='secondary'
+            onClick={exportToExcel}
+          >
+            Descargar Plantilla
           </Button>
           {updateCatalogsRes && generalSuccess && !updateCatalogsRes.error ? (
             <>
