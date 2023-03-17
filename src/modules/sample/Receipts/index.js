@@ -381,9 +381,9 @@ const ReceiptsTable = (props) => {
     console.log('Razón', reason);
     cancelReceiptPayload.request.payload.reason = reason;
     cancelReceiptPayload.request.payload.serial =
-      selectedReceipt.serialNumberReceipt.split('-')[0];
+      selectedReceipt.serialNumber.split('-')[0];
     cancelReceiptPayload.request.payload.numberReceipt =
-      selectedReceipt.serialNumberReceipt.split('-')[1];
+      selectedReceipt.serialNumber.split('-')[1];
     cancelReceiptPayload.request.payload.movementHeaderId =
       selectedReceipt.movementHeaderId;
     cancelReceiptPayload.request.payload.outputId = selectedReceipt.outputId;
@@ -470,13 +470,13 @@ const ReceiptsTable = (props) => {
                     {convertToDateWithoutTime(obj.timestampMovement)}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumberReceipt
-                      ? obj.serialNumberReceipt.split('-')[0]
+                    {obj.serialNumber
+                      ? obj.serialNumber.split('-')[0]
                       : ''}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumberReceipt
-                      ? obj.serialNumberReceipt.split('-')[1]
+                    {obj.serialNumber
+                      ? obj.serialNumber.split('-')[1]
                       : ''}
                   </TableCell>
                   <TableCell>{obj.denominationClient}</TableCell>
