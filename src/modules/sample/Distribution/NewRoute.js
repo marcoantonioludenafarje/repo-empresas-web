@@ -42,6 +42,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -58,6 +59,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CachedIcon from '@mui/icons-material/Cached';
 import CloseIcon from '@mui/icons-material/Close';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
 import {makeStyles} from '@mui/styles';
 import {Form, Formik} from 'formik';
@@ -120,6 +122,7 @@ let selectedDelivery = {};
 let selectedDistribution = '';
 let selectedRoute = '';
 let typeAlert = '';
+let msjError = '';
 const Distribution = (props) => {
   let listPayload = {
     request: {
@@ -178,6 +181,7 @@ const Distribution = (props) => {
   const openMenu = Boolean(anchorEl);
   const router = useRouter();
   const {query} = router;
+  const [open2, setOpen2] = React.useState(false);
 
   console.log('products', listProducts);
   const {userAttributes} = useSelector(({user}) => user);
@@ -413,6 +417,7 @@ const Distribution = (props) => {
       );
     return datav2;
   };
+
   function formatData(
     deliveries,
     originalPoints,
@@ -424,156 +429,191 @@ const Distribution = (props) => {
     return deliveries.map((item) => {
       const {'PUNTO PARTIDA': originalPoint} = item;
       const {'PUNTO LLEGADA': arrivalPoint} = item;
-      const {CHOFER: driver} = item;
+      const {'CHOFER': driver} = item;
       const {'EMPRESA TRANSPORTISTA': carrier} = item;
-      const matchOriginal = originalPoints.find(
-        (d) => d.LUGAR == originalPoint,
-      );
-      const matchArrival = arrivalPoints.find((d) => d.LUGAR == arrivalPoint);
-      const matchDriver = drivers.find(
-        (d) => d['NRO IDENTIFICADOR'] == driver.split('-')[2].trim(),
-      );
-      const matchCarrier = carriers.find(
-        (d) => d['NRO IDENTIFICADOR'] == carrier.split('-')[1].trim(),
-      );
 
+      const matchOriginal = originalPoints.find((d) => d.LUGAR == originalPoint);
+      if(!matchOriginal){
+        msjError = msjError + "Validación de PUNTO DE PARTIDA: El punto '"+ originalPoint +"' no existe, debe de coincidir con algún punto listado en la pestaña PUNTOS DE PARTIDA.  ";
+      }
+
+      const matchArrival = arrivalPoints.find((d) => d.LUGAR == arrivalPoint);
+      if(!matchArrival){
+        msjError = msjError + "Validación de PUNTO DE LLEGADA: El punto '"+ arrivalPoint +"' no existe, debe de coincidir con algún punto listado en la pestaña PUNTOS DE LLEGADA.  ";
+      }
+
+      const matchDriver = drivers.find((d) => d['NRO IDENTIFICADOR'] == driver.split('-')[2].trim());
+      if(!matchDriver){
+        msjError = msjError + "Validación de CHOFER: El chofer '"+ driver +"' no existe, debe de coincidir con algún chofer listado en la pestaña CHOFERES.  ";
+      }
+
+      const matchCarrier = carriers.find((d) => d['NRO IDENTIFICADOR'] == carrier.split('-')[1].trim());
+      if(!matchCarrier){
+        msjError = msjError + "Validación de EMPRESA TRANSPORTISTA: La empresa '"+ carrier +"' no existe, debe de coincidir con alguna empresa listado en la pestaña EMPRESA TRANSPORTISTA.  ";
+      }
+
+      let existeError = false;
       let productsSelected = item['PRODUCTOS'].split('|').map((product) => {
-        return {
-          product: product.split('-')[0].trim(),
-          quantity: parseInt(product.split('-')[1].trim()),
-        };
+        let tempprod = product.split('-');
+        if (tempprod.length != 2){
+          msjError = msjError + "Validación de PRODUCTOS: Error con el producto: '"+tempprod+"' Debe de tener la estructura: PRODUCTO - CANTIDAD.  "; 
+          existeError = true;
+          return;
+        } else {
+            return {
+              product: product.split('-')[0].trim(),
+              quantity: parseInt(product.split('-')[1].trim()),
+            };
+        }        
       });
+
       let totalWeight = 0;
       let productsInfo = [];
-      productsSelected.forEach((product) => {
-        let productInfo = products.find((item2) => {
-          if (
-            item2['DESCRIPCION'].includes('-') ||
-            item2['DESCRIPCION'].includes('|')
-          ) {
-            setShowAlert(true);
-            typeAlert = 'stickSymbolPresenced';
-          }
-          if (
-            item2['DESCRIPCION'].trim().replace(/ /g, '').toUpperCase() ===
-            product.product.trim().replace(/ /g, '').toUpperCase()
-          ) {
-            return true;
-          }
-        });
-        if (!productInfo) {
-          console.log('No identificado', product.product.trim());
-        }
-        if (productInfo['DOSIFICACION']) {
-          console.log("productInfo",productInfo)
-          productInfo['DOSIFICACION'].split('|').forEach((inputProduct) => {
-            let productInfo2 = products.find(
-              (item3) =>
-                item3['DESCRIPCION'].trim().replace(/ /g, '').toUpperCase() ===
-                inputProduct
-                  .split('-')[0]
-                  .trim()
-                  .replace(/ /g, '')
-                  .toUpperCase(),
-            );
-            if (productInfo2) {
-              let existingProduct = productsInfo.find(
-                (p) => p.product === productInfo2['CODIGO'],
-              );
-              if (existingProduct) {
-                existingProduct.count +=
-                  parseInt(inputProduct.split('-')[1].trim()) *
-                  product.quantity;
-              } else {
-                productsInfo.push({
-                  productId: `${productInfo2['CODIGO'].padStart(32, '0')}-${
-                    userDataRes.merchantSelected.merchantId
-                  }`,
-                  product: productInfo2['CODIGO'],
-                  description: productInfo2['DESCRIPCION'].trim(),
-                  unitMeasure: productInfo2['UNIDAD DE MEDIDA'],
-                  typeProduct:
-                    productInfo['TIPO PRODUCTO'] === 'Producto intermedio'
-                      ? 'intermediateProduct'
-                      : productInfo['TIPO PRODUCTO'] === 'Producto final'
-                      ? 'endProduct'
-                      : productInfo['TIPO PRODUCTO'] === 'Insumo'
-                      ? 'rawMaterial'
-                      : null,
-                  count:
-                    parseInt(inputProduct.split('-')[1].trim()) *
-                    product.quantity,
-                  weight: productInfo2['PESO (Kg)'],
-                });
-              }
-              totalWeight +=
-                parseInt(inputProduct.split('-')[1].trim()) *
-                product.quantity *
-                Number(productInfo2['PESO (Kg)']);
+      console.log("productsSelected::",productsSelected)
+      if (productsSelected.length>0 && !existeError){
+        productsSelected.forEach((product) => {
+          let productInfo = products.find((item2) => { 
+            if (
+              item2['DESCRIPCION'].includes('-') ||
+              item2['DESCRIPCION'].includes('|')
+            ) {
+              msjError = MsjError + "Validación de PRODUCTO: Error con el producto: '"+item2['DESCRIPCION']+"' tiene el símbolo | o el - en su descripción, debe de retirarlos.  ";
+              return;
+            }
+            if (
+              item2['DESCRIPCION'].trim().replace(/ /g, '').toUpperCase() ===
+              product.product.trim().replace(/ /g, '').toUpperCase()
+            ) {
+              return true;
             }
           });
-        } else {
+          console.log("productInfo::",productInfo)
           if (productInfo) {
-            let existingProduct = productsInfo.find(
-              (p) => p.product === productInfo['CODIGO'],
-            );
-            if (existingProduct) {
-              existingProduct.count += product.quantity;
-            } else {
-              productsInfo.push({
-                productId: `${productInfo['CODIGO'].padStart(32, '0')}-${
-                  userDataRes.merchantSelected.merchantId
-                }`,
-                product: productInfo['CODIGO'],
-                description: productInfo['DESCRIPCION'].trim(),
-                unitMeasure: productInfo['UNIDAD DE MEDIDA'],
-                typeProduct:
-                  productInfo['TIPO PRODUCTO'] === 'Producto intermedio'
-                    ? 'intermediateProduct'
-                    : productInfo['TIPO PRODUCTO'] === 'Producto final'
-                    ? 'endProduct'
-                    : productInfo['TIPO PRODUCTO'] === 'Insumo'
-                    ? 'rawMaterial'
-                    : null,
-                count: product.quantity,
-                weight: productInfo['PESO (Kg)'],
+            console.log("productInfo12::",productInfo)
+            if (productInfo['DOSIFICACION']) {
+              console.log("productInfo",productInfo)
+              productInfo['DOSIFICACION'].split('|').forEach((inputProduct) => {
+                let productInfo2 = products.find(
+                  (item3) =>
+                    item3['DESCRIPCION'].trim().replace(/ /g, '').toUpperCase() ===
+                    inputProduct
+                      .split('-')[0]
+                      .trim()
+                      .replace(/ /g, '')
+                      .toUpperCase(),
+                );
+                if (productInfo2) {
+                  let existingProduct = productsInfo.find(
+                    (p) => p.product === productInfo2['CODIGO'],
+                  );
+                  if (existingProduct) {
+                    existingProduct.count +=
+                      parseInt(inputProduct.split('-')[1].trim()) *
+                      product.quantity;
+                  } else {
+                    productsInfo.push({
+                      productId: `${productInfo2['CODIGO'].padStart(32, '0')}-${
+                        userDataRes.merchantSelected.merchantId
+                      }`,
+                      product: productInfo2['CODIGO'],
+                      description: productInfo2['DESCRIPCION'].trim(),
+                      unitMeasure: productInfo2['UNIDAD DE MEDIDA'],
+                      typeProduct:
+                        productInfo['TIPO PRODUCTO'] === 'Producto intermedio'
+                          ? 'intermediateProduct'
+                          : productInfo['TIPO PRODUCTO'] === 'Producto final'
+                          ? 'endProduct'
+                          : productInfo['TIPO PRODUCTO'] === 'Insumo'
+                          ? 'rawMaterial'
+                          : null,
+                      count:
+                        parseInt(inputProduct.split('-')[1].trim()) *
+                        product.quantity,
+                      weight: productInfo2['PESO (Kg)'],
+                    });
+                  }
+                  totalWeight +=
+                    parseInt(inputProduct.split('-')[1].trim()) *
+                    product.quantity *
+                    Number(productInfo2['PESO (Kg)']);
+                }
               });
+            } else {
+              if (productInfo) {
+                let existingProduct = productsInfo.find(
+                  (p) => p.product === productInfo['CODIGO'],
+                );
+                if (existingProduct) {
+                  existingProduct.count += product.quantity;
+                } else {
+                  productsInfo.push({
+                    productId: `${productInfo['CODIGO'].padStart(32, '0')}-${
+                      userDataRes.merchantSelected.merchantId
+                    }`,
+                    product: productInfo['CODIGO'],
+                    description: productInfo['DESCRIPCION'].trim(),
+                    unitMeasure: productInfo['UNIDAD DE MEDIDA'],
+                    typeProduct:
+                      productInfo['TIPO PRODUCTO'] === 'Producto intermedio'
+                        ? 'intermediateProduct'
+                        : productInfo['TIPO PRODUCTO'] === 'Producto final'
+                        ? 'endProduct'
+                        : productInfo['TIPO PRODUCTO'] === 'Insumo'
+                        ? 'rawMaterial'
+                        : null,
+                    count: product.quantity,
+                    weight: productInfo['PESO (Kg)'],
+                  });
+                }
+                totalWeight += product.quantity * Number(productInfo['PESO (Kg)']);
+              }
             }
-            totalWeight += product.quantity * Number(productInfo['PESO (Kg)']);
           }
-        }
-      });
-      if (!matchArrival) {
-        console.log('Este es', item);
+          else {
+            msjError = msjError + "Validación de PRODUCTO: El producto: '"+product.product+"' no existe, debe de coincidir con algun producto listado en la pestaña PRODUCTOS.  ";
+            return;
+          }          
+        });
       }
-      return {
-        ...item,
-        startingPointUbigeo: matchOriginal['UBIGEO'],
-        startingAddress: matchOriginal['DIRECCION EXACTA'],
-        arrivalPointUbigeo: matchArrival['UBIGEO'],
-        arrivalAddress: matchArrival['DIRECCION EXACTA'],
-        driverDocumentNumber: matchDriver['NRO IDENTIFICADOR'],
-        driverName: matchDriver['NOMBRES'],
-        driverLastName: matchDriver['APELLIDOS'],
-        driverDocumentType: matchDriver['IDENTIFICADOR'].toLowerCase(),
-        driverId: '',
-        driverLicenseNumber: matchDriver['LICENCIA'],
-        plate: item['PLACA'].trim(),
-        carrierDenomination: matchCarrier['NOMBRE/RAZON SOCIAL'],
-        carrierDocumentType: matchCarrier['IDENTIFICADOR'],
-        carrierDocumentNumber: matchCarrier['NRO IDENTIFICADOR'],
-        products: productsInfo,
-        numberPackages: '1',
-        totalWeight: totalWeight,
-        observationDelivery: item['OBSERVACION'],
-        generateReferralGuide:
-          item['DESEA GENERAR GUIA REMISION?'] == 'SI' ? true : false,
-        transferStartDate: 1676155434735,
-      };
+      else {
+        //msjError = msjError + "Validación de PRODUCTOS: No existe producto ingreso, debe de contener por lo menos uno"; 
+        return;
+      }
+
+      if (msjError){
+        return
+      }
+      else {
+        return {
+          ...item,
+          startingPointUbigeo: matchOriginal['UBIGEO'],
+          startingAddress: matchOriginal['DIRECCION EXACTA'],
+          arrivalPointUbigeo: matchArrival['UBIGEO'],
+          arrivalAddress: matchArrival['DIRECCION EXACTA'],
+          driverDocumentNumber: matchDriver['NRO IDENTIFICADOR'],
+          driverName: matchDriver['NOMBRES'],
+          driverLastName: matchDriver['APELLIDOS'],
+          driverDocumentType: matchDriver['IDENTIFICADOR'].toLowerCase(),
+          driverId: '',
+          driverLicenseNumber: matchDriver['LICENCIA'].toUpperCase(),
+          plate: item['PLACA'].trim(),
+          carrierDenomination: matchCarrier['NOMBRE/RAZON SOCIAL'],
+          carrierDocumentType: matchCarrier['IDENTIFICADOR'],
+          carrierDocumentNumber: matchCarrier['NRO IDENTIFICADOR'],
+          products: productsInfo,
+          numberPackages: '1',
+          totalWeight: totalWeight,
+          observationDelivery: item['OBSERVACION'],
+          generateReferralGuide:
+            item['DESEA GENERAR GUIA REMISION?'] == 'SI' ? true : false,
+          transferStartDate: 1676155434735,
+        };
+      }      
     });
   }
   const onChangeHandler = (event) => {
-    if (excelOrCsv.target.files) {
+    console.log("entramos al onchange",excelOrCsv)
+    if (excelOrCsv && excelOrCsv.target.files) {
       const reader = new FileReader();
       reader.onload = (excelOrCsv) => {
         const bstr = excelOrCsv.target.result;
@@ -619,20 +659,36 @@ const Distribution = (props) => {
         console.log('driversDataV2', driversDataV2);
         console.log('originalPointsDataV2', originalPointsDataV2);
         console.log('arrivalPointsDataV2', arrivalPointsDataV2);
-        const deliveriesFinished = formatData(
-          routesDataV2,
-          originalPointsDataV2,
-          arrivalPointsDataV2,
-          driversDataV2,
-          carriersDataV2,
-          productsDataV2,
-        );
+        msjError='';
 
-        setDriversData(driversData);
-        setDeliveriesData(deliveriesFinished);
-        setRoutes(deliveriesFinished);
-      };
+        if (productsDataV2.length>0 && routesDataV2.length>0 && carriersDataV2.length>0 && driversDataV2.length>0 && originalPointsDataV2.length>0 && arrivalPointsDataV2.length>0) {
+          const deliveriesFinished = formatData(
+            routesDataV2,
+            originalPointsDataV2,
+            arrivalPointsDataV2,
+            driversDataV2,
+            carriersDataV2,
+            productsDataV2,
+          );
+          if (msjError==''){
+            setDriversData(driversData);
+            setDeliveriesData(deliveriesFinished);
+            setRoutes(deliveriesFinished);
+          } 
+          else {
+            setShowAlert(true);
+          }          
+       }
+       else {
+        msjError="Validaciones de Carga de Rutas: Verifique las hojas del Excel. Debe de haber información en todas las hojas como ENTREGAS DE RUTA, PRODUCTOS, PUNTOS DE LLEGADA, PUNTOS DE PARTIDA, CHOFERES Y EMPRESA TRANSPORTISTA";      
+        setShowAlert(true);
+       }
+      }; 
       reader.readAsBinaryString(excelOrCsv.target.files[0]);
+    }
+    else {
+      setShowAlert(true);
+      msjError="Validaciones de Carga de Rutas: Archivo no existe, verifique que lo haya cargado";      
     }
   };
   useEffect(() => {
@@ -686,6 +742,13 @@ const Distribution = (props) => {
     console.log('se está ejecutando?');
     setOpenDelivery(false);
     console.log('openDelivery', openDelivery);
+  };
+
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+  const cancel = () => {
+    setOpen2(true);
   };
 
   const updateDelivery = (event) => {
@@ -897,11 +960,7 @@ const Distribution = (props) => {
           }
           sx={{mb: 2}}
         >
-          {typeAlert == 'stickSymbolPresenced' ? (
-            'Alguno de los productos tiene el símbolo | o el - en su descripción, por favor evitarlos para un procesamiento correcto'
-          ) : (
-            <></>
-          )}
+          {msjError}
         </Alert>
       </Collapse>
       <Box
@@ -1132,18 +1191,27 @@ const Distribution = (props) => {
       <ButtonGroup
         orientation='vertical'
         variant='outlined'
-        sx={{width: 1}}
+        sx={{width: 1, my: 3}}
         aria-label='outlined button group'
       >
         <Button
           color='primary'
-          sx={{mx: 'auto', my: 6, width: '50%', py: 3}}
+          sx={{mx: 'auto', width: '50%', py: 3}}
           type='submit'
           form='principal-form'
           variant='contained'
           startIcon={<SaveAltOutlinedIcon />}
         >
           Finalizar
+        </Button>
+        <Button
+          sx={{mx: 'auto', width: '50%', py: 3}}
+          variant='outlined'
+          size='medium'
+          startIcon={<ArrowCircleLeftOutlinedIcon />}
+          onClick={cancel}
+        >
+          Cancelar
         </Button>
       </ButtonGroup>
       {minTutorial ? (
@@ -1302,6 +1370,42 @@ const Distribution = (props) => {
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button variant='outlined' onClick={sendStatus}>
             Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      <Dialog
+        open={open2}
+        onClose={handleClose2}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Registro de rutas'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Desea cancelar esta operación?. <br /> Se perderá la información
+            ingresada
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              setOpen2(false);
+              Router.push('/sample/distribution/predefined-routes');
+            }}
+          >
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
           </Button>
         </DialogActions>
       </Dialog>
