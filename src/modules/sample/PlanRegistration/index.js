@@ -85,7 +85,7 @@ const UpgradeBusiness = () => {
   const [reload, setReload] = React.useState(false);
   const [filters, setFilters] = React.useState([]);
   const [initialCategories, setInitialCategories] = React.useState([]);
-  const [publish, setPublish] = React.useState(true);
+  const [publish, setPublish] = React.useState(false);
   const [execAll, setExecAll] = React.useState(false);
   const [typeDialog, setTypeDialog] = React.useState('darDeAlta');
   const toUpgradeToNewPlan = (payload) => {
