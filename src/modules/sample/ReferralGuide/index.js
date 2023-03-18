@@ -26,6 +26,7 @@ import {
   DialogContentText,
   DialogTitle,
   CircularProgress,
+  TablePagination
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -110,6 +111,7 @@ let listPayload = {
       searchByBill: null,
       movementHeaderId: null,
       outputId: null,
+      lastEvaluatedKey: ""
     },
   },
 };
@@ -151,6 +153,12 @@ const ReferralGuidesTable = (props) => {
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
+  
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
+  const [totalItems, setTotalItems] = React.useState([]);
+  const [lastKey, setLastKey] = React.useState(null);
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -331,10 +339,10 @@ const ReferralGuidesTable = (props) => {
   };
 
   const compare = (a, b) => {
-    if (a.createdDate < b.createdDate) {
+    if (a.serialNumber.split("-")[1] < b.serialNumber.split("-")[1]) {
       return 1;
     }
-    if (a.createdDate > b.createdDate) {
+    if (a.serialNumber.split("-")[1] > b.serialNumber.split("-")[1]) {
       return -1;
     }
     return 0;
@@ -381,6 +389,57 @@ const ReferralGuidesTable = (props) => {
     handleClose();
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+    toGetMovements({
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          businessProductCode: null,
+          movementType: 'REFERRAL_GUIDE',
+          merchantId: '',
+          timestampMovement: null,
+          searchByBill: null,
+          movementHeaderId: null,
+          outputId: null,
+          lastEvaluatedKey: getMovementsRes[newPage - 1]?.lastKey || ""
+        },
+      },
+    });
+  };
+
+  
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const listPayload = {
+  //       request: {
+  //         payload: {
+  //           initialTime: null,
+  //           finalTime: null,
+  //           businessProductCode: null,
+  //           movementType: "REFERRAL_GUIDE",
+  //           merchantId: "",
+  //           timestampMovement: null,
+  //           searchByBill: null,
+  //           movementHeaderId: null,
+  //           outputId: null,
+  //           lastEvaluatedKey: lastKey || ""
+  //         }
+  //       }
+  //     };
+
+  //     const { data, lastEvaluatedKey } = getMovementsRes;
+  //     setLastKey(lastEvaluatedKey);
+  //   };
+
+  //   fetchData();
+  // }, [lastKey]);
   return (
     <Card sx={{p: 4}}>
       <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
@@ -488,6 +547,15 @@ const ReferralGuidesTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      {/* <TablePagination
+        rowsPerPageOptions={[25, 50, 100]}
+        component="div"
+        count={getMovementsRes ? getMovementsRes.length : 0}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      /> */}
       <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'
