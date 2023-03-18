@@ -383,7 +383,7 @@ const NewInput = (props) => {
     if (selectedProducts && selectedProducts.length >= 1) {
       selectedProducts.map((obj, index) => {
         console.log('obj', obj);
-        if (obj.product == product.product) {
+        if ((obj.businessProductCode || obj.product) == (product.businessProductCode || product.product)) {
           console.log('selectedProducts 1', selectedProducts);
           selectedProducts.splice(index, 1);
           console.log('selectedProducts 2', selectedProducts);
