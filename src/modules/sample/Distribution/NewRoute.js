@@ -432,14 +432,14 @@ const Distribution = (props) => {
       const {'CHOFER': driver} = item;
       const {'EMPRESA TRANSPORTISTA': carrier} = item;
 
-      const matchOriginal = originalPoints.find((d) => d.LUGAR == originalPoint);
+      const matchOriginal = originalPoints.find((d) => d.COD_INTERNO == originalPoint);
       if(!matchOriginal){
-        msjError = msjError + "Validación de PUNTO DE PARTIDA: El punto '"+ originalPoint +"' no existe, debe de coincidir con algún punto listado en la pestaña PUNTOS DE PARTIDA.  ";
+        msjError = msjError + "Validación de PUNTO DE PARTIDA: El código del punto '"+ originalPoint +"' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE PARTIDA.  ";
       }
 
-      const matchArrival = arrivalPoints.find((d) => d.LUGAR == arrivalPoint);
+      const matchArrival = arrivalPoints.find((d) => d.COD_INTERNO == arrivalPoint);
       if(!matchArrival){
-        msjError = msjError + "Validación de PUNTO DE LLEGADA: El punto '"+ arrivalPoint +"' no existe, debe de coincidir con algún punto listado en la pestaña PUNTOS DE LLEGADA.  ";
+        msjError = msjError + "Validación de PUNTO DE LLEGADA: El código del punto '"+ arrivalPoint +"' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE LLEGADA.  ";
       }
 
       const matchDriver = drivers.find((d) => d['NRO IDENTIFICADOR'] == driver.split('-')[2].trim());
@@ -477,7 +477,7 @@ const Distribution = (props) => {
               item2['DESCRIPCION'].includes('-') ||
               item2['DESCRIPCION'].includes('|')
             ) {
-              msjError = MsjError + "Validación de PRODUCTO: Error con el producto: '"+item2['DESCRIPCION']+"' tiene el símbolo | o el - en su descripción, debe de retirarlos.  ";
+              msjError = msjError + "Validación de PRODUCTO: Error con el producto: '"+item2['DESCRIPCION']+"' tiene el símbolo | o el - en su descripción, debe de retirarlos.  ";
               return;
             }
             if (
@@ -687,8 +687,8 @@ const Distribution = (props) => {
       reader.readAsBinaryString(excelOrCsv.target.files[0]);
     }
     else {
-      setShowAlert(true);
       msjError="Validaciones de Carga de Rutas: Archivo no existe, verifique que lo haya cargado";      
+      setShowAlert(true);
     }
   };
   useEffect(() => {
