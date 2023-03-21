@@ -213,7 +213,7 @@ const BulkLoad = (props) => {
         const wb = XLSX.read(bstr, {type: 'binary'});
         console.log('wb', wb);
 
-        let tipoProducto = { tipos: [{nombre:'Insumo'} , {nombre:'Producto Intermedio' } , {nombre:'Producto Final'}] }
+        let tipoProducto = { tipos: [{nombre:'Insumo'} , {nombre:'Producto intermedio' } , {nombre:'Producto final'}] }
         let tipoIdentificador = { tipos: [{nombre:'RUC'} , {nombre:'DNI' } , {nombre:'CE'}] }
 
         const productsSheet = wb.Sheets['PRODUCTOS'];
@@ -339,7 +339,7 @@ const BulkLoad = (props) => {
               } else {
                 const matchTipoProducto = tipoProducto.tipos.find((d) => d.nombre == product['TIPO PRODUCTO']);
                 if(!matchTipoProducto){
-                  msjError = msjError + "Validación de PRODUCTO: El TIPO PRODUCTO '"+ product['TIPO PRODUCTO'] +"' no existe, debe de uno válido como 'Insumo' o 'Producto Intermedio' o 'Producto Final'.  ";
+                  msjError = msjError + "Validación de PRODUCTO: El TIPO PRODUCTO '"+ product['TIPO PRODUCTO'] +"' no existe, debe de uno válido como 'Insumo' o 'Producto intermedio' o 'Producto final'.  ";
                 }
               } 
 
