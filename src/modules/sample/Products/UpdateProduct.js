@@ -895,6 +895,22 @@ const UpdateProduct = (props) => {
                       }}
                     />
                   </Grid>
+
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Alias'
+                      name='alias'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+
                   <Grid item xs={12}>
                     <AppTextField
                       label='Código aduanero'

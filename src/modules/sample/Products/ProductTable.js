@@ -365,6 +365,7 @@ const ProductTable = (arrayObjs, props) => {
   const headersExcel = [
     'Código de producto',
     'Descripción',
+    'Alias',
     `Peso (${weight_unit})`,
     'Tipo',
     /* 'Flete', */
@@ -628,6 +629,7 @@ const ProductTable = (arrayObjs, props) => {
             <TableRow>
               <TableCell>Código</TableCell>
               <TableCell>Descripción</TableCell>
+              <TableCell>Alias</TableCell>
               <TableCell>Peso</TableCell>
               <TableCell>Tipo</TableCell>
               <TableCell>Precio costo sugerido</TableCell>
@@ -676,6 +678,7 @@ const ProductTable = (arrayObjs, props) => {
                           <></>
                         )}
                       </TableCell>
+                      <TableCell>{`${obj.alias ? obj.alias : ''}`}</TableCell>
                       <TableCell>{`${obj.weight} ${weight_unit}`}</TableCell>
                       <TableCell>{showType(obj.typeProduct)}</TableCell>
                       <TableCell>{`${obj.costPriceUnit.toFixed(
