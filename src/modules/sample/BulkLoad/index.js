@@ -547,7 +547,7 @@ const BulkLoad = (props) => {
             }
           );
 
-          msjError='';////COMENTAR ESTO LUEGO
+          //msjError='';////DESCOMENTAR ESTO PARA DESACTIVAR LAS VALIDACIONES
 
           if (msjError==''){
             const payloadCatalogs = {
