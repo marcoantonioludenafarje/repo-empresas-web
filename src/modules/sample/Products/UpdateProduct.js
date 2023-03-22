@@ -120,6 +120,10 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
+  alias: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
   customCodeProduct: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
@@ -326,6 +330,7 @@ const UpdateProduct = (props) => {
   let defaultValues = {
     businessProductCode: query.businessProductCode,
     description: query.description,
+    alias: query.alias,
     customCodeProduct: query.customCodeProduct,
     referecialPriceSell: Number(query.sellPriceUnit),
     costPriceUnit: Number(query.costPriceUnit),
@@ -668,6 +673,7 @@ const UpdateProduct = (props) => {
             quantity: obj.count,
             priceUnit: obj.priceUnit,
             description: obj.description,
+            alias: obj.alias,
             weight: obj.weight,
             unitMeasure: obj.unitMeasure,
             customCodeProduct: obj.customCodeProduct || '',
@@ -689,6 +695,7 @@ const UpdateProduct = (props) => {
           payload: {
             businessProductCode: data.businessProductCode,
             description: data.description,
+            alias: data.alias,
             costPriceUnit: Number(data.costPriceUnit),
             sellPriceUnit: Number(data.referecialPriceSell),
             weight: Number(data.weight),
