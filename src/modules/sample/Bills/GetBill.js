@@ -523,7 +523,7 @@ const NewOutput = (props) => {
             movementHeaderId: query.movementHeaderId,
             timestampMovement: Number(query.timestampMovement),
             clientId: query.clientId,
-            totalPriceWithIgv: Number(data.totalField.toFixed(3)),
+            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(3)),//
             issueDate: specialFormatToSunat(),
             serial: serial,
             documentIntern: query.documentIntern,
