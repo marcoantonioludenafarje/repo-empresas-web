@@ -694,33 +694,54 @@ const Distribution = (props) => {
         console.log('arrivalPointsDataV2', arrivalPointsDataV2);
         msjError = '';
 
-        if (
-          productsDataV2.length > 0 &&
-          routesDataV2.length > 0 &&
-          carriersDataV2.length > 0 &&
-          driversDataV2.length > 0 &&
-          originalPointsDataV2.length > 0 &&
-          arrivalPointsDataV2.length > 0
-        ) {
-          const deliveriesFinished = formatData(
-            routesDataV2,
-            originalPointsDataV2,
-            arrivalPointsDataV2,
-            driversDataV2,
-            carriersDataV2,
-            productsDataV2,
-          );
-          if (msjError == '') {
-            setDriversData(driversData);
-            setDeliveriesData(deliveriesFinished);
-            setRoutes(deliveriesFinished);
+        let existAlias = true;
+        productsDataV2.forEach((ele1) => {
+          console.log('El ele1', ele1);
+          console.log('El String(ele1[', String(ele1['ALIAS']));
+
+          if (
+            !(
+              ele1['ALIAS'] &&
+              String(ele1['ALIAS']) !== 'null' &&
+              String(ele1['ALIAS']).length > 0
+            )
+          ) {
+            existAlias = false;
+          }
+        });
+        if (!existAlias) {
+          msjError =
+            'Validaciones de Carga de Rutas: Los productos deben de contener el campo ALIAS . Puedes actualizarlos en Configuraciones';
+          setShowAlert(true);
+        } else {
+          if (
+            productsDataV2.length > 0 &&
+            routesDataV2.length > 0 &&
+            carriersDataV2.length > 0 &&
+            driversDataV2.length > 0 &&
+            originalPointsDataV2.length > 0 &&
+            arrivalPointsDataV2.length > 0
+          ) {
+            const deliveriesFinished = formatData(
+              routesDataV2,
+              originalPointsDataV2,
+              arrivalPointsDataV2,
+              driversDataV2,
+              carriersDataV2,
+              productsDataV2,
+            );
+            if (msjError == '') {
+              setDriversData(driversData);
+              setDeliveriesData(deliveriesFinished);
+              setRoutes(deliveriesFinished);
+            } else {
+              setShowAlert(true);
+            }
           } else {
+            msjError =
+              'Validaciones de Carga de Rutas: Verifique las hojas del Excel. Debe de haber información en todas las hojas como ENTREGAS DE RUTA, PRODUCTOS, PUNTOS DE LLEGADA, PUNTOS DE PARTIDA, CHOFERES Y EMPRESA TRANSPORTISTA';
             setShowAlert(true);
           }
-        } else {
-          msjError =
-            'Validaciones de Carga de Rutas: Verifique las hojas del Excel. Debe de haber información en todas las hojas como ENTREGAS DE RUTA, PRODUCTOS, PUNTOS DE LLEGADA, PUNTOS DE PARTIDA, CHOFERES Y EMPRESA TRANSPORTISTA';
-          setShowAlert(true);
         }
       };
       reader.readAsBinaryString(excelOrCsv.target.files[0]);
