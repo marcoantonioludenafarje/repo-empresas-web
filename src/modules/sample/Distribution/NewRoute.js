@@ -429,73 +429,104 @@ const Distribution = (props) => {
     return deliveries.map((item) => {
       const {'PUNTO PARTIDA': originalPoint} = item;
       const {'PUNTO LLEGADA': arrivalPoint} = item;
-      const {'CHOFER': driver} = item;
+      const {CHOFER: driver} = item;
       const {'EMPRESA TRANSPORTISTA': carrier} = item;
 
-      const matchOriginal = originalPoints.find((d) => d.COD_INTERNO == originalPoint);
-      if(!matchOriginal){
-        msjError = msjError + "Validación de PUNTO DE PARTIDA: El código del punto '"+ originalPoint +"' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE PARTIDA.  ";
+      const matchOriginal = originalPoints.find(
+        (d) => d.COD_INTERNO == originalPoint,
+      );
+      if (!matchOriginal) {
+        msjError =
+          msjError +
+          "Validación de PUNTO DE PARTIDA: El código del punto '" +
+          originalPoint +
+          "' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE PARTIDA.  ";
       }
 
-      const matchArrival = arrivalPoints.find((d) => d.COD_INTERNO == arrivalPoint);
-      if(!matchArrival){
-        msjError = msjError + "Validación de PUNTO DE LLEGADA: El código del punto '"+ arrivalPoint +"' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE LLEGADA.  ";
+      const matchArrival = arrivalPoints.find(
+        (d) => d.COD_INTERNO == arrivalPoint,
+      );
+      if (!matchArrival) {
+        msjError =
+          msjError +
+          "Validación de PUNTO DE LLEGADA: El código del punto '" +
+          arrivalPoint +
+          "' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE LLEGADA.  ";
       }
 
-      const matchDriver = drivers.find((d) => d['NRO IDENTIFICADOR'] == driver.split('-')[2].trim());
-      if(!matchDriver){
-        msjError = msjError + "Validación de CHOFER: El chofer '"+ driver +"' no existe, debe de coincidir con algún chofer listado en la pestaña CHOFERES.  ";
+      const matchDriver = drivers.find(
+        (d) => d['NRO IDENTIFICADOR'] == driver.split('-')[2].trim(),
+      );
+      if (!matchDriver) {
+        msjError =
+          msjError +
+          "Validación de CHOFER: El chofer '" +
+          driver +
+          "' no existe, debe de coincidir con algún chofer listado en la pestaña CHOFERES.  ";
       }
 
-      const matchCarrier = carriers.find((d) => d['NRO IDENTIFICADOR'] == carrier.split('-')[1].trim());
-      if(!matchCarrier){
-        msjError = msjError + "Validación de EMPRESA TRANSPORTISTA: La empresa '"+ carrier +"' no existe, debe de coincidir con alguna empresa listado en la pestaña EMPRESA TRANSPORTISTA.  ";
+      const matchCarrier = carriers.find(
+        (d) => d['NRO IDENTIFICADOR'] == carrier.split('-')[1].trim(),
+      );
+      if (!matchCarrier) {
+        msjError =
+          msjError +
+          "Validación de EMPRESA TRANSPORTISTA: La empresa '" +
+          carrier +
+          "' no existe, debe de coincidir con alguna empresa listado en la pestaña EMPRESA TRANSPORTISTA.  ";
       }
 
       let existeError = false;
       let productsSelected = item['PRODUCTOS'].split('|').map((product) => {
         let tempprod = product.split('-');
-        if (tempprod.length != 2){
-          msjError = msjError + "Validación de PRODUCTOS: Error con el producto: '"+tempprod+"' Debe de tener la estructura: PRODUCTO - CANTIDAD.  "; 
+        if (tempprod.length != 2) {
+          msjError =
+            msjError +
+            "Validación de PRODUCTOS: Error con el producto: '" +
+            tempprod +
+            "' Debe de tener la estructura: PRODUCTO - CANTIDAD.  ";
           existeError = true;
           return;
         } else {
-            return {
-              product: product.split('-')[0].trim(),
-              quantity: parseInt(product.split('-')[1].trim()),
-            };
-        }        
+          return {
+            alias: product.split('-')[0].trim(),
+            quantity: parseInt(product.split('-')[1].trim()),
+          };
+        }
       });
 
       let totalWeight = 0;
       let productsInfo = [];
-      console.log("productsSelected::",productsSelected)
-      if (productsSelected.length>0 && !existeError){
+      console.log('productsSelected::', productsSelected);
+      if (productsSelected.length > 0 && !existeError) {
         productsSelected.forEach((product) => {
-          let productInfo = products.find((item2) => { 
+          let productInfo = products.find((item2) => {
+            // if (
+            //   item2['DESCRIPCION'].includes('-') ||
+            //   item2['DESCRIPCION'].includes('|')
+            // ) {
+            //   msjError = msjError + "Validación de PRODUCTO: Error con el producto: '"+item2['DESCRIPCION']+"' tiene el símbolo | o el - en su descripción, debe de retirarlos.  ";
+            //   return;
+            // }
             if (
-              item2['DESCRIPCION'].includes('-') ||
-              item2['DESCRIPCION'].includes('|')
-            ) {
-              msjError = msjError + "Validación de PRODUCTO: Error con el producto: '"+item2['DESCRIPCION']+"' tiene el símbolo | o el - en su descripción, debe de retirarlos.  ";
-              return;
-            }
-            if (
-              item2['DESCRIPCION'].trim().replace(/ /g, '').toUpperCase() ===
-              product.product.trim().replace(/ /g, '').toUpperCase()
+              item2['ALIAS'].trim().replace(/ /g, '').toUpperCase() ===
+              product.alias.trim().replace(/ /g, '').toUpperCase()
             ) {
               return true;
             }
           });
-          console.log("productInfo::",productInfo)
+          console.log('productInfo::', productInfo);
           if (productInfo) {
-            console.log("productInfo12::",productInfo)
+            console.log('productInfo12::', productInfo);
             if (productInfo['DOSIFICACION']) {
-              console.log("productInfo",productInfo)
+              console.log('productInfo', productInfo);
               productInfo['DOSIFICACION'].split('|').forEach((inputProduct) => {
                 let productInfo2 = products.find(
                   (item3) =>
-                    item3['DESCRIPCION'].trim().replace(/ /g, '').toUpperCase() ===
+                    item3['DESCRIPCION']
+                      .trim()
+                      .replace(/ /g, '')
+                      .toUpperCase() ===
                     inputProduct
                       .split('-')[0]
                       .trim()
@@ -565,25 +596,27 @@ const Distribution = (props) => {
                     weight: productInfo['PESO (Kg)'],
                   });
                 }
-                totalWeight += product.quantity * Number(productInfo['PESO (Kg)']);
+                totalWeight +=
+                  product.quantity * Number(productInfo['PESO (Kg)']);
               }
             }
-          }
-          else {
-            msjError = msjError + "Validación de PRODUCTO: El producto: '"+product.product+"' no existe, debe de coincidir con algun producto listado en la pestaña PRODUCTOS.  ";
+          } else {
+            msjError =
+              msjError +
+              "Validación de PRODUCTO: El producto: '" +
+              product.product +
+              "' no existe, debe de coincidir con algun producto listado en la pestaña PRODUCTOS.  ";
             return;
-          }          
+          }
         });
-      }
-      else {
-        //msjError = msjError + "Validación de PRODUCTOS: No existe producto ingreso, debe de contener por lo menos uno"; 
+      } else {
+        //msjError = msjError + "Validación de PRODUCTOS: No existe producto ingreso, debe de contener por lo menos uno";
         return;
       }
 
-      if (msjError){
-        return
-      }
-      else {
+      if (msjError) {
+        return;
+      } else {
         return {
           ...item,
           startingPointUbigeo: matchOriginal['UBIGEO'],
@@ -608,11 +641,11 @@ const Distribution = (props) => {
             item['DESEA GENERAR GUIA REMISION?'] == 'SI' ? true : false,
           transferStartDate: 1676155434735,
         };
-      }      
+      }
     });
   }
   const onChangeHandler = (event) => {
-    console.log("entramos al onchange",excelOrCsv)
+    console.log('entramos al onchange', excelOrCsv);
     if (excelOrCsv && excelOrCsv.target.files) {
       const reader = new FileReader();
       reader.onload = (excelOrCsv) => {
@@ -659,9 +692,16 @@ const Distribution = (props) => {
         console.log('driversDataV2', driversDataV2);
         console.log('originalPointsDataV2', originalPointsDataV2);
         console.log('arrivalPointsDataV2', arrivalPointsDataV2);
-        msjError='';
+        msjError = '';
 
-        if (productsDataV2.length>0 && routesDataV2.length>0 && carriersDataV2.length>0 && driversDataV2.length>0 && originalPointsDataV2.length>0 && arrivalPointsDataV2.length>0) {
+        if (
+          productsDataV2.length > 0 &&
+          routesDataV2.length > 0 &&
+          carriersDataV2.length > 0 &&
+          driversDataV2.length > 0 &&
+          originalPointsDataV2.length > 0 &&
+          arrivalPointsDataV2.length > 0
+        ) {
           const deliveriesFinished = formatData(
             routesDataV2,
             originalPointsDataV2,
@@ -670,24 +710,23 @@ const Distribution = (props) => {
             carriersDataV2,
             productsDataV2,
           );
-          if (msjError==''){
+          if (msjError == '') {
             setDriversData(driversData);
             setDeliveriesData(deliveriesFinished);
             setRoutes(deliveriesFinished);
-          } 
-          else {
+          } else {
             setShowAlert(true);
-          }          
-       }
-       else {
-        msjError="Validaciones de Carga de Rutas: Verifique las hojas del Excel. Debe de haber información en todas las hojas como ENTREGAS DE RUTA, PRODUCTOS, PUNTOS DE LLEGADA, PUNTOS DE PARTIDA, CHOFERES Y EMPRESA TRANSPORTISTA";      
-        setShowAlert(true);
-       }
-      }; 
+          }
+        } else {
+          msjError =
+            'Validaciones de Carga de Rutas: Verifique las hojas del Excel. Debe de haber información en todas las hojas como ENTREGAS DE RUTA, PRODUCTOS, PUNTOS DE LLEGADA, PUNTOS DE PARTIDA, CHOFERES Y EMPRESA TRANSPORTISTA';
+          setShowAlert(true);
+        }
+      };
       reader.readAsBinaryString(excelOrCsv.target.files[0]);
-    }
-    else {
-      msjError="Validaciones de Carga de Rutas: Archivo no existe, verifique que lo haya cargado";      
+    } else {
+      msjError =
+        'Validaciones de Carga de Rutas: Archivo no existe, verifique que lo haya cargado';
       setShowAlert(true);
     }
   };
@@ -1373,7 +1412,7 @@ const Distribution = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      
+
       <Dialog
         open={open2}
         onClose={handleClose2}

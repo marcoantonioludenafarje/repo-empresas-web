@@ -213,8 +213,16 @@ const BulkLoad = (props) => {
         const wb = XLSX.read(bstr, {type: 'binary'});
         console.log('wb', wb);
 
-        let tipoProducto = { tipos: [{nombre:'Insumo'} , {nombre:'Producto intermedio' } , {nombre:'Producto final'}] }
-        let tipoIdentificador = { tipos: [{nombre:'RUC'} , {nombre:'DNI' } , {nombre:'CE'}] }
+        let tipoProducto = {
+          tipos: [
+            {nombre: 'Insumo'},
+            {nombre: 'Producto intermedio'},
+            {nombre: 'Producto final'},
+          ],
+        };
+        let tipoIdentificador = {
+          tipos: [{nombre: 'RUC'}, {nombre: 'DNI'}, {nombre: 'CE'}],
+        };
 
         const productsSheet = wb.Sheets['PRODUCTOS'];
         const productsData = XLSX.utils.sheet_to_json(productsSheet, {
@@ -236,12 +244,9 @@ const BulkLoad = (props) => {
         const deliveryPointsDataV2 = processData(deliveryPointsData);
 
         const originPointsSheet = wb.Sheets['PUNTOS DE PARTIDA'];
-        const originPointsData = XLSX.utils.sheet_to_json(
-          originPointsSheet,
-          {
-            header: 1,
-          },
-        );
+        const originPointsData = XLSX.utils.sheet_to_json(originPointsSheet, {
+          header: 1,
+        });
         const originPointsDataV2 = processData(originPointsData);
 
         const driversSheet = wb.Sheets['CHOFERES'];
@@ -262,294 +267,494 @@ const BulkLoad = (props) => {
 
         console.log('productsDataV2', productsDataV2);
         console.log('routesDataV2', clientsDataV2);
-        msjError='';
+        msjError = '';
 
-        if (productsDataV2.length>0 || clientsDataV2.length>0 || providersData2.length>0 || carriersDataV2.length>0 || driversDataV2.length>0 || deliveryPointsDataV2.length>0 || originPointsDataV2.length>0) {
-
+        if (
+          productsDataV2.length > 0 ||
+          clientsDataV2.length > 0 ||
+          providersData2.length > 0 ||
+          carriersDataV2.length > 0 ||
+          driversDataV2.length > 0 ||
+          deliveryPointsDataV2.length > 0 ||
+          originPointsDataV2.length > 0
+        ) {
           //validaciones de contenido
           productsDataV2.forEach((product) => {
-              console.log("product:::",product)
+            console.log('product:::', product);
 
-              if (!product['CODIGO']) {
-                msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' debe de tener un código.  ";
-              } else {
-                if (product['CODIGO'].includes('-') ||
-                  product['CODIGO'].includes('|')
-                  ) {
-                    msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' tiene el símbolo | o el - en su CÓDIGO, debe de retirarlos.  ";
-                  }
-                  product['CODIGO'] = product['CODIGO'].toString().toUpperCase();
-              }            
+            if (!product['CODIGO']) {
+              msjError =
+                msjError +
+                "Validación de PRODUCTO: '" +
+                product['DESCRIPCION'] +
+                "' debe de tener un código.  ";
+            } else {
+              console.log('El producto codigo', product['CODIGO']);
+              if (
+                product['CODIGO'].toString().includes('-') ||
+                product['CODIGO'].toString().includes('|')
+              ) {
+                msjError =
+                  msjError +
+                  "Validación de PRODUCTO: '" +
+                  product['DESCRIPCION'] +
+                  "' tiene el símbolo | o el - en su CÓDIGO, debe de retirarlos.  ";
+              }
+              product['CODIGO'] = product['CODIGO'].toString().toUpperCase();
+            }
 
-              if (!product['DESCRIPCION']) {
-                msjError = msjError + "Validación de PRODUCTO: Con código: '"+product['CODIGO']+"' debe de tener una descripción.  ";
-              } else {
-                if (product['DESCRIPCION'].includes('-') ||
-                  product['DESCRIPCION'].includes('|')
-                  ) {
-                    msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' tiene el símbolo | o el - en su DESCRIPCIÓN, debe de retirarlos.  ";
-                  }
-              }            
+            if (!product['DESCRIPCION']) {
+              msjError =
+                msjError +
+                "Validación de PRODUCTO: Con código: '" +
+                product['CODIGO'] +
+                "' debe de tener una descripción.  ";
+            } else {
+              // Vamos a permitir que se acepte
+              // if (product['DESCRIPCION'].includes('-') ||
+              //   product['DESCRIPCION'].includes('|')
+              //   ) {
+              //     msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' tiene el símbolo | o el - en su DESCRIPCIÓN, debe de retirarlos.  ";
+              //   }
+            }
 
-              //jalar categoria y validar
-              if (!product['CATEGORIA']) {
-                msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' debe de tener una CATEGORIA.  ";
-              } else {
-                ///validar q coincida con lista de categorías
-              } 
-
-              if (!product['PESO (Kg)']) {
-                msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' debe de tener un PESO.  ";
-              } else {
-                /*if (!product['PESO (Kg)']>=0
-                  ) {
-                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
-                  }*/
-              } 
-
-              if (!product['PRECIO COSTO']) {
-                msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' debe de tener un PRECIO COSTO.  ";
-              } else {
-                /*if (!product['PESO (Kg)']>=0
-                  ) {
-                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
-                  }*/
-              } 
-
-              if (!product['PRECIO VENTA']) {
-                msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' debe de tener un PRECIO VENTA.  ";
-              } else {
-                /*if (!product['PESO (Kg)']>=0
-                  ) {
-                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
-                  }*/
-              } 
-
-              if (!product['STOCK INICIAL']) {
-                msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' debe de tener un STOCK INICIAL.  ";
-              } else {
-                /*if (!product['PESO (Kg)']>=0
-                  ) {
-                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
-                  }*/
-              } 
-
-              if (!product['TIPO PRODUCTO']) {
-                msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' debe de tener un TIPO PRODUCTO.  ";
-              } else {
-                const matchTipoProducto = tipoProducto.tipos.find((d) => d.nombre == product['TIPO PRODUCTO']);
-                if(!matchTipoProducto){
-                  msjError = msjError + "Validación de PRODUCTO: El TIPO PRODUCTO '"+ product['TIPO PRODUCTO'] +"' no existe, debe de uno válido como 'Insumo' o 'Producto intermedio' o 'Producto final'.  ";
-                }
-              } 
-
-              if (product['DOSIFICACION']) {
-                let productsSelected = product['DOSIFICACION'].split('|').map((product2) => {
-                  let tempprod = product2.split('-');
-                  if (tempprod.length != 2){
-                    msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"', con DOSIFICACIÓN: '"+tempprod+"' Debe de tener la estructura: PRODUCTO - CANTIDAD.  "; 
-                  }       
-                });
+            if (!product['ALIAS']) {
+              msjError =
+                msjError +
+                "Validación de PRODUCTO: Con código: '" +
+                product['CODIGO'] +
+                "' debe de tener una descripción.  ";
+            } else {
+              if (
+                product['ALIAS'].includes('-') ||
+                product['ALIAS'].includes('|')
+              ) {
+                msjError =
+                  msjError +
+                  "Validación de PRODUCTO: '" +
+                  product['DESCRIPCION'] +
+                  "' tiene el símbolo | o el - en su ALIAS, debe de retirarlos.  ";
               }
             }
-          );
+
+            //jalar categoria y validar
+            if (!product['CATEGORIA']) {
+              msjError =
+                msjError +
+                "Validación de PRODUCTO: '" +
+                product['DESCRIPCION'] +
+                "' debe de tener una CATEGORIA.  ";
+            } else {
+              ///validar q coincida con lista de categorías
+            }
+
+            if (!product['PESO (Kg)']) {
+              msjError =
+                msjError +
+                "Validación de PRODUCTO: '" +
+                product['DESCRIPCION'] +
+                "' debe de tener un PESO.  ";
+            } else {
+              /*if (!product['PESO (Kg)']>=0
+                  ) {
+                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
+                  }*/
+            }
+
+            if (!product['PRECIO COSTO']) {
+              msjError =
+                msjError +
+                "Validación de PRODUCTO: '" +
+                product['DESCRIPCION'] +
+                "' debe de tener un PRECIO COSTO.  ";
+            } else {
+              /*if (!product['PESO (Kg)']>=0
+                  ) {
+                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
+                  }*/
+            }
+
+            if (!product['PRECIO VENTA']) {
+              msjError =
+                msjError +
+                "Validación de PRODUCTO: '" +
+                product['DESCRIPCION'] +
+                "' debe de tener un PRECIO VENTA.  ";
+            } else {
+              /*if (!product['PESO (Kg)']>=0
+                  ) {
+                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
+                  }*/
+            }
+            if (!(product['STOCK INICIAL'] === 0)) {
+              if (!product['STOCK INICIAL']) {
+                msjError =
+                  msjError +
+                  "Validación de PRODUCTO: '" +
+                  product['DESCRIPCION'] +
+                  "' debe de tener un STOCK INICIAL.  ";
+              } else {
+                /*if (!product['PESO (Kg)']>=0
+                    ) {
+                      msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
+                    }*/
+              }
+            }
+
+            if (!product['TIPO PRODUCTO']) {
+              msjError =
+                msjError +
+                "Validación de PRODUCTO: '" +
+                product['DESCRIPCION'] +
+                "' debe de tener un TIPO PRODUCTO.  ";
+            } else {
+              const matchTipoProducto = tipoProducto.tipos.find(
+                (d) => d.nombre == product['TIPO PRODUCTO'],
+              );
+              if (!matchTipoProducto) {
+                msjError =
+                  msjError +
+                  "Validación de PRODUCTO: El TIPO PRODUCTO '" +
+                  product['TIPO PRODUCTO'] +
+                  "' no existe, debe de uno válido como 'Insumo' o 'Producto intermedio' o 'Producto final'.  ";
+              }
+            }
+
+            if (product['DOSIFICACION']) {
+              let productsSelected = product['DOSIFICACION']
+                .split('|')
+                .map((product2) => {
+                  let tempprod = product2.split('-');
+                  if (tempprod.length != 2) {
+                    msjError =
+                      msjError +
+                      "Validación de PRODUCTO: '" +
+                      product['DESCRIPCION'] +
+                      "', con DOSIFICACIÓN: '" +
+                      tempprod +
+                      "' Debe de tener la estructura: PRODUCTO - CANTIDAD.  ";
+                  }
+                });
+            }
+          });
 
           clientsDataV2.forEach((client) => {
-              console.log("client:::",client)
+            console.log('client:::', client);
 
-              if (!client['IDENTIFICADOR']) {
-                msjError = msjError + "Validación de CLIENTE: '"+client['NOMBRE/RAZON SOCIAL']+"' debe de tener un IDENTIFICADOR.  ";
-              } else {
-                client['IDENTIFICADOR'] = client['IDENTIFICADOR'].toString().toUpperCase();
-                const matchIdentificador = tipoIdentificador.tipos.find((d) => d.nombre == client['IDENTIFICADOR']);
-                if(!matchIdentificador){
-                  msjError = msjError + "Validación de CLIENTE: '"+client['NOMBRE/RAZON SOCIAL']+"', con IDENTIFICADOR '"+ client['IDENTIFICADOR'] +"' no existe, debe de uno válido como 'RUC' o 'DNI' o 'CE'.  ";
-                }
-              }                       
-
-              if (!client['NRO IDENTIFICADOR']) {
-                msjError = msjError + "Validación de CLIENTE: '"+client['NOMBRE/RAZON SOCIAL']+"' debe de tener NRO IDENTIFICADOR.  ";
-              } else {
-
-              } 
-
-              if (!client['NOMBRE/RAZON SOCIAL']) {
-                msjError = msjError + "Validación de CLIENTE: Con Nro Identificador: '"+client['NRO IDENTIFICADOR']+"' debe de tener NOMBRE/RAZON SOCIAL.  ";
-              } else {
-
-              } 
-
-              if (!client['DIRECCION']) {
-                msjError = msjError + "Validación de CLIENTE: '"+client['NOMBRE/RAZON SOCIAL']+"' debe de tener DIRECCION.  ";
-              } else {
-
-              } 
-
+            if (!client['IDENTIFICADOR']) {
+              msjError =
+                msjError +
+                "Validación de CLIENTE: '" +
+                client['NOMBRE/RAZON SOCIAL'] +
+                "' debe de tener un IDENTIFICADOR.  ";
+            } else {
+              client['IDENTIFICADOR'] = client['IDENTIFICADOR']
+                .toString()
+                .toUpperCase();
+              const matchIdentificador = tipoIdentificador.tipos.find(
+                (d) => d.nombre == client['IDENTIFICADOR'],
+              );
+              if (!matchIdentificador) {
+                msjError =
+                  msjError +
+                  "Validación de CLIENTE: '" +
+                  client['NOMBRE/RAZON SOCIAL'] +
+                  "', con IDENTIFICADOR '" +
+                  client['IDENTIFICADOR'] +
+                  "' no existe, debe de uno válido como 'RUC' o 'DNI' o 'CE'.  ";
+              }
             }
-          );
+
+            if (!client['NRO IDENTIFICADOR']) {
+              msjError =
+                msjError +
+                "Validación de CLIENTE: '" +
+                client['NOMBRE/RAZON SOCIAL'] +
+                "' debe de tener NRO IDENTIFICADOR.  ";
+            } else {
+            }
+
+            if (!client['NOMBRE/RAZON SOCIAL']) {
+              msjError =
+                msjError +
+                "Validación de CLIENTE: Con Nro Identificador: '" +
+                client['NRO IDENTIFICADOR'] +
+                "' debe de tener NOMBRE/RAZON SOCIAL.  ";
+            } else {
+            }
+
+            if (!client['DIRECCION']) {
+              msjError =
+                msjError +
+                "Validación de CLIENTE: '" +
+                client['NOMBRE/RAZON SOCIAL'] +
+                "' debe de tener DIRECCION.  ";
+            } else {
+            }
+          });
 
           providersData2.forEach((provider) => {
-              console.log("provider:::",provider)
+            console.log('provider:::', provider);
 
-              if (!provider['IDENTIFICADOR']) {
-                msjError = msjError + "Validación de PROVEEDOR: '"+provider['NOMBRE/RAZON SOCIAL']+"' debe de tener un IDENTIFICADOR.  ";
-              } else {
-                provider['IDENTIFICADOR'] = provider['IDENTIFICADOR'].toString().toUpperCase();
-                const matchIdentificador = tipoIdentificador.tipos.find((d) => d.nombre == provider['IDENTIFICADOR']);
-                if(!matchIdentificador){
-                  msjError = msjError + "Validación de PROVEEDOR: '"+provider['NOMBRE/RAZON SOCIAL']+"', con IDENTIFICADOR '"+ provider['IDENTIFICADOR'] +"' no existe, debe de uno válido como 'RUC' o 'DNI' o 'CE'.  ";
-                }
-              }                         
-
-              if (!provider['NRO IDENTIFICADOR']) {
-                msjError = msjError + "Validación de PROVEEDOR: '"+provider['NOMBRE/RAZON SOCIAL']+"' debe de tener NRO IDENTIFICADOR.  ";
-              } else {
-
-              } 
-
-              if (!provider['NOMBRE/RAZON SOCIAL']) {
-                msjError = msjError + "Validación de PROVEEDOR: con Nro Identificador: '"+provider['NRO IDENTIFICADOR']+"' debe de tener NOMBRE/RAZON SOCIAL.  ";
-              } else {
-
-              } 
-
-              if (!provider['DIRECCION']) {
-                msjError = msjError + "Validación de PROVEEDOR: '"+provider['NOMBRE/RAZON SOCIAL']+"' debe de tener DIRECCION.  ";
-              } else {
-
-              } 
-
+            if (!provider['IDENTIFICADOR']) {
+              msjError =
+                msjError +
+                "Validación de PROVEEDOR: '" +
+                provider['NOMBRE/RAZON SOCIAL'] +
+                "' debe de tener un IDENTIFICADOR.  ";
+            } else {
+              provider['IDENTIFICADOR'] = provider['IDENTIFICADOR']
+                .toString()
+                .toUpperCase();
+              const matchIdentificador = tipoIdentificador.tipos.find(
+                (d) => d.nombre == provider['IDENTIFICADOR'],
+              );
+              if (!matchIdentificador) {
+                msjError =
+                  msjError +
+                  "Validación de PROVEEDOR: '" +
+                  provider['NOMBRE/RAZON SOCIAL'] +
+                  "', con IDENTIFICADOR '" +
+                  provider['IDENTIFICADOR'] +
+                  "' no existe, debe de uno válido como 'RUC' o 'DNI' o 'CE'.  ";
+              }
             }
-          );
+
+            if (!provider['NRO IDENTIFICADOR']) {
+              msjError =
+                msjError +
+                "Validación de PROVEEDOR: '" +
+                provider['NOMBRE/RAZON SOCIAL'] +
+                "' debe de tener NRO IDENTIFICADOR.  ";
+            } else {
+            }
+
+            if (!provider['NOMBRE/RAZON SOCIAL']) {
+              msjError =
+                msjError +
+                "Validación de PROVEEDOR: con Nro Identificador: '" +
+                provider['NRO IDENTIFICADOR'] +
+                "' debe de tener NOMBRE/RAZON SOCIAL.  ";
+            } else {
+            }
+
+            if (!provider['DIRECCION']) {
+              msjError =
+                msjError +
+                "Validación de PROVEEDOR: '" +
+                provider['NOMBRE/RAZON SOCIAL'] +
+                "' debe de tener DIRECCION.  ";
+            } else {
+            }
+          });
 
           carriersDataV2.forEach((carrier) => {
-              console.log("carrier:::",carrier)
+            console.log('carrier:::', carrier);
 
-              if (!carrier['IDENTIFICADOR']) {
-                msjError = msjError + "Validación de TRANSPORTISTA: '"+carrier['NOMBRE/RAZON SOCIAL']+"' debe de tener un IDENTIFICADOR.  ";
-              } else {
-                carrier['IDENTIFICADOR'] = carrier['IDENTIFICADOR'].toString().toUpperCase();
-                const matchIdentificador = tipoIdentificador.tipos.find((d) => d.nombre == carrier['IDENTIFICADOR']);
-                if(!matchIdentificador){
-                  msjError = msjError + "Validación de TRANSPORTISTA: '"+carrier['NOMBRE/RAZON SOCIAL']+"', con IDENTIFICADOR '"+ carrier['IDENTIFICADOR'] +"' no existe, debe de uno válido como 'RUC' o 'DNI' o 'CE'.  ";
-                }
-              }                         
-
-              if (!carrier['NRO IDENTIFICADOR']) {
-                msjError = msjError + "Validación de TRANSPORTISTA: '"+carrier['NOMBRE/RAZON SOCIAL']+"' debe de tener NRO IDENTIFICADOR.  ";
-              } else {
-
-              } 
-
-              if (!carrier['NOMBRE/RAZON SOCIAL']) {
-                msjError = msjError + "Validación de TRANSPORTISTA: con Nro Identificador: '"+carrier['NRO IDENTIFICADOR']+"' debe de tener NOMBRE/RAZON SOCIAL.  ";
-              } else {
-
-              } 
+            if (!carrier['IDENTIFICADOR']) {
+              msjError =
+                msjError +
+                "Validación de TRANSPORTISTA: '" +
+                carrier['NOMBRE/RAZON SOCIAL'] +
+                "' debe de tener un IDENTIFICADOR.  ";
+            } else {
+              carrier['IDENTIFICADOR'] = carrier['IDENTIFICADOR']
+                .toString()
+                .toUpperCase();
+              const matchIdentificador = tipoIdentificador.tipos.find(
+                (d) => d.nombre == carrier['IDENTIFICADOR'],
+              );
+              if (!matchIdentificador) {
+                msjError =
+                  msjError +
+                  "Validación de TRANSPORTISTA: '" +
+                  carrier['NOMBRE/RAZON SOCIAL'] +
+                  "', con IDENTIFICADOR '" +
+                  carrier['IDENTIFICADOR'] +
+                  "' no existe, debe de uno válido como 'RUC' o 'DNI' o 'CE'.  ";
+              }
             }
-          );
+
+            if (!carrier['NRO IDENTIFICADOR']) {
+              msjError =
+                msjError +
+                "Validación de TRANSPORTISTA: '" +
+                carrier['NOMBRE/RAZON SOCIAL'] +
+                "' debe de tener NRO IDENTIFICADOR.  ";
+            } else {
+            }
+
+            if (!carrier['NOMBRE/RAZON SOCIAL']) {
+              msjError =
+                msjError +
+                "Validación de TRANSPORTISTA: con Nro Identificador: '" +
+                carrier['NRO IDENTIFICADOR'] +
+                "' debe de tener NOMBRE/RAZON SOCIAL.  ";
+            } else {
+            }
+          });
 
           deliveryPointsDataV2.forEach((delivery) => {
-              console.log("delivery:::",delivery)
+            console.log('delivery:::', delivery);
 
-              if (!delivery['COD_INTERNO']) {
-                msjError = msjError + "Validación de PTOS. LLEGADA: '"+delivery['LUGAR']+"' debe de tener un COD_INTERNO.  ";
-              } else {
-                delivery['COD_INTERNO'] = delivery['COD_INTERNO'].toString().toUpperCase();
-              }                     
-
-              if (!delivery['LUGAR']) {
-                msjError = msjError + "Validación de PTOS. LLEGADA: Con Cod_Interno '"+delivery['COD_INTERNO']+"' debe de tener LUGAR.  ";
-              } else {
-
-              } 
-
-              if (!delivery['UBIGEO']) {
-                msjError = msjError + "Validación de PTOS. LLEGADA: '"+delivery['LUGAR']+"' debe de tener UBIGEO.  ";
-              } else {
-
-              } 
-
-              if (!delivery['DIRECCION EXACTA']) {
-                msjError = msjError + "Validación de PTOS. LLEGADA: '"+delivery['LUGAR']+"' debe de tener DIRECCION EXACTA.  ";
-              } else {
-
-              } 
+            if (!delivery['COD_INTERNO']) {
+              msjError =
+                msjError +
+                "Validación de PTOS. LLEGADA: '" +
+                delivery['LUGAR'] +
+                "' debe de tener un COD_INTERNO.  ";
+            } else {
+              delivery['COD_INTERNO'] = delivery['COD_INTERNO']
+                .toString()
+                .toUpperCase();
             }
-          );
+
+            if (!delivery['LUGAR']) {
+              msjError =
+                msjError +
+                "Validación de PTOS. LLEGADA: Con Cod_Interno '" +
+                delivery['COD_INTERNO'] +
+                "' debe de tener LUGAR.  ";
+            } else {
+            }
+
+            if (!delivery['UBIGEO']) {
+              msjError =
+                msjError +
+                "Validación de PTOS. LLEGADA: '" +
+                delivery['LUGAR'] +
+                "' debe de tener UBIGEO.  ";
+            } else {
+            }
+
+            if (!delivery['DIRECCION EXACTA']) {
+              msjError =
+                msjError +
+                "Validación de PTOS. LLEGADA: '" +
+                delivery['LUGAR'] +
+                "' debe de tener DIRECCION EXACTA.  ";
+            } else {
+            }
+          });
 
           originPointsDataV2.forEach((origin) => {
-              console.log("origin:::",origin)
+            console.log('origin:::', origin);
 
-              if (!origin['COD_INTERNO']) {
-                msjError = msjError + "Validación de PTOS. PARTIDA: '"+origin['LUGAR']+"' debe de tener un COD_INTERNO.  ";
-              } else {
-                origin['COD_INTERNO'] = origin['COD_INTERNO'].toString().toUpperCase();
-              }                       
-
-              if (!origin['LUGAR']) {
-                msjError = msjError + "Validación de PTOS. PARTIDA: Con Cod_Interno '"+origin['COD_INTERNO']+"' debe de tener LUGAR.  ";
-              } else {
-
-              } 
-
-              if (!origin['UBIGEO']) {
-                msjError = msjError + "Validación de PTOS. PARTIDA: '"+origin['LUGAR']+"' debe de tener UBIGEO.  ";
-              } else {
-
-              } 
-
-              if (!origin['DIRECCION EXACTA']) {
-                msjError = msjError + "Validación de PTOS. PARTIDA: '"+origin['LUGAR']+"' debe de tener DIRECCION EXACTA.  ";
-              } else {
-
-              } 
+            if (!origin['COD_INTERNO']) {
+              msjError =
+                msjError +
+                "Validación de PTOS. PARTIDA: '" +
+                origin['LUGAR'] +
+                "' debe de tener un COD_INTERNO.  ";
+            } else {
+              origin['COD_INTERNO'] = origin['COD_INTERNO']
+                .toString()
+                .toUpperCase();
             }
-          );
 
+            if (!origin['LUGAR']) {
+              msjError =
+                msjError +
+                "Validación de PTOS. PARTIDA: Con Cod_Interno '" +
+                origin['COD_INTERNO'] +
+                "' debe de tener LUGAR.  ";
+            } else {
+            }
+
+            if (!origin['UBIGEO']) {
+              msjError =
+                msjError +
+                "Validación de PTOS. PARTIDA: '" +
+                origin['LUGAR'] +
+                "' debe de tener UBIGEO.  ";
+            } else {
+            }
+
+            if (!origin['DIRECCION EXACTA']) {
+              msjError =
+                msjError +
+                "Validación de PTOS. PARTIDA: '" +
+                origin['LUGAR'] +
+                "' debe de tener DIRECCION EXACTA.  ";
+            } else {
+            }
+          });
 
           driversDataV2.forEach((driver) => {
-              console.log("driver:::",driver)
+            console.log('driver:::', driver);
 
-              if (!driver['IDENTIFICADOR']) {
-                msjError = msjError + "Validación de CHOFER: '"+driver['NOMBRES']+" "+driver["APELLIDOS"]+"' debe de tener un IDENTIFICADOR.  ";
-              } else {
-                driver['IDENTIFICADOR'] = driver['IDENTIFICADOR'].toString().toUpperCase();
-                const matchIdentificador = tipoIdentificador.tipos.find((d) => d.nombre == driver['IDENTIFICADOR']);
-                if(!matchIdentificador){
-                  msjError = msjError + "Validación de CHOFER: '"+driver['NOMBRES']+" "+driver["APELLIDOS"]+"', con IDENTIFICADOR '"+ driver['IDENTIFICADOR'] +"' no existe, debe de uno válido como 'RUC' o 'DNI' o 'CE'.  ";
-                }
-              }                         
-
-              if (!driver['NRO IDENTIFICADOR']) {
-                msjError = msjError + "Validación de CHOFER: '"+driver['NOMBRES']+" "+driver["APELLIDOS"]+"' debe de tener NRO IDENTIFICADOR.  ";
-              } else {
-
-              } 
-
-              if (!driver['NOMBRES']) {
-                msjError = msjError + "Validación de CHOFER: con Nro Identificador: '"+driver['NRO IDENTIFICADOR']+"' debe de tener NOMBRES.  ";
-              } else {
-
-              } 
-
-              if (!driver['APELLIDOS']) {
-                msjError = msjError + "Validación de CHOFER: con Nro Identificador: '"+driver['NRO IDENTIFICADOR']+"' debe de tener APELLIDOS.  ";
-              } else {
-
-              } 
-
-              if (!driver['LICENCIA']) {
-                msjError = msjError + "Validación de CHOFER: '"+driver['NOMBRES']+" "+driver["APELLIDOS"]+"' debe de tener LICENCIA.  ";
-              } else {
-
-              } 
+            if (!driver['IDENTIFICADOR']) {
+              msjError =
+                msjError +
+                "Validación de CHOFER: '" +
+                driver['NOMBRES'] +
+                ' ' +
+                driver['APELLIDOS'] +
+                "' debe de tener un IDENTIFICADOR.  ";
+            } else {
+              driver['IDENTIFICADOR'] = driver['IDENTIFICADOR']
+                .toString()
+                .toUpperCase();
+              const matchIdentificador = tipoIdentificador.tipos.find(
+                (d) => d.nombre == driver['IDENTIFICADOR'],
+              );
+              if (!matchIdentificador) {
+                msjError =
+                  msjError +
+                  "Validación de CHOFER: '" +
+                  driver['NOMBRES'] +
+                  ' ' +
+                  driver['APELLIDOS'] +
+                  "', con IDENTIFICADOR '" +
+                  driver['IDENTIFICADOR'] +
+                  "' no existe, debe de uno válido como 'RUC' o 'DNI' o 'CE'.  ";
+              }
             }
-          );
+
+            if (!driver['NRO IDENTIFICADOR']) {
+              msjError =
+                msjError +
+                "Validación de CHOFER: '" +
+                driver['NOMBRES'] +
+                ' ' +
+                driver['APELLIDOS'] +
+                "' debe de tener NRO IDENTIFICADOR.  ";
+            } else {
+            }
+
+            if (!driver['NOMBRES']) {
+              msjError =
+                msjError +
+                "Validación de CHOFER: con Nro Identificador: '" +
+                driver['NRO IDENTIFICADOR'] +
+                "' debe de tener NOMBRES.  ";
+            } else {
+            }
+
+            if (!driver['APELLIDOS']) {
+              msjError =
+                msjError +
+                "Validación de CHOFER: con Nro Identificador: '" +
+                driver['NRO IDENTIFICADOR'] +
+                "' debe de tener APELLIDOS.  ";
+            } else {
+            }
+
+            if (!driver['LICENCIA']) {
+              msjError =
+                msjError +
+                "Validación de CHOFER: '" +
+                driver['NOMBRES'] +
+                ' ' +
+                driver['APELLIDOS'] +
+                "' debe de tener LICENCIA.  ";
+            } else {
+            }
+          });
 
           //msjError='';////DESCOMENTAR ESTO PARA DESACTIVAR LAS VALIDACIONES
 
-          if (msjError==''){
+          if (msjError == '') {
             const payloadCatalogs = {
               request: {
                 payload: {
@@ -573,20 +778,19 @@ const BulkLoad = (props) => {
             toUpdateCatalogs(payloadCatalogs);
             /*msjError="Todo ok"
             setShowAlert(true);*/
-          }
-          else {
+          } else {
             setShowAlert(true);
           }
-        }
-        else {
-          msjError="Validaciones de Carga Catálogo: Verifique las hojas del Excel. Debe de haber por lo menos un registro en PRODUCTOS, CLIENTES, PROVEEDORES, PUNTOS DE LLEGADA, PUNTOS DE PARTIDA, CHOFERES Y EMPRESA TRANSPORTISTA";      
+        } else {
+          msjError =
+            'Validaciones de Carga Catálogo: Verifique las hojas del Excel. Debe de haber por lo menos un registro en PRODUCTOS, CLIENTES, PROVEEDORES, PUNTOS DE LLEGADA, PUNTOS DE PARTIDA, CHOFERES Y EMPRESA TRANSPORTISTA';
           setShowAlert(true);
         }
       };
       reader.readAsBinaryString(excelOrCsv.target.files[0]);
-    }
-    else {
-      msjError="Validaciones de Carga Catálogo: Archivo no existe, verifique que lo haya cargado";      
+    } else {
+      msjError =
+        'Validaciones de Carga Catálogo: Archivo no existe, verifique que lo haya cargado';
       setShowAlert(true);
     }
   };
