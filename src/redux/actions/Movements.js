@@ -21,6 +21,7 @@ import {
   LIST_DISTRIBUTION,
   UPDATE_ROUTE,
   UPDATE_GENERATE_REFERRAL_GUIDE_VALUE,
+  GET_CHILD_ROUTES,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -287,6 +288,7 @@ export const listRoutes = (payload) => {
         dispatch({
           type: LIST_ROUTE,
           payload: data.response.payload,
+          request: payload,
         });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
@@ -296,6 +298,28 @@ export const listRoutes = (payload) => {
       });
   };
 };
+
+export const getChildRoutes = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/routePredefined/getChild', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('getChildRoute resultado', data);
+        dispatch({
+          type: GET_CHILD_ROUTES,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getChildRoute error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
 export const listDistributions = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});

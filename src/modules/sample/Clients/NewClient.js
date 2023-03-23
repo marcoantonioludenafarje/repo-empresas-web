@@ -43,8 +43,10 @@ import {
   GET_USER_DATA,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
+import {useState} from 'react';
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
+  documentType: yup.string(),
   nroDocument: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
@@ -62,6 +64,7 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.number' />)
     .email('Formato de correo invalido'),
+
   emailContact: yup
     .string()
     .typeError(<IntlMessages id='validation.number' />)
@@ -71,11 +74,13 @@ const validationSchema = yup.object({
     .number()
     .typeError(<IntlMessages id='validation.number' />)
     .max(1000000000, 'Se puede ingresar como maximo 11 caracteres'),
+
   extraInformationClient: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />),
 });
 const defaultValues = {
+  documentType: '',
   nroDocument: '',
   name: '',
   addressClient: '',
@@ -129,7 +134,8 @@ const NewClient = () => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const [config, setConfig] = useState({default_identification: 'DNI'});
+  defaultValues.documentType = config.default_identification;
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -172,7 +178,7 @@ const NewClient = () => {
     console.log('Data', data);
     console.log('objSelects', objSelects);
     newClientPayload.request.payload.clients[0].typeDocumentClient =
-      objSelects.documentType;
+      data.documentType;
     newClientPayload.request.payload.clients[0].numberDocumentClient =
       data.nroDocument;
     newClientPayload.request.payload.clients[0].denominationClient = data.name;
@@ -261,8 +267,9 @@ const NewClient = () => {
           validationSchema={validationSchema}
           initialValues={{...defaultValues}}
           onSubmit={handleData}
+          enableReinitialize={true}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({values, isSubmitting, setFieldValue}) => {
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -277,10 +284,10 @@ const NewClient = () => {
                         id='documentType-label'
                         style={{fontWeight: 200}}
                       >
-                        Identificador
+                        Identificador {JSON.stringify(values)}
                       </InputLabel>
                       <Select
-                        defaultValue='RUC'
+                        defaultValue={config.default_identification}
                         name='documentType'
                         labelId='documentType-label'
                         label='Identificador'
@@ -358,51 +365,55 @@ const NewClient = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Nombre de contacto'
-                      name='nameContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Telefono fijo o celular de contacto'
-                      name='numberContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppLowerCaseTextField
-                      label='Correo de contacto'
-                      name='emailContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
+                  {values.documentType == 'RUC' ? (
+                    <>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Nombre de contacto'
+                          name='nameContact'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Telefono fijo o celular de contacto'
+                          name='numberContact'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppLowerCaseTextField
+                          label='Correo de contacto'
+                          name='emailContact'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
+                    </>
+                  ) : null}
                   <Grid item xs={12}>
                     <AppTextField
                       label='Información adicional'

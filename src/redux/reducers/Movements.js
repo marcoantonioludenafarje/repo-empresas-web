@@ -19,6 +19,8 @@ import {
   UPDATE_ROUTE,
   ROUTE_TO_REFERRAL_GUIDE,
   UPDATE_GENERATE_REFERRAL_GUIDE_VALUE,
+  GET_CHILD_ROUTES,
+  SET_DELIVERIES_SIMPLE,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -108,10 +110,56 @@ const movementsReducer = (state = INIT_STATE, action) => {
       };
     case LIST_ROUTE:
       console.log('data de reducer LIST_ROUTE', action.payload);
+
+      let newListRoute =
+        action.payload && action.payload.Items ? action.payload.Items : [];
+      if (action.request && action.request.request.payload.LastEvaluatedKey) {
+        newListRoute = [...state.listRoute, ...newListRoute];
+      }
       return {
         ...state,
-        listRoute: action.payload,
+        listRoute: newListRoute,
+        LastEvaluatedKey:
+          action.payload && action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null,
       };
+
+    case SET_DELIVERIES_SIMPLE:
+      console.log('data de reducer GET_CHILD_ROUTES', action.payload);
+
+      return {
+        ...state,
+        deliveries: action.payload,
+      };
+
+    case GET_CHILD_ROUTES:
+      console.log('data de reducer GET_CHILD_ROUTES', action.payload);
+
+      let deliveries = [];
+
+      if (
+        action.payload &&
+        action.payload.Items &&
+        action.payload.Items.length > 0
+      ) {
+        for (var i = 0; i < action.payload.Items.length; i++) {
+          console.log('El i', i);
+          console.log('action.payload123', action.payload);
+          deliveries = [...deliveries, ...action.payload.Items[i].deliveries];
+        }
+      }
+
+      return {
+        ...state,
+        deliveries,
+        // childRoutes: (action.payload && action.payload.Items) ? action.payload.Items : [],
+        LastEvaluatedKeyChildRoute:
+          action.payload && action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null,
+      };
+
     case LIST_DISTRIBUTION:
       console.log('data de reducer LIST_DISTRIBUTION', action.payload);
       return {
