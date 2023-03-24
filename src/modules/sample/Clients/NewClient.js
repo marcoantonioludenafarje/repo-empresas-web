@@ -33,6 +33,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
@@ -284,7 +285,7 @@ const NewClient = () => {
                         id='documentType-label'
                         style={{fontWeight: 200}}
                       >
-                        Identificador {JSON.stringify(values)}
+                        Identificador
                       </InputLabel>
                       <Select
                         defaultValue={config.default_identification}
@@ -321,7 +322,7 @@ const NewClient = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre / Razón Social *'
                       name='name'
                       variant='outlined'
@@ -368,7 +369,7 @@ const NewClient = () => {
                   {values.documentType == 'RUC' ? (
                     <>
                       <Grid item xs={12}>
-                        <AppTextField
+                        <AppUpperCaseTextField
                           label='Nombre de contacto'
                           name='nameContact'
                           variant='outlined'

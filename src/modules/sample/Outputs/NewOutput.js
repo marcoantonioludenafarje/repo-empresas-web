@@ -366,6 +366,7 @@ const NewOutput = (props) => {
   };
 
   console.log('Valores default peso', weight_unit, 'moneda', moneyUnit);
+  console.log("userDataRes",userDataRes);
 
   const cancel = () => {
     setOpen2(true);
@@ -522,6 +523,11 @@ const NewOutput = (props) => {
                 documentsMovement: cleanDocuments,
                 editTotal: editTotal,
                 observation: data.outputObservation,
+                userCreated: userDataRes.userId,
+                userCreatedMetadata: {
+                  nombreCompleto: userDataRes.nombreCompleto,
+                  email: userDataRes.email,
+                }
               },
               products: selectedProducts.map((obj) => {
                 return {
@@ -923,7 +929,7 @@ const NewOutput = (props) => {
                       variant='outlined'
                       onClick={handleClickOpen.bind(this, 'document')}
                     >
-                      Añade un documento
+                      Añade documentos
                     </Button>
                   </Grid>
                 </Grid>
@@ -1177,7 +1183,7 @@ const NewOutput = (props) => {
           {typeDialog == 'client' ? (
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Selecciona un cliente'}
+                {'Búsqueda de clientes'}
                 <CancelOutlinedIcon
                   onClick={setOpen.bind(this, false)}
                   className={classes.closeButton}

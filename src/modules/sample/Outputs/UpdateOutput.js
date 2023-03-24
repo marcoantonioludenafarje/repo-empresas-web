@@ -557,6 +557,11 @@ const UpdateOutput = (props) => {
                 folderMovement: query.folderMovement,
                 contableMovementId: query.contableMovementId,
                 observation: data.outputObservation,
+                userUpdated: userDataRes.userId,
+                userUpdatedMetadata: {
+                  nombreCompleto: userDataRes.nombreCompleto,
+                  email: userDataRes.email,
+                }
               },
               products: selectedProducts.map((obj) => {
                 return {
@@ -998,7 +1003,7 @@ const UpdateOutput = (props) => {
                       variant='outlined'
                       onClick={handleClickOpen.bind(this, 'document')}
                     >
-                      Añade un documento
+                      Añade documentos
                     </Button>
                   </Grid>
                 </Grid>

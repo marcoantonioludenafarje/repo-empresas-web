@@ -201,6 +201,7 @@ const UpdateEarning = (props) => {
         numberDocumentClient: null,
         denominationClient: null,
         merchantId: userDataRes.merchantSelected.merchantId,
+        flagBusqDoc: true,
       },
     },
   };
@@ -209,6 +210,7 @@ const UpdateEarning = (props) => {
     getBusinessParameter(businessParameterPayload);
     dispatch({type: GET_CLIENTS, payload: undefined});
     setSelectedClient({});
+    console.log("getClients:",listClientsPayload);
     getClients(listClientsPayload);
     listPayments = [];
     selectedEarning.payments.map((obj) => {
