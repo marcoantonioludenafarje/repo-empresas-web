@@ -80,7 +80,7 @@ const validationSchema = yup.object({
     .typeError(<IntlMessages id='validation.string' />),
 });
 const defaultValues = {
-  documentType: '',
+  documentType: 'RUC',
   nroDocument: '',
   name: '',
   addressClient: '',
@@ -118,7 +118,7 @@ const NewClient = () => {
   const router = useRouter();
 
   let objSelects = {
-    documentType: 'RUC',
+    documentType: 'DNI',
   };
 
   //APIS
@@ -174,11 +174,12 @@ const NewClient = () => {
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
-    delete data.documentType;
-    console.log('Data', data);
-    console.log('objSelects', objSelects);
+    // delete data.documentType;
+    // console.log('Data', data);
+    // console.log('objSelects', objSelects);
     newClientPayload.request.payload.clients[0].typeDocumentClient =
       data.documentType;
+      // objSelects.documentType
     newClientPayload.request.payload.clients[0].numberDocumentClient =
       data.nroDocument;
     newClientPayload.request.payload.clients[0].denominationClient = data.name;
@@ -237,10 +238,12 @@ const NewClient = () => {
     Router.push('/sample/clients/table');
   };
 
-  const handleField = (event) => {
-    console.log('evento', event);
+  const handleField = (event, setFieldValue) => {
+
+    console.log('Esta cambiandose el valor papu', event);
     objSelects[event.target.name] = event.target.value;
     console.log('ocjSelects', objSelects);
+    setFieldValue(event.target.name, event.target.value)
   };
 
   return (
@@ -291,7 +294,7 @@ const NewClient = () => {
                         name='documentType'
                         labelId='documentType-label'
                         label='Identificador'
-                        onChange={handleField}
+                        onChange={(event) =>handleField(event,setFieldValue )}
                       >
                         <MenuItem value='RUC' style={{fontWeight: 200}}>
                           RUC
