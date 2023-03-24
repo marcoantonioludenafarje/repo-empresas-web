@@ -575,6 +575,7 @@ const InputsTable = (props) => {
   };
 
   const showStatus = (status) => {
+    console.log("status",status)
     switch (status) {
       case 'requested':
         return <IntlMessages id='movements.status.requested' />;
@@ -802,6 +803,8 @@ const InputsTable = (props) => {
               <TableCell>Precio total con IGV</TableCell>
               <TableCell>Porcentaje IGV</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Creado por</TableCell>
+              <TableCell>Modificado por</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
@@ -903,6 +906,8 @@ const InputsTable = (props) => {
                         </TableCell>
                         <TableCell>{showIgv(obj.igv)}</TableCell>
                         <TableCell>{showStatus(obj.status)}</TableCell>
+                        <TableCell>{obj.userCreatedMetadata ? obj.userCreatedMetadata.nombreCompleto: ''}</TableCell>
+                        <TableCell>{obj.userUpdatedMetadata ? obj.userUpdatedMetadata.nombreCompleto : ''}</TableCell>
                         <TableCell>
                           <Button
                             id='basic-button'

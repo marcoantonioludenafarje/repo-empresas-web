@@ -89,6 +89,7 @@ const AddProductForm = ({sendData}) => {
         numberDocumentClient: '',
         denominationClient: '',
         merchantId: 'KX824',
+        flagBusqDoc: true,
       },
     },
   };
@@ -156,7 +157,7 @@ const AddProductForm = ({sendData}) => {
       sendData(selectedClient);
       selectedClient = {};
     } else {
-      console.log('Porfavor selecciona un cliente');
+      console.log('Porfavor busque y seleccione un cliente');
       setShowAlert(true);
     }
     setSubmitting(false);
@@ -183,7 +184,7 @@ const AddProductForm = ({sendData}) => {
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={11}>
                     <AppTextField
-                      label='Cliente'
+                      label='Ingrese nombre del cliente o su documento de identidad'
                       name='clientId'
                       htmlFor='filled-adornment-password'
                       variant='outlined'

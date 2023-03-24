@@ -505,6 +505,11 @@ const NewInput = (props) => {
                 documentsMovement: cleanDocuments,
                 editTotal: editTotal,
                 observation: data.inputObservation,
+                userCreated: userDataRes.userId,
+                userCreatedMetadata: {
+                  nombreCompleto: userDataRes.nombreCompleto,
+                  email: userDataRes.email,
+                }
               },
               products: selectedProducts.map((obj) => {
                 return {
@@ -930,7 +935,7 @@ const NewInput = (props) => {
                       variant='outlined'
                       onClick={handleClickOpen.bind(this, 'document')}
                     >
-                      Añade un documento
+                      Añade documentos
                     </Button>
                   </Grid>
                 </Grid>

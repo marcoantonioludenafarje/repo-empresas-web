@@ -920,6 +920,8 @@ const OutputsTable = (props) => {
               <TableCell>Precio total sin IGV</TableCell>
               <TableCell>Precio total con IGV</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Creado por</TableCell>
+              <TableCell>Modificado por</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
@@ -1024,6 +1026,8 @@ const OutputsTable = (props) => {
                           : ''}
                       </TableCell>
                       <TableCell>{showStatus(obj.status)}</TableCell>
+                      <TableCell>{obj.userCreatedMetadata ? obj.userCreatedMetadata.nombreCompleto: ''}</TableCell>
+                      <TableCell>{obj.userUpdatedMetadata ? obj.userUpdatedMetadata.nombreCompleto : ''}</TableCell>
                       <TableCell>
                         <Button
                           id='basic-button'
