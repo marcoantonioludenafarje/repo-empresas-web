@@ -117,9 +117,11 @@ const NewClient = () => {
   const [minTutorial, setMinTutorial] = React.useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [isRUC, setRUC] = React.useState(false);
+  const [identidad, setIdentidad] = React.useState('');
 
   let objSelects = {
-    documentType: 'DNI',
+    documentType: '',
   };
 
   //APIS
@@ -135,8 +137,8 @@ const NewClient = () => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  const [config, setConfig] = useState({default_identification: 'DNI'});
-  defaultValues.documentType = config.default_identification;
+  //const [config, setConfig] = useState({default_identification: 'DNI'});
+  //defaultValues.documentType = config.default_identification;
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -175,23 +177,29 @@ const NewClient = () => {
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
-    // delete data.documentType;
-    // console.log('Data', data);
-    // console.log('objSelects', objSelects);
+    //delete data.documentType;
+    console.log('Data', data);
+    console.log('objSelects', objSelects);
     newClientPayload.request.payload.clients[0].typeDocumentClient =
-      data.documentType;
-      // objSelects.documentType
+      identidad;
     newClientPayload.request.payload.clients[0].numberDocumentClient =
       data.nroDocument;
     newClientPayload.request.payload.clients[0].denominationClient = data.name;
     newClientPayload.request.payload.clients[0].addressClient =
       data.addressClient;
-    newClientPayload.request.payload.clients[0].emailContact =
-      data.emailContact;
     newClientPayload.request.payload.clients[0].emailClient = data.emailClient;
-    newClientPayload.request.payload.clients[0].nameContact = data.nameContact;
     newClientPayload.request.payload.clients[0].numberContact =
-      data.numberContact;
+        data.numberContact;
+    if (isRUC){
+      newClientPayload.request.payload.clients[0].emailContact =
+        data.emailContact;    
+      newClientPayload.request.payload.clients[0].nameContact = data.nameContact;      
+    }
+    else {
+      newClientPayload.request.payload.clients[0].emailContact =
+        data.emailClient;    
+      newClientPayload.request.payload.clients[0].nameContact = data.name;
+    }    
     newClientPayload.request.payload.clients[0].extraInformationClient =
       data.extraInformationClient;
     toNewClient(newClientPayload);
@@ -243,9 +251,20 @@ const NewClient = () => {
 
     console.log('Esta cambiandose el valor papu', event);
     objSelects[event.target.name] = event.target.value;
-    console.log('ocjSelects', objSelects);
-    setFieldValue(event.target.name, event.target.value)
+    setRUC(objSelects.documentType=='RUC' ? true : false);
+    console.log("objSelects",objSelects);
+    setIdentidad(objSelects.documentType);
   };
+
+  const inicializaIdentidad = () => {
+    if (!identidad){
+      setIdentidad(typeClient=='PN'?'DNI':'RUC');
+      console.log("inicializaIdentidad",identidad);
+    }
+    return '';
+  }
+
+  const typeClient = userDataRes.merchantSelected.typeClient;
 
   return (
     <Card sx={{p: 4}}>
@@ -290,12 +309,18 @@ const NewClient = () => {
                       >
                         Identificador
                       </InputLabel>
+                      {inicializaIdentidad()}
                       <Select
-                        defaultValue={config.default_identification}
+                        defaultValue={typeClient=='PN'?'DNI':'RUC'}//{config.default_identification}
                         name='documentType'
                         labelId='documentType-label'
                         label='Identificador'
-                        onChange={(event) =>handleField(event,setFieldValue )}
+                        //onChange={handleField}
+                        onChange={(option, value) => {                          
+                          objSelects['documentType'] = value.props.value;
+                          setRUC(objSelects.documentType=='RUC' ? true : false);
+                          setIdentidad(objSelects.documentType);
+                        }}
                       >
                         <MenuItem value='RUC' style={{fontWeight: 200}}>
                           RUC
@@ -369,27 +394,12 @@ const NewClient = () => {
                       }}
                     />
                   </Grid>
-                  {values.documentType == 'RUC' ? (
+                  { isRUC ? (
                     <>
                       <Grid item xs={12}>
                         <AppUpperCaseTextField
                           label='Nombre de contacto'
                           name='nameContact'
-                          variant='outlined'
-                          sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              fontSize: 14,
-                            },
-                            my: 2,
-                            mx: 0,
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <AppTextField
-                          label='Telefono fijo o celular de contacto'
-                          name='numberContact'
                           variant='outlined'
                           sx={{
                             width: '100%',
@@ -420,6 +430,21 @@ const NewClient = () => {
                   ) : null}
                   <Grid item xs={12}>
                     <AppTextField
+                      label='Telefono fijo o celular de contacto'
+                      name='numberContact'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
                       label='Información adicional'
                       multiline
                       rows={4}
@@ -434,9 +459,8 @@ const NewClient = () => {
                         mx: 0,
                       }}
                     />
-                  </Grid>
+                  </Grid>                  
                 </Grid>
-
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -626,6 +650,6 @@ const NewClient = () => {
       </Dialog>
     </Card>
   );
-};
+}; 
 
 export default NewClient;

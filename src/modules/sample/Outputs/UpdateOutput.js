@@ -775,6 +775,8 @@ const UpdateOutput = (props) => {
     setOpenForm(false);
   };
 
+  const typeClient = userDataRes.merchantSelected.typeClient;
+
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -953,7 +955,7 @@ const UpdateOutput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  {typeDocument == 'sales' ? (
+                  {typeClient!='PN' && typeDocument == 'sales' ? (
                     <Grid
                       item
                       xs={4}
@@ -997,6 +999,7 @@ const UpdateOutput = (props) => {
                     </Collapse>
                   </Grid>
 
+                  {typeClient!='PN' ? (
                   <Grid item xs={12}>
                     <Button
                       sx={{width: 1}}
@@ -1006,14 +1009,23 @@ const UpdateOutput = (props) => {
                       Añade documentos
                     </Button>
                   </Grid>
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                    typeForm={'updateOutput'}
-                  />
-                </Box>
+
+                {typeClient!='PN' ? (
+                  <Box sx={{my: 5}}>
+                    <DocumentsTable
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                      typeForm={'updateOutput'}
+                    />
+                  </Box>
+                ) : (
+                  <></>
+                )}
+                
                 <Grid
                   container
                   spacing={2}
@@ -1158,7 +1170,7 @@ const UpdateOutput = (props) => {
           {typeDialog == 'client' ? (
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Selecciona un cliente'}
+                {'Búsqueda de clientes'}
                 <CancelOutlinedIcon
                   onClick={setOpen.bind(this, false)}
                   className={classes.closeButton}

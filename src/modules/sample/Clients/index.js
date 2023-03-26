@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
 let listPayload = {
   request: {
     payload: {
-      typeDocumentClient: 'RUC',
+      typeDocumentClient: '',
       numberDocumentClient: '',
       denominationClient: '',
       merchantId: '',
@@ -163,7 +163,7 @@ const ClientTable = (arrayObjs, props) => {
           },
         },
       };
-      listPayload.request.payload.typeDocumentClient = 'RUC';
+      listPayload.request.payload.typeDocumentClient = '';
       toGetUserData(getUserDataPayload);
     }
   }, []);
@@ -353,7 +353,7 @@ const ClientTable = (arrayObjs, props) => {
             Identificador
           </InputLabel>
           <Select
-            defaultValue='RUC'
+            defaultValue=''
             name='typeDocumentClient'
             labelId='documentType-label'
             label='Identificador'

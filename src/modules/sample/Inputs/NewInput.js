@@ -686,6 +686,8 @@ const NewInput = (props) => {
     console.log('Evento de generar guía', isInputChecked);
   };
 
+  const typeClient = userDataRes.merchantSelected.typeClient;
+
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -871,19 +873,23 @@ const NewInput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    sx={{display: 'flex', alignItems: 'center'}}
-                  >
-                    <FormControlLabel
-                      disabled={Number(igvDefault) > 0 ? false : true}
-                      checked={isIgvChecked}
-                      control={<Checkbox onChange={handleIGV} />}
-                      label='IGV'
-                    />
-                    {igvDefault}
-                  </Grid>
+                  {typeClient!='PN' ? (
+                    <Grid
+                      item
+                      xs={4}
+                      sx={{display: 'flex', alignItems: 'center'}}
+                    >
+                      <FormControlLabel
+                        disabled={Number(igvDefault) > 0 ? false : true}
+                        checked={isIgvChecked}
+                        control={<Checkbox onChange={handleIGV} />}
+                        label='IGV'
+                      />
+                      {igvDefault}
+                    </Grid>
+                   ) : (
+                    <></>
+                  )}
 
                   {/* <Grid
                     item
@@ -929,22 +935,32 @@ const NewInput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={handleClickOpen.bind(this, 'document')}
-                    >
-                      Añade documentos
-                    </Button>
-                  </Grid>
+                  {typeClient!='PN' ? (
+                    <Grid item xs={12}>
+                      <Button
+                        sx={{width: 1}}
+                        variant='outlined'
+                        onClick={handleClickOpen.bind(this, 'document')}
+                      >
+                        Añade documentos
+                      </Button>
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                  />
-                </Box>
+
+                {typeClient!='PN' ? (
+                  <Box sx={{my: 5}}>
+                    <DocumentsTable
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                    />
+                  </Box>
+                ) : (
+                  <></>
+                )}
+
                 <Grid
                   container
                   spacing={2}
@@ -956,7 +972,7 @@ const NewInput = (props) => {
                       variant='outlined'
                       onClick={handleClickOpen.bind(this, 'provider')}
                     >
-                      Selecciona un proveedor
+                      Selecciona un Proveedor
                     </Button>
                   </Grid>
                   <Grid item xs={4} sx={{textAlign: 'center'}}>
@@ -1183,7 +1199,7 @@ const NewInput = (props) => {
           {typeDialog == 'provider' ? (
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Selecciona un proveedor'}
+                {'Búsqueda de proveedores'}
                 <CancelOutlinedIcon
                   onClick={setOpen.bind(this, false)}
                   className={classes.closeButton}

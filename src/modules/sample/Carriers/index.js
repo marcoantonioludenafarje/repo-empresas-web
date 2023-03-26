@@ -371,7 +371,7 @@ const CarrierTable = (arrayObjs, props) => {
             Identificador
           </InputLabel>
           <Select
-            defaultValue='RUC'
+            defaultValue=''
             name='typeDocumentCarrier'
             labelId='documentType-label'
             label='Identificador'

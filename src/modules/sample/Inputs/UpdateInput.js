@@ -667,6 +667,8 @@ const UpdateInput = (props) => {
     console.log('Evento de generar guía', isInputChecked);
   };
 
+  const typeClient = userDataRes.merchantSelected.typeClient;
+
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -872,23 +874,28 @@ const UpdateInput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    sx={{display: 'flex', alignItems: 'center'}}
-                  >
-                    <FormControlLabel
-                      label='IGV'
-                      control={
-                        <Checkbox
-                          onChange={handleIGV}
-                          defaultChecked={
-                            Number(query.igv) > 0 || query.igv == 'true'
-                          }
-                        />
-                      }
-                    />
-                  </Grid>
+
+                  {typeClient!='PN' ? (
+                    <Grid
+                      item
+                      xs={4}
+                      sx={{display: 'flex', alignItems: 'center'}}
+                    >
+                      <FormControlLabel
+                        label='IGV'
+                        control={
+                          <Checkbox
+                            onChange={handleIGV}
+                            defaultChecked={
+                              Number(query.igv) > 0 || query.igv == 'true'
+                            }
+                          />
+                        }
+                      />
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
                   <Grid xs={12}>
                     <Collapse in={showInfo}>
                       <Alert
@@ -912,23 +919,33 @@ const UpdateInput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={handleClickOpen.bind(this, 'document')}
-                    >
-                      Añade documentos
-                    </Button>
-                  </Grid>
+                  {typeClient!='PN' ? (
+                    <Grid item xs={12}>
+                      <Button
+                        sx={{width: 1}}
+                        variant='outlined'
+                        onClick={handleClickOpen.bind(this, 'document')}
+                      >
+                        Añade documentos
+                      </Button>
+                    </Grid>
+                    ) : (
+                      <></>
+                    )}
                 </Grid>
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                    typeForm={'updateInput'}
-                  />
-                </Box>
+
+                {typeClient!='PN' ? (
+                  <Box sx={{my: 5}}>
+                    <DocumentsTable
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                      typeForm={'updateInput'}
+                    />
+                  </Box>
+                ) : (
+                  <></>
+                )}
+
                 <Grid
                   container
                   spacing={2}
@@ -941,7 +958,7 @@ const UpdateInput = (props) => {
                       disabled
                       onClick={handleClickOpen.bind(this, 'provider')}
                     >
-                      Selecciona un proveedor
+                      Selecciona un Proveedor
                     </Button>
                   </Grid>
                   <Grid item xs={4} sx={{textAlign: 'center'}}>
@@ -1065,7 +1082,7 @@ const UpdateInput = (props) => {
           {typeDialog == 'provider' ? (
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Selecciona un proveedor'}
+                {'Búsqueda de proveedores'}
                 <CancelOutlinedIcon
                   onClick={setOpen.bind(this, false)}
                   className={classes.closeButton}
