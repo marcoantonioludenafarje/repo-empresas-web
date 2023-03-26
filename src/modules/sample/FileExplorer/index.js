@@ -542,7 +542,8 @@ const FileExplorer = (props) => {
     downloadZipPayload.request.payload.objects[0].path = newPath;
     downloadZipPayload.request.payload.objects[0].isFolder = true;
     downloadZipPayload.request.payload.pathStream = actualPath;
-    downloadZipPayload.request.payload.zipFileName = `${folder}.zip`;
+    let randomValue = Math.floor(Math.random() * (10000 - 1)) + 1;
+    downloadZipPayload.request.payload.zipFileName = `${folder}-${randomValue}.zip`;
     console.log('Path para setear', newPath);
     dispatch({type: DOWNLOAD_ZIP, payload: undefined});
     toDownloadZip(downloadZipPayload);
