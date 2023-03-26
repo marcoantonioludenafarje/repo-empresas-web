@@ -115,6 +115,11 @@ let deletePayload = {
       movementHeaderId: '',
       folderMovement: '',
       contableMovementId: '',
+      userUpdated: '',
+      userUpdatedMetadata: {
+        nombreCompleto: '',
+        email: '',
+      }
     },
   },
 };
@@ -317,31 +322,58 @@ const InputsTable = (props) => {
     let listResult = [];
     getMovementsRes.map((obj) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
-      obj.createdDate = convertToDateWithoutTime(obj.createdDate);
+      obj.codigo1 = showMinType(obj.movementType) + '-' + (obj.codMovement ? obj.codMovement.split('-')[1] : '');
+      obj.timestampMovement = convertToDateWithoutTime(obj.timestampMovement);
+      obj.updatedDate = convertToDateWithoutTime(obj.updatedDate);
+      obj.movementSubType = (`${showSubtypeMovement(obj.movementSubType,'x')}`?`${showSubtypeMovement(obj.movementSubType,'x')}`:'');      
+      obj.providerdenomination = (obj.provider ? obj.provider.denomination : obj.providerName);
+      obj.totalPrice1 = (obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '');
+      obj.totalPriceWithIgv1 = (obj.totalPriceWithIgv ? Number(obj.totalPriceWithIgv.toFixed(3)) : '');
+      obj.status1 = (`${showStatus(obj.status,'x')}`?`${showStatus(obj.status,'x')}`:'');
+      obj.userCreatedMetadata1 = (obj.userCreatedMetadata ? obj.userCreatedMetadata.nombreCompleto: '');
+      obj.userUpdatedMetadata1 = (obj.userUpdatedMetadata ? obj.userUpdatedMetadata.nombreCompleto : '');
       listResult.push(
         (({
-          createdDate,
-          documentIntern,
-          providerName,
+          codigo1,
+          timestampMovement,
+          updatedDate,
+          movementSubType,
+          providerdenomination,
           descriptionProducts,
-          totalPrice,
+          totalPrice1,
+          totalPriceWithIgv1,
+          status1,
+          userCreatedMetadata1,
+          userUpdatedMetadata1,
         }) => ({
-          createdDate,
-          documentIntern,
-          providerName,
+          codigo1,
+          timestampMovement,
+          updatedDate,
+          movementSubType,
+          providerdenomination,
           descriptionProducts,
-          totalPrice,
+          totalPrice1,
+          totalPriceWithIgv1,
+          status1,
+          userCreatedMetadata1,
+          userUpdatedMetadata1,
         }))(obj),
       );
     });
     return listResult;
   };
   const headersExcel = [
+    'Codigo',
     'Fecha registrada',
-    'Documento',
-    'Proveedor',
+    'Ultima actualización',
+    'Tipo de movimiento',
+    'Cliente',
     'Detalle productos',
-    `Precio total (${money_unit})`,
+    `Precio total ${money_unit} sin IGV`,
+    `Precio total ${money_unit} con IGV`,
+    'Estado',
+    'Creado por',
+    'Modificado por',
   ];
   const exportDoc = () => {
     var ws = XLSX.utils.json_to_sheet(cleanList());
@@ -401,6 +433,10 @@ const InputsTable = (props) => {
     deletePayload.request.payload.folderMovement = selectedInput.folderMovement
       ? selectedInput.folderMovement
       : '';
+    deletePayload.request.payload.userUpdated = userDataRes.userId;
+    deletePayload.request.payload.userUpdatedMetadata.nombreCompleto = userDataRes.nombreCompleto;
+    deletePayload.request.payload.userUpdatedMetadata.email = userDataRes.email;
+    
     dispatch({type: GET_MOVEMENTS, payload: undefined});
     toDeleteMovement(deletePayload);
     setOpen2(false);
@@ -574,18 +610,31 @@ const InputsTable = (props) => {
     }
   };
 
-  const showStatus = (status) => {
-    console.log("status",status)
-    switch (status) {
-      case 'requested':
-        return <IntlMessages id='movements.status.requested' />;
-        break;
-      case 'complete':
-        return <IntlMessages id='movements.status.complete' />;
-        break;
-      default:
-        return null;
+  const showStatus = (status,text) => {
+    if (!text){
+      switch (status) {
+        case 'requested':
+          return <IntlMessages id='movements.status.requested' />;
+          break;
+        case 'complete':
+          return <IntlMessages id='movements.status.complete' />;
+          break;
+        default:
+          return null;
+      }
     }
+    else {
+      switch (status) {
+        case 'requested':
+          return "Solicitado";
+          break;
+        case 'complete':
+          return "Completado";
+          break;
+        default:
+          return null;
+      }
+    }    
   };
 
   const showIgv = (igv) => {

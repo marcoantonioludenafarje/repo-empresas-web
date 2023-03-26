@@ -365,7 +365,7 @@ const DriverTable = (arrayObjs, props) => {
             Identificador
           </InputLabel>
           <Select
-            defaultValue='DNI'
+            defaultValue=''
             name='typeDocumentDriver'
             labelId='documentType-label'
             label='Identificador'

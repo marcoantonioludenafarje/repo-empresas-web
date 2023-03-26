@@ -265,7 +265,7 @@ const NewLocation = () => {
     if (readyData) {
       setObjUbigeo(ubigeos[0]);
       setUbigeo(ubigeos[0].ubigeo.toString());
-      objSelectU.ubigeo = ubigeos[0].ubigeo.toString();
+      objSelectsU.ubigeo = ubigeos[0].ubigeo.toString();
       setExistUbigeo(true);
       setReadyData(true);
     }

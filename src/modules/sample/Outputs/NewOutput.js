@@ -727,6 +727,8 @@ const NewOutput = (props) => {
     console.log('Evento de generar guía', isInputChecked);
   };
 
+  const typeClient = userDataRes.merchantSelected.typeClient;
+
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -883,7 +885,7 @@ const NewOutput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  {typeDocument == 'sales' ? (
+                  {typeClient!='PN' && typeDocument == 'sales' ? (
                     <Grid
                       item
                       xs={4}
@@ -923,22 +925,32 @@ const NewOutput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={handleClickOpen.bind(this, 'document')}
-                    >
-                      Añade documentos
-                    </Button>
-                  </Grid>
+                  {typeClient!='PN' ? (
+                    <Grid item xs={12}>
+                      <Button
+                        sx={{width: 1}}
+                        variant='outlined'
+                        onClick={handleClickOpen.bind(this, 'document')}
+                      >
+                        Añade documentos
+                      </Button>
+                    </Grid>
+                    ) : (
+                      <></>
+                    )}
                 </Grid>
+                
+                {typeClient!='PN' ? (
                 <Box sx={{my: 5}}>
                   <DocumentsTable
                     arrayObjs={listDocuments}
                     toDelete={removeDocument}
                   />
-                </Box>
+                </Box>            
+                ) : (
+                  <></>
+                )}
+
                 <Grid
                   container
                   spacing={2}
@@ -1283,7 +1295,7 @@ const NewOutput = (props) => {
           >
             {getMovementsRes.length !== 0 ? (
               <>
-                {!hasBill.includes('referralGuide') ? (
+                {typeClient!='PN' && !hasBill.includes('referralGuide') ? (
                   <Button
                     color='primary'
                     sx={{width: 1, px: 7, my: 2}}
@@ -1300,6 +1312,25 @@ const NewOutput = (props) => {
                     }}
                   >
                     Generar Guía de remisión
+                  </Button>
+                ) : null}
+                {typeClient=='PN' && !hasBill.includes('bill') ? (
+                  <Button
+                    color='primary'
+                    sx={{width: 1, px: 7, my: 2}}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/receipts/get',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
+                  >
+                    Generar Boleta Venta
                   </Button>
                 ) : null}
                 {!hasBill.includes('bill') ? (

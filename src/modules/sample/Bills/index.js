@@ -659,7 +659,7 @@ const BillsTable = (props) => {
           </MenuItem>
         ) : null}
 
-        {!selectedBill.cancelStatus &&
+       {/*  {!selectedBill.cancelStatus &&
         localStorage
           .getItem('pathsBack')
           .includes('/facturacion/bill/cancel') ? (
@@ -671,7 +671,7 @@ const BillsTable = (props) => {
             <DoDisturbAltIcon sx={{mr: 1, my: 'auto'}} />
             Anular
           </MenuItem>
-        ) : null}
+        ) : null} */}
       </Menu>
     </Card>
   );
