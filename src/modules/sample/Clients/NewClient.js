@@ -81,7 +81,7 @@ const validationSchema = yup.object({
     .typeError(<IntlMessages id='validation.string' />),
 });
 const defaultValues = {
-  documentType: '',
+  documentType: 'RUC',
   nroDocument: '',
   name: '',
   addressClient: '',
@@ -247,8 +247,9 @@ const NewClient = () => {
     Router.push('/sample/clients/table');
   };
 
-  const handleField = (event) => {
-    console.log('evento', event);
+  const handleField = (event, setFieldValue) => {
+
+    console.log('Esta cambiandose el valor papu', event);
     objSelects[event.target.name] = event.target.value;
     setRUC(objSelects.documentType=='RUC' ? true : false);
     console.log("objSelects",objSelects);
@@ -649,6 +650,6 @@ const NewClient = () => {
       </Dialog>
     </Card>
   );
-};
+}; 
 
 export default NewClient;

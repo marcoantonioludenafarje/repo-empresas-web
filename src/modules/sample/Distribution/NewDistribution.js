@@ -76,6 +76,7 @@ import {getCarriers} from '../../../redux/actions/Carriers';
 import {
   generateDistribution,
   listRoutes,
+  getChildRoutes,
 } from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -122,8 +123,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 let selectedDelivery = {};
 let selectedDistribution = '';
+
+let getChildRoutesPayload = {
+  request: {
+    payload: {
+      deliveryFatherId: '',
+    },
+  },
+};
+
 const Distribution = (props) => {
   const {listRoute} = useSelector(({movements}) => movements);
+  const {deliveries, LastEvaluatedKeyChildRoute} = useSelector(
+    ({movements}) => movements,
+  );
+
+
+
+
   const emptyRoute = {
     empty: true,
     carrierDocumentType: 'Vacío',
@@ -229,6 +246,39 @@ const Distribution = (props) => {
     },
   };
 
+
+  const toGetChildRoutes = (payload) => {
+    dispatch(getChildRoutes(payload));
+  };
+
+  useEffect(() => {
+    console.log("Aca vienen los deliveries", deliveries)
+    if(deliveries && deliveries.length>0){
+      console.log("Entro a setear ahora", deliveries)
+
+      let newDeliveries = deliveries.map((obj) => {
+        obj.products = obj.productsInfo;
+        obj.totalWeight = obj.totalGrossWeight;
+        obj.numberPackages = obj.numberOfPackages;
+        obj.startingAddress = obj.startingPointAddress;
+        obj.arrivalAddress = obj.arrivalPointAddress;
+        obj.driverName = obj.driverDenomination;
+        obj.plate = obj.carrierPlateNumber;
+        obj.transferStartDate = dateWithHyphen(Date.now());
+        obj.generateReferralGuide = true;
+        return obj;
+      });
+      console.log('initial newDeliveries', newDeliveries);
+
+
+
+      setRoutes(newDeliveries)
+    }
+  }, [deliveries]);
+
+  
+
+
   useEffect(() => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
@@ -265,20 +315,38 @@ const Distribution = (props) => {
       const initialRoute = listRoute[0];
       setSelectedRouteId(initialRoute.routePredefinedId);
       setSelectedRoute(initialRoute);
-      let deliveries = initialRoute.deliveries.map((obj) => {
-        obj.products = obj.productsInfo;
-        obj.totalWeight = obj.totalGrossWeight;
-        obj.numberPackages = obj.numberOfPackages;
-        obj.startingAddress = obj.startingPointAddress;
-        obj.arrivalAddress = obj.arrivalPointAddress;
-        obj.driverName = obj.driverDenomination;
-        obj.plate = obj.carrierPlateNumber;
-        obj.transferStartDate = dateWithHyphen(Date.now());
-        obj.generateReferralGuide = true;
-        return obj;
-      });
-      console.log('initial deliveries', deliveries);
-      setRoutes(deliveries);
+
+      // Es una ruta predefinida con el nuevo formato
+      if(initialRoute.routesChildId && initialRoute.routesChildId.length >0){
+        getChildRoutesPayload.request.payload.deliveryFatherId =
+        initialRoute.routePredefinedId;
+
+        setRoutes([]);
+        toGetChildRoutes(getChildRoutesPayload);
+
+
+
+      // Ahora chekaremos la sgte casuistica simple  
+      }else{
+
+        let deliveries = initialRoute.deliveries.map((obj) => {
+          obj.products = obj.productsInfo;
+          obj.totalWeight = obj.totalGrossWeight;
+          obj.numberPackages = obj.numberOfPackages;
+          obj.startingAddress = obj.startingPointAddress;
+          obj.arrivalAddress = obj.arrivalPointAddress;
+          obj.driverName = obj.driverDenomination;
+          obj.plate = obj.carrierPlateNumber;
+          obj.transferStartDate = dateWithHyphen(Date.now());
+          obj.generateReferralGuide = true;
+          return obj;
+        });
+        console.log('initial deliveries', deliveries);
+        setRoutes(deliveries);
+
+
+      }
+
     }
   }, [listRoute]);
 
@@ -851,7 +919,7 @@ const Distribution = (props) => {
               alignItems: 'center',
             }}
           >
-            <IntlMessages id='common.deliveries' />
+            <IntlMessages id='common.deliveries' /> {selectedRoute && routes.length >0 ? `(${routes.length}) puntos` : `(Cargando ${selectedRoute.cantDeliveries} puntos)`}
           </Typography>
           <IconButton
             onClick={() => {

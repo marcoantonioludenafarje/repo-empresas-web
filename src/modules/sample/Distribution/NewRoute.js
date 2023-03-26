@@ -1109,10 +1109,10 @@ const Distribution = (props) => {
                       <>
                         <TableRow key={index2}>
                           <TableCell>{index2 + 1}</TableCell>
-                          <TableCell>{route.arrivalAddress}</TableCell>
-                          <TableCell>{route.arrivalPointUbigeo}</TableCell>
                           <TableCell>{route.startingAddress}</TableCell>
                           <TableCell>{route.startingPointUbigeo}</TableCell>
+                          <TableCell>{route.arrivalAddress}</TableCell>
+                          <TableCell>{route.arrivalPointUbigeo}</TableCell>
                           <TableCell>{route.carrierDenomination}</TableCell>
                           <TableCell>
                             {route.driverDocumentType &&
