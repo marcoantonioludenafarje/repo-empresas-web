@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useAuthMethod, useAuthUser} from '../../../@crema/utility/AuthHooks';
@@ -51,12 +52,8 @@ const validationSchema = yup.object({
     .string()
     .required(<IntlMessages id='validation.reTypePassword' />),
   name: yup.string().required(<IntlMessages id='validation.required' />),
-  lastName: yup
-    .string()
-    .required(<IntlMessages id='validation.required' />),
-  cellphone: yup
-    .number()
-    .required(<IntlMessages id='validation.cellphone' />),
+  lastName: yup.string().required(<IntlMessages id='validation.required' />),
+  cellphone: yup.number().required(<IntlMessages id='validation.cellphone' />),
   businessSocialReason: yup
     .string()
     .required(<IntlMessages id='validation.required' />),
@@ -133,6 +130,7 @@ const SignupAwsCognito = () => {
           validationSchema={validationSchema}
           onSubmit={(data, {setSubmitting, setErrors}) => {
             setSubmitting(true);
+            data.email = data.email.toLowerCase();
             data.cellphone = data.cellphone.toString();
             if (data.password !== data.confirmPassword) {
               console.log('No coincidieron', data);
@@ -171,7 +169,7 @@ const SignupAwsCognito = () => {
                 <IntlMessages id='common.userData' />
               </Typography>
               <Box sx={{mb: {xs: 4, xl: 5}}}>
-                <AppTextField
+                <AppLowerCaseTextField
                   label={<IntlMessages id='common.email' />}
                   name='email'
                   variant='outlined'
@@ -240,10 +238,17 @@ const SignupAwsCognito = () => {
                   }}
                 />
               </Box>
-                      
+
               <AppGridContainer spacing={4}>
                 <Grid item xs={2} md={2}>
-                  <TextField disabled defaultValue={'+51'} label={<IntlMessages id='common.cellphoneCountryCod' />} variant="filled" color="success" focused />
+                  <TextField
+                    disabled
+                    defaultValue={'+51'}
+                    label={<IntlMessages id='common.cellphoneCountryCod' />}
+                    variant='filled'
+                    color='success'
+                    focused
+                  />
                 </Grid>
                 <Grid item xs={10} md={10}>
                   <Box sx={{mb: {xs: 4, xl: 5}}}>
@@ -261,7 +266,6 @@ const SignupAwsCognito = () => {
                   </Box>
                 </Grid>
               </AppGridContainer>
-              
 
               {/* <Box
                 sx={{

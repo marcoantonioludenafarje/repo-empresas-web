@@ -125,6 +125,27 @@ const validationSchema = yup.object({
     .required(<IntlMessages id='validation.required' />),
 });
 
+const objectsAreEqual = (a, b) => {
+  // Comprobar si los dos valores son objetos
+  if (typeof a === 'object' && typeof b === 'object') {
+    // Comprobar si los objetos tienen las mismas propiedades
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) {
+      return false;
+    }
+    // Comparar el valor de cada propiedad de forma recursiva
+    for (const key of aKeys) {
+      if (!objectsAreEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  // Comparar los valores directamente
+  return a === b;
+};
+
 const useForceUpdate = () => {
   const [reload, setReload] = React.useState(0); // integer state
   return () => setReload((value) => value + 1); // update the state to force render
@@ -377,13 +398,18 @@ const GetReferralGuide = () => {
           routeToReferralGuide.carrierPlateNumber,
         );
         changeValueField('driverName', routeToReferralGuide.driverDenomination);
-        changeValueField('driverLastName', routeToReferralGuide.driverLastName ? routeToReferralGuide.driverLastName : "");
+        changeValueField(
+          'driverLastName',
+          routeToReferralGuide.driverLastName
+            ? routeToReferralGuide.driverLastName
+            : '',
+        );
         if (
           routeToReferralGuide.carrierDocumentType &&
           typeof routeToReferralGuide.carrierDocumentType === 'string'
         ) {
           setDriverDocumentType(
-            routeToReferralGuide.carrierDocumentType.toString().toUpperCase(),
+            routeToReferralGuide.driverDocumentType.toString().toUpperCase(),
           );
         }
         changeValueField(
@@ -392,7 +418,9 @@ const GetReferralGuide = () => {
         );
         changeValueField(
           'driverLicenseNumber',
-          routeToReferralGuide.driverLicenseNumber ? routeToReferralGuide.driverLicenseNumber : "",
+          routeToReferralGuide.driverLicenseNumber
+            ? routeToReferralGuide.driverLicenseNumber
+            : '',
         );
         changeValueField('observation', routeToReferralGuide.observation);
       }
@@ -422,32 +450,40 @@ const GetReferralGuide = () => {
           description: prod.description,
           unitMeasure: prod.unitMeasure,
           quantityMovement: prod.quantityMovement,
+          businessProductCode: prod.businessProductCode,
         };
       });
-      let changedDelivery = {
-        destination: dataFinal.arrivalPointAddress,
-        transferStartDate: dataFinal.transferStartDate,
-        totalGrossWeight: dataFinal.totalGrossWeight,
-        numberOfPackages: dataFinal.numberOfPackages,
-        startingPointAddress: dataFinal.startingPointAddress,
-        startingPointUbigeo: dataFinal.startingPointUbigeo,
-        arrivalPointAddress: dataFinal.arrivalPointAddress,
-        arrivalPointUbigeo: dataFinal.arrivalPointUbigeo,
-        carrierDocumentType: dataFinal.carrierDocumentType,
-        carrierDocumentNumber: dataFinal.carrierDocumentNumber,
-        carrierDenomination: dataFinal.carrierDenomination,
-        driverDenomination: dataFinal.driverDenomination,
-        driverDocumentType: dataFinal.driverDocumentType,
-        driverDocumentNumber: dataFinal.driverDocumentNumber,
-        driverId: '',
-        carrierPlateNumber: dataFinal.carrierPlateNumber,
-        generateReferralGuide: true,
-        productsInfo: parsedProducts,
-      };
+
       const indexDelivery = routeToReferralGuide.deliveries.findIndex(
         (delivery) =>
           delivery.localRouteId === routeToReferralGuide.localRouteId,
       );
+      let changedDelivery = {
+        arrivalPointAddress: dataFinal.arrivalPointAddress,
+        serialNumber: addReferralGuideRes.serialNumber,
+        arrivalPointUbigeo: dataFinal.arrivalPointUbigeo,
+        generateReferralGuide: true,
+        localRouteId: routeToReferralGuide.localRouteId,
+        destination: dataFinal.arrivalPointAddress,
+        driverDocumentNumber: dataFinal.driverDocumentNumber,
+        driverDenomination: dataFinal.driverDenomination,
+        productsInfo: parsedProducts,
+        numberOfPackages: dataFinal.numberOfPackages,
+        carrierDenomination: dataFinal.carrierDenomination,
+        driverDocumentType: dataFinal.driverDocumentType,
+        totalGrossWeight: dataFinal.totalGrossWeight,
+        referralGuideMovementHeaderId:
+          addReferralGuideRes.referralGuideMovementHeaderId,
+        driverLicenseNumber: dataFinal.driverLicenseNumber,
+        driverId: '',
+        carrierPlateNumber: dataFinal.carrierPlateNumber,
+        carrierDocumentType: dataFinal.carrierDocumentType,
+        transferStartDate: dataFinal.transferStartDate,
+        driverLastName: dataFinal.driverLastName,
+        carrierDocumentNumber: dataFinal.carrierDocumentNumber,
+        startingPointUbigeo: dataFinal.startingPointUbigeo,
+        startingPointAddress: dataFinal.startingPointAddress,
+      };
       let parsedDeliveries = routeToReferralGuide.deliveries;
       parsedDeliveries[indexDelivery] = changedDelivery;
       let payloadUpdateRF = {
@@ -505,6 +541,7 @@ const GetReferralGuide = () => {
             customCodeProduct: obj.customCodeProduct,
             description: obj.description,
             unitMeasure: obj.unitMeasure,
+            businessProductCode: obj.businessProductCode,
           });
         });
       }
@@ -528,6 +565,9 @@ const GetReferralGuide = () => {
         request: {
           payload: {
             merchantId: userDataRes.merchantSelected.merchantId,
+            deliveryDistributionId: routeToReferralGuide
+              ? routeToReferralGuide.deliveryDistributionId
+              : '',
             movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
             movementHeaderId: selectedOutput.movementHeaderId,
             contableMovementId: selectedOutput.contableMovementId || '',
@@ -611,13 +651,15 @@ const GetReferralGuide = () => {
       return (
         successMessage != undefined &&
         updateGenerateReferralGuideRes != undefined &&
-        !('error' in updateGenerateReferralGuideRes)
+        (!('error' in updateGenerateReferralGuideRes) ||
+          objectsAreEqual(updateGenerateReferralGuideRes.error, {}))
       );
     } else {
       return (
         successMessage != undefined &&
         addReferralGuideRes != undefined &&
-        !('error' in addReferralGuideRes)
+        (!('error' in addReferralGuideRes) ||
+          objectsAreEqual(addReferralGuideRes.error, {}))
       );
     }
   };
@@ -627,14 +669,16 @@ const GetReferralGuide = () => {
       return (
         (successMessage != undefined &&
           updateGenerateReferralGuideRes &&
-          'error' in updateGenerateReferralGuideRes) ||
+          'error' in updateGenerateReferralGuideRes &&
+          !objectsAreEqual(updateGenerateReferralGuideRes.error, {})) ||
         errorMessage != undefined
       );
     } else {
       return (
         (successMessage != undefined &&
           addReferralGuideRes &&
-          'error' in addReferralGuideRes) ||
+          'error' in addReferralGuideRes &&
+          !objectsAreEqual(addReferralGuideRes.error, {})) ||
         errorMessage != undefined
       );
     }

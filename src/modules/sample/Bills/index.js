@@ -370,8 +370,14 @@ const BillsTable = (props) => {
   };
   const showIconStatus = (bool) => {
     switch (bool) {
+      case 'accepted':
+        return <CheckCircleIcon color='success' />;
+        break;
       case true:
         return <CheckCircleIcon color='success' />;
+        break;
+      case 'denied':
+        return <CancelIcon sx={{color: red[500]}} />;
         break;
       case false:
         return <CancelIcon sx={{color: red[500]}} />;
@@ -653,7 +659,7 @@ const BillsTable = (props) => {
           </MenuItem>
         ) : null}
 
-        {!selectedBill.cancelStatus &&
+        {/*  {!selectedBill.cancelStatus &&
         localStorage
           .getItem('pathsBack')
           .includes('/facturacion/bill/cancel') ? (
@@ -665,7 +671,7 @@ const BillsTable = (props) => {
             <DoDisturbAltIcon sx={{mr: 1, my: 'auto'}} />
             Anular
           </MenuItem>
-        ) : null}
+        ) : null} */}
       </Menu>
     </Card>
   );

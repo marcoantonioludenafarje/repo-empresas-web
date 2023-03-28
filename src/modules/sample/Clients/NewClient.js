@@ -32,6 +32,8 @@ import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
@@ -42,8 +44,10 @@ import {
   GET_USER_DATA,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
+import {useState} from 'react';
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
+  documentType: yup.string(),
   nroDocument: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
@@ -61,6 +65,7 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.number' />)
     .email('Formato de correo invalido'),
+
   emailContact: yup
     .string()
     .typeError(<IntlMessages id='validation.number' />)
@@ -70,11 +75,13 @@ const validationSchema = yup.object({
     .number()
     .typeError(<IntlMessages id='validation.number' />)
     .max(1000000000, 'Se puede ingresar como maximo 11 caracteres'),
+
   extraInformationClient: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />),
 });
 const defaultValues = {
+  documentType: 'RUC',
   nroDocument: '',
   name: '',
   addressClient: '',
@@ -110,9 +117,11 @@ const NewClient = () => {
   const [minTutorial, setMinTutorial] = React.useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [isRUC, setRUC] = React.useState(false);
+  const [identidad, setIdentidad] = React.useState('');
 
   let objSelects = {
-    documentType: 'RUC',
+    documentType: '',
   };
 
   //APIS
@@ -128,7 +137,8 @@ const NewClient = () => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  //const [config, setConfig] = useState({default_identification: 'DNI'});
+  //defaultValues.documentType = config.default_identification;
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -167,22 +177,28 @@ const NewClient = () => {
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
-    delete data.documentType;
+    //delete data.documentType;
     console.log('Data', data);
     console.log('objSelects', objSelects);
-    newClientPayload.request.payload.clients[0].typeDocumentClient =
-      objSelects.documentType;
+    newClientPayload.request.payload.clients[0].typeDocumentClient = identidad;
     newClientPayload.request.payload.clients[0].numberDocumentClient =
       data.nroDocument;
     newClientPayload.request.payload.clients[0].denominationClient = data.name;
     newClientPayload.request.payload.clients[0].addressClient =
       data.addressClient;
-    newClientPayload.request.payload.clients[0].emailContact =
-      data.emailContact;
     newClientPayload.request.payload.clients[0].emailClient = data.emailClient;
-    newClientPayload.request.payload.clients[0].nameContact = data.nameContact;
     newClientPayload.request.payload.clients[0].numberContact =
       data.numberContact;
+    if (isRUC) {
+      newClientPayload.request.payload.clients[0].emailContact =
+        data.emailContact;
+      newClientPayload.request.payload.clients[0].nameContact =
+        data.nameContact;
+    } else {
+      newClientPayload.request.payload.clients[0].emailContact =
+        data.emailClient;
+      newClientPayload.request.payload.clients[0].nameContact = data.name;
+    }
     newClientPayload.request.payload.clients[0].extraInformationClient =
       data.extraInformationClient;
     toNewClient(newClientPayload);
@@ -230,11 +246,23 @@ const NewClient = () => {
     Router.push('/sample/clients/table');
   };
 
-  const handleField = (event) => {
-    console.log('evento', event);
+  const handleField = (event, setFieldValue) => {
+    console.log('Esta cambiandose el valor papu', event);
     objSelects[event.target.name] = event.target.value;
-    console.log('ocjSelects', objSelects);
+    setRUC(objSelects.documentType == 'RUC' ? true : false);
+    console.log('objSelects', objSelects);
+    setIdentidad(objSelects.documentType);
   };
+
+  const inicializaIdentidad = () => {
+    if (!identidad) {
+      setIdentidad(typeClient == 'PN' ? 'DNI' : 'RUC');
+      console.log('inicializaIdentidad', identidad);
+    }
+    return '';
+  };
+
+  const typeClient = userDataRes.merchantSelected.typeClient;
 
   return (
     <Card sx={{p: 4}}>
@@ -260,8 +288,9 @@ const NewClient = () => {
           validationSchema={validationSchema}
           initialValues={{...defaultValues}}
           onSubmit={handleData}
+          enableReinitialize={true}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({values, isSubmitting, setFieldValue}) => {
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -278,12 +307,20 @@ const NewClient = () => {
                       >
                         Identificador
                       </InputLabel>
+                      {inicializaIdentidad()}
                       <Select
-                        defaultValue='RUC'
+                        defaultValue={typeClient == 'PN' ? 'DNI' : 'RUC'} //{config.default_identification}
                         name='documentType'
                         labelId='documentType-label'
                         label='Identificador'
-                        onChange={handleField}
+                        //onChange={handleField}
+                        onChange={(option, value) => {
+                          objSelects['documentType'] = value.props.value;
+                          setRUC(
+                            objSelects.documentType == 'RUC' ? true : false,
+                          );
+                          setIdentidad(objSelects.documentType);
+                        }}
                       >
                         <MenuItem value='RUC' style={{fontWeight: 200}}>
                           RUC
@@ -291,10 +328,7 @@ const NewClient = () => {
                         <MenuItem value='DNI' style={{fontWeight: 200}}>
                           DNI
                         </MenuItem>
-                        <MenuItem
-                          value='foreignerscard'
-                          style={{fontWeight: 200}}
-                        >
+                        <MenuItem value='CE' style={{fontWeight: 200}}>
                           CE
                         </MenuItem>
                       </Select>
@@ -316,7 +350,7 @@ const NewClient = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre / Razón Social *'
                       name='name'
                       variant='outlined'
@@ -346,7 +380,7 @@ const NewClient = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppLowerCaseTextField
                       label='Correo de cliente'
                       name='emailClient'
                       variant='outlined'
@@ -360,40 +394,44 @@ const NewClient = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Nombre de contacto'
-                      name='nameContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
+                  {isRUC ? (
+                    <>
+                      <Grid item xs={12}>
+                        <AppUpperCaseTextField
+                          label='Nombre de contacto'
+                          name='nameContact'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppLowerCaseTextField
+                          label='Correo de contacto'
+                          name='emailContact'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
+                    </>
+                  ) : null}
                   <Grid item xs={12}>
                     <AppTextField
                       label='Telefono fijo o celular de contacto'
                       name='numberContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Correo de contacto'
-                      name='emailContact'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -423,7 +461,6 @@ const NewClient = () => {
                     />
                   </Grid>
                 </Grid>
-
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'

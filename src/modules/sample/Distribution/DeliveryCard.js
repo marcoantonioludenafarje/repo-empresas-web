@@ -207,11 +207,13 @@ const DeliveryCard = ({
       );
       changeValue(
         'driverLastName',
-        initialValues.driverLastName ? initialValues.driverLastName : "",
+        initialValues.driverLastName ? initialValues.driverLastName : '',
       );
       changeValue(
         'driverLicenseNumber',
-        initialValues.driverLicenseNumber ? initialValues.driverLicenseNumber : "",
+        initialValues.driverLicenseNumber
+          ? initialValues.driverLicenseNumber
+          : '',
       );
       changeValue('driverDocumentNumber', initialValues.driverDocumentNumber);
       changeValue(
@@ -850,7 +852,9 @@ const DeliveryCard = ({
 
                   <Grid item xs={3}>
                     <AppTextField
-                      label={<IntlMessages id='common.busines.driver.lastName' />}
+                      label={
+                        <IntlMessages id='common.busines.driver.lastName' />
+                      }
                       name='driverLastName'
                       variant='outlined'
                       sx={{
@@ -913,7 +917,9 @@ const DeliveryCard = ({
 
                   <Grid item xs={3}>
                     <AppTextField
-                      label={<IntlMessages id='common.busines.driver.licenseNumber' />}
+                      label={
+                        <IntlMessages id='common.busines.driver.licenseNumber' />
+                      }
                       name='driverLicenseNumber'
                       variant='outlined'
                       sx={{

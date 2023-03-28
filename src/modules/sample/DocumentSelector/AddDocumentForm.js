@@ -29,6 +29,7 @@ import {
 import InputAdornment from '@mui/material/InputAdornment';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -142,6 +143,7 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
       nameCarrier: isRefGuide ? data.nameCarrier : '',
       typeDocument: billType,
       dateDocument: toSimpleDate(dateRegister),
+      isSelected: true,
     });
     setSubmitting(false);
   };
@@ -222,7 +224,7 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
                   </Grid>
 
                   <Grid item xs={4}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Número de documento'
                       name='documentIntern'
                       variant='outlined'

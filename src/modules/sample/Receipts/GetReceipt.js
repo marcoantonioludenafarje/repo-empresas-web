@@ -456,7 +456,7 @@ const GetReceipt = (props) => {
             contableMovementId: query.contableMovementId || '',
             timestampMovement: Number(query.timestampMovement),
             clientId: query.clientId,
-            totalPriceWithIgv: Number(data.totalField.toFixed(3)),
+            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(3)),
             issueDate: specialFormatToSunat(Date.now()),
             serial: serial,
             documentIntern: query.documentIntern,
@@ -534,7 +534,9 @@ const GetReceipt = (props) => {
 
   const registerError = () => {
     return (
-      (successMessage != undefined && addReceiptRes !== undefined && 'error' in addReceiptRes) ||
+      (successMessage != undefined &&
+        addReceiptRes !== undefined &&
+        'error' in addReceiptRes) ||
       errorMessage != undefined
     );
   };

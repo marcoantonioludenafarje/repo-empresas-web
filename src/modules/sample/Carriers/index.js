@@ -371,7 +371,7 @@ const CarrierTable = (arrayObjs, props) => {
             Identificador
           </InputLabel>
           <Select
-            defaultValue='RUC'
+            defaultValue=''
             name='typeDocumentCarrier'
             labelId='documentType-label'
             label='Identificador'
@@ -381,13 +381,16 @@ const CarrierTable = (arrayObjs, props) => {
                 event.target.value;
             }}
           >
+            <MenuItem value='' style={{fontWeight: 200}}>
+              Todos
+            </MenuItem>
             <MenuItem value='RUC' style={{fontWeight: 200}}>
               RUC
             </MenuItem>
             <MenuItem value='DNI' style={{fontWeight: 200}}>
               DNI
             </MenuItem>
-            <MenuItem value='foreignerscard' style={{fontWeight: 200}}>
+            <MenuItem value='CE' style={{fontWeight: 200}}>
               CE
             </MenuItem>
           </Select>
@@ -440,10 +443,9 @@ const CarrierTable = (arrayObjs, props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getCarriersRes 
-            // && getCarriersRes.length > 0 
-            && Array.isArray(getCarriersRes) 
-            ? (
+            {getCarriersRes &&
+            // && getCarriersRes.length > 0
+            Array.isArray(getCarriersRes) ? (
               getCarriersRes.sort(compare).map((obj, index) => {
                 let parsedId = obj.carrierId.split('-');
                 return (

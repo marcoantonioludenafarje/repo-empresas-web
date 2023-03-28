@@ -10,6 +10,8 @@ import FileExplorer from './FileExplorer';
 import Finances from './Finances';
 import User from './User';
 import Carriers from './Carriers';
+import Drivers from './Drivers';
+import Locations from './Locations';
 import ToDoApp from './ToDoApp';
 import MyBilling from './MyBilling';
 import Requests from './Requests';
@@ -29,6 +31,8 @@ const reducers = combineReducers({
   user: User,
   todoApp: ToDoApp,
   carriers: Carriers,
+  drivers: Drivers,
+  locations: Locations,
   myBilling: MyBilling,
   requests: Requests,
   notifications: Notifications,

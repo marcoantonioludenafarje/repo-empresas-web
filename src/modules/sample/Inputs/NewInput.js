@@ -302,7 +302,10 @@ const NewInput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(total * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (total *  (1 + Number(igvDefault))).toFixed(3));
+      changeValueField(
+        'totalFieldIgv',
+        (total * (1 + Number(igvDefault))).toFixed(3),
+      );
     }
     setTimeout(() => {
       setMinTutorial(true);
@@ -376,11 +379,14 @@ const NewInput = (props) => {
   };
 
   const getNewProduct = (product) => {
-    console.log('nuevo producto', product);
+    console.log('nuevo producto1', product);
     if (selectedProducts && selectedProducts.length >= 1) {
       selectedProducts.map((obj, index) => {
         console.log('obj', obj);
-        if (obj.product == product.product) {
+        if (
+          (obj.businessProductCode || obj.product) ==
+          (product.businessProductCode || product.product)
+        ) {
           console.log('selectedProducts 1', selectedProducts);
           selectedProducts.splice(index, 1);
           console.log('selectedProducts 2', selectedProducts);
@@ -400,7 +406,10 @@ const NewInput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total *  (1 + Number(igvDefault))).toFixed(3));
+    changeValueField(
+      'totalFieldIgv',
+      (total * (1 + Number(igvDefault))).toFixed(3),
+    );
   };
   const getProvider = (provider) => {
     selectedProvider = provider;
@@ -435,7 +444,10 @@ const NewInput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total *  (1 + Number(igvDefault))).toFixed(3));
+    changeValueField(
+      'totalFieldIgv',
+      (total * (1 + Number(igvDefault))).toFixed(3),
+    );
     forceUpdate();
   };
 
@@ -496,10 +508,15 @@ const NewInput = (props) => {
                 documentsMovement: cleanDocuments,
                 editTotal: editTotal,
                 observation: data.inputObservation,
+                userCreated: userDataRes.userId,
+                userCreatedMetadata: {
+                  nombreCompleto: userDataRes.nombreCompleto,
+                  email: userDataRes.email,
+                },
               },
               products: selectedProducts.map((obj) => {
                 return {
-                  businessProductCode: obj.product,
+                  businessProductCode: obj.businessProductCode,
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
                 };
@@ -543,7 +560,10 @@ const NewInput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(event.target.value * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (event.target.value * (1+Number(igvDefault))).toFixed(3));
+      changeValueField(
+        'totalFieldIgv',
+        (event.target.value * (1 + Number(igvDefault))).toFixed(3),
+      );
     }
     console.log('actualValues', actualValues);
   };
@@ -668,6 +688,8 @@ const NewInput = (props) => {
     setGuide(isInputChecked);
     console.log('Evento de generar guía', isInputChecked);
   };
+
+  const typeClient = userDataRes.merchantSelected.typeClient;
 
   return (
     <Card sx={{p: 4}}>
@@ -854,19 +876,23 @@ const NewInput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  <Grid
-                    item
-                    xs={4}
-                    sx={{display: 'flex', alignItems: 'center'}}
-                  >
-                    <FormControlLabel
-                      disabled={Number(igvDefault) > 0 ? false : true}
-                      checked={isIgvChecked}
-                      control={<Checkbox onChange={handleIGV} />}
-                      label='IGV'
-                    />
-                    {igvDefault}
-                  </Grid>
+                  {typeClient != 'PN' ? (
+                    <Grid
+                      item
+                      xs={4}
+                      sx={{display: 'flex', alignItems: 'center'}}
+                    >
+                      <FormControlLabel
+                        disabled={Number(igvDefault) > 0 ? false : true}
+                        checked={isIgvChecked}
+                        control={<Checkbox onChange={handleIGV} />}
+                        label='IGV'
+                      />
+                      {igvDefault}
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
 
                   {/* <Grid
                     item
@@ -912,22 +938,32 @@ const NewInput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={handleClickOpen.bind(this, 'document')}
-                    >
-                      Añade un documento
-                    </Button>
-                  </Grid>
+                  {typeClient != 'PN' ? (
+                    <Grid item xs={12}>
+                      <Button
+                        sx={{width: 1}}
+                        variant='outlined'
+                        onClick={handleClickOpen.bind(this, 'document')}
+                      >
+                        Añade documentos
+                      </Button>
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                  />
-                </Box>
+
+                {typeClient != 'PN' ? (
+                  <Box sx={{my: 5}}>
+                    <DocumentsTable
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                    />
+                  </Box>
+                ) : (
+                  <></>
+                )}
+
                 <Grid
                   container
                   spacing={2}
@@ -939,7 +975,7 @@ const NewInput = (props) => {
                       variant='outlined'
                       onClick={handleClickOpen.bind(this, 'provider')}
                     >
-                      Selecciona un proveedor
+                      Selecciona un Proveedor
                     </Button>
                   </Grid>
                   <Grid item xs={4} sx={{textAlign: 'center'}}>
@@ -1166,7 +1202,7 @@ const NewInput = (props) => {
           {typeDialog == 'provider' ? (
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Selecciona un proveedor'}
+                {'Búsqueda de proveedores'}
                 <CancelOutlinedIcon
                   onClick={setOpen.bind(this, false)}
                   className={classes.closeButton}

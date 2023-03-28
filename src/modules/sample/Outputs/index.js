@@ -136,6 +136,11 @@ let deletePayload = {
       movementHeaderId: '',
       folderMovement: '',
       contableMovementId: '',
+      userUpdated: '',
+      userUpdatedMetadata: {
+        nombreCompleto: '',
+        email: '',
+      },
     },
   },
 };
@@ -325,13 +330,13 @@ const OutputsTable = (props) => {
       getGlobalParameter(globalParameterPayload);
     }
   }, [userDataRes]);
-  useEffect(()=>{
-    setValue2(Date.now())
+  useEffect(() => {
+    setValue2(Date.now());
     listPayload.request.payload.finalTime = toEpoch(Date.now());
-    console.log("Se ejecuta esto?")
+    console.log('Se ejecuta esto?');
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
-      dispatch({type: FETCH_ERROR, payload: undefined});  
+      dispatch({type: FETCH_ERROR, payload: undefined});
       listPayload.request.payload.finalTime = toEpoch(Date.now());
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
@@ -344,7 +349,7 @@ const OutputsTable = (props) => {
         listPayload.request.payload.movementHeaderId = null;
       }
     }
-  },[actualDateRes])
+  }, [actualDateRes]);
   /* listFinancesPayload.request.payload.merchantId =
     userAttributes['custom:businessId']; */
 
@@ -376,7 +381,6 @@ const OutputsTable = (props) => {
   const newOutput = () => {
     Router.push('/sample/outputs/new');
   };
-  
 
   //BUSQUEDA
   const handleSearchValues = (event) => {
@@ -429,6 +433,11 @@ const OutputsTable = (props) => {
     deletePayload.request.payload.folderMovement = selectedOutput.folderMovement
       ? selectedOutput.folderMovement
       : '';
+    deletePayload.request.payload.userUpdated = userDataRes.userId;
+    deletePayload.request.payload.userUpdatedMetadata.nombreCompleto =
+      userDataRes.nombreCompleto;
+    deletePayload.request.payload.userUpdatedMetadata.email = userDataRes.email;
+
     dispatch({type: GET_MOVEMENTS, payload: undefined});
     toDeleteMovement(deletePayload);
     setOpen2(false);
@@ -443,7 +452,6 @@ const OutputsTable = (props) => {
   const goToMoves = () => {
     console.log('Llendo a movimientos');
   };
-
 
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
@@ -481,31 +489,74 @@ const OutputsTable = (props) => {
     let listResult = [];
     getMovementsRes.map((obj) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
+      obj.codigo1 =
+        showMinType(obj.movementType) +
+        '-' +
+        (obj.codMovement ? obj.codMovement.split('-')[1] : '');
       obj.timestampMovement = convertToDateWithoutTime(obj.timestampMovement);
+      obj.updatedDate = convertToDateWithoutTime(obj.updatedDate);
+      obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
+        ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
+        : '';
+      obj.clientdenomination = obj.client
+        ? obj.client.denomination
+        : obj.clientName;
+      obj.totalPrice1 = obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '';
+      obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
+        ? Number(obj.totalPriceWithIgv.toFixed(3))
+        : '';
+      obj.status1 = `${showStatus(obj.status, 'x')}`
+        ? `${showStatus(obj.status, 'x')}`
+        : '';
+      obj.userCreatedMetadata1 = obj.userCreatedMetadata
+        ? obj.userCreatedMetadata.nombreCompleto
+        : '';
+      obj.userUpdatedMetadata1 = obj.userUpdatedMetadata
+        ? obj.userUpdatedMetadata.nombreCompleto
+        : '';
+
       listResult.push(
         (({
+          codigo1,
           timestampMovement,
-          documentIntern,
-          clientName,
+          updatedDate,
+          movementSubType,
+          clientdenomination,
           descriptionProducts,
-          totalPrice,
+          totalPrice1,
+          totalPriceWithIgv1,
+          status1,
+          userCreatedMetadata1,
+          userUpdatedMetadata1,
         }) => ({
+          codigo1,
           timestampMovement,
-          documentIntern,
-          clientName,
+          updatedDate,
+          movementSubType,
+          clientdenomination,
           descriptionProducts,
-          totalPrice,
+          totalPrice1,
+          totalPriceWithIgv1,
+          status1,
+          userCreatedMetadata1,
+          userUpdatedMetadata1,
         }))(obj),
       );
     });
     return listResult;
   };
   const headersExcel = [
+    'Codigo',
     'Fecha registrada',
-    'Documento',
+    'Ultima actualización',
+    'Tipo de movimiento',
     'Cliente',
     'Detalle productos',
-    `Precio Total (${money_unit})`,
+    `Precio total ${money_unit} sin IGV`,
+    `Precio total ${money_unit} con IGV`,
+    'Estado',
+    'Creado por',
+    'Modificado por',
   ];
   const exportDoc = () => {
     var ws = XLSX.utils.json_to_sheet(cleanList());
@@ -673,6 +724,11 @@ const OutputsTable = (props) => {
         pathname: '/sample/referral-guide/table',
         query: {movementHeaderId: selectedOutput.movementHeaderId},
       });
+    } else if (type == 'receipt') {
+      Router.push({
+        pathname: '/sample/receipts/table',
+        query: {referralGuideId: selectedOutput.receiptId},
+      });
     } else {
       return null;
     }
@@ -725,16 +781,29 @@ const OutputsTable = (props) => {
   //   listPayload.request.payload.finalTime = toEpoch(newValue2);
   //   setOpen3(false)
   // }, [open3]);
-  const showStatus = (status) => {
-    switch (status) {
-      case 'requested':
-        return <IntlMessages id='movements.status.requested' />;
-        break;
-      case 'complete':
-        return <IntlMessages id='movements.status.complete' />;
-        break;
-      default:
-        return null;
+  const showStatus = (status, text) => {
+    if (!text) {
+      switch (status) {
+        case 'requested':
+          return <IntlMessages id='movements.status.requested' />;
+          break;
+        case 'complete':
+          return <IntlMessages id='movements.status.complete' />;
+          break;
+        default:
+          return null;
+      }
+    } else {
+      switch (status) {
+        case 'requested':
+          return 'Solicitado';
+          break;
+        case 'complete':
+          return 'Completado';
+          break;
+        default:
+          return null;
+      }
     }
   };
 
@@ -916,12 +985,15 @@ const OutputsTable = (props) => {
               <TableCell>Cliente</TableCell>
               <TableCell>Detalle productos</TableCell>
               <TableCell>Detalle documentos</TableCell>
+              <TableCell>Boleta Venta relacionada</TableCell>
               <TableCell>Guía de remisión relacionada</TableCell>
               <TableCell>Factura relacionada</TableCell>
               <TableCell>Ingreso relacionado</TableCell>
               <TableCell>Precio total sin IGV</TableCell>
               <TableCell>Precio total con IGV</TableCell>
               <TableCell>Estado</TableCell>
+              <TableCell>Creado por</TableCell>
+              <TableCell>Modificado por</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
@@ -991,6 +1063,9 @@ const OutputsTable = (props) => {
                         )}
                       </TableCell>
                       <TableCell align='center'>
+                        {statusObject(obj, obj.existReceipt, 'receipt')}
+                      </TableCell>
+                      <TableCell align='center'>
                         {statusObject(
                           obj,
                           obj.existReferralGuide,
@@ -1026,6 +1101,16 @@ const OutputsTable = (props) => {
                           : ''}
                       </TableCell>
                       <TableCell>{showStatus(obj.status)}</TableCell>
+                      <TableCell>
+                        {obj.userCreatedMetadata
+                          ? obj.userCreatedMetadata.nombreCompleto
+                          : ''}
+                      </TableCell>
+                      <TableCell>
+                        {obj.userUpdatedMetadata
+                          ? obj.userUpdatedMetadata.nombreCompleto
+                          : ''}
+                      </TableCell>
                       <TableCell>
                         <Button
                           id='basic-button'
@@ -1065,7 +1150,10 @@ const OutputsTable = (props) => {
                                       return (
                                         <TableRow key={index}>
                                           <TableCell>
-                                            {subProduct.product}
+                                            {subProduct.businessProductCode !=
+                                            null
+                                              ? subProduct.businessProductCode
+                                              : subProduct.product}
                                           </TableCell>
                                           <TableCell>
                                             {subProduct.description}
@@ -1354,7 +1442,10 @@ const OutputsTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/facturacion/deliveryDistribution/register') === true ? (
-          <MenuItem onClick={doDistribution}>
+          <MenuItem
+            disabled={selectedOutput.movementSubType !== 'sales'}
+            onClick={doDistribution}
+          >
             <MapIcon sx={{mr: 1, my: 'auto'}} />
             Generar distribución
           </MenuItem>

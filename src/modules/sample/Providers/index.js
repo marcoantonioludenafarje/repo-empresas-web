@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
 let listPayload = {
   request: {
     payload: {
-      typeDocumentProvider: 'RUC',
+      typeDocumentProvider: '',
       numberDocumentProvider: '',
       denominationProvider: '',
       merchantId: '',
@@ -357,7 +357,7 @@ const ProviderTable = (arrayObjs, props) => {
             Identificador
           </InputLabel>
           <Select
-            defaultValue='RUC'
+            defaultValue=''
             name='typeDocumentProvider'
             labelId='documentType-label'
             label='Identificador'
@@ -367,6 +367,9 @@ const ProviderTable = (arrayObjs, props) => {
                 event.target.value;
             }}
           >
+            <MenuItem value='' style={{fontWeight: 200}}>
+              Todos
+            </MenuItem>
             <MenuItem value='RUC' style={{fontWeight: 200}}>
               RUC
             </MenuItem>

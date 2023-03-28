@@ -60,7 +60,7 @@ const OutputProducts = ({data, toDelete}) => {
                   key={index}
                   id={index}
                 >
-                  <TableCell>{obj.product}</TableCell>
+                  <TableCell>{obj.businessProductCode}</TableCell>
                   <TableCell>{obj.description}</TableCell>
                   <TableCell>{obj.unitMeasure}</TableCell>
                   <TableCell>{obj.quantityMovement}</TableCell>

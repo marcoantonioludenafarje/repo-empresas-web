@@ -190,6 +190,7 @@ const AddProductForm = ({sendData, type}) => {
         description: selectedProduct.description,
         productId: selectedProduct.productId,
         costPriceUnit: selectedProduct.costPriceUnit,
+        businessProductCode: selectedProduct.businessProductCode,
       };
       console.log('Data recibida', finalObj);
       sendData(finalObj);

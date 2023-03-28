@@ -107,8 +107,8 @@ const UpgradeBusinessForm = ({
     setReload(!reload);
   };
   const emptyFilter = {
-    filterName: "",
-    options: []
+    filterName: '',
+    options: [],
   };
   const emptyCategory = {
     active: true,
@@ -315,10 +315,7 @@ const UpgradeBusinessForm = ({
                       </Typography>
                       <IconButton
                         onClick={() => {
-                          console.log(
-                            'initialCategories',
-                            initialCategories,
-                          );
+                          console.log('initialCategories', initialCategories);
                           let newCategories = initialCategories;
                           let newEmptyCategory = {
                             active: true,
@@ -418,7 +415,6 @@ const UpgradeBusinessForm = ({
                         </Card>
                       ))}
                   </Box>
-
                 </Box>
               </Grid>
               <Grid item xs={12} md={12}>
@@ -435,143 +431,143 @@ const UpgradeBusinessForm = ({
                   />
                 </FormGroup>
               </Grid>
-              
-              {publish && 
-              <> 
-                <Grid item xs={12} md={12}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography
-                      component='h3'
+
+              {publish && (
+                <>
+                  <Grid item xs={12} md={12}>
+                    <Box
                       sx={{
-                        fontSize: 16,
+                        display: 'flex',
+                        alignItems: 'center',
                       }}
                     >
-                      Rango de Precio de Productos:
-                    </Typography>
-                    <Grid item xs={4} md={4} sx={{mr: 2}}>
-                      <AppTextField
-                        name='defaultMinPrice'
-                        value={defaultPriceRange[0]}
-                        fullWidth
-                        label={<IntlMessages id='common.price.min' />}
-                        labelId={<IntlMessages id='common.price.min' />}
-                      />
-                    </Grid>
-                    <Grid item xs={4} md={4}>
-                      <AppTextField
-                        name='defaultMaxPrice'
-                        variant='outlined'
-                        value={defaultPriceRange[1]}
-                        fullWidth
-                        label={<IntlMessages id='common.price.max' />}
-                        labelId={<IntlMessages id='common.price.max' />}
-                      />
-                    </Grid>
-                  </Box>
-                </Grid>
-                {businessParameter ? (
-                  <>
-                    {/* */}
-                    <Grid item xs={12} md={12}>
-                      <Box
+                      <Typography
+                        component='h3'
                         sx={{
-                          flex: 1,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          mb: 5,
-                          mx: 'auto',
+                          fontSize: 16,
                         }}
                       >
+                        Rango de Precio de Productos:
+                      </Typography>
+                      <Grid item xs={4} md={4} sx={{mr: 2}}>
+                        <AppTextField
+                          name='defaultMinPrice'
+                          value={defaultPriceRange[0]}
+                          fullWidth
+                          label={<IntlMessages id='common.price.min' />}
+                          labelId={<IntlMessages id='common.price.min' />}
+                        />
+                      </Grid>
+                      <Grid item xs={4} md={4}>
+                        <AppTextField
+                          name='defaultMaxPrice'
+                          variant='outlined'
+                          value={defaultPriceRange[1]}
+                          fullWidth
+                          label={<IntlMessages id='common.price.max' />}
+                          labelId={<IntlMessages id='common.price.max' />}
+                        />
+                      </Grid>
+                    </Box>
+                  </Grid>
+                  {businessParameter ? (
+                    <>
+                      {/* */}
+                      <Grid item xs={12} md={12}>
                         <Box
                           sx={{
                             flex: 1,
                             display: 'flex',
                             flexDirection: 'column',
                             mb: 5,
+                            mx: 'auto',
                           }}
                         >
-                          <Stack
-                            direction='row'
-                            divider={<Divider orientation='vertical' flexItem />}
-                            spacing={2}
+                          <Box
+                            sx={{
+                              flex: 1,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              mb: 5,
+                            }}
                           >
-                            <Typography
-                              sx={{
-                                fontWeight: 600,
-                                fontSize: 20,
-                                display: 'flex',
-                                alignItems: 'center',
-                              }}
+                            <Stack
+                              direction='row'
+                              divider={
+                                <Divider orientation='vertical' flexItem />
+                              }
+                              spacing={2}
                             >
-                              <IntlMessages id='common.productTags' />
-                            </Typography>
-                            <IconButton
-                              onClick={() => {
-                                console.log('filters', filters);
-                                let newFilters = filters;
-                                newFilters.push(emptyFilter);
-                                setFilters(newFilters);
-                                reloadPage();
-                                updateFilters(filters);
-                              }}
-                              aria-label='delete'
-                              size='large'
-                            >
-                              <AddIcon fontSize='inherit' />
-                            </IconButton>
-                            <IconButton
-                              onClick={() => {
-                                console.log('filters', filters);
-                                let newFilters = filters;
-                                newFilters.pop();
-                                setFilters(newFilters);
-                                reloadPage();
-                                updateFilters(filters);
-                              }}
-                              aria-label='delete'
-                              size='large'
-                            >
-                              <RemoveIcon fontSize='inherit' />
-                            </IconButton>
-                          </Stack>
-                        </Box>
+                              <Typography
+                                sx={{
+                                  fontWeight: 600,
+                                  fontSize: 20,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <IntlMessages id='common.productTags' />
+                              </Typography>
+                              <IconButton
+                                onClick={() => {
+                                  console.log('filters', filters);
+                                  let newFilters = filters;
+                                  newFilters.push(emptyFilter);
+                                  setFilters(newFilters);
+                                  reloadPage();
+                                  updateFilters(filters);
+                                }}
+                                aria-label='delete'
+                                size='large'
+                              >
+                                <AddIcon fontSize='inherit' />
+                              </IconButton>
+                              <IconButton
+                                onClick={() => {
+                                  console.log('filters', filters);
+                                  let newFilters = filters;
+                                  newFilters.pop();
+                                  setFilters(newFilters);
+                                  reloadPage();
+                                  updateFilters(filters);
+                                }}
+                                aria-label='delete'
+                                size='large'
+                              >
+                                <RemoveIcon fontSize='inherit' />
+                              </IconButton>
+                            </Stack>
+                          </Box>
 
-                        <Box
-                          sx={{
-                            m: 'auto',
-                            mb: 5,
-                            border: '1px solid grey',
-                            borderRadius: '10px',
-                            width: '100%',
-                          }}
-                        >
-                          {filters &&
-                            filters.map((filter, index) => (
-                              <DeliveryCard
-                                // key={`count${index}`}
-                                key={`filter${index}`}
-                                order={index}
-                                execFunctions={execAll}
-                                newValuesData={setFilterIndex}
-                                initialValues={filter}
-                              />
-                            ))}
+                          <Box
+                            sx={{
+                              m: 'auto',
+                              mb: 5,
+                              border: '1px solid grey',
+                              borderRadius: '10px',
+                              width: '100%',
+                            }}
+                          >
+                            {filters &&
+                              filters.map((filter, index) => (
+                                <DeliveryCard
+                                  // key={`count${index}`}
+                                  key={`filter${index}`}
+                                  order={index}
+                                  execFunctions={execAll}
+                                  newValuesData={setFilterIndex}
+                                  initialValues={filter}
+                                />
+                              ))}
+                          </Box>
                         </Box>
-                        
-                      </Box>
-                    </Grid>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </>
-              } 
-              
+                      </Grid>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              )}
             </>
           ) : (
             <></>

@@ -59,7 +59,7 @@ import {
 } from '../../../Utils/utils';
 import AddProductForm from './AddProductForm';
 import AddDocumentForm from '../DocumentSelector/AddDocumentForm';
-import DocumentsTable from '../DocumentSelector/DocumentsTable';
+import DocumentsTableForBill from '../DocumentSelector/DocumentsTableForBill';
 import {
   FETCH_ERROR,
   FETCH_SUCCESS,
@@ -126,6 +126,27 @@ const validationSchema = yup.object({
 const useForceUpdate = () => {
   const [reload, setReload] = React.useState(0); // integer state
   return () => setReload((value) => value + 1); // update the state to force render
+};
+
+const objectsAreEqual = (a, b) => {
+  // Comprobar si los dos valores son objetos
+  if (typeof a === 'object' && typeof b === 'object') {
+    // Comprobar si los objetos tienen las mismas propiedades
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) {
+      return false;
+    }
+    // Comparar el valor de cada propiedad de forma recursiva
+    for (const key of aKeys) {
+      if (!objectsAreEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  // Comparar los valores directamente
+  return a === b;
 };
 
 let selectedProducts = [];
@@ -233,6 +254,7 @@ const NewOutput = (props) => {
           dateDocument: obj.issueDate,
           document: obj.serialDocument,
           typeDocument: obj.typeDocument,
+          isSelected: true,
         };
       });
       console.log('listDocuments', listDocuments);
@@ -247,7 +269,7 @@ const NewOutput = (props) => {
       let serieParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'SERIES_BILL',
       );
-      
+
       let igvDefault = businessParameter.find(
         (obj) => obj.abreParametro == 'IGV',
       ).value;
@@ -422,13 +444,37 @@ const NewOutput = (props) => {
 
   //FUNCIONES DIALOG
   const [open, setOpen] = React.useState(false);
+  const [openReferralGuides, setOpenReferralGuides] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleCloseReferralGuides = () => {
+    setOpenReferralGuides(false);
   };
   const handleClickOpen = (type) => {
     setOpen(true);
     setTypeDialog(type);
     setShowAlert(false);
+  };
+
+  const handleClickOpenReferralGuides = (type) => {
+    setOpenReferralGuides(true);
+    setShowAlert(false);
+  };
+
+  const showListDocumentsSelected = () => {
+    const total = listDocuments.reduce((count, element) => {
+      if (element.isSelected) {
+        return count + 1;
+      } else {
+        return count;
+      }
+    }, 0);
+    return total > 1
+      ? `Hay ${total} guías de remisión asignadas`
+      : total > 0
+      ? `Hay ${total} guía de remisión asignada`
+      : `No hay guías de remisión asignadas`;
   };
 
   const removeProduct = (index) => {
@@ -459,12 +505,12 @@ const NewOutput = (props) => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: ADD_INVOICE, payload: undefined});
     console.log('listDocuments', listDocuments);
-    let parsedDocuments = listDocuments.map((obj) => {
-      return {
+    let parsedDocuments = listDocuments
+      .filter((obj) => obj.isSelected)
+      .map((obj) => ({
         issueDate: obj.dateDocument,
         serialDocument: obj.document,
-      };
-    });
+      }));
     console.log('parsedDocuments', parsedDocuments);
     let finalPayload;
     try {
@@ -481,7 +527,7 @@ const NewOutput = (props) => {
             movementHeaderId: query.movementHeaderId,
             timestampMovement: Number(query.timestampMovement),
             clientId: query.clientId,
-            totalPriceWithIgv: Number(data.totalField.toFixed(3)),
+            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(3)), //
             issueDate: specialFormatToSunat(),
             serial: serial,
             documentIntern: query.documentIntern,
@@ -496,6 +542,10 @@ const NewOutput = (props) => {
             observation: data.observation ? data.observation : '',
             igv: Number(query.igv),
             productsInfo: selectedProducts.map((obj) => {
+              console.log(
+                'facturabusinessProductCode',
+                obj.businessProductCode,
+              );
               return {
                 product: obj.product,
                 quantityMovement: Number(obj.quantityMovement),
@@ -505,6 +555,7 @@ const NewOutput = (props) => {
                 customCodeProduct: obj.customCodeProduct,
                 description: obj.description,
                 unitMeasure: obj.unitMeasure,
+                businessProductCode: obj.businessProductCode,
               };
             }),
             documentsMovement: selectedOutput.documentsMovement,
@@ -512,7 +563,7 @@ const NewOutput = (props) => {
           },
         },
       };
-      console.log("getAddInvoice payload", finalPayload)
+      console.log('getAddInvoice payload', finalPayload);
       getAddInvoice(finalPayload);
       setOpenStatus(true);
     } catch (error) {
@@ -547,14 +598,15 @@ const NewOutput = (props) => {
     return (
       successMessage != undefined &&
       addInvoiceRes != undefined &&
-      !('error' in addInvoiceRes)
+      (!('error' in addInvoiceRes) || objectsAreEqual(addInvoiceRes.error, {}))
     );
   };
   const registerError = () => {
     return (
       (successMessage != undefined &&
         addInvoiceRes &&
-        'error' in addInvoiceRes) ||
+        'error' in addInvoiceRes &&
+        !objectsAreEqual(addInvoiceRes.error, {})) ||
       errorMessage != undefined
     );
   };
@@ -678,6 +730,24 @@ const NewOutput = (props) => {
   };
   const removeDocument = (index) => {
     listDocuments.splice(index, 1);
+    forceUpdate();
+  };
+  const selectDocument = (index) => {
+    console.log('index document', index);
+    console.log('index document listDocument', listDocuments);
+    listDocuments[index].isSelected = !listDocuments[index].isSelected;
+    forceUpdate();
+  };
+  const selectAll = () => {
+    listDocuments = listDocuments.map((obj) => {
+      return {...obj, isSelected: true};
+    });
+    forceUpdate();
+  };
+  const deselectAll = () => {
+    listDocuments = listDocuments.map((obj) => {
+      return {...obj, isSelected: false};
+    });
     forceUpdate();
   };
 
@@ -944,23 +1014,25 @@ const NewOutput = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-
+                  <Grid item xs={12}>
+                    <Typography align='center'>
+                      {showListDocumentsSelected()} de un total de{' '}
+                      {listDocuments.length}
+                    </Typography>
+                  </Grid>
                   <Grid item xs={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
-                      onClick={() => handleClickOpen('document')}
+                      onClick={() =>
+                        handleClickOpenReferralGuides('referralGuides')
+                      }
                     >
-                      Añadir guía de remisión
+                      Ver guías de remisión asignadas
                     </Button>
                   </Grid>
                 </Grid>
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                  />
-                </Box>
+
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   {/* <Grid item xs={4}>
                     <DateTimePicker
@@ -1235,6 +1307,43 @@ const NewOutput = (props) => {
             </DialogContent>
           </>
         ) : null}
+      </Dialog>
+      <Dialog
+        open={openReferralGuides}
+        onClose={handleCloseReferralGuides}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Guías de remisión'}
+          <CancelOutlinedIcon
+            onClick={setOpenReferralGuides.bind(this, false)}
+            className={classes.closeButton}
+          />
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{my: 5}}>
+            <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+              <Grid item xs={12}>
+                <Button
+                  sx={{width: 1}}
+                  variant='outlined'
+                  onClick={() => handleClickOpen('document')}
+                >
+                  Añadir guía de remisión
+                </Button>
+              </Grid>
+            </Grid>
+            <Button onClick={selectAll}>Seleccionar todo</Button>
+            <Button onClick={deselectAll}>Deseleccionar todo</Button>
+            <DocumentsTableForBill
+              arrayObjs={listDocuments}
+              toDelete={removeDocument}
+              toSelect={selectDocument}
+            />
+          </Box>
+        </DialogContent>
       </Dialog>
       <Dialog
         open={showDelete}

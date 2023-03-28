@@ -304,7 +304,10 @@ const NewOutput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(total * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (total * (1 + Number(igvDefault))).toFixed(3));
+      changeValueField(
+        'totalFieldIgv',
+        (total * (1 + Number(igvDefault))).toFixed(3),
+      );
     }
     setTimeout(() => {
       setMinTutorial(true);
@@ -363,6 +366,7 @@ const NewOutput = (props) => {
   };
 
   console.log('Valores default peso', weight_unit, 'moneda', moneyUnit);
+  console.log('userDataRes', userDataRes);
 
   const cancel = () => {
     setOpen2(true);
@@ -382,7 +386,10 @@ const NewOutput = (props) => {
     if (selectedProducts && selectedProducts.length >= 1) {
       selectedProducts.map((obj, index) => {
         console.log('obj', obj);
-        if (obj.product == product.product) {
+        if (
+          (obj.businessProductCode || obj.product) ==
+          (product.businessProductCode || product.product)
+        ) {
           console.log('selectedProducts 1', selectedProducts);
           selectedProducts.splice(index, 1);
           console.log('selectedProducts 2', selectedProducts);
@@ -402,7 +409,10 @@ const NewOutput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total * (1 + Number(igvDefault))).toFixed(3));
+    changeValueField(
+      'totalFieldIgv',
+      (total * (1 + Number(igvDefault))).toFixed(3),
+    );
   };
   const getClient = (client) => {
     selectedClient = client;
@@ -436,7 +446,10 @@ const NewOutput = (props) => {
       'equivalentTotal',
       parseTo3Decimals(total * exchangeRate).toFixed(3),
     );
-    changeValueField('totalFieldIgv', (total * (1 + Number(igvDefault))).toFixed(3));
+    changeValueField(
+      'totalFieldIgv',
+      (total * (1 + Number(igvDefault))).toFixed(3),
+    );
     forceUpdate();
   };
 
@@ -513,10 +526,15 @@ const NewOutput = (props) => {
                 documentsMovement: cleanDocuments,
                 editTotal: editTotal,
                 observation: data.outputObservation,
+                userCreated: userDataRes.userId,
+                userCreatedMetadata: {
+                  nombreCompleto: userDataRes.nombreCompleto,
+                  email: userDataRes.email,
+                },
               },
               products: selectedProducts.map((obj) => {
                 return {
-                  businessProductCode: obj.product,
+                  businessProductCode: obj.businessProductCode,
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
                 };
@@ -562,7 +580,10 @@ const NewOutput = (props) => {
         'equivalentTotal',
         parseTo3Decimals(event.target.value * exchangeRate).toFixed(3),
       );
-      changeValueField('totalFieldIgv', (event.target.value * (1+Number(igvDefault))).toFixed(3));
+      changeValueField(
+        'totalFieldIgv',
+        (event.target.value * (1 + Number(igvDefault))).toFixed(3),
+      );
     }
     console.log('actualValues', actualValues);
   };
@@ -650,7 +671,7 @@ const NewOutput = (props) => {
       typeDocument === 'sales'
     ) {
       //dispatch({type: GET_MOVEMENTS, payload: []});
-      console.log("Este es el listPayload NewOutput", listPayload)
+      console.log('Este es el listPayload NewOutput', listPayload);
       toGetMovements(listPayload);
       setShowForms(true);
     } else {
@@ -708,6 +729,8 @@ const NewOutput = (props) => {
     setGuide(isInputChecked);
     console.log('Evento de generar guía', isInputChecked);
   };
+
+  const typeClient = userDataRes.merchantSelected.typeClient;
 
   return (
     <Card sx={{p: 4}}>
@@ -865,7 +888,7 @@ const NewOutput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  {typeDocument == 'sales' ? (
+                  {typeClient != 'PN' && typeDocument == 'sales' ? (
                     <Grid
                       item
                       xs={4}
@@ -873,7 +896,7 @@ const NewOutput = (props) => {
                     >
                       <FormControlLabel
                         disabled={Number(igvDefault) > 0 ? false : true}
-                        checked={true}
+                        checked={isIgvChecked}
                         control={<Checkbox onChange={handleIGV} />}
                         label='IGV'
                       />
@@ -905,22 +928,32 @@ const NewOutput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={handleClickOpen.bind(this, 'document')}
-                    >
-                      Añade un documento
-                    </Button>
-                  </Grid>
+                  {typeClient != 'PN' ? (
+                    <Grid item xs={12}>
+                      <Button
+                        sx={{width: 1}}
+                        variant='outlined'
+                        onClick={handleClickOpen.bind(this, 'document')}
+                      >
+                        Añade documentos
+                      </Button>
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                  />
-                </Box>
+
+                {typeClient != 'PN' ? (
+                  <Box sx={{my: 5}}>
+                    <DocumentsTable
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                    />
+                  </Box>
+                ) : (
+                  <></>
+                )}
+
                 <Grid
                   container
                   spacing={2}
@@ -1165,7 +1198,7 @@ const NewOutput = (props) => {
           {typeDialog == 'client' ? (
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Selecciona un cliente'}
+                {'Búsqueda de clientes'}
                 <CancelOutlinedIcon
                   onClick={setOpen.bind(this, false)}
                   className={classes.closeButton}
@@ -1265,7 +1298,7 @@ const NewOutput = (props) => {
           >
             {getMovementsRes.length !== 0 ? (
               <>
-                {!hasBill.includes('referralGuide') ? (
+                {typeClient != 'PN' && !hasBill.includes('referralGuide') ? (
                   <Button
                     color='primary'
                     sx={{width: 1, px: 7, my: 2}}
@@ -1282,6 +1315,25 @@ const NewOutput = (props) => {
                     }}
                   >
                     Generar Guía de remisión
+                  </Button>
+                ) : null}
+                {typeClient == 'PN' && !hasBill.includes('bill') ? (
+                  <Button
+                    color='primary'
+                    sx={{width: 1, px: 7, my: 2}}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/receipts/get',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
+                  >
+                    Generar Boleta Venta
                   </Button>
                 ) : null}
                 {!hasBill.includes('bill') ? (

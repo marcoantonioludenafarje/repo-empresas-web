@@ -25,7 +25,8 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import {red} from '@mui/material/colors';
+import PendingIcon from '@mui/icons-material/Pending';
+import {red, amber} from '@mui/material/colors';
 import {getUserData} from '../../../redux/actions/User';
 
 import {
@@ -190,10 +191,10 @@ const FinancesTable = (props) => {
     //     pathname: '/sample/bills/table',
     //     query: {billId: selectedOutput.billId},
     //   });
-    // } else 
-    
+    // } else
+
     if (type == 'referralGuide') {
-      console.log("Esta es la id de la guia", codOutput)
+      console.log('Esta es la id de la guia', codOutput);
       Router.push({
         pathname: '/sample/referral-guide/table',
         query: {referralGuideId: codOutput},
@@ -204,15 +205,42 @@ const FinancesTable = (props) => {
   };
   const showIconStatus = (bool, obj) => {
     switch (bool) {
+      case 'waiting':
+        return <PendingIcon sx={{color: amber[500]}} />;
+        break;
+      case null:
+        return <PendingIcon sx={{color: amber[500]}} />;
+        break;
+      case 'accepted':
+        return (
+          <Button
+            variant='secondary'
+            sx={{fontSize: '1em'}}
+            /* disabled={type == 'referralGuide'} */
+            onClick={() =>
+              showObject(obj.referralGuideMovementHeaderId, 'referralGuide')
+            }
+          >
+            <CheckCircleIcon color='success' />
+          </Button>
+        );
+        break;
       case true:
-        return <Button
-              variant='secondary'
-              sx={{fontSize: '1em'}}
-              /* disabled={type == 'referralGuide'} */
-              onClick={() => showObject(obj.referralGuideMovementHeaderId, 'referralGuide')}
-            >
-              <CheckCircleIcon color='success' />
-            </Button>
+        return (
+          <Button
+            variant='secondary'
+            sx={{fontSize: '1em'}}
+            /* disabled={type == 'referralGuide'} */
+            onClick={() =>
+              showObject(obj.referralGuideMovementHeaderId, 'referralGuide')
+            }
+          >
+            <CheckCircleIcon color='success' />
+          </Button>
+        );
+        break;
+      case 'denied':
+        return <CancelIcon sx={{color: red[500]}} />;
         break;
       case false:
         return <CancelIcon sx={{color: red[500]}} />;
@@ -273,6 +301,7 @@ const FinancesTable = (props) => {
                             <Table size='small' aria-label='purchases'>
                               <TableHead sx={{backgroundColor: '#ededed'}}>
                                 <TableRow>
+                                  <TableCell>Serie-Número</TableCell>
                                   <TableCell>
                                     Dirección de punto de partida
                                   </TableCell>
@@ -285,9 +314,7 @@ const FinancesTable = (props) => {
                                   <TableCell>
                                     Ubigeo de punto de llegada
                                   </TableCell>
-                                  <TableCell>
-                                    Documento de conductor
-                                  </TableCell>
+                                  <TableCell>Documento de conductor</TableCell>
                                   <TableCell>Nombre de conductor</TableCell>
                                   <TableCell>Apellidos de conductor</TableCell>
                                   <TableCell>Licencia de conductor</TableCell>
@@ -296,9 +323,7 @@ const FinancesTable = (props) => {
                                   <TableCell>Observaciones</TableCell>
                                   <TableCell>Peso total</TableCell>
                                   <TableCell>Número de paquetes</TableCell>
-                                  <TableCell>
-                                    Guía de Remisión Generada
-                                  </TableCell>
+                                  <TableCell>Estado Guía Sunat</TableCell>
                                   <TableCell></TableCell>
                                 </TableRow>
                               </TableHead>
@@ -309,6 +334,9 @@ const FinancesTable = (props) => {
                                       return (
                                         <>
                                           <TableRow key={index2}>
+                                            <TableCell>
+                                              {route.serialNumber}
+                                            </TableCell>
                                             <TableCell>
                                               {route.arrivalPointAddress}
                                             </TableCell>
@@ -358,7 +386,9 @@ const FinancesTable = (props) => {
                                               {route.observationDelivery}
                                             </TableCell>
                                             <TableCell>
-                                              {route.totalGrossWeight}
+                                              {Number.parseFloat(
+                                                route.totalGrossWeight,
+                                              ).toFixed(3)}
                                             </TableCell>
                                             <TableCell>
                                               {route.numberOfPackages}
@@ -366,7 +396,7 @@ const FinancesTable = (props) => {
                                             <TableCell align='center'>
                                               {showIconStatus(
                                                 route.generateReferralGuide,
-                                                route
+                                                route,
                                               )}
                                             </TableCell>
                                             <TableCell>
@@ -439,9 +469,10 @@ const FinancesTable = (props) => {
                                                                   key={`${index3}-${index3}`}
                                                                 >
                                                                   <TableCell>
-                                                                    {
-                                                                      product.product
-                                                                    }
+                                                                    {product.businessProductCode !=
+                                                                    null
+                                                                      ? product.businessProductCode
+                                                                      : product.product}
                                                                   </TableCell>
                                                                   <TableCell>
                                                                     {

@@ -26,6 +26,7 @@ import {
   DialogContentText,
   DialogTitle,
   CircularProgress,
+  TablePagination,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -43,10 +44,11 @@ import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import DataSaverOffOutlinedIcon from '@mui/icons-material/DataSaverOffOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PendingIcon from '@mui/icons-material/Pending';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
-import {red} from '@mui/material/colors';
+import {red, amber} from '@mui/material/colors';
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
@@ -109,6 +111,7 @@ let listPayload = {
       searchByBill: null,
       movementHeaderId: null,
       outputId: null,
+      lastEvaluatedKey: '',
     },
   },
 };
@@ -150,6 +153,11 @@ const ReferralGuidesTable = (props) => {
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
+  const [totalItems, setTotalItems] = React.useState([]);
+  const [lastKey, setLastKey] = React.useState(null);
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -248,9 +256,9 @@ const ReferralGuidesTable = (props) => {
 
       if (Object.keys(query).length !== 0) {
         console.log('Query con datos', query);
-        if(query.movementHeaderId){
+        if (query.movementHeaderId) {
           listPayload.request.payload.outputId = query.movementHeaderId;
-        }else if (query.referralGuideId){
+        } else if (query.referralGuideId) {
           listPayload.request.payload.movementHeaderId = query.referralGuideId;
         }
       }
@@ -330,10 +338,10 @@ const ReferralGuidesTable = (props) => {
   };
 
   const compare = (a, b) => {
-    if (a.createdDate < b.createdDate) {
+    if (a.serialNumber.split('-')[1] < b.serialNumber.split('-')[1]) {
       return 1;
     }
-    if (a.createdDate > b.createdDate) {
+    if (a.serialNumber.split('-')[1] > b.serialNumber.split('-')[1]) {
       return -1;
     }
     return 0;
@@ -352,8 +360,20 @@ const ReferralGuidesTable = (props) => {
   };
   const showIconStatus = (bool) => {
     switch (bool) {
+      case 'waiting' || null:
+        return <PendingIcon sx={{color: amber[500]}} />;
+        break;
+      case null:
+        return <PendingIcon sx={{color: amber[500]}} />;
+        break;
+      case 'accepted' || true:
+        return <CheckCircleIcon color='success' />;
+        break;
       case true:
         return <CheckCircleIcon color='success' />;
+        break;
+      case 'denied' || false:
+        return <CancelIcon sx={{color: red[500]}} />;
         break;
       case false:
         return <CancelIcon sx={{color: red[500]}} />;
@@ -368,6 +388,56 @@ const ReferralGuidesTable = (props) => {
     handleClose();
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+    toGetMovements({
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          businessProductCode: null,
+          movementType: 'REFERRAL_GUIDE',
+          merchantId: '',
+          timestampMovement: null,
+          searchByBill: null,
+          movementHeaderId: null,
+          outputId: null,
+          lastEvaluatedKey: getMovementsRes[newPage - 1]?.lastKey || '',
+        },
+      },
+    });
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const listPayload = {
+  //       request: {
+  //         payload: {
+  //           initialTime: null,
+  //           finalTime: null,
+  //           businessProductCode: null,
+  //           movementType: "REFERRAL_GUIDE",
+  //           merchantId: "",
+  //           timestampMovement: null,
+  //           searchByBill: null,
+  //           movementHeaderId: null,
+  //           outputId: null,
+  //           lastEvaluatedKey: lastKey || ""
+  //         }
+  //       }
+  //     };
+
+  //     const { data, lastEvaluatedKey } = getMovementsRes;
+  //     setLastKey(lastEvaluatedKey);
+  //   };
+
+  //   fetchData();
+  // }, [lastKey]);
   return (
     <Card sx={{p: 4}}>
       <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
@@ -428,13 +498,11 @@ const ReferralGuidesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes &&
-            Array.isArray(getMovementsRes) 
-            // &&
-            // getMovementsRes[0] &&
-            // getMovementsRes[0].movementType == 'REFERRAL_GUIDE' 
-            
-            ? (
+            {getMovementsRes && Array.isArray(getMovementsRes) ? (
+              // &&
+              // getMovementsRes[0] &&
+              // getMovementsRes[0].movementType == 'REFERRAL_GUIDE'
+
               getMovementsRes.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -477,6 +545,15 @@ const ReferralGuidesTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      {/* <TablePagination
+        rowsPerPageOptions={[25, 50, 100]}
+        component="div"
+        count={getMovementsRes ? getMovementsRes.length : 0}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      /> */}
       <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'

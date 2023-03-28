@@ -7,6 +7,7 @@ import AppPageMeta from '../../../@crema/core/AppPageMeta';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import {
   Button,
@@ -627,7 +628,7 @@ const UpdateExpense = (props) => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Número de factura'
                       name='nroBill'
                       variant='outlined'

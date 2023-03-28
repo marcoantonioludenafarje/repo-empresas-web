@@ -22,7 +22,7 @@ import {
   GET_USER_DATA,
   FETCH_SUCCESS,
   FETCH_ERROR,
-  UPDATE_DATA_BUSINESS
+  UPDATE_DATA_BUSINESS,
 } from '../../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../../redux/actions/User';
 import {updateDataBusiness} from '../../../../redux/actions/General';
@@ -48,8 +48,7 @@ const validationSchema = yup.object({
     .required(<IntlMessages id='validation.required' />),
   passwordCertified: yup
     .string()
-    .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
+    .typeError(<IntlMessages id='validation.string' />),
 });
 const BusinessInfo = () => {
   const {user} = useAuthUser();
@@ -63,16 +62,22 @@ const BusinessInfo = () => {
   console.log('generalError', generalError);
   const {updateBusinessRes} = useSelector(({general}) => general);
   console.log('updateBusinessRes', updateBusinessRes);
-  const [selectedJsonImages, setSelectedJsonImages] = React.useState(userDataRes
-    ? [userDataRes.merchantSelected.logoImage]
-    : []);
-  const [certified, setCertified] = React.useState(userDataRes ? userDataRes.merchantSelected.billingCertified : "");
+  const [selectedJsonImages, setSelectedJsonImages] = React.useState(
+    userDataRes ? [userDataRes.merchantSelected.logoImage] : [],
+  );
+  const [certified, setCertified] = React.useState(
+    userDataRes ? userDataRes.merchantSelected.billingCertified : '',
+  );
   console.log('userAttributes', userAttributes);
   const [docType, setDocType] = React.useState(
     userAttributes['custom:businessDocumentType'],
   );
-  const [ubigeo, setUbigeo] = React.useState(userDataRes ? userDataRes.merchantSelected.ubigeo : "");
-  const [passwordCertified, setPasswordCertified] = React.useState(userDataRes ? userDataRes.merchantSelected.passwordCertified : "");
+  const [ubigeo, setUbigeo] = React.useState(
+    userDataRes ? userDataRes.merchantSelected.ubigeo : '',
+  );
+  const [passwordCertified, setPasswordCertified] = React.useState(
+    userDataRes ? userDataRes.merchantSelected.passwordCertified : '',
+  );
 
   const [open, setOpen] = React.useState(false);
 
@@ -102,7 +107,6 @@ const BusinessInfo = () => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
   }, []);
-
 
   const getDocumentType = (value) => {
     console.log('tipo desde index', value);
@@ -180,39 +184,44 @@ const BusinessInfo = () => {
           companyName: userDataRes.merchantSelected.denominationMerchant,
           documentNumber: userDataRes.merchantSelected.numberDocumentMerchant,
           direction: userDataRes.merchantSelected.addressMerchant,
-          documentType: docType, /* userAttributes['custom:businessDocumentType'] */
+          documentType:
+            docType /* userAttributes['custom:businessDocumentType'] */,
           eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
           facebook: userDataRes.merchantSelected.facebookUrl,
           instagram: userDataRes.merchantSelected.instagramUrl,
           twitter: userDataRes.merchantSelected.twitterUrl,
           youtube: userDataRes.merchantSelected.youtubeUrl,
-          comercialName: userDataRes.merchantSelected.comercialName ? userDataRes.merchantSelected.comercialName : "",
-          passwordCertified: userDataRes.merchantSelected.passwordCertified ? userDataRes.merchantSelected.passwordCertified : "",
+          comercialName: userDataRes.merchantSelected.comercialName
+            ? userDataRes.merchantSelected.comercialName
+            : '',
+          passwordCertified: userDataRes.merchantSelected.passwordCertified
+            ? userDataRes.merchantSelected.passwordCertified
+            : '',
         }}
         validationSchema={validationSchema}
         onSubmit={(data, {setSubmitting}) => {
           setSubmitting(true);
           console.log('payload actualizarInfo: ', {
-              request: {
-                payload: {
-                  merchantId: userDataRes.merchantSelected.merchantId,
-                  denominationMerchant: data.companyName,
-                  typeDocumentMerchant: docType,
-                  numberDocumentMerchant: data.documentNumber,
-                  addressMerchant: data.direction,
-                  ecommerceMerchantSlug: data.eMerchantSlugName,
-                  facebookUrl: data.facebook,
-                  twitterUrl: data.twitter,
-                  instagramUrl: data.instagram,
-                  youtubeUrl: data.youtube,
-                  logo: selectedJsonImages[0],
-                  comercialName: data.comercialName,
-                  digitalCertified: certified,
-                  ubigeo: ubigeo,
-                  passwordCertified: data.passwordCertified
-                },
+            request: {
+              payload: {
+                merchantId: userDataRes.merchantSelected.merchantId,
+                denominationMerchant: data.companyName,
+                typeDocumentMerchant: docType,
+                numberDocumentMerchant: data.documentNumber,
+                addressMerchant: data.direction,
+                ecommerceMerchantSlug: data.eMerchantSlugName,
+                facebookUrl: data.facebook,
+                twitterUrl: data.twitter,
+                instagramUrl: data.instagram,
+                youtubeUrl: data.youtube,
+                logo: selectedJsonImages[0],
+                comercialName: data.comercialName,
+                digitalCertified: certified,
+                ubigeo: ubigeo,
+                passwordCertified: data.passwordCertified,
               },
-            });
+            },
+          });
           // TODO Api Call here to save user info
           dispatch({
             type: GET_PRESIGNED,
@@ -235,7 +244,7 @@ const BusinessInfo = () => {
                 comercialName: data.comercialName,
                 digitalCertified: certified,
                 ubigeo: ubigeo,
-                passwordCertified: data.passwordCertified
+                passwordCertified: data.passwordCertified,
               },
             },
           });
@@ -256,7 +265,11 @@ const BusinessInfo = () => {
                   ? [userDataRes.merchantSelected.logoImage]
                   : []
               }
-              billingCertified={userDataRes.merchantSelected.digitalCertified ? userDataRes.merchantSelected.digitalCertified : ""}
+              billingCertified={
+                userDataRes.merchantSelected.digitalCertified
+                  ? userDataRes.merchantSelected.digitalCertified
+                  : ''
+              }
               isBilling={userDataRes.merchantSelected.isBillingEnabled}
               baseUbigeo={userDataRes.merchantSelected.ubigeo}
               moveUbigeo={getUbigeo}

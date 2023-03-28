@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
 let listPayload = {
   request: {
     payload: {
-      typeDocumentClient: 'RUC',
+      typeDocumentClient: '',
       numberDocumentClient: '',
       denominationClient: '',
       merchantId: '',
@@ -163,7 +163,7 @@ const ClientTable = (arrayObjs, props) => {
           },
         },
       };
-      listPayload.request.payload.typeDocumentClient = 'RUC';
+      listPayload.request.payload.typeDocumentClient = '';
       toGetUserData(getUserDataPayload);
     }
   }, []);
@@ -353,23 +353,26 @@ const ClientTable = (arrayObjs, props) => {
             Identificador
           </InputLabel>
           <Select
-            defaultValue='RUC'
+            defaultValue=''
             name='typeDocumentClient'
             labelId='documentType-label'
             label='Identificador'
             onChange={(event) => {
-              console.log("Está pasando por aquí?", event.target.value);
+              console.log('Está pasando por aquí?', event.target.value);
               listPayload.request.payload.typeDocumentClient =
                 event.target.value;
             }}
           >
+            <MenuItem value='' style={{fontWeight: 200}}>
+              Todos
+            </MenuItem>
             <MenuItem value='RUC' style={{fontWeight: 200}}>
               RUC
             </MenuItem>
             <MenuItem value='DNI' style={{fontWeight: 200}}>
               DNI
             </MenuItem>
-            <MenuItem value='foreignerscard' style={{fontWeight: 200}}>
+            <MenuItem value='CE' style={{fontWeight: 200}}>
               CE
             </MenuItem>
           </Select>
@@ -422,12 +425,9 @@ const ClientTable = (arrayObjs, props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listClients
-             && 
-             Array.isArray(listClients) 
-            //  &&
-            //  listClients.length > 0 
-             ? (
+            {listClients && Array.isArray(listClients) ? (
+              //  &&
+              //  listClients.length > 0
               listClients.map((obj, index) => {
                 let parsedId = obj.clientId.split('-');
                 return (

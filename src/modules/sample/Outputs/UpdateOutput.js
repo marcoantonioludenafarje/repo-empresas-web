@@ -557,10 +557,18 @@ const UpdateOutput = (props) => {
                 folderMovement: query.folderMovement,
                 contableMovementId: query.contableMovementId,
                 observation: data.outputObservation,
+                userUpdated: userDataRes.userId,
+                userUpdatedMetadata: {
+                  nombreCompleto: userDataRes.nombreCompleto,
+                  email: userDataRes.email,
+                },
               },
               products: selectedProducts.map((obj) => {
                 return {
-                  businessProductCode: obj.product,
+                  businessProductCode:
+                    obj.businessProductCode != null
+                      ? obj.businessProductCode
+                      : obj.product, //obj.businessProductCode,
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
                 };
@@ -669,7 +677,9 @@ const UpdateOutput = (props) => {
         </>
       );
     } else if (
-      (errorMessage != undefined && cancelInvoiceRes !== undefined && 'error' in cancelInvoiceRes) ||
+      (errorMessage != undefined &&
+        cancelInvoiceRes !== undefined &&
+        'error' in cancelInvoiceRes) ||
       errorMessage !== undefined
     ) {
       return (
@@ -764,6 +774,8 @@ const UpdateOutput = (props) => {
     setCancelStatus(true);
     setOpenForm(false);
   };
+
+  const typeClient = userDataRes.merchantSelected.typeClient;
 
   return (
     <Card sx={{p: 4}}>
@@ -943,7 +955,7 @@ const UpdateOutput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  {typeDocument == 'sales' ? (
+                  {typeClient != 'PN' && typeDocument == 'sales' ? (
                     <Grid
                       item
                       xs={4}
@@ -987,23 +999,33 @@ const UpdateOutput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={handleClickOpen.bind(this, 'document')}
-                    >
-                      Añade un documento
-                    </Button>
-                  </Grid>
+                  {typeClient != 'PN' ? (
+                    <Grid item xs={12}>
+                      <Button
+                        sx={{width: 1}}
+                        variant='outlined'
+                        onClick={handleClickOpen.bind(this, 'document')}
+                      >
+                        Añade documentos
+                      </Button>
+                    </Grid>
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                    typeForm={'updateOutput'}
-                  />
-                </Box>
+
+                {typeClient != 'PN' ? (
+                  <Box sx={{my: 5}}>
+                    <DocumentsTable
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                      typeForm={'updateOutput'}
+                    />
+                  </Box>
+                ) : (
+                  <></>
+                )}
+
                 <Grid
                   container
                   spacing={2}
@@ -1148,7 +1170,7 @@ const UpdateOutput = (props) => {
           {typeDialog == 'client' ? (
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Selecciona un cliente'}
+                {'Búsqueda de clientes'}
                 <CancelOutlinedIcon
                   onClick={setOpen.bind(this, false)}
                   className={classes.closeButton}

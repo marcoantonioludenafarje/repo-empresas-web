@@ -80,7 +80,26 @@ let producePayload = {
   },
 };
 
-let stockProducts = [];
+const objectsAreEqual = (a, b) => {
+  // Comprobar si los dos valores son objetos
+  if (typeof a === 'object' && typeof b === 'object') {
+    // Comprobar si los objetos tienen las mismas propiedades
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) {
+      return false;
+    }
+    // Comparar el valor de cada propiedad de forma recursiva
+    for (const key of aKeys) {
+      if (!objectsAreEqual(a[key], b[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  // Comparar los valores directamente
+  return a === b;
+};
 
 const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
   const history = useHistory();
@@ -91,15 +110,18 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
   const [registerDate, setRegisterDate] = React.useState(Date.now());
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
+  const [stockProducts, setStockProducts] = React.useState([]);
 
   useEffect(() => {
-    product.inputsProduct.map((obj) => {
-      let ogProduct;
-      ogProduct = listProducts.find(
-        (objProd) => obj.productId == objProd.productId,
-      );
-      stockProducts.push(ogProduct);
-    });
+    setStockProducts(
+      product.inputsProduct.map((obj) => {
+        let ogProduct;
+        ogProduct = listProducts.find(
+          (objProd) => obj.productId == objProd.productId,
+        );
+        return ogProduct;
+      }),
+    );
     console.log('stockProducts', stockProducts);
   }, []);
 
@@ -126,7 +148,7 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     let goodStock = true;
-    product.inputsProduct.map((obj) => {
+    product.inputsProduct.forEach((obj) => {
       let actualProduct;
       actualProduct = stockProducts.find(
         (ogProd) => ogProd.productId == obj.productId,
@@ -163,7 +185,12 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
     if (
       successMessage != undefined &&
       produceProductRes !== undefined &&
-      !('error' in produceProductRes)
+      (!(
+        typeof tuVariable === 'object' &&
+        tuVariable !== null &&
+        'error' in produceProductRes
+      ) ||
+        objectsAreEqual(produceProductRes.error, {}))
     ) {
       return (
         <>
@@ -188,7 +215,10 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
         </>
       );
     } else if (
-      (successMessage != undefined && 'error' in produceProductRes) ||
+      (successMessage != undefined &&
+        produceProductRes &&
+        'error' in produceProductRes &&
+        !objectsAreEqual(produceProductRes.error, {})) ||
       errorMessage != undefined
     ) {
       return (
@@ -233,7 +263,7 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
     // setAmount(value);
   };
 
-  return (
+  return stockProducts.length > 0 ? (
     <Box
       sx={{
         flex: 1,
@@ -303,26 +333,6 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
                     my: 2,
                   }}
                 />
-                <Collapse in={showAlert}>
-                  <Alert
-                    severity='error'
-                    action={
-                      <IconButton
-                        aria-label='close'
-                        color='inherit'
-                        size='small'
-                        onClick={() => {
-                          setShowAlert(false);
-                        }}
-                      >
-                        <CloseIcon fontSize='inherit' />
-                      </IconButton>
-                    }
-                    sx={{mb: 2}}
-                  >
-                    Por favor selecciona al menos un producto.
-                  </Alert>
-                </Collapse>
               </Grid>
               {/* <Grid item xs={12}>
               <AppTextField
@@ -371,6 +381,9 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
                       <TableCell sx={{width: '10px'}}>
                         Cantidad necesaria para producir
                       </TableCell>
+                      <TableCell sx={{width: '10px'}}>
+                        Stock Disponible
+                      </TableCell>
                       {/* <TableCell sx={{width: '10px'}}>Subtotal</TableCell> */}
                     </TableRow>
                   </TableHead>
@@ -378,6 +391,10 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
                     {product.inputsProduct &&
                     typeof product.inputsProduct !== 'string' ? (
                       product.inputsProduct.map((obj, index) => {
+                        const productSelected = stockProducts.find(
+                          (element) => element.productId == obj.productId,
+                        );
+
                         return (
                           <TableRow
                             sx={{
@@ -395,8 +412,19 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
                             <TableCell sx={{width: '10px'}}>
                               {obj.quantity}
                             </TableCell>
-                            <TableCell sx={{width: '10px'}}>
+                            <TableCell
+                              style={{
+                                color:
+                                  obj.quantity * amount > productSelected.stock
+                                    ? 'red'
+                                    : 'inherit',
+                              }}
+                              sx={{width: '10px'}}
+                            >
                               {obj.quantity * amount}
+                            </TableCell>
+                            <TableCell sx={{width: '10px'}}>
+                              {productSelected.stock}
                             </TableCell>
                             {/* <TableCell sx={{width: '10px'}}>
                               {fixDecimals(
@@ -413,7 +441,28 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
                 </Table>
               </TableContainer>
             </Box>
-
+            <Grid item xs={12}>
+              <Collapse in={showAlert}>
+                <Alert
+                  severity='error'
+                  action={
+                    <IconButton
+                      aria-label='close'
+                      color='inherit'
+                      size='small'
+                      onClick={() => {
+                        setShowAlert(false);
+                      }}
+                    >
+                      <CloseIcon fontSize='inherit' />
+                    </IconButton>
+                  }
+                  sx={{mb: 2}}
+                >
+                  No se cuenta con stock disponible en los insumos.
+                </Alert>
+              </Collapse>
+            </Grid>
             <ButtonGroup
               orientation='vertical'
               variant='outlined'
@@ -465,7 +514,7 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
         {showMessage()}
       </Dialog>
     </Box>
-  );
+  ) : null;
 };
 AddFinishedProduct.propTypes = {
   product: PropTypes.object.isRequired,

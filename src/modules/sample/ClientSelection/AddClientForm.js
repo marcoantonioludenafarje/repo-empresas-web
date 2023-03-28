@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -82,24 +83,24 @@ const AddProductForm = ({sendData}) => {
   let changeValueField;
   console.log('funcion recibida', sendData);
 
+  //FUNCIONES DIALOG
+  const [open, setOpen] = React.useState(false);
+  const [showAlert, setShowAlert] = React.useState(false);
+  const {userAttributes} = useSelector(({user}) => user);
+  const {userDataRes} = useSelector(({user}) => user);
+
   let listClientsPayload = {
     request: {
       payload: {
         typeDocumentClient: '',
         numberDocumentClient: '',
         denominationClient: '',
-        merchantId: 'KX824',
+        merchantId: userDataRes.merchantSelected.merchantId,
+        flagBusqDoc: true,
       },
     },
   };
 
-  //FUNCIONES DIALOG
-  const [open, setOpen] = React.useState(false);
-  const [showAlert, setShowAlert] = React.useState(false);
-  const {userAttributes} = useSelector(({user}) => user);
-  const {userDataRes} = useSelector(({user}) => user);
-  listClientsPayload.request.payload.merchantId =
-    userDataRes.merchantSelected.merchantId;
   const handleClose = () => {
     setOpen(false);
   };
@@ -156,7 +157,7 @@ const AddProductForm = ({sendData}) => {
       sendData(selectedClient);
       selectedClient = {};
     } else {
-      console.log('Porfavor selecciona un cliente');
+      console.log('Porfavor busque y seleccione un cliente');
       setShowAlert(true);
     }
     setSubmitting(false);
@@ -182,8 +183,8 @@ const AddProductForm = ({sendData}) => {
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={11}>
-                    <AppTextField
-                      label='Cliente'
+                    <AppUpperCaseTextField
+                      label='Ingrese nombre del cliente o documento de identidad'
                       name='clientId'
                       htmlFor='filled-adornment-password'
                       variant='outlined'

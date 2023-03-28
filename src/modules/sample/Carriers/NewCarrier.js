@@ -38,6 +38,7 @@ import {
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
@@ -63,6 +64,10 @@ const validationSchema = yup.object({
   addressCarrier: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />),
+  emailCarrier: yup
+    .string()
+    .typeError(<IntlMessages id='validation.number' />)
+    .email('Formato de correo invalido'),
   emailContact: yup
     .string()
     .typeError(<IntlMessages id='validation.number' />)
@@ -80,6 +85,7 @@ const defaultValues = {
   nroDocument: '',
   name: '',
   addressCarrier: '',
+  emailCarrier: '',
   emailContact: '',
   nameContact: '',
   numberContact: '',
@@ -94,6 +100,7 @@ let newCarrierPayload = {
           numberDocumentCarrier: '',
           denominationCarrier: '',
           addressCarrier: '',
+          emailCarrier: '',
           nameContact: '',
           numberContact: '',
           emailContact: '',
@@ -180,6 +187,8 @@ const NewCarrier = () => {
       data.name;
     newCarrierPayload.request.payload.carriers[0].addressCarrier =
       data.addressCarrier;
+    newCarrierPayload.request.payload.carriers[0].emailCarrier =
+      data.emailCarrier;
     newCarrierPayload.request.payload.carriers[0].nameContact =
       data.nameContact;
     newCarrierPayload.request.payload.carriers[0].numberContact =
@@ -316,10 +325,7 @@ const NewCarrier = () => {
                         <MenuItem value='DNI' style={{fontWeight: 200}}>
                           DNI
                         </MenuItem>
-                        <MenuItem
-                          value='foreignerscard'
-                          style={{fontWeight: 200}}
-                        >
+                        <MenuItem value='CE' style={{fontWeight: 200}}>
                           CE
                         </MenuItem>
                       </Select>
@@ -371,6 +377,21 @@ const NewCarrier = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
+                    <AppLowerCaseTextField
+                      label='Correo de Empresa'
+                      name='emailCarrier'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
                     <AppTextField
                       label='Nombre de contacto'
                       name='nameContact'
@@ -401,7 +422,7 @@ const NewCarrier = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppLowerCaseTextField
                       label='Correo de contacto'
                       name='emailContact'
                       variant='outlined'

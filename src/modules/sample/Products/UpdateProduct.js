@@ -120,6 +120,10 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
+  alias: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
   customCodeProduct: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
@@ -324,8 +328,9 @@ const UpdateProduct = (props) => {
     },
   };
   let defaultValues = {
-    businessProductCode: query.product,
+    businessProductCode: query.businessProductCode,
     description: query.description,
+    alias: query.alias,
     customCodeProduct: query.customCodeProduct,
     referecialPriceSell: Number(query.sellPriceUnit),
     costPriceUnit: Number(query.costPriceUnit),
@@ -470,6 +475,7 @@ const UpdateProduct = (props) => {
           description: subProduct.description,
           count: obj.quantity,
           priceUnit: obj.priceUnit,
+          businessProductCode: obj.businessProductCode,
         });
       });
 
@@ -479,7 +485,7 @@ const UpdateProduct = (props) => {
   useEffect(() => {
     console.log('CUAL ES EL originalProduct', originalProduct);
     if (originalProduct && originalProduct.active) {
-      if(originalProduct.images){
+      if (originalProduct.images) {
         originalProduct.images = originalProduct.images.map((image) => {
           image.isSaved = true;
           return image;
@@ -487,7 +493,6 @@ const UpdateProduct = (props) => {
         setSelectedImages(originalProduct.images);
         setSelectedJsonImages(originalProduct.images);
         console.log('selectedImages', selectedImages);
-
       }
 
       console.log('selectedImages de original', originalProduct.images);
@@ -668,9 +673,11 @@ const UpdateProduct = (props) => {
             quantity: obj.count,
             priceUnit: obj.priceUnit,
             description: obj.description,
+            alias: obj.alias,
             weight: obj.weight,
             unitMeasure: obj.unitMeasure,
             customCodeProduct: obj.customCodeProduct || '',
+            businessProductCode: obj.businessProductCode,
           });
         });
       }
@@ -688,6 +695,7 @@ const UpdateProduct = (props) => {
           payload: {
             businessProductCode: data.businessProductCode,
             description: data.description,
+            alias: data.alias,
             costPriceUnit: Number(data.costPriceUnit),
             sellPriceUnit: Number(data.referecialPriceSell),
             weight: Number(data.weight),
@@ -894,6 +902,22 @@ const UpdateProduct = (props) => {
                       }}
                     />
                   </Grid>
+
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Alias'
+                      name='alias'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+
                   <Grid item xs={12}>
                     <AppTextField
                       label='Código aduanero'
@@ -1265,9 +1289,15 @@ const UpdateProduct = (props) => {
                                           control={
                                             <Checkbox
                                               value={Number(index) + 1}
-                                              checked={selectedFilters[
-                                                obj.featureName
-                                              ] ? selectedFilters[obj.featureName].includes(Number(index) + 1) : false}
+                                              checked={
+                                                selectedFilters[obj.featureName]
+                                                  ? selectedFilters[
+                                                      obj.featureName
+                                                    ].includes(
+                                                      Number(index) + 1,
+                                                    )
+                                                  : false
+                                              }
                                               onChange={handleFieldFilter2}
                                               name={obj.featureName}
                                             />
@@ -1383,10 +1413,8 @@ const UpdateProduct = (props) => {
                   ) : (
                     <></>
                   )}
-                  
                 </Grid>
 
-                
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'

@@ -45,7 +45,7 @@ const rolesRoutesConfig = {
       type: 'item',
       url: '/sample/myBilling',
     },
-    
+
     {
       id: 'ecommerce',
       title: 'ecommerce',
@@ -226,12 +226,36 @@ const rolesRoutesConfig = {
           url: '/sample/carriers/table',
         },
         {
+          id: 'driversTable',
+          title: 'Drivers Table',
+          messageId: 'sidebar.sample.driversTable',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/drivers/table',
+        },
+        {
+          id: 'locationsTable',
+          title: 'Locations Table',
+          messageId: 'sidebar.sample.locationsTable',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/locations/table',
+        },
+        {
           id: 'parametersTable',
           title: 'Parameters Table',
           messageId: 'sidebar.sample.parametersTable',
           type: 'item',
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/parameters/update',
+        },
+        {
+          id: 'bulkLoad',
+          title: 'BulkLoad Table',
+          messageId: 'sidebar.sample.bulkLoad',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/bulkLoad',
         },
       ],
     },

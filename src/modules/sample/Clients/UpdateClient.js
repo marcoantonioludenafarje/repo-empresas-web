@@ -7,6 +7,7 @@ import AppPageMeta from '../../../@crema/core/AppPageMeta';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
 console.log('Al menos aquí 1?');
 
 import {
@@ -128,6 +129,8 @@ const UpdateClient = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [statusClient, setStatusClient] = React.useState(query.status);
   const dispatch = useDispatch();
+  const [isRUC, setRUC] = React.useState(false);
+  const [identidad, setIdentidad] = React.useState('');
 
   const toUpdateClient = (payload) => {
     dispatch(updateClient(payload));
@@ -196,7 +199,7 @@ const UpdateClient = (props) => {
   };
 
   let objSelects = {
-    documentType: 'RUC',
+    documentType: '',
   };
 
   const handleData = (data, {setSubmitting}) => {
@@ -207,10 +210,15 @@ const UpdateClient = (props) => {
     newClientPayload.request.payload.denominationClient =
       data.denominationClient;
     newClientPayload.request.payload.addressClient = data.addressClient;
-    newClientPayload.request.payload.nameContact = data.nameContact;
-    newClientPayload.request.payload.numberContact = data.numberContact;
-    newClientPayload.request.payload.emailContact = data.emailContact;
     newClientPayload.request.payload.emailClient = data.emailClient;
+    newClientPayload.request.payload.numberContact = data.numberContact;
+    if (isRUC) {
+      newClientPayload.request.payload.emailContact = data.emailContact;
+      newClientPayload.request.payload.nameContact = data.nameContact;
+    } else {
+      newClientPayload.request.payload.emailContact = data.emailClient;
+      newClientPayload.request.payload.nameContact = data.denominationClient;
+    }
     newClientPayload.request.payload.extraInformationClient =
       data.extraInformationClient;
     toUpdateClient(newClientPayload);
@@ -277,7 +285,16 @@ const UpdateClient = (props) => {
   const handleField = (event) => {
     console.log('evento', event);
     objSelects[event.target.name] = event.target.value;
-    console.log('ocjSelects', objSelects);
+    console.log('objSelects', objSelects);
+    setRUC(objSelects.documentType == 'RUC' ? true : false);
+  };
+
+  const inicializaIdentidad = () => {
+    if (!identidad) {
+      setIdentidad(query.clientId.split('-')[0]);
+      setRUC(query.clientId.split('-')[0] == 'RUC' ? true : false);
+    }
+    return '';
   };
 
   return (
@@ -322,8 +339,9 @@ const UpdateClient = (props) => {
                       >
                         Identificador
                       </InputLabel>
+                      {inicializaIdentidad()}
                       <Select
-                        defaultValue='RUC'
+                        defaultValue={query.clientId.split('-')[0]}
                         name='typeDocumentClient'
                         labelId='documentType-label'
                         label='Identificador'
@@ -334,6 +352,9 @@ const UpdateClient = (props) => {
                         </MenuItem>
                         <MenuItem value='DNI' style={{fontWeight: 200}}>
                           DNI
+                        </MenuItem>
+                        <MenuItem value='CE' style={{fontWeight: 200}}>
+                          CE
                         </MenuItem>
                       </Select>
                     </FormControl>
@@ -385,8 +406,8 @@ const UpdateClient = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
-                      label='Correo de Empresa'
+                    <AppLowerCaseTextField
+                      label='Correo de cliente'
                       name='emailClient'
                       variant='outlined'
                       sx={{
@@ -399,40 +420,44 @@ const UpdateClient = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Nombre de contacto'
-                      name='nameContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
+                  {isRUC ? (
+                    <>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Nombre de contacto'
+                          name='nameContact'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppLowerCaseTextField
+                          label='Correo de contacto'
+                          name='emailContact'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
+                    </>
+                  ) : null}
                   <Grid item xs={12}>
                     <AppTextField
                       label='Telefono fijo o celular de contacto'
                       name='numberContact'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Correo de contacto'
-                      name='emailContact'
                       variant='outlined'
                       sx={{
                         width: '100%',

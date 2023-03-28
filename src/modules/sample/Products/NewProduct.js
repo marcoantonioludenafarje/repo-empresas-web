@@ -18,6 +18,7 @@ import {
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import {
   Button,
@@ -120,7 +121,14 @@ const validationSchema = yup.object({
   description: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
+    .required(<IntlMessages id='validation.required' />)
+    .test(
+      'stickSymbolPresenced',
+      'Símbolos | y - no están permitidos, evitarlos por favor',
+      function (value) {
+        return !/\||\-/.test(value);
+      },
+    ),
   title: yup.string().typeError(<IntlMessages id='validation.string' />),
   commercialDescription: yup
     .string()
@@ -235,7 +243,7 @@ const NewProduct = (props) => {
   const [lengthProducts, setLengthProducts] = React.useState(0);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
-  const [typeDialog, setTypeDialog] = React.useState("registrarProducto");
+  const [typeDialog, setTypeDialog] = React.useState('registrarProducto');
   const [selectedCategory, setSelectedCategory] =
     React.useState('noCategories');
   const [typeProduct, setTypeProduct] = React.useState('rawMaterial');
@@ -394,7 +402,7 @@ const NewProduct = (props) => {
       defaultValues.merchantId = userDataRes.merchantSelected.merchantId;
       if (userDataRes.merchantSelected.isEcommerceEnabled == true) {
         setSectionEcommerce(true);
-        
+
         setPublish(true);
       }
       getProducts(listPayload);
@@ -573,14 +581,14 @@ const NewProduct = (props) => {
       userDataRes.merchantSelected.plans.find((obj) => obj.active == true)
         .limits.catalogNumberProducts
     ) {
-      if(publish && !data.title){
-        setTypeDialog("nonTitle");
+      if (publish && !data.title) {
+        setTypeDialog('nonTitle');
         setOpen(true);
-      } else if(publish && !data.commercialDescription) {
-        setTypeDialog("nonCommercialDescription");
+      } else if (publish && !data.commercialDescription) {
+        setTypeDialog('nonCommercialDescription');
         setOpen(true);
       } else {
-        setTypeDialog("registrarProducto");
+        setTypeDialog('registrarProducto');
         setShowAlert(false);
         setSubmitting(true);
         /* if (selectedFile) { */ //PARA LA TOMA DE IMAGEN
@@ -616,6 +624,7 @@ const NewProduct = (props) => {
                 weight: obj.weight,
                 unitMeasure: obj.unitMeasure,
                 customCodeProduct: obj.customCodeProduct || '',
+                businessProductCode: obj.businessProductCode,
               });
             });
           }
@@ -691,7 +700,10 @@ const NewProduct = (props) => {
           console.log('resultado del registro', addProductResponse);
           setOpen(true);
         } else {
-          if (selectedProducts.length === 0 && typeProduct == 'intermediateProduct') {
+          if (
+            selectedProducts.length === 0 &&
+            typeProduct == 'intermediateProduct'
+          ) {
             setTypeAlert('faltaProduct');
           } else if (!goodStockComplexProducts) {
             setTypeAlert('maxStock');
@@ -713,10 +725,13 @@ const NewProduct = (props) => {
   };
 
   const showMessage = () => {
+    console.log('successMessage1:', successMessage);
+    console.log('addProductResponse1:', addProductResponse);
+    console.log('addProductResponse1:', addProductResponse);
     if (
       successMessage != undefined &&
       addProductResponse !== undefined &&
-      !('error' in addProductResponse)
+      'error' !== addProductResponse //!('error' in addProductResponse)
     ) {
       return (
         <>
@@ -876,7 +891,7 @@ const NewProduct = (props) => {
             <Form style={{textAlign: 'left'}} noValidate autoComplete='on'>
               <Grid container spacing={2} sx={{width: 500, mx: 'auto', mb: 4}}>
                 <Grid item xs={12}>
-                  <AppTextField
+                  <AppUpperCaseTextField
                     label='Código *'
                     name='businessProductCode'
                     variant='outlined'
@@ -904,6 +919,22 @@ const NewProduct = (props) => {
                     }}
                   />
                 </Grid>
+
+                <Grid item xs={12}>
+                  <AppTextField
+                    label='Alias *'
+                    name='alias'
+                    variant='outlined'
+                    sx={{
+                      width: '100%',
+                      '& .MuiInputBase-input': {
+                        fontSize: 14,
+                      },
+                      my: 2,
+                    }}
+                  />
+                </Grid>
+
                 <Grid item xs={12}>
                   <AppTextField
                     label='Código aduanero (opcional)'
@@ -1124,7 +1155,7 @@ const NewProduct = (props) => {
                         />
                       </FormGroup>
                     </Grid>
-                    {publish && 
+                    {publish && (
                       <>
                         <Typography
                           component='h3'
@@ -1252,8 +1283,7 @@ const NewProduct = (props) => {
                           <></>
                         )}
                       </>
-                    } 
-                    
+                    )}
                   </>
                 ) : (
                   <></>
@@ -1347,9 +1377,8 @@ const NewProduct = (props) => {
                 ) : (
                   <></>
                 )}
-                
               </Grid>
-              
+
               <ButtonGroup
                 orientation='vertical'
                 variant='outlined'
@@ -1514,7 +1543,6 @@ const NewProduct = (props) => {
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
                 {'Falta indicar el título comercial'}
-                
               </DialogTitle>
               <DialogContent>
                 <CancelOutlinedIcon
@@ -1524,8 +1552,7 @@ const NewProduct = (props) => {
                 <DialogContentText
                   sx={{fontSize: '1.2em', m: 'auto'}}
                   id='alert-dialog-description'
-                >
-                </DialogContentText>
+                ></DialogContentText>
               </DialogContent>
               <DialogActions sx={{justifyContent: 'center'}}>
                 <Button variant='outlined' onClick={() => setOpen(false)}>
@@ -1540,7 +1567,6 @@ const NewProduct = (props) => {
             <>
               <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
                 {'Falta llenar la descripción comercial'}
-                
               </DialogTitle>
               <DialogContent>
                 <CancelOutlinedIcon
@@ -1550,8 +1576,7 @@ const NewProduct = (props) => {
                 <DialogContentText
                   sx={{fontSize: '1.2em', m: 'auto'}}
                   id='alert-dialog-description'
-                >
-                </DialogContentText>
+                ></DialogContentText>
               </DialogContent>
               <DialogActions sx={{justifyContent: 'center'}}>
                 <Button variant='outlined' onClick={() => setOpen(false)}>

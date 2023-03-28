@@ -392,34 +392,65 @@ export const fixDecimals = (number) => {
   return Number(Number(number).toFixed(3));
 };
 
-export const showSubtypeMovement = (type) => {
-  switch (type) {
-    case 'production':
-      return <IntlMessages id='movements.type.production' />;
-      break;
-    case 'buys':
-      return <IntlMessages id='movements.type.buys' />;
-      break;
-    case 'expired':
-      return <IntlMessages id='movements.type.expired' />;
-      break;
-    case 'sales':
-      return <IntlMessages id='movements.type.sales' />;
-      break;
-    case 'sale':
-      return <IntlMessages id='movements.type.sales' />;
-      break;
-    case 'internalUses':
-      return <IntlMessages id='movements.type.internalUses' />;
-      break;
-    case 'sampling':
-      return <IntlMessages id='movements.type.sampling' />;
-      break;
-    case 'otherUses':
-      return <IntlMessages id='movements.type.otherUses' />;
-      break;
-    default:
-      return null;
+export const showSubtypeMovement = (type, text) => {
+  if (!text) {
+    switch (type) {
+      case 'production':
+        return <IntlMessages id='movements.type.production' />;
+        break;
+      case 'buys':
+        return <IntlMessages id='movements.type.buys' />;
+        break;
+      case 'expired':
+        return <IntlMessages id='movements.type.expired' />;
+        break;
+      case 'sales':
+        return <IntlMessages id='movements.type.sales' />;
+        break;
+      case 'sale':
+        return <IntlMessages id='movements.type.sales' />;
+        break;
+      case 'internalUses':
+        return <IntlMessages id='movements.type.internalUses' />;
+        break;
+      case 'sampling':
+        return <IntlMessages id='movements.type.sampling' />;
+        break;
+      case 'otherUses':
+        return <IntlMessages id='movements.type.otherUses' />;
+        break;
+      default:
+        return null;
+    }
+  } else {
+    switch (type) {
+      case 'production':
+        return 'Producción';
+        break;
+      case 'buys':
+        return 'Compras';
+        break;
+      case 'expired':
+        return 'Producto vencido';
+        break;
+      case 'sales':
+        return 'Ventas';
+        break;
+      case 'sale':
+        return 'Ventas';
+        break;
+      case 'internalUses':
+        return 'Usos internos';
+        break;
+      case 'sampling':
+        return 'Muestreo';
+        break;
+      case 'otherUses':
+        return 'Otros usos';
+        break;
+      default:
+        return '';
+    }
   }
 };
 
