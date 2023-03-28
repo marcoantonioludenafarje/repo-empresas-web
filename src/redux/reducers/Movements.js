@@ -126,7 +126,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
       };
 
     case SET_DELIVERIES_SIMPLE:
-      console.log('data de reducer GET_CHILD_ROUTES', action.payload);
+      console.log('data de reducer SET_DELIVERIES_SIMPLE', action.payload);
 
       return {
         ...state,
@@ -134,21 +134,21 @@ const movementsReducer = (state = INIT_STATE, action) => {
       };
 
     case GET_CHILD_ROUTES:
-      console.log('data de reducer GET_CHILD_ROUTES', action.payload);
+      console.log('data de reducer GET_CHILD_ROUTES1234', action.payload);
 
       let deliveries = [];
 
       if (
         action.payload &&
-        action.payload.childRouteRegisters &&
-        action.payload.childRouteRegisters.length > 0
+        action.payload.Items &&
+        action.payload.Items.length > 0
       ) {
-        for (var i = 0; i < action.payload.childRouteRegisters.length; i++) {
+        for (var i = 0; i < action.payload.Items.length; i++) {
           console.log('El i', i);
           console.log('action.payload123', action.payload);
           deliveries = [
             ...deliveries,
-            ...action.payload.childRouteRegisters[i].deliveries,
+            ...action.payload.Items[i].deliveries,
           ];
         }
       }
