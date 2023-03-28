@@ -171,16 +171,37 @@ export const getUserFromJwtAuth = (user) => {
 };
 export const request = (method, path, payload) => {
   console.log('Ahora axios');
-  return axios[method](
-    `${process.env.REACT_APP_ENDPOINT_GATEWAY_URL}${path}`,
-    payload,
-    {
-      headers: {
-        Authorization: localStorage.getItem('jwt'),
-        'Content-type': 'application/json',
-      },
-    },
-  );
+  switch (method) {
+    case 'post':
+      // code block
+      return axios[method](
+        `${process.env.REACT_APP_ENDPOINT_GATEWAY_URL}${path}`,
+        payload,
+        {
+          headers: {
+            Authorization: localStorage.getItem('jwt'),
+            'Content-type': 'application/json',
+          },
+        },
+      );
+      break;
+    case 'get':
+      return axios[method](
+        `${process.env.REACT_APP_ENDPOINT_GATEWAY_URL}${path}`,
+        {
+          headers: {
+            Authorization: localStorage.getItem('jwt'),
+            'Content-type': 'application/json',
+            merchantid: payload.body.merchantId,
+          },
+        },
+      );
+      // code block
+      break;
+    default:
+    // code block
+  }
+
   // return API[method](api,path , {
   //   body: payload,
   //   headers: {
