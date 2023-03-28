@@ -536,7 +536,7 @@ const NewRequest = ({data, subType}) => {
                     color='secondary'
                     component='label'
                   >
-                    Adjuntar comprobante de pago
+                    Adjuntar documentos solicitados
                     <input
                       type='file'
                       hidden

@@ -8,6 +8,8 @@ import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
+
 console.log('Al menos aquí 1?');
 
 import {
@@ -379,7 +381,7 @@ const UpdateClient = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre / Razón Social *'
                       name='denominationClient'
                       variant='outlined'
@@ -394,7 +396,7 @@ const UpdateClient = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Dirección *'
                       name='addressClient'
                       variant='outlined'
@@ -426,7 +428,7 @@ const UpdateClient = (props) => {
                   { isRUC ? (
                     <>
                     <Grid item xs={12}>
-                      <AppTextField
+                      <AppUpperCaseTextField
                         label='Nombre de contacto'
                         name='nameContact'
                         variant='outlined'

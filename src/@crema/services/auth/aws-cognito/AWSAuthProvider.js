@@ -356,6 +356,7 @@ const AwsAuthProvider = ({children}) => {
           'custom:businessUbigeo': data.ubigeo,
           'custom:product': 'INVENTORY',
           'custom:businessCountry': 'peru',
+          'custom:typeClient': data.typeClient,
         },
       };
       console.log('objectParam', objectParam);

@@ -892,6 +892,7 @@
   "common.busines.defaultBusinessType": "Tipo de empresa por defecto",
   "common.busines.defaultIgvActivation": "Activación de IGV por defecto",
   "common.busines.documentType": "Tipo de documento",
+  "common.busines.typeClient": "Tipo principal de cliente",
   "common.busines.profileType": "Tipo de perfil",
   "common.busines.documentNumber": "Número de documento",
   "common.busines.direction": "Dirección",

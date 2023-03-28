@@ -3,6 +3,7 @@ import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useAuthMethod, useAuthUser} from '../../../@crema/utility/AuthHooks';
@@ -69,6 +70,7 @@ const validationSchema = yup.object({
   promotionCode: yup.string(),
   businessNecessity: yup.string(),
   ubigeo: yup.string(),
+  typeClient: yup.string(),
 });
 
 const SignupAwsCognito = () => {
@@ -86,10 +88,18 @@ const SignupAwsCognito = () => {
   let anotherValues = {
     businessDocumentType: 'RUC',
   };
+  let anotherTC = {
+    typeClient: 'PJ',
+  };
   const handleField = (event) => {
     console.log('evento', event);
     anotherValues[event.target.name] = event.target.value;
     console.log('anotherValues', anotherValues);
+  };
+  const handleFieldTC = (event) => {
+    console.log('evento', event);
+    anotherTC[event.target.name] = event.target.value;
+    console.log('anotherTC', anotherTC);
   };
   useEffect(() => {
     const ubigeos = originalUbigeos.map((obj, index) => {
@@ -126,6 +136,7 @@ const SignupAwsCognito = () => {
             promotionCode: '',
             businessNecessity: '',
             ubigeo: '',
+            typeClient: '',
           }}
           validationSchema={validationSchema}
           onSubmit={(data, {setSubmitting, setErrors}) => {
@@ -141,6 +152,8 @@ const SignupAwsCognito = () => {
               });
             } else {
               data.ubigeo = ubigeo;
+              console.log('Data0', data);
+              data.typeClient = anotherTC.typeClient;
               console.log('Data', data);
               console.log('anotherValues', anotherValues);
               console.log('todo el payload', {...anotherValues, ...data});
@@ -212,7 +225,7 @@ const SignupAwsCognito = () => {
                 />
               </Box>
               <Box sx={{mb: {xs: 4, xl: 5}}}>
-                <AppTextField
+                <AppUpperCaseTextField
                   label={<IntlMessages id='common.name' />}
                   name='name'
                   variant='outlined'
@@ -226,7 +239,7 @@ const SignupAwsCognito = () => {
               </Box>
 
               <Box sx={{mb: {xs: 4, xl: 5}}}>
-                <AppTextField
+                <AppUpperCaseTextField
                   label={<IntlMessages id='common.lastName' />}
                   name='lastName'
                   variant='outlined'
@@ -319,7 +332,7 @@ const SignupAwsCognito = () => {
               </Typography>
 
               <Box sx={{mb: {xs: 4, xl: 5}}}>
-                <AppTextField
+                <AppUpperCaseTextField
                   label={<IntlMessages id='common.busines.socialReason' />}
                   name='businessSocialReason'
                   variant='outlined'
@@ -382,7 +395,7 @@ const SignupAwsCognito = () => {
                 />
               </Box>
               <Box sx={{mb: {xs: 4, xl: 5}}}>
-                <AppTextField
+                <AppUpperCaseTextField
                   label={<IntlMessages id='common.busines.direction' />}
                   name='businessDirection'
                   variant='outlined'
@@ -446,6 +459,30 @@ const SignupAwsCognito = () => {
                     />
                   )}
                 />
+              </Box>
+              <Box sx={{mb: {xs: 4, xl: 5}}}>
+                <FormControl fullWidth sx={{my: 2}}>
+                  <InputLabel
+                    id='typClient-label'
+                    style={{fontWeight: 200}}
+                  >
+                    {<IntlMessages id='common.busines.typeClient' />}
+                  </InputLabel>
+                  <Select
+                    defaultValue='PJ'
+                    name='typeClient'
+                    labelId='typeClient-label'
+                    label={<IntlMessages id='common.busines.typeClient' />}
+                    onChange={handleFieldTC}
+                  >
+                    <MenuItem value='PJ' style={{fontWeight: 200}}>
+                      PERSONAS JURÍDICAS
+                    </MenuItem>
+                    <MenuItem value='PN' style={{fontWeight: 200}}>
+                      PERSONAS NATURALES
+                    </MenuItem>
+                  </Select>
+                </FormControl>
               </Box>
               {/* PARTE DE CONTACTO E INFORMACION EXTRA */}
               {/* <Typography

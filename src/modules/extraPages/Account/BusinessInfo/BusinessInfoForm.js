@@ -32,6 +32,7 @@ import {useDropzone} from 'react-dropzone';
 import {Form} from 'formik';
 import PropTypes from 'prop-types';
 import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {styled} from '@mui/material/styles';
@@ -347,14 +348,14 @@ const BusinessInfoForm = ({
 
       <AppGridContainer spacing={4}>
         <Grid item xs={12} md={12}>
-          <AppTextField
+          <AppUpperCaseTextField
             name='companyName'
             fullWidth
             label={<IntlMessages id='common.companyName' />}
           />
         </Grid>
         <Grid item xs={12} md={12}>
-          <AppTextField
+          <AppUpperCaseTextField
             name='comercialName'
             fullWidth
             label={<IntlMessages id='common.comercialName' />}
@@ -430,7 +431,7 @@ const BusinessInfoForm = ({
           />
         </Grid>
         <Grid item xs={12} md={12}>
-          <AppTextField
+          <AppUpperCaseTextField
             name='direction'
             fullWidth
             label={<IntlMessages id='common.busines.direction' />}

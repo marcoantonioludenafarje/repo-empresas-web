@@ -1330,7 +1330,7 @@ const NewOutput = (props) => {
                       });
                     }}
                   >
-                    Generar Boleta Venta
+                    Generar Boleta De Venta
                   </Button>
                 ) : null}
                 {!hasBill.includes('bill') ? (
