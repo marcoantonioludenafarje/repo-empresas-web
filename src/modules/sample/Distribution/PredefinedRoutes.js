@@ -19,14 +19,19 @@ import {
   Menu,
   Stack,
   Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from '@mui/material';
-
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-
+import {makeStyles} from '@mui/styles';
 import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
 import CachedIcon from '@mui/icons-material/Cached';
 
@@ -37,7 +42,7 @@ import {
   SET_DELIVERIES_SIMPLE,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
-import {listRoutes, getChildRoutes} from '../../../redux/actions/Movements';
+import {listRoutes, getChildRoutes, listNewRoutes} from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {getYear, justDate, justTime} from '../../../Utils/utils';
@@ -62,6 +67,49 @@ let getChildRoutesPayload = {
 let codFinanceSelected = '';
 let selectedRoute = '';
 let selectedDelivery = {};
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    textAlign: 'center',
+  },
+  btnGroup: {
+    marginTop: '1em',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  btn: {
+    margin: '3px 0',
+    width: '260px',
+  },
+  noSub: {
+    textDecoration: 'none',
+  },
+  field: {
+    marginTop: '10px',
+  },
+  imgPreview: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  img: {
+    width: '80%',
+  },
+  fixPosition: {
+    position: 'relative',
+    bottom: '-8px',
+  },
+  searchIcon: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  buttonAddProduct: {},
+  closeButton: {
+    cursor: 'pointer',
+    float: 'right',
+    marginTop: '5px',
+    width: '20px',
+  },
+}));
 
 const PredefinedRoutes = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -107,6 +155,12 @@ const PredefinedRoutes = () => {
   const toGetChildRoutes = (payload) => {
     dispatch(getChildRoutes(payload));
   };
+
+  const toListNewRoutes = (payload) => {
+    dispatch(listNewRoutes(payload));
+  };
+
+  
 
   const handleNextPage = (event) => {
     console.log('Llamando al  handleNextPage', handleNextPage);
@@ -223,6 +277,28 @@ const PredefinedRoutes = () => {
     setAnchorEl(event.currentTarget);
     selectedRoute = findRoute(routeId);
     console.log('selectedfindRoute', selectedRoute);
+  };
+
+  const [open, setOpen] = React.useState(false);
+  const [typeDialog, setTypeDialog] = React.useState('');
+  const [showAlert, setShowAlert] = React.useState(false);
+  const classes = useStyles();
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleClickOpen = (type) => {
+    console.log("Veamos el total", selectedRoute)
+    let routePredefinedId = selectedRoute.routePredefinedId
+    console.log("EY que tal", userDataRes.merchantSelected.merchantId)
+   toListNewRoutes({
+    routePredefinedId, 
+    merchantId: userDataRes.merchantSelected.merchantId})
+    
+    // setOpen(true);
+    // toListNewRoutes()
+    // setTypeDialog(type);
+    // setShowAlert(false);
   };
 
   return (
@@ -526,6 +602,11 @@ const PredefinedRoutes = () => {
               'aria-labelledby': 'basic-button',
             }}
           >
+            <MenuItem onClick={handleClickOpen.bind('detailRoute')}>
+              <CachedIcon sx={{mr: 1, my: 'auto'}} />
+              Ver detalle
+            </MenuItem>
+
             <MenuItem onClick={goToUpdate}>
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Actualizar en mantenimiento
@@ -540,6 +621,32 @@ const PredefinedRoutes = () => {
               Descargar archivo de rutas
             </MenuItem>
           </Menu>
+          
+
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          {typeDialog == 'detailRoute' ? (
+            <>
+              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                {'Rutas'}
+                <CancelOutlinedIcon
+                  onClick={setOpen.bind(this, false)}
+                  className={classes.closeButton}
+                />
+              </DialogTitle>
+              <DialogContent>
+                  <span>Aca deberia de aparecer la info que necesito</span>
+              </DialogContent>
+            </>
+          ) : null}
+
+        </Dialog>  
+
         </Card>
       )}
     </>

@@ -140,13 +140,13 @@ const movementsReducer = (state = INIT_STATE, action) => {
 
       if (
         action.payload &&
-        action.payload.Items &&
-        action.payload.Items.length > 0
+        action.payload.childRouteRegisters &&
+        action.payload.childRouteRegisters.length > 0
       ) {
-        for (var i = 0; i < action.payload.Items.length; i++) {
+        for (var i = 0; i < action.payload.childRouteRegisters.length; i++) {
           console.log('El i', i);
           console.log('action.payload123', action.payload);
-          deliveries = [...deliveries, ...action.payload.Items[i].deliveries];
+          deliveries = [...deliveries, ...action.payload.childRouteRegisters[i].deliveries];
         }
       }
 
@@ -154,10 +154,10 @@ const movementsReducer = (state = INIT_STATE, action) => {
         ...state,
         deliveries,
         // childRoutes: (action.payload && action.payload.Items) ? action.payload.Items : [],
-        LastEvaluatedKeyChildRoute:
-          action.payload && action.payload.LastEvaluatedKey
-            ? action.payload.LastEvaluatedKey
-            : null,
+        // LastEvaluatedKeyChildRoute:
+        //   action.payload && action.payload.LastEvaluatedKey
+        //     ? action.payload.LastEvaluatedKey
+        //     : null,
       };
 
     case LIST_DISTRIBUTION:
