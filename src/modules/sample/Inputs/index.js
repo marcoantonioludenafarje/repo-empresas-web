@@ -331,9 +331,12 @@ const InputsTable = (props) => {
       obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
         ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
         : '';
-      obj.providerdenomination = obj.provider
+      obj.providerdenomination = (obj.provider 
+        ? obj.provider.id.split('-')[1] + " - " 
+        : '') 
+        + (obj.provider
         ? obj.provider.denomination
-        : obj.providerName;
+        : obj.providerName);
       obj.totalPrice1 = obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '';
       obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
         ? Number(obj.totalPriceWithIgv.toFixed(3))
@@ -902,9 +905,12 @@ const InputsTable = (props) => {
                           {showSubtypeMovement(obj.movementSubType)}
                         </TableCell>
                         <TableCell>
-                          {obj.provider
+                          {(obj.provider 
+                            ? obj.provider.id.split('-')[1] + " - " 
+                            : '') +  
+                          (obj.provider
                             ? obj.provider.denomination
-                            : obj.providerName}
+                            : obj.providerName)}
                         </TableCell>
                         <TableCell
                           sx={{

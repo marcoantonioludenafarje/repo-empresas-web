@@ -498,9 +498,12 @@ const OutputsTable = (props) => {
       obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
         ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
         : '';
-      obj.clientdenomination = obj.client
+      obj.clientdenomination = (obj.client 
+        ? obj.numberDocumentClient + " - " 
+        : '') + 
+        (obj.client
         ? obj.client.denomination
-        : obj.clientName;
+        : obj.clientName);
       obj.totalPrice1 = obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '';
       obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
         ? Number(obj.totalPriceWithIgv.toFixed(3))
@@ -1024,7 +1027,10 @@ const OutputsTable = (props) => {
                         {showSubtypeMovement(obj.movementSubType)}
                       </TableCell>
                       <TableCell>
-                        {obj.client ? obj.client.denomination : obj.clientName}
+                        {(obj.client 
+                          ? obj.numberDocumentClient + " - " 
+                          : '') + 
+                          (obj.client ? obj.client.denomination : obj.clientName)}
                       </TableCell>
                       <TableCell
                         sx={{
