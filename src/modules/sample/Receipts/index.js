@@ -344,13 +344,13 @@ const ReceiptsTable = (props) => {
   };
   const showIconStatus = (bool) => {
     switch (bool) {
-      case "accepted":
+      case 'accepted':
         return <CheckCircleIcon color='success' />;
         break;
       case true:
         return <CheckCircleIcon color='success' />;
         break;
-      case "denied":
+      case 'denied':
         return <CancelIcon sx={{color: red[500]}} />;
         break;
       case false:
@@ -470,14 +470,10 @@ const ReceiptsTable = (props) => {
                     {convertToDateWithoutTime(obj.timestampMovement)}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumber
-                      ? obj.serialNumber.split('-')[0]
-                      : ''}
+                    {obj.serialNumber ? obj.serialNumber.split('-')[0] : ''}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumber
-                      ? obj.serialNumber.split('-')[1]
-                      : ''}
+                    {obj.serialNumber ? obj.serialNumber.split('-')[1] : ''}
                   </TableCell>
                   <TableCell>{obj.denominationClient}</TableCell>
                   <TableCell>{obj.observation}</TableCell>

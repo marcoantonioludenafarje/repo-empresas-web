@@ -26,7 +26,7 @@ import {
   DialogContentText,
   DialogTitle,
   CircularProgress,
-  TablePagination
+  TablePagination,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -111,7 +111,7 @@ let listPayload = {
       searchByBill: null,
       movementHeaderId: null,
       outputId: null,
-      lastEvaluatedKey: ""
+      lastEvaluatedKey: '',
     },
   },
 };
@@ -153,7 +153,6 @@ const ReferralGuidesTable = (props) => {
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
-  
 
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
@@ -339,10 +338,10 @@ const ReferralGuidesTable = (props) => {
   };
 
   const compare = (a, b) => {
-    if (a.serialNumber.split("-")[1] < b.serialNumber.split("-")[1]) {
+    if (a.serialNumber.split('-')[1] < b.serialNumber.split('-')[1]) {
       return 1;
     }
-    if (a.serialNumber.split("-")[1] > b.serialNumber.split("-")[1]) {
+    if (a.serialNumber.split('-')[1] > b.serialNumber.split('-')[1]) {
       return -1;
     }
     return 0;
@@ -403,13 +402,12 @@ const ReferralGuidesTable = (props) => {
           searchByBill: null,
           movementHeaderId: null,
           outputId: null,
-          lastEvaluatedKey: getMovementsRes[newPage - 1]?.lastKey || ""
+          lastEvaluatedKey: getMovementsRes[newPage - 1]?.lastKey || '',
         },
       },
     });
   };
 
-  
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);

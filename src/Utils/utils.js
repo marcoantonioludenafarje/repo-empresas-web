@@ -392,7 +392,7 @@ export const fixDecimals = (number) => {
   return Number(Number(number).toFixed(3));
 };
 
-export const showSubtypeMovement = (type,text) => {
+export const showSubtypeMovement = (type, text) => {
   if (!text) {
     switch (type) {
       case 'production':
@@ -422,38 +422,36 @@ export const showSubtypeMovement = (type,text) => {
       default:
         return null;
     }
-  }
-  else {
+  } else {
     switch (type) {
       case 'production':
-        return "Producción";
+        return 'Producción';
         break;
       case 'buys':
-        return "Compras";
+        return 'Compras';
         break;
       case 'expired':
-        return "Producto vencido";
+        return 'Producto vencido';
         break;
       case 'sales':
-        return "Ventas";
+        return 'Ventas';
         break;
       case 'sale':
-        return "Ventas";
+        return 'Ventas';
         break;
       case 'internalUses':
-        return "Usos internos";
+        return 'Usos internos';
         break;
       case 'sampling':
-        return "Muestreo";
+        return 'Muestreo';
         break;
       case 'otherUses':
-        return "Otros usos";
+        return 'Otros usos';
         break;
       default:
         return '';
     }
   }
-  
 };
 
 export const isEmpty = (obj) => {

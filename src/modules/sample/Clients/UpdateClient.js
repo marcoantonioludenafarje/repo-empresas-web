@@ -214,16 +214,13 @@ const UpdateClient = (props) => {
     newClientPayload.request.payload.addressClient = data.addressClient;
     newClientPayload.request.payload.emailClient = data.emailClient;
     newClientPayload.request.payload.numberContact = data.numberContact;
-    if (isRUC){
-      newClientPayload.request.payload.emailContact =
-        data.emailContact;    
-      newClientPayload.request.payload.nameContact = data.nameContact;      
-    }
-    else {
-      newClientPayload.request.payload.emailContact =
-        data.emailClient;    
+    if (isRUC) {
+      newClientPayload.request.payload.emailContact = data.emailContact;
+      newClientPayload.request.payload.nameContact = data.nameContact;
+    } else {
+      newClientPayload.request.payload.emailContact = data.emailClient;
       newClientPayload.request.payload.nameContact = data.denominationClient;
-    }    
+    }
     newClientPayload.request.payload.extraInformationClient =
       data.extraInformationClient;
     toUpdateClient(newClientPayload);
@@ -291,16 +288,16 @@ const UpdateClient = (props) => {
     console.log('evento', event);
     objSelects[event.target.name] = event.target.value;
     console.log('objSelects', objSelects);
-    setRUC(objSelects.documentType=='RUC' ? true : false);
+    setRUC(objSelects.documentType == 'RUC' ? true : false);
   };
 
   const inicializaIdentidad = () => {
-    if (!identidad){
+    if (!identidad) {
       setIdentidad(query.clientId.split('-')[0]);
-      setRUC(query.clientId.split('-')[0]=='RUC' ? true : false);
+      setRUC(query.clientId.split('-')[0] == 'RUC' ? true : false);
     }
     return '';
-  }
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -425,7 +422,7 @@ const UpdateClient = (props) => {
                       }}
                     />
                   </Grid>
-                  { isRUC ? (
+                  {isRUC ? (
                     <>
                     <Grid item xs={12}>
                       <AppUpperCaseTextField

@@ -505,8 +505,12 @@ const NewOutput = (props) => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: ADD_INVOICE, payload: undefined});
     console.log('listDocuments', listDocuments);
-    let parsedDocuments = listDocuments.filter((obj) => obj.isSelected)
-                                   .map((obj) => ({issueDate: obj.dateDocument, serialDocument: obj.document}));
+    let parsedDocuments = listDocuments
+      .filter((obj) => obj.isSelected)
+      .map((obj) => ({
+        issueDate: obj.dateDocument,
+        serialDocument: obj.document,
+      }));
     console.log('parsedDocuments', parsedDocuments);
     let finalPayload;
     try {
@@ -523,7 +527,7 @@ const NewOutput = (props) => {
             movementHeaderId: query.movementHeaderId,
             timestampMovement: Number(query.timestampMovement),
             clientId: query.clientId,
-            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(3)),//
+            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(3)), //
             issueDate: specialFormatToSunat(),
             serial: serial,
             documentIntern: query.documentIntern,

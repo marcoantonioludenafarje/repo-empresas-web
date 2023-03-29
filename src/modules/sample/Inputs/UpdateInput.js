@@ -527,7 +527,7 @@ const UpdateInput = (props) => {
                 userUpdatedMetadata: {
                   nombreCompleto: userDataRes.nombreCompleto,
                   email: userDataRes.email,
-                }
+                },
               },
               products: selectedProducts.map((obj) => {
                 return {
@@ -875,7 +875,7 @@ const UpdateInput = (props) => {
                     />
                   </Grid>
 
-                  {typeClient!='PN' ? (
+                  {typeClient != 'PN' ? (
                     <Grid
                       item
                       xs={4}
@@ -919,7 +919,7 @@ const UpdateInput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  {typeClient!='PN' ? (
+                  {typeClient != 'PN' ? (
                     <Grid item xs={12}>
                       <Button
                         sx={{width: 1}}
@@ -929,12 +929,12 @@ const UpdateInput = (props) => {
                         Añade documentos
                       </Button>
                     </Grid>
-                    ) : (
-                      <></>
-                    )}
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
 
-                {typeClient!='PN' ? (
+                {typeClient != 'PN' ? (
                   <Box sx={{my: 5}}>
                     <DocumentsTable
                       arrayObjs={listDocuments}

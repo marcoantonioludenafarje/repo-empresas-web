@@ -368,7 +368,9 @@ const InventoryTable = (props) => {
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={obj.product}
                 >
-                  <TableCell>{obj.businessProductCode || obj.product}</TableCell>
+                  <TableCell>
+                    {obj.businessProductCode || obj.product}
+                  </TableCell>
                   <TableCell>{obj.description}</TableCell>
                   <TableCell>{obj.numInputs}</TableCell>
                   <TableCell>{obj.numOutputs}</TableCell>

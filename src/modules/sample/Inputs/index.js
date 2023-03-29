@@ -119,7 +119,7 @@ let deletePayload = {
       userUpdatedMetadata: {
         nombreCompleto: '',
         email: '',
-      }
+      },
     },
   },
 };
@@ -322,16 +322,31 @@ const InputsTable = (props) => {
     let listResult = [];
     getMovementsRes.map((obj) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
-      obj.codigo1 = showMinType(obj.movementType) + '-' + (obj.codMovement ? obj.codMovement.split('-')[1] : '');
+      obj.codigo1 =
+        showMinType(obj.movementType) +
+        '-' +
+        (obj.codMovement ? obj.codMovement.split('-')[1] : '');
       obj.timestampMovement = convertToDateWithoutTime(obj.timestampMovement);
       obj.updatedDate = convertToDateWithoutTime(obj.updatedDate);
-      obj.movementSubType = (`${showSubtypeMovement(obj.movementSubType,'x')}`?`${showSubtypeMovement(obj.movementSubType,'x')}`:'');      
-      obj.providerdenomination = (obj.provider ? obj.provider.denomination : obj.providerName);
-      obj.totalPrice1 = (obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '');
-      obj.totalPriceWithIgv1 = (obj.totalPriceWithIgv ? Number(obj.totalPriceWithIgv.toFixed(3)) : '');
-      obj.status1 = (`${showStatus(obj.status,'x')}`?`${showStatus(obj.status,'x')}`:'');
-      obj.userCreatedMetadata1 = (obj.userCreatedMetadata ? obj.userCreatedMetadata.nombreCompleto: '');
-      obj.userUpdatedMetadata1 = (obj.userUpdatedMetadata ? obj.userUpdatedMetadata.nombreCompleto : '');
+      obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
+        ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
+        : '';
+      obj.providerdenomination = obj.provider
+        ? obj.provider.denomination
+        : obj.providerName;
+      obj.totalPrice1 = obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '';
+      obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
+        ? Number(obj.totalPriceWithIgv.toFixed(3))
+        : '';
+      obj.status1 = `${showStatus(obj.status, 'x')}`
+        ? `${showStatus(obj.status, 'x')}`
+        : '';
+      obj.userCreatedMetadata1 = obj.userCreatedMetadata
+        ? obj.userCreatedMetadata.nombreCompleto
+        : '';
+      obj.userUpdatedMetadata1 = obj.userUpdatedMetadata
+        ? obj.userUpdatedMetadata.nombreCompleto
+        : '';
       listResult.push(
         (({
           codigo1,
@@ -434,9 +449,10 @@ const InputsTable = (props) => {
       ? selectedInput.folderMovement
       : '';
     deletePayload.request.payload.userUpdated = userDataRes.userId;
-    deletePayload.request.payload.userUpdatedMetadata.nombreCompleto = userDataRes.nombreCompleto;
+    deletePayload.request.payload.userUpdatedMetadata.nombreCompleto =
+      userDataRes.nombreCompleto;
     deletePayload.request.payload.userUpdatedMetadata.email = userDataRes.email;
-    
+
     dispatch({type: GET_MOVEMENTS, payload: undefined});
     toDeleteMovement(deletePayload);
     setOpen2(false);
@@ -610,8 +626,8 @@ const InputsTable = (props) => {
     }
   };
 
-  const showStatus = (status,text) => {
-    if (!text){
+  const showStatus = (status, text) => {
+    if (!text) {
       switch (status) {
         case 'requested':
           return <IntlMessages id='movements.status.requested' />;
@@ -622,19 +638,18 @@ const InputsTable = (props) => {
         default:
           return null;
       }
-    }
-    else {
+    } else {
       switch (status) {
         case 'requested':
-          return "Solicitado";
+          return 'Solicitado';
           break;
         case 'complete':
-          return "Completado";
+          return 'Completado';
           break;
         default:
           return null;
       }
-    }    
+    }
   };
 
   const showIgv = (igv) => {
@@ -955,8 +970,16 @@ const InputsTable = (props) => {
                         </TableCell>
                         <TableCell>{showIgv(obj.igv)}</TableCell>
                         <TableCell>{showStatus(obj.status)}</TableCell>
-                        <TableCell>{obj.userCreatedMetadata ? obj.userCreatedMetadata.nombreCompleto: ''}</TableCell>
-                        <TableCell>{obj.userUpdatedMetadata ? obj.userUpdatedMetadata.nombreCompleto : ''}</TableCell>
+                        <TableCell>
+                          {obj.userCreatedMetadata
+                            ? obj.userCreatedMetadata.nombreCompleto
+                            : ''}
+                        </TableCell>
+                        <TableCell>
+                          {obj.userUpdatedMetadata
+                            ? obj.userUpdatedMetadata.nombreCompleto
+                            : ''}
+                        </TableCell>
                         <TableCell>
                           <Button
                             id='basic-button'

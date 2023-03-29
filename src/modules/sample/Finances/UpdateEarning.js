@@ -210,7 +210,7 @@ const UpdateEarning = (props) => {
     getBusinessParameter(businessParameterPayload);
     dispatch({type: GET_CLIENTS, payload: undefined});
     setSelectedClient({});
-    console.log("getClients:",listClientsPayload);
+    console.log('getClients:', listClientsPayload);
     getClients(listClientsPayload);
     listPayments = [];
     selectedEarning.payments.map((obj) => {

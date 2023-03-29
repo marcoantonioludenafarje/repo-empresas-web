@@ -383,7 +383,10 @@ const NewInput = (props) => {
     if (selectedProducts && selectedProducts.length >= 1) {
       selectedProducts.map((obj, index) => {
         console.log('obj', obj);
-        if ((obj.businessProductCode || obj.product) == (product.businessProductCode || product.product)) {
+        if (
+          (obj.businessProductCode || obj.product) ==
+          (product.businessProductCode || product.product)
+        ) {
           console.log('selectedProducts 1', selectedProducts);
           selectedProducts.splice(index, 1);
           console.log('selectedProducts 2', selectedProducts);
@@ -509,7 +512,7 @@ const NewInput = (props) => {
                 userCreatedMetadata: {
                   nombreCompleto: userDataRes.nombreCompleto,
                   email: userDataRes.email,
-                }
+                },
               },
               products: selectedProducts.map((obj) => {
                 return {
@@ -873,7 +876,7 @@ const NewInput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  {typeClient!='PN' ? (
+                  {typeClient != 'PN' ? (
                     <Grid
                       item
                       xs={4}
@@ -887,7 +890,7 @@ const NewInput = (props) => {
                       />
                       {igvDefault}
                     </Grid>
-                   ) : (
+                  ) : (
                     <></>
                   )}
 
@@ -935,7 +938,7 @@ const NewInput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  {typeClient!='PN' ? (
+                  {typeClient != 'PN' ? (
                     <Grid item xs={12}>
                       <Button
                         sx={{width: 1}}
@@ -950,7 +953,7 @@ const NewInput = (props) => {
                   )}
                 </Grid>
 
-                {typeClient!='PN' ? (
+                {typeClient != 'PN' ? (
                   <Box sx={{my: 5}}>
                     <DocumentsTable
                       arrayObjs={listDocuments}

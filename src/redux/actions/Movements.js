@@ -24,6 +24,7 @@ import {
   GET_CHILD_ROUTES,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
+import {request} from '../../@crema/utility/Utils';
 
 export const getMovements = (payload) => {
   return (dispatch, getState) => {
@@ -311,6 +312,27 @@ export const getChildRoutes = (payload) => {
           type: GET_CHILD_ROUTES,
           payload: data.response.payload,
         });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getChildRoute error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const listNewRoutes = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    request('get', '/distribution/routesPredefined', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('getChildRoute resultado', data);
+        // dispatch({
+        //   type: GET_CHILD_ROUTES,
+        //   payload: data.response.payload,
+        // });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {

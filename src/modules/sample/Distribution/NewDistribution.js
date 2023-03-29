@@ -138,9 +138,6 @@ const Distribution = (props) => {
     ({movements}) => movements,
   );
 
-
-
-
   const emptyRoute = {
     empty: true,
     carrierDocumentType: 'Vacío',
@@ -246,15 +243,14 @@ const Distribution = (props) => {
     },
   };
 
-
   const toGetChildRoutes = (payload) => {
     dispatch(getChildRoutes(payload));
   };
 
   useEffect(() => {
-    console.log("Aca vienen los deliveries", deliveries)
-    if(deliveries && deliveries.length>0){
-      console.log("Entro a setear ahora", deliveries)
+    console.log('Aca vienen los deliveries', deliveries);
+    if (deliveries && deliveries.length > 0) {
+      console.log('Entro a setear ahora', deliveries);
 
       let newDeliveries = deliveries.map((obj) => {
         obj.products = obj.productsInfo;
@@ -270,14 +266,9 @@ const Distribution = (props) => {
       });
       console.log('initial newDeliveries', newDeliveries);
 
-
-
-      setRoutes(newDeliveries)
+      setRoutes(newDeliveries);
     }
   }, [deliveries]);
-
-  
-
 
   useEffect(() => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -317,18 +308,15 @@ const Distribution = (props) => {
       setSelectedRoute(initialRoute);
 
       // Es una ruta predefinida con el nuevo formato
-      if(initialRoute.routesChildId && initialRoute.routesChildId.length >0){
+      if (initialRoute.routesChildId && initialRoute.routesChildId.length > 0) {
         getChildRoutesPayload.request.payload.deliveryFatherId =
-        initialRoute.routePredefinedId;
+          initialRoute.routePredefinedId;
 
         setRoutes([]);
         toGetChildRoutes(getChildRoutesPayload);
 
-
-
-      // Ahora chekaremos la sgte casuistica simple  
-      }else{
-
+        // Ahora chekaremos la sgte casuistica simple
+      } else {
         let deliveries = initialRoute.deliveries.map((obj) => {
           obj.products = obj.productsInfo;
           obj.totalWeight = obj.totalGrossWeight;
@@ -343,10 +331,7 @@ const Distribution = (props) => {
         });
         console.log('initial deliveries', deliveries);
         setRoutes(deliveries);
-
-
       }
-
     }
   }, [listRoute]);
 
@@ -919,7 +904,10 @@ const Distribution = (props) => {
               alignItems: 'center',
             }}
           >
-            <IntlMessages id='common.deliveries' /> {selectedRoute && routes.length >0 ? `(${routes.length}) puntos` : `(Cargando ${selectedRoute.cantDeliveries} puntos)`}
+            <IntlMessages id='common.deliveries' />{' '}
+            {selectedRoute && routes.length > 0
+              ? `(${routes.length}) puntos`
+              : `(Cargando ${selectedRoute.cantDeliveries} puntos)`}
           </Typography>
           <IconButton
             onClick={() => {

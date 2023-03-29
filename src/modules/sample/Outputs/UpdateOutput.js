@@ -561,7 +561,7 @@ const UpdateOutput = (props) => {
                 userUpdatedMetadata: {
                   nombreCompleto: userDataRes.nombreCompleto,
                   email: userDataRes.email,
-                }
+                },
               },
               products: selectedProducts.map((obj) => {
                 return {
@@ -955,7 +955,7 @@ const UpdateOutput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  {typeClient!='PN' && typeDocument == 'sales' ? (
+                  {typeClient != 'PN' && typeDocument == 'sales' ? (
                     <Grid
                       item
                       xs={4}
@@ -999,22 +999,22 @@ const UpdateOutput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  {typeClient!='PN' ? (
-                  <Grid item xs={12}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={handleClickOpen.bind(this, 'document')}
-                    >
-                      Añade documentos
-                    </Button>
-                  </Grid>
+                  {typeClient != 'PN' ? (
+                    <Grid item xs={12}>
+                      <Button
+                        sx={{width: 1}}
+                        variant='outlined'
+                        onClick={handleClickOpen.bind(this, 'document')}
+                      >
+                        Añade documentos
+                      </Button>
+                    </Grid>
                   ) : (
                     <></>
                   )}
                 </Grid>
 
-                {typeClient!='PN' ? (
+                {typeClient != 'PN' ? (
                   <Box sx={{my: 5}}>
                     <DocumentsTable
                       arrayObjs={listDocuments}
@@ -1025,7 +1025,7 @@ const UpdateOutput = (props) => {
                 ) : (
                   <></>
                 )}
-                
+
                 <Grid
                   container
                   spacing={2}

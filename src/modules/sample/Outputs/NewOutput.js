@@ -366,7 +366,7 @@ const NewOutput = (props) => {
   };
 
   console.log('Valores default peso', weight_unit, 'moneda', moneyUnit);
-  console.log("userDataRes",userDataRes);
+  console.log('userDataRes', userDataRes);
 
   const cancel = () => {
     setOpen2(true);
@@ -386,7 +386,10 @@ const NewOutput = (props) => {
     if (selectedProducts && selectedProducts.length >= 1) {
       selectedProducts.map((obj, index) => {
         console.log('obj', obj);
-        if ((obj.businessProductCode || obj.product) == (product.businessProductCode || product.product)) {
+        if (
+          (obj.businessProductCode || obj.product) ==
+          (product.businessProductCode || product.product)
+        ) {
           console.log('selectedProducts 1', selectedProducts);
           selectedProducts.splice(index, 1);
           console.log('selectedProducts 2', selectedProducts);
@@ -527,7 +530,7 @@ const NewOutput = (props) => {
                 userCreatedMetadata: {
                   nombreCompleto: userDataRes.nombreCompleto,
                   email: userDataRes.email,
-                }
+                },
               },
               products: selectedProducts.map((obj) => {
                 return {
@@ -885,7 +888,7 @@ const NewOutput = (props) => {
                       label='Editar total'
                     />
                   </Grid>
-                  {typeClient!='PN' && typeDocument == 'sales' ? (
+                  {typeClient != 'PN' && typeDocument == 'sales' ? (
                     <Grid
                       item
                       xs={4}
@@ -925,7 +928,7 @@ const NewOutput = (props) => {
                     </Collapse>
                   </Grid>
 
-                  {typeClient!='PN' ? (
+                  {typeClient != 'PN' ? (
                     <Grid item xs={12}>
                       <Button
                         sx={{width: 1}}
@@ -935,18 +938,18 @@ const NewOutput = (props) => {
                         Añade documentos
                       </Button>
                     </Grid>
-                    ) : (
-                      <></>
-                    )}
+                  ) : (
+                    <></>
+                  )}
                 </Grid>
-                
-                {typeClient!='PN' ? (
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                  />
-                </Box>            
+
+                {typeClient != 'PN' ? (
+                  <Box sx={{my: 5}}>
+                    <DocumentsTable
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                    />
+                  </Box>
                 ) : (
                   <></>
                 )}
@@ -1295,7 +1298,7 @@ const NewOutput = (props) => {
           >
             {getMovementsRes.length !== 0 ? (
               <>
-                {typeClient!='PN' && !hasBill.includes('referralGuide') ? (
+                {typeClient != 'PN' && !hasBill.includes('referralGuide') ? (
                   <Button
                     color='primary'
                     sx={{width: 1, px: 7, my: 2}}
@@ -1314,7 +1317,7 @@ const NewOutput = (props) => {
                     Generar Guía de remisión
                   </Button>
                 ) : null}
-                {typeClient=='PN' && !hasBill.includes('bill') ? (
+                {typeClient == 'PN' && !hasBill.includes('bill') ? (
                   <Button
                     color='primary'
                     sx={{width: 1, px: 7, my: 2}}

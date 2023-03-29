@@ -180,8 +180,7 @@ const NewClient = () => {
     //delete data.documentType;
     console.log('Data', data);
     console.log('objSelects', objSelects);
-    newClientPayload.request.payload.clients[0].typeDocumentClient =
-      identidad;
+    newClientPayload.request.payload.clients[0].typeDocumentClient = identidad;
     newClientPayload.request.payload.clients[0].numberDocumentClient =
       data.nroDocument;
     newClientPayload.request.payload.clients[0].denominationClient = data.name;
@@ -189,17 +188,17 @@ const NewClient = () => {
       data.addressClient;
     newClientPayload.request.payload.clients[0].emailClient = data.emailClient;
     newClientPayload.request.payload.clients[0].numberContact =
-        data.numberContact;
-    if (isRUC){
+      data.numberContact;
+    if (isRUC) {
       newClientPayload.request.payload.clients[0].emailContact =
-        data.emailContact;    
-      newClientPayload.request.payload.clients[0].nameContact = data.nameContact;      
-    }
-    else {
+        data.emailContact;
+      newClientPayload.request.payload.clients[0].nameContact =
+        data.nameContact;
+    } else {
       newClientPayload.request.payload.clients[0].emailContact =
-        data.emailClient;    
+        data.emailClient;
       newClientPayload.request.payload.clients[0].nameContact = data.name;
-    }    
+    }
     newClientPayload.request.payload.clients[0].extraInformationClient =
       data.extraInformationClient;
     toNewClient(newClientPayload);
@@ -248,21 +247,20 @@ const NewClient = () => {
   };
 
   const handleField = (event, setFieldValue) => {
-
     console.log('Esta cambiandose el valor papu', event);
     objSelects[event.target.name] = event.target.value;
-    setRUC(objSelects.documentType=='RUC' ? true : false);
-    console.log("objSelects",objSelects);
+    setRUC(objSelects.documentType == 'RUC' ? true : false);
+    console.log('objSelects', objSelects);
     setIdentidad(objSelects.documentType);
   };
 
   const inicializaIdentidad = () => {
-    if (!identidad){
-      setIdentidad(typeClient=='PN'?'DNI':'RUC');
-      console.log("inicializaIdentidad",identidad);
+    if (!identidad) {
+      setIdentidad(typeClient == 'PN' ? 'DNI' : 'RUC');
+      console.log('inicializaIdentidad', identidad);
     }
     return '';
-  }
+  };
 
   const typeClient = userDataRes.merchantSelected.typeClient;
 
@@ -311,14 +309,16 @@ const NewClient = () => {
                       </InputLabel>
                       {inicializaIdentidad()}
                       <Select
-                        defaultValue={typeClient=='PN'?'DNI':'RUC'}//{config.default_identification}
+                        defaultValue={typeClient == 'PN' ? 'DNI' : 'RUC'} //{config.default_identification}
                         name='documentType'
                         labelId='documentType-label'
                         label='Identificador'
                         //onChange={handleField}
-                        onChange={(option, value) => {                          
+                        onChange={(option, value) => {
                           objSelects['documentType'] = value.props.value;
-                          setRUC(objSelects.documentType=='RUC' ? true : false);
+                          setRUC(
+                            objSelects.documentType == 'RUC' ? true : false,
+                          );
                           setIdentidad(objSelects.documentType);
                         }}
                       >
@@ -394,7 +394,7 @@ const NewClient = () => {
                       }}
                     />
                   </Grid>
-                  { isRUC ? (
+                  {isRUC ? (
                     <>
                       <Grid item xs={12}>
                         <AppUpperCaseTextField
@@ -459,7 +459,7 @@ const NewClient = () => {
                         mx: 0,
                       }}
                     />
-                  </Grid>                  
+                  </Grid>
                 </Grid>
                 <ButtonGroup
                   orientation='vertical'
@@ -650,6 +650,6 @@ const NewClient = () => {
       </Dialog>
     </Card>
   );
-}; 
+};
 
 export default NewClient;
