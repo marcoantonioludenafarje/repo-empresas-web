@@ -19,6 +19,7 @@ import {
   LIST_ROUTE,
   GENERATE_DISTRIBUTION,
   LIST_DISTRIBUTION,
+  TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION,
   UPDATE_ROUTE,
   UPDATE_GENERATE_REFERRAL_GUIDE_VALUE,
   GET_CHILD_ROUTES,
@@ -324,7 +325,7 @@ export const getChildRoutes = (payload) => {
 export const listNewRoutes = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    request('get', '/distribution/routesPredefined', {
+    request('get', '/distribution/routesPredefined/17838393', {
       body: payload,
     })
       .then((data) => {
@@ -341,6 +342,29 @@ export const listNewRoutes = (payload) => {
       });
   };
 };
+
+
+export const getSpecificRoutesNew = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    request('get', '/distribution/routesPredefined/17838393', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('getChildRoute resultado', data);
+        // dispatch({
+        //   type: GET_CHILD_ROUTES,
+        //   payload: data.response.payload,
+        // });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getChildRoute error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
 
 export const listDistributions = (payload) => {
   return (dispatch, getState) => {
@@ -362,6 +386,35 @@ export const listDistributions = (payload) => {
       });
   };
 };
+
+
+
+export const getDistribution= (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    request('get',  `/distribution/deliveryDistribution/${payload.deliveryDistributionId}`, {
+    // request('get',  `/distribution/deliveryDistribution`, {
+      
+      body: payload,
+    })
+      .then((data) => {
+        console.log('getDistribution resultado', data);
+        dispatch({
+          type: TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION,
+          payload: data.data,
+          indexDistributionSelected: payload.indexDistributionSelected
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getDistribution error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+
+
 export const generateDistribution = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});

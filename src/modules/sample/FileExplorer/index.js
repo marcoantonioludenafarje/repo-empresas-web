@@ -696,7 +696,7 @@ const FileExplorer = (props) => {
             getDataRes.nameFolders &&
             typeof getDataRes.nameFolders !== 'string' ? (
               getDataRes.nameFolders.map((folder, index) => {
-                if (folder !== 'zipCollection') {
+                if (folder !== 'zipCollection2') {
                   return (
                     <TableRow
                       key={index}

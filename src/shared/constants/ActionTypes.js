@@ -220,6 +220,9 @@ export const GENERATE_EXCEL_TEMPLATE_TO_BULK_LOAD =
 
 //DISTRIBUTIONS
 export const LIST_DISTRIBUTION = 'list_distribution';
+export const TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION = 'to_update_item_in_list_distribution';
+
+
 export const GENERATE_DISTRIBUTION = 'generate_distribution';
 
 //PROVIDERS

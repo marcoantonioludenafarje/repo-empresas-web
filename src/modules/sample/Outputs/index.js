@@ -1040,9 +1040,9 @@ const OutputsTable = (props) => {
                           padding: '14px',
                         }}
                       >
-                        {obj.descriptionProductsInfo
+                        {/* {obj.descriptionProductsInfo
                           ? obj.descriptionProducts
-                          : ''}
+                          : ''} */}
                         {obj.descriptionProductsInfo &&
                         obj.descriptionProductsInfo.length != 0 ? (
                           <IconButton
