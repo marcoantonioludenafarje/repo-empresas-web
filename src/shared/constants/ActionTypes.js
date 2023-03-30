@@ -217,6 +217,8 @@ export const GENERATE_EXCEL_TEMPLATE_TO_ROUTES =
   'generate_excel_template_to_routes';
 export const GENERATE_EXCEL_TEMPLATE_TO_BULK_LOAD =
   'generate_excel_template_to_bulk_load';
+  export const GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES =
+  'generate_excel_template_to_Referralguides';
 
 //DISTRIBUTIONS
 export const LIST_DISTRIBUTION = 'list_distribution';

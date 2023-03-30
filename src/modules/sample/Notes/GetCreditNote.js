@@ -405,7 +405,7 @@ const GetCreditNote = () => {
               userDataRes.merchantSelected.denominationMerchant,
             movementTypeMerchantId: selectedBill.movementTypeMerchantId,
             movementHeaderId: selectedBill.movementHeaderId,
-            timestampMovement: selectedBill.timestampMovement,
+            createdAt: selectedBill.createdAt,
             contableMovementId: selectedOutput.contableMovementId || '',
             clientId: selectedClient.clientId,
             clientEmail: selectedClient.emailClient,

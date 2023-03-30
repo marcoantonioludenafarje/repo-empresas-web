@@ -95,7 +95,7 @@ let listPayload = {
       businessProductCode: null,
       movementType: 'RECEIPT',
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       searchByReceipt: '',
       movementHeaderId: '',
     },
@@ -467,7 +467,7 @@ const ReceiptsTable = (props) => {
                   key={index}
                 >
                   <TableCell>
-                    {convertToDateWithoutTime(obj.timestampMovement)}
+                    {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
                     {obj.serialNumber ? obj.serialNumber.split('-')[0] : ''}

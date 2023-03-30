@@ -49,6 +49,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import {red, amber} from '@mui/material/colors';
+import {exportExcelTemplateToReferralGuides} from '../../../redux/actions/General';
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
@@ -81,6 +82,7 @@ import {
   GET_MOVEMENTS,
   DELETE_FINANCE,
   GET_USER_DATA,
+  GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -107,7 +109,7 @@ let listPayload = {
       businessProductCode: null,
       movementType: 'REFERRAL_GUIDE',
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       searchByBill: null,
       movementHeaderId: null,
       outputId: null,
@@ -153,7 +155,8 @@ const ReferralGuidesTable = (props) => {
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
-
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
+  
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [totalItems, setTotalItems] = React.useState([]);
@@ -161,6 +164,9 @@ const ReferralGuidesTable = (props) => {
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
+  const {excelTemplateGeneratedToReferralGuides} = useSelector(
+    ({general}) => general,
+  );
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
@@ -174,6 +180,9 @@ const ReferralGuidesTable = (props) => {
   };
   const toCancelInvoice = (payload) => {
     dispatch(cancelInvoice(payload));
+  };
+  const toExportExcelTemplateToReferralGuides = (payload) => {
+    dispatch(exportExcelTemplateToReferralGuides(payload));
   };
 
   const useForceUpdate = () => {
@@ -299,6 +308,39 @@ const ReferralGuidesTable = (props) => {
     Router.push({pathname: '/sample/bills/get', query: selectedReferralGuide});
   };
 
+  const exportToExcel = () => {
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES, payload: undefined});
+    toExportExcelTemplateToReferralGuides(excelPayload);
+    setDownloadExcel(true);
+  };
+
+  useEffect(() => {
+    if (excelTemplateGeneratedToReferralGuides && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelTemplateGeneratedToReferralGuides);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'bulkLoadTemplate.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelTemplateGeneratedToReferralGuides, downloadExcel]);
+
   const showMessage = () => {
     if (successMessage != undefined) {
       return (
@@ -398,7 +440,7 @@ const ReferralGuidesTable = (props) => {
           businessProductCode: null,
           movementType: 'REFERRAL_GUIDE',
           merchantId: '',
-          timestampMovement: null,
+          createdAt: null,
           searchByBill: null,
           movementHeaderId: null,
           outputId: null,
@@ -423,7 +465,7 @@ const ReferralGuidesTable = (props) => {
   //           businessProductCode: null,
   //           movementType: "REFERRAL_GUIDE",
   //           merchantId: "",
-  //           timestampMovement: null,
+  //           createdAt: null,
   //           searchByBill: null,
   //           movementHeaderId: null,
   //           outputId: null,
@@ -509,7 +551,7 @@ const ReferralGuidesTable = (props) => {
                   key={index}
                 >
                   <TableCell>
-                    {convertToDateWithoutTime(obj.timestampMovement)}
+                    {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>{`${obj.documentIntern.split('-')[0]}`}</TableCell>
                   <TableCell>{`${obj.documentIntern.split('-')[1]}`}</TableCell>
@@ -559,7 +601,10 @@ const ReferralGuidesTable = (props) => {
         aria-label='outlined button group'
         className={classes.btnGroup}
       >
-        <Button variant='outlined' startIcon={<GridOnOutlinedIcon />}>
+        <Button 
+          variant='outlined' 
+          startIcon={<GridOnOutlinedIcon />}
+          onClick={exportToExcel}>
           Exportar todo
         </Button>
       </ButtonGroup>

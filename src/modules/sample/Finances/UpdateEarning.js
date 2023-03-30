@@ -312,7 +312,7 @@ const UpdateEarning = (props) => {
         movementType: 'INCOME',
         movementTypeMerchantId: `INCOME-${userDataRes.merchantSelected.merchantId}`,
         contableMovementId: query.contableMovementId,
-        timestampMovement: null,
+        createdAt: null,
         monthMovement: getActualMonth(),
         yearMovement: getYear(),
         providerId: '',
@@ -340,7 +340,7 @@ const UpdateEarning = (props) => {
       // if (listPayments.length > 0) {
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
-      newFinancePayload.request.payload.timestampMovement =
+      newFinancePayload.request.payload.createdAt =
         anotherValues.registerDate;
       newFinancePayload.request.payload.numberDocumentProvider =
         selectedClient.clientId.split('-')[1];
