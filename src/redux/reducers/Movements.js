@@ -16,6 +16,7 @@ import {
   LIST_ROUTE,
   GENERATE_DISTRIBUTION,
   LIST_DISTRIBUTION,
+  TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION,
   UPDATE_ROUTE,
   ROUTE_TO_REFERRAL_GUIDE,
   UPDATE_GENERATE_REFERRAL_GUIDE_VALUE,
@@ -169,6 +170,21 @@ const movementsReducer = (state = INIT_STATE, action) => {
         ...state,
         listDistribution: action.payload,
       };
+
+    case TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION:
+      console.log('data de reducer TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION', action.payload);
+      let indexDistribution =  action.indexDistributionSelected
+      console.log("indexDistribution ahora si papu", indexDistribution)
+      console.log("action.payload", action.payload)
+      
+      let newListDistributions = state.listDistribution
+      newListDistributions[indexDistribution].deliveries = action.payload.deliveries
+      // listDistribution[i].deliveries= 
+      return {
+        ...state,
+        listDistribution: newListDistributions
+      };
+
     case GENERATE_DISTRIBUTION:
       console.log('data de reducer GENERATE_DISTRIBUTION', action.payload);
       return {
