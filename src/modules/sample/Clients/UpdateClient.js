@@ -8,6 +8,8 @@ import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
+
 console.log('Al menos aquí 1?');
 
 import {
@@ -376,7 +378,7 @@ const UpdateClient = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre / Razón Social *'
                       name='denominationClient'
                       variant='outlined'
@@ -391,7 +393,7 @@ const UpdateClient = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Dirección *'
                       name='addressClient'
                       variant='outlined'
@@ -422,36 +424,36 @@ const UpdateClient = (props) => {
                   </Grid>
                   {isRUC ? (
                     <>
-                      <Grid item xs={12}>
-                        <AppTextField
-                          label='Nombre de contacto'
-                          name='nameContact'
-                          variant='outlined'
-                          sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              fontSize: 14,
-                            },
-                            my: 2,
-                            mx: 0,
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12}>
-                        <AppLowerCaseTextField
-                          label='Correo de contacto'
-                          name='emailContact'
-                          variant='outlined'
-                          sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              fontSize: 14,
-                            },
-                            my: 2,
-                            mx: 0,
-                          }}
-                        />
-                      </Grid>
+                    <Grid item xs={12}>
+                      <AppUpperCaseTextField
+                        label='Nombre de contacto'
+                        name='nameContact'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                          mx: 0,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <AppLowerCaseTextField
+                        label='Correo de contacto'
+                        name='emailContact'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                          mx: 0,
+                        }}
+                      />
+                    </Grid>
                     </>
                   ) : null}
                   <Grid item xs={12}>

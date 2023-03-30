@@ -39,6 +39,7 @@ import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
@@ -326,7 +327,7 @@ const NewProvider = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre / Razón Social *'
                       name='name'
                       variant='outlined'
@@ -341,7 +342,7 @@ const NewProvider = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Dirección'
                       name='addressProvider'
                       variant='outlined'
@@ -371,7 +372,7 @@ const NewProvider = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre de contacto'
                       name='nameContact'
                       variant='outlined'

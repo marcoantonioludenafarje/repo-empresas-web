@@ -129,6 +129,10 @@ const validationSchema = yup.object({
         return !/\||\-/.test(value);
       },
     ),
+  alias: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
   title: yup.string().typeError(<IntlMessages id='validation.string' />),
   commercialDescription: yup
     .string()
@@ -180,6 +184,7 @@ const defaultValues = {
   title: '',
   commercialDescription: '',
   description: '',
+  alias: '',
   customCodeProduct: '',
   costPriceUnit: undefined,
   referecialPriceSell: undefined,
@@ -607,7 +612,7 @@ const NewProduct = (props) => {
         console.log('typeProduct', typeProduct);
         if (
           (goodStockComplexProducts &&
-            selectedProducts.length > 0 &&
+            //selectedProducts.length > 0 &&
             typeProduct == 'intermediateProduct') ||
           typeProduct !== 'intermediateProduct'
         ) {
@@ -621,6 +626,7 @@ const NewProduct = (props) => {
                 quantity: obj.count,
                 priceUnit: obj.costPriceUnit,
                 description: obj.description,
+                alias: obj.alias,
                 weight: obj.weight,
                 unitMeasure: obj.unitMeasure,
                 customCodeProduct: obj.customCodeProduct || '',
@@ -644,6 +650,7 @@ const NewProduct = (props) => {
                   {
                     businessProductCode: data.businessProductCode,
                     description: data.description,
+                    alias: data.alias,
                     costPriceUnit: Number(data.costPriceUnit),
                     sellPriceUnit: Number(data.referecialPriceSell),
                     weight: Number(data.weight),
@@ -674,6 +681,7 @@ const NewProduct = (props) => {
                   {
                     businessProductCode: data.businessProductCode,
                     description: data.description,
+                    alias: data.alias,
                     costPriceUnit: Number(data.costPriceUnit),
                     sellPriceUnit: Number(data.referecialPriceSell),
                     weight: Number(data.weight),
@@ -700,12 +708,12 @@ const NewProduct = (props) => {
           console.log('resultado del registro', addProductResponse);
           setOpen(true);
         } else {
-          if (
+          /*if (
             selectedProducts.length === 0 &&
             typeProduct == 'intermediateProduct'
           ) {
             setTypeAlert('faltaProduct');
-          } else if (!goodStockComplexProducts) {
+          } else */if (!goodStockComplexProducts) {
             setTypeAlert('maxStock');
           } else {
             setTypeAlert('');
@@ -906,7 +914,7 @@ const NewProduct = (props) => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <AppTextField
+                  <AppUpperCaseTextField
                     label='Descripción *'
                     name='description'
                     variant='outlined'
@@ -921,7 +929,7 @@ const NewProduct = (props) => {
                 </Grid>
 
                 <Grid item xs={12}>
-                  <AppTextField
+                  <AppUpperCaseTextField
                     label='Alias *'
                     name='alias'
                     variant='outlined'

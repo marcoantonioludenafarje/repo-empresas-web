@@ -7,6 +7,8 @@ import AppPageMeta from '../../../@crema/core/AppPageMeta';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
+
 console.log('Al menos aquí 1?');
 
 import {
@@ -326,7 +328,7 @@ const UpdateDriver = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombres *'
                       name='firstName'
                       variant='outlined'
@@ -341,7 +343,7 @@ const UpdateDriver = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Apellidos *'
                       name='lastName'
                       variant='outlined'
@@ -356,7 +358,7 @@ const UpdateDriver = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Licencia *'
                       name='license'
                       variant='outlined'

@@ -348,44 +348,51 @@ const BulkLoad = (props) => {
               ///validar q coincida con lista de categorías
             }
 
-            if (!product['PESO (Kg)']) {
-              msjError =
-                msjError +
-                "Validación de PRODUCTO: '" +
-                product['DESCRIPCION'] +
-                "' debe de tener un PESO.  ";
-            } else {
-              /*if (!product['PESO (Kg)']>=0
-                  ) {
-                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
-                  }*/
+            if (!(product['PESO (Kg)'] === 0)) {
+              if (!product['PESO (Kg)']) {
+                msjError =
+                  msjError +
+                  "Validación de PRODUCTO: '" +
+                  product['DESCRIPCION'] +
+                  "' debe de tener un PESO.  ";
+              } else {
+                /*if (!product['PESO (Kg)']>=0
+                    ) {
+                      msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
+                    }*/
+              }
             }
 
-            if (!product['PRECIO COSTO']) {
-              msjError =
-                msjError +
-                "Validación de PRODUCTO: '" +
-                product['DESCRIPCION'] +
-                "' debe de tener un PRECIO COSTO.  ";
-            } else {
-              /*if (!product['PESO (Kg)']>=0
-                  ) {
-                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
-                  }*/
+            if (!(product['PRECIO COSTO'] === 0)) {
+              if (!product['PRECIO COSTO']) {
+                msjError =
+                  msjError +
+                  "Validación de PRODUCTO: '" +
+                  product['DESCRIPCION'] +
+                  "' debe de tener un PRECIO COSTO.  ";
+              } else {
+                /*if (!product['PESO (Kg)']>=0
+                    ) {
+                      msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
+                    }*/
+              }
             }
 
-            if (!product['PRECIO VENTA']) {
-              msjError =
-                msjError +
-                "Validación de PRODUCTO: '" +
-                product['DESCRIPCION'] +
-                "' debe de tener un PRECIO VENTA.  ";
-            } else {
-              /*if (!product['PESO (Kg)']>=0
-                  ) {
-                    msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
-                  }*/
+            if (!(product['PRECIO VENTA'] === 0)) {
+              if (!product['PRECIO VENTA']) {
+                msjError =
+                  msjError +
+                  "Validación de PRODUCTO: '" +
+                  product['DESCRIPCION'] +
+                  "' debe de tener un PRECIO VENTA.  ";
+              } else {
+                /*if (!product['PESO (Kg)']>=0
+                    ) {
+                      msjError = msjError + "Validación de PRODUCTO: Producto: '"+product['DESCRIPCION']+"' debe de ser valor numérico cero o positivo en PESO.  ";
+                    }*/
+              }
             }
+
             if (!(product['STOCK INICIAL'] === 0)) {
               if (!product['STOCK INICIAL']) {
                 msjError =

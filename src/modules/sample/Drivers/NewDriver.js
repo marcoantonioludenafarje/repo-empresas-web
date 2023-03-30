@@ -27,6 +27,7 @@ import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutl
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import {red} from '@mui/material/colors';
 import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -316,7 +317,7 @@ const NewDriver = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombres *'
                       name='firstName'
                       variant='outlined'
@@ -331,7 +332,7 @@ const NewDriver = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Apellidos *'
                       name='lastName'
                       variant='outlined'
@@ -346,7 +347,7 @@ const NewDriver = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Licencia *'
                       name='license'
                       variant='outlined'

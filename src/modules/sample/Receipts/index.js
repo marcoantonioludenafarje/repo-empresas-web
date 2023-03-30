@@ -90,8 +90,8 @@ let merchantIdLocal = '';
 let listPayload = {
   request: {
     payload: {
-      initialTime: null,
-      finalTime: null,
+      initialTime: toEpoch(Date.now() - 89280000),
+      finalTime: toEpoch(Date.now()),
       businessProductCode: null,
       movementType: 'RECEIPT',
       merchantId: '',
@@ -269,8 +269,8 @@ const ReceiptsTable = (props) => {
   };
 
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(null);
-  const [value2, setValue2] = React.useState(null);
+  const [value, setValue] = React.useState(Date.now() - 89280000);
+  const [value2, setValue2] = React.useState(Date.now());
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
     let someDate = new Date(strDate);

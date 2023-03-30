@@ -40,6 +40,7 @@ import {
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
@@ -306,7 +307,7 @@ const NewLocation = () => {
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Código *'
                       name='modularCode'
                       variant='outlined'
@@ -321,7 +322,7 @@ const NewLocation = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre *'
                       name='locationName'
                       variant='outlined'
@@ -336,7 +337,7 @@ const NewLocation = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Dirección *'
                       name='locationDetail'
                       variant='outlined'

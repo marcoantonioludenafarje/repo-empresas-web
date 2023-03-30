@@ -677,7 +677,7 @@ const GetReceipt = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          GENERAR BOLETA
+          GENERAR BOLETA DE VENTA
         </Typography>
       </Box>
       <Box

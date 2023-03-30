@@ -365,7 +365,7 @@ const NewClient = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Dirección *'
                       name='addressClient'
                       variant='outlined'

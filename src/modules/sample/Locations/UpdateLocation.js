@@ -7,6 +7,8 @@ import AppPageMeta from '../../../@crema/core/AppPageMeta';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
+
 console.log('Al menos aquí 1?');
 
 import {
@@ -333,7 +335,7 @@ const UpdateLocation = (props) => {
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       disabled
                       label='Código *'
                       name='modularCode'
@@ -349,7 +351,7 @@ const UpdateLocation = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre *'
                       name='locationName'
                       variant='outlined'
@@ -364,7 +366,7 @@ const UpdateLocation = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Dirección *'
                       name='locationDetail'
                       variant='outlined'

@@ -12,6 +12,7 @@ import {orange} from '@mui/material/colors';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
 import {
   Button,
@@ -660,7 +661,7 @@ const UpdateProduct = (props) => {
     let goodStockComplexProducts = allCountsRigth(data.initialStock);
     if (
       (goodStockComplexProducts &&
-        selectedProducts.length !== 0 &&
+        //selectedProducts.length !== 0 &&
         typeProduct != 'rawMaterial') ||
       typeProduct == 'rawMaterial'
     ) {
@@ -722,14 +723,14 @@ const UpdateProduct = (props) => {
       console.log('resultado de la actualizacion', updateProductRes);
       setOpen(true);
     } else {
-      if (selectedProducts.length === 0) {
+      /*if (selectedProducts.length === 0) {
         setTypeAlert('faltaProduct');
-      } else if (!goodStockComplexProducts) {
+      } else */if (!goodStockComplexProducts) {
         setTypeAlert('maxStock');
+        setShowAlert(true);
       } else {
         setTypeAlert('');
-      }
-      setShowAlert(true);
+      }      
     }
     setSubmitting(false);
   };
@@ -873,8 +874,8 @@ const UpdateProduct = (props) => {
                   sx={{width: 500, mx: 'auto', mb: 4}}
                 >
                   <Grid item xs={12}>
-                    <AppTextField
-                      label='Código'
+                    <AppUpperCaseTextField
+                      label='Código *'
                       disabled
                       name='businessProductCode'
                       variant='outlined'
@@ -889,8 +890,8 @@ const UpdateProduct = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
-                      label='Descripción'
+                    <AppUpperCaseTextField
+                      label='Descripción *'
                       name='description'
                       variant='outlined'
                       sx={{
@@ -904,8 +905,8 @@ const UpdateProduct = (props) => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <AppTextField
-                      label='Alias'
+                    <AppUpperCaseTextField
+                      label='Alias *'
                       name='alias'
                       variant='outlined'
                       sx={{
@@ -920,7 +921,7 @@ const UpdateProduct = (props) => {
 
                   <Grid item xs={12}>
                     <AppTextField
-                      label='Código aduanero'
+                      label='Código aduanero (opcional)'
                       name='customCodeProduct'
                       variant='outlined'
                       sx={{
@@ -989,7 +990,7 @@ const UpdateProduct = (props) => {
                         id='categoria-label'
                         style={{fontWeight: 200}}
                       >
-                        Categoría
+                        Categoría *
                       </InputLabel>
                       <Select
                         //defaultValue={prevSelectedCategory}
@@ -1020,7 +1021,7 @@ const UpdateProduct = (props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label={`Peso (${weight_unit})`}
+                      label={`Peso (${weight_unit}) *`}
                       name='weight'
                       variant='outlined'
                       sx={{
@@ -1034,7 +1035,7 @@ const UpdateProduct = (props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label={`Precio costo sugerido (${money_unit})`}
+                      label={`Precio costo sugerido (${money_unit}) *`}
                       name='costPriceUnit'
                       variant='outlined'
                       sx={{
@@ -1048,7 +1049,7 @@ const UpdateProduct = (props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label={`Precio venta sugerido (${money_unit})`}
+                      label={`Precio venta sugerido (${money_unit}) *`}
                       name='referecialPriceSell'
                       variant='outlined'
                       sx={{
@@ -1063,7 +1064,7 @@ const UpdateProduct = (props) => {
                   <Grid item xs={12}>
                     <AppTextField
                       disabled
-                      label='Stock inicial'
+                      label='Stock inicial *'
                       name='initialStock'
                       variant='outlined'
                       sx={{
