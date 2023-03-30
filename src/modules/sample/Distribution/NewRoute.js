@@ -170,6 +170,7 @@ const Distribution = (props) => {
   const [excelOrCsv, setExcelOrCsv] = React.useState('');
   const [excelOrCsvName, setExcelOrCsvName] = React.useState('');
   const [showAlert, setShowAlert] = React.useState(false);
+  const [excelBase64, setExcelBase64] = React.useState('');
 
   const [openProducts, setOpenProducts] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
@@ -272,6 +273,7 @@ const Distribution = (props) => {
       request: {
         payload: {
           userActor: userAttributes['sub'],
+          excel: excelBase64 ? excelBase64 : "",
           merchantId: userDataRes.merchantSelected.merchantId,
           routeName: data.routeName,
           deliveries: routes.map((obj) => {
@@ -644,9 +646,25 @@ const Distribution = (props) => {
       }
     });
   }
+  const onLoad = (fileString, name, type) => {
+    console.log('llega aquí?');
+    setExcelBase64({
+      base64: fileString,
+      name: name,
+      type: type
+    });
+  };
+  const getBase64 = (file) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      onLoad(reader.result, file.name, file.type);
+    };
+  };
   const onChangeHandler = (event) => {
     console.log('entramos al onchange', excelOrCsv);
     if (excelOrCsv && excelOrCsv.target.files) {
+      getBase64(excelOrCsv.target.files[0]);
       const reader = new FileReader();
       reader.onload = (excelOrCsv) => {
         const bstr = excelOrCsv.target.result;
