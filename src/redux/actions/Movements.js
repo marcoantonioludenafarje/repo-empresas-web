@@ -34,7 +34,7 @@ export const getMovements = (payload) => {
     API.post('tunexo', '/inventory/movementProducts/list', {body: payload})
       .then((data) => {
         console.log('getMovements123 resultado', data);
-        dispatch({type: GET_MOVEMENTS, payload: data.response.payload});
+        dispatch({type: GET_MOVEMENTS, payload: data.response.payload, request: payload,});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -455,6 +455,22 @@ export const updateReferralGuideValue = (payload) => {
       })
       .catch((error) => {
         console.log('updateReferralGuideValue error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const getReferralGuides = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    console.log('/inventory/referralGuides/v1/list', {body: payload});
+    API.post('tunexo', '/inventory/referralGuides/v1/list', {body: payload})
+      .then((data) => {
+        console.log('getReferralGuides resultado', data);
+        dispatch({type: GET_MOVEMENTS, payload: data.response.payload, request: payload,});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getReferralGuides error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

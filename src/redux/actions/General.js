@@ -334,7 +334,7 @@ export const exportExcelTemplateToBulkLoad = (payload) => {
 export const exportExcelTemplateToReferralGuides = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/inventory/v1/ReferralGuides', {
+    API.post('tunexo', '/inventory/exportReferralGuides', {
       body: payload,
     })
       .then((data) => {

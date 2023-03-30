@@ -74,7 +74,7 @@ import {
   parseTo3Decimals,
   toSimpleDate,
 } from '../../../Utils/utils';
-import {getMovements, cancelInvoice} from '../../../redux/actions/Movements';
+import {getReferralGuides, cancelInvoice} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -113,7 +113,6 @@ let listPayload = {
       searchByBill: null,
       movementHeaderId: null,
       outputId: null,
-      lastEvaluatedKey: '',
     },
   },
 };
@@ -164,13 +163,15 @@ const ReferralGuidesTable = (props) => {
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
-  const {excelTemplateGeneratedToReferralGuides} = useSelector(
+  const [loading, setLoading] = React.useState(true);
+  const {excelTemplateGeneratedToReferralGuidesRes} = useSelector(
     ({general}) => general,
   );
+  const {listReferralGuide, LastEvaluatedKey} = useSelector(({movements}) => movements);
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getReferralGuides(payload));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -188,6 +189,19 @@ const ReferralGuidesTable = (props) => {
   const useForceUpdate = () => {
     return () => setReload((value) => value + 1); // update the state to force render
   };
+
+  const handleNextPage = (event) => {
+    console.log('Llamando al  handleNextPage', handleNextPage);
+    listPayload.request.payload.LastEvaluatedKey = LastEvaluatedKey;
+    dispatch(toGetMovements(listPayload));
+    // setPage(page+1);
+  };
+
+  useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, [listReferralGuide]);
 
   let money_unit;
   let weight_unit;
@@ -227,6 +241,7 @@ const ReferralGuidesTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    listPayload.request.payload.LastEvaluatedKey = null
     toGetMovements(listPayload);
   };
   useEffect(() => {
@@ -271,6 +286,7 @@ const ReferralGuidesTable = (props) => {
           listPayload.request.payload.movementHeaderId = query.referralGuideId;
         }
       }
+      listPayload.request.payload.LastEvaluatedKey = null;
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -320,9 +336,9 @@ const ReferralGuidesTable = (props) => {
   };
 
   useEffect(() => {
-    if (excelTemplateGeneratedToReferralGuides && downloadExcel) {
+    if (excelTemplateGeneratedToReferralGuidesRes && downloadExcel) {
       setDownloadExcel(false);
-      const byteCharacters = atob(excelTemplateGeneratedToReferralGuides);
+      const byteCharacters = atob(excelTemplateGeneratedToReferralGuidesRes);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -334,12 +350,12 @@ const ReferralGuidesTable = (props) => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'bulkLoadTemplate.xlsx');
+      link.setAttribute('download', 'ReferralGuides.xlsx');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
-  }, [excelTemplateGeneratedToReferralGuides, downloadExcel]);
+  }, [excelTemplateGeneratedToReferralGuidesRes, downloadExcel]);
 
   const showMessage = () => {
     if (successMessage != undefined) {
@@ -430,7 +446,7 @@ const ReferralGuidesTable = (props) => {
     handleClose();
   };
 
-  const handleChangePage = (event, newPage) => {
+  /*const handleChangePage = (event, newPage) => {
     setPage(newPage);
     toGetMovements({
       request: {
@@ -448,7 +464,7 @@ const ReferralGuidesTable = (props) => {
         },
       },
     });
-  };
+  };*/
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -540,12 +556,12 @@ const ReferralGuidesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes && Array.isArray(getMovementsRes) ? (
+            {getMovementsRes && Array.isArray(getMovementsRes.Items) ? (
               // &&
               // getMovementsRes[0] &&
               // getMovementsRes[0].movementType == 'REFERRAL_GUIDE'
 
-              getMovementsRes.sort(compare).map((obj, index) => (
+              getMovementsRes.Items.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
@@ -586,7 +602,16 @@ const ReferralGuidesTable = (props) => {
             )}
           </TableBody>
         </Table>
+
+        {LastEvaluatedKey ? (
+                <Stack spacing={2}>
+                  <IconButton onClick={() => handleNextPage()} size='small'>
+                    <ArrowForwardIosIcon fontSize='inherit' />
+                  </IconButton>
+                </Stack>
+              ) : null}
       </TableContainer>
+
       {/* <TablePagination
         rowsPerPageOptions={[25, 50, 100]}
         component="div"

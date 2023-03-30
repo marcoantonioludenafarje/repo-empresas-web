@@ -162,6 +162,7 @@ const BulkLoad = (props) => {
   const {excelTemplateGeneratedToBulkLoadRes} = useSelector(
     ({general}) => general,
   );
+  console.log("excelTemplateGeneratedToBulkLoadRes",excelTemplateGeneratedToBulkLoadRes)
 
   const toUpdateCatalogs = (payload) => {
     dispatch(updateCatalogs(payload));
