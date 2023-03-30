@@ -119,7 +119,7 @@ const useStyles = makeStyles((theme) => ({
       finalTime: null,
       movementType: 'INCOME',
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       monthMovement: null,
       yearMovement: null,
       searchByBill: '',
@@ -132,7 +132,7 @@ let deletePayload = {
     payload: {
       movementType: 'OUTPUT',
       movementTypeMerchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       movementHeaderId: '',
       folderMovement: '',
       contableMovementId: '',
@@ -152,7 +152,7 @@ let listPayload = {
       businessProductCode: null,
       movementType: 'OUTPUT',
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       searchByDocument: null,
       movementHeaderId: null,
       outputId: null,
@@ -182,7 +182,7 @@ let invoicePayload = {
     payload: {
       merchantId: '',
       movementTypeMerchantId: '',
-      timestampMovement: '',
+      createdAt: '',
       clientId: '',
       totalPriceWithIgv: '',
       issueDate: '',
@@ -422,8 +422,8 @@ const OutputsTable = (props) => {
     console.log('Eliminando salida :(');
     deletePayload.request.payload.movementTypeMerchantId =
       selectedOutput.movementTypeMerchantId;
-    deletePayload.request.payload.timestampMovement =
-      selectedOutput.timestampMovement;
+    deletePayload.request.payload.createdAt =
+      selectedOutput.createdAt;
     deletePayload.request.payload.movementHeaderId =
       selectedOutput.movementHeaderId;
     deletePayload.request.payload.contableMovementId =
@@ -493,7 +493,7 @@ const OutputsTable = (props) => {
         showMinType(obj.movementType) +
         '-' +
         (obj.codMovement ? obj.codMovement.split('-')[1] : '');
-      obj.timestampMovement = convertToDateWithoutTime(obj.timestampMovement);
+      obj.createdAt = convertToDateWithoutTime(obj.createdAt);
       obj.updatedDate = convertToDateWithoutTime(obj.updatedDate);
       obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
         ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
@@ -521,7 +521,7 @@ const OutputsTable = (props) => {
       listResult.push(
         (({
           codigo1,
-          timestampMovement,
+          createdAt,
           updatedDate,
           movementSubType,
           clientdenomination,
@@ -533,7 +533,7 @@ const OutputsTable = (props) => {
           userUpdatedMetadata1,
         }) => ({
           codigo1,
-          timestampMovement,
+          createdAt,
           updatedDate,
           movementSubType,
           clientdenomination,
@@ -1018,7 +1018,7 @@ const OutputsTable = (props) => {
                         obj.codMovement ? obj.codMovement.split('-')[1] : ''
                       }`}</TableCell>
                       <TableCell>
-                        {convertToDateWithoutTime(obj.timestampMovement)}
+                        {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       <TableCell>
                         {convertToDateWithoutTime(obj.updatedDate)}

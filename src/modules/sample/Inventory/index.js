@@ -84,7 +84,7 @@ let listPayload = {
       businessProductCode: null,
       movementType: null,
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
     },
   },
 };

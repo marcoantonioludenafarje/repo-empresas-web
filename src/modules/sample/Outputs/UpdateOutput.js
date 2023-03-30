@@ -199,7 +199,7 @@ const UpdateOutput = (props) => {
   const [dateRegister, setDateRegister] = React.useState(Date.now());
   const [showDelete, setShowDelete] = React.useState(false);
   const [value, setValue] = React.useState(
-    convertToDate(selectedOutput.timestampMovement),
+    convertToDate(selectedOutput.createdAt),
   );
   const [open, setOpen] = React.useState(false);
   const [moneyUnit, setMoneyUnit] = React.useState(query.exchangeRate);
@@ -354,7 +354,7 @@ const UpdateOutput = (props) => {
     equivalentTotal: selectedOutput.totalPriceWithIgv * exchangeRate,
     clientId: query.clientId,
     status: query.status,
-    initialDate: toSimpleDate(selectedOutput.timestampMovement),
+    initialDate: toSimpleDate(selectedOutput.createdAt),
     outputObservation: selectedOutput.observation,
   };
   const actualValues = {
@@ -542,7 +542,7 @@ const UpdateOutput = (props) => {
                 merchantId: userDataRes.merchantSelected.merchantId,
                 /* quoteId: null,
                 facturaId: null, */
-                timestampMovement: parseInt(query.timestampMovement),
+                createdAt: parseInt(query.createdAt),
                 issueDate: toSimpleDate(dateRegister),
                 unitMeasureMoney: moneyToConvert,
                 igv: typeDocument == 'sales' ? addIgv : false,

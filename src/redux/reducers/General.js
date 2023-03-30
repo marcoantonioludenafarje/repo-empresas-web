@@ -22,6 +22,7 @@ import {
   ACTUAL_DATE,
   GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
   GENERATE_EXCEL_TEMPLATE_TO_BULK_LOAD,
+  GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
   UPDATE_CATALOGS,
 } from '../../shared/constants/ActionTypes';
 
@@ -177,6 +178,15 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         excelTemplateGeneratedToBulkLoadRes: action.payload,
+      };
+    case GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES:
+      console.log(
+        'data de reducer GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES',
+        action.payload,
+      );
+      return {
+        ...state,
+        excelTemplateGeneratedToReferralGuidesRes: action.payload,
       };
     case UPDATE_CATALOGS:
       console.log('data de reducer UPDATE_CATALOGS', action.payload);

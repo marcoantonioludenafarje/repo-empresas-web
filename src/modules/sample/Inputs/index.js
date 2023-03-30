@@ -98,7 +98,7 @@ let listFinancesPayload = {
       finalTime: null,
       movementType: 'EXPENSE',
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       monthMovement: null,
       yearMovement: null,
       searchByBill: '',
@@ -111,7 +111,7 @@ let deletePayload = {
     payload: {
       movementType: 'INPUT',
       movementTypeMerchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       movementHeaderId: '',
       folderMovement: '',
       contableMovementId: '',
@@ -131,7 +131,7 @@ let listPayload = {
       businessProductCode: null,
       movementType: 'INPUT',
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       searchByDocument: null,
       movementHeaderId: null,
     },
@@ -326,7 +326,7 @@ const InputsTable = (props) => {
         showMinType(obj.movementType) +
         '-' +
         (obj.codMovement ? obj.codMovement.split('-')[1] : '');
-      obj.timestampMovement = convertToDateWithoutTime(obj.timestampMovement);
+      obj.createdAt = convertToDateWithoutTime(obj.createdAt);
       obj.updatedDate = convertToDateWithoutTime(obj.updatedDate);
       obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
         ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
@@ -353,7 +353,7 @@ const InputsTable = (props) => {
       listResult.push(
         (({
           codigo1,
-          timestampMovement,
+          createdAt,
           updatedDate,
           movementSubType,
           providerdenomination,
@@ -365,7 +365,7 @@ const InputsTable = (props) => {
           userUpdatedMetadata1,
         }) => ({
           codigo1,
-          timestampMovement,
+          createdAt,
           updatedDate,
           movementSubType,
           providerdenomination,
@@ -442,8 +442,8 @@ const InputsTable = (props) => {
   const confirmDelete = () => {
     deletePayload.request.payload.movementTypeMerchantId =
       selectedInput.movementTypeMerchantId;
-    deletePayload.request.payload.timestampMovement =
-      selectedInput.timestampMovement;
+    deletePayload.request.payload.createdAt =
+      selectedInput.createdAt;
     deletePayload.request.payload.movementHeaderId =
       selectedInput.movementHeaderId;
     deletePayload.request.payload.contableMovementId =
@@ -896,7 +896,7 @@ const InputsTable = (props) => {
                           obj.codMovement ? obj.codMovement.split('-')[1] : ''
                         }`}</TableCell>
                         <TableCell>
-                          {convertToDateWithoutTime(obj.timestampMovement)}
+                          {convertToDateWithoutTime(obj.createdAt)}
                         </TableCell>
                         <TableCell>
                           {convertToDateWithoutTime(obj.updatedDate)}

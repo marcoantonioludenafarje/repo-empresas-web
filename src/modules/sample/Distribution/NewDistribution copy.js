@@ -248,7 +248,7 @@ const Distribution = () => {
           movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
           contableMovementId: selectedOutput.contableMovementId || '',
           movementHeaderId: selectedOutput.movementHeaderId,
-          timestampMovement: selectedOutput.timestampMovement,
+          createdAt: selectedOutput.createdAt,
           clientId: selectedOutput.clientId,
           issueDate: dateWithHyphen(new Date()),
           serial: serial,

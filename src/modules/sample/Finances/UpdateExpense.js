@@ -325,7 +325,7 @@ const UpdateExpense = (props) => {
         movementType: 'EXPENSE',
         movementTypeMerchantId: `EXPENSE-${userDataRes.merchantSelected.merchantId}`,
         contableMovementId: query.contableMovementId,
-        timestampMovement: null,
+        createdAt: null,
         monthMovement: getActualMonth(),
         yearMovement: getYear(),
         providerId: '',
@@ -353,7 +353,7 @@ const UpdateExpense = (props) => {
       // if (listPayments.length > 0) {
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
-      newFinancePayload.request.payload.timestampMovement =
+      newFinancePayload.request.payload.createdAt =
         anotherValues.regsiterDate;
       newFinancePayload.request.payload.numberDocumentProvider =
         selectedProvider.providerId.split('-')[1];

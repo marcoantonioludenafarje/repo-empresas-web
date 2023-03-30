@@ -95,7 +95,7 @@ let listPayload = {
       businessProductCode: null,
       movementType: 'BILL',
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       searchByBill: '',
       movementHeaderId: '',
     },
@@ -490,7 +490,7 @@ const BillsTable = (props) => {
                   key={index}
                 >
                   <TableCell>
-                    {convertToDateWithoutTime(obj.timestampMovement)}
+                    {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
                     {obj.serialNumberBill

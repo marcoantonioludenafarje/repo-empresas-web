@@ -307,7 +307,7 @@ const NewEarning = (props) => {
         merchantId: userDataRes.merchantSelected.merchantId,
         movements: [
           {
-            /* timestampMovement: null, */
+            /* createdAt: null, */
             monthMovement: getActualMonth(),
             yearMovement: getYear(),
             movementType: 'INCOME',

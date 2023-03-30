@@ -44,7 +44,7 @@ let listFinancesPayload = {
       finalTime: null,
       movementType: null,
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       monthMovement: null,
       yearMovement: null,
       searchByBill: '',

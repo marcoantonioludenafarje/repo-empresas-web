@@ -18,6 +18,7 @@ import {
   ACTUAL_DATE,
   GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
   GENERATE_EXCEL_TEMPLATE_TO_BULK_LOAD,
+  GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
   UPDATE_CATALOGS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
@@ -325,6 +326,27 @@ export const exportExcelTemplateToBulkLoad = (payload) => {
       })
       .catch((error) => {
         console.log('onExportExcelTemplateToBulkLoad error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const exportExcelTemplateToReferralGuides = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/v1/ReferralGuides', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelTemplateToReferralGuides resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('exportExcelTemplateToReferralGuides error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
