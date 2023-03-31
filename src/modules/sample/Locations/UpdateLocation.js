@@ -82,7 +82,7 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-  locatioName: yup
+  locationName: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
@@ -192,6 +192,7 @@ const UpdateLocation = (props) => {
   };
 
   const handleData = (data, {setSubmitting}) => {
+    console.log("Esta funcionaod")
     setSubmitting(true);
     delete data.ubigeo;
     delete data.type;
@@ -201,7 +202,7 @@ const UpdateLocation = (props) => {
     newLocationPayload.request.payload.locationName = data.locationName;
     newLocationPayload.request.payload.locationDetail = data.locationDetail;
     newLocationPayload.request.payload.ubigeo = objUbigeo.ubigeo;
-    newLocationPayload.request.payload.type = objSelectsT.type;
+    newLocationPayload.request.payload.type = objSelects.type;
     newLocationPayload.request.payload.coordenates = {
       lat: {S: ''},
       long: {S: ''},
@@ -325,13 +326,14 @@ const UpdateLocation = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({values,isSubmitting, setFieldValue}) => {
             return (
+              <>
               <Form
+                id='principal-form'
                 style={{textAlign: 'left', justifyContent: 'center'}}
                 noValidate
                 autoComplete='on'
-                /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={12}>
@@ -449,14 +451,16 @@ const UpdateLocation = (props) => {
                     </FormControl>
                   </Grid>
                 </Grid>
+              </Form>
 
-                <ButtonGroup
+              <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
                   sx={{width: 1, py: 3}}
                   aria-label='outlined button group'
                 >
                   <Button
+                    form='principal-form'
                     color='primary'
                     sx={{mx: 'auto', width: '40%', py: 2}}
                     type='submit'
@@ -473,16 +477,17 @@ const UpdateLocation = (props) => {
                       >
                         Guardar y registrar nuevo
                       </Button> */}
-                  <Button
+                  {/* <Button
                     sx={{mx: 'auto', width: '40%', py: 2}}
                     variant='outlined'
                     startIcon={<ArrowCircleLeftOutlinedIcon />}
                     onClick={cancel}
                   >
                     Cancelar
-                  </Button>
+                  </Button> */}
                 </ButtonGroup>
-              </Form>
+
+              </>
             );
           }}
         </Formik>
