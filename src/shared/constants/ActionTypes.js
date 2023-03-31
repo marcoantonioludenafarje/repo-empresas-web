@@ -194,6 +194,7 @@ export const ALL_PRODUCTS = 'all_products';
 
 //MOVEMENTS
 export const GET_MOVEMENTS = 'get_movements';
+export const GET_REFERRALGUIDE_PAGE_LISTGUIDE ="get_referralguide_page_listguide";
 export const GET_INVENTORY_PRODUCTS = 'get_inventory_products';
 export const ADD_MOVEMENT = 'add_movement';
 export const RES_ADD_MOVEMENT = 'res_add_movement';

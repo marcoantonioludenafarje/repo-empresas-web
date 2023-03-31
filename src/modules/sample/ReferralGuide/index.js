@@ -12,6 +12,7 @@ import {
   Button,
   MenuItem,
   Menu,
+  IconButton,
   MenuList,
   ClickAwayListener,
   Popper,
@@ -50,6 +51,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import {red, amber} from '@mui/material/colors';
 import {exportExcelTemplateToReferralGuides} from '../../../redux/actions/General';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
@@ -74,7 +76,7 @@ import {
   parseTo3Decimals,
   toSimpleDate,
 } from '../../../Utils/utils';
-import {getReferralGuides, cancelInvoice} from '../../../redux/actions/Movements';
+import {getReferralGuides_PageListGuide, cancelInvoice} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -167,11 +169,12 @@ const ReferralGuidesTable = (props) => {
   const {excelTemplateGeneratedToReferralGuidesRes} = useSelector(
     ({general}) => general,
   );
-  const {listReferralGuide, LastEvaluatedKey} = useSelector(({movements}) => movements);
-
+  //const {getMovementsRes, LastEvaluatedKey} = useSelector(({movements}) => movements);
+  //console.log('getMovementsRes', getMovementsRes);
+  //console.log('LastEvaluatedKey', LastEvaluatedKey);
   //API FUNCTIONS
   const toGetMovements = (payload) => {
-    dispatch(getReferralGuides(payload));
+    dispatch(getReferralGuides_PageListGuide(payload));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -191,26 +194,17 @@ const ReferralGuidesTable = (props) => {
   };
 
   const handleNextPage = (event) => {
-    console.log('Llamando al  handleNextPage', handleNextPage);
-    listPayload.request.payload.LastEvaluatedKey = LastEvaluatedKey;
-    dispatch(toGetMovements(listPayload));
+    //console.log('Llamando al  handleNextPage', handleNextPage);    
+    listPayload.request.payload.LastEvaluatedKey = referralGuideLastEvalutedKey_pageListGuide;
+    console.log('listPayload',listPayload)
+    toGetMovements(listPayload);
     // setPage(page+1);
   };
 
-  useEffect(() => {
-    if (loading) {
-      setLoading(false);
-    }
-  }, [listReferralGuide]);
-
-  let money_unit;
-  let weight_unit;
-  let exchangeRate;
-
   //GET APIS RES
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  console.log('getMovementsRes', getMovementsRes);
-  let listToUse = getMovementsRes;
+  const {referralGuideItems_pageListGuide, referralGuideLastEvalutedKey_pageListGuide} = useSelector(({movements}) => movements);
+  console.log('referralGuideItems_pageListGuide', referralGuideItems_pageListGuide);
+  let listToUse = referralGuideItems_pageListGuide;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
@@ -221,6 +215,15 @@ const ReferralGuidesTable = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+
+  useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, [referralGuideItems_pageListGuide]);
+  let money_unit;
+  let weight_unit;
+  let exchangeRate;
 
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
@@ -303,7 +306,7 @@ const ReferralGuidesTable = (props) => {
   const handleClick = (codInput, event) => {
     setAnchorEl(event.currentTarget);
     codProdSelected = codInput;
-    selectedReferralGuide = getMovementsRes.Items[codInput];
+    selectedReferralGuide = referralGuideItems_pageListGuide[codInput];
     console.log('selectedReferralGuide', selectedReferralGuide);
   };
   const handleClose = () => {
@@ -536,6 +539,7 @@ const ReferralGuidesTable = (props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${referralGuideItems_pageListGuide.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -557,12 +561,12 @@ const ReferralGuidesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes && Array.isArray(getMovementsRes.Items) ? (
+            {referralGuideItems_pageListGuide && Array.isArray(referralGuideItems_pageListGuide) ? (
               // &&
               // getMovementsRes[0] &&
               // getMovementsRes[0].movementType == 'REFERRAL_GUIDE'
 
-              getMovementsRes.Items.sort(compare).map((obj, index) => (
+              referralGuideItems_pageListGuide.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
@@ -603,16 +607,14 @@ const ReferralGuidesTable = (props) => {
             )}
           </TableBody>
         </Table>
-
-        {LastEvaluatedKey ? (
-                <Stack spacing={2}>
-                  <IconButton onClick={() => handleNextPage()} size='small'>
-                    <ArrowForwardIosIcon fontSize='inherit' />
-                  </IconButton>
-                </Stack>
-              ) : null}
-      </TableContainer>
-
+        {referralGuideLastEvalutedKey_pageListGuide ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
+      </TableContainer>        
       {/* <TablePagination
         rowsPerPageOptions={[25, 50, 100]}
         component="div"

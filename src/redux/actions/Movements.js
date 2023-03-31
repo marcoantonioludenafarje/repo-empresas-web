@@ -23,6 +23,7 @@ import {
   UPDATE_ROUTE,
   UPDATE_GENERATE_REFERRAL_GUIDE_VALUE,
   GET_CHILD_ROUTES,
+  GET_REFERRALGUIDE_PAGE_LISTGUIDE
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -459,14 +460,14 @@ export const updateReferralGuideValue = (payload) => {
       });
   };
 };
-export const getReferralGuides = (payload) => {
+export const getReferralGuides_PageListGuide = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     console.log('/inventory/referralGuides/v1/list', {body: payload});
     API.post('tunexo', '/inventory/referralGuides/v1/list', {body: payload})
       .then((data) => {
         console.log('getReferralGuides resultado', data);
-        dispatch({type: GET_MOVEMENTS, payload: data.response.payload, request: payload,});
+        dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: data.response.payload, request: payload,});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {

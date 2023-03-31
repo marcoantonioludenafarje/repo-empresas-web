@@ -1,6 +1,7 @@
 import {
   ADD_INVOICE,
   GET_MOVEMENTS,
+  GET_REFERRALGUIDE_PAGE_LISTGUIDE,
   RES_ADD_MOVEMENT,
   GET_INVENTORY_PRODUCTS,
   ADD_MOVEMENT,
@@ -26,16 +27,24 @@ import {
 
 const INIT_STATE = {
   list: [],
-  getMovementsRes: [],
+  getMovementsRes: [], referralGuideItems_pageListGuide: [], referralGuideLastEvalutedKey_pageListGuide: null
 };
 
 const movementsReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_MOVEMENTS:
-      console.log('data de reducer GET_MOVEMENTS', action.payload);
       return {
         ...state,
         getMovementsRes: action.payload,
+      };
+    case GET_REFERRALGUIDE_PAGE_LISTGUIDE:
+      let items = [...state.referralGuideItems_pageListGuide, ...action.payload.Items];
+      let lastEvaluatedKey = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+
+      return {
+        ...state,
+        referralGuideItems_pageListGuide: items, 
+        referralGuideLastEvalutedKey_pageListGuide: lastEvaluatedKey
       };
     case GET_INVENTORY_PRODUCTS:
       console.log('data de reducer GET_INVENTORY_PRODUCTS', action.payload);
