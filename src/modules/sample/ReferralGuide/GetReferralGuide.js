@@ -32,6 +32,8 @@ import Router, {useRouter} from 'next/router';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import {useDispatch, useSelector} from 'react-redux';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
@@ -1080,7 +1082,7 @@ const GetReferralGuide = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppLowerCaseTextField
                       label='Correo de cliente'
                       name='clientEmail'
                       variant='outlined'
@@ -1153,7 +1155,7 @@ const GetReferralGuide = () => {
                         </Collapse>
                       </Grid>
                       <Grid item xs={12}>
-                        <AppTextField
+                        <AppUpperCaseTextField
                           label='Punto de partida'
                           name='startingPoint'
                           variant='outlined'
@@ -1241,7 +1243,7 @@ const GetReferralGuide = () => {
                         </Collapse>
                       </Grid>
                       <Grid item xs={12}>
-                        <AppTextField
+                        <AppUpperCaseTextField
                           label='Punto de llegada'
                           name='arrivalPoint'
                           variant='outlined'
@@ -1288,7 +1290,7 @@ const GetReferralGuide = () => {
 
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Placa de vehículo'
                       name='licensePlate'
                       variant='outlined'
@@ -1303,7 +1305,7 @@ const GetReferralGuide = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre del conductor'
                       name='driverName'
                       variant='outlined'
@@ -1318,7 +1320,7 @@ const GetReferralGuide = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Apellidos del conductor'
                       name='driverLastName'
                       variant='outlined'
@@ -1375,7 +1377,7 @@ const GetReferralGuide = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Licencia del conductor'
                       name='driverLicenseNumber'
                       variant='outlined'

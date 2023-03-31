@@ -241,7 +241,8 @@ const ReferralGuidesTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
-    listPayload.request.payload.LastEvaluatedKey = null
+    listPayload.request.payload.LastEvaluatedKey = null;
+    listPayload.request.payload.outputId = null;
     toGetMovements(listPayload);
   };
   useEffect(() => {
@@ -302,7 +303,7 @@ const ReferralGuidesTable = (props) => {
   const handleClick = (codInput, event) => {
     setAnchorEl(event.currentTarget);
     codProdSelected = codInput;
-    selectedReferralGuide = getMovementsRes[codInput];
+    selectedReferralGuide = getMovementsRes.Items[codInput];
     console.log('selectedReferralGuide', selectedReferralGuide);
   };
   const handleClose = () => {
