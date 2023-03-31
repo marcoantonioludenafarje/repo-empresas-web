@@ -493,7 +493,7 @@ const NewOutput = (props) => {
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * 0.18).toFixed(3))
+        ? Number((total + total * Number(query.igv)).toFixed(3))
         : total,
     );
     forceUpdate();
@@ -708,10 +708,11 @@ const NewOutput = (props) => {
     total = calculatedtotal;
     console.log('total de las salidas', total);
     changeValueField('totalField', Number(total.toFixed(3)));
+    console.log('query', query);
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * igv).toFixed(3))
+        ? Number((total + total * Number(query.igv)).toFixed(3))
         : total,
     );
     console.log('total de los productos', total);
