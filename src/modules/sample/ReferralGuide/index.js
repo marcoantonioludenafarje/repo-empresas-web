@@ -196,7 +196,7 @@ const ReferralGuidesTable = (props) => {
   const handleNextPage = (event) => {
     //console.log('Llamando al  handleNextPage', handleNextPage);    
     listPayload.request.payload.LastEvaluatedKey = referralGuideLastEvalutedKey_pageListGuide;
-    console.log('listPayload',listPayload)
+    console.log('listPayload111:handleNextPage:',listPayload)
     toGetMovements(listPayload);
     // setPage(page+1);
   };
@@ -246,6 +246,7 @@ const ReferralGuidesTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
+    console.log('listPayload122:searchInputs:',listPayload)
     toGetMovements(listPayload);
   };
   useEffect(() => {
@@ -291,6 +292,7 @@ const ReferralGuidesTable = (props) => {
         }
       }
       listPayload.request.payload.LastEvaluatedKey = null;
+      console.log('listPayload133:useEffect userDataRes:',listPayload)
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
