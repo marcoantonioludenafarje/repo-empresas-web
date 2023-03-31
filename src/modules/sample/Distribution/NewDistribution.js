@@ -302,7 +302,7 @@ const Distribution = (props) => {
   }, [businessParameter]);
 
   useEffect(() => {
-    if (listRoute) {
+    if (listRoute && listRoute.length >0) {
       const initialRoute = listRoute[0];
       setSelectedRouteId(initialRoute.routePredefinedId);
       setSelectedRoute(initialRoute);
@@ -741,7 +741,7 @@ const Distribution = (props) => {
                       renderInput={(params) => (
                         <TextField {...params} sx={{width: 1}} />
                       )}
-                      label={<IntlMessages id='dashboard.initialDateTime' />}
+                      label={<IntlMessages id='dashboard.iinitialDateTimeTras' />}
                       inputFormat='dd/MM/yyyy hh:mm a'
                       value={initialDate}
                       onChange={(newDate) => {

@@ -146,14 +146,16 @@ const FinancesTable = (props) => {
   };
 
   const checkProducts = (delivery, index) => {
-    selectedRoute = delivery;
-    console.log('selectedRoute', selectedRoute);
-    setOpenProducts(false);
-    setOpenProducts(true);
+
+
     if (openProducts == true && rowNumber2 == index) {
+      console.log("Va a cerrar el openProducts")
       setOpenProducts(false);
+    }else{
+      console.log("Va a abrir el openProducts")
+      setRowNumber2(index);
+      setOpenProducts(true);
     }
-    setRowNumber2(index);
   };
 
   const newRoute = () => {
@@ -374,7 +376,6 @@ const FinancesTable = (props) => {
 
 
                     </TableRow>
-
                   </>
                 );
               })
@@ -431,6 +432,7 @@ const FinancesTable = (props) => {
                     <TableRow>
                       
                     <TableCell>Serie-Número</TableCell>
+                    <TableCell>Estado Guía Sunat</TableCell>
                     <TableCell>
                       Dirección de punto de partida
                     </TableCell>
@@ -452,7 +454,6 @@ const FinancesTable = (props) => {
                     <TableCell>Observaciones</TableCell>
                     <TableCell>Peso total</TableCell>
                     <TableCell>Número de paquetes</TableCell>
-                    <TableCell>Estado Guía Sunat</TableCell>
                     
                       {/* <TableCell></TableCell> */}
                     </TableRow>
@@ -471,7 +472,13 @@ const FinancesTable = (props) => {
                           >
                             {/* <TableCell>{deliveryItem.serialNumber}</TableCell> */}
                             <TableCell>
-              {deliveryItem.serialNumber}
+              {deliveryItem.serialNumber} 
+            </TableCell>
+            <TableCell align='center'>
+              {showIconStatus(
+                deliveryItem.generateReferralGuide,
+                deliveryItem,
+              )}
             </TableCell>
             <TableCell>
               {deliveryItem.arrivalPointAddress}
@@ -529,13 +536,83 @@ const FinancesTable = (props) => {
             <TableCell>
               {deliveryItem.numberOfPackages}
             </TableCell>
-            <TableCell align='center'>
-              {showIconStatus(
-                deliveryItem.generateReferralGuide,
-                deliveryItem,
-              )}
-            </TableCell>
+
                         </TableRow>
+
+                        
+                    <TableRow key={`sub-${index}`}>
+                                <TableCell sx={{p: 0}} colSpan={10}>
+                                  <Collapse
+                                    in={
+                                      openProducts &&
+                                      index === rowNumber2
+                                    }
+                                    timeout='auto'
+                                    unmountOnExit
+                                  >
+                                    <Box sx={{margin: 0}}>
+                                      <Table
+                                        size='small'
+                                        aria-label='purchases'
+                                      >
+                                        <TableHead
+                                          sx={{
+                                            backgroundColor:
+                                              '#ededed',
+                                          }}
+                                        >
+                                          <TableRow>
+                                            <TableCell>
+                                              Código
+                                            </TableCell>
+                                            <TableCell>
+                                              Descripción
+                                            </TableCell>
+                                            <TableCell>
+                                              Cantidad
+                                            </TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {products &&
+                                          products.length !== 0
+                                            ? products.map(
+                                                (
+                                                  product,
+                                                  index3,
+                                                ) => {
+                                                  return (
+                                                    <TableRow
+                                                      key={`${index3}-${index3}`}
+                                                    >
+                                                      <TableCell>
+                                                        {product.businessProductCode !=
+                                                        null
+                                                          ? product.businessProductCode
+                                                          : product.product}
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        {
+                                                          product.description
+                                                        }
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        {
+                                                          product.quantityMovement
+                                                        }
+                                                      </TableCell>
+                                                    </TableRow>
+                                                  );
+                                                },
+                                              )
+                                            : null}
+                                        </TableBody>
+                                      </Table>
+                                    </Box>
+                                  </Collapse>
+                                </TableCell>
+                              </TableRow>
+
                       </>
                     );
                   })
