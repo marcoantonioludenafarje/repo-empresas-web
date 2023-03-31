@@ -119,8 +119,9 @@ const UpdateLocation = (props) => {
     ubigeo: '150101',
   });
 
+
   const [showAlert, setShowAlert] = React.useState(false);
-  const [statusLocation, setStatusLocation] = React.useState(query.status);
+  const [typeLocation, setTypeLocation] = React.useState(query.type);
   const dispatch = useDispatch();
 
   const toUpdateLocation = (payload) => {
@@ -192,17 +193,16 @@ const UpdateLocation = (props) => {
   };
 
   const handleData = (data, {setSubmitting}) => {
-    console.log("Esta funcionaod")
+    console.log("Esta funcionaod", data)
     setSubmitting(true);
     delete data.ubigeo;
-    delete data.type;
     console.log('Data', data);
-    console.log('objSelects', objSelects);
+    // console.log('objSelects', objSelects);
     newLocationPayload.request.payload.modularCode = data.modularCode;
     newLocationPayload.request.payload.locationName = data.locationName;
     newLocationPayload.request.payload.locationDetail = data.locationDetail;
     newLocationPayload.request.payload.ubigeo = objUbigeo.ubigeo;
-    newLocationPayload.request.payload.type = objSelects.type;
+    newLocationPayload.request.payload.type = typeLocation;
     newLocationPayload.request.payload.coordenates = {
       lat: {S: ''},
       long: {S: ''},
@@ -270,8 +270,9 @@ const UpdateLocation = (props) => {
   };
 
   const handleField = (event) => {
-    console.log('evento', event);
-    objSelects[event.target.name] = event.target.value;
+    console.log('evento 12354', event);
+    // objSelects[event.target.name] = event.target.value;
+    setTypeLocation(event.target.value)
     console.log('ocjSelects', objSelects);
   };
 
@@ -327,6 +328,7 @@ const UpdateLocation = (props) => {
           onSubmit={handleData}
         >
           {({values,isSubmitting, setFieldValue}) => {
+          
             return (
               <>
               <Form
@@ -451,9 +453,8 @@ const UpdateLocation = (props) => {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Form>
 
-              <ButtonGroup
+                <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
                   sx={{width: 1, py: 3}}
@@ -486,6 +487,9 @@ const UpdateLocation = (props) => {
                     Cancelar
                   </Button> */}
                 </ButtonGroup>
+              </Form>
+
+
 
               </>
             );
