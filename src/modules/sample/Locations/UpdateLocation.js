@@ -82,7 +82,7 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-  locatioName: yup
+  locationName: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
@@ -119,8 +119,9 @@ const UpdateLocation = (props) => {
     ubigeo: '150101',
   });
 
+
   const [showAlert, setShowAlert] = React.useState(false);
-  const [statusLocation, setStatusLocation] = React.useState(query.status);
+  const [typeLocation, setTypeLocation] = React.useState(query.type);
   const dispatch = useDispatch();
 
   const toUpdateLocation = (payload) => {
@@ -192,16 +193,16 @@ const UpdateLocation = (props) => {
   };
 
   const handleData = (data, {setSubmitting}) => {
+    console.log("Esta funcionaod", data)
     setSubmitting(true);
     delete data.ubigeo;
-    delete data.type;
     console.log('Data', data);
-    console.log('objSelects', objSelects);
+    // console.log('objSelects', objSelects);
     newLocationPayload.request.payload.modularCode = data.modularCode;
     newLocationPayload.request.payload.locationName = data.locationName;
     newLocationPayload.request.payload.locationDetail = data.locationDetail;
     newLocationPayload.request.payload.ubigeo = objUbigeo.ubigeo;
-    newLocationPayload.request.payload.type = objSelectsT.type;
+    newLocationPayload.request.payload.type = typeLocation;
     newLocationPayload.request.payload.coordenates = {
       lat: {S: ''},
       long: {S: ''},
@@ -269,8 +270,9 @@ const UpdateLocation = (props) => {
   };
 
   const handleField = (event) => {
-    console.log('evento', event);
-    objSelects[event.target.name] = event.target.value;
+    console.log('evento 12354', event);
+    // objSelects[event.target.name] = event.target.value;
+    setTypeLocation(event.target.value)
     console.log('ocjSelects', objSelects);
   };
 
@@ -325,13 +327,15 @@ const UpdateLocation = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({values,isSubmitting, setFieldValue}) => {
+          
             return (
+              <>
               <Form
+                id='principal-form'
                 style={{textAlign: 'left', justifyContent: 'center'}}
                 noValidate
                 autoComplete='on'
-                /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={12}>
@@ -457,6 +461,7 @@ const UpdateLocation = (props) => {
                   aria-label='outlined button group'
                 >
                   <Button
+                    form='principal-form'
                     color='primary'
                     sx={{mx: 'auto', width: '40%', py: 2}}
                     type='submit'
@@ -473,16 +478,20 @@ const UpdateLocation = (props) => {
                       >
                         Guardar y registrar nuevo
                       </Button> */}
-                  <Button
+                  {/* <Button
                     sx={{mx: 'auto', width: '40%', py: 2}}
                     variant='outlined'
                     startIcon={<ArrowCircleLeftOutlinedIcon />}
                     onClick={cancel}
                   >
                     Cancelar
-                  </Button>
+                  </Button> */}
                 </ButtonGroup>
               </Form>
+
+
+
+              </>
             );
           }}
         </Formik>
