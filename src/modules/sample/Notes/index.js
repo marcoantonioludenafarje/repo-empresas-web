@@ -41,7 +41,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import {red} from '@mui/material/colors';
-
+import {exportExcelTemplateToNotes} from '../../../redux/actions/General';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
   DesktopDatePicker,
@@ -63,12 +63,13 @@ import {
   translateValue,
 } from '../../../Utils/utils';
 import AddReasonForm from './AddReasonForm';
-import {getMovements, cancelInvoice} from '../../../redux/actions/Movements';
+import {getNoteItems_pageListNote, cancelInvoice} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  GENERATE_EXCEL_TEMPLATE_TO_NOTES,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -137,10 +138,15 @@ const CreditNotesTable = (props) => {
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const {excelTemplateGeneratedToNotesRes} = useSelector(
+    ({general}) => general,
+  );
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getNoteItems_pageListNote(payload));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -151,21 +157,28 @@ const CreditNotesTable = (props) => {
   const toCancelInvoice = (payload) => {
     dispatch(cancelInvoice(payload));
   };
+  const toExportExcelTemplateToNotes = (payload) => {
+    dispatch(exportExcelTemplateToNotes(payload));
+  };
 
   const useForceUpdate = () => {
     return () => setReload((value) => value + 1); // update the state to force render
   };
 
-  /* let money_unit; */
-  let weight_unit;
-  let exchangeRate;
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);    
+    listPayload.request.payload.LastEvaluatedKey = noteLastEvalutedKey_pageListNote;
+    console.log('listPayload111:handleNextPage:',listPayload)
+    toGetMovements(listPayload);
+    // setPage(page+1);
+  };
 
   //GET APIS RES
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  console.log('getMovementsRes', getMovementsRes);
+  const {noteItems_pageListNote, noteLastEvalutedKey_pageListNote} = useSelector(({movements}) => movements);
+  console.log('noteItems_pageListNote', noteItems_pageListNote);
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
-  let listToUse = getMovementsRes;
+  let listToUse = noteItems_pageListNote;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
@@ -177,6 +190,11 @@ const CreditNotesTable = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
+  /* let money_unit; */
+  let weight_unit;
+  let exchangeRate;
+
+  
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -208,7 +226,8 @@ const CreditNotesTable = (props) => {
         userDataRes.merchantSelected.merchantId;
       businessParameterPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
-
+      
+      listPayload.request.payload.LastEvaluatedKey = null;
       toGetMovements(listPayload);
       getBusinessParameter(businessParameterPayload);
       getGlobalParameter(globalParameterPayload);
@@ -239,6 +258,8 @@ const CreditNotesTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    listPayload.request.payload.LastEvaluatedKey = null;
+    listPayload.request.payload.outputId = null;
     toGetMovements(listPayload);
   };
 
@@ -248,7 +269,7 @@ const CreditNotesTable = (props) => {
   const handleClick = (codInput, event) => {
     setAnchorEl(event.currentTarget);
     codProdSelected = codInput;
-    selectedCreditNote = getMovementsRes[codInput];
+    selectedCreditNote = noteItems_pageListNote[codInput];
     console.log('selectedCreditNote', selectedCreditNote);
   };
   const handleClose = () => {
@@ -272,6 +293,39 @@ const CreditNotesTable = (props) => {
       query: selectedCreditNote,
     });
   };
+
+  const exportToExcel = () => {
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_NOTES, payload: undefined});
+    toExportExcelTemplateToNotes(excelPayload);
+    setDownloadExcel(true);
+  };
+
+  useEffect(() => {
+    if (excelTemplateGeneratedToNotesRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelTemplateGeneratedToNotesRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Notes.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelTemplateGeneratedToNotesRes, downloadExcel]);
 
   const showMessage = () => {
     if (successMessage != undefined) {
@@ -427,6 +481,7 @@ const CreditNotesTable = (props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${noteItems_pageListNote.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -449,8 +504,8 @@ const CreditNotesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes && Array.isArray(getMovementsRes) ? (
-              getMovementsRes.sort(compare).map((obj, index) => (
+            {noteItems_pageListNote && Array.isArray(noteItems_pageListNote) ? (
+              noteItems_pageListNote.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
@@ -461,7 +516,7 @@ const CreditNotesTable = (props) => {
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')
                       ? obj.serialNumber.split('-')[0]
-                      : null}
+                      : null} 
                     {/* {obj.serialNumber &&
                     typeof obj.serialNumber === 'string' &&
                     obj.serialNumber.length !== 0
@@ -514,13 +569,23 @@ const CreditNotesTable = (props) => {
             )}
           </TableBody>
         </Table>
+        {noteLastEvalutedKey_pageListNote ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'
         className={classes.btnGroup}
       >
-        <Button variant='outlined' startIcon={<GridOnOutlinedIcon />}>
+        <Button 
+          variant='outlined' 
+          startIcon={<GridOnOutlinedIcon />}
+          onClick={exportToExcel}>
           Exportar todo
         </Button>
       </ButtonGroup>

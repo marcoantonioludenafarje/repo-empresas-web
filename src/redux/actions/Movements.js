@@ -23,7 +23,10 @@ import {
   UPDATE_ROUTE,
   UPDATE_GENERATE_REFERRAL_GUIDE_VALUE,
   GET_CHILD_ROUTES,
-  GET_REFERRALGUIDE_PAGE_LISTGUIDE
+  GET_REFERRALGUIDE_PAGE_LISTGUIDE,
+  GET_BILL_PAGE_LISTGUIDE,
+  GET_RECEIPT_PAGE_LISTGUIDE,
+  GET_NOTE_PAGE_LISTGUIDE
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -413,9 +416,6 @@ export const getDistribution= (payload) => {
       });
   };
 };
-
-
-
 export const generateDistribution = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -466,12 +466,60 @@ export const getReferralGuides_PageListGuide = (payload) => {
     console.log('/inventory/referralGuides/v1/list', {body: payload});
     API.post('tunexo', '/inventory/referralGuides/v1/list', {body: payload})
       .then((data) => {
-        console.log('getReferralGuides resultado', data);
+        console.log('getReferralGuides_PageListGuide resultado', data);
         dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: data.response.payload, request: payload,});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
-        console.log('getReferralGuides error', error);
+        console.log('getReferralGuides_PageListGuide error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const getBillItems_pageListBill = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    console.log('/inventory/bill/v1/list', {body: payload});
+    API.post('tunexo', '/inventory/bills/v1/list', {body: payload})
+      .then((data) => {
+        console.log('getBillItems_pageListBill resultado', data);
+        dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: data.response.payload, request: payload,});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getBillItems_pageListBill error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const getReceiptItems_pageListReceipt = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    console.log('/inventory/receipt/v1/list', {body: payload});
+    API.post('tunexo', '/inventory/receipts/v1/list', {body: payload})
+      .then((data) => {
+        console.log('getReceiptItems_pageListReceipt resultado', data);
+        dispatch({type: GET_RECEIPT_PAGE_LISTGUIDE, payload: data.response.payload, request: payload,});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getReceiptItems_pageListReceipt error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const getNoteItems_pageListNote = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    console.log('/inventory/notes/v1/list', {body: payload});
+    API.post('tunexo', '/inventory/notes/v1/list', {body: payload})
+      .then((data) => {
+        console.log('getNoteItems_pageListNote resultado', data);
+        dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: data.response.payload, request: payload,});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getNoteItems_pageListNote error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

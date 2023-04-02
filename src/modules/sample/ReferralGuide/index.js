@@ -169,9 +169,7 @@ const ReferralGuidesTable = (props) => {
   const {excelTemplateGeneratedToReferralGuidesRes} = useSelector(
     ({general}) => general,
   );
-  //const {getMovementsRes, LastEvaluatedKey} = useSelector(({movements}) => movements);
-  //console.log('getMovementsRes', getMovementsRes);
-  //console.log('LastEvaluatedKey', LastEvaluatedKey);
+
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getReferralGuides_PageListGuide(payload));
@@ -221,6 +219,7 @@ const ReferralGuidesTable = (props) => {
       setLoading(false);
     }
   }, [referralGuideItems_pageListGuide]);
+
   let money_unit;
   let weight_unit;
   let exchangeRate;
@@ -564,10 +563,6 @@ const ReferralGuidesTable = (props) => {
           </TableHead>
           <TableBody>
             {referralGuideItems_pageListGuide && Array.isArray(referralGuideItems_pageListGuide) ? (
-              // &&
-              // getMovementsRes[0] &&
-              // getMovementsRes[0].movementType == 'REFERRAL_GUIDE'
-
               referralGuideItems_pageListGuide.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -576,8 +571,16 @@ const ReferralGuidesTable = (props) => {
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
-                  <TableCell>{`${obj.documentIntern.split('-')[0]}`}</TableCell>
-                  <TableCell>{`${obj.documentIntern.split('-')[1]}`}</TableCell>
+                  <TableCell>
+                    {obj.documentIntern && obj.documentIntern.includes('-')
+                        ? obj.documentIntern.split('-')[0]
+                        : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.documentIntern && obj.documentIntern.includes('-')
+                        ? obj.documentIntern.split('-')[1]
+                        : ''}
+                  </TableCell>
                   <TableCell>{obj.reasonForTransfer || ''} </TableCell>
                   <TableCell>
                     {`${obj.clientId.split('-')[1]}` +
