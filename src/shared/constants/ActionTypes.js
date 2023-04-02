@@ -289,3 +289,16 @@ export const NEW_REQUEST = 'new_request';
 
 //NOTIFICATIONS
 export const GET_NOTIFICATIONS = 'get_notifications';
+
+
+// ROUTES
+
+export const SET_ROUTE_PREDEFINED_TO_UPDATE_____PAGE_LIST_PREDEFINED_ROUTES = 'set_route_predefined_to_update_____page_list_predefined_routes';
+export const SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES = 'set_list_route_predefined_____page_list_predefined_routes';
+
+
+// DISTRIBUTIONS
+export const SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION = 'set_list_route_predefined_____page_new_distribution';
+export const SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION = 'set_deliveries_in_route_predefined_____page_new_distribution'
+
+
