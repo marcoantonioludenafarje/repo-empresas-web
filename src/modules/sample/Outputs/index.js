@@ -95,6 +95,7 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  GET_ROL_USER,
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
 
@@ -288,6 +289,9 @@ const OutputsTable = (props) => {
   //GET APIS RES
   const {listProducts} = useSelector(({products}) => products);
   console.log('products123', listProducts);
+  const {getRolUserRes} = useSelector(({general}) => general);
+  console.log('Esto es getRolUserRes', getRolUserRes);
+
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -929,6 +933,20 @@ const OutputsTable = (props) => {
     listPayload.request.payload.denominationClient = '';
     setMoreFilters(false);
   };
+
+  function searchPrivilege() {
+    let pathsBack = [];
+
+    for (let objModules of getRolUserRes.modules) {
+      for (let objSubModules of objModules.submodule) {
+        for (let obj of objSubModules.privileges) {
+          console.log('Path agarrado: ', obj.path);
+          pathsBack.push(obj.path);
+        }
+      }
+    }
+    return pathsBack;
+  }
 
   return (
     <Card sx={{p: 4}}>

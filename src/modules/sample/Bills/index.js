@@ -295,7 +295,7 @@ const BillsTable = (props) => {
   const handleClick = (codInput, event) => {
     setAnchorEl(event.currentTarget);
     codProdSelected = codInput;
-    selectedBill = billLastEvalutedKey_pageListBill[codInput];
+    selectedBill = billItems_pageListBill[codInput];
     console.log('selectedBIll', selectedBill);
   };
   const handleClose = () => {
