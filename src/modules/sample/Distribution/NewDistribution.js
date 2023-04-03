@@ -404,11 +404,13 @@ const Distribution = (props) => {
                 numberOfPackages: route.numberPackages,
                 observationDelivery: route.observationDelivery,
                 startingPointAddress: route.startingAddress,
+                startingInternalCode: route.startingInternalCode || "",
                 startingPointUbigeo: completeWithZeros(
                   route.startingPointUbigeo,
                   6,
                 ),
                 arrivalPointAddress: route.arrivalAddress,
+                arrivalInternalCode: route.arrivalInternalCode || "",
                 arrivalPointUbigeo: completeWithZeros(
                   route.arrivalPointUbigeo,
                   6,

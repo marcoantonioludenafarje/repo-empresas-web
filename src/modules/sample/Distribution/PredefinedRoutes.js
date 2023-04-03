@@ -386,10 +386,16 @@ const PredefinedRoutes = () => {
                                         Ubigeo de punto de partida
                                       </TableCell>
                                       <TableCell>
+                                        CodInterno de punto de partida
+                                      </TableCell>
+                                      <TableCell>
                                         Dirección de punto de llegada
                                       </TableCell>
                                       <TableCell>
                                         Ubigeo de punto de llegada
+                                      </TableCell>
+                                      <TableCell>
+                                        CodInterno de punto de llegada
                                       </TableCell>
                                       <TableCell>
                                         Documento de conductor
@@ -424,10 +430,16 @@ const PredefinedRoutes = () => {
                                                   {route.arrivalPointUbigeo}
                                                 </TableCell>
                                                 <TableCell>
+                                                  {route.arrivalInternalCode || ""}
+                                                </TableCell>
+                                                <TableCell>
                                                   {route.startingPointAddress}
                                                 </TableCell>
                                                 <TableCell>
                                                   {route.startingPointUbigeo}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {route.startingInternalCode || ""}
                                                 </TableCell>
                                                 <TableCell>
                                                   {route.driverDocumentType &&

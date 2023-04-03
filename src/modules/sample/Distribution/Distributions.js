@@ -438,10 +438,16 @@ const FinancesTable = (props) => {
                       Ubigeo de punto de partida
                     </TableCell>
                     <TableCell>
+                      CodInterno de punto de partida
+                    </TableCell>
+                    <TableCell>
                       Dirección de punto de llegada
                     </TableCell>
                     <TableCell>
                       Ubigeo de punto de llegada
+                    </TableCell>
+                    <TableCell>
+                      CodInterno de punto de llegada
                     </TableCell>
                     <TableCell>Documento de conductor</TableCell>
                     <TableCell>Nombre de conductor</TableCell>
@@ -480,10 +486,16 @@ const FinancesTable = (props) => {
               {deliveryItem.arrivalPointUbigeo}
             </TableCell>
             <TableCell>
+              {deliveryItem.arrivalInternalCode || ""}
+            </TableCell>
+            <TableCell>
               {deliveryItem.startingPointAddress}
             </TableCell>
             <TableCell>
               {deliveryItem.startingPointUbigeo}
+            </TableCell>
+            <TableCell>
+              {deliveryItem.startingInternalCode || ""}
             </TableCell>
             <TableCell>
               {deliveryItem.driverDocumentType &&
