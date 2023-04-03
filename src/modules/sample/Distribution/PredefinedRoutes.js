@@ -40,25 +40,27 @@ import {
   FETCH_ERROR,
   LIST_ROUTE,
   SET_DELIVERIES_SIMPLE,
+  SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {
-  listRoutes,
   getChildRoutes,
   listNewRoutes,
+  listPredefinedRoutes_____PageListPredefinedRoutes,
+  getPredefinedRoute_____PageListPredefinedRoutes,
 } from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {getYear, justDate, justTime} from '../../../Utils/utils';
 import AppLoader from '@crema/core/AppLoader';
 
-let listRoutesPayload = {
-  request: {
-    payload: {
-      merchantId: '',
-    },
-  },
-};
+// let listRoutesPayload = {
+//   request: {
+//     payload: {
+//       merchantId: '',
+//     },
+//   },
+// };
 
 let getChildRoutesPayload = {
   request: {
@@ -133,10 +135,12 @@ const PredefinedRoutes = () => {
   const {query} = router;
   console.log('query', query);
 
-  const {listRoute, LastEvaluatedKey} = useSelector(({movements}) => movements);
-  console.log('listRoute', listRoute);
+  const {predefinedRoutes_PageListPredefinedRoutes, 
+    lastEvaluatedKeys_PageListPredefinedRoutes, 
+    selectedRoute_PageListPredefinedRoutes} = useSelector(({movements}) => movements);
+  // console.log('listRoute', listRoute);
 
-  const {deliveries, LastEvaluatedKeyChildRoute} = useSelector(
+  const {deliveries} = useSelector(
     ({movements}) => movements,
   );
 
@@ -146,28 +150,32 @@ const PredefinedRoutes = () => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  listRoutesPayload.request.payload.merchantId =
-    userDataRes.merchantSelected.merchantId;
+  // listRoutesPayload.request.payload.merchantId =
+  //   userDataRes.merchantSelected.merchantId;
 
   const [page, setPage] = React.useState(1);
 
   //APIS
   const toListRoutes = (payload) => {
-    dispatch(listRoutes(payload));
+    dispatch(listPredefinedRoutes_____PageListPredefinedRoutes(payload));
   };
 
   const toGetChildRoutes = (payload) => {
     dispatch(getChildRoutes(payload));
   };
 
-  const toListNewRoutes = (payload) => {
-    dispatch(listNewRoutes(payload));
+  const toGetPredefinedRoute = (payload) => {
+    dispatch(getPredefinedRoute_____PageListPredefinedRoutes(payload));
   };
 
   const handleNextPage = (event) => {
     console.log('Llamando al  handleNextPage', handleNextPage);
-    listRoutesPayload.request.payload.LastEvaluatedKey = LastEvaluatedKey;
-    dispatch(listRoutes(listRoutesPayload));
+    // listRoutesPayload.request.payload.LastEvaluatedKey = LastEvaluatedKey;
+    let payload = {
+      merchantId: userDataRes.merchantSelected.merchantId,
+      LastEvaluatedKey:lastEvaluatedKeys_PageListPredefinedRoutes
+    }
+    dispatch(listPredefinedRoutes_____PageListPredefinedRoutes(payload));
     // setPage(page+1);
   };
 
@@ -180,7 +188,7 @@ const PredefinedRoutes = () => {
     if (loading) {
       setLoading(false);
     }
-  }, [listRoute]);
+  }, [predefinedRoutes_PageListPredefinedRoutes]);
 
   useEffect(() => {
     console.log('El deliveries 111', deliveries);
@@ -192,12 +200,19 @@ const PredefinedRoutes = () => {
 
   useEffect(() => {
     console.log('Reseteando todo');
-    listRoutesPayload.request.payload.LastEvaluatedKey = null;
+    if(userDataRes &&  userDataRes.merchantSelected) {
 
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: LIST_ROUTE, payload: undefined});
-    toListRoutes(listRoutesPayload);
+      let payload = {
+        merchantId: userDataRes.merchantSelected.merchantId,
+        LastEvaluatedKey:lastEvaluatedKeys_PageListPredefinedRoutes
+      }
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      dispatch({type: LIST_ROUTE, payload: undefined});
+      toListRoutes(payload);
+
+
+    }
   }, []);
 
   const compare = (a, b) => {
@@ -271,7 +286,7 @@ const PredefinedRoutes = () => {
   };
 
   const findRoute = (routeId) => {
-    return listRoute.find((obj) => obj.routePredefinedId == routeId);
+    return predefinedRoutes_PageListPredefinedRoutes.find((obj) => obj.routePredefinedId == routeId);
   };
 
   const handleClick = (routeId, event) => {
@@ -292,16 +307,23 @@ const PredefinedRoutes = () => {
 
   const handleClickOpen = (type) => {
     console.log('Veamos el total', selectedRoute);
+    console.log("El type", type)
     let routePredefinedId = selectedRoute.routePredefinedId;
     console.log('EY que tal', userDataRes.merchantSelected.merchantId);
-    toListNewRoutes({
+    dispatch({
+      type: SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
+      payload: null,
+    })
+
+    toGetPredefinedRoute({
       routePredefinedId,
       merchantId: userDataRes.merchantSelected.merchantId,
     });
 
-    // setOpen(true);
-    // toListNewRoutes()
-    // setTypeDialog(type);
+
+    setOpen(true);
+    // toGetPredefinedRoute()
+    setTypeDialog(type);
     // setShowAlert(false);
   };
 
@@ -323,8 +345,9 @@ const PredefinedRoutes = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {listRoute && Array.isArray(listRoute) ? (
-                  listRoute.sort(compare).map((obj, index) => {
+                {predefinedRoutes_PageListPredefinedRoutes 
+                && Array.isArray(predefinedRoutes_PageListPredefinedRoutes) ? (
+                  predefinedRoutes_PageListPredefinedRoutes.sort(compare).map((obj, index) => {
                     const routes = obj.deliveries;
                     return (
                       <>
@@ -368,200 +391,7 @@ const PredefinedRoutes = () => {
                             </Button>
                           </TableCell>
                         </TableRow>
-                        <TableRow key={`doc-${index}`}>
-                          <TableCell sx={{p: 0}} colSpan={4}>
-                            <Collapse
-                              in={openRoutes && index === rowNumber}
-                              timeout='auto'
-                              unmountOnExit
-                            >
-                              <Box sx={{margin: 0}}>
-                                <Table size='small' aria-label='purchases'>
-                                  <TableHead sx={{backgroundColor: '#ededed'}}>
-                                    <TableRow>
-                                      <TableCell>
-                                        Dirección de punto de partida
-                                      </TableCell>
-                                      <TableCell>
-                                        Ubigeo de punto de partida
-                                      </TableCell>
-                                      <TableCell>
-                                        Dirección de punto de llegada
-                                      </TableCell>
-                                      <TableCell>
-                                        Ubigeo de punto de llegada
-                                      </TableCell>
-                                      <TableCell>
-                                        Documento de conductor
-                                      </TableCell>
-                                      <TableCell>Nombre de conductor</TableCell>
-                                      <TableCell>
-                                        Apellidos de conductor
-                                      </TableCell>
-                                      <TableCell>
-                                        Licencia de conductor
-                                      </TableCell>
-                                      <TableCell>Placa</TableCell>
-                                      <TableCell>Productos</TableCell>
-                                      <TableCell>Observaciones</TableCell>
-                                      <TableCell>Peso total</TableCell>
-                                      <TableCell>Número de paquetes</TableCell>
-                                    </TableRow>
-                                  </TableHead>
-                                  <TableBody>
-                                    {openRoutes &&
-                                    deliveries &&
-                                    deliveries.length !== 0
-                                      ? deliveries.map((route, index2) => {
-                                          const products = route.productsInfo;
-                                          return (
-                                            <>
-                                              <TableRow key={index2}>
-                                                <TableCell>
-                                                  {route.arrivalPointAddress}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.arrivalPointUbigeo}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.startingPointAddress}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.startingPointUbigeo}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.driverDocumentType &&
-                                                  route.driverDocumentNumber
-                                                    ? `${route.driverDocumentType.toUpperCase()} - ${
-                                                        route.driverDocumentNumber
-                                                      }`
-                                                    : null}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.driverDenomination}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.driverLastName}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.driverLicenseNumber}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.carrierPlateNumber}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {products &&
-                                                  products.length !== 0 ? (
-                                                    <IconButton
-                                                      onClick={() =>
-                                                        checkProducts(
-                                                          route,
-                                                          index2,
-                                                        )
-                                                      }
-                                                      size='small'
-                                                    >
-                                                      <FormatListBulletedIcon fontSize='small' />
-                                                    </IconButton>
-                                                  ) : null}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.observationDelivery}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {Number.parseFloat(
-                                                    route.totalGrossWeight,
-                                                  ).toFixed(3)}
-                                                </TableCell>
-                                                <TableCell>
-                                                  {route.numberOfPackages}
-                                                </TableCell>
-                                              </TableRow>
-                                              <TableRow key={`sub-${index2}`}>
-                                                <TableCell
-                                                  sx={{p: 0}}
-                                                  colSpan={10}
-                                                >
-                                                  <Collapse
-                                                    in={
-                                                      openProducts &&
-                                                      index2 === rowNumber2
-                                                    }
-                                                    timeout='auto'
-                                                    unmountOnExit
-                                                  >
-                                                    <Box sx={{margin: 0}}>
-                                                      <Table
-                                                        size='small'
-                                                        aria-label='purchases'
-                                                      >
-                                                        <TableHead
-                                                          sx={{
-                                                            backgroundColor:
-                                                              '#ededed',
-                                                          }}
-                                                        >
-                                                          <TableRow>
-                                                            <TableCell>
-                                                              Código
-                                                            </TableCell>
-                                                            <TableCell>
-                                                              Descripción
-                                                            </TableCell>
-                                                            <TableCell>
-                                                              Cantidad
-                                                            </TableCell>
-                                                          </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                          {products &&
-                                                          products.length !== 0
-                                                            ? products.map(
-                                                                (
-                                                                  product,
-                                                                  index3,
-                                                                ) => {
-                                                                  return (
-                                                                    <TableRow
-                                                                      key={`${index3}-${index3}`}
-                                                                    >
-                                                                      <TableCell>
-                                                                        {product.businessProductCode !=
-                                                                        null
-                                                                          ? product.businessProductCode
-                                                                          : product.product}
-                                                                      </TableCell>
-                                                                      <TableCell>
-                                                                        {
-                                                                          product.description
-                                                                        }
-                                                                      </TableCell>
-                                                                      <TableCell>
-                                                                        {
-                                                                          product.quantityMovement
-                                                                        }
-                                                                      </TableCell>
-                                                                    </TableRow>
-                                                                  );
-                                                                },
-                                                              )
-                                                            : null}
-                                                        </TableBody>
-                                                      </Table>
-                                                    </Box>
-                                                  </Collapse>
-                                                </TableCell>
-                                              </TableRow>
-                                            </>
-                                          );
-                                        })
-                                      : null}
-                                  </TableBody>
-                                </Table>
-                              </Box>
-                            </Collapse>
-                          </TableCell>
-                        </TableRow>
+
                       </>
                     );
                   })
@@ -574,7 +404,7 @@ const PredefinedRoutes = () => {
               </TableBody>
             </Table>
 
-            {LastEvaluatedKey ? (
+            {lastEvaluatedKeys_PageListPredefinedRoutes ? (
               <Stack spacing={2}>
                 <IconButton onClick={() => handleNextPage()} size='small'>
                   <ArrowForwardIosIcon fontSize='inherit' />
@@ -606,7 +436,7 @@ const PredefinedRoutes = () => {
               'aria-labelledby': 'basic-button',
             }}
           >
-            <MenuItem onClick={handleClickOpen.bind('detailRoute')}>
+            <MenuItem onClick={handleClickOpen.bind(this,'detailRoute')}>
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Ver detalle
             </MenuItem>
@@ -636,14 +466,203 @@ const PredefinedRoutes = () => {
             {typeDialog == 'detailRoute' ? (
               <>
                 <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                  {'Rutas'}
+                  
+                  {`Rutas(${selectedRoute_PageListPredefinedRoutes ? selectedRoute_PageListPredefinedRoutes.cantDeliveries : ''} puntos)`}
+                  {/* { selectedRoute_PageListPredefinedRoutes && selectedRoute_PageListPredefinedRoutes.deliveries
+                   && selectedRoute_PageListPredefinedRoutes.deliveries.length >0  ? 
+                   `Rutas (${selectedRoute_PageListPredefinedRoutes.deliveries.length} puntos)` : `Rutas (Cargando ... ${selectedRoute_PageListPredefinedRoutes.deliveries.length} puntos)`} */}
                   <CancelOutlinedIcon
                     onClick={setOpen.bind(this, false)}
                     className={classes.closeButton}
                   />
                 </DialogTitle>
                 <DialogContent>
-                  <span>Aca deberia de aparecer la info que necesito</span>
+
+                    <Table size='small' aria-label='purchases'>
+                      <TableHead sx={{backgroundColor: '#ededed'}}>
+                        <TableRow>
+                          <TableCell>
+                            Dirección de punto de partida
+                          </TableCell>
+                          <TableCell>
+                            Ubigeo de punto de partida
+                          </TableCell>
+                          <TableCell>
+                            Dirección de punto de llegada
+                          </TableCell>
+                          <TableCell>
+                            Ubigeo de punto de llegada
+                          </TableCell>
+                          <TableCell>
+                            Documento de conductor
+                          </TableCell>
+                          <TableCell>Nombre de conductor</TableCell>
+                          <TableCell>
+                            Apellidos de conductor
+                          </TableCell>
+                          <TableCell>
+                            Licencia de conductor
+                          </TableCell>
+                          <TableCell>Placa</TableCell>
+                          <TableCell>Productos</TableCell>
+                          <TableCell>Observaciones</TableCell>
+                          <TableCell>Peso total</TableCell>
+                          <TableCell>Número de paquetes</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {selectedRoute_PageListPredefinedRoutes && 
+                          selectedRoute_PageListPredefinedRoutes.deliveries.length >0
+                          
+                          ? selectedRoute_PageListPredefinedRoutes.deliveries
+                          
+                          .map((route, index2) => {
+                              const products = route.productsInfo;
+                              return (
+                                <>
+                                  <TableRow key={index2}>
+                                    <TableCell>
+                                      {route.arrivalPointAddress}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.arrivalPointUbigeo}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.startingPointAddress}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.startingPointUbigeo}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.driverDocumentType &&
+                                      route.driverDocumentNumber
+                                        ? `${route.driverDocumentType.toUpperCase()} - ${
+                                            route.driverDocumentNumber
+                                          }`
+                                        : null}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.driverDenomination}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.driverLastName}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.driverLicenseNumber}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.carrierPlateNumber}
+                                    </TableCell>
+                                    <TableCell>
+                                      {products &&
+                                      products.length !== 0 ? (
+                                        <IconButton
+                                          onClick={() =>
+                                            checkProducts(
+                                              route,
+                                              index2,
+                                            )
+                                          }
+                                          size='small'
+                                        >
+                                          <FormatListBulletedIcon fontSize='small' />
+                                        </IconButton>
+                                      ) : null}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.observationDelivery}
+                                    </TableCell>
+                                    <TableCell>
+                                      {Number.parseFloat(
+                                        route.totalGrossWeight,
+                                      ).toFixed(3)}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.numberOfPackages}
+                                    </TableCell>
+                                  </TableRow>
+                                  <TableRow key={`sub-${index2}`}>
+                                    <TableCell
+                                      sx={{p: 0}}
+                                      colSpan={10}
+                                    >
+                                      <Collapse
+                                        in={
+                                          openProducts &&
+                                          index2 === rowNumber2
+                                        }
+                                        timeout='auto'
+                                        unmountOnExit
+                                      >
+                                        <Box sx={{margin: 0}}>
+                                          <Table
+                                            size='small'
+                                            aria-label='purchases'
+                                          >
+                                            <TableHead
+                                              sx={{
+                                                backgroundColor:
+                                                  '#ededed',
+                                              }}
+                                            >
+                                              <TableRow>
+                                                <TableCell>
+                                                  Código
+                                                </TableCell>
+                                                <TableCell>
+                                                  Descripción
+                                                </TableCell>
+                                                <TableCell>
+                                                  Cantidad
+                                                </TableCell>
+                                              </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                              {products &&
+                                              products.length !== 0
+                                                ? products.map(
+                                                    (
+                                                      product,
+                                                      index3,
+                                                    ) => {
+                                                      return (
+                                                        <TableRow
+                                                          key={`${index3}-${index3}`}
+                                                        >
+                                                          <TableCell>
+                                                            {product.businessProductCode !=
+                                                            null
+                                                              ? product.businessProductCode
+                                                              : product.product}
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {
+                                                              product.description
+                                                            }
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {
+                                                              product.quantityMovement
+                                                            }
+                                                          </TableCell>
+                                                        </TableRow>
+                                                      );
+                                                    },
+                                                  )
+                                                : null}
+                                            </TableBody>
+                                          </Table>
+                                        </Box>
+                                      </Collapse>
+                                    </TableCell>
+                                  </TableRow>
+                                </>
+                              );
+                            })
+                          : null}
+                      </TableBody>
+                      </Table>
+
                 </DialogContent>
               </>
             ) : null}

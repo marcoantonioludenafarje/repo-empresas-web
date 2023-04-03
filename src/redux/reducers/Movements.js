@@ -24,6 +24,8 @@ import {
   SET_DELIVERIES_SIMPLE,
   SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
+  SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
+  SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -33,8 +35,17 @@ const INIT_STATE = {
   lastEvaluatedKeys_PageListPredefinedRoutes: null,
   predefinedRoutes_PageNewDistribution: [],
   lastEvaluatedKeys_PageNewDistribution: null,
-  selectedRoute_PageNewDistribution: null
+  selectedRoute_PageNewDistribution: null,
+  predefinedRoutes_PageListPredefinedRoutes: [], 
+  lastEvaluatedKeys_PageListPredefinedRoutes:null,
+  selectedRoute_PageListPredefinedRoutes:null,
+
+
 };
+
+
+
+
 
 const movementsReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
@@ -229,7 +240,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
 
     case SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION:
       console.log(
-        'data de reducer SET_LIST_ROUTE_PREDEFINED',
+        'data de reducer SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION',
         action.payload,
       );
 
@@ -237,7 +248,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
         ...state,
         predefinedRoutes_PageNewDistribution: action.payload.Items,
         lastEvaluatedKeys_PageNewDistribution : action.payload.LastEvaluatedKey,
-        listRoute: action.payload.Items,
+        // listRoute: action.payload.Items,
         // action.payload.Items
       };
 
@@ -249,9 +260,35 @@ const movementsReducer = (state = INIT_STATE, action) => {
       return {
           ...state,
           predefinedRoutes_PageNewDistribution: newItems,
-          listRoute: newItems,
+          // listRoute: newItems,
           selectedRoute_PageNewDistribution:action.payload,
       };
+
+
+
+
+    case SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
+      console.log(
+        'data de reducer SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION',
+        action.payload,
+      );
+
+      return {
+        ...state,
+        predefinedRoutes_PageListPredefinedRoutes: action.payload.Items,
+        lastEvaluatedKeys_PageListPredefinedRoutes : action.payload.LastEvaluatedKey,
+        // listRoute: action.payload.Items,
+        // action.payload.Items
+      };
+
+    case SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
+      return {
+          ...state,
+
+          selectedRoute_PageListPredefinedRoutes:action.payload,
+      };
+  
+
 
 
       

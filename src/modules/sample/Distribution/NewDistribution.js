@@ -78,7 +78,7 @@ import {
   getChildRoutes,
   listPredefinedRoutes_____PageNewDistribution,
   registerNewDistribution_____PageNewDistribution,
-  getPredefinedRoute_PageListPredefinedRoutes,
+  getPredefinedRoute_____PageNewDistribution,
 } from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -215,7 +215,7 @@ const Distribution = (props) => {
   };
 
   const toGetPredefinedRoute = () => {
-    dispatch(getPredefinedRoute_PageListPredefinedRoutes(
+    dispatch(getPredefinedRoute_____PageNewDistribution(
       {merchantId: userDataRes.merchantSelected.merchantId, 
         routePredefinedId : selectedRoute.routePredefinedId }
     ));

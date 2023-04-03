@@ -25,6 +25,8 @@ import {
   GET_CHILD_ROUTES,
   SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
+  SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
+  SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
 
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
@@ -347,26 +349,7 @@ export const listNewRoutes = (payload) => {
 };
 
 
-export const getSpecificRoutesNew = (payload) => {
-  return (dispatch, getState) => {
-    dispatch({type: FETCH_START});
-    request('get', '/distribution/routesPredefined/17838393', {
-      body: payload,
-    })
-      .then((data) => {
-        console.log('getChildRoute resultado', data);
-        // dispatch({
-        //   type: GET_CHILD_ROUTES,
-        //   payload: data.response.payload,
-        // });
-        dispatch({type: FETCH_SUCCESS, payload: 'success'});
-      })
-      .catch((error) => {
-        console.log('getChildRoute error', error);
-        dispatch({type: FETCH_ERROR, payload: error.message});
-      });
-  };
-};
+
 
 
 export const listDistributions = (payload) => {
@@ -493,7 +476,65 @@ export const listPredefinedRoutes_____PageNewDistribution = (payload) => {
 };
 
 
-export const getPredefinedRoute_PageListPredefinedRoutes = (payload) => {
+
+
+export const listPredefinedRoutes_____PageListPredefinedRoutes = (payload) => {
+  console.log('payload10000', payload);
+
+  
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    request('get', '/distribution/routesPredefined', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('listPredefinedRoutes_____PageNewDistribution resultado', data);
+        dispatch({
+          type: SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
+          payload: data.data,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('listPredefinedRoutes_____PageNewDistribution error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+
+};
+
+
+
+
+export const getPredefinedRoute_____PageListPredefinedRoutes = (payload) => {
+  
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    request('get', `/distribution/routesPredefined/${payload.routePredefinedId}`, {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('getPredefinedRoute_PageListPredefinedRoutes resultado', data);
+        dispatch({
+          type: SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
+          payload: data.data,
+        });
+
+        // dispatch({
+        //   type: SET_LIST_ROUTE_PREDEFINED,
+        //   payload: data.response.payload,
+        // });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getChildRoute error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+
+export const getPredefinedRoute_____PageNewDistribution = (payload) => {
   
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
