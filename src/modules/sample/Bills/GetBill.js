@@ -197,7 +197,7 @@ const NewOutput = (props) => {
   const [showForms, setShowForms] = React.useState(false);
   const [serial, setSerial] = React.useState('');
   const [paymentMethod, setPaymentMethod] = React.useState('credit');
-  const [expirationDate, setExpirationDate] = React.useState(Date.now());
+  const [expirationDate, setExpirationDate] = React.useState(Date.now() + 1 * 24 * 60 * 60 * 1000);
   const [minTutorial, setMinTutorial] = React.useState(false);
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
@@ -836,10 +836,11 @@ const NewOutput = (props) => {
                       )}
                       required
                       value={value}
-                      disabled
                       label='Fecha de emisión'
                       inputFormat='dd/MM/yyyy hh:mm a'
                       name='issueDate'
+                      minDate={new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)} // establece la fecha mínima en dos días a partir de la actual
+                      maxDate={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)}
                       onChange={(newValue) => {
                         setValue(newValue);
                         console.log('date', newValue);
@@ -859,6 +860,7 @@ const NewOutput = (props) => {
                       value={expirationDate}
                       label='Fecha de vencimiento'
                       inputFormat='dd/MM/yyyy hh:mm a'
+                      minDate={new Date(value + 1 * 24 * 60 * 60 * 1000)}
                       name='issueDate'
                       onChange={(newValue) => {
                         setExpirationDate(newValue);
