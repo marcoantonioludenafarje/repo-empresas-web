@@ -247,7 +247,9 @@ const NewOutput = (props) => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const {getRolUserRes} = useSelector(({general}) => general);
+  console.log('Esto es getRolUserRes', getRolUserRes);
+  
   //SETEANDO PARAMETROS
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
@@ -673,7 +675,10 @@ const NewOutput = (props) => {
       //dispatch({type: GET_MOVEMENTS, payload: []});
       console.log('Este es el listPayload NewOutput', listPayload);
       toGetMovements(listPayload);
-      setShowForms(true);
+      if (searchPrivilege("outputsTable"))
+        setShowForms(true);
+      else
+        Router.push('/sample/outputs/table');
     } else {
       Router.push('/sample/outputs/table');
     }
@@ -729,6 +734,45 @@ const NewOutput = (props) => {
     setGuide(isInputChecked);
     console.log('Evento de generar guía', isInputChecked);
   };
+
+  function searchPrivilege(opcion) {
+    let access = true;
+
+    if (getRolUserRes)
+      for (let objModules of getRolUserRes.modules) {
+        for (let objSubModules of objModules.submodule) {
+          if (objSubModules.idFront == opcion && objSubModules.typeAccess == 'RESTRICTED'){
+            access = false;
+          }            
+        }
+      }
+      console.log('submodule fin: ', access);
+
+    return access;
+  }
+
+  function validationClientType(documentType) {
+    let validation = false;
+
+    if (selectedClient.clientId) {
+      let client = selectedClient.clientId.split('-');
+      let clientDocumentType = client [0];
+      let clientNumberDocument = client [1];
+
+      if (clientDocumentType != "RUC" && documentType == "receipt") {
+        validation = true;
+      } else if (clientDocumentType == "RUC" && (documentType == "referralGuide" || documentType == "distribution")) {
+        validation = true;
+      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '1' && (documentType == "receipt" || documentType == "bill")) {
+        validation = true;
+      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '2' && documentType == "bill") {
+        validation = true;
+      }
+    }
+    
+    console.log("selectedOutput1",selectedClient)
+    return validation;
+  }
 
   const typeClient = userDataRes.merchantSelected.typeClient;
 
@@ -1296,104 +1340,108 @@ const NewOutput = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            {getMovementsRes.length !== 0 ? (
-              <>
-                {typeClient != 'PN' && !hasBill.includes('referralGuide') ? (
+            {getMovementsRes.length !== 0 ? 
+              (
+                <>
+                  {validationClientType('referralGuide') && !hasBill.includes('referralGuide') ? (
+                    <Button
+                      color='primary'
+                      sx={{width: 1, px: 7, my: 2}}
+                      variant='contained'
+                      onClick={() => {
+                        Router.push({
+                          pathname: '/sample/referral-guide/get',
+                          query: getMovementsRes.find(
+                            (obj) =>
+                              obj.movementHeaderId ==
+                              addMovementRes.movementHeaderId,
+                          ),
+                        });
+                      }}
+                    >
+                      Generar Guía de remisión
+                    </Button>
+                  ) : null}
+                  {validationClientType('receipt') && !hasBill.includes('bill') ? (
+                    <Button
+                      color='primary'
+                      sx={{width: 1, px: 7, my: 2}}
+                      variant='contained'
+                      onClick={() => {
+                        Router.push({
+                          pathname: '/sample/receipts/get',
+                          query: getMovementsRes.find(
+                            (obj) =>
+                              obj.movementHeaderId ==
+                              addMovementRes.movementHeaderId,
+                          ),
+                        });
+                      }}
+                    >
+                      Generar Boleta De Venta
+                    </Button>
+                  ) : null}
+                  {validationClientType('bill') && !hasBill.includes('bill') ? (
+                    <Button
+                      color='primary'
+                      sx={{width: 1, px: 7, my: 2}}
+                      variant='contained'
+                      onClick={() => {
+                        Router.push({
+                          pathname: '/sample/bills/get',
+                          query: getMovementsRes.find(
+                            (obj) =>
+                              obj.movementHeaderId ==
+                              addMovementRes.movementHeaderId,
+                          ),
+                        });
+                      }}
+                    >
+                      Generar Factura
+                    </Button>
+                  ) : null}
+                  {hasBill.includes('bill') ? (
+                    <Button
+                      color='primary'
+                      sx={{width: 1, px: 7, my: 2}}
+                      variant='contained'
+                      onClick={() => {
+                        Router.push({
+                          pathname: '/sample/finances/new-earning',
+                          query: getMovementsRes.find(
+                            (obj) =>
+                              obj.movementHeaderId ==
+                              addMovementRes.movementHeaderId,
+                          ),
+                        });
+                      }}
+                    >
+                      Generar Ingreso
+                    </Button>
+                  ) : null}
                   <Button
                     color='primary'
                     sx={{width: 1, px: 7, my: 2}}
-                    variant='contained'
-                    onClick={() => {
-                      Router.push({
-                        pathname: '/sample/referral-guide/get',
-                        query: getMovementsRes.find(
-                          (obj) =>
-                            obj.movementHeaderId ==
-                            addMovementRes.movementHeaderId,
-                        ),
-                      });
-                    }}
+                    variant='outlined'
+                    onClick={() => Router.push('/sample/outputs/table')}
+                    // onClick={() => {
+                    //   Router.push({
+                    //     pathname: '/sample/outputs/table',
+                    //     query: {
+                    //       operationBack: true
+                    //     },
+                    //   });
+                    // }}
                   >
-                    Generar Guía de remisión
+                    Ir a Listado
                   </Button>
-                ) : null}
-                {typeClient == 'PN' && !hasBill.includes('bill') ? (
-                  <Button
-                    color='primary'
-                    sx={{width: 1, px: 7, my: 2}}
-                    variant='contained'
-                    onClick={() => {
-                      Router.push({
-                        pathname: '/sample/receipts/get',
-                        query: getMovementsRes.find(
-                          (obj) =>
-                            obj.movementHeaderId ==
-                            addMovementRes.movementHeaderId,
-                        ),
-                      });
-                    }}
-                  >
-                    Generar Boleta De Venta
-                  </Button>
-                ) : null}
-                {!hasBill.includes('bill') ? (
-                  <Button
-                    color='primary'
-                    sx={{width: 1, px: 7, my: 2}}
-                    variant='contained'
-                    onClick={() => {
-                      Router.push({
-                        pathname: '/sample/bills/get',
-                        query: getMovementsRes.find(
-                          (obj) =>
-                            obj.movementHeaderId ==
-                            addMovementRes.movementHeaderId,
-                        ),
-                      });
-                    }}
-                  >
-                    Generar Factura
-                  </Button>
-                ) : null}
-                {hasBill.includes('bill') ? (
-                  <Button
-                    color='primary'
-                    sx={{width: 1, px: 7, my: 2}}
-                    variant='contained'
-                    onClick={() => {
-                      Router.push({
-                        pathname: '/sample/finances/new-earning',
-                        query: getMovementsRes.find(
-                          (obj) =>
-                            obj.movementHeaderId ==
-                            addMovementRes.movementHeaderId,
-                        ),
-                      });
-                    }}
-                  >
-                    Generar Ingreso
-                  </Button>
-                ) : null}
-                <Button
-                  color='primary'
-                  sx={{width: 1, px: 7, my: 2}}
-                  variant='outlined'
-                  onClick={() => Router.push('/sample/outputs/table')}
-                  // onClick={() => {
-                  //   Router.push({
-                  //     pathname: '/sample/outputs/table',
-                  //     query: {
-                  //       operationBack: true
-                  //     },
-                  //   });
-                  // }}
-                >
-                  Ir a Listado
-                </Button>
-              </>
-            ) : (
-              <CircularProgress />
-            )}
+                </>
+              ) 
+
+              
+              : (
+                <CircularProgress />
+              )}
           </DialogContentText>
         </DialogContent>
       </Dialog>

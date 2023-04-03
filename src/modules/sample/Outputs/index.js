@@ -95,7 +95,6 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
-  GET_ROL_USER,
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
 
@@ -157,6 +156,7 @@ let listPayload = {
       searchByDocument: null,
       movementHeaderId: null,
       outputId: null,
+      userCreated: null,
     },
   },
 };
@@ -326,6 +326,9 @@ const OutputsTable = (props) => {
         console.log('Query con datos', query);
         listPayload.request.payload.movementHeaderId = query.movementHeaderId;
       }
+
+      (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
+      console.log("toGetMovements [userDataRes] ",listPayload)
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -348,6 +351,8 @@ const OutputsTable = (props) => {
         console.log('Query con datos', query);
         listPayload.request.payload.movementHeaderId = query.movementHeaderId;
       }
+      (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
+      console.log("toGetMovements [actualDateRes] ",listPayload)
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -380,6 +385,8 @@ const OutputsTable = (props) => {
     listPayload.request.payload.searchByDocument = '';
     listPayload.request.payload.typeDocumentClient = '';
     listPayload.request.payload.numberDocumentClient = '';
+    (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
+    console.log("toGetMovements [searchOutputs] ",listPayload)
     toGetMovements(listPayload);
   };
   const newOutput = () => {
@@ -467,6 +474,8 @@ const OutputsTable = (props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
+      (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
+      console.log("toGetMovements [sendStatus] ",listPayload)
       toGetMovements(listPayload);
     }, 2200);
   };
@@ -926,6 +935,8 @@ const OutputsTable = (props) => {
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toLowerCase();
     console.log('listPayload', listPayload);
     dispatch({type: GET_MOVEMENTS, payload: undefined});
+    (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
+    console.log("toGetMovements [filterData] ",listPayload)
     toGetMovements(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
@@ -934,18 +945,44 @@ const OutputsTable = (props) => {
     setMoreFilters(false);
   };
 
-  function searchPrivilege() {
-    let pathsBack = [];
+  function searchPrivilege(opcion) {
+    let access = true;
 
-    for (let objModules of getRolUserRes.modules) {
-      for (let objSubModules of objModules.submodule) {
-        for (let obj of objSubModules.privileges) {
-          console.log('Path agarrado: ', obj.path);
-          pathsBack.push(obj.path);
+    if (getRolUserRes)
+      for (let objModules of getRolUserRes.modules) {
+        for (let objSubModules of objModules.submodule) {
+          if (objSubModules.idFront == opcion && objSubModules.typeAccess == 'RESTRICTED'){
+            access = false;
+          }            
         }
       }
+      console.log('submodule fin: ', access);
+
+    return access;
+  }
+
+  function validationClientType(selectedOutput1, documentType) {
+    let validation = false;
+
+    if(selectedOutput1 && selectedOutput1.clientId) {
+
+      let client = selectedOutput1.clientId.split('-');
+      let clientDocumentType = client [0];
+      let clientNumberDocument = client [1];
+
+      if (clientDocumentType != "RUC" && documentType == "receipt") {
+        validation = true;
+      } else if (clientDocumentType == "RUC" && (documentType == "referralGuide" || documentType == "distribution")) {
+        validation = true;
+      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '1' && (documentType == "receipt" || documentType == "bill")) {
+        validation = true;
+      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '2' && documentType == "bill") {
+        validation = true;
+      }
     }
-    return pathsBack;
+    
+    console.log("selectedOutput1",selectedOutput1)
+    return validation;
   }
 
   return (
@@ -1378,67 +1415,98 @@ const OutputsTable = (props) => {
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Eliminar
           </MenuItem>
-        ) : null}
+        ) : null} 
 
-        {localStorage
-          .getItem('pathsBack')
-          .includes('/inventory/movementProducts/list?path=/output/*') ===
-        true ? (
-          <MenuItem disabled onClick={goToMoves}>
-            <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
-            Exportar
-          </MenuItem>
-        ) : null}
+        {(searchPrivilege("outputsTable") ? (<>
 
-        {localStorage
-          .getItem('pathsBack')
-          .includes(
-            '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
-          ) && selectedOutput.movementSubType == 'sales' ? (
-          <MenuItem
-            disabled={
-              userDataRes.merchantSelected &&
-              !userDataRes.merchantSelected.isBillingEnabled
-            }
-            onClick={getReferralGuide}
-          >
-            <EditLocationOutlinedIcon sx={{mr: 1, my: 'auto'}} />
-            Generar Guía <br />
-            de remisión
-          </MenuItem>
-        ) : null}
+            {localStorage
+              .getItem('pathsBack')
+              .includes('/inventory/movementProducts/list?path=/output/*') ===
+            true ? (
+              <MenuItem disabled onClick={goToMoves}>
+                <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
+                Exportar
+              </MenuItem>
+            ) : null}
 
-        {localStorage
-          .getItem('pathsBack')
-          .includes(
-            '/facturacion/accounting/movement/register?path=/billOfOutput/*',
-          ) &&
-        selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existBill ? (
-          <MenuItem
-            disabled={
-              userDataRes.merchantSelected &&
-              !userDataRes.merchantSelected.isBillingEnabled
-            }
-            onClick={getInvoice}
-          >
-            <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
-            Generar Factura
-          </MenuItem>
-        ) : null}
+            {validationClientType(selectedOutput,'referralGuide') && localStorage
+              .getItem('pathsBack')
+              .includes(
+                '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
+              ) && selectedOutput.movementSubType == 'sales' ? (
+              <MenuItem
+                disabled={
+                  userDataRes.merchantSelected &&
+                  !userDataRes.merchantSelected.isBillingEnabled
+                }
+                onClick={getReferralGuide}
+              >
+                <EditLocationOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+                Generar Guía <br />
+                de remisión
+              </MenuItem>
+            ) : null}
 
-        {localStorage
-          .getItem('pathsBack')
-          .includes(
-            '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
-          ) &&
-        selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existReceipt ? (
-          <MenuItem onClick={getReceipt}>
-            <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
-            Generar Boleta
-          </MenuItem>
-        ) : null}
+            {validationClientType(selectedOutput,'bill') && localStorage
+              .getItem('pathsBack')
+              .includes(
+                '/facturacion/accounting/movement/register?path=/billOfOutput/*',
+              ) &&
+            selectedOutput.movementSubType == 'sales' &&
+            !selectedOutput.existBill ? (
+              <MenuItem
+                disabled={
+                  userDataRes.merchantSelected &&
+                  !userDataRes.merchantSelected.isBillingEnabled
+                }
+                onClick={getInvoice}
+              >
+                <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
+                Generar Factura
+              </MenuItem>
+            ) : null}
+
+            {validationClientType(selectedOutput,'receipt') && localStorage
+              .getItem('pathsBack')
+              .includes(
+                '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+              ) &&
+            selectedOutput.movementSubType == 'sales' &&
+            !selectedOutput.existReceipt ? (
+              <MenuItem onClick={getReceipt}>
+                <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
+                Generar Boleta
+              </MenuItem>
+            ) : null}
+            
+            {localStorage
+              .getItem('pathsBack')
+              .includes(
+                '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
+              ) &&
+            selectedOutput.existBill &&
+            !selectedOutput.existIncome &&
+            selectedOutput.movementSubType == 'sales' ? (
+              <MenuItem onClick={doFinance}>
+                <InputIcon sx={{mr: 1, my: 'auto'}} />
+                Generar ingreso
+              </MenuItem>
+            ) : null}
+
+            {validationClientType(selectedOutput,'distribution') && localStorage
+              .getItem('pathsBack')
+              .includes('/facturacion/deliveryDistribution/register') === true ? (
+              <MenuItem
+                disabled={selectedOutput.movementSubType !== 'sales'}
+                onClick={doDistribution}
+              >
+                <MapIcon sx={{mr: 1, my: 'auto'}} />
+                Generar distribución
+              </MenuItem>
+            ) : null}
+
+        </>)  : null)}
+
         {localStorage
           .getItem('pathsBack')
           .includes('/utility/listObjectsPathMerchant?path=/salidas/*') ===
@@ -1449,31 +1517,6 @@ const OutputsTable = (props) => {
           </MenuItem>
         ) : null}
 
-        {localStorage
-          .getItem('pathsBack')
-          .includes(
-            '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
-          ) &&
-        selectedOutput.existBill &&
-        !selectedOutput.existIncome &&
-        selectedOutput.movementSubType == 'sales' ? (
-          <MenuItem onClick={doFinance}>
-            <InputIcon sx={{mr: 1, my: 'auto'}} />
-            Generar ingreso
-          </MenuItem>
-        ) : null}
-
-        {localStorage
-          .getItem('pathsBack')
-          .includes('/facturacion/deliveryDistribution/register') === true ? (
-          <MenuItem
-            disabled={selectedOutput.movementSubType !== 'sales'}
-            onClick={doDistribution}
-          >
-            <MapIcon sx={{mr: 1, my: 'auto'}} />
-            Generar distribución
-          </MenuItem>
-        ) : null}
       </Menu>
 
       <Dialog

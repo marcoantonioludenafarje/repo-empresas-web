@@ -61,6 +61,8 @@ import {array} from 'prop-types';
 import {getUserData} from '../../../redux/actions/User';
 import {getCurrentMovementsDocumentsBusiness} from '../../../redux/actions/MyBilling';
 import {exportExcelTemplateToBulkLoad} from '../../../redux/actions/General';
+import originalUbigeos from '../../../Utils/ubigeo.json';
+
 import {
   getYear,
   getActualMonth,
@@ -301,7 +303,9 @@ const BulkLoad = (props) => {
                   product['DESCRIPCION'] +
                   "' tiene el símbolo | o el - en su CÓDIGO, debe de retirarlos.  ";
               }
-              product['CODIGO'] = product['CODIGO'].toString().toUpperCase();
+              product['CODIGO'] = product['CODIGO']
+                .toString().
+                toUpperCase();
             }
 
             if (!product['DESCRIPCION']) {
@@ -311,12 +315,9 @@ const BulkLoad = (props) => {
                 product['CODIGO'] +
                 "' debe de tener una descripción.  ";
             } else {
-              // Vamos a permitir que se acepte
-              // if (product['DESCRIPCION'].includes('-') ||
-              //   product['DESCRIPCION'].includes('|')
-              //   ) {
-              //     msjError = msjError + "Validación de PRODUCTO: '"+product['DESCRIPCION']+"' tiene el símbolo | o el - en su DESCRIPCIÓN, debe de retirarlos.  ";
-              //   }
+              product['DESCRIPCION'] = product['DESCRIPCION']
+                .toString()
+                .toUpperCase();
             }
 
             if (!product['ALIAS']) {
@@ -336,6 +337,9 @@ const BulkLoad = (props) => {
                   product['DESCRIPCION'] +
                   "' tiene el símbolo | o el - en su ALIAS, debe de retirarlos.  ";
               }
+              product['ALIAS'] = product['ALIAS']
+              .toString()
+              .toUpperCase();
             }
 
             //jalar categoria y validar
@@ -489,6 +493,9 @@ const BulkLoad = (props) => {
                 client['NRO IDENTIFICADOR'] +
                 "' debe de tener NOMBRE/RAZON SOCIAL.  ";
             } else {
+              client['NOMBRE/RAZON SOCIAL'] = client['NOMBRE/RAZON SOCIAL']
+                .toString()
+                .toUpperCase();
             }
 
             if (!client['DIRECCION']) {
@@ -498,6 +505,9 @@ const BulkLoad = (props) => {
                 client['NOMBRE/RAZON SOCIAL'] +
                 "' debe de tener DIRECCION.  ";
             } else {
+              client['DIRECCION'] = client['DIRECCION']
+                .toString()
+                .toUpperCase();
             }
           });
 
@@ -544,6 +554,9 @@ const BulkLoad = (props) => {
                 provider['NRO IDENTIFICADOR'] +
                 "' debe de tener NOMBRE/RAZON SOCIAL.  ";
             } else {
+              provider['NOMBRE/RAZON SOCIAL'] = provider['NOMBRE/RAZON SOCIAL']
+                .toString()
+                .toUpperCase();
             }
 
             if (!provider['DIRECCION']) {
@@ -553,6 +566,9 @@ const BulkLoad = (props) => {
                 provider['NOMBRE/RAZON SOCIAL'] +
                 "' debe de tener DIRECCION.  ";
             } else {
+              provider['DIRECCION'] = provider['DIRECCION']
+                .toString()
+                .toUpperCase();
             }
           });
 
@@ -599,6 +615,9 @@ const BulkLoad = (props) => {
                 carrier['NRO IDENTIFICADOR'] +
                 "' debe de tener NOMBRE/RAZON SOCIAL.  ";
             } else {
+              carrier['NOMBRE/RAZON SOCIAL'] = carrier['NOMBRE/RAZON SOCIAL']
+                .toString()
+                .toUpperCase();
             }
           });
 
@@ -624,6 +643,9 @@ const BulkLoad = (props) => {
                 delivery['COD_INTERNO'] +
                 "' debe de tener LUGAR.  ";
             } else {
+              delivery['LUGAR'] = delivery['LUGAR']
+                .toString()
+                .toUpperCase();
             }
 
             if (!delivery['UBIGEO']) {
@@ -633,6 +655,22 @@ const BulkLoad = (props) => {
                 delivery['LUGAR'] +
                 "' debe de tener UBIGEO.  ";
             } else {
+              delivery['UBIGEO'] = delivery['UBIGEO']
+                .toString()
+                .toUpperCase();
+              const matchUbigeo = originalUbigeos.find(
+                (d) => d.ubigeo == delivery['UBIGEO'],
+              );
+
+              if (!matchUbigeo) {
+                msjError =
+                  msjError +
+                  "Validación de PTOS. LLEGADA: '" +
+                  delivery['LUGAR'] +
+                  "', con UBIGEO '" +
+                  delivery['UBIGEO'] +
+                  "' no existe, debe de ser uno válido según información INEI. ";
+              }
             }
 
             if (!delivery['DIRECCION EXACTA']) {
@@ -642,6 +680,9 @@ const BulkLoad = (props) => {
                 delivery['LUGAR'] +
                 "' debe de tener DIRECCION EXACTA.  ";
             } else {
+              delivery['DIRECCION EXACTA'] = delivery['DIRECCION EXACTA']
+                .toString()
+                .toUpperCase();
             }
           });
 
@@ -667,6 +708,9 @@ const BulkLoad = (props) => {
                 origin['COD_INTERNO'] +
                 "' debe de tener LUGAR.  ";
             } else {
+              origin['LUGAR'] = origin['LUGAR']
+                .toString()
+                .toUpperCase();
             }
 
             if (!origin['UBIGEO']) {
@@ -676,6 +720,22 @@ const BulkLoad = (props) => {
                 origin['LUGAR'] +
                 "' debe de tener UBIGEO.  ";
             } else {
+              origin['UBIGEO'] = origin['UBIGEO']
+                .toString()
+                .toUpperCase();
+              const matchUbigeo = originalUbigeos.find(
+                (d) => d.ubigeo == origin['UBIGEO'],
+              );
+
+              if (!matchUbigeo) {
+                msjError =
+                  msjError +
+                  "Validación de PTOS. PARTIDA: '" +
+                  origin['LUGAR'] +
+                  "', con UBIGEO '" +
+                  origin['UBIGEO'] +
+                  "' no existe, debe de ser uno válido según información INEI. ";
+              }
             }
 
             if (!origin['DIRECCION EXACTA']) {
@@ -685,6 +745,9 @@ const BulkLoad = (props) => {
                 origin['LUGAR'] +
                 "' debe de tener DIRECCION EXACTA.  ";
             } else {
+              origin['DIRECCION EXACTA'] = origin['DIRECCION EXACTA']
+                .toString()
+                .toUpperCase();
             }
           });
 
@@ -737,6 +800,9 @@ const BulkLoad = (props) => {
                 driver['NRO IDENTIFICADOR'] +
                 "' debe de tener NOMBRES.  ";
             } else {
+              driver['NOMBRES'] = driver['NOMBRES']
+                .toString()
+                .toUpperCase();
             }
 
             if (!driver['APELLIDOS']) {
@@ -746,6 +812,9 @@ const BulkLoad = (props) => {
                 driver['NRO IDENTIFICADOR'] +
                 "' debe de tener APELLIDOS.  ";
             } else {
+              driver['APELLIDOS'] = driver['APELLIDOS']
+                .toString()
+                .toUpperCase();
             }
 
             if (!driver['LICENCIA']) {
@@ -757,6 +826,9 @@ const BulkLoad = (props) => {
                 driver['APELLIDOS'] +
                 "' debe de tener LICENCIA.  ";
             } else {
+              driver['LICENCIA'] = driver['LICENCIA']
+                .toString()
+                .toUpperCase();
             }
           });
 
