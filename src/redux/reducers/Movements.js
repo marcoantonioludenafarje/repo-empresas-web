@@ -1,6 +1,10 @@
 import {
   ADD_INVOICE,
   GET_MOVEMENTS,
+  GET_REFERRALGUIDE_PAGE_LISTGUIDE,
+  GET_BILL_PAGE_LISTGUIDE,
+  GET_RECEIPT_PAGE_LISTGUIDE,
+  GET_NOTE_PAGE_LISTGUIDE,
   RES_ADD_MOVEMENT,
   GET_INVENTORY_PRODUCTS,
   ADD_MOVEMENT,
@@ -36,11 +40,15 @@ const INIT_STATE = {
   predefinedRoutes_PageNewDistribution: [],
   lastEvaluatedKeys_PageNewDistribution: null,
   selectedRoute_PageNewDistribution: null,
-  predefinedRoutes_PageListPredefinedRoutes: [], 
-  lastEvaluatedKeys_PageListPredefinedRoutes:null,
   selectedRoute_PageListPredefinedRoutes:null,
-
-
+  referralGuideItems_pageListGuide: [], 
+  referralGuideLastEvalutedKey_pageListGuide: null, 
+  billItems_pageListBill: [], 
+  billLastEvalutedKey_pageListBill: null, 
+  receiptItems_pageListReceipt: [], 
+  receiptLastEvalutedKey_pageListReceipt: null,
+  noteItems_pageListNote: [], 
+  noteLastEvalutedKey_pageListNote: null
 };
 
 
@@ -50,10 +58,42 @@ const INIT_STATE = {
 const movementsReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_MOVEMENTS:
-      console.log('data de reducer GET_MOVEMENTS', action.payload);
       return {
         ...state,
         getMovementsRes: action.payload,
+      };
+    case GET_REFERRALGUIDE_PAGE_LISTGUIDE:
+      let itemsGR = [...state.referralGuideItems_pageListGuide, ...action.payload.Items];
+      let lastEvaluatedKeyGR = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      return {
+        ...state,
+        referralGuideItems_pageListGuide: itemsGR, 
+        referralGuideLastEvalutedKey_pageListGuide: lastEvaluatedKeyGR
+      };
+    case GET_BILL_PAGE_LISTGUIDE:
+      let itemsBL = [...state.billItems_pageListBill, ...action.payload.Items];
+      let lastEvaluatedKeyBL = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      return {
+        ...state,
+        billItems_pageListBill: itemsBL, 
+        billLastEvalutedKey_pageListBill: lastEvaluatedKeyBL
+      };
+    case GET_RECEIPT_PAGE_LISTGUIDE:
+      let itemsRC = [...state.receiptItems_pageListReceipt, ...action.payload.Items];
+      let lastEvaluatedKeyRC = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+
+      return {
+        ...state,
+        receiptItems_pageListReceipt: itemsRC, 
+        receiptLastEvalutedKey_pageListReceipt: lastEvaluatedKeyRC
+      };
+    case GET_NOTE_PAGE_LISTGUIDE:
+      let itemsNO = [...state.noteItems_pageListNote, ...action.payload.Items];
+      let lastEvaluatedKeyNO = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      return {
+        ...state,
+        noteItems_pageListNote: itemsNO, 
+        noteLastEvalutedKey_pageListNote: lastEvaluatedKeyNO
       };
     case GET_INVENTORY_PRODUCTS:
       console.log('data de reducer GET_INVENTORY_PRODUCTS', action.payload);

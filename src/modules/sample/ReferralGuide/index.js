@@ -12,6 +12,7 @@ import {
   Button,
   MenuItem,
   Menu,
+  IconButton,
   MenuList,
   ClickAwayListener,
   Popper,
@@ -50,6 +51,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import {red, amber} from '@mui/material/colors';
 import {exportExcelTemplateToReferralGuides} from '../../../redux/actions/General';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
@@ -74,7 +76,7 @@ import {
   parseTo3Decimals,
   toSimpleDate,
 } from '../../../Utils/utils';
-import {getMovements, cancelInvoice} from '../../../redux/actions/Movements';
+import {getReferralGuides_PageListGuide, cancelInvoice} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -113,7 +115,6 @@ let listPayload = {
       searchByBill: null,
       movementHeaderId: null,
       outputId: null,
-      lastEvaluatedKey: '',
     },
   },
 };
@@ -164,13 +165,14 @@ const ReferralGuidesTable = (props) => {
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
-  const {excelTemplateGeneratedToReferralGuides} = useSelector(
+  const [loading, setLoading] = React.useState(true);
+  const {excelTemplateGeneratedToReferralGuidesRes} = useSelector(
     ({general}) => general,
   );
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getReferralGuides_PageListGuide(payload));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -189,14 +191,18 @@ const ReferralGuidesTable = (props) => {
     return () => setReload((value) => value + 1); // update the state to force render
   };
 
-  let money_unit;
-  let weight_unit;
-  let exchangeRate;
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);    
+    listPayload.request.payload.LastEvaluatedKey = referralGuideLastEvalutedKey_pageListGuide;
+    console.log('listPayload111:handleNextPage:',listPayload)
+    toGetMovements(listPayload);
+    // setPage(page+1);
+  };
 
   //GET APIS RES
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  console.log('getMovementsRes', getMovementsRes);
-  let listToUse = getMovementsRes;
+  const {referralGuideItems_pageListGuide, referralGuideLastEvalutedKey_pageListGuide} = useSelector(({movements}) => movements);
+  console.log('referralGuideItems_pageListGuide', referralGuideItems_pageListGuide);
+  let listToUse = referralGuideItems_pageListGuide;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
@@ -207,6 +213,16 @@ const ReferralGuidesTable = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+
+  useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, [referralGuideItems_pageListGuide]);
+
+  let money_unit;
+  let weight_unit;
+  let exchangeRate;
 
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
@@ -227,6 +243,9 @@ const ReferralGuidesTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    listPayload.request.payload.LastEvaluatedKey = null;
+    listPayload.request.payload.outputId = null;
+    console.log('listPayload122:searchInputs:',listPayload)
     toGetMovements(listPayload);
   };
   useEffect(() => {
@@ -271,6 +290,8 @@ const ReferralGuidesTable = (props) => {
           listPayload.request.payload.movementHeaderId = query.referralGuideId;
         }
       }
+      listPayload.request.payload.LastEvaluatedKey = null;
+      console.log('listPayload133:useEffect userDataRes:',listPayload)
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -286,7 +307,7 @@ const ReferralGuidesTable = (props) => {
   const handleClick = (codInput, event) => {
     setAnchorEl(event.currentTarget);
     codProdSelected = codInput;
-    selectedReferralGuide = getMovementsRes[codInput];
+    selectedReferralGuide = referralGuideItems_pageListGuide[codInput];
     console.log('selectedReferralGuide', selectedReferralGuide);
   };
   const handleClose = () => {
@@ -320,9 +341,9 @@ const ReferralGuidesTable = (props) => {
   };
 
   useEffect(() => {
-    if (excelTemplateGeneratedToReferralGuides && downloadExcel) {
+    if (excelTemplateGeneratedToReferralGuidesRes && downloadExcel) {
       setDownloadExcel(false);
-      const byteCharacters = atob(excelTemplateGeneratedToReferralGuides);
+      const byteCharacters = atob(excelTemplateGeneratedToReferralGuidesRes);
       const byteNumbers = new Array(byteCharacters.length);
       for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -334,12 +355,12 @@ const ReferralGuidesTable = (props) => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'bulkLoadTemplate.xlsx');
+      link.setAttribute('download', 'ReferralGuides.xlsx');
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
-  }, [excelTemplateGeneratedToReferralGuides, downloadExcel]);
+  }, [excelTemplateGeneratedToReferralGuidesRes, downloadExcel]);
 
   const showMessage = () => {
     if (successMessage != undefined) {
@@ -430,7 +451,7 @@ const ReferralGuidesTable = (props) => {
     handleClose();
   };
 
-  const handleChangePage = (event, newPage) => {
+  /*const handleChangePage = (event, newPage) => {
     setPage(newPage);
     toGetMovements({
       request: {
@@ -448,7 +469,7 @@ const ReferralGuidesTable = (props) => {
         },
       },
     });
-  };
+  };*/
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -519,6 +540,7 @@ const ReferralGuidesTable = (props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${referralGuideItems_pageListGuide.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -540,12 +562,8 @@ const ReferralGuidesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes && Array.isArray(getMovementsRes) ? (
-              // &&
-              // getMovementsRes[0] &&
-              // getMovementsRes[0].movementType == 'REFERRAL_GUIDE'
-
-              getMovementsRes.sort(compare).map((obj, index) => (
+            {referralGuideItems_pageListGuide && Array.isArray(referralGuideItems_pageListGuide) ? (
+              referralGuideItems_pageListGuide.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
@@ -553,8 +571,16 @@ const ReferralGuidesTable = (props) => {
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
-                  <TableCell>{`${obj.documentIntern.split('-')[0]}`}</TableCell>
-                  <TableCell>{`${obj.documentIntern.split('-')[1]}`}</TableCell>
+                  <TableCell>
+                    {obj.documentIntern && obj.documentIntern.includes('-')
+                        ? obj.documentIntern.split('-')[0]
+                        : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.documentIntern && obj.documentIntern.includes('-')
+                        ? obj.documentIntern.split('-')[1]
+                        : ''}
+                  </TableCell>
                   <TableCell>{obj.reasonForTransfer || ''} </TableCell>
                   <TableCell>
                     {`${obj.clientId.split('-')[1]}` +
@@ -586,7 +612,14 @@ const ReferralGuidesTable = (props) => {
             )}
           </TableBody>
         </Table>
-      </TableContainer>
+        {referralGuideLastEvalutedKey_pageListGuide ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
+      </TableContainer>        
       {/* <TablePagination
         rowsPerPageOptions={[25, 50, 100]}
         component="div"
