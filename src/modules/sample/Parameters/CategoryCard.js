@@ -32,6 +32,7 @@ import {
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import TransformIcon from '@mui/icons-material/Transform';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddExisingProduct from '../AddExisingProduct';
@@ -394,7 +395,7 @@ const CategoryCard = ({
               onChange={handleChange}
               autoComplete='on'
             >
-              <AppTextField
+              <AppUpperCaseTextField
                 label='Nombre de la categoría'
                 name='observationDelivery'
                 variant='outlined'

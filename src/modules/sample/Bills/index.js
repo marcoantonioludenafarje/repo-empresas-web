@@ -42,6 +42,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import {red} from '@mui/material/colors';
 import {getUserData} from '../../../redux/actions/User';
+import {exportExcelTemplateToBills} from '../../../redux/actions/General';
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
@@ -63,12 +64,13 @@ import {
   translateValue,
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
-import {getMovements, cancelInvoice} from '../../../redux/actions/Movements';
+import {getBillItems_pageListBill, cancelInvoice} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_MOVEMENTS,
   CANCEL_INVOICE,
+  GENERATE_EXCEL_TEMPLATE_TO_BILLS,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -95,7 +97,7 @@ let listPayload = {
       businessProductCode: null,
       movementType: 'BILL',
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       searchByBill: '',
       movementHeaderId: '',
     },
@@ -141,13 +143,17 @@ const BillsTable = (props) => {
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
-
+  const [loading, setLoading] = React.useState(true);
+  const {excelTemplateGeneratedToBillsRes} = useSelector(
+    ({general}) => general,
+  );
   //API FUNCTIONS
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getBillItems_pageListBill(payload));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -158,9 +164,20 @@ const BillsTable = (props) => {
   const toCancelInvoice = (payload) => {
     dispatch(cancelInvoice(payload));
   };
+  const toExportExcelTemplateToBills = (payload) => {
+    dispatch(exportExcelTemplateToBills(payload));
+  };
 
   const useForceUpdate = () => {
     return () => setReload((value) => value + 1); // update the state to force render
+  };
+
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);    
+    listPayload.request.payload.LastEvaluatedKey = billLastEvalutedKey_pageListBill;
+    console.log('listPayload111:handleNextPage:',listPayload)
+    toGetMovements(listPayload);
+    // setPage(page+1);
   };
 
   let money_unit;
@@ -168,11 +185,11 @@ const BillsTable = (props) => {
   let exchangeRate;
 
   //GET APIS RES
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  console.log('getMovementsRes', getMovementsRes);
+  const {billItems_pageListBill, billLastEvalutedKey_pageListBill} = useSelector(({movements}) => movements);
+  //const {getMovementsRes} = useSelector(({movements}) => movements);
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
-  let listToUse = getMovementsRes;
+  let listToUse = billItems_pageListBill;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
@@ -185,6 +202,12 @@ const BillsTable = (props) => {
   const {userDataRes} = useSelector(({user}) => user);
   const {cancelInvoiceRes} = useSelector(({movements}) => movements);
   console.log('cancelInvoiceRes', cancelInvoiceRes);
+
+  useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, [billItems_pageListBill]);
 
   useEffect(() => {
     if (!userDataRes) {
@@ -229,6 +252,8 @@ const BillsTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    listPayload.request.payload.LastEvaluatedKey = null;
+    listPayload.request.payload.outputId = null;
     toGetMovements(listPayload);
   };
 
@@ -249,6 +274,7 @@ const BillsTable = (props) => {
         console.log('Query con datos', query);
         listPayload.request.payload.movementHeaderId = query.billId;
       }
+      listPayload.request.payload.LastEvaluatedKey = null;
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -264,7 +290,7 @@ const BillsTable = (props) => {
   const handleClick = (codInput, event) => {
     setAnchorEl(event.currentTarget);
     codProdSelected = codInput;
-    selectedBill = getMovementsRes[codInput];
+    selectedBill = billLastEvalutedKey_pageListBill[codInput];
     console.log('selectedBIll', selectedBill);
   };
   const handleClose = () => {
@@ -304,6 +330,39 @@ const BillsTable = (props) => {
       setOpenStatus(false);
     }
   };
+
+  const exportToExcel = () => {
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_BILLS, payload: undefined});
+    toExportExcelTemplateToBills(excelPayload);
+    setDownloadExcel(true);
+  };
+
+  useEffect(() => {
+    if (excelTemplateGeneratedToBillsRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelTemplateGeneratedToBillsRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Bills.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelTemplateGeneratedToBillsRes, downloadExcel]);
 
   const showMessage = () => {
     if (registerSuccess()) {
@@ -461,6 +520,7 @@ const BillsTable = (props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${billItems_pageListBill.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -483,22 +543,22 @@ const BillsTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes && Array.isArray(getMovementsRes) ? (
-              getMovementsRes.sort(compare).map((obj, index) => (
+            {billItems_pageListBill && Array.isArray(billItems_pageListBill) ? (
+              billItems_pageListBill.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
                 >
                   <TableCell>
-                    {convertToDateWithoutTime(obj.timestampMovement)}
+                    {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumberBill
-                      ? obj.serialNumberBill.split('-')[0]
+                    {obj.serialNumberBill && obj.serialNumberBill.includes('-') 
+                      ? obj.serialNumberBill.split('-')[0] 
                       : ''}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumberBill
+                    {obj.serialNumberBill && obj.serialNumberBill.includes('-')
                       ? obj.serialNumberBill.split('-')[1]
                       : ''}
                   </TableCell>
@@ -534,6 +594,13 @@ const BillsTable = (props) => {
             )}
           </TableBody>
         </Table>
+        {billLastEvalutedKey_pageListBill ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       <ButtonGroup
         variant='outlined'

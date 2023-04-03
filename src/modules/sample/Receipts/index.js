@@ -41,7 +41,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import {red} from '@mui/material/colors';
-
+import {excelTemplateGeneratedToReceiptsRes, exportExcelTemplateToReceipts} from '../../../redux/actions/General';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
   DesktopDatePicker,
@@ -63,12 +63,13 @@ import {
   translateValue,
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
-import {getMovements, cancelReceipt} from '../../../redux/actions/Movements';
+import {getReceiptItems_pageListReceipt, cancelInvoice} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -95,7 +96,7 @@ let listPayload = {
       businessProductCode: null,
       movementType: 'RECEIPT',
       merchantId: '',
-      timestampMovement: null,
+      createdAt: null,
       searchByReceipt: '',
       movementHeaderId: '',
     },
@@ -141,13 +142,18 @@ const ReceiptsTable = (props) => {
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
+  const [loading, setLoading] = React.useState(true);
+  const {excelTemplateGeneratedToReceiptsRes} = useSelector(
+    ({general}) => general,
+  );
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getReceiptItems_pageListReceipt(payload));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -158,18 +164,25 @@ const ReceiptsTable = (props) => {
   const toCancelReceipt = (payload) => {
     dispatch(cancelReceipt(payload));
   };
+  const toExportExcelTemplateToReceipts = (payload) => {
+    dispatch(exportExcelTemplateToReceipts(payload));
+  };
 
   const useForceUpdate = () => {
     return () => setReload((value) => value + 1); // update the state to force render
   };
 
-  let money_unit;
-  let weight_unit;
-  let exchangeRate;
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);    
+    listPayload.request.payload.LastEvaluatedKey = receiptLastEvalutedKey_pageListReceipt;
+    console.log('listPayload111:handleNextPage:',listPayload)
+    toGetMovements(listPayload);
+    // setPage(page+1);
+  };
 
   //GET APIS RES
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  console.log('getMovementsRes', getMovementsRes);
+  const {receiptItems_pageListReceipt, receiptLastEvalutedKey_pageListReceipt} = useSelector(({movements}) => movements);
+  console.log('receiptItems_pageListReceipt', receiptItems_pageListReceipt);
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
   const {successMessage} = useSelector(({movements}) => movements);
@@ -182,6 +195,16 @@ const ReceiptsTable = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+
+  useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, [receiptItems_pageListReceipt]);
+
+  let money_unit;
+  let weight_unit;
+  let exchangeRate;
 
   useEffect(() => {
     if (businessParameter !== undefined) {
@@ -202,11 +225,13 @@ const ReceiptsTable = (props) => {
       console.log('exchangerate', exchangeRate);
     }
   }, [globalParameter]);
-
+  
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    listPayload.request.payload.LastEvaluatedKey = null;
+    listPayload.request.payload.outputId = null;
     toGetMovements(listPayload);
   };
   useEffect(() => {
@@ -246,6 +271,7 @@ const ReceiptsTable = (props) => {
         console.log('Query con datos', query);
         listPayload.request.payload.movementHeaderId = query.receiptId;
       }
+      listPayload.request.payload.LastEvaluatedKey = null;
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -261,7 +287,7 @@ const ReceiptsTable = (props) => {
   const handleClick = (codInput, event) => {
     setAnchorEl(event.currentTarget);
     codProdSelected = codInput;
-    selectedReceipt = getMovementsRes[codInput];
+    selectedReceipt = receiptItems_pageListReceipt[codInput];
     console.log('selectedReceipt', selectedReceipt);
   };
   const handleClose = () => {
@@ -282,6 +308,39 @@ const ReceiptsTable = (props) => {
     console.log(' boleta', selectedReceipt);
     Router.push({pathname: '/sample/receipts/get', query: selectedReceipt});
   };
+
+  const exportToExcel = () => {
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS, payload: undefined});
+    toExportExcelTemplateToReceipts(excelPayload);
+    setDownloadExcel(true);
+  };
+
+  useEffect(() => {
+    if (excelTemplateGeneratedToReceiptsRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelTemplateGeneratedToReceiptsRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Receipts.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelTemplateGeneratedToReceiptsRes, downloadExcel]);
 
   const showMessage = () => {
     if (successMessage != undefined) {
@@ -438,6 +497,7 @@ const ReceiptsTable = (props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${receiptItems_pageListReceipt.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -460,20 +520,24 @@ const ReceiptsTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes && Array.isArray(getMovementsRes) ? (
-              getMovementsRes.sort(compare).map((obj, index) => (
+            {receiptItems_pageListReceipt && Array.isArray(receiptItems_pageListReceipt) ? (
+              receiptItems_pageListReceipt.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
                 >
                   <TableCell>
-                    {convertToDateWithoutTime(obj.timestampMovement)}
+                    {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumber ? obj.serialNumber.split('-')[0] : ''}
+                    {obj.serialNumber && obj.serialNumber.includes('-')
+                      ? obj.serialNumber.split('-')[0]
+                      : ''}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumber ? obj.serialNumber.split('-')[1] : ''}
+                  {obj.serialNumber && obj.serialNumber.includes('-')
+                      ? obj.serialNumber.split('-')[1]
+                      : ''}
                   </TableCell>
                   <TableCell>{obj.denominationClient}</TableCell>
                   <TableCell>{obj.observation}</TableCell>
@@ -507,13 +571,23 @@ const ReceiptsTable = (props) => {
             )}
           </TableBody>
         </Table>
+        {receiptLastEvalutedKey_pageListReceipt ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'
         className={classes.btnGroup}
       >
-        <Button variant='outlined' startIcon={<GridOnOutlinedIcon />}>
+        <Button 
+          variant='outlined' 
+          startIcon={<GridOnOutlinedIcon />}
+          onClick={exportToExcel}>
           Exportar todo
         </Button>
       </ButtonGroup>

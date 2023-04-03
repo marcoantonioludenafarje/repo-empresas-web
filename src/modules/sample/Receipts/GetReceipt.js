@@ -393,7 +393,7 @@ const GetReceipt = (props) => {
 
   //CALENDARIO
   const [value, setValue] = React.useState(
-    Date.now() /* Number(query.timestampMovement) */,
+    Date.now() /* Number(query.createdAt) */,
   );
   const [value2, setValue2] = React.useState(
     query.deletedAt ? query.deletedAt : Date.now(),
@@ -454,7 +454,7 @@ const GetReceipt = (props) => {
             movementTypeMerchantId: query.movementTypeMerchantId,
             movementHeaderId: query.movementHeaderId,
             contableMovementId: query.contableMovementId || '',
-            timestampMovement: Number(query.timestampMovement),
+            createdAt: Number(query.createdAt),
             clientId: query.clientId,
             totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(3)),
             issueDate: specialFormatToSunat(Date.now()),

@@ -18,6 +18,10 @@ import {
   ACTUAL_DATE,
   GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
   GENERATE_EXCEL_TEMPLATE_TO_BULK_LOAD,
+  GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
+  GENERATE_EXCEL_TEMPLATE_TO_BILLS,
+  GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS,
+  GENERATE_EXCEL_TEMPLATE_TO_NOTES,
   UPDATE_CATALOGS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
@@ -351,4 +355,88 @@ export const updateCatalogs = (payload) => {
 
 export const actualDate = () => {
   return (dispatch) => dispatch({type: ACTUAL_DATE});
+};
+
+export const exportExcelTemplateToReferralGuides = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/exportReferralGuides', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelTemplateToReferralGuides resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('exportExcelTemplateToReferralGuides error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const exportExcelTemplateToBills = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/exportBills', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelTemplateToBills resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_BILLS,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('exportExcelTemplateToBills error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const exportExcelTemplateToReceipts = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/exportReceipts', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelTemplateToReceipts resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('exportExcelTemplateToReceipts error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const exportExcelTemplateToNotes = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/exportNotes', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelTemplateToNotes resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_NOTES,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('exportExcelTemplateToNotes error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
 };

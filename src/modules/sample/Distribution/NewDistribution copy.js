@@ -248,7 +248,7 @@ const Distribution = () => {
           movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
           contableMovementId: selectedOutput.contableMovementId || '',
           movementHeaderId: selectedOutput.movementHeaderId,
-          timestampMovement: selectedOutput.timestampMovement,
+          createdAt: selectedOutput.createdAt,
           clientId: selectedOutput.clientId,
           issueDate: dateWithHyphen(new Date()),
           serial: serial,
@@ -501,7 +501,7 @@ const Distribution = () => {
                       renderInput={(params) => (
                         <TextField {...params} sx={{width: 1}} />
                       )}
-                      label={<IntlMessages id='dashboard.initialDateTime' />}
+                      label={<IntlMessages id='dashboard.iinitialDateTimeTras' />}
                       inputFormat='dd/MM/yyyy hh:mm a'
                       value={initialDate}
                       onChange={(newDate) => {

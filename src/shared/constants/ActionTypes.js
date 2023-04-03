@@ -194,6 +194,10 @@ export const ALL_PRODUCTS = 'all_products';
 
 //MOVEMENTS
 export const GET_MOVEMENTS = 'get_movements';
+export const GET_REFERRALGUIDE_PAGE_LISTGUIDE ="get_referralguide_page_listguide";
+export const GET_BILL_PAGE_LISTGUIDE ="get_bill_page_listguide";
+export const GET_RECEIPT_PAGE_LISTGUIDE ="get_receipt_page_listguide";
+export const GET_NOTE_PAGE_LISTGUIDE ="get_note_page_listguide";
 export const GET_INVENTORY_PRODUCTS = 'get_inventory_products';
 export const ADD_MOVEMENT = 'add_movement';
 export const RES_ADD_MOVEMENT = 'res_add_movement';
@@ -217,7 +221,14 @@ export const GENERATE_EXCEL_TEMPLATE_TO_ROUTES =
   'generate_excel_template_to_routes';
 export const GENERATE_EXCEL_TEMPLATE_TO_BULK_LOAD =
   'generate_excel_template_to_bulk_load';
-
+  export const GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES =
+  'generate_excel_template_to_Referralguides';
+  export const GENERATE_EXCEL_TEMPLATE_TO_BILLS =
+  'generate_excel_template_to_Bills';
+  export const GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS =
+  'generate_excel_template_to_Receipts';
+  export const GENERATE_EXCEL_TEMPLATE_TO_NOTES =
+  'generate_excel_template_to_Notes';
 //DISTRIBUTIONS
 export const LIST_DISTRIBUTION = 'list_distribution';
 export const TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION = 'to_update_item_in_list_distribution';
@@ -289,3 +300,16 @@ export const NEW_REQUEST = 'new_request';
 
 //NOTIFICATIONS
 export const GET_NOTIFICATIONS = 'get_notifications';
+
+
+// ROUTES
+
+export const SET_ROUTE_PREDEFINED_TO_UPDATE_____PAGE_LIST_PREDEFINED_ROUTES = 'set_route_predefined_to_update_____page_list_predefined_routes';
+export const SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES = 'set_list_route_predefined_____page_list_predefined_routes';
+export const SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES = 'set_deliveries_in_route_predefined_____page_list_predefined_routes';
+
+
+// DISTRIBUTIONS
+export const SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION = 'set_list_route_predefined_____page_new_distribution';
+export const SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION = 'set_deliveries_in_route_predefined_____page_new_distribution'
+
