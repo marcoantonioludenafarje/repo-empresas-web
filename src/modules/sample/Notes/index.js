@@ -69,6 +69,7 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  GET_NOTE_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_NOTES,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
@@ -196,6 +197,7 @@ const CreditNotesTable = (props) => {
 
   
   useEffect(() => {
+    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 
@@ -260,6 +262,7 @@ const CreditNotesTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
+    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
     toGetMovements(listPayload);
   };
 

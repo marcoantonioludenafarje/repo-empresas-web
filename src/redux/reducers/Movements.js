@@ -63,33 +63,48 @@ const movementsReducer = (state = INIT_STATE, action) => {
         getMovementsRes: action.payload,
       };
     case GET_REFERRALGUIDE_PAGE_LISTGUIDE:
-      let itemsGR = [...state.referralGuideItems_pageListGuide, ...action.payload.Items];
-      let lastEvaluatedKeyGR = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      let itemsGR = [];
+      let lastEvaluatedKeyGR = "";
+      if(action.payload.callType !== "firstTime"){
+        itemsGR = [...state.referralGuideItems_pageListGuide, ...action.payload.Items];
+        lastEvaluatedKeyGR = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      }
       return {
         ...state,
         referralGuideItems_pageListGuide: itemsGR, 
         referralGuideLastEvalutedKey_pageListGuide: lastEvaluatedKeyGR
       };
     case GET_BILL_PAGE_LISTGUIDE:
-      let itemsBL = [...state.billItems_pageListBill, ...action.payload.Items];
-      let lastEvaluatedKeyBL = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      let itemsBL = [];
+      let lastEvaluatedKeyBL = "";
+      if(action.payload.callType !== "firstTime"){
+        itemsBL = [...state.billItems_pageListBill, ...action.payload.Items];
+        lastEvaluatedKeyBL = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      }
       return {
         ...state,
         billItems_pageListBill: itemsBL, 
         billLastEvalutedKey_pageListBill: lastEvaluatedKeyBL
       };
     case GET_RECEIPT_PAGE_LISTGUIDE:
-      let itemsRC = [...state.receiptItems_pageListReceipt, ...action.payload.Items];
-      let lastEvaluatedKeyRC = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
-
+      let itemsRC = [];
+      let lastEvaluatedKeyRC = "";
+      if(action.payload.callType !== "firstTime"){
+        itemsRC = [...state.receiptItems_pageListReceipt, ...action.payload.Items];
+        lastEvaluatedKeyRC = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      }
       return {
         ...state,
         receiptItems_pageListReceipt: itemsRC, 
         receiptLastEvalutedKey_pageListReceipt: lastEvaluatedKeyRC
       };
     case GET_NOTE_PAGE_LISTGUIDE:
-      let itemsNO = [...state.noteItems_pageListNote, ...action.payload.Items];
-      let lastEvaluatedKeyNO = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      let itemsNO = [];
+      let lastEvaluatedKeyNO = "";
+      if(action.payload.callType !== "firstTime"){
+        itemsNO = [...state.noteItems_pageListNote, ...action.payload.Items];
+        lastEvaluatedKeyNO = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      }
       return {
         ...state,
         noteItems_pageListNote: itemsNO, 

@@ -84,6 +84,7 @@ import {
   GET_MOVEMENTS,
   DELETE_FINANCE,
   GET_USER_DATA,
+  GET_REFERRALGUIDE_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
@@ -245,10 +246,13 @@ const ReferralGuidesTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
+    dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
     console.log('listPayload122:searchInputs:',listPayload)
     toGetMovements(listPayload);
   };
   useEffect(() => {
+    dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 

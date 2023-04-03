@@ -70,6 +70,8 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   CANCEL_INVOICE,
+  GET_USER_DATA,
+  GET_BILL_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_BILLS,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
@@ -254,10 +256,13 @@ const BillsTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
+    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
     toGetMovements(listPayload);
   };
 
   useEffect(() => {
+    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});

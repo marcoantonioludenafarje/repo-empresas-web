@@ -69,6 +69,7 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  GET_RECEIPT_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
@@ -232,9 +233,12 @@ const ReceiptsTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
+    dispatch({type: GET_RECEIPT_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
     toGetMovements(listPayload);
   };
   useEffect(() => {
+    dispatch({type: GET_RECEIPT_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 
