@@ -1280,6 +1280,10 @@
     "descripcion": "LOS CHANKAS / CHINCHEROS / APURIMAC"
   },
   {
+    "ubigeo": "030612",
+    "descripcion": "AHUAYRO / CHINCHEROS / APURIMAC"
+  },
+  {
     "ubigeo": "030701",
     "descripcion": "CHUQUIBAMBILLA / GRAU / APURIMAC"
   },
@@ -3094,6 +3098,18 @@
   {
     "ubigeo": "080914",
     "descripcion": "MEGANTONI / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080915",
+    "descripcion": "KUMPIRUSHIATO / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080916",
+    "descripcion": "CIELO PUNCO / LA CONVENCION / CUSCO"
+  },
+  {
+    "ubigeo": "080917",
+    "descripcion": "MANITEA / LA CONVENCION / CUSCO"
   },
   {
     "ubigeo": "081001",

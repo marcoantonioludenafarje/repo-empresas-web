@@ -22,11 +22,18 @@ import {
   UPDATE_GENERATE_REFERRAL_GUIDE_VALUE,
   GET_CHILD_ROUTES,
   SET_DELIVERIES_SIMPLE,
+  SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
+  SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
   list: [],
   getMovementsRes: [],
+  predefinedRoutes_PageListPredefinedRoutes:[],
+  lastEvaluatedKeys_PageListPredefinedRoutes: null,
+  predefinedRoutes_PageNewDistribution: [],
+  lastEvaluatedKeys_PageNewDistribution: null,
+  selectedRoute_PageNewDistribution: null
 };
 
 const movementsReducer = (state = INIT_STATE, action) => {
@@ -218,6 +225,63 @@ const movementsReducer = (state = INIT_STATE, action) => {
         ...state,
         updateGenerateReferralGuideRes: action.payload,
       };
+
+
+    case SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION:
+      console.log(
+        'data de reducer SET_LIST_ROUTE_PREDEFINED',
+        action.payload,
+      );
+
+      return {
+        ...state,
+        predefinedRoutes_PageNewDistribution: action.payload.Items,
+        lastEvaluatedKeys_PageNewDistribution : action.payload.LastEvaluatedKey,
+        listRoute: action.payload.Items,
+        // action.payload.Items
+      };
+
+    case SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION:
+        let newItems = state.predefinedRoutes_PageNewDistribution
+        let item = newItems.filter(item => item.routePredefinedId == action.payload.routePredefinedId)
+        item[0].deliveries = action.payload.deliveries
+        console.log("Estamos actualizando el listRoute", newItems)
+      return {
+          ...state,
+          predefinedRoutes_PageNewDistribution: newItems,
+          listRoute: newItems,
+          selectedRoute_PageNewDistribution:action.payload,
+      };
+
+
+      
+      
+
+    // case SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
+    //   console.log(
+    //     'data de reducer SET_LIST_ROUTE_PREDEFINED',
+    //     action.payload,
+    //   );
+    //   // let items = []
+    //   return {
+    //     ...state,
+    //     predefinedRoutes_PageListPredefinedRoutes,
+    //     lastEvaluatedKeys_PageListPredefinedRoutes
+    //   };
+      
+
+    // case SET_ROUTE_PREDEFINED_TO_UPDATE_____PAGE_LIST_PREDEFINED_ROUTES:
+    //   console.log(
+    //     'data de reducer SET_LIST_ROUTE_PREDEFINED',
+    //     action.payload,
+    //   );
+    //   // let items = []
+    //   return {
+    //     ...state,
+    //     predefinedRoutes_PageListPredefinedRoutes,
+    //     lastEvaluatedKeys_PageListPredefinedRoutes
+    //   };
+
     default:
       return state;
   }

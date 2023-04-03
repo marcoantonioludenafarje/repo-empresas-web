@@ -27,7 +27,7 @@
   "dashboard.ticketId": "Identificación de entradas",
   "dashboard.basicInfo": "Información básica",
   "dashboard.createDate": "Fecha de Creación",
-  "dashboard.iinitialDateTimeTras": "Fecha y hora de inicio de Traslado",
+  "dashboard.initialDateTimeTras": "Fecha y hora de inicio de Traslado",
   "dashboard.finalDateTime": "Fecha y hora final de Traslado",
   "dashboard.reviewText": "El número total de sesiones dentro del rango de fechas. Es el periodo de tiempo",
   "dashboard.totalBalance": "Su saldo total",

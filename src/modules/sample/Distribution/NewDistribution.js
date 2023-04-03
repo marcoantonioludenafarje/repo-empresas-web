@@ -75,8 +75,10 @@ import {onGetProducts} from '../../../redux/actions/Products';
 import {getCarriers} from '../../../redux/actions/Carriers';
 import {
   generateDistribution,
-  listRoutes,
   getChildRoutes,
+  listPredefinedRoutes_____PageNewDistribution,
+  registerNewDistribution_____PageNewDistribution,
+  getPredefinedRoute_PageListPredefinedRoutes,
 } from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -124,19 +126,18 @@ const useStyles = makeStyles((theme) => ({
 let selectedDelivery = {};
 let selectedDistribution = '';
 
-let getChildRoutesPayload = {
-  request: {
-    payload: {
-      deliveryFatherId: '',
-    },
-  },
-};
 
 const Distribution = (props) => {
-  const {listRoute} = useSelector(({movements}) => movements);
-  const {deliveries, LastEvaluatedKeyChildRoute} = useSelector(
-    ({movements}) => movements,
-  );
+  const {getMovementsRes, 
+    predefinedRoutes_PageNewDistribution, 
+    successMessage, 
+    generateDistributionRes,
+     errorMessage,
+     deliveries, LastEvaluatedKeyChildRoute,
+     selectedRoute_PageNewDistribution,
+    } = useSelector(({movements}) => movements);
+
+
 
   const emptyRoute = {
     empty: true,
@@ -198,54 +199,74 @@ const Distribution = (props) => {
 
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  const {successMessage} = useSelector(({movements}) => movements);
-  const {generateDistributionRes} = useSelector(({movements}) => movements);
-  console.log('generateDistributionRes', generateDistributionRes);
-  const {errorMessage} = useSelector(({movements}) => movements);
+
+
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   const {jwtToken} = useSelector(({general}) => general);
 
-  let businessParameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-  let listRoutesPayload = {
-    request: {
-      payload: {
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-  let listPayload = {
-    request: {
-      payload: {
-        businessProductCode: null,
-        description: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-  let listCarriersPayload = {
-    request: {
-      payload: {
-        typeDocumentCarrier: '',
-        numberDocumentCarrier: '',
-        denominationCarrier: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
 
   const toGetChildRoutes = (payload) => {
     dispatch(getChildRoutes(payload));
   };
+
+  const toListPredefinedRoutes = () => {
+    dispatch(listPredefinedRoutes_____PageNewDistribution({merchantId: userDataRes.merchantSelected.merchantId}));
+  };
+
+  const toGetPredefinedRoute = () => {
+    dispatch(getPredefinedRoute_PageListPredefinedRoutes(
+      {merchantId: userDataRes.merchantSelected.merchantId, 
+        routePredefinedId : selectedRoute.routePredefinedId }
+    ));
+  }
+
+  const toRegisterNewDistribution = (payload) => {
+    dispatch(registerNewDistribution_____PageNewDistribution(payload));
+  };
+
+  useEffect(() => {
+    console.log("Se selecciono en un selectedRoute", selectedRoute)
+    if(selectedRoute && selectedRoute.deliveries){
+
+      if (selectedRoute.routesChildId && 
+        selectedRoute.routesChildId.length > 0 && 
+        selectedRoute.deliveries.length == 0) {
+        console.log("LLamara la primera condicional")
+        // getChildRoutesPayload.request.payload.deliveryFatherId =
+        //   initialRoute.routePredefinedId;
+
+        setRoutes([]);
+        // toGetChildRoutes(getChildRoutesPayload);
+        toGetPredefinedRoute()
+
+        // Ahora chekaremos la sgte casuistica simple
+      } else if(selectedRoute && selectedRoute.deliveries.length>0) {
+        console.log("Finalmente entro a setear los routes")
+        let deliveries = selectedRoute.deliveries.map((obj) => {
+          obj.products = obj.productsInfo;
+          obj.totalWeight = obj.totalGrossWeight;
+          obj.numberPackages = obj.numberOfPackages;
+          obj.startingAddress = obj.startingPointAddress;
+          obj.arrivalAddress = obj.arrivalPointAddress;
+          obj.driverName = obj.driverDenomination;
+          obj.plate = obj.carrierPlateNumber;
+          obj.transferStartDate = dateWithHyphen(Date.now());
+          obj.generateReferralGuide = true;
+          return obj;
+        });
+        console.log('initial deliveries', deliveries);
+        setRoutes(deliveries);
+      }
+
+
+    }
+
+
+
+  }, [selectedRoute]);
+  
+
 
   useEffect(() => {
     console.log('Aca vienen los deliveries', deliveries);
@@ -271,24 +292,63 @@ const Distribution = (props) => {
   }, [deliveries]);
 
   useEffect(() => {
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GET_PRODUCTS, payload: undefined});
-    toListRoutes(listRoutesPayload);
-    getProducts(listPayload);
-    toGetCarriers(listCarriersPayload, jwtToken);
-    let foundOutput = getMovementsRes.find(
-      (output) => output.movementHeaderId === query.movementHeaderId,
-    );
-    console.log('selectedOutput', selectedOutput);
-    setSelectedOutput(foundOutput);
-    if (!businessParameter) {
-      getBusinessParameter(businessParameterPayload);
+
+    console.log("userDataRes12000", userDataRes )
+    if(userDataRes && userDataRes.merchantSelected){
+
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      dispatch({type: GET_PRODUCTS, payload: undefined});
+      // topredefinedRoutes_PageNewDistributions(predefinedRoutes_PageNewDistributionsPayload);
+      toListPredefinedRoutes()
+      let listPayload = {
+        request: {
+          payload: {
+            businessProductCode: null,
+            description: null,
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
+
+      getProducts(listPayload);
+      let listCarriersPayload = {
+        request: {
+          payload: {
+            typeDocumentCarrier: '',
+            numberDocumentCarrier: '',
+            denominationCarrier: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
+
+      toGetCarriers(listCarriersPayload, jwtToken);
+      let foundOutput = getMovementsRes.find(
+        (output) => output.movementHeaderId === query.movementHeaderId,
+      );
+      console.log('selectedOutput', selectedOutput);
+      setSelectedOutput(foundOutput);
+      if (!businessParameter) {
+        let businessParameterPayload = {
+          request: {
+            payload: {
+              abreParametro: null,
+              codTipoparametro: null,
+              merchantId: userDataRes.merchantSelected.merchantId,
+            },
+          },
+        };
+        getBusinessParameter(businessParameterPayload);
+      }
+      setTimeout(() => {
+        setMinTutorial(true);
+      }, 2000);
+
+
+
     }
-    setTimeout(() => {
-      setMinTutorial(true);
-    }, 2000);
-  }, []);
+  }, [userDataRes]);
 
   useEffect(() => {
     if (businessParameter != undefined) {
@@ -301,43 +361,9 @@ const Distribution = (props) => {
     }
   }, [businessParameter]);
 
-  useEffect(() => {
-    if (listRoute && listRoute.length >0) {
-      const initialRoute = listRoute[0];
-      setSelectedRouteId(initialRoute.routePredefinedId);
-      setSelectedRoute(initialRoute);
+ 
 
-      // Es una ruta predefinida con el nuevo formato
-      if (initialRoute.routesChildId && initialRoute.routesChildId.length > 0) {
-        getChildRoutesPayload.request.payload.deliveryFatherId =
-          initialRoute.routePredefinedId;
 
-        setRoutes([]);
-        toGetChildRoutes(getChildRoutesPayload);
-
-        // Ahora chekaremos la sgte casuistica simple
-      } else {
-        let deliveries = initialRoute.deliveries.map((obj) => {
-          obj.products = obj.productsInfo;
-          obj.totalWeight = obj.totalGrossWeight;
-          obj.numberPackages = obj.numberOfPackages;
-          obj.startingAddress = obj.startingPointAddress;
-          obj.arrivalAddress = obj.arrivalPointAddress;
-          obj.driverName = obj.driverDenomination;
-          obj.plate = obj.carrierPlateNumber;
-          obj.transferStartDate = dateWithHyphen(Date.now());
-          obj.generateReferralGuide = true;
-          return obj;
-        });
-        console.log('initial deliveries', deliveries);
-        setRoutes(deliveries);
-      }
-    }
-  }, [listRoute]);
-
-  const toListRoutes = (payload) => {
-    dispatch(listRoutes(payload));
-  };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
   };
@@ -542,28 +568,14 @@ const Distribution = (props) => {
   const selectRoute = (event) => {
     console.log('Id ruta', event.target.value);
     console.log('selectedRoutePredefined', selectedRoute);
-    const selectedNewRoute = listRoute.find(
+    const selectedNewRoute = predefinedRoutes_PageNewDistribution.find(
       (obj) => obj.routePredefinedId == event.target.value,
     );
-    const fecha = new Date(initialDate);
-    const timestamp = fecha.getTime();
-    let deliveries = selectedNewRoute.deliveries.map((obj) => {
-      obj.products = obj.productsInfo;
-      obj.totalWeight = obj.totalGrossWeight;
-      obj.numberPackages = obj.numberOfPackages;
-      obj.startingAddress = obj.startingPointAddress;
-      obj.arrivalAddress = obj.arrivalPointAddress;
-      obj.driverName = obj.driverDenomination;
-      obj.plate = obj.carrierPlateNumber;
-      obj.transferStartDate = dateWithHyphen(timestamp);
-      obj.generateReferralGuide = true;
-      return obj;
-    });
-    setSelectedRouteId(selectedNewRoute.routePredefinedId);
+
+    setSelectedRouteId(event.target.value);
     setSelectedRoute(selectedNewRoute);
-    console.log('deliveries', selectedNewRoute.deliveries);
-    setRoutes(deliveries);
-    reloadPage();
+
+
   };
 
   const onChangeInitialDate = (event) => {
@@ -655,6 +667,36 @@ const Distribution = (props) => {
     setRoutes(newRoutes);
     reloadPage();
   };
+
+  useEffect(() => {
+    console.log("Este es el predefinedRoutes_PageNewDistribution 1234", predefinedRoutes_PageNewDistribution)
+    console.log("Este es el selectedRoute_PageNewDistribution", selectedRoute_PageNewDistribution)
+    // Si es que no existe el selectedRoute entonces seleccionamos
+    // por defecto el predefinedRoutes_PageNewDistribution
+    if (predefinedRoutes_PageNewDistribution && predefinedRoutes_PageNewDistribution.length >0 && !selectedRoute.routePredefinedId) {
+      const initialRoute = predefinedRoutes_PageNewDistribution[0];
+      setSelectedRouteId(initialRoute.routePredefinedId);
+      setSelectedRoute(initialRoute);
+
+
+    }else if(predefinedRoutes_PageNewDistribution && predefinedRoutes_PageNewDistribution.length >0 
+      && selectedRoute_PageNewDistribution.routePredefinedId){
+        console.log("Entro por aca selectedRoute_PageNewDistribution" )
+      // let itemModified =  predefinedRoutes_PageNewDistribution.filter(ele => ele.routePredefinedId == selectedRoute.routePredefinedId )
+      // if(itemModified.length>0 && itemModified[0].deliveries.length>0){
+        setSelectedRouteId(selectedRoute_PageNewDistribution.routePredefinedId)
+        setSelectedRoute(selectedRoute_PageNewDistribution);
+
+
+      // }
+
+
+
+    }
+  }, [predefinedRoutes_PageNewDistribution, selectedRoute_PageNewDistribution]);
+
+
+
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -825,8 +867,8 @@ const Distribution = (props) => {
                         value={selectedRouteId}
                         MenuProps={{PaperProps: {style: {maxHeight: 200}}}}
                       >
-                        {listRoute &&
-                          listRoute.sort(compare).map((route, index) => {
+                        {predefinedRoutes_PageNewDistribution &&
+                          predefinedRoutes_PageNewDistribution.sort(compare).map((route, index) => {
                             return (
                               <MenuItem
                                 value={route.routePredefinedId}

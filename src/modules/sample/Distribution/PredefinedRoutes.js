@@ -253,8 +253,9 @@ const PredefinedRoutes = () => {
     Router.push('/sample/distribution/create-routes');
   };
 
-  const downloadOriginalFile = () => {
+  const downloadOriginalFile = (path, merchant) => {
     console.log('Descargar original');
+    window.open(`https://d2moc5ro519bc0.cloudfront.net/merchant/${merchant}/${path}`);
   };
 
   const downloadTranslatedFile = () => {
@@ -614,7 +615,7 @@ const PredefinedRoutes = () => {
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Actualizar en mantenimiento
             </MenuItem>
-            <MenuItem onClick={downloadOriginalFile}>
+            <MenuItem disabled={!selectedRoute.originalExcel} onClick={() => downloadOriginalFile(selectedRoute.originalExcel, selectedRoute.merchantId)}>
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Descargar original
             </MenuItem>
