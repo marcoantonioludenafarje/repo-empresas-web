@@ -1105,8 +1105,10 @@ const Distribution = (props) => {
                 <TableCell>Nro</TableCell>
                 <TableCell>Dirección de punto de partida</TableCell>
                 <TableCell>Ubigeo de punto de partida</TableCell>
+                <TableCell>CodInterno de punto de partida</TableCell>
                 <TableCell>Dirección de punto de llegada</TableCell>
                 <TableCell>Ubigeo de punto de llegada</TableCell>
+                <TableCell>CodInterno de punto de llegada</TableCell>
                 <TableCell>Empresa Transportista</TableCell>
                 <TableCell>Documento de conductor</TableCell>
                 <TableCell>Nombre de conductor</TableCell>
@@ -1133,8 +1135,10 @@ const Distribution = (props) => {
                           <TableCell>{index2 + 1}</TableCell>
                           <TableCell>{route.startingAddress}</TableCell>
                           <TableCell>{route.startingPointUbigeo}</TableCell>
+                          <TableCell>{route.startingInternalCode}</TableCell>
                           <TableCell>{route.arrivalAddress}</TableCell>
                           <TableCell>{route.arrivalPointUbigeo}</TableCell>
+                          <TableCell>{route.arrivalInternalCode}</TableCell>
                           <TableCell>{route.carrierDenomination}</TableCell>
                           <TableCell>
                             {route.driverDocumentType &&
