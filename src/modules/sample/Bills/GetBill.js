@@ -187,6 +187,7 @@ const NewOutput = (props) => {
   /* const [exchangeRate, setExchangeRate] = React.useState(); */
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [addIgv, setAddIgv] = React.useState(false);
+  const [sendEmail, setSendEmail] = React.useState(true);
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showDelete, setShowDelete] = React.useState(false);
@@ -300,6 +301,7 @@ const NewOutput = (props) => {
       typeof selectedOutput === 'object' &&
       selectedOutput.loaded == true
     ) {
+      changeValueField('clientEmail', selectedOutput.client.email)
       selectedProducts = selectedOutput.descriptionProductsInfo;
       selectedProducts.map((obj) => {
         obj['subtotal'] = Number(
@@ -560,6 +562,7 @@ const NewOutput = (props) => {
             }),
             documentsMovement: selectedOutput.documentsMovement,
             referralGuides: parsedDocuments,
+            sendEmail: sendEmail
           },
         },
       };
@@ -679,6 +682,10 @@ const NewOutput = (props) => {
 
   const handleIGV = (event, isInputChecked) => {
     /* setAddIgv(isInputChecked); */
+    console.log('Evento de IGV cbx', isInputChecked);
+  };
+  const handleSendEmail = (event, isInputChecked) => {
+    setSendEmail(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
 
@@ -1056,7 +1063,7 @@ const NewOutput = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid item xs={12}>
+                  <Grid item xs={9}>
                     <AppTextField
                       label='Correo de cliente'
                       name='clientEmail'
@@ -1068,6 +1075,21 @@ const NewOutput = (props) => {
                         },
                         my: 2,
                       }}
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={3}
+                    sx={{display: 'flex', alignItems: 'center'}}
+                  >
+                    <FormControlLabel
+                      label='Enviar Correo'
+                      control={
+                        <Checkbox
+                          onChange={handleSendEmail}
+                          defaultChecked={true}
+                        />
+                      }
                     />
                   </Grid>
                   <Grid item xs={12}>
