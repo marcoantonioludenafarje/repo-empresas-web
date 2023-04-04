@@ -70,7 +70,7 @@ const DocumentsTableForBill = ({arrayObjs, toDelete, typeForm, toSelect}) => {
             <TableCell>Tipo de documento</TableCell>
             <TableCell>Documento</TableCell>
             <TableCell>Fecha documento</TableCell>
-            {/* <TableCell>Opciones</TableCell> */}
+            <TableCell style={{width: '50px'}}></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -98,11 +98,11 @@ const DocumentsTableForBill = ({arrayObjs, toDelete, typeForm, toSelect}) => {
                   <TableCell>{showType(obj.typeDocument)}</TableCell>
                   <TableCell>{obj.document}</TableCell>
                   <TableCell>{obj.dateDocument}</TableCell>
-                  {/* <TableCell>
+                  <TableCell>
                     <IconButton onClick={deleteProduct.bind(this, index)}>
                       <DeleteIcon />
                     </IconButton>
-                  </TableCell> */}
+                  </TableCell>
                 </TableRow>
               );
             })

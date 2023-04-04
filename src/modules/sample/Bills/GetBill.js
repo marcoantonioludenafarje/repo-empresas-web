@@ -301,6 +301,9 @@ const NewOutput = (props) => {
       typeof selectedOutput === 'object' &&
       selectedOutput.loaded == true
     ) {
+      changeValueField('receiver', `${query.clientId.split('-')[1]} - ${
+        selectedOutput.client.denomination
+      }`)
       changeValueField('clientEmail', selectedOutput.client.email)
       selectedProducts = selectedOutput.descriptionProductsInfo;
       selectedProducts.map((obj) => {
