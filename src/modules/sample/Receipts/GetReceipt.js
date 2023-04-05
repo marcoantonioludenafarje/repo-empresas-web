@@ -876,7 +876,7 @@ const GetReceipt = (props) => {
                           Credito
                         </MenuItem>
                         <MenuItem value='debit' style={{fontWeight: 200}}>
-                          Debito
+                          Al contado
                         </MenuItem>
                       </Select>
                     </FormControl>
