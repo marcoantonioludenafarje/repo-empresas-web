@@ -276,7 +276,7 @@ const ReferralGuidesTable = (props) => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_MOVEMENTS, payload: undefined});
+      //dispatch({type: GET_MOVEMENTS, payload: undefined});
       dispatch({type: GET_FINANCES, payload: undefined});
 
       listPayload.request.payload.merchantId =

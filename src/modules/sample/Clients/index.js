@@ -41,6 +41,7 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import {red} from '@mui/material/colors';
+import {exportExcelTemplateToClients} from '../../../redux/actions/General';
 
 import {makeStyles} from '@mui/styles';
 import {useHistory, BrowserRouter, Route, Switch, Link} from 'react-router-dom';
@@ -64,6 +65,7 @@ import {
   FETCH_ERROR,
   GET_USER_DATA,
   GET_CLIENTS,
+  GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
 } from '../../../shared/constants/ActionTypes';
 let selectedClient = {};
 const useStyles = makeStyles((theme) => ({
@@ -107,9 +109,14 @@ const ClientTable = (arrayObjs, props) => {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   let popUp = false;
   let codProdSelected = '';
+  const [loading, setLoading] = React.useState(true);
+  const {excelTemplateGeneratedToClientsRes} = useSelector(
+    ({general}) => general,
+  );
 
   //API FUNCTIONSupdateMovement
   const getClients = (payload) => {
@@ -118,13 +125,24 @@ const ClientTable = (arrayObjs, props) => {
   const toDeleteClient = (payload) => {
     dispatch(deleteClient(payload));
   };
+  const toExportExcelTemplateToClients = (payload) => {
+    dispatch(exportExcelTemplateToClients(payload));
+  };
 
   const useForceUpdate = () => {
     return () => setReload((value) => value + 1); // update the state to force render
   };
 
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);    
+    listPayload.request.payload.LastEvaluatedKey = referralGuideLastEvalutedKey_pageListGuide;
+    console.log('listPayload111:handleNextPage:',listPayload)
+    getClients(listPayload);
+    // setPage(page+1);
+  };
+
   //GET APIS RES
-  const {listClients} = useSelector(({clients}) => clients);
+  const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(({clients}) => clients);
   console.log('clients123', listClients);
   const {deleteProviderRes} = useSelector(({providers}) => providers);
   console.log('deleteProviderRes', deleteProviderRes);
@@ -139,16 +157,19 @@ const ClientTable = (arrayObjs, props) => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_CLIENTS, payload: undefined});
+      //dispatch({type: GET_CLIENTS, payload: undefined});
 
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
-
+      listPayload.request.payload.LastEvaluatedKey = null;
+      dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
       getClients(listPayload);
       setFirstload(false);
     }
   }, [userDataRes]);
   useEffect(() => {
+    dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 
@@ -207,9 +228,20 @@ const ClientTable = (arrayObjs, props) => {
       if (event.target.value == '') {
         listPayload.request.payload.denominationClient = '';
       } else {
-        listPayload.request.payload.denominationClient = event.target.value;
+        listPayload.request.payload.denominationClient = event.target.value.toUpperCase();
       }
     }
+  };
+
+  //BUTTONS BAR FUNCTIONS
+  const searchClients = () => {
+    listPayload.request.payload.LastEvaluatedKey = null;
+    dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+    getClients(listPayload);
+  };
+  const newClient = () => {
+    console.log('Para redireccionar a nuevo cliente');
+    Router.push('/sample/clients/new');
   };
 
   const cleanList = () => {
@@ -238,28 +270,39 @@ const ClientTable = (arrayObjs, props) => {
     });
     return listResult;
   };
-  const headersExcel = [
-    'Tipo',
-    'Número Documento',
-    'Nombre / Razón social',
-    'Nombre Contacto',
-    'Ultima actualización',
-  ];
-  //BUTTONS BAR FUNCTIONS
-  const searchClients = () => {
-    getClients(listPayload);
+
+  const exportToExcel = () => {
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_CLIENTS, payload: undefined});
+    toExportExcelTemplateToClients(excelPayload);
+    setDownloadExcel(true);
   };
-  const newClient = () => {
-    console.log('Para redireccionar a nuevo cliente');
-    Router.push('/sample/clients/new');
-  };
-  const exportDoc = () => {
-    var ws = XLSX.utils.json_to_sheet(cleanList());
-    var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Clients');
-    XLSX.utils.sheet_add_aoa(ws, [headersExcel], {origin: 'A1'});
-    XLSX.writeFile(wb, 'Clients.xlsx');
-  };
+
+  useEffect(() => {
+    if (excelTemplateGeneratedToClientsRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelTemplateGeneratedToClientsRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Clients.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelTemplateGeneratedToClientsRes, downloadExcel]);
 
   //FUNCIONES MENU
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -321,6 +364,8 @@ const ClientTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
+      listPayload.request.payload.LastEvaluatedKey = null;
+      dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
       getClients(listPayload);
     }, 2000);
   };
@@ -407,6 +452,7 @@ const ClientTable = (arrayObjs, props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${listClients.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -459,6 +505,13 @@ const ClientTable = (arrayObjs, props) => {
             )}
           </TableBody>
         </Table>
+        {clientsLastEvalutedKey_pageListClients ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       <ButtonGroup
         variant='outlined'
@@ -477,11 +530,10 @@ const ClientTable = (arrayObjs, props) => {
           </Button>
         ) : null}
 
-        <Button
+        <Button 
+          variant='outlined' 
           startIcon={<GridOnOutlinedIcon />}
-          onClick={exportDoc}
-          variant='outlined'
-        >
+          onClick={exportToExcel}>
           Exportar todo
         </Button>
       </ButtonGroup>

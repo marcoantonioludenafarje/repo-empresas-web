@@ -26,6 +26,7 @@ import {onGetProviders} from '../../../redux/actions/Providers';
 
 import SelectProvider from './SelectProvider';
 import PropTypes from 'prop-types';
+import { GET_PROVIDERS } from 'shared/constants/ActionTypes';
 
 const maxLength = 11111111111111111111; //20 caracteres
 const validationSchema = yup.object({
@@ -108,6 +109,8 @@ const AddProductForm = ({sendData}) => {
     if (actualValues.providerSearch != '') {
       listProvidersPayload.request.payload.denominationProvider =
         actualValues.providerId;
+      listProvidersPayload.request.payload.LastEvaluatedKey = null;
+      dispatch({type: GET_PROVIDERS, payload: {callType: "firstTime"}});
       getProviders(listProvidersPayload);
     } else {
       listProvidersPayload.request.payload.description = null;

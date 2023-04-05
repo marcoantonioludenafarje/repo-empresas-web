@@ -223,7 +223,9 @@ const UpdateExpense = (props) => {
   useEffect(() => {
     setSelectedProvider({});
     getBusinessParameter(businessParameterPayload);
-    dispatch({type: GET_PROVIDERS, payload: undefined});
+    //dispatch({type: GET_PROVIDERS, payload: undefined});
+    listProvidersPayload.request.payload.LastEvaluatedKey = null;
+    dispatch({type: GET_PROVIDERS, payload: {callType: "firstTime"}});
     getProviders(listProvidersPayload);
     listPayments = [];
     selectedExpense.payments.map((obj) => {

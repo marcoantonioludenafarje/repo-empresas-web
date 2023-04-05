@@ -26,6 +26,8 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_BILLS,
   GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS,
   GENERATE_EXCEL_TEMPLATE_TO_NOTES,
+  GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
+  GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
   UPDATE_CATALOGS,
 } from '../../shared/constants/ActionTypes';
 
@@ -209,15 +211,33 @@ const generalReducer = (state = INIT_STATE, action) => {
         ...state,
         excelTemplateGeneratedToReceiptsRes: action.payload,
       };
-      case GENERATE_EXCEL_TEMPLATE_TO_NOTES:
-        console.log(
-          'data de reducer case GENERATE_EXCEL_TEMPLATE_TO_NOTES',
-          action.payload,
-        );
-        return {
-          ...state,
-          excelTemplateGeneratedToNotesRes: action.payload,
-        };
+    case GENERATE_EXCEL_TEMPLATE_TO_NOTES:
+      console.log(
+        'data de reducer case GENERATE_EXCEL_TEMPLATE_TO_NOTES',
+        action.payload,
+      );
+      return {
+        ...state,
+        excelTemplateGeneratedToNotesRes: action.payload,
+      };
+    case GENERATE_EXCEL_TEMPLATE_TO_CLIENTS:
+      console.log(
+        'data de reducer case GENERATE_EXCEL_TEMPLATE_TO_CLIENTS',
+        action.payload,
+      );
+      return {
+        ...state,
+        excelTemplateGeneratedToClientsRes: action.payload,
+      };
+    case GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS:
+      console.log(
+        'data de reducer case GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS',
+        action.payload,
+      );
+      return {
+        ...state,
+        excelTemplateGeneratedToProvidersRes: action.payload,
+      };
     case UPDATE_CATALOGS:
       console.log('data de reducer UPDATE_CATALOGS', action.payload);
       return {

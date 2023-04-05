@@ -22,6 +22,8 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_BILLS,
   GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS,
   GENERATE_EXCEL_TEMPLATE_TO_NOTES,
+  GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
+  GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
   UPDATE_CATALOGS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
@@ -436,6 +438,48 @@ export const exportExcelTemplateToNotes = (payload) => {
       })
       .catch((error) => {
         console.log('exportExcelTemplateToNotes error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const exportExcelTemplateToClients = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/exportClients', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelTemplateToClients resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('exportExcelTemplateToClients error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const exportExcelTemplateToProviders = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/exportProviders', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelTemplateToProviders resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('exportExcelTemplateToProviders error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

@@ -43,6 +43,7 @@ import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import {red} from '@mui/material/colors';
+import {exportExcelTemplateToProviders} from '../../../redux/actions/General';
 
 import {makeStyles} from '@mui/styles';
 import {useHistory, BrowserRouter, Route, Switch, Link} from 'react-router-dom';
@@ -66,6 +67,7 @@ import {
   FETCH_ERROR,
   GET_USER_DATA,
   GET_PROVIDERS,
+  GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
 } from '../../../shared/constants/ActionTypes';
 let selectedProvider = {};
 const useStyles = makeStyles((theme) => ({
@@ -109,9 +111,14 @@ const ProviderTable = (arrayObjs, props) => {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   let popUp = false;
   let codProdSelected = '';
+  const [loading, setLoading] = React.useState(true);
+  const {excelTemplateGeneratedToProvidersRes} = useSelector(
+    ({general}) => general,
+  );
 
   //API FUNCTIONSupdateMovement
   const getProviders = (payload) => {
@@ -120,13 +127,24 @@ const ProviderTable = (arrayObjs, props) => {
   const toDeleteProvider = (payload) => {
     dispatch(deleteProvider(payload));
   };
+  const toExportExcelTemplateToProviders = (payload) => {
+    dispatch(exportExcelTemplateToProviders(payload));
+  };
 
   const useForceUpdate = () => {
     return () => setReload((value) => value + 1); // update the state to force render
   };
 
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);    
+    listPayload.request.payload.LastEvaluatedKey = referralGuideLastEvalutedKey_pageListGuide;
+    console.log('listPayload111:handleNextPage:',listPayload)
+    getProviders(listPayload);
+    // setPage(page+1);
+  };
+
   //GET APIS RES
-  const {listProviders} = useSelector(({providers}) => providers);
+  const {listProviders, providersLastEvalutedKey_pageListProviders} = useSelector(({providers}) => providers);
   console.log('providers123', listProviders);
   const {deleteProviderRes} = useSelector(({providers}) => providers);
   console.log('deleteProviderRes', deleteProviderRes);
@@ -138,6 +156,8 @@ const ProviderTable = (arrayObjs, props) => {
   const {userDataRes} = useSelector(({user}) => user);
 
   useEffect(() => {
+    dispatch({type: GET_PROVIDERS, payload: {callType: "firstTime"}});
+
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 
@@ -161,11 +181,12 @@ const ProviderTable = (arrayObjs, props) => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_PROVIDERS, payload: undefined});
+      //dispatch({type: GET_PROVIDERS, payload: undefined});
 
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
-
+      listPayload.request.payload.LastEvaluatedKey = null;
+      dispatch({type: GET_PROVIDERS, payload: {callType: "firstTime"}});
       getProviders(listPayload);
       setFirstload(false);
     }
@@ -210,13 +231,15 @@ const ProviderTable = (arrayObjs, props) => {
       if (event.target.value == '') {
         listPayload.request.payload.denominationProvider = '';
       } else {
-        listPayload.request.payload.denominationProvider = event.target.value;
+        listPayload.request.payload.denominationProvider = event.target.value.toUpperCase();
       }
     }
   };
 
   //BUTTONS BAR FUNCTIONS
   const searchProviders = () => {
+    listPayload.request.payload.LastEvaluatedKey = null;
+    dispatch({type: GET_PROVIDERS, payload: {callType: "firstTime"}});
     getProviders(listPayload);
   };
   const newProvider = () => {
@@ -250,20 +273,40 @@ const ProviderTable = (arrayObjs, props) => {
     });
     return listResult;
   };
-  const headersExcel = [
-    'Tipo',
-    'Número Documento',
-    'Nombre / Razón social',
-    'Nombre Contacto',
-    'Ultima actualización',
-  ];
-  const exportDoc = () => {
-    var ws = XLSX.utils.json_to_sheet(cleaneList());
-    var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Providers');
-    XLSX.utils.sheet_add_aoa(ws, [headersExcel], {origin: 'A1'});
-    XLSX.writeFile(wb, 'Providers.xlsx');
+
+  const exportToExcel = () => {
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS, payload: undefined});
+    toExportExcelTemplateToProviders(excelPayload);
+    setDownloadExcel(true);
   };
+
+  useEffect(() => {
+    if (excelTemplateGeneratedToProvidersRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelTemplateGeneratedToProvidersRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Providers.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelTemplateGeneratedToProvidersRes, downloadExcel]);
+
 
   //FUNCIONES MENU
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -325,6 +368,8 @@ const ProviderTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
+      listPayload.request.payload.LastEvaluatedKey = null;
+      dispatch({type: GET_PROVIDERS, payload: {callType: "firstTime"}});
       getProviders(listPayload);
     }, 2000);
   };
@@ -411,6 +456,7 @@ const ProviderTable = (arrayObjs, props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${listProviders.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -464,6 +510,13 @@ const ProviderTable = (arrayObjs, props) => {
             )}
           </TableBody>
         </Table>
+        {providersLastEvalutedKey_pageListProviders ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       <ButtonGroup
         variant='outlined'
@@ -481,11 +534,10 @@ const ProviderTable = (arrayObjs, props) => {
             Nuevo
           </Button>
         ) : null}
-        <Button
+        <Button 
+          variant='outlined' 
           startIcon={<GridOnOutlinedIcon />}
-          onClick={exportDoc}
-          variant='outlined'
-        >
+          onClick={exportToExcel}>
           Exportar todo
         </Button>
       </ButtonGroup>

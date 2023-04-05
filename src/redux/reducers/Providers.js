@@ -9,16 +9,24 @@ import {
 
 const INIT_STATE = {
   list: [],
-  listProducts: [],
+  listProviders: [],
+  providersLastEvalutedKey_pageListProviders: null,
 };
 
 const providersReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_PROVIDERS:
       console.log('data de reducer GET_PROVIDERS', action.payload);
+      let items= [];
+      let lastEvaluatedKey = "";
+      if(action.payload.callType !== "firstTime"){
+        items = [...state.listProviders, ...action.payload.Items];
+        lastEvaluatedKey = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      }
       return {
         ...state,
-        listProviders: action.payload,
+        listProviders: items, 
+        providersLastEvalutedKey_pageListProviders: lastEvaluatedKey
       };
     case NEW_PROVIDER:
       console.log('data de reducer NEW_PROVIDER', action.payload);

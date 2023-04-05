@@ -241,12 +241,16 @@ export const GET_PROVIDERS = 'get_providers';
 export const NEW_PROVIDER = 'new_provider';
 export const DELETE_PROVIDER = 'delete_provider';
 export const UPDATE_PROVIDER = 'update_provider';
+export const GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS =
+'generate_excel_template_to_providers';
 
 //CLIENTS
 export const GET_CLIENTS = 'get_clients';
 export const NEW_CLIENT = 'new_client';
 export const DELETE_CLIENT = 'delete_client';
 export const UPDATE_CLIENT = 'update_client';
+export const GENERATE_EXCEL_TEMPLATE_TO_CLIENTS =
+'generate_excel_template_to_clients';
 
 //CARRIERS
 export const GET_CARRIERS = 'get_carriers';
