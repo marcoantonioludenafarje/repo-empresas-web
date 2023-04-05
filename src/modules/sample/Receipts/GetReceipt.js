@@ -496,7 +496,7 @@ const GetReceipt = (props) => {
             automaticSendSunat: true,
             automaticSendClient: true,
             referralGuide: data.guide ? true : false,
-            creditSale: actualValues.wayToPay == 'credit',
+            creditSale: actualValues.wayToPay,
             referralGuideSerial: data.guide ? data.guide : '',
             dueDate: specialFormatToSunat(Date.now()),
             observation: data.observation ? data.observation : '',
