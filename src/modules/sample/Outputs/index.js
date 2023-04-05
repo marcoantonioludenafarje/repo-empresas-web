@@ -74,6 +74,7 @@ import {
   getMovements,
   deleteMovement,
   generateInvoice,
+  generateSellTicket,
 } from '../../../redux/actions/Movements';
 import {
   onGetBusinessParameter,
@@ -86,6 +87,8 @@ import {
   convertToDateWithoutTime,
   translateValue,
   showSubtypeMovement,
+  specialFormatToSunat,
+  dateWithHyphen,
 } from '../../../Utils/utils';
 
 const XLSX = require('xlsx');
@@ -95,6 +98,8 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  GET_ROL_USER,
+  GENERATE_SELL_TICKET
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
 
@@ -260,7 +265,9 @@ const OutputsTable = (props) => {
   const toGenerateInvoice = (payload) => {
     dispatch(generateInvoice(payload));
   };
-
+  const toGenerateSellTicket = (payload) => {
+    dispatch(generateSellTicket(payload));
+  };
   let money_unit;
   let weight_unit;
   let exchangeRate;
@@ -284,6 +291,8 @@ const OutputsTable = (props) => {
   console.log('generateInvoiceRes', generateInvoiceRes);
   const {actualDateRes} = useSelector(({general}) => general);
   console.log('actualDateRes', actualDateRes);
+  const {generateSellTicketRes} = useSelector(({movements}) => movements);
+  console.log('generateSellTicketRes', generateSellTicketRes);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   //GET APIS RES
@@ -293,9 +302,9 @@ const OutputsTable = (props) => {
   console.log('Esto es getRolUserRes', getRolUserRes);
 
   useEffect(() => {
+    dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
-
       dispatch({type: GET_USER_DATA, payload: undefined});
       const toGetUserData = (payload) => {
         dispatch(getUserData(payload));
@@ -359,8 +368,17 @@ const OutputsTable = (props) => {
       }
     }
   }, [actualDateRes]);
-  /* listFinancesPayload.request.payload.merchantId =
-    userAttributes['custom:businessId']; */
+
+  useEffect(() => {
+    if (generateSellTicketRes) {
+      console.log('Se manda al ticket de venta', generateSellTicketRes);
+      // const link = document.createElement('a');
+      // link.href = generateSellTicketRes.enlace_del_pdf;
+      // link.target = `${generateSellTicketRes.enlace_del_pdf}`;
+      // link.click();
+      window.open(`${generateSellTicketRes.enlace_del_pdf}`);
+    }
+  }, [generateSellTicketRes]);
 
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
@@ -606,6 +624,59 @@ const OutputsTable = (props) => {
       pathname: '/sample/receipts/get',
       query: selectedOutput,
     });
+  };
+  const getSellTicket = () => {
+    let finalPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          denominationMerchant:
+            userDataRes.merchantSelected.denominationMerchant,
+          typePDF: userDataRes.merchantSelected.typeMerchant,
+          folderMovement: selectedOutput.folderMovement,
+          movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
+          contableMovementId: selectedOutput.contableMovementId || '',
+          movementHeaderId: selectedOutput.movementHeaderId,
+          createdAt: Number(selectedOutput.createdAt),
+          clientId: selectedOutput.clientId,
+          totalPriceWithIgv: Number(selectedOutput.totalPriceWithIgv.toFixed(3)), //
+          issueDate: specialFormatToSunat(),
+          serial: 'V001',
+          documentIntern: selectedOutput.documentIntern,
+          clientEmail: selectedOutput.clientEmail,
+          numberBill: selectedOutput.codMovement.split("-")[1],
+          automaticSendSunat: /* sendSunat */ true,
+          automaticSendClient: /* sendClient */ true,
+          referralGuide: false,
+          creditSale: false,
+          referralGuideSerial: '',
+          dueDate: dateWithHyphen(Date.now() + 1 * 24 * 60 * 60 * 1000),
+          observation: '',
+          igv: Number(selectedOutput.igv),
+          productsInfo: selectedOutput.descriptionProductsInfo.map((obj) => {
+            console.log(
+              'facturabusinessProductCode',
+              obj.businessProductCode,
+            );
+            return {
+              product: obj.product,
+              quantityMovement: Number(obj.quantityMovement),
+              priceBusinessMoneyWithIgv: Number(
+                obj.priceBusinessMoneyWithIgv,
+              ),
+              customCodeProduct: obj.customCodeProduct,
+              description: obj.description,
+              unitMeasure: obj.unitMeasure,
+              businessProductCode: obj.businessProductCode,
+            };
+          }),
+          documentsMovement: selectedOutput.documentsMovement,
+          referralGuides: [],
+        },
+      },
+    };
+    console.log('getSellTicket payload', finalPayload);
+    toGenerateSellTicket(finalPayload);
   };
   const getReferralGuide = () => {
     console.log('Selected Output', selectedOutput);
@@ -1507,6 +1578,18 @@ const OutputsTable = (props) => {
 
         </>)  : null)}
 
+        {localStorage
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+          ) &&
+        selectedOutput.movementSubType == 'sales' &&
+        !selectedOutput.existSellTicket ? (
+          <MenuItem onClick={getSellTicket}>
+            <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Ticket de Venta
+          </MenuItem>
+        ) : null}
         {localStorage
           .getItem('pathsBack')
           .includes('/utility/listObjectsPathMerchant?path=/salidas/*') ===
