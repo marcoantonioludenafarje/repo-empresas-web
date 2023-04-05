@@ -823,7 +823,7 @@ const OutputsTable = (props) => {
     }
   };
 
-  const statusObject = (obj, exist, type, mintype, cod) => {
+  const statusObject = (obj, exist, type, mintype, cod, documentsMovement) => {
     if (obj.movementSubType == 'sales') {
       if (exist) {
         if (mintype) {
@@ -838,16 +838,33 @@ const OutputsTable = (props) => {
             </Button>
           );
         } else {
-          return (
-            <Button
-              variant='secondary'
-              sx={{fontSize: '1em'}}
-              /* disabled={type == 'referralGuide'} */
-              onClick={() => showObject(obj.movementHeaderId, type)}
-            >
-              Generado
-            </Button>
-          );
+          if (documentsMovement && documentsMovement.length>0) {
+            console.log ('documentsMovement',documentsMovement)
+            let serialDocument = null;documentsMovement.filter( item => item.typeDocument === type);
+            serialDocument = serialDocument ? serialDocument : 'Generado1';
+
+            return (
+              <Button
+                variant='secondary'
+                sx={{fontSize: '1em'}}
+                /* disabled={type == 'referralGuide'} */
+                onClick={() => showObject(obj.movementHeaderId, type)}
+              >
+                {serialDocument}
+              </Button>
+            );
+          } else {
+            return (
+              <Button
+                variant='secondary'
+                sx={{fontSize: '1em'}}
+                /* disabled={type == 'referralGuide'} */
+                onClick={() => showObject(obj.movementHeaderId, type)}
+              >
+                Generado
+              </Button>
+            );
+          }
         }
       } else {
         return (
@@ -1044,6 +1061,7 @@ const OutputsTable = (props) => {
               <TableCell>Detalle productos</TableCell>
               <TableCell>Detalle documentos</TableCell>
               <TableCell>Boleta Venta relacionada</TableCell>
+              <TableCell>Ticket Venta relacionada</TableCell>
               <TableCell>Guía de remisión relacionada</TableCell>
               <TableCell>Factura relacionada</TableCell>
               <TableCell>Ingreso relacionado</TableCell>
@@ -1124,6 +1142,9 @@ const OutputsTable = (props) => {
                         )}
                       </TableCell>
                       <TableCell align='center'>
+                        {statusObject(obj, obj.existSellticket, 'sellticket')}
+                      </TableCell>
+                      <TableCell align='center'>
                         {statusObject(obj, obj.existReceipt, 'receipt')}
                       </TableCell>
                       <TableCell align='center'>
@@ -1134,7 +1155,7 @@ const OutputsTable = (props) => {
                         )}
                       </TableCell>
                       <TableCell align='center'>
-                        {statusObject(obj, obj.existBill, 'bill')}
+                        {statusObject(obj, obj.existBill, 'bill',null,null,obj.documentsMovement)}
                       </TableCell>
                       <TableCell align='center'>
                         {statusObject(
