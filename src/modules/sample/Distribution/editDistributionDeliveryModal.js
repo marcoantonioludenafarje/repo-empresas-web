@@ -108,11 +108,12 @@ const EditDistributionDeliveryModal = ({
         selectedDeliveryState.productsInfo ||
         [];
       productsToSet.forEach((prod) => {
-        let originalProduct = getOriginalProduct(prod.productId);
+        //let originalProduct = getOriginalProduct(prod.productId);
         newProds.push({
-          ...originalProduct,
+          //...originalProduct,
+          ...prod,
           count: prod.quantityMovement || prod.count,
-          weight: originalProduct.weight || 0.1,
+          weight: prod.weight || 0.1,
           invalidate: false,
           inputProduct: false,
           rowId: internalCounter,
@@ -181,7 +182,9 @@ const EditDistributionDeliveryModal = ({
     let newTemporaryDelivery = {
       ...temporaryDelivery,
       startingAddress: event.target.startingAddress.value,
+      startingInternalCode: event.target.startingInternalCode.value,
       arrivalAddress: event.target.arrivalAddress.value,
+      arrivalInternalCode: event.target.arrivalInternalCode.value,
       driverDocumentNumber: event.target.driverDocumentNumber.value,
       driverName: event.target.driverName.value,
       driverLastName: event.target.driverLastName.value,
@@ -340,7 +343,7 @@ const EditDistributionDeliveryModal = ({
               </Alert>
             </Collapse>
           </Grid>
-          <Grid item xs={12} sm={8}>
+          <Grid item xs={12} sm={6}>
             <Autocomplete
               disablePortal
               id='combo-box-demo'
@@ -392,7 +395,21 @@ const EditDistributionDeliveryModal = ({
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={8}>
+          <Grid item xs={12} sm={2}>
+            <TextField
+              label={<IntlMessages id='common.busines.startingInternalCode' />}
+              defaultValue={temporaryDelivery.startingInternalCode}
+              name='startingInternalCode'
+              variant='outlined'
+              sx={{
+                width: '100%',
+                '& .MuiInputBase-input': {
+                  fontSize: 14,
+                },
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <Autocomplete
               disablePortal
               id='combo-box-demo'
@@ -435,6 +452,20 @@ const EditDistributionDeliveryModal = ({
               label={<IntlMessages id='common.busines.arrivalDirection' />}
               defaultValue={temporaryDelivery.arrivalAddress}
               name='arrivalAddress'
+              variant='outlined'
+              sx={{
+                width: '100%',
+                '& .MuiInputBase-input': {
+                  fontSize: 14,
+                },
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <TextField
+              label={<IntlMessages id='common.busines.arrivalInternalCode' />}
+              defaultValue={temporaryDelivery.arrivalInternalCode}
+              name='arrivalInternalCode'
               variant='outlined'
               sx={{
                 width: '100%',

@@ -57,6 +57,7 @@ import {
 } from '../../../Utils/utils';
 import AddProductForm from '../Bills/AddProductForm';
 import AddDocumentForm from '../DocumentSelector/AddDocumentForm';
+import DocumentsTableForBill from '../DocumentSelector/DocumentsTableForBill';
 import DocumentsTable from '../DocumentSelector/DocumentsTable';
 import {
   FETCH_ERROR,
@@ -158,6 +159,7 @@ const GetReceipt = (props) => {
 
   /* const [exchangeRate, setExchangeRate] = React.useState(); */
   const [igvDefault, setIgvDefault] = React.useState(0);
+  const [sendEmail, setSendEmail] = React.useState(true);
   const [addIgv, setAddIgv] = React.useState(false);
   const [sendClient, setSendClient] = React.useState(false);
   const [sendSunat, setSendSunat] = React.useState(false);
@@ -205,6 +207,61 @@ const GetReceipt = (props) => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+
+
+  let defaultValues = {
+    nroReceipt: 'Autogenerado' /* query.documentIntern */,
+    /* guide: '', */
+    receiver: `${query.clientId.split('-')[1]} - ${
+      query.clientName ||
+      selectedOutput.clientName /* query.clientId.split('-')[2] */
+    }`,
+    issueDate: Date.now(),
+    wayToPay: Date.now(),
+    totalField: Number(query.totalPriceWithoutIgv),
+    totalFieldIgv: Number(query.totalPriceWithIgv),
+    money_unit: money_unit,
+    clientEmail: query.clientEmail,
+  };
+  const actualValues = {
+    nroReceipt: '',
+    guide: '',
+    issueDate: '',
+    wayToPay: '',
+    receiver: '',
+    totalField: '',
+    totalFieldIgv: '',
+    money_unit: '',
+  };
+  let listPayload = {
+    request: {
+      payload: {
+        initialTime: null,
+        finalTime: null,
+        businessProductCode: null,
+        movementType: 'OUTPUT',
+        merchantId: userDataRes.merchantSelected.merchantId,
+      },
+    },
+  };
+  let businessParameterPayload = {
+    request: {
+      payload: {
+        abreParametro: null,
+        codTipoparametro: null,
+        merchantId: userDataRes.merchantSelected.merchantId,
+      },
+    },
+  };
+  let globalParameterPayload = {
+    request: {
+      payload: {
+        abreParametro: null,
+        codTipoparametro: null,
+        country: 'peru',
+      },
+    },
+  };
 
   useEffect(() => {
     selectedOutput = {};
@@ -262,6 +319,10 @@ const GetReceipt = (props) => {
 
   useEffect(() => {
     if (typeof selectedOutput === 'object') {
+      changeValueField('receiver', `${query.clientId.split('-')[1]} - ${
+        selectedOutput.client.denomination
+      }`)
+      changeValueField('clientEmail', selectedOutput.client.email)
       selectedProducts = selectedOutput.descriptionProductsInfo;
       selectedProducts.map((obj) => {
         obj['subtotal'] = Number(
@@ -332,59 +393,7 @@ const GetReceipt = (props) => {
     }
   }, [globalParameter != undefined && moneyUnit, moneyToConvert]);
 
-  const defaultValues = {
-    nroReceipt: 'Autogenerado' /* query.documentIntern */,
-    /* guide: '', */
-    receiver: `${query.clientId.split('-')[1]} - ${
-      query.clientName ||
-      selectedOutput.clientName /* query.clientId.split('-')[2] */
-    }`,
-    issueDate: Date.now(),
-    wayToPay: Date.now(),
-    totalField: Number(query.totalPriceWithoutIgv),
-    totalFieldIgv: Number(query.totalPriceWithIgv),
-    money_unit: money_unit,
-    clientEmail: query.clientEmail,
-  };
-  const actualValues = {
-    nroReceipt: '',
-    guide: '',
-    issueDate: '',
-    wayToPay: '',
-    receiver: '',
-    totalField: '',
-    totalFieldIgv: '',
-    money_unit: '',
-  };
-  let listPayload = {
-    request: {
-      payload: {
-        initialTime: null,
-        finalTime: null,
-        businessProductCode: null,
-        movementType: 'OUTPUT',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-  let businessParameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-  let globalParameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        country: 'peru',
-      },
-    },
-  };
+  
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
   const cancel = () => {
@@ -401,6 +410,7 @@ const GetReceipt = (props) => {
 
   //FUNCIONES DIALOG
   const [open, setOpen] = React.useState(false);
+  const [openReferralGuides, setOpenReferralGuides] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
   };
@@ -409,7 +419,28 @@ const GetReceipt = (props) => {
     setTypeDialog(type);
     setShowAlert(false);
   };
+  const handleCloseReferralGuides = () => {
+    setOpenReferralGuides(false);
+  };
+  const handleClickOpenReferralGuides = (type) => {
+    setOpenReferralGuides(true);
+    setShowAlert(false);
+  };
 
+  const showListDocumentsSelected = () => {
+    const total = listDocuments.reduce((count, element) => {
+      if (element.isSelected) {
+        return count + 1;
+      } else {
+        return count;
+      }
+    }, 0);
+    return total > 1
+      ? `Hay ${total} guías de remisión asignadas`
+      : total > 0
+      ? `Hay ${total} guía de remisión asignada`
+      : `No hay guías de remisión asignadas`;
+  };
   const removeProduct = (index) => {
     /* total -= Number(selectedProducts[index].subtotal); */
     selectedProducts.splice(index, 1);
@@ -488,6 +519,7 @@ const GetReceipt = (props) => {
             folderMovement: query.folderMovement,
             denominationMerchant:
               userDataRes.merchantSelected.denominationMerchant,
+            sendEmail: sendEmail
           },
         },
       };
@@ -611,6 +643,10 @@ const GetReceipt = (props) => {
     setAddIgv(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
+  const handleSendEmail = (event, isInputChecked) => {
+    setSendEmail(isInputChecked);
+    console.log('Evento de IGV cbx', isInputChecked);
+  };
   const handleSendClient = (event, isInputChecked) => {
     setSendClient(isInputChecked);
     console.log('Enviar a cliente', isInputChecked);
@@ -670,7 +706,24 @@ const GetReceipt = (props) => {
     listDocuments.splice(index, 1);
     forceUpdate();
   };
-
+  const selectDocument = (index) => {
+    console.log('index document', index);
+    console.log('index document listDocument', listDocuments);
+    listDocuments[index].isSelected = !listDocuments[index].isSelected;
+    forceUpdate();
+  };
+  const selectAll = () => {
+    listDocuments = listDocuments.map((obj) => {
+      return {...obj, isSelected: true};
+    });
+    forceUpdate();
+  };
+  const deselectAll = () => {
+    listDocuments = listDocuments.map((obj) => {
+      return {...obj, isSelected: false};
+    });
+    forceUpdate();
+  };
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -912,21 +965,24 @@ const GetReceipt = (props) => {
                   </Grid>
 
                   <Grid item xs={12}>
+                    <Typography align='center'>
+                      {showListDocumentsSelected()} de un total de{' '}
+                      {listDocuments.length}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
-                      onClick={() => handleClickOpen('document')}
+                      onClick={() =>
+                        handleClickOpenReferralGuides('referralGuides')
+                      }
                     >
-                      Añadir guía de remisión
+                      Ver guías de remisión asignadas
                     </Button>
                   </Grid>
                 </Grid>
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                  />
-                </Box>
+                
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   {/* <Grid item xs={4}>
                     <DateTimePicker
@@ -947,7 +1003,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid item xs={12}>
+                  <Grid item xs={9}>
                     <AppTextField
                       label='Correo de cliente'
                       name='clientEmail'
@@ -959,6 +1015,21 @@ const GetReceipt = (props) => {
                         },
                         my: 2,
                       }}
+                    />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={3}
+                    sx={{display: 'flex', alignItems: 'center'}}
+                  >
+                    <FormControlLabel
+                      label='Enviar Correo'
+                      control={
+                        <Checkbox
+                          onChange={handleSendEmail}
+                          defaultChecked={true}
+                        />
+                      }
                     />
                   </Grid>
                   {/* <Grid
@@ -1225,6 +1296,43 @@ const GetReceipt = (props) => {
             </DialogContent>
           </>
         ) : null}
+      </Dialog>
+      <Dialog
+        open={openReferralGuides}
+        onClose={handleCloseReferralGuides}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Guías de remisión'}
+          <CancelOutlinedIcon
+            onClick={setOpenReferralGuides.bind(this, false)}
+            className={classes.closeButton}
+          />
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{my: 5}}>
+            <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+              <Grid item xs={12}>
+                <Button
+                  sx={{width: 1}}
+                  variant='outlined'
+                  onClick={() => handleClickOpen('document')}
+                >
+                  Añadir guía de remisión
+                </Button>
+              </Grid>
+            </Grid>
+            <Button onClick={selectAll}>Seleccionar todo</Button>
+            <Button onClick={deselectAll}>Deseleccionar todo</Button>
+            <DocumentsTableForBill
+              arrayObjs={listDocuments}
+              toDelete={removeDocument}
+              toSelect={selectDocument}
+            />
+          </Box>
+        </DialogContent>
       </Dialog>
       <Dialog
         open={showDelete}
