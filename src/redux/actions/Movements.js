@@ -31,6 +31,7 @@ import {
   GET_BILL_PAGE_LISTGUIDE,
   GET_RECEIPT_PAGE_LISTGUIDE,
   GET_NOTE_PAGE_LISTGUIDE,
+  GENERATE_SELL_TICKET
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -143,6 +144,26 @@ export const generateInvoice = (payload) => {
       })
       .catch((error) => {
         console.log('generateInvoice error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const generateSellTicket = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/sellTicket/register', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('generateSellTicket resultado', data);
+        dispatch({
+          type: GENERATE_SELL_TICKET,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('generateSellTicket error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

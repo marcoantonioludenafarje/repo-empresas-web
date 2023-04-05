@@ -30,6 +30,7 @@ import {
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
   SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
+  GENERATE_SELL_TICKET
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -139,6 +140,12 @@ const movementsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         generateInvoiceRes: action.payload,
+      };
+    case GENERATE_SELL_TICKET:
+      console.log('data de reducer GENERATE_SELL_TICKET', action.payload);
+      return {
+        ...state,
+        generateSellTicketRes: action.payload,
       };
     case ADD_INVOICE:
       console.log('data de reducer ADD_INVOICE', action.payload);
