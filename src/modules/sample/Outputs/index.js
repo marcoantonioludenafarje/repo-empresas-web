@@ -638,7 +638,7 @@ const OutputsTable = (props) => {
           automaticSendSunat: /* sendSunat */ true,
           automaticSendClient: /* sendClient */ true,
           referralGuide: false,
-          creditSale: 'debit',
+          creditSale: false,
           referralGuideSerial: '',
           dueDate: dateWithHyphen(Date.now() + 1 * 24 * 60 * 60 * 1000),
           observation: '',

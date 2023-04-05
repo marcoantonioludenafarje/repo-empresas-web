@@ -541,7 +541,7 @@ const NewOutput = (props) => {
             automaticSendSunat: /* sendSunat */ true,
             automaticSendClient: /* sendClient */ true,
             referralGuide: data.guide ? true : false,
-            creditSale: paymentMethod,
+            creditSale: paymentMethod == "credit",
             referralGuideSerial: data.guide ? data.guide : '',
             dueDate: dateWithHyphen(expirationDate),
             observation: data.observation ? data.observation : '',
