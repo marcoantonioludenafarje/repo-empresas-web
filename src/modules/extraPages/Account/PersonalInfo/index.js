@@ -97,7 +97,7 @@ const PersonalInfo = () => {
     email: userDataRes ? userDataRes.email : '',
     name: userDataRes ? userDataRes.nombres : '',
     lastName: userDataRes ? userDataRes.apellidoPat : '',
-    cellphone: userDataRes ? userDataRes.cellphone.replace('+51', '') : '',
+    cellphone: userDataRes && userDataRes.cellphone ? userDataRes.cellphone.replace('+51', '') : '',
   };
 
   useEffect(() => {
