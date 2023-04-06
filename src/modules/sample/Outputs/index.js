@@ -549,6 +549,14 @@ const OutputsTable = (props) => {
         ? obj.userUpdatedMetadata.nombreCompleto
         : '';
 
+      console.log ("statusObject",obj)
+      obj.receipt1 = statusTextObject(obj, obj.existReceipt, 'receipt')
+      obj.ticket1 = statusTextObject(obj, (obj.existSellTicket ? true : false), 'ticket')
+      obj.referralGuide1 = statusTextObject(obj, obj.existReferralGuide, 'referralGuide');
+      obj.bill1 = statusTextObject(obj, obj.existBill, 'bill');
+      obj.income1 = statusTextObject(obj, obj.existIncome, 'income');
+      console.log ("statusObject1",obj)
+
       listResult.push(
         (({
           codigo1,
@@ -557,6 +565,11 @@ const OutputsTable = (props) => {
           movementSubType,
           clientdenomination,
           descriptionProducts,
+          receipt1,
+          ticket1,
+          referralGuide1,
+          bill1,
+          income1,
           totalPrice1,
           totalPriceWithIgv1,
           status1,
@@ -569,6 +582,11 @@ const OutputsTable = (props) => {
           movementSubType,
           clientdenomination,
           descriptionProducts,
+          receipt1,
+          ticket1,
+          referralGuide1,
+          bill1,
+          income1,
           totalPrice1,
           totalPriceWithIgv1,
           status1,
@@ -586,6 +604,11 @@ const OutputsTable = (props) => {
     'Tipo de movimiento',
     'Cliente',
     'Detalle productos',
+    'Boleta relacionada',
+    'Ticket relacionada',
+    'Guía relacionada',
+    'Factura relacionada',
+    'Ingreso relacionado',
     `Precio total ${money_unit} sin IGV`,
     `Precio total ${money_unit} con IGV`,
     'Estado',
@@ -894,6 +917,38 @@ const OutputsTable = (props) => {
     }
   };
 
+  const statusTextObject = (obj, exist, type, mintype, cod) => {
+    if (obj.movementSubType == 'Ventas') {
+      if (exist) {
+        if (mintype) {
+          return (
+              `${mintype} - ${cod}`
+          );
+        } else {
+          if (type != 'ticket' && obj.documentsMovement && obj.documentsMovement.length>0) {
+            let serialDocumentObj = obj.documentsMovement.filter( item => item.typeDocument === type);
+            let serialDocument = serialDocumentObj && serialDocumentObj.length>0 && type != 'referralGuide' ? serialDocumentObj[0].serialDocument : "Generado";
+            
+            if (serialDocumentObj && serialDocumentObj.length>0 && type == 'referralGuide')
+              serialDocument = serialDocumentObj.length==1 ? serialDocumentObj[0].serialDocument : "Varias";
+
+            return serialDocument;
+
+          } else if (type == 'ticket') {
+            return 'Ver'
+            
+          } else {
+            return 'Generado'
+          }
+        }
+      } else {
+        return 'No generado';
+      }
+    } else {
+      return 'No aplica';
+    }
+  };
+
   const statusObject = (obj, exist, type, mintype, cod) => {
     if (obj.movementSubType == 'sales') {
       if (exist) {
@@ -909,7 +964,7 @@ const OutputsTable = (props) => {
             </Button>
           );
         } else {
-          if (obj.documentsMovement && obj.documentsMovement.length>0) {
+          if (type != 'ticket' && obj.documentsMovement && obj.documentsMovement.length>0) {
             let serialDocumentObj = obj.documentsMovement.filter( item => item.typeDocument === type);
             let serialDocument = serialDocumentObj && serialDocumentObj.length>0 && type != 'referralGuide' ? serialDocumentObj[0].serialDocument : "Generado";
             
@@ -926,6 +981,19 @@ const OutputsTable = (props) => {
                 {serialDocument}
               </Button>
             );
+
+          } else if (type == 'ticket') {
+            return (
+              <Button
+                variant='secondary'
+                sx={{fontSize: '1em'}}
+                /* disabled={type == 'referralGuide'} */
+                onClick={() => {window.open(obj.existSellTicket)}}
+              >
+                Ver
+              </Button>
+            );
+            
           } else {
             return (
               <Button
@@ -1223,7 +1291,7 @@ const OutputsTable = (props) => {
                       </TableCell>
                       {typeClient == 'PN' ?
                         <TableCell align='center'>
-                          {statusObject(obj, obj.existSellticket, 'sellticket')}
+                          {statusObject(obj, (obj.existSellTicket ? true : false), 'ticket')}
                         </TableCell>
                         : null }
                       <TableCell align='center'>
@@ -1234,7 +1302,7 @@ const OutputsTable = (props) => {
                         )}
                       </TableCell>
                       <TableCell align='center'>
-                        {statusObject(obj, obj.existBill, 'bill',null,null,obj.documentsMovement)}
+                        {statusObject(obj, obj.existBill, 'bill')}
                       </TableCell>
                       <TableCell align='center'>
                         {statusObject(
