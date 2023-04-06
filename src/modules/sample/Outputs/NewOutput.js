@@ -675,8 +675,27 @@ const NewOutput = (props) => {
       //dispatch({type: GET_MOVEMENTS, payload: []});
       console.log('Este es el listPayload NewOutput', listPayload);
       toGetMovements(listPayload);
-      if (searchPrivilege("outputsTable"))
-        setShowForms(true);
+      if (localStorage
+        .getItem('pathsBack')
+        .includes(
+          '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+        ) ||
+        localStorage
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
+          ) ||
+        localStorage
+        .getItem('pathsBack')
+        .includes(
+          '/facturacion/accounting/movement/register?path=/billOfOutput/*',
+        ) ||
+        localStorage
+        .getItem('pathsBack')
+        .includes(
+          '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
+        ))
+          setShowForms(true);
       else
         Router.push('/sample/outputs/table');
     } else {
@@ -1343,7 +1362,13 @@ const NewOutput = (props) => {
             {getMovementsRes.length !== 0 ? 
               (
                 <>
-                  {validationClientType('referralGuide') && !hasBill.includes('referralGuide') ? (
+                  {validationClientType('referralGuide') && 
+                    !hasBill.includes('referralGuide') &&
+                    localStorage
+                    .getItem('pathsBack')
+                    .includes(
+                      '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
+                    ) ? (
                     <Button
                       color='primary'
                       sx={{width: 1, px: 7, my: 2}}
@@ -1362,7 +1387,13 @@ const NewOutput = (props) => {
                       Generar Guía de remisión
                     </Button>
                   ) : null}
-                  {validationClientType('receipt') && !hasBill.includes('bill') ? (
+                  {validationClientType('receipt') && 
+                    !hasBill.includes('bill') &&
+                    localStorage
+                    .getItem('pathsBack')
+                    .includes(
+                      '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+                    ) ? (
                     <Button
                       color='primary'
                       sx={{width: 1, px: 7, my: 2}}
@@ -1381,7 +1412,13 @@ const NewOutput = (props) => {
                       Generar Boleta De Venta
                     </Button>
                   ) : null}
-                  {validationClientType('bill') && !hasBill.includes('bill') ? (
+                  {validationClientType('bill') && 
+                    !hasBill.includes('bill')  &&
+                    localStorage
+                    .getItem('pathsBack')
+                    .includes(
+                      '/facturacion/accounting/movement/register?path=/billOfOutput/*',
+                    ) ? (
                     <Button
                       color='primary'
                       sx={{width: 1, px: 7, my: 2}}
@@ -1400,7 +1437,12 @@ const NewOutput = (props) => {
                       Generar Factura
                     </Button>
                   ) : null}
-                  {hasBill.includes('bill') ? (
+                  {hasBill.includes('bill') &&
+                    localStorage
+                    .getItem('pathsBack')
+                    .includes(
+                      '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
+                    ) ? (
                     <Button
                       color='primary'
                       sx={{width: 1, px: 7, my: 2}}

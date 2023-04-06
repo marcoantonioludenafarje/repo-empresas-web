@@ -894,7 +894,7 @@ const OutputsTable = (props) => {
     }
   };
 
-  const statusObject = (obj, exist, type, mintype, cod, documentsMovement) => {
+  const statusObject = (obj, exist, type, mintype, cod) => {
     if (obj.movementSubType == 'sales') {
       if (exist) {
         if (mintype) {
@@ -909,10 +909,12 @@ const OutputsTable = (props) => {
             </Button>
           );
         } else {
-          if (documentsMovement && documentsMovement.length>0) {
-            console.log ('documentsMovement',documentsMovement)
-            let serialDocument = null;documentsMovement.filter( item => item.typeDocument === type);
-            serialDocument = serialDocument ? serialDocument : 'Generado1';
+          if (obj.documentsMovement && obj.documentsMovement.length>0) {
+            let serialDocumentObj = obj.documentsMovement.filter( item => item.typeDocument === type);
+            let serialDocument = serialDocumentObj && serialDocumentObj.length>0 && type != 'referralGuide' ? serialDocumentObj[0].serialDocument : "Generado";
+            
+            if (serialDocumentObj && serialDocumentObj.length>0 && type == 'referralGuide')
+              serialDocument = serialDocumentObj.length==1 ? serialDocumentObj[0].serialDocument : "Varias";
 
             return (
               <Button
@@ -1073,6 +1075,8 @@ const OutputsTable = (props) => {
     return validation;
   }
 
+  const typeClient = userDataRes.merchantSelected.typeClient;
+
   return (
     <Card sx={{p: 4}}>
       <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
@@ -1132,7 +1136,9 @@ const OutputsTable = (props) => {
               <TableCell>Detalle productos</TableCell>
               <TableCell>Detalle documentos</TableCell>
               <TableCell>Boleta Venta relacionada</TableCell>
-              <TableCell>Ticket Venta relacionada</TableCell>
+              {typeClient == 'PN' ?
+                <TableCell>Ticket Venta relacionada</TableCell>
+                : null}
               <TableCell>Guía de remisión relacionada</TableCell>
               <TableCell>Factura relacionada</TableCell>
               <TableCell>Ingreso relacionado</TableCell>
@@ -1213,11 +1219,13 @@ const OutputsTable = (props) => {
                         )}
                       </TableCell>
                       <TableCell align='center'>
-                        {statusObject(obj, obj.existSellticket, 'sellticket')}
-                      </TableCell>
-                      <TableCell align='center'>
                         {statusObject(obj, obj.existReceipt, 'receipt')}
                       </TableCell>
+                      {typeClient == 'PN' ?
+                        <TableCell align='center'>
+                          {statusObject(obj, obj.existSellticket, 'sellticket')}
+                        </TableCell>
+                        : null }
                       <TableCell align='center'>
                         {statusObject(
                           obj,
@@ -1509,97 +1517,17 @@ const OutputsTable = (props) => {
           </MenuItem>
         ) : null} 
 
-        {(searchPrivilege("outputsTable") ? (<>
-
-            {localStorage
-              .getItem('pathsBack')
-              .includes('/inventory/movementProducts/list?path=/output/*') ===
-            true ? (
-              <MenuItem disabled onClick={goToMoves}>
-                <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
-                Exportar
-              </MenuItem>
-            ) : null}
-
-            {validationClientType(selectedOutput,'referralGuide') && localStorage
-              .getItem('pathsBack')
-              .includes(
-                '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
-              ) && selectedOutput.movementSubType == 'sales' ? (
-              <MenuItem
-                disabled={
-                  userDataRes.merchantSelected &&
-                  !userDataRes.merchantSelected.isBillingEnabled
-                }
-                onClick={getReferralGuide}
-              >
-                <EditLocationOutlinedIcon sx={{mr: 1, my: 'auto'}} />
-                Generar Guía <br />
-                de remisión
-              </MenuItem>
-            ) : null}
-
-            {validationClientType(selectedOutput,'bill') && localStorage
-              .getItem('pathsBack')
-              .includes(
-                '/facturacion/accounting/movement/register?path=/billOfOutput/*',
-              ) &&
-            selectedOutput.movementSubType == 'sales' &&
-            !selectedOutput.existBill ? (
-              <MenuItem
-                disabled={
-                  userDataRes.merchantSelected &&
-                  !userDataRes.merchantSelected.isBillingEnabled
-                }
-                onClick={getInvoice}
-              >
-                <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
-                Generar Factura
-              </MenuItem>
-            ) : null}
-
-            {validationClientType(selectedOutput,'receipt') && localStorage
-              .getItem('pathsBack')
-              .includes(
-                '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
-              ) &&
-            selectedOutput.movementSubType == 'sales' &&
-            !selectedOutput.existReceipt ? (
-              <MenuItem onClick={getReceipt}>
-                <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
-                Generar Boleta
-              </MenuItem>
-            ) : null}
-            
-            {localStorage
-              .getItem('pathsBack')
-              .includes(
-                '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
-              ) &&
-            selectedOutput.existBill &&
-            !selectedOutput.existIncome &&
-            selectedOutput.movementSubType == 'sales' ? (
-              <MenuItem onClick={doFinance}>
-                <InputIcon sx={{mr: 1, my: 'auto'}} />
-                Generar ingreso
-              </MenuItem>
-            ) : null}
-
-            {validationClientType(selectedOutput,'distribution') && localStorage
-              .getItem('pathsBack')
-              .includes('/facturacion/deliveryDistribution/register') === true ? (
-              <MenuItem
-                disabled={selectedOutput.movementSubType !== 'sales'}
-                onClick={doDistribution}
-              >
-                <MapIcon sx={{mr: 1, my: 'auto'}} />
-                Generar distribución
-              </MenuItem>
-            ) : null}
-
-        </>)  : null)}
-
         {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/list?path=/output/*') ===
+        true ? (
+          <MenuItem disabled onClick={goToMoves}>
+            <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
+            Exportar
+          </MenuItem>
+        ) : null}
+
+        {typeClient == 'PN' && localStorage
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
@@ -1611,6 +1539,83 @@ const OutputsTable = (props) => {
             Generar Ticket de Venta
           </MenuItem>
         ) : null}
+
+        {validationClientType(selectedOutput,'receipt') && localStorage
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+          ) &&
+        selectedOutput.movementSubType == 'sales' &&
+        !selectedOutput.existReceipt ? (
+          <MenuItem onClick={getReceipt}>
+            <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Boleta Venta
+          </MenuItem>
+        ) : null}
+        
+        {validationClientType(selectedOutput,'referralGuide') && localStorage
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
+          ) && selectedOutput.movementSubType == 'sales' ? (
+          <MenuItem
+            disabled={
+              userDataRes.merchantSelected &&
+              !userDataRes.merchantSelected.isBillingEnabled
+            }
+            onClick={getReferralGuide}
+          >
+            <EditLocationOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Guía <br />
+            de remisión
+          </MenuItem>
+        ) : null}
+
+        {validationClientType(selectedOutput,'bill') && localStorage
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/billOfOutput/*',
+          ) &&
+        selectedOutput.movementSubType == 'sales' &&
+        !selectedOutput.existBill ? (
+          <MenuItem
+            disabled={
+              userDataRes.merchantSelected &&
+              !userDataRes.merchantSelected.isBillingEnabled
+            }
+            onClick={getInvoice}
+          >
+            <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Factura
+          </MenuItem>
+        ) : null}
+
+        {localStorage
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
+          ) &&
+        selectedOutput.existBill &&
+        !selectedOutput.existIncome &&
+        selectedOutput.movementSubType == 'sales' ? (
+          <MenuItem onClick={doFinance}>
+            <InputIcon sx={{mr: 1, my: 'auto'}} />
+            Generar ingreso
+          </MenuItem>
+        ) : null}
+
+        {validationClientType(selectedOutput,'distribution') && localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/deliveryDistribution/register') === true ? (
+          <MenuItem
+            disabled={selectedOutput.movementSubType !== 'sales'}
+            onClick={doDistribution}
+          >
+            <MapIcon sx={{mr: 1, my: 'auto'}} />
+            Generar distribución
+          </MenuItem>
+        ) : null}
+
         {localStorage
           .getItem('pathsBack')
           .includes('/utility/listObjectsPathMerchant?path=/salidas/*') ===
