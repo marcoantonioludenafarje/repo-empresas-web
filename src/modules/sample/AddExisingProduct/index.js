@@ -20,11 +20,12 @@ import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
-
+import CachedIcon from '@mui/icons-material/Cached';
 import {useDispatch, useSelector} from 'react-redux';
 import {onGetProducts} from '../../../redux/actions/Products';
 import SelectProduct from './SelectProduct';
 import PropTypes from 'prop-types';
+import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 
 const defaultValues = {
   productSearch: '',
@@ -70,19 +71,11 @@ const AddExistingProduct = ({sendData, type}) => {
   const dispatch = useDispatch();
   let changeValueField;
   console.log('funcion recibida', sendData);
-  let typeAlert = 'faltaProduct';
+  // let typeAlert = 'faltaProduct';
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-  let listProductsPayload = {
-    request: {
-      payload: {
-        businessProductCode: null,
-        description: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
+
 
   //FUNCIONES DIALOG
   const [open, setOpen] = React.useState(false);
@@ -91,16 +84,31 @@ const AddExistingProduct = ({sendData, type}) => {
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [proSearch, setProSearch] = React.useState();
   const [nameChanged, setNameChanged] = React.useState(false);
+  const [basicUrl, setBasicUrl] = React.useState(null)
+  const [typeAlert, setTypeAlert] = React.useState('faltaProduct')
   const handleClose = () => {
     setOpen(false);
   };
 
   useEffect(() => {
     /* selectedProduct = {}; */
+
+    let domain = (new URL(window.location.href));
+    setBasicUrl(domain.origin)
   }, []);
 
   const handleClickOpen = () => {
     setShowAlert(false);
+    let listProductsPayload = {
+      request: {
+        payload: {
+          businessProductCode: null,
+          description: null,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+
     if (actualValues.productSearch != '') {
       listProductsPayload.request.payload.description =
         actualValues.productSearch;
@@ -140,9 +148,11 @@ const AddExistingProduct = ({sendData, type}) => {
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
     setShowAlert(false);
+    
     if (selectedProduct.stock < data.count && type == 'output') {
       console.log('porfavor selecciona un numero menor al total de productos');
-      typeAlert = 'maxCount';
+      // typeAlert = 'maxCount';
+      setTypeAlert('maxCount')
       setShowAlert(true);
     } else {
       let requiredKeys = ['product', 'description', 'costPriceUnit'];
@@ -297,7 +307,24 @@ const AddExistingProduct = ({sendData, type}) => {
                   aria-describedby='alert-dialog-description'
                 >
                   <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                    {'Selecciona un producto'}
+                    <div>{`Listado de Producto`}</div>
+                    <Button
+                    sx={{mx: 'auto', mx: 1 , my: 1 ,py: 3}}
+                    variant='outlined'
+                    startIcon={<CachedIcon sx={{m: 1 , my: 'auto'}} />}
+                    onClick={() => handleClickOpen()}
+                    >
+                    {'Actualizar'}  
+                    </Button>
+                    <Button
+                    sx={{mx: 'auto',py: 3 , mx: 1,  my: 1 }}
+                    variant='outlined'
+                    startIcon={<ArrowCircleLeftOutlinedIcon />}
+                    onClick={() => window.open(`${basicUrl}/sample/products/new`)}
+                    >
+                     Agregar nuevo Produco
+                    </Button>
+
                   </DialogTitle>
                   <DialogContent
                     sx={{display: 'flex', justifyContent: 'center'}}

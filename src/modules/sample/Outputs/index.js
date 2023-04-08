@@ -248,6 +248,7 @@ const OutputsTable = (props) => {
   //SELECCIÓN CALENDARIO
   const [value, setValue] = React.useState(Date.now() - 2678400000);
   const [value2, setValue2] = React.useState(Date.now());
+  const [typeClient, setTypeClient]= React.useState(null);
   // setOpen3(query.operationBack)
   //API FUNCTIONS
   const getBusinessParameter = (payload) => {
@@ -321,7 +322,7 @@ const OutputsTable = (props) => {
     }
   }, []);
   useEffect(() => {
-    if (userDataRes) {
+    if (userDataRes && userDataRes.merchantSelected) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: GET_MOVEMENTS, payload: undefined});
@@ -344,6 +345,10 @@ const OutputsTable = (props) => {
       }
       getBusinessParameter(businessParameterPayload);
       getGlobalParameter(globalParameterPayload);
+      console.log("userDataRes1234", userDataRes)
+      console.log("userDataRes.merchantSelected.typeClien", userDataRes.merchantSelected.typeClient)
+      
+      setTypeClient(userDataRes.merchantSelected.typeClient ? userDataRes.merchantSelected.typeClient  : 'PJ')
     }
   }, [userDataRes]);
   useEffect(() => {
@@ -1143,9 +1148,8 @@ const OutputsTable = (props) => {
     return validation;
   }
 
-  const typeClient = userDataRes.merchantSelected.typeClient;
 
-  return (
+  return  typeClient ? (
     <Card sx={{p: 4}}>
       <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
         <DateTimePicker
@@ -1730,7 +1734,7 @@ const OutputsTable = (props) => {
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
     </Card>
-  );
+  ) : null 
 };
 
 export default OutputsTable;

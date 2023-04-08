@@ -318,24 +318,24 @@ const NewProduct = (props) => {
   let imgBase64;
   let selectedFile;
 
-  let listPayload = {
-    request: {
-      payload: {
-        businessProductCode: null,
-        description: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-  let parameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
+  // let listPayload = {
+  //   request: {
+  //     payload: {
+  //       businessProductCode: null,
+  //       description: null,
+  //       merchantId: userDataRes.merchantSelected.merchantId,
+  //     },
+  //   },
+  // };
+  // let parameterPayload = {
+  //   request: {
+  //     payload: {
+  //       abreParametro: null,
+  //       codTipoparametro: null,
+  //       merchantId: userDataRes.merchantSelected.merchantId,
+  //     },
+  //   },
+  // };
   let imagePayload = {
     request: {
       payload: {
@@ -345,14 +345,14 @@ const NewProduct = (props) => {
       },
     },
   };
-  let getCategoriesPayload = {
-    request: {
-      payload: {
-        denominationProductCategory: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
+  // let getCategoriesPayload = {
+  //   request: {
+  //     payload: {
+  //       denominationProductCategory: '',
+  //       merchantId: userDataRes.merchantSelected.merchantId,
+  //     },
+  //   },
+  // };
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -410,8 +410,34 @@ const NewProduct = (props) => {
 
         setPublish(true);
       }
+      let listPayload = {
+        request: {
+          payload: {
+            businessProductCode: null,
+            description: null,
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
       getProducts(listPayload);
+      let parameterPayload = {
+        request: {
+          payload: {
+            abreParametro: null,
+            codTipoparametro: null,
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
       getBusinessParameter(parameterPayload);
+      let getCategoriesPayload = {
+        request: {
+          payload: {
+            denominationProductCategory: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
       toGetCategories(getCategoriesPayload);
       selectedProducts = [];
     }
@@ -786,6 +812,15 @@ const NewProduct = (props) => {
     setShowAlert(false);
   };
   const closeSelect = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          businessProductCode: null,
+          description: null,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
     listPayload.request.payload.businessProductCode = null;
     listPayload.request.payload.description = null;
     getProducts(listPayload);

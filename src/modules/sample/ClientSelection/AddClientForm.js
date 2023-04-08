@@ -28,6 +28,8 @@ import SelectClient from './SelectClient';
 import PropTypes from 'prop-types';
 import {GET_CLIENTS} from '../../../shared/constants/ActionTypes';
 
+import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
+import CachedIcon from '@mui/icons-material/Cached';
 const maxLength = 11111111111111111111; //20 caracteres
 const validationSchema = yup.object({
   clientId: yup.string().typeError(<IntlMessages id='validation.string' />),
@@ -41,7 +43,7 @@ const actualValues = {
 
 let selectedClient = {};
 
-const AddProductForm = ({sendData}) => {
+const AddClientForm = ({sendData}) => {
   const useStyles = {
     container: {
       textAlign: 'center',
@@ -88,18 +90,11 @@ const AddProductForm = ({sendData}) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const [basicUrl, setBasicUrl] = React.useState('');
 
-  let listClientsPayload = {
-    request: {
-      payload: {
-        typeDocumentClient: '',
-        numberDocumentClient: '',
-        denominationClient: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-        flagBusqDoc: true,
-      },
-    },
-  };
+
+
+
 
   const handleClose = () => {
     setOpen(false);
@@ -107,6 +102,17 @@ const AddProductForm = ({sendData}) => {
 
   const handleClickOpen = () => {
     setShowAlert(false);
+    let listClientsPayload = {
+      request: {
+        payload: {
+          typeDocumentClient: '',
+          numberDocumentClient: '',
+          denominationClient: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          flagBusqDoc: true,
+        },
+      },
+    };
     //dispatch({type: GET_CLIENTS, payload: undefined});
     listClientsPayload.request.payload.LastEvaluatedKey = null;
     dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
@@ -164,6 +170,13 @@ const AddProductForm = ({sendData}) => {
     }
     setSubmitting(false);
   };
+
+
+  useEffect(() => {
+    let domain = (new URL(window.location.href));
+    setBasicUrl(domain.origin)
+  }, []);
+
 
   return (
     <>
@@ -228,6 +241,10 @@ const AddProductForm = ({sendData}) => {
                     >
                       Seleccionar
                     </Button>
+
+
+
+
                   </Grid>
                 </Grid>
 
@@ -240,7 +257,24 @@ const AddProductForm = ({sendData}) => {
                   aria-describedby='alert-dialog-description'
                 >
                   <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                    {'Selecciona un cliente'}
+                    <div>{`Listado de Clientes`}</div>
+                    <Button
+                    sx={{mx: 'auto', mx: 1 , my: 1 ,py: 3}}
+                    variant='outlined'
+                    startIcon={<CachedIcon sx={{m: 1 , my: 'auto'}} />}
+                    onClick={() => handleClickOpen()}
+                    >
+                    {'Actualizar'}  
+                    </Button>
+                    <Button
+                    sx={{mx: 'auto',py: 3 , mx: 1,  my: 1 }}
+                    variant='outlined'
+                    startIcon={<ArrowCircleLeftOutlinedIcon />}
+                    onClick={() => window.open(`${basicUrl}/sample/clients/new`)}
+                    >
+                     Agregar nuevo Cliente
+                    </Button>
+
                   </DialogTitle>
                   <DialogContent
                     sx={{display: 'flex', justifyContent: 'center'}}
@@ -277,8 +311,8 @@ const AddProductForm = ({sendData}) => {
   );
 };
 
-AddProductForm.propTypes = {
+AddClientForm.propTypes = {
   sendData: PropTypes.func.isRequired,
 };
 
-export default AddProductForm;
+export default AddClientForm;

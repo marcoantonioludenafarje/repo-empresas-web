@@ -118,7 +118,7 @@ const NewClient = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isRUC, setRUC] = React.useState(false);
-  const [identidad, setIdentidad] = React.useState('');
+  const [identidad, setIdentidad] = React.useState(null);
 
   let objSelects = {
     documentType: '',
@@ -162,9 +162,14 @@ const NewClient = () => {
     }, 2000);
   }, []);
   useEffect(() => {
-    if (userDataRes) {
+    if (userDataRes && userDataRes.merchantSelected) {
       newClientPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
+
+        
+     setIdentidad(userDataRes.merchantSelected.typeClient == 'PN' ? 'DNI' : 'RUC' )
+     
+
     }
   }, [userDataRes]);
   const cancel = () => {
@@ -254,17 +259,18 @@ const NewClient = () => {
     setIdentidad(objSelects.documentType);
   };
 
-  const inicializaIdentidad = () => {
-    if (!identidad) {
-      setIdentidad(typeClient == 'PN' ? 'DNI' : 'RUC');
-      console.log('inicializaIdentidad', identidad);
-    }
-    return '';
-  };
+  // const inicializaIdentidad = () => {
+  //   if (!identidad) {
+  //     setIdentidad(typeClient == 'PN' ? 'DNI' : 'RUC');
+  //     console.log('inicializaIdentidad', identidad);
+  //   }
+  //   return '';
+  // };
 
-  const typeClient = userDataRes.merchantSelected.typeClient;
+  
 
-  return (
+  return identidad ?  (
+
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
         <Typography
@@ -307,9 +313,9 @@ const NewClient = () => {
                       >
                         Identificador
                       </InputLabel>
-                      {inicializaIdentidad()}
+                      {/* {inicializaIdentidad()} */}
                       <Select
-                        defaultValue={typeClient == 'PN' ? 'DNI' : 'RUC'} //{config.default_identification}
+                        defaultValue={identidad} //{config.default_identification}
                         name='documentType'
                         labelId='documentType-label'
                         label='Identificador'
@@ -649,7 +655,7 @@ const NewClient = () => {
         </DialogActions>
       </Dialog>
     </Card>
-  );
+  ) : null
 };
 
 export default NewClient;

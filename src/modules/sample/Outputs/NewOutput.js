@@ -181,6 +181,15 @@ const NewOutput = (props) => {
 
   useEffect(() => {
     dispatch({type: ADD_MOVEMENT, payload: []});
+    let businessParameterPayload = {
+      request: {
+        payload: {
+          abreParametro: null,
+          codTipoparametro: null,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
     getBusinessParameter(businessParameterPayload);
     getGlobalParameter(globalParameterPayload);
     selectedProducts = [];
@@ -337,32 +346,13 @@ const NewOutput = (props) => {
     initialDate: '',
     money_unit: moneyToConvert,
   };
-  let businessParameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
+
   let globalParameterPayload = {
     request: {
       payload: {
         abreParametro: null,
         codTipoparametro: null,
         country: 'peru',
-      },
-    },
-  };
-  let listPayload = {
-    request: {
-      payload: {
-        initialTime: null,
-        finalTime: null,
-        businessProductCode: null,
-        movementType: 'OUTPUT',
-        merchantId: userDataRes.merchantSelected.merchantId,
       },
     },
   };
@@ -672,6 +662,19 @@ const NewOutput = (props) => {
       !(isBill.includes('bill') && isBill.includes('referralGuide')) &&
       typeDocument === 'sales'
     ) {
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: null,
+            finalTime: null,
+            businessProductCode: null,
+            movementType: 'OUTPUT',
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
+
+      
       //dispatch({type: GET_MOVEMENTS, payload: []});
       console.log('Este es el listPayload NewOutput', listPayload);
       toGetMovements(listPayload);
