@@ -152,6 +152,8 @@ const GetCreditNote = () => {
 
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
+  const {billItems_pageListBill, billLastEvalutedKey_pageListBill} = useSelector(({movements}) => movements);
+  console.log('billItems_pageListBill', billItems_pageListBill);
   const {addCreditNoteRes} = useSelector(({movements}) => movements);
   console.log('addCreditNoteRes', addCreditNoteRes);
   const {businessParameter} = useSelector(({general}) => general);
@@ -244,11 +246,11 @@ const GetCreditNote = () => {
 
   useEffect(() => {
     if (
-      getMovementsRes &&
-      Array.isArray(getMovementsRes) &&
-      getMovementsRes[0].movementType == 'BILL'
+      billItems_pageListBill &&
+      Array.isArray(billItems_pageListBill) &&
+      billItems_pageListBill[0].movementType == 'BILL'
     ) {
-      let bill = getMovementsRes.find(
+      let bill = billItems_pageListBill.find(
         (obj) => obj.movementHeaderId == query.idBill,
       );
       setSelectedBill(bill);
@@ -289,16 +291,16 @@ const GetCreditNote = () => {
       toGetMovements(listOutputsPayload);
       forceUpdate();
     }
-    if (getMovementsRes && getMovementsRes[0].movementType == 'OUTPUT') {
-      console.log('getMovementsRes de salidas', getMovementsRes);
+    if (billItems_pageListBill && billItems_pageListBill[0].movementType == 'OUTPUT') {
+      console.log('billItems_pageListBill de salidas', billItems_pageListBill);
       console.log('query.movementId', query.movementId);
-      let output = getMovementsRes.find(
+      let output = billItems_pageListBill.find(
         (obj) => obj.movementHeaderId == query.movementId,
       );
       console.log('output desde nota de credito', output);
       setSelectedOutput(output);
     }
-  }, [getMovementsRes]);
+  }, [billItems_pageListBill]);
 
   /* useEffect(() => {
     if (Object.keys(selectedBill).length !== 0 && getMovementsRes) {
@@ -535,7 +537,7 @@ const GetCreditNote = () => {
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * igv).toFixed(3))
+        ? Number((total + total * Number(query.igv)).toFixed(3))
         : Number(total.toFixed(3)),
     );
     console.log('total de los productos', total);
@@ -568,7 +570,7 @@ const GetCreditNote = () => {
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * 0.18).toFixed(3))
+        ? Number((total + total * Number(query.igv)).toFixed(3))
         : total,
     );
     forceUpdate();
