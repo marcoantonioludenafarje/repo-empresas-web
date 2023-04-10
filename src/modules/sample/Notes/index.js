@@ -22,6 +22,8 @@ import {
   DialogTitle,
   CircularProgress,
   Typography,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -134,6 +136,8 @@ let selectedCreditNote = {};
 const CreditNotesTable = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [reload, setReload] = React.useState(0);
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [moneyUnit, setMoneyUnit] = React.useState('');
@@ -447,7 +451,7 @@ const CreditNotesTable = (props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
+      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}

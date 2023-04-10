@@ -28,6 +28,8 @@ import {
   DialogTitle,
   CircularProgress,
   TablePagination,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -153,6 +155,8 @@ let selectedReferralGuide = {};
 const ReferralGuidesTable = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [reload, setReload] = React.useState(0);
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
@@ -507,7 +511,8 @@ const ReferralGuidesTable = (props) => {
   // }, [lastKey]);
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
+      <Stack sx={{m: 2}} 
+            direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -567,7 +572,7 @@ const ReferralGuidesTable = (props) => {
           </TableHead>
           <TableBody>
             {referralGuideItems_pageListGuide && Array.isArray(referralGuideItems_pageListGuide) ? (
-              referralGuideItems_pageListGuide.sort(compare).map((obj, index) => (
+              referralGuideItems_pageListGuide.map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}

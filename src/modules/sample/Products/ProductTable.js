@@ -23,6 +23,8 @@ import {
   IconButton,
   Box,
   Collapse,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   getYear,
@@ -127,6 +129,8 @@ const ProductTable = (arrayObjs, props) => {
   const classes = useStyles(props);
   const history = useHistory();
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [firstload, setFirstload] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
@@ -586,7 +590,7 @@ const ProductTable = (arrayObjs, props) => {
 
   return (
     <>
-      <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
+      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
         <TextField
           label='Código'
           variant='outlined'

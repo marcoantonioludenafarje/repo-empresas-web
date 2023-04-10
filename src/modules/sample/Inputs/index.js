@@ -27,6 +27,8 @@ import {
   DialogTitle,
   CircularProgress,
   Collapse,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -162,6 +164,8 @@ let redirect = false;
 const InputsTable = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   let popUp = false;
   const [reload, setReload] = React.useState(0);
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -807,7 +811,7 @@ const InputsTable = (props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
+      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}

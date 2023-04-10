@@ -22,6 +22,8 @@ import {
   Card,
   Box,
   CircularProgress,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -105,6 +107,8 @@ const InventoryTable = (props) => {
   const dispatch = useDispatch();
   let popUp = false;
   let codProdSelected = '';
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [fast, setFast] = React.useState({});
 
@@ -289,7 +293,7 @@ const InventoryTable = (props) => {
         {({isSubmitting}) => (
           <Stack
             sx={{m: 2}}
-            direction='row'
+            direction={isMobile ? 'column' : 'row'}
             spacing={2}
             className={classes.stack}
           >

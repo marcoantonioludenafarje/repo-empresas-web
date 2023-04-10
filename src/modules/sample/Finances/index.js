@@ -40,6 +40,8 @@ import {
   CircularProgress,
   FormControl,
   Collapse,
+  useTheme,
+  useMediaQuery
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -161,8 +163,10 @@ const months = {
 };
 
 const FinancesTable = (props) => {
-  const [value, setValue] = React.useState(Date.now());
   const classes = useStyles(props);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [value, setValue] = React.useState(Date.now());
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open2, setOpen2] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -691,7 +695,7 @@ const FinancesTable = (props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
+      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
         <ToggleButtonGroup
           value={financeType}
           exclusive

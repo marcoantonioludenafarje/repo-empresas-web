@@ -26,6 +26,8 @@ import {
   Stack,
   TextField,
   CircularProgress,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -106,6 +108,8 @@ const ProviderTable = (arrayObjs, props) => {
   const classes = useStyles(props);
   const history = useHistory();
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [firstload, setFirstload] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
@@ -396,7 +400,7 @@ const ProviderTable = (arrayObjs, props) => {
   console.log('ESTOY AQUI');
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
+      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
         <FormControl sx={{my: 0, width: 100}}>
           <InputLabel id='categoria-label' style={{fontWeight: 200}}>
             Identificador

@@ -32,6 +32,8 @@ import {
   CircularProgress,
   IconButton,
   Collapse,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -231,6 +233,8 @@ const OutputsTable = (props) => {
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   //UseStates
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -1151,7 +1155,10 @@ const OutputsTable = (props) => {
 
   return  typeClient ? (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
+      <Stack sx={{
+        m: 2,
+      }} 
+      direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
