@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import * as yup from 'yup';
 import {useIntl} from 'react-intl';
 
+import AppLoader from '../../../@crema/core/AppLoader';
 import {
   Table,
   TableBody,
@@ -253,6 +254,7 @@ const OutputsTable = (props) => {
   const [value, setValue] = React.useState(Date.now() - 2678400000);
   const [value2, setValue2] = React.useState(Date.now());
   const [typeClient, setTypeClient]= React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
   // setOpen3(query.operationBack)
   //API FUNCTIONS
   const getBusinessParameter = (payload) => {
@@ -385,6 +387,8 @@ const OutputsTable = (props) => {
       // link.href = generateSellTicketRes.enlace_del_pdf;
       // link.target = `${generateSellTicketRes.enlace_del_pdf}`;
       // link.click();
+      setIsLoading(false);
+      toGetMovements(listPayload);
       window.open(`${generateSellTicketRes.enlace_del_pdf}`);
     }
   }, [generateSellTicketRes]);
@@ -658,6 +662,7 @@ const OutputsTable = (props) => {
     });
   };
   const getSellTicket = () => {
+    handleClose();
     let finalPayload = {
       request: {
         payload: {
@@ -676,7 +681,7 @@ const OutputsTable = (props) => {
           serial: 'V001',
           documentIntern: selectedOutput.documentIntern,
           clientEmail: selectedOutput.clientEmail,
-          numberBill: selectedOutput.codMovement.split("-")[1],
+          numberSellTicket: selectedOutput.codMovement.split("-")[1],
           automaticSendSunat: /* sendSunat */ true,
           automaticSendClient: /* sendClient */ true,
           referralGuide: false,
@@ -709,6 +714,7 @@ const OutputsTable = (props) => {
     };
     console.log('getSellTicket payload', finalPayload);
     toGenerateSellTicket(finalPayload);
+    setIsLoading(true);
   };
   const getReferralGuide = () => {
     console.log('Selected Output', selectedOutput);
@@ -1487,6 +1493,11 @@ const OutputsTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      {isLoading ? (
+        <AppLoader />
+      ) : (
+        <></>
+      )}
       <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'
