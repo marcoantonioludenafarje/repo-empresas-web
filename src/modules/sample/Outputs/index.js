@@ -1609,7 +1609,7 @@ const OutputsTable = (props) => {
         {typeClient == 'PN' && localStorage
           .getItem('pathsBack')
           .includes(
-            '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+            '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
           ) &&
         selectedOutput.movementSubType == 'sales' &&
         !selectedOutput.existSellTicket ? (

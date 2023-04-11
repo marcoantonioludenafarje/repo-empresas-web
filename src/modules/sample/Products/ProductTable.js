@@ -341,42 +341,59 @@ const ProductTable = (arrayObjs, props) => {
   const cleanList = () => {
     let listResult = [];
     listProducts.map((obj) => {
+      obj.typeProduct1 = showTypeText(obj.typeProduct);
+      obj.businessProductCode1 = '' || obj.businessProductCode;
+
+      let dosificacion = "";
+      for (let i = 0; i < obj.inputsProduct.length; i++) {
+          dosificacion += obj.inputsProduct[i].description + " - " + obj.inputsProduct[i].quantity + " | ";
+      }
+      dosificacion = dosificacion.replace(/\s*\|\s*$/, "");
+      obj.dosificacion = dosificacion;
+      
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
         (({
-          product,
+          businessProductCode1,
           description,
+          alias,
+          customCodeProduct,
+          category,          
           weight,
-          /* flete, */
-          typeProduct,
           costPriceUnit,
           priceBusinessMoneyWithIgv,
-          stock,
+          initialStock,
+          typeProduct1,
+          dosificacion,
         }) => ({
-          product,
+          businessProductCode1,
           description,
+          alias,
+          customCodeProduct,
+          category,          
           weight,
-          typeProduct,
-          /* flete, */
           costPriceUnit,
           priceBusinessMoneyWithIgv,
-          stock,
+          initialStock,
+          typeProduct1,
+          dosificacion,
         }))(obj),
       );
     });
     return listResult;
   };
   const headersExcel = [
-    'Código de producto',
+    'Código',
     'Descripción',
     'Alias',
+    'Cod Aduanero',
+    'Categoría',
     `Peso (${weight_unit})`,
-    'Tipo',
-    /* 'Flete', */
     'Precio costo sugerido',
     'Precio venta sugerido',
     'Stock inicial',
-    /* 'Precio unitario', */
+    'Tipo',
+    'Prod. relacionados'
   ];
   const exportDoc = () => {
     var ws = XLSX.utils.json_to_sheet(cleanList());
@@ -563,6 +580,15 @@ const ProductTable = (arrayObjs, props) => {
       return <IntlMessages id='product.type.intermediateProduct' />;
     if (type == 'endProduct')
       return <IntlMessages id='product.type.endProduct' />;
+  };
+
+  const showTypeText = (type) => {
+    if (type == 'rawMaterial')
+      return 'Insumo';
+    if (type == 'intermediateProduct')
+      return 'Producto intermedio';
+    if (type == 'endProduct')
+      return 'Producto terminado';
   };
 
   const goToMovementsDetail = (product) => {
