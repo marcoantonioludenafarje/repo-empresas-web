@@ -570,7 +570,7 @@ const BusinessInfoForm = ({
                   onChange={uploadNewFile1}
                   id='newFile'
                   name='newfile'
-                  accept='.pem, .pfx'
+                  accept='.pem, .pfx, .p12'
                 />
               </Button>
               {billingCertified ? (
