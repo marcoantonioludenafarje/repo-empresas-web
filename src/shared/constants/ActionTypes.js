@@ -210,6 +210,7 @@ export const CANCEL_INVOICE = 'cancel_invoice';
 export const ADD_CREDIT_NOTE = 'add_credit_note';
 export const ADD_RECEIPT = 'add_receipt';
 export const GENERATE_SELL_TICKET = 'generate_sell_ticket';
+export const REFERRAL_GUIDES_BATCH_CONSULT = 'referral_guides_batch_consult';
 
 //ROUTES
 export const GENERATE_ROUTE = 'generate_route';
