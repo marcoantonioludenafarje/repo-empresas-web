@@ -37,7 +37,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
-
+import Backdrop from "@mui/material/Backdrop";
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -1494,7 +1494,13 @@ const OutputsTable = (props) => {
         </Table>
       </TableContainer>
       {isLoading ? (
-        <AppLoader />
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading}
+        >
+          <AppLoader />
+          {/* <CircularProgress color="inherit" /> */}
+        </Backdrop>
       ) : (
         <></>
       )}
