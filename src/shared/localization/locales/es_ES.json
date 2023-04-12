@@ -1017,7 +1017,7 @@
   "finance.purchase.type.credit": "Al credito",
   "payment.method": "Tipo de pago",
   "payment.method.cash": "Efectivo",
-  "payment.method.debit": "Debito",
+  "payment.method.debit": "Al contado",
   "payment.method.credit": "Crédito",
   "otherPayConcept.action": "Tipo de Acción",
   "otherPayConcept.action.add": "SUMAR",
