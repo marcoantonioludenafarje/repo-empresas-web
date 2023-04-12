@@ -592,12 +592,18 @@ const ReceiptsTable = (props) => {
         aria-label='outlined button group'
         className={classes.btnGroup}
       >
-        <Button 
-          variant='outlined' 
-          startIcon={<GridOnOutlinedIcon />}
-          onClick={exportToExcel}>
-          Exportar todo
-        </Button>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportReceipts/*') ===
+          true ? (
+            <Button
+              variant='outlined'
+              startIcon={<GridOnOutlinedIcon />}
+              onClick={exportToExcel}
+            >
+              Exportar todo
+            </Button>
+        ) : null}
       </ButtonGroup>
 
       <Dialog

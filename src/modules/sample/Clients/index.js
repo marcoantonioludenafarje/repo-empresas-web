@@ -534,12 +534,24 @@ const ClientTable = (arrayObjs, props) => {
           </Button>
         ) : null}
 
-        <Button 
-          variant='outlined' 
-          startIcon={<GridOnOutlinedIcon />}
-          onClick={exportToExcel}>
-          Exportar todo
-        </Button>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportClients/*') ===
+          true ? (
+            <Button
+              variant='outlined'
+              startIcon={<GridOnOutlinedIcon />}
+              onClick={exportToExcel}
+            >
+              Exportar todo
+            </Button>
+        ) : null}
+
+        {!popUp ? (
+          <></> 
+        ) : (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        )}
       </ButtonGroup>
       <Dialog
         open={openStatus}

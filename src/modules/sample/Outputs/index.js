@@ -1005,7 +1005,7 @@ const OutputsTable = (props) => {
                 /* disabled={type == 'referralGuide'} */
                 onClick={() => {window.open(obj.existSellTicket)}}
               >
-                Ver
+                NRO. {obj.codMovement.split('-')[1]}
               </Button>
             );
             
@@ -1506,7 +1506,7 @@ const OutputsTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/movementProducts/register?path=/output/*') ===
-        true ? (
+        true && !popUp ? (
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
@@ -1516,8 +1516,10 @@ const OutputsTable = (props) => {
           </Button>
         ) : null}
 
-        {!popUp ? (
-          <>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportOutputs/*') ===
+          true && !popUp ? (
             <Button
               variant='outlined'
               startIcon={<GridOnOutlinedIcon />}
@@ -1525,7 +1527,10 @@ const OutputsTable = (props) => {
             >
               Exportar todo
             </Button>
-          </>
+        ) : null}
+
+        {!popUp ? (
+          <></> 
         ) : (
           <CircularProgress disableShrink sx={{m: '10px'}} />
         )}
@@ -1538,7 +1543,7 @@ const OutputsTable = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar sallida'}
+          {'Eliminar salida'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -1626,7 +1631,7 @@ const OutputsTable = (props) => {
         !selectedOutput.existSellTicket ? (
           <MenuItem onClick={getSellTicket}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
-            Generar Ticket de Venta
+            Generar Ticket
           </MenuItem>
         ) : null}
 
