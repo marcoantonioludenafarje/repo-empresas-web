@@ -31,7 +31,7 @@ const NotificationItem = (props) => {
   };
   const convertToDate = (miliseconds) => {
     const fecha = new Date(miliseconds);
-    const fecha_actual = `${fecha.getDate()}/${fecha.getMonth() < 10 ? `0${fecha.getMonth()}`: fecha.getMonth()}/${fecha.getFullYear()} - ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds()}`;
+    const fecha_actual = `${fecha.getDate()}/${fecha.getMonth() < 10 ? `0${fecha.getMonth()}`: fecha.getMonth()}/${fecha.getFullYear()} - ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds() < 10 ? `0${fecha.getSeconds()}`: fecha.getSeconds()}`;
     return fecha_actual;
   };
   return (
