@@ -51,6 +51,7 @@ import PendingIcon from '@mui/icons-material/Pending';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
+import PageviewIcon from '@mui/icons-material/Pageview';
 import {red, amber} from '@mui/material/colors';
 import {exportExcelTemplateToReferralGuides} from '../../../redux/actions/General';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -162,12 +163,16 @@ const ReferralGuidesTable = (props) => {
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [openError, setOpenError] = React.useState(false);
+
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [totalItems, setTotalItems] = React.useState([]);
   const [lastKey, setLastKey] = React.useState(null);
+  const [errorDetail, setErrorDetail] = React.useState("");
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -454,6 +459,29 @@ const ReferralGuidesTable = (props) => {
         return null;
     }
   };
+
+  const showCanceled = (bool) => {
+    if (bool) {
+      return (
+        <Typography sx={{color: 'error.light', fontWeight: '500'}}>
+          <IntlMessages sx={{color: 'red'}} id='common.yes' />
+        </Typography>
+      );
+    } else {
+      return <></>;
+    }
+  };
+
+  const showIconErrorStatus = (bool) => {
+    if (bool) {
+      return (
+       <PageviewIcon sx={{color: amber[500]}} />
+      );
+    } else {
+      return <></>;
+    }
+  };
+
   const showIconStatus = (bool) => {
     switch (bool) {
       case 'waiting' || null:
@@ -508,6 +536,14 @@ const ReferralGuidesTable = (props) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const CancelOptionOpen = () => {
+    setOpen(true);
+  }
+
+  const CancelOptionClose = () => {
+    setOpen(false);
+  }
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -592,6 +628,8 @@ const ReferralGuidesTable = (props) => {
               <TableCell>Observación</TableCell>
               <TableCell>Enviado a Sunat</TableCell>
               <TableCell>Aceptado por Sunat</TableCell>
+              <TableCell>Anulado?</TableCell>
+              <TableCell>Error</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
@@ -627,6 +665,19 @@ const ReferralGuidesTable = (props) => {
                   </TableCell>
                   <TableCell align='center'>
                     {showIconStatus(obj.acceptedStatus)}
+                  </TableCell>
+                  <TableCell>      
+                    {showCanceled(obj.cancelStatus || false)}
+                  </TableCell>
+                  <TableCell>
+                  <Button
+                      onClick={() =>{
+                        setOpenError(true)
+                        setErrorDetail(obj.errorDetail)
+                      }}
+                    >
+                      {showIconErrorStatus(obj.errorDetail || false)}
+                    </Button>
                   </TableCell>
                   <TableCell>
                     <Button
@@ -730,7 +781,28 @@ const ReferralGuidesTable = (props) => {
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Consultar Estado
         </MenuItem>
+        <MenuItem onClick={CancelOptionOpen}>
+          Anular
+        </MenuItem>
       </Menu>
+
+      <Dialog 
+        open={openError}
+        onClose={() => setOpenError(false)}
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}}>Error de guía</DialogTitle>
+        <DialogContent>
+          {errorDetail}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={open} onClose={CancelOptionClose}>
+        <DialogTitle sx={{fontSize: '1.5em'}}>Anulación de Guías de remisión</DialogTitle>
+        <DialogContent>
+        La anulación legal se realiza a traves del portal de Sunat, puede seguir
+        el siguiente tutorial: 
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };
