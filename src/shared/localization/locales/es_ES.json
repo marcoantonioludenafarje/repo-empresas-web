@@ -409,6 +409,7 @@
   "common.writeContent": "Escribir contenido ...",
   "common.undefinedFilter": "Sin definir",
   "validation.required": "!Por favor, complete este campo!",
+  "validation.positive": "!Por favor, complete valor positivo!",
   "validation.select.product": "Seleccione un producto primero",
   "validation.minLength": "!Este campo solo acepta letras!",
   "validation.maxLength": "Solo puedes escribir 20 carácteres como máximo",
