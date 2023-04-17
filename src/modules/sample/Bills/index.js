@@ -12,6 +12,7 @@ import {
   Button,
   MenuItem,
   Menu,
+  IconButton,
   Stack,
   TextField,
   Card,
@@ -45,6 +46,8 @@ import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import {red} from '@mui/material/colors';
 import {getUserData} from '../../../redux/actions/User';
 import {exportExcelTemplateToBills} from '../../../redux/actions/General';
+import CloseIcon from '@mui/icons-material/Close';
+import MoreFiltersDocumentSunat from '../Filters/MoreFiltersDocumentSunat';
 
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
@@ -157,6 +160,9 @@ const BillsTable = (props) => {
   const {excelTemplateGeneratedToBillsRes} = useSelector(
     ({general}) => general,
   );
+  const [moreFilters, setMoreFilters] = React.useState(false);
+  const documentSunat = "bill";
+
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getBillItems_pageListBill(payload));
@@ -255,6 +261,40 @@ const BillsTable = (props) => {
   }, [globalParameter]);
 
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
+
+  const buildFilter = (typeDoc, numberDoc) => {
+    let nroDoc = numberDoc.length !== 0 ? numberDoc : null;
+    if (typeDoc !== 'anyone' && numberDoc.length !== 0) {
+      return `${typeDoc}||${numberDoc}`;
+    } else if (typeDoc !== 'anyone' && numberDoc.length === 0) {
+      return typeDoc;
+    } else {
+      return nroDoc;
+    }
+  };
+  const filterData = (dataFilters) => {
+    console.log('dataFilters', dataFilters);
+    listPayload.request.payload.searchByDocument = buildFilter(
+      dataFilters.typeDocument,
+      dataFilters.nroDoc,
+    );
+    if (dataFilters.typeIdentifier == 'TODOS') {
+      dataFilters.typeIdentifier = '';
+    }
+    listPayload.request.payload.typeDocumentClient = dataFilters.typeIdentifier;
+    listPayload.request.payload.numberDocumentClient =
+      dataFilters.nroIdentifier;
+    listPayload.request.payload.denominationClient =
+      dataFilters.searchByDenominationProvider.replace(/ /g, '').toUpperCase();
+    console.log('listPayload', listPayload);
+    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    toGetMovements(listPayload);
+    (listPayload.request.payload.searchByDocument = ''),
+      (listPayload.request.payload.typeDocumentClient = '');
+    listPayload.request.payload.numberDocumentClient = '';
+    listPayload.request.payload.denominationClient = '';
+    setMoreFilters(false);
+  };
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
@@ -518,7 +558,11 @@ const BillsTable = (props) => {
             console.log('payload de busqueda', listPayload);
           }}
         />
-        <Button variant='outlined' startIcon={<FilterAltOutlinedIcon />}>
+        <Button
+          onClick={() => setMoreFilters(true)}
+          startIcon={<FilterAltOutlinedIcon />}
+          variant='outlined'
+        >
           Más filtros
         </Button>
         <Button
@@ -760,6 +804,41 @@ const BillsTable = (props) => {
           </MenuItem>
         ) : null} */}
       </Menu>
+
+      <Dialog
+        open={moreFilters}
+        onClose={() => setMoreFilters(false)}
+        maxWidth='sm'
+        fullWidth
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          <IconButton
+            aria-label='close'
+            onClick={() => setMoreFilters(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          {'Más filtros'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <DialogContentText
+            sx={{fontSize: '1.2em'}}
+            id='alert-dialog-description'
+          >
+            <MoreFiltersDocumentSunat sendData={filterData} ds={documentSunat} />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
+      </Dialog>
+
     </Card>
   );
 };

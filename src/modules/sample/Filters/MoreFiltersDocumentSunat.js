@@ -36,8 +36,8 @@ const formats = {
   quotation: '52',
   bill: 'FFF1-13',
   referralGuide: 'TTT1-18',
-  creditNote: 'FFF1-21',
-  debitNote: 'FFF1-16',
+  credit_Note: 'FFF1-21',
+  debit_Note: 'FFF1-16',
   receipt: 'BBB1-2',
   anyone: '',
   sellticket: '12',
@@ -49,19 +49,21 @@ const typeDocs = [
     name: 'referralGuide',
     message: <IntlMessages id='document.type.referralGuide' />,
   },
-  {name: 'creditNote', message: <IntlMessages id='document.type.creditNote' />},
-  {name: 'debitNote', message: <IntlMessages id='document.type.debitNote' />},
+  {name: 'credit_Note', message: <IntlMessages id='document.type.creditNote' />},
+  {name: 'debit_Note', message: <IntlMessages id='document.type.debitNote' />},
   {name: 'receipt', message: <IntlMessages id='document.type.receipt' />},
   {name: 'anyone', message: <IntlMessages id='document.type.anyone' />},
   {name: 'sellticket', message: <IntlMessages id='document.type.sellticket' />},
 ];
 
-const MoreFilters = ({sendData}) => {
-  const [typeDocument, setTypeDocument] = React.useState('anyone');
-  const [docType, setDocType] = React.useState('anyone');
+const MoreFiltersDocumentSunat = ({sendData, ds}) => {
+  console.log('info inicial', ds);
+  const [typeDocument, setTypeDocument] = React.useState(ds);
+  const [docType, setDocType] = React.useState(ds);
   const [typeIdentifier, setTypeIdentifier] = React.useState('TODOS');
 
   let changeValueField;
+  const isNoteDocument = ( ds=='credit_Note' || ds=='debit_Note' ? true : false );
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
@@ -90,56 +92,74 @@ const MoreFilters = ({sendData}) => {
             noValidate
             autoComplete='on'
           >
-            <Grid container spacing={2} sx={{width: 1}}>
-              <Grid item xs={12}>
-                <FormControl fullWidth sx={{my: 2}}>
+            <Grid
+              container
+              spacing={2}
+              sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
+            >
+              <Grid item xs={6}></Grid>
+              <Grid item xs={6}>
+                <Typography sx={{color: 'aaa'}}>
+                  Formato de documento: {formats[docType]}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl fullWidth sx={{my: 0}}>
                   <InputLabel id='moneda-label' style={{fontWeight: 200}}>
-                    Tipo de documento relacionado
+                    Tipo de documento Sunat
                   </InputLabel>
+
+                  {!isNoteDocument ?  (
+                    <Select
+                      name='documentType'
+                      labelId='documentType-label'
+                      label='Tipo de documento Sunat'
+                      value={typeDocument}
+                      disabled
+                    >  
+                      <MenuItem value='bill' style={{fontWeight: 200}}>
+                        <IntlMessages id='document.type.bill' />
+                      </MenuItem>
+                      <MenuItem value='receipt' style={{fontWeight: 200}}>
+                        <IntlMessages id='document.type.receipt' />
+                      </MenuItem>
+                      <MenuItem value='sellticket' style={{fontWeight: 200}}>
+                        <IntlMessages id='document.type.sellticket' />
+                      </MenuItem>
+                      <MenuItem value='referralGuide' style={{fontWeight: 200}}>
+                        <IntlMessages id='document.type.referralGuide' />
+                      </MenuItem>
+                      <MenuItem value='credit_Note' style={{fontWeight: 200}}>
+                        <IntlMessages id='document.type.creditNote' />
+                      </MenuItem>
+                      <MenuItem value='debit_Note' style={{fontWeight: 200}}>
+                        <IntlMessages id='document.type.debitNote' />
+                      </MenuItem>
+                    </Select>
+                 ) : 
                   <Select
-                    name='documentType'
-                    labelId='documentType-label'
-                    label='Tipo de documento'
-                    onChange={(event) => {
-                      console.log('event.target.value', event.target.value);
-                      setDocType(event.target.value);
-                      setTypeDocument(event.target.value);
-                    }}
-                    value={typeDocument}
-                    defaultValue='anyone'
-                  >
-                    <MenuItem value='anyone' style={{fontWeight: 200}}>
-                      <IntlMessages id='document.type.anyone' />
-                    </MenuItem>
-                    <MenuItem value='bill' style={{fontWeight: 200}}>
-                      <IntlMessages id='document.type.bill' />
-                    </MenuItem>
-                    <MenuItem value='referralGuide' style={{fontWeight: 200}}>
-                      <IntlMessages id='document.type.referralGuide' />
-                    </MenuItem>
-                    <MenuItem value='creditNote' style={{fontWeight: 200}}>
-                      <IntlMessages id='document.type.creditNote' />
-                    </MenuItem>
-                    <MenuItem value='debitNote' style={{fontWeight: 200}}>
-                      <IntlMessages id='document.type.debitNote' />
-                    </MenuItem>
-                    <MenuItem value='receipt' style={{fontWeight: 200}}>
-                      <IntlMessages id='document.type.receipt' />
-                    </MenuItem>
-                    <MenuItem value='sellticket' style={{fontWeight: 200}}>
-                      <IntlMessages id='document.type.sellticket' />
-                    </MenuItem>
-                  </Select>
+                     name='documentType'
+                     labelId='documentType-label'
+                     label='Tipo de documento Sunat'
+                     value={typeDocument}
+                     onChange={(event) => {
+                       console.log('event.target.value', event.target.value);
+                       setDocType(event.target.value);
+                       setTypeDocument(event.target.value);
+                     }}
+                   > 
+                     <MenuItem value='credit_Note' style={{fontWeight: 200}}>
+                       <IntlMessages id='document.type.creditNote' />
+                     </MenuItem>
+                     <MenuItem value='debi_N_ote' style={{fontWeight: 200}}>
+                       <IntlMessages id='document.type.debitNote' />
+                     </MenuItem>
+                   </Select>
+                 }
                 </FormControl>
               </Grid>
 
-              <Grid item xs={12}>
-                <Typography sx={{color: 'aaa', mx: '14px'}}>
-                  Formato de documento relacionado: {formats[docType]}
-                </Typography>
-              </Grid>
-
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <AppUpperCaseTextField
                   label={`Número de documento`}
                   name='nroDoc'
@@ -150,11 +170,10 @@ const MoreFilters = ({sendData}) => {
                     '& .MuiInputBase-input': {
                       fontSize: 14,
                     },
-                    my: 2,
+                    my: 0,
                   }}
                 />
               </Grid>
-
               <Grid item xs={6}>
                 <FormControl fullWidth sx={{my: 2}}>
                   <InputLabel id='categoria-label' style={{fontWeight: 200}}>
@@ -243,8 +262,8 @@ const MoreFilters = ({sendData}) => {
   );
 };
 
-MoreFilters.propTypes = {
+MoreFiltersDocumentSunat.propTypes = {
   sendData: PropTypes.func.isRequired,
 };
 
-export default MoreFilters;
+export default MoreFiltersDocumentSunat;

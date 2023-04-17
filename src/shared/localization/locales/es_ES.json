@@ -998,6 +998,7 @@
   "document.type.creditNote": "Nota de crédito",
   "document.type.debitNote": "Nota de debito",
   "document.type.referralGuide": "Guía de remisión",
+  "document.type.sellticket": "Ticket",
   "document.type.anyone": "Cualquiera",
   "document.cancelStatus.true": "Sí",
   "document.cancelStatus.false": "",

@@ -52,6 +52,7 @@ const typeDocs = [
   {name: 'debitNote', message: <IntlMessages id='document.type.debitNote' />},
   {name: 'receipt', message: <IntlMessages id='document.type.receipt' />},
   {name: 'anyone', message: <IntlMessages id='document.type.anyone' />},
+  {name: 'sellticket', message: <IntlMessages id='document.type.sellticket' />},
 ];
 
 const MoreFiltersFinances = ({sendData}) => {
@@ -205,7 +206,7 @@ const MoreFiltersFinances = ({sendData}) => {
               </Grid>
 
               <Grid item xs={12}>
-                <AppTextField
+                <AppUpperCaseTextField
                   sx={{
                     width: '100%',
                     '& .MuiInputBase-input': {
