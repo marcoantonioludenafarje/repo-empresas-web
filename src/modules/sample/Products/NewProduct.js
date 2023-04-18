@@ -639,8 +639,8 @@ const NewProduct = (props) => {
         if (
           (goodStockComplexProducts &&
             //selectedProducts.length > 0 &&
-            typeProduct == 'intermediateProduct') ||
-          typeProduct !== 'intermediateProduct'
+            typeProduct !== 'rawMaterial') ||
+          typeProduct == 'rawMaterial'
         ) {
           console.log('Todo correcto');
           let cleanProducts = [];

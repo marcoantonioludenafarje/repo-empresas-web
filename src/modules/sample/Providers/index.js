@@ -538,12 +538,24 @@ const ProviderTable = (arrayObjs, props) => {
             Nuevo
           </Button>
         ) : null}
-        <Button 
-          variant='outlined' 
-          startIcon={<GridOnOutlinedIcon />}
-          onClick={exportToExcel}>
-          Exportar todo
-        </Button>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportProviders/*') ===
+          true ? (
+            <Button
+              variant='outlined'
+              startIcon={<GridOnOutlinedIcon />}
+              onClick={exportToExcel}
+            >
+              Exportar todo
+            </Button>
+        ) : null}
+
+        {!popUp ? (
+          <></> 
+        ) : (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        )}
       </ButtonGroup>
       <Dialog
         open={openStatus}

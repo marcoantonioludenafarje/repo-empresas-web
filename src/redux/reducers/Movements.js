@@ -30,7 +30,8 @@ import {
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
   SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
-  GENERATE_SELL_TICKET
+  GENERATE_SELL_TICKET,
+  REFERRAL_GUIDES_BATCH_CONSULT
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -350,7 +351,11 @@ const movementsReducer = (state = INIT_STATE, action) => {
           selectedRoute_PageListPredefinedRoutes:action.payload,
       };
   
-
+    case REFERRAL_GUIDES_BATCH_CONSULT:
+      return {
+          ...state,
+          referralGuidesBatchConsultRes: action.payload,
+      };
 
 
       

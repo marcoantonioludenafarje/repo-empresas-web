@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import * as yup from 'yup';
 import {useIntl} from 'react-intl';
 
+import AppLoader from '../../../@crema/core/AppLoader';
 import {
   Table,
   TableBody,
@@ -36,7 +37,7 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
-
+import Backdrop from "@mui/material/Backdrop";
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -253,6 +254,7 @@ const OutputsTable = (props) => {
   const [value, setValue] = React.useState(Date.now() - 2678400000);
   const [value2, setValue2] = React.useState(Date.now());
   const [typeClient, setTypeClient]= React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
   // setOpen3(query.operationBack)
   //API FUNCTIONS
   const getBusinessParameter = (payload) => {
@@ -385,6 +387,8 @@ const OutputsTable = (props) => {
       // link.href = generateSellTicketRes.enlace_del_pdf;
       // link.target = `${generateSellTicketRes.enlace_del_pdf}`;
       // link.click();
+      setIsLoading(false);
+      toGetMovements(listPayload);
       window.open(`${generateSellTicketRes.enlace_del_pdf}`);
     }
   }, [generateSellTicketRes]);
@@ -658,6 +662,7 @@ const OutputsTable = (props) => {
     });
   };
   const getSellTicket = () => {
+    handleClose();
     let finalPayload = {
       request: {
         payload: {
@@ -676,7 +681,7 @@ const OutputsTable = (props) => {
           serial: 'V001',
           documentIntern: selectedOutput.documentIntern,
           clientEmail: selectedOutput.clientEmail,
-          numberBill: selectedOutput.codMovement.split("-")[1],
+          numberSellTicket: selectedOutput.codMovement.split("-")[1],
           automaticSendSunat: /* sendSunat */ true,
           automaticSendClient: /* sendClient */ true,
           referralGuide: false,
@@ -709,6 +714,7 @@ const OutputsTable = (props) => {
     };
     console.log('getSellTicket payload', finalPayload);
     toGenerateSellTicket(finalPayload);
+    setIsLoading(true);
   };
   const getReferralGuide = () => {
     console.log('Selected Output', selectedOutput);
@@ -999,7 +1005,7 @@ const OutputsTable = (props) => {
                 /* disabled={type == 'referralGuide'} */
                 onClick={() => {window.open(obj.existSellTicket)}}
               >
-                Ver
+                NRO. {obj.codMovement.split('-')[1]}
               </Button>
             );
             
@@ -1487,6 +1493,17 @@ const OutputsTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
+      {isLoading ? (
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading}
+        >
+          <AppLoader />
+          {/* <CircularProgress color="inherit" /> */}
+        </Backdrop>
+      ) : (
+        <></>
+      )}
       <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'
@@ -1495,7 +1512,7 @@ const OutputsTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/movementProducts/register?path=/output/*') ===
-        true ? (
+        true && !popUp ? (
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
@@ -1505,8 +1522,10 @@ const OutputsTable = (props) => {
           </Button>
         ) : null}
 
-        {!popUp ? (
-          <>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportOutputs/*') ===
+          true && !popUp ? (
             <Button
               variant='outlined'
               startIcon={<GridOnOutlinedIcon />}
@@ -1514,7 +1533,10 @@ const OutputsTable = (props) => {
             >
               Exportar todo
             </Button>
-          </>
+        ) : null}
+
+        {!popUp ? (
+          <></> 
         ) : (
           <CircularProgress disableShrink sx={{m: '10px'}} />
         )}
@@ -1527,7 +1549,7 @@ const OutputsTable = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar sallida'}
+          {'Eliminar salida'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -1615,7 +1637,7 @@ const OutputsTable = (props) => {
         !selectedOutput.existSellTicket ? (
           <MenuItem onClick={getSellTicket}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
-            Generar Ticket de Venta
+            Generar Ticket
           </MenuItem>
         ) : null}
 

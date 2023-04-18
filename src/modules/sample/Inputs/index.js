@@ -1146,8 +1146,10 @@ const InputsTable = (props) => {
           </Button>
         ) : null}
 
-        {!popUp ? (
-          <>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportInputs/*') ===
+          true ? (
             <Button
               variant='outlined'
               startIcon={<GridOnOutlinedIcon />}
@@ -1155,9 +1157,12 @@ const InputsTable = (props) => {
             >
               Exportar todo
             </Button>
-          </>
+        ) : null}
+
+        {!popUp ? (
+          <></> 
         ) : (
-          <></>
+          <CircularProgress disableShrink sx={{m: '10px'}} />
         )}
       </ButtonGroup>
 

@@ -807,6 +807,19 @@ const ProductTable = (arrayObjs, props) => {
           </Button>
         ) : null}
 
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportProducts/*') ===
+          true ? (
+            <Button
+              variant='outlined'
+              startIcon={<GridOnOutlinedIcon />}
+              onClick={exportDoc}
+            >
+              Exportar todo
+            </Button>
+        ) : null}
+
         {!popUp ? (
           <>
             <Button
@@ -824,13 +837,6 @@ const ProductTable = (arrayObjs, props) => {
                 name='file'
                 accept='.xlsx, .csv'
               /> */}
-            </Button>
-            <Button
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportDoc}
-              variant='outlined'
-            >
-              Exportar todo
             </Button>
           </>
         ) : (

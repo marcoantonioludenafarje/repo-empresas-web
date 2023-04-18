@@ -588,13 +588,24 @@ const LocationTable = (arrayObjs, props) => {
           </Button>
         ) : null}
 
-        <Button
-          startIcon={<GridOnOutlinedIcon />}
-          onClick={exportDoc}
-          variant='outlined'
-        >
-          Exportar todo
-        </Button>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/exportLocations/*') ===
+          true ? (
+            <Button
+              variant='outlined'
+              startIcon={<GridOnOutlinedIcon />}
+              onClick={exportDoc}
+            >
+              Exportar todo
+            </Button>
+        ) : null}
+
+        {!popUp ? (
+          <></> 
+        ) : (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        )}
       </ButtonGroup>
       <Dialog
         open={openStatus}

@@ -33,7 +33,7 @@ import {
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
-
+import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CachedIcon from '@mui/icons-material/Cached';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -78,7 +78,7 @@ import {
   parseTo3Decimals,
   toSimpleDate,
 } from '../../../Utils/utils';
-import {getReferralGuides_PageListGuide, cancelInvoice} from '../../../redux/actions/Movements';
+import {getReferralGuides_PageListGuide, cancelInvoice, referralGuidesBatchConsult} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -88,6 +88,7 @@ import {
   GET_USER_DATA,
   GET_REFERRALGUIDE_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
+  REFERRAL_GUIDES_BATCH_CONSULT,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -162,7 +163,7 @@ const ReferralGuidesTable = (props) => {
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
-  
+  const [isLoading, setIsLoading] = React.useState(false);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [totalItems, setTotalItems] = React.useState([]);
@@ -191,6 +192,9 @@ const ReferralGuidesTable = (props) => {
   const toExportExcelTemplateToReferralGuides = (payload) => {
     dispatch(exportExcelTemplateToReferralGuides(payload));
   };
+  const toReferralGuidesBatchConsult = (payload) => {
+    dispatch(referralGuidesBatchConsult(payload));
+  };
 
   const useForceUpdate = () => {
     return () => setReload((value) => value + 1); // update the state to force render
@@ -205,7 +209,7 @@ const ReferralGuidesTable = (props) => {
   };
 
   //GET APIS RES
-  const {referralGuideItems_pageListGuide, referralGuideLastEvalutedKey_pageListGuide} = useSelector(({movements}) => movements);
+  const {referralGuideItems_pageListGuide, referralGuideLastEvalutedKey_pageListGuide, referralGuidesBatchConsultRes} = useSelector(({movements}) => movements);
   console.log('referralGuideItems_pageListGuide', referralGuideItems_pageListGuide);
   let listToUse = referralGuideItems_pageListGuide;
   const {successMessage} = useSelector(({movements}) => movements);
@@ -348,6 +352,27 @@ const ReferralGuidesTable = (props) => {
     setDownloadExcel(true);
   };
 
+  const batchConsultReferralGuide = () => {
+    if(userDataRes){
+      toReferralGuidesBatchConsult({
+        request: {
+          payload: {
+            merchantId: userDataRes.merchantSelected.merchantId
+          }
+        }
+      });
+      setIsLoading(true);
+    }
+  };
+
+  useEffect(() => {
+    if (referralGuidesBatchConsultRes) {
+      setIsLoading(false);
+      dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+      toGetMovements(listPayload);
+      dispatch({type: REFERRAL_GUIDES_BATCH_CONSULT, payload: undefined});
+    }
+  }, [referralGuidesBatchConsultRes]);
   useEffect(() => {
     if (excelTemplateGeneratedToReferralGuidesRes && downloadExcel) {
       setDownloadExcel(false);
@@ -642,12 +667,29 @@ const ReferralGuidesTable = (props) => {
         variant='outlined'
         aria-label='outlined button group'
         className={classes.btnGroup}
+        orientation={isMobile ? 'vertical' : 'horizontal'}
       >
-        <Button 
-          variant='outlined' 
-          startIcon={<GridOnOutlinedIcon />}
-          onClick={exportToExcel}>
-          Exportar todo
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportReferralGuides/*') ===
+          true ? (
+            <Button
+              variant='outlined'
+              startIcon={<GridOnOutlinedIcon />}
+              onClick={exportToExcel}
+            >
+              Exportar todo
+            </Button>
+        ) : null}
+        <Button
+          variant='outlined'
+          startIcon={<FindReplaceIcon />}
+          onClick={batchConsultReferralGuide}
+          disabled={isLoading}
+          color="success"
+        >
+          Consulta Masiva de Guías en SUNAT
+          {isLoading && <CircularProgress sx={{ml:2}} size={24} />}
         </Button>
       </ButtonGroup>
 
