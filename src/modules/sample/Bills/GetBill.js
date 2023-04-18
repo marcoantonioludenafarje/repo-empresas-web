@@ -265,6 +265,8 @@ const NewOutput = (props) => {
     }, 2000);
   }, []);
 
+  //----------------------
+
   useEffect(() => {
     if (businessParameter) {
       let serieParameter = businessParameter.find(
@@ -280,6 +282,8 @@ const NewOutput = (props) => {
       setSerial(serieParameter.metadata ? serieParameter.metadata : '');
     }
   }, [businessParameter]);
+
+  //------------------------
 
   useEffect(() => {
     /* setAddIgv(Number(query.igv) > 0 || query.igv == 'true'); */
@@ -466,6 +470,12 @@ const NewOutput = (props) => {
     setOpenReferralGuides(true);
     setShowAlert(false);
   };
+
+  const valueWithIGV = (value) => {
+    const IGV = igvDefault;
+    const precioConIGV =( value * (1 + IGV)).toFixed(10);
+    return precioConIGV;
+  }
 
   const showListDocumentsSelected = () => {
     const total = listDocuments.reduce((count, element) => {
@@ -1125,6 +1135,7 @@ const NewOutput = (props) => {
                 <Divider sx={{my: 3}} />
                 <OutputProducts
                   data={selectedProducts}
+                  valueWithIGV={valueWithIGV}
                   toDelete={removeProduct}
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
