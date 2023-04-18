@@ -15,13 +15,26 @@ const INIT_STATE = {
 const clientsReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_CLIENTS:
-      console.log('data de reducer GET_CLIENTS', action.payload);
+      console.log("action.payload1234", action.payload)
+      let request = action.request.request.payload
+      let lastEvaluatedKeyRequest = null 
       let items= [];
       let lastEvaluatedKey = "";
-      if(action.payload.callType !== "firstTime"){
+
+      if(request && request.LastEvaluatedKey){
+        // En estos casos hay que agregar al listado actual de items
         items = [...state.listClients, ...action.payload.Items];
         lastEvaluatedKey = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+
+
+      }else{
+        // En estos casos hay que setear con lo que venga
+        items = action.payload.Items;
+        lastEvaluatedKey = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+
+      
       }
+
       return {
         ...state,
         listClients: items, 

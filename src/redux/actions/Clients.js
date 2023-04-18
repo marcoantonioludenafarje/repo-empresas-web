@@ -15,7 +15,7 @@ export const onGetClients = (payload) => {
     API.post('tunexo', '/inventory/clients/list', {body: payload})
       .then((data) => {
         console.log('onGetClients resultado', data);
-        dispatch({type: GET_CLIENTS, payload: data.response.payload});
+        dispatch({type: GET_CLIENTS, payload: data.response.payload , request:payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
