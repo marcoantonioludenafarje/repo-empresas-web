@@ -407,9 +407,9 @@ const NewClient = (props) => {
 
                 }}
               >
-                <div>{JSON.stringify(values)}</div>
+                {/* <div>{JSON.stringify(values)}</div>
                 <div>{JSON.stringify(errors)}</div>
-                
+                 */}
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
