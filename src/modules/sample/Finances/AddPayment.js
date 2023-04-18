@@ -196,11 +196,20 @@ const AddPayment = ({sendData}) => {
                         <MenuItem value='cash' style={{fontWeight: 200}}>
                           <IntlMessages id='common.cash' />
                         </MenuItem>
+                        <MenuItem value='yape' style={{fontWeight: 200}}>
+                          Yape
+                        </MenuItem>
+                        <MenuItem value='plin' style={{fontWeight: 200}}>
+                          Plin
+                        </MenuItem>
                         <MenuItem
                           value='bankTransfer'
                           style={{fontWeight: 200}}
                         >
                           <IntlMessages id='common.bankTransfer' />
+                        </MenuItem>
+                        <MenuItem value='card' style={{fontWeight: 200}}>
+                          Tarjeta de crédito/débito
                         </MenuItem>
                         <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
                           <IntlMessages id='common.bankDeposit' />

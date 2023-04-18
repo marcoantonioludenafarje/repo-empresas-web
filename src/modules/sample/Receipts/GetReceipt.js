@@ -780,7 +780,7 @@ const GetReceipt = (props) => {
                 /* onChange={handleActualData} */
               >
                 <Grid container sx={{maxWidth: 500, margin: 'auto'}}>
-                  <Grid xs={4} sx={{px: 1, mt: 2}}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Nro Boleta'
                       name='nroReceipt'
@@ -796,7 +796,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={4} sx={{px: 1, mt: 2}}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='moneda-label' style={{fontWeight: 200}}>
                         Moneda
@@ -818,7 +818,7 @@ const GetReceipt = (props) => {
                     </FormControl>
                   </Grid>
 
-                  <Grid xs={4} sx={{px: 1, mt: 2}}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <DateTimePicker
                       renderInput={(params) => (
                         <TextField
@@ -839,7 +839,7 @@ const GetReceipt = (props) => {
                     />
                   </Grid>
 
-                  <Grid xs={4} sx={{px: 1, mt: 2}}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label={`Total ${moneyUnit} sin IGV`}
                       name='totalField'
@@ -854,7 +854,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={4} sx={{px: 1, mt: 2}}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label={`Total ${moneyUnit} con IGV`}
                       name='totalFieldIgv'
@@ -870,7 +870,7 @@ const GetReceipt = (props) => {
                     />
                   </Grid>
                   <Grid
-                    xs={4}
+                    xs={6} sm={4}
                     sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2, mr: 0}}
                   >
                     <FormControlLabel
@@ -983,11 +983,14 @@ const GetReceipt = (props) => {
                         <MenuItem value='plin' style={{fontWeight: 200}}>
                           Plin
                         </MenuItem>
-                        <MenuItem value='wireTransfer' style={{fontWeight: 200}}>
+                        <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
                           Transferencia Bancaria
                         </MenuItem>
                         <MenuItem value='card' style={{fontWeight: 200}}>
                           Tarjeta de crédito/débito
+                        </MenuItem>
+                        <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
+                          <IntlMessages id='common.bankDeposit' />
                         </MenuItem>
                       </Select>
                     </FormControl>

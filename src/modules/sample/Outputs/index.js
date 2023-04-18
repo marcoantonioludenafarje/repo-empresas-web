@@ -1842,11 +1842,14 @@ const OutputsTable = (props) => {
                           <MenuItem value='plin' style={{fontWeight: 200}}>
                             Plin
                           </MenuItem>
-                          <MenuItem value='wireTransfer' style={{fontWeight: 200}}>
+                          <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
                             Transferencia Bancaria
                           </MenuItem>
                           <MenuItem value='card' style={{fontWeight: 200}}>
                             Tarjeta de crédito/débito
+                          </MenuItem>
+                          <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
+                            <IntlMessages id='common.bankDeposit' />
                           </MenuItem>
                         </Select>
                       </FormControl>
