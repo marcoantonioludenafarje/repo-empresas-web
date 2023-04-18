@@ -24,7 +24,7 @@ let listPayload = {
   },
 };
 
-const OutputProducts = ({data, toDelete}) => {
+const OutputProducts = ({data, toDelete, valueWithIGV}) => {
   //FUNCIONES MENU
   const {userAttributes} = useSelector(({user}) => user);
 
@@ -47,7 +47,9 @@ const OutputProducts = ({data, toDelete}) => {
             <TableCell>Unidad</TableCell>
             <TableCell>Cantidad</TableCell>
             <TableCell>Valor unitario</TableCell>
+            <TableCell>Valor con IGV</TableCell>
             <TableCell>Subtotal</TableCell>
+            <TableCell>Subtotal con IGV</TableCell>
             <TableCell>Opciones</TableCell>
           </TableRow>
         </TableHead>
@@ -65,7 +67,9 @@ const OutputProducts = ({data, toDelete}) => {
                   <TableCell>{obj.unitMeasure}</TableCell>
                   <TableCell>{obj.quantityMovement}</TableCell>
                   <TableCell>{obj.priceBusinessMoneyWithIgv}</TableCell>
+                  <TableCell>{valueWithIGV(obj.priceBusinessMoneyWithIgv)}</TableCell>
                   <TableCell>{obj.subtotal}</TableCell>
+                  <TableCell>{valueWithIGV(obj.subtotal)}</TableCell>
                   <TableCell>
                     <IconButton onClick={deleteProduct.bind(this, index)}>
                       <DeleteIcon />
@@ -85,6 +89,7 @@ const OutputProducts = ({data, toDelete}) => {
 
 OutputProducts.propTypes = {
   data: PropTypes.array.isRequired,
-  toDelete: PropTypes.array.isRequired,
+  toDelete: PropTypes.func.isRequired,
+  valueWithIGV: PropTypes.func.isRequired,
 };
 export default OutputProducts;

@@ -267,6 +267,18 @@ const GetReceipt = (props) => {
     },
   };
 
+  //const calcularPrecioConIGV = (precioSinIGV, priceBusinessMoneyWithIgv) => {
+    //const IGV = igvDefault;
+    //const precioConIGV = priceBusinessMoneyWithIgv * (1 + IGV);
+    //return precioConIGV;
+  //}
+  
+  useEffect(() => {
+    
+
+  })
+  
+
   useEffect(() => {
     selectedOutput = {};
     dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -430,6 +442,12 @@ const GetReceipt = (props) => {
     setOpenReferralGuides(true);
     setShowAlert(false);
   };
+
+  const valueWithIGV = (value) => {
+    const IGV = igvDefault;
+    const precioConIGV =( value * (1 + IGV)).toFixed(10);
+    return precioConIGV;
+  }
 
   const showListDocumentsSelected = () => {
     const total = listDocuments.reduce((count, element) => {
@@ -1145,6 +1163,7 @@ const GetReceipt = (props) => {
                 <Divider sx={{my: 3}} />
                 <OutputProducts
                   data={selectedProducts}
+                  valueWithIGV={valueWithIGV}
                   toDelete={removeProduct}
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
