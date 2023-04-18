@@ -35,6 +35,13 @@ import {
   Collapse,
   useTheme,
   useMediaQuery,
+  Grid,
+  Select,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  Checkbox,
+
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import Backdrop from "@mui/material/Backdrop";
@@ -247,6 +254,9 @@ const OutputsTable = (props) => {
   const [openDocuments, setOpenDocuments] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
   const [moreFilters, setMoreFilters] = React.useState(false);
+  const [sellTicketDialog, setSellTicketDialog] = React.useState(false);
+  const [earningGeneration, setEarningGeneration] = React.useState(true);
+  const [paymentMethod, setPaymentMethod] = React.useState('cash');
   //MENU ANCHOR
   const [anchorEl, setAnchorEl] = React.useState(null);
   //FECHAS
@@ -528,7 +538,10 @@ const OutputsTable = (props) => {
     console.log('timestamp', datum / 1000);
     return datum / 1000;
   };
-
+  const handleEarningGeneration = (event, isInputChecked) => {
+    setEarningGeneration(isInputChecked);
+    console.log('Evento de earningGeneration', isInputChecked);
+  };
   const cleanList = () => {
     let listResult = [];
     getMovementsRes.map((obj) => {
@@ -686,6 +699,7 @@ const OutputsTable = (props) => {
           automaticSendClient: /* sendClient */ true,
           referralGuide: false,
           creditSale: false,
+          earningGeneration: earningGeneration,
           referralGuideSerial: '',
           dueDate: dateWithHyphen(Date.now() + 1 * 24 * 60 * 60 * 1000),
           observation: '',
@@ -1633,9 +1647,8 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
           ) &&
-        selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existSellTicket ? (
-          <MenuItem onClick={getSellTicket}>
+        selectedOutput.movementSubType == 'sales'? (
+          <MenuItem onClick={() => setSellTicketDialog(true)}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
           </MenuItem>
@@ -1758,6 +1771,124 @@ const OutputsTable = (props) => {
             id='alert-dialog-description'
           >
             <MoreFilters sendData={filterData} />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={sellTicketDialog}
+        onClose={() => setSellTicketDialog(false)}
+        maxWidth='sm'
+        fullWidth
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          <IconButton
+            aria-label='close'
+            onClick={() => setSellTicketDialog(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          {'Ticket de Venta'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <DialogContentText
+            sx={{fontSize: '1.2em'}}
+            id='alert-dialog-description'
+          >
+            <Formik
+              validateOnChange={true}
+              onSubmit={getSellTicket}
+            >
+              {({isSubmitting}) => {
+                return (
+                  <Form
+                    style={{textAlign: 'left', justifyContent: 'center'}}
+                    noValidate
+                    autoComplete='on'
+                  >
+                    <Grid container spacing={2} sx={{width: 1}}>
+
+                      <Grid item xs={12}>
+                      <FormControl fullWidth sx={{my: 2}}>
+                        <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
+                          Medio de pago
+                        </InputLabel>
+                        <Select
+                          value={paymentMethod}
+                          name='methodToPay'
+                          labelId='methodToPay-label'
+                          label='Medio de pago'
+                          onChange={
+                            /* handleActualData */ (event) => {
+                              setPaymentMethod(event.target.value);
+                            }
+                          }
+                        >
+                          <MenuItem value='cash' style={{fontWeight: 200}}>
+                            Efectivo
+                          </MenuItem>
+                          <MenuItem value='yape' style={{fontWeight: 200}}>
+                            Yape
+                          </MenuItem>
+                          <MenuItem value='plin' style={{fontWeight: 200}}>
+                            Plin
+                          </MenuItem>
+                          <MenuItem value='wireTransfer' style={{fontWeight: 200}}>
+                            Transferencia Bancaria
+                          </MenuItem>
+                          <MenuItem value='card' style={{fontWeight: 200}}>
+                            Tarjeta de crédito/débito
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                      </Grid>
+
+                      <Grid
+                        item
+                        xs={12}
+                        sx={{display: 'flex', alignItems: 'center'}}
+                      >
+                        <FormControlLabel
+                          label='Generar Ingreso contable'
+                          control={
+                            <Checkbox
+                              onChange={handleEarningGeneration}
+                              defaultChecked={true}
+                            />
+                          }
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <ButtonGroup
+                      orientation='vertical'
+                      variant='outlined'
+                      sx={{width: 1, my: '10px'}}
+                      aria-label='outlined button group'
+                    >
+                      <Button
+                        color='primary'
+                        sx={{mx: 'auto', width: '50%', py: 3}}
+                        type='submit'
+                        variant='contained'
+                        disabled={isSubmitting}
+                      >
+                        Generar
+                      </Button>
+                    </ButtonGroup>
+                  </Form>
+                );
+              }}
+            </Formik>
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>

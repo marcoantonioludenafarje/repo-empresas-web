@@ -197,9 +197,11 @@ const NewOutput = (props) => {
   const prevExchangeRateRef = useRef();
   const [showForms, setShowForms] = React.useState(false);
   const [serial, setSerial] = React.useState('');
-  const [paymentMethod, setPaymentMethod] = React.useState('credit');
+  const [paymentWay, setPaymentWay] = React.useState('credit');
+  const [paymentMethod, setPaymentMethod] = React.useState('cash');
   const [expirationDate, setExpirationDate] = React.useState(Date.now() + 1 * 24 * 60 * 60 * 1000);
   const [minTutorial, setMinTutorial] = React.useState(false);
+  const [earningGeneration, setEarningGeneration] = React.useState(true);
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
   });
@@ -389,6 +391,7 @@ const NewOutput = (props) => {
     }`,
     issueDate: Date.now(),
     wayToPay: Date.now(),
+    methodToPay: 'Efectivo',
     totalField: Number(query.totalPriceWithoutIgv),
     totalFieldIgv: fixDecimals(query.totalPriceWithIgv),
     money_unit: money_unit,
@@ -399,6 +402,7 @@ const NewOutput = (props) => {
     guide: '',
     issueDate: '',
     wayToPay: '',
+    methodToPay: '',
     receiver: '',
     totalField: '',
     totalFieldIgv: '',
@@ -541,7 +545,9 @@ const NewOutput = (props) => {
             automaticSendSunat: /* sendSunat */ true,
             automaticSendClient: /* sendClient */ true,
             referralGuide: data.guide ? true : false,
-            creditSale: paymentMethod == "credit",
+            creditSale: paymentWay == "credit",
+            methodToPay: methodToPay,
+            earningGeneration: earningGeneration,
             referralGuideSerial: data.guide ? data.guide : '',
             dueDate: dateWithHyphen(expirationDate),
             observation: data.observation ? data.observation : '',
@@ -691,6 +697,10 @@ const NewOutput = (props) => {
     setSendEmail(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
+  const handleEarningGeneration = (event, isInputChecked) => {
+    setEarningGeneration(isInputChecked);
+    console.log('Evento de earningGeneration', isInputChecked);
+  };
 
   const getNewProduct = (product) => {
     console.log('ver ahora nuevo producto', product);
@@ -792,13 +802,13 @@ const NewOutput = (props) => {
             changeValueField = setFieldValue;
             return (
               <Form
-                style={{textAlign: 'left', justifyContent: 'center'}}
+                style={{textAlign: 'left'}}
                 noValidate
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={6}>
+                <Grid container spacing={2} sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}>
+                  <Grid item xs={12} sm={6}>
                     <AppTextField
                       label='Nro Factura'
                       name='nroBill'
@@ -814,7 +824,7 @@ const NewOutput = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='moneda-label' style={{fontWeight: 200}}>
                         Moneda
@@ -979,13 +989,13 @@ const NewOutput = (props) => {
                         Forma de pago
                       </InputLabel>
                       <Select
-                        value={paymentMethod}
+                        value={paymentWay}
                         name='wayToPay'
                         labelId='wayToPay-label'
                         label='Forma de pago'
                         onChange={
                           /* handleActualData */ (event) => {
-                            setPaymentMethod(event.target.value);
+                            setPaymentWay(event.target.value);
                           }
                         }
                       >
@@ -994,6 +1004,40 @@ const NewOutput = (props) => {
                         </MenuItem>
                         <MenuItem value='debit' style={{fontWeight: 200}}>
                           Al contado
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
+                        Medio de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentMethod}
+                        name='methodToPay'
+                        labelId='methodToPay-label'
+                        label='Medio de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentMethod(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='cash' style={{fontWeight: 200}}>
+                          Efectivo
+                        </MenuItem>
+                        <MenuItem value='yape' style={{fontWeight: 200}}>
+                          Yape
+                        </MenuItem>
+                        <MenuItem value='plin' style={{fontWeight: 200}}>
+                          Plin
+                        </MenuItem>
+                        <MenuItem value='wireTransfer' style={{fontWeight: 200}}>
+                          Transferencia Bancaria
+                        </MenuItem>
+                        <MenuItem value='card' style={{fontWeight: 200}}>
+                          Tarjeta de crédito/débito
                         </MenuItem>
                       </Select>
                     </FormControl>
@@ -1026,6 +1070,21 @@ const NewOutput = (props) => {
                           })}
                       </Select>
                     </FormControl>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={6}
+                    sx={{display: 'flex', alignItems: 'center'}}
+                  >
+                    <FormControlLabel
+                      label='Generar Ingreso contable'
+                      control={
+                        <Checkbox
+                          onChange={handleEarningGeneration}
+                          defaultChecked={true}
+                        />
+                      }
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <Typography align='center'>

@@ -932,7 +932,7 @@ const NewProduct = (props) => {
         >
           {({isSubmitting}) => (
             <Form style={{textAlign: 'left'}} noValidate autoComplete='on'>
-              <Grid container spacing={2} sx={{width: 500, mx: 'auto', mb: 4}}>
+              <Grid container spacing={2} sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}>
                 <Grid item xs={12}>
                   <AppUpperCaseTextField
                     label='Código *'

@@ -109,7 +109,6 @@ const useStyles = makeStyles((theme) => ({
     width: '20px',
   },
 }));
-
 const maxLength = 11111111111111111111; //20 caracteres
 const validationSchema = yup.object({
   guide: yup.string().typeError(<IntlMessages id='validation.string' />),
@@ -176,6 +175,9 @@ const GetReceipt = (props) => {
   const [serial, setSerial] = React.useState('');
   const [showSelectDoc, setShowSelectDoc] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
+  const [earningGeneration, setEarningGeneration] = React.useState(true);
+  const [paymentWay, setPaymentWay] = React.useState('credit');
+  const [paymentMethod, setPaymentMethod] = React.useState('cash');
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
   });
@@ -218,6 +220,7 @@ const GetReceipt = (props) => {
     }`,
     issueDate: Date.now(),
     wayToPay: Date.now(),
+    methodToPay: 'Efectivo',
     totalField: Number(query.totalPriceWithoutIgv),
     totalFieldIgv: Number(query.totalPriceWithIgv),
     money_unit: money_unit,
@@ -228,6 +231,7 @@ const GetReceipt = (props) => {
     guide: '',
     issueDate: '',
     wayToPay: '',
+    methodToPay: '',
     receiver: '',
     totalField: '',
     totalFieldIgv: '',
@@ -496,7 +500,9 @@ const GetReceipt = (props) => {
             automaticSendSunat: true,
             automaticSendClient: true,
             referralGuide: data.guide ? true : false,
-            creditSale: actualValues.wayToPay == "credit",
+            creditSale: paymentWay == "credit",
+            methodToPay: methodToPay,
+            earningGeneration: earningGeneration,
             referralGuideSerial: data.guide ? data.guide : '',
             dueDate: specialFormatToSunat(Date.now()),
             observation: data.observation ? data.observation : '',
@@ -647,6 +653,10 @@ const GetReceipt = (props) => {
     setSendEmail(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
+  const handleEarningGeneration = (event, isInputChecked) => {
+    setEarningGeneration(isInputChecked);
+    console.log('Evento de earningGeneration', isInputChecked);
+  };
   const handleSendClient = (event, isInputChecked) => {
     setSendClient(isInputChecked);
     console.log('Enviar a cliente', isInputChecked);
@@ -734,13 +744,6 @@ const GetReceipt = (props) => {
         </Typography>
       </Box>
       <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          mb: 5,
-          mx: 'auto',
-        }}
       >
         <AppPageMeta />
 
@@ -754,13 +757,12 @@ const GetReceipt = (props) => {
             changeValueField = setFieldValue;
             return (
               <Form
-                style={{textAlign: 'left', justifyContent: 'center'}}
                 noValidate
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={4}>
+                <Grid container sx={{maxWidth: 500, margin: 'auto'}}>
+                  <Grid xs={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Nro Boleta'
                       name='nroReceipt'
@@ -776,7 +778,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid xs={4} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='moneda-label' style={{fontWeight: 200}}>
                         Moneda
@@ -798,7 +800,7 @@ const GetReceipt = (props) => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={4}>
+                  <Grid xs={4} sx={{px: 1, mt: 2}}>
                     <DateTimePicker
                       renderInput={(params) => (
                         <TextField
@@ -810,7 +812,7 @@ const GetReceipt = (props) => {
                       value={value}
                       disabled
                       label='Fecha de emisión'
-                      inputFormat='dd/MM/yyyy hh:mm a'
+                      inputFormat='dd/MM/yyyy'
                       name='issueDate'
                       onChange={(newValue) => {
                         setValue(newValue);
@@ -819,7 +821,7 @@ const GetReceipt = (props) => {
                     />
                   </Grid>
 
-                  <Grid item xs={4}>
+                  <Grid xs={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label={`Total ${moneyUnit} sin IGV`}
                       name='totalField'
@@ -834,7 +836,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid xs={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label={`Total ${moneyUnit} con IGV`}
                       name='totalFieldIgv'
@@ -850,13 +852,13 @@ const GetReceipt = (props) => {
                     />
                   </Grid>
                   <Grid
-                    item
                     xs={4}
-                    sx={{display: 'flex', alignItems: 'center'}}
+                    sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2, mr: 0}}
                   >
                     <FormControlLabel
                       label='IGV'
                       disabled
+                      sx={{mr:1}}
                       control={
                         <Checkbox
                           onChange={handleIGV}
@@ -883,7 +885,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid item xs={12}>
+                  <Grid xs={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Receptor'
                       name='receiver'
@@ -913,17 +915,21 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid item xs={6}>
+                  <Grid xs={6} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
                         Forma de pago
                       </InputLabel>
                       <Select
-                        defaultValue='debit'
+                        value={paymentWay}
                         name='wayToPay'
                         labelId='wayToPay-label'
                         label='Forma de pago'
-                        onChange={handleActualData}
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentWay(event.target.value);
+                          }
+                        }
                       >
                         <MenuItem value='credit' style={{fontWeight: 200}}>
                           Credito
@@ -934,7 +940,41 @@ const GetReceipt = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid sx={{px: 1, mt: 2}} xs={6}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
+                        Medio de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentMethod}
+                        name='methodToPay'
+                        labelId='methodToPay-label'
+                        label='Medio de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentMethod(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='cash' style={{fontWeight: 200}}>
+                          Efectivo
+                        </MenuItem>
+                        <MenuItem value='yape' style={{fontWeight: 200}}>
+                          Yape
+                        </MenuItem>
+                        <MenuItem value='plin' style={{fontWeight: 200}}>
+                          Plin
+                        </MenuItem>
+                        <MenuItem value='wireTransfer' style={{fontWeight: 200}}>
+                          Transferencia Bancaria
+                        </MenuItem>
+                        <MenuItem value='card' style={{fontWeight: 200}}>
+                          Tarjeta de crédito/débito
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid sx={{px: 1, mt: 2}} xs={6}>
                     <FormControl disabled fullWidth sx={{my: 2}}>
                       <InputLabel id='quota-label' style={{fontWeight: 200}}>
                         Nro de cuotas
@@ -963,14 +1003,28 @@ const GetReceipt = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
+                  <Grid
+                    xs={6}
+                    sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
+                  >
+                    <FormControlLabel
+                      label='Generar Ingreso contable'
+                      control={
+                        <Checkbox
+                          onChange={handleEarningGeneration}
+                          defaultChecked={true}
+                        />
+                      }
+                    />
+                  </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid sx={{px: 1, mt: 2}} xs={12}>
                     <Typography align='center'>
                       {showListDocumentsSelected()} de un total de{' '}
                       {listDocuments.length}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid sx={{px: 1, mt: 2}} xs={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -983,7 +1037,7 @@ const GetReceipt = (props) => {
                   </Grid>
                 </Grid>
                 
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid container spacing={2} sx={{maxWidth: 500, mx: 'auto', mb: 4, mt: 4}}>
                   {/* <Grid item xs={4}>
                     <DateTimePicker
                       renderInput={(params) => (
@@ -1003,7 +1057,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid item xs={9}>
+                  <Grid sx={{px: 1, mt: 2}} xs={8}>
                     <AppTextField
                       label='Correo de cliente'
                       name='clientEmail'
@@ -1018,9 +1072,8 @@ const GetReceipt = (props) => {
                     />
                   </Grid>
                   <Grid
-                    item
                     xs={3}
-                    sx={{display: 'flex', alignItems: 'center'}}
+                    sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
                   >
                     <FormControlLabel
                       label='Enviar Correo'
@@ -1060,7 +1113,8 @@ const GetReceipt = (props) => {
                       label='Enviar correo a SUNAT'
                     />
                   </Grid> */}
-                  <Grid item xs={12}>
+                  <Grid 
+                    sx={{px: 1, mt: 2}} xs={12}>
                     <AppTextField
                       label='Observación'
                       name='observation'
@@ -1076,7 +1130,8 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={12} sx={{my: 2}}>
+                  <Grid xs={12} 
+                    sx={{px: 1, mt: 2, my: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
