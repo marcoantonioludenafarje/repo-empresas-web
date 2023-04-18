@@ -71,6 +71,14 @@ const rolesRoutesConfig = {
       icon: <CompareArrowsIcon fontSize='small' />,
       children: [
         {
+          id: 'movements0',
+          title: 'Movements table',
+          messageId: 'sidebar.sample.movements',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/finances/table',
+        },
+        {
           id: 'movements',
           title: 'Movements table',
           messageId: 'sidebar.sample.ingressEgress',
@@ -396,6 +404,14 @@ const rolesRoutesConfig = {
       type: 'collapse',
       icon: <CompareArrowsIcon fontSize='small' />,
       children: [
+        {
+          id: 'movements0',
+          title: 'Movements table',
+          messageId: 'sidebar.sample.movements',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/finances/table',
+        },
         {
           id: 'movements',
           title: 'Movements table',
