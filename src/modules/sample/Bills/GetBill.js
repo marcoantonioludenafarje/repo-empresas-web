@@ -723,7 +723,7 @@ const NewOutput = (props) => {
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
         ? Number((total + total * Number(query.igv)).toFixed(2))
-        : total,
+        : Number(total.toFixed(2)),
     );
     console.log('total de los productos', total);
     forceUpdate();
