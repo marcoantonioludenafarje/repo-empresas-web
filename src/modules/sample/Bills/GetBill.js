@@ -556,7 +556,7 @@ const NewOutput = (props) => {
             automaticSendClient: /* sendClient */ true,
             referralGuide: data.guide ? true : false,
             creditSale: paymentWay == "credit",
-            methodToPay: methodToPay,
+            methodToPay: paymentMethod,
             earningGeneration: earningGeneration,
             referralGuideSerial: data.guide ? data.guide : '',
             dueDate: dateWithHyphen(expirationDate),
