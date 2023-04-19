@@ -115,7 +115,7 @@ const AddClientForm = ({sendData}) => {
     };
     //dispatch({type: GET_CLIENTS, payload: undefined});
     listClientsPayload.request.payload.LastEvaluatedKey = null;
-    dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+    // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
     if (actualValues.clientSearch != '') {
       listClientsPayload.request.payload.denominationClient =
         actualValues.clientId;

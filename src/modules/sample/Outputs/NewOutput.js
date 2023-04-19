@@ -407,6 +407,7 @@ const NewOutput = (props) => {
     );
   };
   const getClient = (client) => {
+    console.log("Estoy en el getClient")
     selectedClient = client;
     console.log('Cliente seleccionado', client);
     setOpen(false);
