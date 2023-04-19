@@ -1017,7 +1017,7 @@ const GetReferralGuide = () => {
                         >
                           Venta sujeta a confirmación del comprador
                         </MenuItem>
-                        <MenuItem value='BUY' style={{fontWeight: 200}}>
+                        <MenuItem value='buy' style={{fontWeight: 200}}>
                           Compra
                         </MenuItem>
                         <MenuItem
