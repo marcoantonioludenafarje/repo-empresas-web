@@ -1710,7 +1710,7 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
           ) &&
-        (selectedOutput.existBill || skectedOutput.existReceipt || selectedOutput.existSellTicket) &&
+        (selectedOutput.existBill || selectedOutput.existReceipt || selectedOutput.existSellTicket) &&
         !selectedOutput.existIncome &&
         selectedOutput.movementSubType == 'sales' ? (
           <MenuItem onClick={doFinance}>
