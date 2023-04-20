@@ -699,6 +699,7 @@ const OutputsTable = (props) => {
           automaticSendClient: /* sendClient */ true,
           referralGuide: false,
           creditSale: false,
+          methodToPay: paymentMethod,
           earningGeneration: earningGeneration,
           referralGuideSerial: '',
           dueDate: dateWithHyphen(Date.now() + 1 * 24 * 60 * 60 * 1000),
@@ -1709,7 +1710,7 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
           ) &&
-        selectedOutput.existBill &&
+        (selectedOutput.existBill || selectedOutput.existReceipt || selectedOutput.existSellTicket) &&
         !selectedOutput.existIncome &&
         selectedOutput.movementSubType == 'sales' ? (
           <MenuItem onClick={doFinance}>
