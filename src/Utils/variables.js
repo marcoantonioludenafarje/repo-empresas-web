@@ -46,6 +46,9 @@ export const dictionary = {
     CREDIT: <IntlMessages id='payment.method.credit' />,
     BANKTRANSFER: <IntlMessages id='common.bankTransfer' />,
     BANKDEPOSIT: <IntlMessages id='common.bankDeposit' />,
+    YAPE: <IntlMessages id='payment.method.yape' />,
+    PLIN: <IntlMessages id='payment.method.plin' />,
+    CARD: <IntlMessages id='payment.method.card' />,
   },
   CONCEPTACTION: {
     SUBTRACT: <IntlMessages id='otherPayConcept.action.subtract' />,
@@ -59,10 +62,31 @@ export const dictionary = {
     ANYONE: <IntlMessages id='document.type.anyone' />,
     CREDITNOTE: <IntlMessages id='document.type.creditNote' />,
     DEBITNOTE: <IntlMessages id='document.type.debitNote' />,
+    TICKET: <IntlMessages id='document.type.sellticket' />,
   },
   DOCUMENTCANCELSTATUS: {
     YES: <IntlMessages id='document.cancelStatus.true' />,
     NO: <IntlMessages id='document.cancelStatus.false' />,
+  },
+  PROOFOFPAYMENTPAYSTATUS: {
+    BILL: <IntlMessages id='finance.proofOfPayment.type.bill.payStatus' />,
+    RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.payStatus' />,
+    TICKET:<IntlMessages id='finance.proofOfPayment.type.ticket.payStatus' />,
+  },
+  PROOFOFPAYMENTTOTALAMOUNT: {
+    BILL: <IntlMessages id='finance.proofOfPayment.type.bill.totalAmount' />,
+    RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.totalAmount' />,
+    TICKET:<IntlMessages id='finance.proofOfPayment.type.ticket.totalAmount' />,
+  },
+  PROOFOFPAYMENTNUMBER: {
+    BILL: <IntlMessages id='finance.proofOfPayment.type.bill.number' />,
+    RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.number' />,
+    TICKET:<IntlMessages id='finance.proofOfPayment.type.ticket.number' />,
+  },
+  PROOFOFPAYMENTDATE: {
+    BILL: <IntlMessages id='finance.proofOfPayment.type.bill.date' />,
+    RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.date' />,
+    TICKET:<IntlMessages id='finance.proofOfPayment.type.ticket.date' />,
   },
   SUBTYPENOTE: {
     operationCancellation: (

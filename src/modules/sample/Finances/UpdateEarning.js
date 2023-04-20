@@ -122,6 +122,7 @@ const UpdateEarning = (props) => {
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [moneyUnit, setMoneyUnit] = React.useState(query.exchangeRate);
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState(query.proofOfPaymentType);
   const [showAlert, setShowAlert] = React.useState(false);
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   const [statusEarning, setStatusEarning] = React.useState(query.status);
@@ -358,6 +359,7 @@ const UpdateEarning = (props) => {
       newFinancePayload.request.payload.observation = data.saleObservation;
       newFinancePayload.request.payload.totalAmount = Number(data.totalAmounth);
       newFinancePayload.request.payload.status = statusEarning;
+      //newFinancePayload.request.payload.proofOfPaymentType = query.proofOfPaymentType || "";
       newFinancePayload.request.payload.folderMovement = query.folderMovement;
       newFinancePayload.request.payload.movementHeaderId =
         !isObjEmpty(query) && query.movementHeaderId
@@ -616,8 +618,45 @@ const UpdateEarning = (props) => {
                     />
                   </Grid>
                   <Grid item xs={12}>
+                    <FormControl disabled fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='proofOfPaymentType-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Tipo de Comprobante
+                      </InputLabel>
+                      <Select
+                        sx={{textAlign: 'left'}}
+                        value={proofOfPaymentType}
+                        onChange={(event) => {
+                          console.log('Tipo de comprobante de pago', event.target.value);
+                          setProofOfPaymentType(event.target.value);
+                        }}
+                        name='proofOfPaymentType'
+                        labelId='proofOfPaymentType-label'
+                        label='Tipo de Comprobante'
+                      >
+                        <MenuItem value='bill' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.bill']}
+                        </MenuItem>
+                        <MenuItem value='receipt' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.receipt']}
+                        </MenuItem>
+                        <MenuItem value='ticket' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.ticket']}
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
                     <AppUpperCaseTextField
-                      label='Número de factura'
+                      label={query.proofOfPaymentType
+                        ? translateValue(
+                            'PROOFOFPAYMENTNUMBER',
+                            query.proofOfPaymentType.toUpperCase(),
+                          )
+                        : 'Número de comprobante'}
+                      disabled={query.serialNumberBill ? true : false}
                       name='nroBill'
                       variant='outlined'
                       sx={{
@@ -631,6 +670,7 @@ const UpdateEarning = (props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <DesktopDatePicker
+                      disabled={query.serialNumberBill ? true : false}
                       renderInput={(params) => (
                         <TextField
                           sx={{
@@ -645,7 +685,12 @@ const UpdateEarning = (props) => {
                       required
                       sx={{my: 2}}
                       value={value2}
-                      label='Fecha de factura'
+                      label={query.proofOfPaymentType
+                        ? translateValue(
+                            'PROOFOFPAYMENTDATE',
+                            query.proofOfPaymentType.toUpperCase(),
+                          )
+                        : 'Fecha de Comprobante'}
                       /* maxDate={new Date()} */
                       inputFormat='dd/MM/yyyy'
                       name='initialDate'
@@ -716,7 +761,12 @@ const UpdateEarning = (props) => {
 
                   <Grid item xs={12}>
                     <AppTextField
-                      label='Monto Factura(con igv)'
+                      label={query.proofOfPaymentType
+                        ? translateValue(
+                            'PROOFOFPAYMENTTOTALAMOUNT',
+                            query.proofOfPaymentType.toUpperCase(),
+                          )
+                        : 'Monto comprobante (con igv)'}
                       name='totalAmounth'
                       variant='outlined'
                       sx={{

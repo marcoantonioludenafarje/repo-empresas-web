@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import * as yup from 'yup';
 import {useIntl} from 'react-intl';
 
+import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppLoader from '../../../@crema/core/AppLoader';
 import {
   Table,
@@ -213,20 +214,11 @@ let invoicePayload = {
     },
   },
 };
-const defaultValues = {
-  date1: '',
-  date2: '',
-};
+
 
 const validationSchema = yup.object({
-  date1: yup
-    .date()
-    .typeError(<IntlMessages id='validation.date' />)
-    .required(<IntlMessages id='validation.required' />),
-  date1: yup
-    .date()
-    .typeError(<IntlMessages id='validation.date' />)
-    .required(<IntlMessages id='validation.required' />),
+  transactionNumber: yup
+    .string(),
 });
 
 let codProdSelected = '';
@@ -244,6 +236,7 @@ const OutputsTable = (props) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  let changeValueField;
   //UseStates
   const [openStatus, setOpenStatus] = React.useState(false);
   const [eliminated, setEliminated] = React.useState(false);
@@ -288,6 +281,9 @@ const OutputsTable = (props) => {
   let money_unit;
   let weight_unit;
   let exchangeRate;
+  const defaultValues = {
+    transactionNumber: '',
+  };
 
   //GET APIS RES
   const {businessParameter} = useSelector(({general}) => general);
@@ -674,7 +670,8 @@ const OutputsTable = (props) => {
       query: selectedOutput,
     });
   };
-  const getSellTicket = () => {
+  const getSellTicket = (data, {setSubmitting}) => {
+    setSubmitting(true);
     handleClose();
     let finalPayload = {
       request: {
@@ -693,7 +690,8 @@ const OutputsTable = (props) => {
           issueDate: specialFormatToSunat(),
           serial: 'V001',
           documentIntern: selectedOutput.documentIntern,
-          clientEmail: selectedOutput.clientEmail,
+          clientEmail: selectedOutput.client.email,
+          transactionNumber: data.transactionNumber || "",
           numberSellTicket: selectedOutput.codMovement.split("-")[1],
           automaticSendSunat: /* sendSunat */ true,
           automaticSendClient: /* sendClient */ true,
@@ -730,6 +728,7 @@ const OutputsTable = (props) => {
     console.log('getSellTicket payload', finalPayload);
     toGenerateSellTicket(finalPayload);
     setIsLoading(true);
+    setSubmitting(false);
   };
   const getReferralGuide = () => {
     console.log('Selected Output', selectedOutput);
@@ -1643,7 +1642,7 @@ const OutputsTable = (props) => {
           </MenuItem>
         ) : null}
 
-        {typeClient == 'PN' && localStorage
+        {localStorage
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
@@ -1806,10 +1805,13 @@ const OutputsTable = (props) => {
             id='alert-dialog-description'
           >
             <Formik
-              validateOnChange={true}
+              validateOnChange={false}
+              validationSchema={validationSchema}
+              initialValues={{...defaultValues}}
               onSubmit={getSellTicket}
             >
-              {({isSubmitting}) => {
+              {({isSubmitting, setFieldValue}) => {
+                changeValueField = setFieldValue;
                 return (
                   <Form
                     style={{textAlign: 'left', justifyContent: 'center'}}
@@ -1855,7 +1857,21 @@ const OutputsTable = (props) => {
                         </Select>
                       </FormControl>
                       </Grid>
-
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Número de transacción'
+                          disabled={paymentMethod == 'cash'}
+                          name='transactionNumber'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
                       <Grid
                         item
                         xs={12}

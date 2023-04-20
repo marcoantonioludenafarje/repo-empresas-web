@@ -120,6 +120,8 @@ const validationSchema = yup.object({
     .string()
     .email(<IntlMessages id='validation.emailFormat' />)
     .required(<IntlMessages id='validation.required' />),
+  transactionNumber: yup
+    .string(),
 });
 
 //FORCE UPDATE
@@ -400,6 +402,7 @@ const NewOutput = (props) => {
     totalFieldIgv: fixDecimals(query.totalPriceWithIgv),
     money_unit: money_unit,
     clientEmail: query.clientEmail,
+    transactionNumber: "",
   };
   const actualValues = {
     nroBill: '',
@@ -551,6 +554,7 @@ const NewOutput = (props) => {
             serial: serial,
             documentIntern: query.documentIntern,
             clientEmail: data.clientEmail,
+            transactionNumber: data.transactionNumber || "",
             /* numberBill: 3, */
             automaticSendSunat: /* sendSunat */ true,
             automaticSendClient: /* sendClient */ true,
@@ -994,32 +998,7 @@ const NewOutput = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid item xs={6}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
-                        Forma de pago
-                      </InputLabel>
-                      <Select
-                        value={paymentWay}
-                        name='wayToPay'
-                        labelId='wayToPay-label'
-                        label='Forma de pago'
-                        onChange={
-                          /* handleActualData */ (event) => {
-                            setPaymentWay(event.target.value);
-                          }
-                        }
-                      >
-                        <MenuItem value='credit' style={{fontWeight: 200}}>
-                          Credito
-                        </MenuItem>
-                        <MenuItem value='debit' style={{fontWeight: 200}}>
-                          Al contado
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
                         Medio de pago
@@ -1056,6 +1035,46 @@ const NewOutput = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <AppTextField
+                      label='Número de transacción'
+                      disabled={paymentMethod == 'cash'}
+                      name='transactionNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
+                        Forma de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentWay}
+                        name='wayToPay'
+                        labelId='wayToPay-label'
+                        label='Forma de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentWay(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='credit' style={{fontWeight: 200}}>
+                          Credito
+                        </MenuItem>
+                        <MenuItem value='debit' style={{fontWeight: 200}}>
+                          Al contado
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={6}>
                     <FormControl disabled fullWidth sx={{my: 2}}>
                       <InputLabel id='quota-label' style={{fontWeight: 200}}>
@@ -1087,7 +1106,7 @@ const NewOutput = (props) => {
                   </Grid>
                   <Grid
                     item
-                    xs={6}
+                    xs={12}
                     sx={{display: 'flex', alignItems: 'center'}}
                   >
                     <FormControlLabel

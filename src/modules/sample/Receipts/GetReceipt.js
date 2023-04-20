@@ -225,6 +225,7 @@ const GetReceipt = (props) => {
     totalFieldIgv: Number(query.totalPriceWithIgv),
     money_unit: money_unit,
     clientEmail: query.clientEmail,
+    transactionNumber: "",
   };
   const actualValues = {
     nroReceipt: '',
@@ -514,6 +515,7 @@ const GetReceipt = (props) => {
             serial: serial,
             documentIntern: query.documentIntern,
             clientEmail: data.clientEmail,
+            transactionNumber: data.transactionNumber || "",
             /* numberBill: 3, */
             automaticSendSunat: true,
             automaticSendClient: true,
@@ -933,32 +935,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid xs={6} sx={{px: 1, mt: 2}}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
-                        Forma de pago
-                      </InputLabel>
-                      <Select
-                        value={paymentWay}
-                        name='wayToPay'
-                        labelId='wayToPay-label'
-                        label='Forma de pago'
-                        onChange={
-                          /* handleActualData */ (event) => {
-                            setPaymentWay(event.target.value);
-                          }
-                        }
-                      >
-                        <MenuItem value='credit' style={{fontWeight: 200}}>
-                          Credito
-                        </MenuItem>
-                        <MenuItem value='debit' style={{fontWeight: 200}}>
-                          Al contado
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid sx={{px: 1, mt: 2}} xs={6}>
+                  <Grid sx={{px: 1, mt: 2}} xs={12} sm={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
                         Medio de pago
@@ -995,6 +972,46 @@ const GetReceipt = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <AppTextField
+                      label='Número de transacción'
+                      disabled={paymentMethod == 'cash'}
+                      name='transactionNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid xs={6} sx={{px: 1, mt: 2}}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
+                        Forma de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentWay}
+                        name='wayToPay'
+                        labelId='wayToPay-label'
+                        label='Forma de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentWay(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='credit' style={{fontWeight: 200}}>
+                          Credito
+                        </MenuItem>
+                        <MenuItem value='debit' style={{fontWeight: 200}}>
+                          Al contado
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
                   <Grid xs={6} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='quota-label' style={{fontWeight: 200}}>
@@ -1025,7 +1042,7 @@ const GetReceipt = (props) => {
                     </FormControl>
                   </Grid>
                   <Grid
-                    xs={6}
+                    xs={12}
                     sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
                   >
                     <FormControlLabel
