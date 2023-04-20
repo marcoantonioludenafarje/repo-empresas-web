@@ -305,7 +305,7 @@ const NewClient = () => {
                 /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={12}>
+                <Grid item xs={8} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='documentType-label'
@@ -340,7 +340,7 @@ const NewClient = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Número Identificador *'
                       name='nroDocument'
@@ -355,7 +355,7 @@ const NewClient = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppUpperCaseTextField
                       label='Nombre / Razón Social *'
                       name='name'
@@ -370,7 +370,7 @@ const NewClient = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppUpperCaseTextField
                       label='Dirección *'
                       name='addressClient'
@@ -385,7 +385,7 @@ const NewClient = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                <Grid item xs={8} sm={12}>
                     <AppLowerCaseTextField
                       label='Correo de cliente'
                       name='emailClient'
@@ -434,7 +434,7 @@ const NewClient = () => {
                       </Grid>
                     </>
                   ) : null}
-                  <Grid item xs={12}>
+                <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Telefono fijo o celular de contacto'
                       name='numberContact'
@@ -449,7 +449,7 @@ const NewClient = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Información adicional'
                       multiline

@@ -401,7 +401,7 @@ const ProviderTable = (arrayObjs, props) => {
   return (
     <Card sx={{p: 4}}>
       <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
-        <FormControl sx={{my: 0, width: 100}}>
+        <FormControl sx={{my: 0, width: 140}}>
           <InputLabel id='categoria-label' style={{fontWeight: 200}}>
             Identificador
           </InputLabel>
@@ -410,6 +410,7 @@ const ProviderTable = (arrayObjs, props) => {
             name='typeDocumentProvider'
             labelId='documentType-label'
             label='Identificador'
+            sx={{maxWidth: 140}}
             onChange={(event) => {
               console.log(event.target.value);
               listPayload.request.payload.typeDocumentProvider =

@@ -785,7 +785,7 @@ const Distribution = (props) => {
                       renderInput={(params) => (
                         <TextField {...params} sx={{width: 1}} />
                       )}
-                      label={<IntlMessages id='dashboard.iinitialDateTimeTras' />}
+                      label={<IntlMessages id='dashboard.initialDateTimeTras' />}
                       inputFormat='dd/MM/yyyy hh:mm a'
                       value={initialDate}
                       onChange={(newDate) => {
@@ -814,6 +814,7 @@ const Distribution = (props) => {
                       label={<IntlMessages id='dashboard.finalDateTime' />}
                       inputFormat='dd/MM/yyyy hh:mm a'
                       value={finalDate}
+                      minDateTime={new Date()}
                       onChange={(newDate) => {
                         setFinalDate(newDate);
                         console.log('final date', newDate);

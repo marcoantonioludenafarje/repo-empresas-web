@@ -923,7 +923,7 @@ const FileExplorer = (props) => {
         </TableContainer>
       </Card>
       <Dialog
-        open={open}
+        //open={open}
         onClose={handleClose}
         maxWidth='lg'
         sx={{textAlign: 'center'}}
@@ -987,7 +987,7 @@ const FileExplorer = (props) => {
       </Dialog>
 
       <Dialog
-        open={open2}
+        //open={open2}
         onClose={handleClose2}
         sx={{textAlign: 'center'}}
         aria-labelledby='alert-dialog-title'

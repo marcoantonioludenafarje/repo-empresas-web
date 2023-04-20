@@ -838,7 +838,7 @@ const NewOutput = (props) => {
                   spacing={2}
                   sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
                 >
-                  <Grid item xs={4}>
+                  <Grid item xs={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='moneda-label' style={{fontWeight: 200}}>
                         Moneda
@@ -859,7 +859,7 @@ const NewOutput = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='status-label' style={{fontWeight: 200}}>
                         Estado
@@ -881,7 +881,7 @@ const NewOutput = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='status-label' style={{fontWeight: 200}}>
                         Tipo de salida
@@ -909,7 +909,7 @@ const NewOutput = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={6}>
                     <AppTextField
                       label={`Total ${moneyUnit} sin IGV`}
                       name='totalField'
@@ -925,7 +925,7 @@ const NewOutput = (props) => {
                     />
                   </Grid>
                   {addIgv ? (
-                    <Grid item xs={4}>
+                    <Grid item xs={6}>
                       <AppTextField
                         label={`Total ${moneyUnit} con IGV`}
                         name='totalFieldIgv'
@@ -1051,7 +1051,7 @@ const NewOutput = (props) => {
 
                 <Divider sx={{m: 2}} />
 
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid container spacing={2} sx={{maxWidth: 500, margin: 'auto'}}>
                   <Button
                     sx={{width: 1}}
                     variant='outlined'

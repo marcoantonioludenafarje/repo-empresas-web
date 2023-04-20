@@ -305,7 +305,7 @@ const NewCarrier = () => {
                 /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={12}>
+                  <Grid item xs={8} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='categoria-label'
@@ -332,7 +332,7 @@ const NewCarrier = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
+                    <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Número Identificador *'
                       name='nroDocument'
@@ -347,7 +347,7 @@ const NewCarrier = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                    <Grid item xs={8} sm={12}>
                     <AppUpperCaseTextField
                       label='Nombre / Razón Social *'
                       name='name'
@@ -362,7 +362,7 @@ const NewCarrier = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                    <Grid item xs={8} sm={12}>
                     <AppUpperCaseTextField
                       label='Dirección'
                       name='addressCarrier'
@@ -377,7 +377,7 @@ const NewCarrier = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                    <Grid item xs={8} sm={12}>
                     <AppLowerCaseTextField
                       label='Correo de Empresa'
                       name='emailCarrier'
@@ -392,7 +392,7 @@ const NewCarrier = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                    <Grid item xs={8} sm={12}>
                     <AppUpperCaseTextField
                       label='Nombre de contacto'
                       name='nameContact'
@@ -407,7 +407,7 @@ const NewCarrier = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Telefono fijo o celular de contacto'
                       name='numberContact'
@@ -422,7 +422,7 @@ const NewCarrier = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppLowerCaseTextField
                       label='Correo de contacto'
                       name='emailContact'
@@ -437,7 +437,7 @@ const NewCarrier = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Información adicional'
                       multiline

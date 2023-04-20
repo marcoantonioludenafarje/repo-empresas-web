@@ -26,6 +26,8 @@ import {
   CircularProgress,
   Autocomplete,
   Grid,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 
 import {SET_JWT_TOKEN} from '../../../shared/constants/ActionTypes';
@@ -116,6 +118,8 @@ const LocationTable = (arrayObjs, props) => {
   const dispatch = useDispatch();
   const [firstload, setFirstload] = React.useState(true);
   const [open, setOpen] = React.useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -428,18 +432,20 @@ const LocationTable = (arrayObjs, props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
+      <Stack sx={{m: 2}} 
+            direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
         <TextField
           label='Nombre'
           variant='outlined'
           name='nameToSearch'
-          size='small'
+          size='big'
+          
           onChange={(event) => {
             console.log(event.target.value);
             listPayload.request.payload.locationName = event.target.value;
           }}
         />
-        <FormControl sx={{my: 0, width: 100}}>
+        <FormControl sx={{my: 0, width: 140}}>
           <InputLabel id='type-label' style={{fontWeight: 200}}>
             Tipo
           </InputLabel>
@@ -448,12 +454,14 @@ const LocationTable = (arrayObjs, props) => {
             name='typeToSearch'
             labelId='type-label'
             label='Tipo'
+
+
             onChange={(event) => {
               console.log(event.target.value);
               listPayload.request.payload.type = event.target.value;
             }}
           >
-            <MenuItem value='' style={{fontWeight: 200}}>
+            <MenuItem value='TODOS' style={{fontWeight: 200}}>
               Todos
             </MenuItem>
             <MenuItem value='PUNTO LLEGADA' style={{fontWeight: 200}}>
@@ -464,7 +472,7 @@ const LocationTable = (arrayObjs, props) => {
             </MenuItem>
           </Select>
         </FormControl>
-        <Grid item xs={12}>
+        <Grid xs={6} sx={{my: 0, maxWidth: 350}}>
           <Autocomplete
             disablePortal
             id='ubigeoToSearch'
