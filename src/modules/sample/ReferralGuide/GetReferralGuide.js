@@ -885,8 +885,8 @@ const GetReferralGuide = () => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={4}>
+                <Grid container sx={{maxWidth: 600, margin: 'auto'}}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Nro Guía de Remisión'
                       name='nroReferralGuide'
@@ -902,7 +902,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <DesktopDatePicker
                       renderInput={(params) => (
                         <TextField
@@ -923,7 +923,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <DesktopDatePicker
                       renderInput={(params) => (
                         <TextField
@@ -936,13 +936,15 @@ const GetReferralGuide = () => {
                       label='Fecha inicio traslado'
                       inputFormat='dd/MM/yyyy'
                       name='dateStartTransfer'
+                      minDate={new Date()}
                       onChange={(newValue) => {
                         setDateStartTransfer(newValue);
                         console.log('Fecha de inicio de traslado', newValue);
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+
+                  <Grid xs={6} sm={8} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Destinatario'
                       name='addressee'
@@ -958,7 +960,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid xs={8} sm={4} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='transportMode-label'
@@ -992,7 +994,7 @@ const GetReferralGuide = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid xs={12} sm={10} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='reason-label' style={{fontWeight: 200}}>
                         Motivo
@@ -1050,7 +1052,7 @@ const GetReferralGuide = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Peso bruto total'
                       name='totalWeight'
@@ -1065,7 +1067,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Número de bultos'
                       name='numberPackages'
@@ -1081,7 +1083,7 @@ const GetReferralGuide = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid xs={12} sm={10 } sx={{px: 1, mt: 2}}>
                     <AppLowerCaseTextField
                       label='Correo de cliente'
                       name='clientEmail'
@@ -1100,10 +1102,10 @@ const GetReferralGuide = () => {
 
                 <Divider sx={{mt: 2, mb: 4}} />
 
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid container sx={{width: 500, margin: 'auto'}}>
                   {availableUbigeos() ? (
                     <>
-                      <Grid item xs={12}>
+                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                         <Autocomplete
                           disablePortal
                           id='combo-box-demo'
@@ -1154,7 +1156,7 @@ const GetReferralGuide = () => {
                           </Alert>
                         </Collapse>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                         <AppUpperCaseTextField
                           label='Punto de partida'
                           name='startingPoint'
@@ -1174,7 +1176,7 @@ const GetReferralGuide = () => {
 
                   {availableUbigeos() ? (
                     <>
-                      <Grid item xs={12}>
+                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                         <Autocomplete
                           disablePortal
                           id='combo-box-demo'
@@ -1242,7 +1244,7 @@ const GetReferralGuide = () => {
                           </Alert>
                         </Collapse>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                         <AppUpperCaseTextField
                           label='Punto de llegada'
                           name='arrivalPoint'
@@ -1263,11 +1265,12 @@ const GetReferralGuide = () => {
 
                 <Divider sx={{mt: 2, mb: 4}} />
 
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={8}>
+                <Grid container sx={{width: 500, margin: 'auto'}}>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
+
                       onClick={() => openSelectCarrier()}
                     >
                       Seleccionar transportista
@@ -1288,8 +1291,8 @@ const GetReferralGuide = () => {
                   </Grid>
                 </Grid>
 
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={12}>
+                <Grid container sx={{width: 500, margin: 'auto'}}>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Placa de vehículo'
                       name='licensePlate'
@@ -1304,7 +1307,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Nombre del conductor'
                       name='driverName'
@@ -1319,7 +1322,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Apellidos del conductor'
                       name='driverLastName'
@@ -1334,7 +1337,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='driverDocumentType-label'
@@ -1361,7 +1364,7 @@ const GetReferralGuide = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Número identificador del conductor'
                       name='driverDocumentNumber'
@@ -1376,7 +1379,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Licencia del conductor'
                       name='driverLicenseNumber'
@@ -1391,7 +1394,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Observación'
                       name='observation'
@@ -1407,7 +1410,7 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={12} sx={{my: 2}}>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'

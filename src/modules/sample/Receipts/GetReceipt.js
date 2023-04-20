@@ -995,8 +995,8 @@ const GetReceipt = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid sx={{px: 1, mt: 2}} xs={6}>
-                    <FormControl disabled fullWidth sx={{my: 2}}>
+                  <Grid xs={6} sx={{px: 1, mt: 2}}>
+                    <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='quota-label' style={{fontWeight: 200}}>
                         Nro de cuotas
                       </InputLabel>

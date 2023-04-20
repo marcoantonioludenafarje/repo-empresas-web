@@ -732,7 +732,7 @@ const NewInput = (props) => {
                   spacing={2}
                   sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
                 >
-                  <Grid item xs={4}>
+                  <Grid item xs={6} sm={4}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='moneda-label' style={{fontWeight: 200}}>
                         Moneda
@@ -753,7 +753,7 @@ const NewInput = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={6} sm={4}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='status-label' style={{fontWeight: 200}}>
                         Estado
@@ -775,7 +775,7 @@ const NewInput = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={6} sm={4}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='status-label' style={{fontWeight: 200}}>
                         Tipo de entrada
@@ -801,7 +801,7 @@ const NewInput = (props) => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={4}>
+                  <Grid item xs={6} sm={4}>
                     <AppTextField
                       label={`Total ${moneyUnit} sin IGV`}
                       name='totalField'
@@ -817,8 +817,8 @@ const NewInput = (props) => {
                     />
                   </Grid>
                   {addIgv ? (
-                    <Grid item xs={4}>
-                      <AppTextField
+                  <Grid item xs={6} sm={4}>
+                  <AppTextField
                         label={`Total ${moneyUnit} con IGV`}
                         name='totalFieldIgv'
                         defaultValue={0}
@@ -969,7 +969,7 @@ const NewInput = (props) => {
                   spacing={2}
                   sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
                 >
-                  <Grid item xs={8}>
+                  <Grid item xs={12} sm={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -986,8 +986,9 @@ const NewInput = (props) => {
                 </Grid>
 
                 <Divider sx={{m: 2}} />
+              {/* <Grid item xs={6} sm={6}> */}
 
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid item xs={12} container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Button
                     sx={{width: 1}}
                     variant='outlined'

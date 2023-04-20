@@ -818,7 +818,7 @@ const NewOutput = (props) => {
                 /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={6} sm={6}>
                     <AppTextField
                       label='Nro Factura'
                       name='nroBill'
@@ -834,7 +834,7 @@ const NewOutput = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={6} sm={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='moneda-label' style={{fontWeight: 200}}>
                         Moneda
@@ -856,7 +856,7 @@ const NewOutput = (props) => {
                     </FormControl>
                   </Grid>
 
-                  <Grid item xs={6} sx={{mb: 2}}>
+                  <Grid item xs={6} sm={6}>
                     <DateTimePicker
                       renderInput={(params) => (
                         <TextField
@@ -878,7 +878,7 @@ const NewOutput = (props) => {
                     />
                   </Grid>
 
-                  <Grid item xs={6} sx={{mb: 2}}>
+                  <Grid item xs={6} sm={6}>
                     <DateTimePicker
                       renderInput={(params) => (
                         <TextField
@@ -899,7 +899,7 @@ const NewOutput = (props) => {
                     />
                   </Grid>
 
-                  <Grid item xs={4}>
+                  <Grid item xs={6} sm={4} sx={{mt: 3}}>
                     <AppTextField
                       label={`Total ${moneyUnit} sin IGV`}
                       name='totalField'
@@ -914,7 +914,7 @@ const NewOutput = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={6} sm={4} sx={{mt: 3}}>
                     <AppTextField
                       label={`Total ${moneyUnit} con IGV`}
                       name='totalFieldIgv'
@@ -929,6 +929,7 @@ const NewOutput = (props) => {
                       }}
                     />
                   </Grid>
+
                   <Grid
                     item
                     xs={4}
@@ -1138,7 +1139,7 @@ const NewOutput = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid item xs={9}>
+                  <Grid item xs={6} sm={8} sx={{mt: 2}}>
                     <AppTextField
                       label='Correo de cliente'
                       name='clientEmail'
@@ -1155,7 +1156,7 @@ const NewOutput = (props) => {
                   <Grid
                     item
                     xs={3}
-                    sx={{display: 'flex', alignItems: 'center'}}
+                    sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
                   >
                     <FormControlLabel
                       label='Enviar Correo'
@@ -1167,7 +1168,7 @@ const NewOutput = (props) => {
                       }
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={8} sm={12} sx={{mt: 2}}>
                     <AppTextField
                       label='Observación'
                       name='observation'
@@ -1183,7 +1184,7 @@ const NewOutput = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={12} sx={{my: 2}}>
+                  <Grid item xs={8} sm={12} sx={{mt: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'

@@ -23,6 +23,8 @@ import {
   Card,
   Stack,
   TextField,
+  useTheme,
+  useMediaQuery,
   CircularProgress,
 } from '@mui/material';
 
@@ -106,6 +108,8 @@ const DriverTable = (arrayObjs, props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [firstload, setFirstload] = React.useState(true);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [reload, setReload] = React.useState(0); // integer state
@@ -359,8 +363,8 @@ const DriverTable = (arrayObjs, props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction='row' spacing={2} className={classes.stack}>
-        <FormControl sx={{my: 0, width: 100}}>
+      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <FormControl sx={{my: 0, width: 140}}>
           <InputLabel id='categoria-label' style={{fontWeight: 200}}>
             Identificador
           </InputLabel>
@@ -369,6 +373,7 @@ const DriverTable = (arrayObjs, props) => {
             name='typeDocumentDriver'
             labelId='documentType-label'
             label='Identificador'
+            sx={{maxWidth: 140}}
             onChange={(event) => {
               console.log(event.target.value);
               listPayload.request.payload.typeDocumentDriver =
