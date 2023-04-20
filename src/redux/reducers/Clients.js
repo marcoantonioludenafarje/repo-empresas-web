@@ -16,16 +16,18 @@ const clientsReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_CLIENTS:
       console.log('data de reducer GET_CLIENTS', action.payload);
-      let items= [];
-      let lastEvaluatedKey = "";
-      if(action.payload.callType !== "firstTime"){
+      let items = [];
+      let lastEvaluatedKey = '';
+      if (action.payload.callType !== 'firstTime') {
         items = [...state.listClients, ...action.payload.Items];
-        lastEvaluatedKey = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+        lastEvaluatedKey = action.payload.LastEvaluatedKey
+          ? action.payload.LastEvaluatedKey
+          : null;
       }
       return {
         ...state,
-        listClients: items, 
-        clientsLastEvalutedKey_pageListClients: lastEvaluatedKey
+        listClients: items,
+        clientsLastEvalutedKey_pageListClients: lastEvaluatedKey,
       };
     case NEW_CLIENT:
       console.log('data de reducer NEW_CLIENT', action.payload);

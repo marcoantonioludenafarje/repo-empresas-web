@@ -152,7 +152,8 @@ const GetCreditNote = () => {
 
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
-  const {billItems_pageListBill, billLastEvalutedKey_pageListBill} = useSelector(({movements}) => movements);
+  const {billItems_pageListBill, billLastEvalutedKey_pageListBill} =
+    useSelector(({movements}) => movements);
   console.log('billItems_pageListBill', billItems_pageListBill);
   const {addCreditNoteRes} = useSelector(({movements}) => movements);
   console.log('addCreditNoteRes', addCreditNoteRes);
@@ -291,7 +292,10 @@ const GetCreditNote = () => {
       toGetMovements(listOutputsPayload);
       forceUpdate();
     }
-    if (billItems_pageListBill && billItems_pageListBill[0].movementType == 'OUTPUT') {
+    if (
+      billItems_pageListBill &&
+      billItems_pageListBill[0].movementType == 'OUTPUT'
+    ) {
       console.log('billItems_pageListBill de salidas', billItems_pageListBill);
       console.log('query.movementId', query.movementId);
       let output = billItems_pageListBill.find(

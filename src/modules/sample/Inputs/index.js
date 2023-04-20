@@ -28,7 +28,7 @@ import {
   CircularProgress,
   Collapse,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -335,12 +335,9 @@ const InputsTable = (props) => {
       obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
         ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
         : '';
-      obj.providerdenomination = (obj.provider 
-        ? obj.provider.id.split('-')[1] + " - " 
-        : '') 
-        + (obj.provider
-        ? obj.provider.denomination
-        : obj.providerName);
+      obj.providerdenomination =
+        (obj.provider ? obj.provider.id.split('-')[1] + ' - ' : '') +
+        (obj.provider ? obj.provider.denomination : obj.providerName);
       obj.totalPrice1 = obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '';
       obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
         ? Number(obj.totalPriceWithIgv.toFixed(3))
@@ -446,8 +443,7 @@ const InputsTable = (props) => {
   const confirmDelete = () => {
     deletePayload.request.payload.movementTypeMerchantId =
       selectedInput.movementTypeMerchantId;
-    deletePayload.request.payload.createdAt =
-      selectedInput.createdAt;
+    deletePayload.request.payload.createdAt = selectedInput.createdAt;
     deletePayload.request.payload.movementHeaderId =
       selectedInput.movementHeaderId;
     deletePayload.request.payload.contableMovementId =
@@ -811,7 +807,12 @@ const InputsTable = (props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -909,12 +910,12 @@ const InputsTable = (props) => {
                           {showSubtypeMovement(obj.movementSubType)}
                         </TableCell>
                         <TableCell>
-                          {(obj.provider 
-                            ? obj.provider.id.split('-')[1] + " - " 
-                            : '') +  
-                          (obj.provider
-                            ? obj.provider.denomination
-                            : obj.providerName)}
+                          {(obj.provider
+                            ? obj.provider.id.split('-')[1] + ' - '
+                            : '') +
+                            (obj.provider
+                              ? obj.provider.denomination
+                              : obj.providerName)}
                         </TableCell>
                         <TableCell
                           sx={{
@@ -1148,22 +1149,17 @@ const InputsTable = (props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportInputs/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportDoc}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportInputs/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportDoc}
+          >
+            Exportar todo
+          </Button>
         ) : null}
 
-        {!popUp ? (
-          <></> 
-        ) : (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        )}
+        {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
 
       <Dialog

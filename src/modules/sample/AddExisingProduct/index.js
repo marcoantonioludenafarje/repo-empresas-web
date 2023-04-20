@@ -75,8 +75,6 @@ const AddExistingProduct = ({sendData, type}) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-
-
   //FUNCIONES DIALOG
   const [open, setOpen] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
@@ -84,8 +82,8 @@ const AddExistingProduct = ({sendData, type}) => {
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [proSearch, setProSearch] = React.useState();
   const [nameChanged, setNameChanged] = React.useState(false);
-  const [basicUrl, setBasicUrl] = React.useState(null)
-  const [typeAlert, setTypeAlert] = React.useState('faltaProduct')
+  const [basicUrl, setBasicUrl] = React.useState(null);
+  const [typeAlert, setTypeAlert] = React.useState('faltaProduct');
   const handleClose = () => {
     setOpen(false);
   };
@@ -93,8 +91,8 @@ const AddExistingProduct = ({sendData, type}) => {
   useEffect(() => {
     /* selectedProduct = {}; */
 
-    let domain = (new URL(window.location.href));
-    setBasicUrl(domain.origin)
+    let domain = new URL(window.location.href);
+    setBasicUrl(domain.origin);
   }, []);
 
   const handleClickOpen = () => {
@@ -148,11 +146,11 @@ const AddExistingProduct = ({sendData, type}) => {
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
     setShowAlert(false);
-    
+
     if (selectedProduct.stock < data.count && type == 'output') {
       console.log('porfavor selecciona un numero menor al total de productos');
       // typeAlert = 'maxCount';
-      setTypeAlert('maxCount')
+      setTypeAlert('maxCount');
       setShowAlert(true);
     } else {
       let requiredKeys = ['product', 'description', 'costPriceUnit'];
@@ -309,22 +307,23 @@ const AddExistingProduct = ({sendData, type}) => {
                   <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
                     <div>{`Listado de Producto`}</div>
                     <Button
-                    sx={{mx: 'auto', mx: 1 , my: 1 ,py: 3}}
-                    variant='outlined'
-                    startIcon={<CachedIcon sx={{m: 1 , my: 'auto'}} />}
-                    onClick={() => handleClickOpen()}
+                      sx={{mx: 'auto', mx: 1, my: 1, py: 3}}
+                      variant='outlined'
+                      startIcon={<CachedIcon sx={{m: 1, my: 'auto'}} />}
+                      onClick={() => handleClickOpen()}
                     >
-                    {'Actualizar'}  
+                      {'Actualizar'}
                     </Button>
                     <Button
-                    sx={{mx: 'auto',py: 3 , mx: 1,  my: 1 }}
-                    variant='outlined'
-                    startIcon={<ArrowCircleLeftOutlinedIcon />}
-                    onClick={() => window.open(`${basicUrl}/sample/products/new`)}
+                      sx={{mx: 'auto', py: 3, mx: 1, my: 1}}
+                      variant='outlined'
+                      startIcon={<ArrowCircleLeftOutlinedIcon />}
+                      onClick={() =>
+                        window.open(`${basicUrl}/sample/products/new`)
+                      }
                     >
-                     Agregar nuevo Produco
+                      Agregar nuevo Produco
                     </Button>
-
                   </DialogTitle>
                   <DialogContent
                     sx={{display: 'flex', justifyContent: 'center'}}

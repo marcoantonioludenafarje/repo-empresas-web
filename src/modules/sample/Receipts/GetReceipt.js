@@ -210,7 +210,6 @@ const GetReceipt = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
     /* guide: '', */
@@ -225,7 +224,7 @@ const GetReceipt = (props) => {
     totalFieldIgv: Number(query.totalPriceWithIgv),
     money_unit: money_unit,
     clientEmail: query.clientEmail,
-    transactionNumber: "",
+    transactionNumber: '',
   };
   const actualValues = {
     nroReceipt: '',
@@ -269,16 +268,12 @@ const GetReceipt = (props) => {
   };
 
   //const calcularPrecioConIGV = (precioSinIGV, priceBusinessMoneyWithIgv) => {
-    //const IGV = igvDefault;
-    //const precioConIGV = priceBusinessMoneyWithIgv * (1 + IGV);
-    //return precioConIGV;
+  //const IGV = igvDefault;
+  //const precioConIGV = priceBusinessMoneyWithIgv * (1 + IGV);
+  //return precioConIGV;
   //}
-  
-  useEffect(() => {
-    
 
-  })
-  
+  useEffect(() => {});
 
   useEffect(() => {
     selectedOutput = {};
@@ -336,10 +331,13 @@ const GetReceipt = (props) => {
 
   useEffect(() => {
     if (typeof selectedOutput === 'object') {
-      changeValueField('receiver', `${query.clientId.split('-')[1]} - ${
-        selectedOutput.client.denomination
-      }`)
-      changeValueField('clientEmail', selectedOutput.client.email)
+      changeValueField(
+        'receiver',
+        `${query.clientId.split('-')[1]} - ${
+          selectedOutput.client.denomination
+        }`,
+      );
+      changeValueField('clientEmail', selectedOutput.client.email);
       selectedProducts = selectedOutput.descriptionProductsInfo;
       selectedProducts.map((obj) => {
         obj['subtotal'] = Number(
@@ -410,7 +408,6 @@ const GetReceipt = (props) => {
     }
   }, [globalParameter != undefined && moneyUnit, moneyToConvert]);
 
-  
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
   const cancel = () => {
@@ -446,9 +443,9 @@ const GetReceipt = (props) => {
 
   const valueWithIGV = (value) => {
     const IGV = igvDefault;
-    const precioConIGV =( value * (1 + IGV)).toFixed(10);
+    const precioConIGV = (value * (1 + IGV)).toFixed(10);
     return precioConIGV;
-  }
+  };
 
   const showListDocumentsSelected = () => {
     const total = listDocuments.reduce((count, element) => {
@@ -515,12 +512,12 @@ const GetReceipt = (props) => {
             serial: serial,
             documentIntern: query.documentIntern,
             clientEmail: data.clientEmail,
-            transactionNumber: data.transactionNumber || "",
+            transactionNumber: data.transactionNumber || '',
             /* numberBill: 3, */
             automaticSendSunat: true,
             automaticSendClient: true,
             referralGuide: data.guide ? true : false,
-            creditSale: paymentWay == "credit",
+            creditSale: paymentWay == 'credit',
             methodToPay: paymentMethod,
             earningGeneration: earningGeneration,
             referralGuideSerial: data.guide ? data.guide : '',
@@ -545,7 +542,7 @@ const GetReceipt = (props) => {
             folderMovement: query.folderMovement,
             denominationMerchant:
               userDataRes.merchantSelected.denominationMerchant,
-            sendEmail: sendEmail
+            sendEmail: sendEmail,
           },
         },
       };
@@ -763,8 +760,7 @@ const GetReceipt = (props) => {
           GENERAR BOLETA DE VENTA
         </Typography>
       </Box>
-      <Box
-      >
+      <Box>
         <AppPageMeta />
 
         <Formik
@@ -872,13 +868,20 @@ const GetReceipt = (props) => {
                     />
                   </Grid>
                   <Grid
-                    xs={6} sm={4}
-                    sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2, mr: 0}}
+                    xs={6}
+                    sm={4}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      px: 1,
+                      mt: 2,
+                      mr: 0,
+                    }}
                   >
                     <FormControlLabel
                       label='IGV'
                       disabled
-                      sx={{mr:1}}
+                      sx={{mr: 1}}
                       control={
                         <Checkbox
                           onChange={handleIGV}
@@ -937,7 +940,10 @@ const GetReceipt = (props) => {
                   </Grid> */}
                   <Grid sx={{px: 1, mt: 2}} xs={12} sm={6}>
                     <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
+                      <InputLabel
+                        id='methodToPay-label'
+                        style={{fontWeight: 200}}
+                      >
                         Medio de pago
                       </InputLabel>
                       <Select
@@ -960,7 +966,10 @@ const GetReceipt = (props) => {
                         <MenuItem value='plin' style={{fontWeight: 200}}>
                           Plin
                         </MenuItem>
-                        <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
+                        <MenuItem
+                          value='bankTransfer'
+                          style={{fontWeight: 200}}
+                        >
                           Transferencia Bancaria
                         </MenuItem>
                         <MenuItem value='card' style={{fontWeight: 200}}>
@@ -1074,8 +1083,12 @@ const GetReceipt = (props) => {
                     </Button>
                   </Grid>
                 </Grid>
-                
-                <Grid container spacing={2} sx={{maxWidth: 500, mx: 'auto', mb: 4, mt: 4}}>
+
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, mx: 'auto', mb: 4, mt: 4}}
+                >
                   {/* <Grid item xs={4}>
                     <DateTimePicker
                       renderInput={(params) => (
@@ -1151,8 +1164,7 @@ const GetReceipt = (props) => {
                       label='Enviar correo a SUNAT'
                     />
                   </Grid> */}
-                  <Grid 
-                    sx={{px: 1, mt: 2}} xs={12}>
+                  <Grid sx={{px: 1, mt: 2}} xs={12}>
                     <AppTextField
                       label='Observación'
                       name='observation'
@@ -1168,8 +1180,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={12} 
-                    sx={{px: 1, mt: 2, my: 2}}>
+                  <Grid xs={12} sx={{px: 1, mt: 2, my: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'

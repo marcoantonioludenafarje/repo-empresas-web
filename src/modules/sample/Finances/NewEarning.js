@@ -376,7 +376,8 @@ const NewEarning = (props) => {
       newFinancePayload.request.payload.movements[0].otherPayConcepts = [];
       newFinancePayload.request.payload.movements[0].purchaseType =
         purchaseType;
-      newFinancePayload.request.payload.movements[0].proofOfPaymentType = proofOfPaymentType;
+      newFinancePayload.request.payload.movements[0].proofOfPaymentType =
+        proofOfPaymentType;
       listPayments.map((obj, index) => {
         newFinancePayload.request.payload.movements[0].payments.push({
           descriptionPayment: obj.description,
@@ -633,7 +634,10 @@ const NewEarning = (props) => {
                         sx={{textAlign: 'left'}}
                         value={proofOfPaymentType}
                         onChange={(event) => {
-                          console.log('Tipo de comprobante de pago', event.target.value);
+                          console.log(
+                            'Tipo de comprobante de pago',
+                            event.target.value,
+                          );
                           setProofOfPaymentType(event.target.value);
                         }}
                         name='proofOfPaymentType'
@@ -664,12 +668,14 @@ const NewEarning = (props) => {
 
                   <Grid item xs={12}>
                     <AppUpperCaseTextField
-                      label={proofOfPaymentType
-                        ? translateValue(
-                            'PROOFOFPAYMENTNUMBER',
-                            proofOfPaymentType.toUpperCase(),
-                          )
-                        : null}
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTNUMBER',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
                       name='nroBill'
                       variant='outlined'
                       sx={{
@@ -697,12 +703,14 @@ const NewEarning = (props) => {
                       required
                       sx={{my: 2}}
                       value={value2}
-                      label={proofOfPaymentType
-                        ? translateValue(
-                            'PROOFOFPAYMENTDATE',
-                            proofOfPaymentType.toUpperCase(),
-                          )
-                        : null}
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTDATE',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
                       /* maxDate={new Date()} */
                       inputFormat='dd/MM/yyyy'
                       name='initialDate'
@@ -773,12 +781,14 @@ const NewEarning = (props) => {
 
                   <Grid item xs={12}>
                     <AppTextField
-                      label={proofOfPaymentType
-                        ? translateValue(
-                            'PROOFOFPAYMENTTOTALAMOUNT',
-                            proofOfPaymentType.toUpperCase(),
-                          )
-                        : null}
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTTOTALAMOUNT',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
                       name='totalAmounth'
                       variant='outlined'
                       sx={{
@@ -798,11 +808,11 @@ const NewEarning = (props) => {
                         style={{fontWeight: 200}}
                       >
                         {proofOfPaymentType
-                        ? translateValue(
-                            'PROOFOFPAYMENTPAYSTATUS',
-                            proofOfPaymentType.toUpperCase(),
-                          )
-                        : null}
+                          ? translateValue(
+                              'PROOFOFPAYMENTPAYSTATUS',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null}
                       </InputLabel>
                       <Select
                         sx={{textAlign: 'left'}}

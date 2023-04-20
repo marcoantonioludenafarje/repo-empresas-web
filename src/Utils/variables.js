@@ -70,23 +70,29 @@ export const dictionary = {
   },
   PROOFOFPAYMENTPAYSTATUS: {
     BILL: <IntlMessages id='finance.proofOfPayment.type.bill.payStatus' />,
-    RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.payStatus' />,
-    TICKET:<IntlMessages id='finance.proofOfPayment.type.ticket.payStatus' />,
+    RECEIPT: (
+      <IntlMessages id='finance.proofOfPayment.type.receipt.payStatus' />
+    ),
+    TICKET: <IntlMessages id='finance.proofOfPayment.type.ticket.payStatus' />,
   },
   PROOFOFPAYMENTTOTALAMOUNT: {
     BILL: <IntlMessages id='finance.proofOfPayment.type.bill.totalAmount' />,
-    RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.totalAmount' />,
-    TICKET:<IntlMessages id='finance.proofOfPayment.type.ticket.totalAmount' />,
+    RECEIPT: (
+      <IntlMessages id='finance.proofOfPayment.type.receipt.totalAmount' />
+    ),
+    TICKET: (
+      <IntlMessages id='finance.proofOfPayment.type.ticket.totalAmount' />
+    ),
   },
   PROOFOFPAYMENTNUMBER: {
     BILL: <IntlMessages id='finance.proofOfPayment.type.bill.number' />,
     RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.number' />,
-    TICKET:<IntlMessages id='finance.proofOfPayment.type.ticket.number' />,
+    TICKET: <IntlMessages id='finance.proofOfPayment.type.ticket.number' />,
   },
   PROOFOFPAYMENTDATE: {
     BILL: <IntlMessages id='finance.proofOfPayment.type.bill.date' />,
     RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.date' />,
-    TICKET:<IntlMessages id='finance.proofOfPayment.type.ticket.date' />,
+    TICKET: <IntlMessages id='finance.proofOfPayment.type.ticket.date' />,
   },
   SUBTYPENOTE: {
     operationCancellation: (

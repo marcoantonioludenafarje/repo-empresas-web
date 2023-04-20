@@ -424,36 +424,36 @@ const UpdateClient = (props) => {
                   </Grid>
                   {isRUC ? (
                     <>
-                    <Grid item xs={12}>
-                      <AppUpperCaseTextField
-                        label='Nombre de contacto'
-                        name='nameContact'
-                        variant='outlined'
-                        sx={{
-                          width: '100%',
-                          '& .MuiInputBase-input': {
-                            fontSize: 14,
-                          },
-                          my: 2,
-                          mx: 0,
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <AppLowerCaseTextField
-                        label='Correo de contacto'
-                        name='emailContact'
-                        variant='outlined'
-                        sx={{
-                          width: '100%',
-                          '& .MuiInputBase-input': {
-                            fontSize: 14,
-                          },
-                          my: 2,
-                          mx: 0,
-                        }}
-                      />
-                    </Grid>
+                      <Grid item xs={12}>
+                        <AppUpperCaseTextField
+                          label='Nombre de contacto'
+                          name='nameContact'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppLowerCaseTextField
+                          label='Correo de contacto'
+                          name='emailContact'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
                     </>
                   ) : null}
                   <Grid item xs={12}>

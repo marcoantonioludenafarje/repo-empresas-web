@@ -258,7 +258,7 @@ const NewOutput = (props) => {
   const {userDataRes} = useSelector(({user}) => user);
   const {getRolUserRes} = useSelector(({general}) => general);
   console.log('Esto es getRolUserRes', getRolUserRes);
-  
+
   //SETEANDO PARAMETROS
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
@@ -674,33 +674,33 @@ const NewOutput = (props) => {
         },
       };
 
-      
       //dispatch({type: GET_MOVEMENTS, payload: []});
       console.log('Este es el listPayload NewOutput', listPayload);
       toGetMovements(listPayload);
-      if (localStorage
-        .getItem('pathsBack')
-        .includes(
-          '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
-        ) ||
+      if (
+        localStorage
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+          ) ||
         localStorage
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
           ) ||
         localStorage
-        .getItem('pathsBack')
-        .includes(
-          '/facturacion/accounting/movement/register?path=/billOfOutput/*',
-        ) ||
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/billOfOutput/*',
+          ) ||
         localStorage
-        .getItem('pathsBack')
-        .includes(
-          '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
-        ))
-          setShowForms(true);
-      else
-        Router.push('/sample/outputs/table');
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
+          )
+      )
+        setShowForms(true);
+      else Router.push('/sample/outputs/table');
     } else {
       Router.push('/sample/outputs/table');
     }
@@ -763,12 +763,15 @@ const NewOutput = (props) => {
     if (getRolUserRes)
       for (let objModules of getRolUserRes.modules) {
         for (let objSubModules of objModules.submodule) {
-          if (objSubModules.idFront == opcion && objSubModules.typeAccess == 'RESTRICTED'){
+          if (
+            objSubModules.idFront == opcion &&
+            objSubModules.typeAccess == 'RESTRICTED'
+          ) {
             access = false;
-          }            
+          }
         }
       }
-      console.log('submodule fin: ', access);
+    console.log('submodule fin: ', access);
 
     return access;
   }
@@ -778,21 +781,32 @@ const NewOutput = (props) => {
 
     if (selectedClient.clientId) {
       let client = selectedClient.clientId.split('-');
-      let clientDocumentType = client [0];
-      let clientNumberDocument = client [1];
+      let clientDocumentType = client[0];
+      let clientNumberDocument = client[1];
 
-      if (clientDocumentType != "RUC" && documentType == "receipt") {
+      if (clientDocumentType != 'RUC' && documentType == 'receipt') {
         validation = true;
-      } else if (clientDocumentType == "RUC" && (documentType == "referralGuide" || documentType == "distribution")) {
+      } else if (
+        clientDocumentType == 'RUC' &&
+        (documentType == 'referralGuide' || documentType == 'distribution')
+      ) {
         validation = true;
-      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '1' && (documentType == "receipt" || documentType == "bill")) {
+      } else if (
+        clientDocumentType == 'RUC' &&
+        clientNumberDocument.charAt(0) == '1' &&
+        (documentType == 'receipt' || documentType == 'bill')
+      ) {
         validation = true;
-      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '2' && documentType == "bill") {
+      } else if (
+        clientDocumentType == 'RUC' &&
+        clientNumberDocument.charAt(0) == '2' &&
+        documentType == 'bill'
+      ) {
         validation = true;
       }
     }
-    
-    console.log("selectedOutput1",selectedClient)
+
+    console.log('selectedOutput1', selectedClient);
     return validation;
   }
 
@@ -1051,7 +1065,11 @@ const NewOutput = (props) => {
 
                 <Divider sx={{m: 2}} />
 
-                <Grid container spacing={2} sx={{maxWidth: 500, margin: 'auto'}}>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, margin: 'auto'}}
+                >
                   <Button
                     sx={{width: 1}}
                     variant='outlined'
@@ -1362,131 +1380,127 @@ const NewOutput = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            {getMovementsRes.length !== 0 ? 
-              (
-                <>
-                  {validationClientType('referralGuide') && 
-                    !hasBill.includes('referralGuide') &&
-                    localStorage
-                    .getItem('pathsBack')
-                    .includes(
-                      '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
-                    ) ? (
-                    <Button
-                      color='primary'
-                      sx={{width: 1, px: 7, my: 2}}
-                      variant='contained'
-                      onClick={() => {
-                        Router.push({
-                          pathname: '/sample/referral-guide/get',
-                          query: getMovementsRes.find(
-                            (obj) =>
-                              obj.movementHeaderId ==
-                              addMovementRes.movementHeaderId,
-                          ),
-                        });
-                      }}
-                    >
-                      Generar Guía de remisión
-                    </Button>
-                  ) : null}
-                  {validationClientType('receipt') && 
-                    !hasBill.includes('bill') &&
-                    localStorage
-                    .getItem('pathsBack')
-                    .includes(
-                      '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
-                    ) ? (
-                    <Button
-                      color='primary'
-                      sx={{width: 1, px: 7, my: 2}}
-                      variant='contained'
-                      onClick={() => {
-                        Router.push({
-                          pathname: '/sample/receipts/get',
-                          query: getMovementsRes.find(
-                            (obj) =>
-                              obj.movementHeaderId ==
-                              addMovementRes.movementHeaderId,
-                          ),
-                        });
-                      }}
-                    >
-                      Generar Boleta De Venta
-                    </Button>
-                  ) : null}
-                  {validationClientType('bill') && 
-                    !hasBill.includes('bill')  &&
-                    localStorage
-                    .getItem('pathsBack')
-                    .includes(
-                      '/facturacion/accounting/movement/register?path=/billOfOutput/*',
-                    ) ? (
-                    <Button
-                      color='primary'
-                      sx={{width: 1, px: 7, my: 2}}
-                      variant='contained'
-                      onClick={() => {
-                        Router.push({
-                          pathname: '/sample/bills/get',
-                          query: getMovementsRes.find(
-                            (obj) =>
-                              obj.movementHeaderId ==
-                              addMovementRes.movementHeaderId,
-                          ),
-                        });
-                      }}
-                    >
-                      Generar Factura
-                    </Button>
-                  ) : null}
-                  {hasBill.includes('bill') &&
-                    localStorage
-                    .getItem('pathsBack')
-                    .includes(
-                      '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
-                    ) ? (
-                    <Button
-                      color='primary'
-                      sx={{width: 1, px: 7, my: 2}}
-                      variant='contained'
-                      onClick={() => {
-                        Router.push({
-                          pathname: '/sample/finances/new-earning',
-                          query: getMovementsRes.find(
-                            (obj) =>
-                              obj.movementHeaderId ==
-                              addMovementRes.movementHeaderId,
-                          ),
-                        });
-                      }}
-                    >
-                      Generar Ingreso
-                    </Button>
-                  ) : null}
+            {getMovementsRes.length !== 0 ? (
+              <>
+                {validationClientType('referralGuide') &&
+                !hasBill.includes('referralGuide') &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
+                  ) ? (
                   <Button
                     color='primary'
                     sx={{width: 1, px: 7, my: 2}}
-                    variant='outlined'
-                    onClick={() => Router.push('/sample/outputs/table')}
-                    // onClick={() => {
-                    //   Router.push({
-                    //     pathname: '/sample/outputs/table',
-                    //     query: {
-                    //       operationBack: true
-                    //     },
-                    //   });
-                    // }}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/referral-guide/get',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
                   >
-                    Ir a Listado
+                    Generar Guía de remisión
                   </Button>
-                </>
-              ) 
-
-              
-              : (
-                <CircularProgress />
-              )}
+                ) : null}
+                {validationClientType('receipt') &&
+                !hasBill.includes('bill') &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+                  ) ? (
+                  <Button
+                    color='primary'
+                    sx={{width: 1, px: 7, my: 2}}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/receipts/get',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
+                  >
+                    Generar Boleta De Venta
+                  </Button>
+                ) : null}
+                {validationClientType('bill') &&
+                !hasBill.includes('bill') &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/billOfOutput/*',
+                  ) ? (
+                  <Button
+                    color='primary'
+                    sx={{width: 1, px: 7, my: 2}}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/bills/get',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
+                  >
+                    Generar Factura
+                  </Button>
+                ) : null}
+                {hasBill.includes('bill') &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
+                  ) ? (
+                  <Button
+                    color='primary'
+                    sx={{width: 1, px: 7, my: 2}}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/finances/new-earning',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
+                  >
+                    Generar Ingreso
+                  </Button>
+                ) : null}
+                <Button
+                  color='primary'
+                  sx={{width: 1, px: 7, my: 2}}
+                  variant='outlined'
+                  onClick={() => Router.push('/sample/outputs/table')}
+                  // onClick={() => {
+                  //   Router.push({
+                  //     pathname: '/sample/outputs/table',
+                  //     query: {
+                  //       operationBack: true
+                  //     },
+                  //   });
+                  // }}
+                >
+                  Ir a Listado
+                </Button>
+              </>
+            ) : (
+              <CircularProgress />
+            )}
           </DialogContentText>
         </DialogContent>
       </Dialog>

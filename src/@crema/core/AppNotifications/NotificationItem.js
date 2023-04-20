@@ -2,36 +2,39 @@ import React from 'react';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import PropTypes from 'prop-types';
-import { Box, ListItem, Typography } from '@mui/material';
-import { Fonts } from '../../../shared/constants/AppEnums';
+import {Box, ListItem, Typography} from '@mui/material';
+import {Fonts} from '../../../shared/constants/AppEnums';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import {justDate, justTime} from '../../../Utils/utils';
 
-
 import red from '@mui/material/colors/red';
 import green from '@mui/material/colors/green';
 import cyan from '@mui/material/colors/cyan';
-import { render } from 'react-dom';
+import {render} from 'react-dom';
 const NotificationItem = (props) => {
-  const { item } = props;
+  const {item} = props;
   console.log('Qué item es?', item);
   const renderSwitch = (item) => {
     switch (item.typeIcon.toLowerCase()) {
       case 'success':
-        return <CheckCircleRoundedIcon style={{ color: green[500] }} />;
+        return <CheckCircleRoundedIcon style={{color: green[500]}} />;
       case 'info':
-        return <InfoRoundedIcon style={{ color: cyan[500] }} />;
+        return <InfoRoundedIcon style={{color: cyan[500]}} />;
       case 'alert':
-        return <ErrorRoundedIcon style={{ color: red[500] }} />;
+        return <ErrorRoundedIcon style={{color: red[500]}} />;
       default:
         return <InfoRoundedIcon />;
     }
   };
   const convertToDate = (miliseconds) => {
     const fecha = new Date(miliseconds);
-    const fecha_actual = `${fecha.getDate()}/${fecha.getMonth() < 10 ? `0${fecha.getMonth()}`: fecha.getMonth()}/${fecha.getFullYear()} - ${fecha.getHours()}:${fecha.getMinutes()}:${fecha.getSeconds() < 10 ? `0${fecha.getSeconds()}`: fecha.getSeconds()}`;
+    const fecha_actual = `${fecha.getDate()}/${
+      fecha.getMonth() < 10 ? `0${fecha.getMonth()}` : fecha.getMonth()
+    }/${fecha.getFullYear()} - ${fecha.getHours()}:${fecha.getMinutes()}:${
+      fecha.getSeconds() < 10 ? `0${fecha.getSeconds()}` : fecha.getSeconds()
+    }`;
     return fecha_actual;
   };
   return (

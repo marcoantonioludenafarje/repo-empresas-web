@@ -120,8 +120,7 @@ const validationSchema = yup.object({
     .string()
     .email(<IntlMessages id='validation.emailFormat' />)
     .required(<IntlMessages id='validation.required' />),
-  transactionNumber: yup
-    .string(),
+  transactionNumber: yup.string(),
 });
 
 //FORCE UPDATE
@@ -201,7 +200,9 @@ const NewOutput = (props) => {
   const [serial, setSerial] = React.useState('');
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
-  const [expirationDate, setExpirationDate] = React.useState(Date.now() + 1 * 24 * 60 * 60 * 1000);
+  const [expirationDate, setExpirationDate] = React.useState(
+    Date.now() + 1 * 24 * 60 * 60 * 1000,
+  );
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [earningGeneration, setEarningGeneration] = React.useState(true);
   useEffect(() => {
@@ -309,10 +310,13 @@ const NewOutput = (props) => {
       typeof selectedOutput === 'object' &&
       selectedOutput.loaded == true
     ) {
-      changeValueField('receiver', `${query.clientId.split('-')[1]} - ${
-        selectedOutput.client.denomination
-      }`)
-      changeValueField('clientEmail', selectedOutput.client.email)
+      changeValueField(
+        'receiver',
+        `${query.clientId.split('-')[1]} - ${
+          selectedOutput.client.denomination
+        }`,
+      );
+      changeValueField('clientEmail', selectedOutput.client.email);
       selectedProducts = selectedOutput.descriptionProductsInfo;
       selectedProducts.map((obj) => {
         obj['subtotal'] = Number(
@@ -402,7 +406,7 @@ const NewOutput = (props) => {
     totalFieldIgv: fixDecimals(query.totalPriceWithIgv),
     money_unit: money_unit,
     clientEmail: query.clientEmail,
-    transactionNumber: "",
+    transactionNumber: '',
   };
   const actualValues = {
     nroBill: '',
@@ -480,9 +484,9 @@ const NewOutput = (props) => {
 
   const valueWithIGV = (value) => {
     const IGV = igvDefault;
-    const precioConIGV =( value * (1 + IGV)).toFixed(10);
+    const precioConIGV = (value * (1 + IGV)).toFixed(10);
     return precioConIGV;
-  }
+  };
 
   const showListDocumentsSelected = () => {
     const total = listDocuments.reduce((count, element) => {
@@ -554,12 +558,12 @@ const NewOutput = (props) => {
             serial: serial,
             documentIntern: query.documentIntern,
             clientEmail: data.clientEmail,
-            transactionNumber: data.transactionNumber || "",
+            transactionNumber: data.transactionNumber || '',
             /* numberBill: 3, */
             automaticSendSunat: /* sendSunat */ true,
             automaticSendClient: /* sendClient */ true,
             referralGuide: data.guide ? true : false,
-            creditSale: paymentWay == "credit",
+            creditSale: paymentWay == 'credit',
             methodToPay: paymentMethod,
             earningGeneration: earningGeneration,
             referralGuideSerial: data.guide ? data.guide : '',
@@ -585,7 +589,7 @@ const NewOutput = (props) => {
             }),
             documentsMovement: selectedOutput.documentsMovement,
             referralGuides: parsedDocuments,
-            sendEmail: sendEmail
+            sendEmail: sendEmail,
           },
         },
       };
@@ -821,7 +825,11 @@ const NewOutput = (props) => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}
+                >
                   <Grid item xs={6} sm={6}>
                     <AppTextField
                       label='Nro Factura'
@@ -1000,7 +1008,10 @@ const NewOutput = (props) => {
                   </Grid> */}
                   <Grid item xs={12} sm={6}>
                     <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
+                      <InputLabel
+                        id='methodToPay-label'
+                        style={{fontWeight: 200}}
+                      >
                         Medio de pago
                       </InputLabel>
                       <Select
@@ -1023,7 +1034,10 @@ const NewOutput = (props) => {
                         <MenuItem value='plin' style={{fontWeight: 200}}>
                           Plin
                         </MenuItem>
-                        <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
+                        <MenuItem
+                          value='bankTransfer'
+                          style={{fontWeight: 200}}
+                        >
                           Transferencia Bancaria
                         </MenuItem>
                         <MenuItem value='card' style={{fontWeight: 200}}>

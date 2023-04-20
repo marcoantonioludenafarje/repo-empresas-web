@@ -49,7 +49,10 @@ const typeDocs = [
     name: 'referralGuide',
     message: <IntlMessages id='document.type.referralGuide' />,
   },
-  {name: 'credit_Note', message: <IntlMessages id='document.type.creditNote' />},
+  {
+    name: 'credit_Note',
+    message: <IntlMessages id='document.type.creditNote' />,
+  },
   {name: 'debit_Note', message: <IntlMessages id='document.type.debitNote' />},
   {name: 'receipt', message: <IntlMessages id='document.type.receipt' />},
   {name: 'anyone', message: <IntlMessages id='document.type.anyone' />},
@@ -63,7 +66,8 @@ const MoreFiltersDocumentSunat = ({sendData, ds}) => {
   const [typeIdentifier, setTypeIdentifier] = React.useState('TODOS');
 
   let changeValueField;
-  const isNoteDocument = ( ds=='credit_Note' || ds=='debit_Note' ? true : false );
+  const isNoteDocument =
+    ds == 'credit_Note' || ds == 'debit_Note' ? true : false;
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
@@ -109,14 +113,14 @@ const MoreFiltersDocumentSunat = ({sendData, ds}) => {
                     Tipo de documento Sunat
                   </InputLabel>
 
-                  {!isNoteDocument ?  (
+                  {!isNoteDocument ? (
                     <Select
                       name='documentType'
                       labelId='documentType-label'
                       label='Tipo de documento Sunat'
                       value={typeDocument}
                       disabled
-                    >  
+                    >
                       <MenuItem value='bill' style={{fontWeight: 200}}>
                         <IntlMessages id='document.type.bill' />
                       </MenuItem>
@@ -136,26 +140,26 @@ const MoreFiltersDocumentSunat = ({sendData, ds}) => {
                         <IntlMessages id='document.type.debitNote' />
                       </MenuItem>
                     </Select>
-                 ) : 
-                  <Select
-                     name='documentType'
-                     labelId='documentType-label'
-                     label='Tipo de documento Sunat'
-                     value={typeDocument}
-                     onChange={(event) => {
-                       console.log('event.target.value', event.target.value);
-                       setDocType(event.target.value);
-                       setTypeDocument(event.target.value);
-                     }}
-                   > 
-                     <MenuItem value='credit_Note' style={{fontWeight: 200}}>
-                       <IntlMessages id='document.type.creditNote' />
-                     </MenuItem>
-                     <MenuItem value='debi_N_ote' style={{fontWeight: 200}}>
-                       <IntlMessages id='document.type.debitNote' />
-                     </MenuItem>
-                   </Select>
-                 }
+                  ) : (
+                    <Select
+                      name='documentType'
+                      labelId='documentType-label'
+                      label='Tipo de documento Sunat'
+                      value={typeDocument}
+                      onChange={(event) => {
+                        console.log('event.target.value', event.target.value);
+                        setDocType(event.target.value);
+                        setTypeDocument(event.target.value);
+                      }}
+                    >
+                      <MenuItem value='credit_Note' style={{fontWeight: 200}}>
+                        <IntlMessages id='document.type.creditNote' />
+                      </MenuItem>
+                      <MenuItem value='debi_N_ote' style={{fontWeight: 200}}>
+                        <IntlMessages id='document.type.debitNote' />
+                      </MenuItem>
+                    </Select>
+                  )}
                 </FormControl>
               </Grid>
 
@@ -264,6 +268,7 @@ const MoreFiltersDocumentSunat = ({sendData, ds}) => {
 
 MoreFiltersDocumentSunat.propTypes = {
   sendData: PropTypes.func.isRequired,
+  ds: PropTypes.string,
 };
 
 export default MoreFiltersDocumentSunat;

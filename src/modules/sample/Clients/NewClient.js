@@ -166,10 +166,9 @@ const NewClient = () => {
       newClientPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
 
-        
-     setIdentidad(userDataRes.merchantSelected.typeClient == 'PN' ? 'DNI' : 'RUC' )
-     
-
+      setIdentidad(
+        userDataRes.merchantSelected.typeClient == 'PN' ? 'DNI' : 'RUC',
+      );
     }
   }, [userDataRes]);
   const cancel = () => {
@@ -267,10 +266,7 @@ const NewClient = () => {
   //   return '';
   // };
 
-  
-
-  return identidad ?  (
-
+  return identidad ? (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
         <Typography
@@ -305,7 +301,7 @@ const NewClient = () => {
                 /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                <Grid item xs={8} sm={12}>
+                  <Grid item xs={8} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='documentType-label'
@@ -385,7 +381,7 @@ const NewClient = () => {
                       }}
                     />
                   </Grid>
-                <Grid item xs={8} sm={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppLowerCaseTextField
                       label='Correo de cliente'
                       name='emailClient'
@@ -434,7 +430,7 @@ const NewClient = () => {
                       </Grid>
                     </>
                   ) : null}
-                <Grid item xs={8} sm={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Telefono fijo o celular de contacto'
                       name='numberContact'
@@ -655,7 +651,7 @@ const NewClient = () => {
         </DialogActions>
       </Dialog>
     </Card>
-  ) : null
+  ) : null;
 };
 
 export default NewClient;

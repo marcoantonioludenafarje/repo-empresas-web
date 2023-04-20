@@ -17,16 +17,18 @@ const providersReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_PROVIDERS:
       console.log('data de reducer GET_PROVIDERS', action.payload);
-      let items= [];
-      let lastEvaluatedKey = "";
-      if(action.payload.callType !== "firstTime"){
+      let items = [];
+      let lastEvaluatedKey = '';
+      if (action.payload.callType !== 'firstTime') {
         items = [...state.listProviders, ...action.payload.Items];
-        lastEvaluatedKey = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+        lastEvaluatedKey = action.payload.LastEvaluatedKey
+          ? action.payload.LastEvaluatedKey
+          : null;
       }
       return {
         ...state,
-        listProviders: items, 
-        providersLastEvalutedKey_pageListProviders: lastEvaluatedKey
+        listProviders: items,
+        providersLastEvalutedKey_pageListProviders: lastEvaluatedKey,
       };
     case NEW_PROVIDER:
       console.log('data de reducer NEW_PROVIDER', action.payload);

@@ -29,7 +29,8 @@ import {
   CircularProgress,
   TablePagination,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Typography,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -81,7 +82,11 @@ import {
   parseTo3Decimals,
   toSimpleDate,
 } from '../../../Utils/utils';
-import {getReferralGuides_PageListGuide, cancelInvoice, referralGuidesBatchConsult} from '../../../redux/actions/Movements';
+import {
+  getReferralGuides_PageListGuide,
+  cancelInvoice,
+  referralGuidesBatchConsult,
+} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -174,7 +179,7 @@ const ReferralGuidesTable = (props) => {
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [totalItems, setTotalItems] = React.useState([]);
   const [lastKey, setLastKey] = React.useState(null);
-  const [errorDetail, setErrorDetail] = React.useState("");
+  const [errorDetail, setErrorDetail] = React.useState('');
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -183,7 +188,7 @@ const ReferralGuidesTable = (props) => {
     ({general}) => general,
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
-  const documentSunat = "referralGuide";
+  const documentSunat = 'referralGuide';
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
@@ -210,16 +215,24 @@ const ReferralGuidesTable = (props) => {
   };
 
   const handleNextPage = (event) => {
-    //console.log('Llamando al  handleNextPage', handleNextPage);    
-    listPayload.request.payload.LastEvaluatedKey = referralGuideLastEvalutedKey_pageListGuide;
-    console.log('listPayload111:handleNextPage:',listPayload)
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    listPayload.request.payload.LastEvaluatedKey =
+      referralGuideLastEvalutedKey_pageListGuide;
+    console.log('listPayload111:handleNextPage:', listPayload);
     toGetMovements(listPayload);
     // setPage(page+1);
   };
 
   //GET APIS RES
-  const {referralGuideItems_pageListGuide, referralGuideLastEvalutedKey_pageListGuide, referralGuidesBatchConsultRes} = useSelector(({movements}) => movements);
-  console.log('referralGuideItems_pageListGuide', referralGuideItems_pageListGuide);
+  const {
+    referralGuideItems_pageListGuide,
+    referralGuideLastEvalutedKey_pageListGuide,
+    referralGuidesBatchConsultRes,
+  } = useSelector(({movements}) => movements);
+  console.log(
+    'referralGuideItems_pageListGuide',
+    referralGuideItems_pageListGuide,
+  );
   let listToUse = referralGuideItems_pageListGuide;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
@@ -284,7 +297,10 @@ const ReferralGuidesTable = (props) => {
     listPayload.request.payload.denominationClient =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toUpperCase();
     console.log('listPayload', listPayload);
-    dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({
+      type: GET_REFERRALGUIDE_PAGE_LISTGUIDE,
+      payload: {callType: 'firstTime'},
+    });
     toGetMovements(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
@@ -297,12 +313,18 @@ const ReferralGuidesTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
-    dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
-    console.log('listPayload122:searchInputs:',listPayload)
+    dispatch({
+      type: GET_REFERRALGUIDE_PAGE_LISTGUIDE,
+      payload: {callType: 'firstTime'},
+    });
+    console.log('listPayload122:searchInputs:', listPayload);
     toGetMovements(listPayload);
   };
   useEffect(() => {
-    dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({
+      type: GET_REFERRALGUIDE_PAGE_LISTGUIDE,
+      payload: {callType: 'firstTime'},
+    });
 
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -346,7 +368,7 @@ const ReferralGuidesTable = (props) => {
         }
       }
       listPayload.request.payload.LastEvaluatedKey = null;
-      console.log('listPayload133:useEffect userDataRes:',listPayload)
+      console.log('listPayload133:useEffect userDataRes:', listPayload);
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -390,19 +412,22 @@ const ReferralGuidesTable = (props) => {
     console.log('excelPayload', excelPayload);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES, payload: undefined});
+    dispatch({
+      type: GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
+      payload: undefined,
+    });
     toExportExcelTemplateToReferralGuides(excelPayload);
     setDownloadExcel(true);
   };
 
   const batchConsultReferralGuide = () => {
-    if(userDataRes){
+    if (userDataRes) {
       toReferralGuidesBatchConsult({
         request: {
           payload: {
-            merchantId: userDataRes.merchantSelected.merchantId
-          }
-        }
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
       });
       setIsLoading(true);
     }
@@ -411,7 +436,10 @@ const ReferralGuidesTable = (props) => {
   useEffect(() => {
     if (referralGuidesBatchConsultRes) {
       setIsLoading(false);
-      dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+      dispatch({
+        type: GET_REFERRALGUIDE_PAGE_LISTGUIDE,
+        payload: {callType: 'firstTime'},
+      });
       toGetMovements(listPayload);
       dispatch({type: REFERRAL_GUIDES_BATCH_CONSULT, payload: undefined});
     }
@@ -512,9 +540,7 @@ const ReferralGuidesTable = (props) => {
 
   const showIconErrorStatus = (bool) => {
     if (bool) {
-      return (
-       <PageviewIcon sx={{color: amber[500]}} />
-      );
+      return <PageviewIcon sx={{color: amber[500]}} />;
     } else {
       return <></>;
     }
@@ -577,11 +603,11 @@ const ReferralGuidesTable = (props) => {
 
   const CancelOptionOpen = () => {
     setOpen(true);
-  }
+  };
 
   const CancelOptionClose = () => {
     setOpen(false);
-  }
+  };
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -610,8 +636,12 @@ const ReferralGuidesTable = (props) => {
   // }, [lastKey]);
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} 
-            direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -676,7 +706,8 @@ const ReferralGuidesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {referralGuideItems_pageListGuide && Array.isArray(referralGuideItems_pageListGuide) ? (
+            {referralGuideItems_pageListGuide &&
+            Array.isArray(referralGuideItems_pageListGuide) ? (
               referralGuideItems_pageListGuide.map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -687,13 +718,13 @@ const ReferralGuidesTable = (props) => {
                   </TableCell>
                   <TableCell>
                     {obj.documentIntern && obj.documentIntern.includes('-')
-                        ? obj.documentIntern.split('-')[0]
-                        : ''}
+                      ? obj.documentIntern.split('-')[0]
+                      : ''}
                   </TableCell>
                   <TableCell>
                     {obj.documentIntern && obj.documentIntern.includes('-')
-                        ? obj.documentIntern.split('-')[1]
-                        : ''}
+                      ? obj.documentIntern.split('-')[1]
+                      : ''}
                   </TableCell>
                   <TableCell>{obj.reasonForTransfer || ''} </TableCell>
                   <TableCell>
@@ -708,14 +739,14 @@ const ReferralGuidesTable = (props) => {
                   <TableCell align='center'>
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
-                  <TableCell>      
+                  <TableCell>
                     {showCanceled(obj.cancelStatus || false)}
                   </TableCell>
                   <TableCell>
-                  <Button
-                      onClick={() =>{
-                        setOpenError(true)
-                        setErrorDetail(obj.errorDetail)
+                    <Button
+                      onClick={() => {
+                        setOpenError(true);
+                        setErrorDetail(obj.errorDetail);
                       }}
                     >
                       {showIconErrorStatus(obj.errorDetail || false)}
@@ -746,7 +777,7 @@ const ReferralGuidesTable = (props) => {
             </IconButton>
           </Stack>
         ) : null}
-      </TableContainer>        
+      </TableContainer>
       {/* <TablePagination
         rowsPerPageOptions={[25, 50, 100]}
         component="div"
@@ -764,25 +795,24 @@ const ReferralGuidesTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportReferralGuides/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportToExcel}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportReferralGuides/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportToExcel}
+          >
+            Exportar todo
+          </Button>
         ) : null}
         <Button
           variant='outlined'
           startIcon={<FindReplaceIcon />}
           onClick={batchConsultReferralGuide}
           disabled={isLoading}
-          color="success"
+          color='success'
         >
           Consulta Masiva de Guías en SUNAT
-          {isLoading && <CircularProgress sx={{ml:2}} size={24} />}
+          {isLoading && <CircularProgress sx={{ml: 2}} size={24} />}
         </Button>
       </ButtonGroup>
 
@@ -823,26 +853,21 @@ const ReferralGuidesTable = (props) => {
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Consultar Estado
         </MenuItem>
-        <MenuItem onClick={CancelOptionOpen}>
-          Anular
-        </MenuItem>
+        <MenuItem onClick={CancelOptionOpen}>Anular</MenuItem>
       </Menu>
 
-      <Dialog 
-        open={openError}
-        onClose={() => setOpenError(false)}
-      >
+      <Dialog open={openError} onClose={() => setOpenError(false)}>
         <DialogTitle sx={{fontSize: '1.5em'}}>Error de guía</DialogTitle>
-        <DialogContent>
-          {errorDetail}
-        </DialogContent>
+        <DialogContent>{errorDetail}</DialogContent>
       </Dialog>
 
       <Dialog open={open} onClose={CancelOptionClose}>
-        <DialogTitle sx={{fontSize: '1.5em'}}>Anulación de Guías de remisión</DialogTitle>
+        <DialogTitle sx={{fontSize: '1.5em'}}>
+          Anulación de Guías de remisión
+        </DialogTitle>
         <DialogContent>
-        La anulación legal se realiza a traves del portal de Sunat, puede seguir
-        el siguiente tutorial: 
+          La anulación legal se realiza a traves del portal de Sunat, puede
+          seguir el siguiente tutorial:
         </DialogContent>
       </Dialog>
 
@@ -874,12 +899,14 @@ const ReferralGuidesTable = (props) => {
             sx={{fontSize: '1.2em'}}
             id='alert-dialog-description'
           >
-            <MoreFiltersDocumentSunat sendData={filterData} ds={documentSunat} />
+            <MoreFiltersDocumentSunat
+              sendData={filterData}
+              ds={documentSunat}
+            />
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
-
     </Card>
   );
 };

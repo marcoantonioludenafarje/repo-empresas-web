@@ -43,7 +43,10 @@ import {
   ROUTE_TO_REFERRAL_GUIDE,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
-import {listDistributions,getDistribution} from '../../../redux/actions/Movements';
+import {
+  listDistributions,
+  getDistribution,
+} from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {getYear, justDate, showSubtypeMovement} from '../../../Utils/utils';
@@ -81,11 +84,12 @@ const FinancesTable = (props) => {
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
-  const {userDataRes} = useSelector(({user}) => user); 
+  const {userDataRes} = useSelector(({user}) => user);
 
   const [distributionSelected, setDistributionSelected] = React.useState(null);
-  const [indexDistributionSelected, setIndexDistributionSelected] = React.useState(null);
-  
+  const [indexDistributionSelected, setIndexDistributionSelected] =
+    React.useState(null);
+
   const [typeDialog, setTypeDialog] = React.useState('');
   //APIS
   const toListDistributions = (payload) => {
@@ -146,13 +150,11 @@ const FinancesTable = (props) => {
   };
 
   const checkProducts = (delivery, index) => {
-
-
     if (openProducts == true && rowNumber2 == index) {
-      console.log("Va a cerrar el openProducts")
+      console.log('Va a cerrar el openProducts');
       setOpenProducts(false);
-    }else{
-      console.log("Va a abrir el openProducts")
+    } else {
+      console.log('Va a abrir el openProducts');
       setRowNumber2(index);
       setOpenProducts(true);
     }
@@ -169,23 +171,23 @@ const FinancesTable = (props) => {
   };
 
   const handleClickOpen = (type) => {
-    console.log("Este es el type", type)
-    if(type == "viewDetail" ){
-      setTypeDialog(type)
-      if(listDistribution[indexDistributionSelected] && listDistribution[indexDistributionSelected].deliveries.length == 0){
-        console.log("Obtendra el listDistribution")
+    console.log('Este es el type', type);
+    if (type == 'viewDetail') {
+      setTypeDialog(type);
+      if (
+        listDistribution[indexDistributionSelected] &&
+        listDistribution[indexDistributionSelected].deliveries.length == 0
+      ) {
+        console.log('Obtendra el listDistribution');
         toGetDistribution({
-           deliveryDistributionId: distributionSelected,
-           indexDistributionSelected : indexDistributionSelected,
-           merchantId:  userDataRes.merchantSelected.merchantId})
-
-      }else{ 
-        console.log("Se reutilizara el metodo")
+          deliveryDistributionId: distributionSelected,
+          indexDistributionSelected: indexDistributionSelected,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        });
+      } else {
+        console.log('Se reutilizara el metodo');
       }
-      setOpen(true)
-  
-
-      
+      setOpen(true);
     }
     // console.log('Veamos el total', selectedRoute);
     // let routePredefinedId = selectedRoute.routePredefinedId;
@@ -207,11 +209,9 @@ const FinancesTable = (props) => {
 
   const handleClickFather = (deliveryDistributionId, index, event) => {
     setAnchorEl(event.currentTarget);
-    setDistributionSelected(deliveryDistributionId)
-    setIndexDistributionSelected(index)
-    
+    setDistributionSelected(deliveryDistributionId);
+    setIndexDistributionSelected(index);
   };
-
 
   const getReferralGuide = () => {
     console.log('Selected distribution', selectedDistribution);
@@ -308,7 +308,6 @@ const FinancesTable = (props) => {
     }
   };
 
-
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -359,22 +358,18 @@ const FinancesTable = (props) => {
                       <TableCell>
                         <Button
                           id='basic-button'
-                          aria-controls={
-                            openMenu ? 'basic-menu' : undefined
-                          }
+                          aria-controls={openMenu ? 'basic-menu' : undefined}
                           aria-haspopup='true'
                           aria-expanded={openMenu ? 'true' : undefined}
                           onClick={handleClickFather.bind(
                             this,
                             obj.deliveryDistributionId,
-                            index
+                            index,
                           )}
                         >
                           <KeyboardArrowDownIcon />
                         </Button>
                       </TableCell>
-
-
                     </TableRow>
                   </>
                 );
@@ -398,253 +393,209 @@ const FinancesTable = (props) => {
           'aria-labelledby': 'basic-button',
         }}
       >
-            <MenuItem onClick={handleClickOpen.bind(this,'viewDetail')}>
-              <CachedIcon sx={{mr: 1, my: 'auto'}} />
-              Ver detalle
-            </MenuItem>
-
-
+        <MenuItem onClick={handleClickOpen.bind(this, 'viewDetail')}>
+          <CachedIcon sx={{mr: 1, my: 'auto'}} />
+          Ver detalle
+        </MenuItem>
       </Menu>
 
       <Dialog
-            open={open}
-            onClose={handleClose}
-            sx={{textAlign: 'center'}}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-            fullWidth
-            maxWidth='x1'
-          >
-            {typeDialog == 'viewDetail' ? (
-              <>
-                <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                  {'Puntos de entrega'} 
-                  {/* <CancelOutlinedIcon
+        open={open}
+        onClose={handleClose}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+        fullWidth
+        maxWidth='x1'
+      >
+        {typeDialog == 'viewDetail' ? (
+          <>
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Puntos de entrega'}
+              {/* <CancelOutlinedIcon
                     onClick={setOpen.bind(this, false)}
                     // className={classes.closeButton}
                   /> */}
-                </DialogTitle>
-                <DialogContent>
-                  
-                <TableContainer component={Paper} sx={{maxHeight: 440}}>
+            </DialogTitle>
+            <DialogContent>
+              <TableContainer component={Paper} sx={{maxHeight: 440}}>
                 <Table stickyHeader size='small' aria-label='simple table'>
                   <TableHead>
                     <TableRow>
-                      
-                    <TableCell>Serie-Número</TableCell>
-                    <TableCell>Estado Guía Sunat</TableCell>
-                    <TableCell>
-                      Dirección de punto de partida
-                    </TableCell>
-                    <TableCell>
-                      Ubigeo de punto de partida
-                    </TableCell>
-                    <TableCell>
-                      CodInterno de punto de partida
-                    </TableCell>
-                    <TableCell>
-                      Dirección de punto de llegada
-                    </TableCell>
-                    <TableCell>
-                      Ubigeo de punto de llegada
-                    </TableCell>
-                    <TableCell>
-                      CodInterno de punto de llegada
-                    </TableCell>
-                    <TableCell>Documento de conductor</TableCell>
-                    <TableCell>Nombre de conductor</TableCell>
-                    <TableCell>Apellidos de conductor</TableCell>
-                    <TableCell>Licencia de conductor</TableCell>
-                    <TableCell>Placa del vehículo</TableCell>
-                    <TableCell>Productos</TableCell>
-                    <TableCell>Observaciones</TableCell>
-                    <TableCell>Peso total</TableCell>
-                    <TableCell>Número de paquetes</TableCell>
-                    
+                      <TableCell>Serie-Número</TableCell>
+                      <TableCell>Estado Guía Sunat</TableCell>
+                      <TableCell>Dirección de punto de partida</TableCell>
+                      <TableCell>Ubigeo de punto de partida</TableCell>
+                      <TableCell>CodInterno de punto de partida</TableCell>
+                      <TableCell>Dirección de punto de llegada</TableCell>
+                      <TableCell>Ubigeo de punto de llegada</TableCell>
+                      <TableCell>CodInterno de punto de llegada</TableCell>
+                      <TableCell>Documento de conductor</TableCell>
+                      <TableCell>Nombre de conductor</TableCell>
+                      <TableCell>Apellidos de conductor</TableCell>
+                      <TableCell>Licencia de conductor</TableCell>
+                      <TableCell>Placa del vehículo</TableCell>
+                      <TableCell>Productos</TableCell>
+                      <TableCell>Observaciones</TableCell>
+                      <TableCell>Peso total</TableCell>
+                      <TableCell>Número de paquetes</TableCell>
+
                       {/* <TableCell></TableCell> */}
                     </TableRow>
                   </TableHead>
-                {/* {JSON.stringify(listDistribution[indexDistributionSelected].deliveries)} */}
+                  {/* {JSON.stringify(listDistribution[indexDistributionSelected].deliveries)} */}
                   <TableBody>
-                  {listDistribution[indexDistributionSelected] && 
-                  listDistribution[indexDistributionSelected].deliveries.length > 0 ? (
-                    listDistribution[indexDistributionSelected].deliveries.map((deliveryItem, index) => {
-                      const products = deliveryItem.productsInfo;
-                      return (
-                        <>
-                          <TableRow
-                            sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                            key={`points-located-${index}`}
-                          >
-                            {/* <TableCell>{deliveryItem.serialNumber}</TableCell> */}
-                            <TableCell>
-              {deliveryItem.serialNumber} 
-            </TableCell>
-            <TableCell align='center'>
-              {showIconStatus(
-                deliveryItem.generateReferralGuide,
-                deliveryItem,
-              )}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.arrivalPointAddress}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.arrivalPointUbigeo}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.arrivalInternalCode || ""}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.startingPointAddress}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.startingPointUbigeo}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.startingInternalCode || ""}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.driverDocumentType &&
-              deliveryItem.driverDocumentNumber
-                ? `${deliveryItem.driverDocumentType.toUpperCase()} - ${
-                    deliveryItem.driverDocumentNumber
-                  }`
-                : null}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.driverDenomination}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.driverLastName}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.driverLicenseNumber}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.carrierPlateNumber}
-            </TableCell>
-            <TableCell>
-              {products &&
-              products.length !== 0 ? (
-                <IconButton
-                  onClick={() =>
-                    checkProducts(deliveryItem, index)
-                  }
-                  size='small'
-                >
-                  <FormatListBulletedIcon fontSize='small' />
-                </IconButton>
-              ) : null}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.observationDelivery}
-            </TableCell>
-            <TableCell>
-              {Number.parseFloat(
-                deliveryItem.totalGrossWeight,
-              ).toFixed(3)}
-            </TableCell>
-            <TableCell>
-              {deliveryItem.numberOfPackages}
-            </TableCell>
-
-                        </TableRow>
-
-                        
-                    <TableRow key={`sub-${index}`}>
-                                <TableCell sx={{p: 0}} colSpan={10}>
-                                  <Collapse
-                                    in={
-                                      openProducts &&
-                                      index === rowNumber2
+                    {listDistribution[indexDistributionSelected] &&
+                    listDistribution[indexDistributionSelected].deliveries
+                      .length > 0 ? (
+                      listDistribution[
+                        indexDistributionSelected
+                      ].deliveries.map((deliveryItem, index) => {
+                        const products = deliveryItem.productsInfo;
+                        return (
+                          <>
+                            <TableRow
+                              sx={{
+                                '&:last-child td, &:last-child th': {border: 0},
+                              }}
+                              key={`points-located-${index}`}
+                            >
+                              {/* <TableCell>{deliveryItem.serialNumber}</TableCell> */}
+                              <TableCell>{deliveryItem.serialNumber}</TableCell>
+                              <TableCell align='center'>
+                                {showIconStatus(
+                                  deliveryItem.generateReferralGuide,
+                                  deliveryItem,
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.arrivalPointAddress}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.arrivalPointUbigeo}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.arrivalInternalCode || ''}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.startingPointAddress}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.startingPointUbigeo}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.startingInternalCode || ''}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.driverDocumentType &&
+                                deliveryItem.driverDocumentNumber
+                                  ? `${deliveryItem.driverDocumentType.toUpperCase()} - ${
+                                      deliveryItem.driverDocumentNumber
+                                    }`
+                                  : null}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.driverDenomination}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.driverLastName}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.driverLicenseNumber}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.carrierPlateNumber}
+                              </TableCell>
+                              <TableCell>
+                                {products && products.length !== 0 ? (
+                                  <IconButton
+                                    onClick={() =>
+                                      checkProducts(deliveryItem, index)
                                     }
-                                    timeout='auto'
-                                    unmountOnExit
+                                    size='small'
                                   >
-                                    <Box sx={{margin: 0}}>
-                                      <Table
-                                        size='small'
-                                        aria-label='purchases'
+                                    <FormatListBulletedIcon fontSize='small' />
+                                  </IconButton>
+                                ) : null}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.observationDelivery}
+                              </TableCell>
+                              <TableCell>
+                                {Number.parseFloat(
+                                  deliveryItem.totalGrossWeight,
+                                ).toFixed(3)}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.numberOfPackages}
+                              </TableCell>
+                            </TableRow>
+
+                            <TableRow key={`sub-${index}`}>
+                              <TableCell sx={{p: 0}} colSpan={10}>
+                                <Collapse
+                                  in={openProducts && index === rowNumber2}
+                                  timeout='auto'
+                                  unmountOnExit
+                                >
+                                  <Box sx={{margin: 0}}>
+                                    <Table size='small' aria-label='purchases'>
+                                      <TableHead
+                                        sx={{
+                                          backgroundColor: '#ededed',
+                                        }}
                                       >
-                                        <TableHead
-                                          sx={{
-                                            backgroundColor:
-                                              '#ededed',
-                                          }}
-                                        >
-                                          <TableRow>
-                                            <TableCell>
-                                              Código
-                                            </TableCell>
-                                            <TableCell>
-                                              Descripción
-                                            </TableCell>
-                                            <TableCell>
-                                              Cantidad
-                                            </TableCell>
-                                          </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                          {products &&
-                                          products.length !== 0
-                                            ? products.map(
-                                                (
-                                                  product,
-                                                  index3,
-                                                ) => {
-                                                  return (
-                                                    <TableRow
-                                                      key={`${index3}-${index3}`}
-                                                    >
-                                                      <TableCell>
-                                                        {product.businessProductCode !=
-                                                        null
-                                                          ? product.businessProductCode
-                                                          : product.product}
-                                                      </TableCell>
-                                                      <TableCell>
-                                                        {
-                                                          product.description
-                                                        }
-                                                      </TableCell>
-                                                      <TableCell>
-                                                        {
-                                                          product.quantityMovement
-                                                        }
-                                                      </TableCell>
-                                                    </TableRow>
-                                                  );
-                                                },
-                                              )
-                                            : null}
-                                        </TableBody>
-                                      </Table>
-                                    </Box>
-                                  </Collapse>
-                                </TableCell>
-                              </TableRow>
-
-                      </>
-                    );
-                  })
-) : (
-  <CircularProgress
-    disableShrink
-    sx={{m: '10px', position: 'relative'}}
-  />
-)}
-</TableBody>
-
+                                        <TableRow>
+                                          <TableCell>Código</TableCell>
+                                          <TableCell>Descripción</TableCell>
+                                          <TableCell>Cantidad</TableCell>
+                                        </TableRow>
+                                      </TableHead>
+                                      <TableBody>
+                                        {products && products.length !== 0
+                                          ? products.map((product, index3) => {
+                                              return (
+                                                <TableRow
+                                                  key={`${index3}-${index3}`}
+                                                >
+                                                  <TableCell>
+                                                    {product.businessProductCode !=
+                                                    null
+                                                      ? product.businessProductCode
+                                                      : product.product}
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    {product.description}
+                                                  </TableCell>
+                                                  <TableCell>
+                                                    {product.quantityMovement}
+                                                  </TableCell>
+                                                </TableRow>
+                                              );
+                                            })
+                                          : null}
+                                      </TableBody>
+                                    </Table>
+                                  </Box>
+                                </Collapse>
+                              </TableCell>
+                            </TableRow>
+                          </>
+                        );
+                      })
+                    ) : (
+                      <CircularProgress
+                        disableShrink
+                        sx={{m: '10px', position: 'relative'}}
+                      />
+                    )}
+                  </TableBody>
                 </Table>
               </TableContainer>
-
-                </DialogContent>
-              </>
-            ) : null}
-          </Dialog>
-
-
+            </DialogContent>
+          </>
+        ) : null}
+      </Dialog>
     </Card>
   );
 };

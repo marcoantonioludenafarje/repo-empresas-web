@@ -24,11 +24,12 @@ import {
   CircularProgress,
   Typography,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
@@ -69,7 +70,10 @@ import {
   translateValue,
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
-import {getBillItems_pageListBill, cancelInvoice} from '../../../redux/actions/Movements';
+import {
+  getBillItems_pageListBill,
+  cancelInvoice,
+} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -161,7 +165,7 @@ const BillsTable = (props) => {
     ({general}) => general,
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
-  const documentSunat = "bill";
+  const documentSunat = 'bill';
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
@@ -185,9 +189,10 @@ const BillsTable = (props) => {
   };
 
   const handleNextPage = (event) => {
-    //console.log('Llamando al  handleNextPage', handleNextPage);    
-    listPayload.request.payload.LastEvaluatedKey = billLastEvalutedKey_pageListBill;
-    console.log('listPayload111:handleNextPage:',listPayload)
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    listPayload.request.payload.LastEvaluatedKey =
+      billLastEvalutedKey_pageListBill;
+    console.log('listPayload111:handleNextPage:', listPayload);
     toGetMovements(listPayload);
     // setPage(page+1);
   };
@@ -197,7 +202,8 @@ const BillsTable = (props) => {
   let exchangeRate;
 
   //GET APIS RES
-  const {billItems_pageListBill, billLastEvalutedKey_pageListBill} = useSelector(({movements}) => movements);
+  const {billItems_pageListBill, billLastEvalutedKey_pageListBill} =
+    useSelector(({movements}) => movements);
   //const {getMovementsRes} = useSelector(({movements}) => movements);
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
@@ -287,7 +293,7 @@ const BillsTable = (props) => {
     listPayload.request.payload.denominationClient =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toUpperCase();
     console.log('listPayload', listPayload);
-    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     toGetMovements(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
@@ -300,13 +306,13 @@ const BillsTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
-    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     toGetMovements(listPayload);
   };
 
   useEffect(() => {
-    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
-    
+    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
+
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
@@ -532,8 +538,12 @@ const BillsTable = (props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} 
-            direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -607,8 +617,8 @@ const BillsTable = (props) => {
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumberBill && obj.serialNumberBill.includes('-') 
-                      ? obj.serialNumberBill.split('-')[0] 
+                    {obj.serialNumberBill && obj.serialNumberBill.includes('-')
+                      ? obj.serialNumberBill.split('-')[0]
                       : ''}
                   </TableCell>
                   <TableCell>
@@ -663,15 +673,14 @@ const BillsTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportBills/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportToExcel}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportBills/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportToExcel}
+          >
+            Exportar todo
+          </Button>
         ) : null}
       </ButtonGroup>
 
@@ -780,7 +789,7 @@ const BillsTable = (props) => {
                   idBill: selectedBill.movementHeaderId,
                   movementId: selectedBill.outputId,
                   nroBill: selectedBill.serialNumberBill,
-                  igv: selectedBill.igv
+                  igv: selectedBill.igv,
                 },
               })
             }
@@ -833,12 +842,14 @@ const BillsTable = (props) => {
             sx={{fontSize: '1.2em'}}
             id='alert-dialog-description'
           >
-            <MoreFiltersDocumentSunat sendData={filterData} ds={documentSunat} />
+            <MoreFiltersDocumentSunat
+              sendData={filterData}
+              ds={documentSunat}
+            />
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
-
     </Card>
   );
 };

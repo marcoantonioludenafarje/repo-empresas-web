@@ -41,7 +41,7 @@ import {
   FormControl,
   Collapse,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -695,7 +695,12 @@ const FinancesTable = (props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <ToggleButtonGroup
           value={financeType}
           exclusive

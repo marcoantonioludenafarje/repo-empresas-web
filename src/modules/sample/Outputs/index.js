@@ -42,10 +42,9 @@ import {
   FormControlLabel,
   InputLabel,
   Checkbox,
-
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
-import Backdrop from "@mui/material/Backdrop";
+import Backdrop from '@mui/material/Backdrop';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -110,7 +109,7 @@ import {
   GET_MOVEMENTS,
   GET_USER_DATA,
   GET_ROL_USER,
-  GENERATE_SELL_TICKET
+  GENERATE_SELL_TICKET,
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
 
@@ -215,10 +214,8 @@ let invoicePayload = {
   },
 };
 
-
 const validationSchema = yup.object({
-  transactionNumber: yup
-    .string(),
+  transactionNumber: yup.string(),
 });
 
 let codProdSelected = '';
@@ -256,7 +253,7 @@ const OutputsTable = (props) => {
   //SELECCIÓN CALENDARIO
   const [value, setValue] = React.useState(Date.now() - 2678400000);
   const [value2, setValue2] = React.useState(Date.now());
-  const [typeClient, setTypeClient]= React.useState(null);
+  const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
   // setOpen3(query.operationBack)
   //API FUNCTIONS
@@ -349,18 +346,27 @@ const OutputsTable = (props) => {
         listPayload.request.payload.movementHeaderId = query.movementHeaderId;
       }
 
-      (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
-      console.log("toGetMovements [userDataRes] ",listPayload)
+      searchPrivilege('outputsTable')
+        ? (listPayload.request.payload.userCreated = null)
+        : (listPayload.request.payload.userCreated = userDataRes.userId);
+      console.log('toGetMovements [userDataRes] ', listPayload);
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
       }
       getBusinessParameter(businessParameterPayload);
       getGlobalParameter(globalParameterPayload);
-      console.log("userDataRes1234", userDataRes)
-      console.log("userDataRes.merchantSelected.typeClien", userDataRes.merchantSelected.typeClient)
-      
-      setTypeClient(userDataRes.merchantSelected.typeClient ? userDataRes.merchantSelected.typeClient  : 'PJ')
+      console.log('userDataRes1234', userDataRes);
+      console.log(
+        'userDataRes.merchantSelected.typeClien',
+        userDataRes.merchantSelected.typeClient,
+      );
+
+      setTypeClient(
+        userDataRes.merchantSelected.typeClient
+          ? userDataRes.merchantSelected.typeClient
+          : 'PJ',
+      );
     }
   }, [userDataRes]);
   useEffect(() => {
@@ -377,8 +383,10 @@ const OutputsTable = (props) => {
         console.log('Query con datos', query);
         listPayload.request.payload.movementHeaderId = query.movementHeaderId;
       }
-      (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
-      console.log("toGetMovements [actualDateRes] ",listPayload)
+      searchPrivilege('outputsTable')
+        ? (listPayload.request.payload.userCreated = null)
+        : (listPayload.request.payload.userCreated = userDataRes.userId);
+      console.log('toGetMovements [actualDateRes] ', listPayload);
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -422,8 +430,10 @@ const OutputsTable = (props) => {
     listPayload.request.payload.searchByDocument = '';
     listPayload.request.payload.typeDocumentClient = '';
     listPayload.request.payload.numberDocumentClient = '';
-    (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
-    console.log("toGetMovements [searchOutputs] ",listPayload)
+    searchPrivilege('outputsTable')
+      ? (listPayload.request.payload.userCreated = null)
+      : (listPayload.request.payload.userCreated = userDataRes.userId);
+    console.log('toGetMovements [searchOutputs] ', listPayload);
     toGetMovements(listPayload);
   };
   const newOutput = () => {
@@ -470,8 +480,7 @@ const OutputsTable = (props) => {
     console.log('Eliminando salida :(');
     deletePayload.request.payload.movementTypeMerchantId =
       selectedOutput.movementTypeMerchantId;
-    deletePayload.request.payload.createdAt =
-      selectedOutput.createdAt;
+    deletePayload.request.payload.createdAt = selectedOutput.createdAt;
     deletePayload.request.payload.movementHeaderId =
       selectedOutput.movementHeaderId;
     deletePayload.request.payload.contableMovementId =
@@ -511,8 +520,10 @@ const OutputsTable = (props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
-      (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
-      console.log("toGetMovements [sendStatus] ",listPayload)
+      searchPrivilege('outputsTable')
+        ? (listPayload.request.payload.userCreated = null)
+        : (listPayload.request.payload.userCreated = userDataRes.userId);
+      console.log('toGetMovements [sendStatus] ', listPayload);
       toGetMovements(listPayload);
     }, 2200);
   };
@@ -551,12 +562,9 @@ const OutputsTable = (props) => {
       obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
         ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
         : '';
-      obj.clientdenomination = (obj.client 
-        ? obj.numberDocumentClient + " - " 
-        : '') + 
-        (obj.client
-        ? obj.client.denomination
-        : obj.clientName);
+      obj.clientdenomination =
+        (obj.client ? obj.numberDocumentClient + ' - ' : '') +
+        (obj.client ? obj.client.denomination : obj.clientName);
       obj.totalPrice1 = obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '';
       obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
         ? Number(obj.totalPriceWithIgv.toFixed(3))
@@ -571,13 +579,21 @@ const OutputsTable = (props) => {
         ? obj.userUpdatedMetadata.nombreCompleto
         : '';
 
-      console.log ("statusObject",obj)
-      obj.receipt1 = statusTextObject(obj, obj.existReceipt, 'receipt')
-      obj.ticket1 = statusTextObject(obj, (obj.existSellTicket ? true : false), 'ticket')
-      obj.referralGuide1 = statusTextObject(obj, obj.existReferralGuide, 'referralGuide');
+      console.log('statusObject', obj);
+      obj.receipt1 = statusTextObject(obj, obj.existReceipt, 'receipt');
+      obj.ticket1 = statusTextObject(
+        obj,
+        obj.existSellTicket ? true : false,
+        'ticket',
+      );
+      obj.referralGuide1 = statusTextObject(
+        obj,
+        obj.existReferralGuide,
+        'referralGuide',
+      );
       obj.bill1 = statusTextObject(obj, obj.existBill, 'bill');
       obj.income1 = statusTextObject(obj, obj.existIncome, 'income');
-      console.log ("statusObject1",obj)
+      console.log('statusObject1', obj);
 
       listResult.push(
         (({
@@ -686,13 +702,15 @@ const OutputsTable = (props) => {
           movementHeaderId: selectedOutput.movementHeaderId,
           createdAt: Number(selectedOutput.createdAt),
           clientId: selectedOutput.clientId,
-          totalPriceWithIgv: Number(selectedOutput.totalPriceWithIgv.toFixed(3)), //
+          totalPriceWithIgv: Number(
+            selectedOutput.totalPriceWithIgv.toFixed(3),
+          ), //
           issueDate: specialFormatToSunat(),
           serial: 'V001',
           documentIntern: selectedOutput.documentIntern,
           clientEmail: selectedOutput.client.email,
-          transactionNumber: data.transactionNumber || "",
-          numberSellTicket: selectedOutput.codMovement.split("-")[1],
+          transactionNumber: data.transactionNumber || '',
+          numberSellTicket: selectedOutput.codMovement.split('-')[1],
           automaticSendSunat: /* sendSunat */ true,
           automaticSendClient: /* sendClient */ true,
           referralGuide: false,
@@ -704,16 +722,11 @@ const OutputsTable = (props) => {
           observation: '',
           igv: Number(selectedOutput.igv),
           productsInfo: selectedOutput.descriptionProductsInfo.map((obj) => {
-            console.log(
-              'facturabusinessProductCode',
-              obj.businessProductCode,
-            );
+            console.log('facturabusinessProductCode', obj.businessProductCode);
             return {
               product: obj.product,
               quantityMovement: Number(obj.quantityMovement),
-              priceBusinessMoneyWithIgv: Number(
-                obj.priceBusinessMoneyWithIgv,
-              ),
+              priceBusinessMoneyWithIgv: Number(obj.priceBusinessMoneyWithIgv),
               customCodeProduct: obj.customCodeProduct,
               description: obj.description,
               unitMeasure: obj.unitMeasure,
@@ -950,24 +963,38 @@ const OutputsTable = (props) => {
     if (obj.movementSubType == 'Ventas') {
       if (exist) {
         if (mintype) {
-          return (
-              `${mintype} - ${cod}`
-          );
+          return `${mintype} - ${cod}`;
         } else {
-          if (type != 'ticket' && obj.documentsMovement && obj.documentsMovement.length>0) {
-            let serialDocumentObj = obj.documentsMovement.filter( item => item.typeDocument === type);
-            let serialDocument = serialDocumentObj && serialDocumentObj.length>0 && type != 'referralGuide' ? serialDocumentObj[0].serialDocument : "Generado";
-            
-            if (serialDocumentObj && serialDocumentObj.length>0 && type == 'referralGuide')
-              serialDocument = serialDocumentObj.length==1 ? serialDocumentObj[0].serialDocument : "Varias";
+          if (
+            type != 'ticket' &&
+            obj.documentsMovement &&
+            obj.documentsMovement.length > 0
+          ) {
+            let serialDocumentObj = obj.documentsMovement.filter(
+              (item) => item.typeDocument === type,
+            );
+            let serialDocument =
+              serialDocumentObj &&
+              serialDocumentObj.length > 0 &&
+              type != 'referralGuide'
+                ? serialDocumentObj[0].serialDocument
+                : 'Generado';
+
+            if (
+              serialDocumentObj &&
+              serialDocumentObj.length > 0 &&
+              type == 'referralGuide'
+            )
+              serialDocument =
+                serialDocumentObj.length == 1
+                  ? serialDocumentObj[0].serialDocument
+                  : 'Varias';
 
             return serialDocument;
-
           } else if (type == 'ticket') {
-            return 'Ver'
-            
+            return 'Ver';
           } else {
-            return 'Generado'
+            return 'Generado';
           }
         }
       } else {
@@ -993,12 +1020,30 @@ const OutputsTable = (props) => {
             </Button>
           );
         } else {
-          if (type != 'ticket' && obj.documentsMovement && obj.documentsMovement.length>0) {
-            let serialDocumentObj = obj.documentsMovement.filter( item => item.typeDocument === type);
-            let serialDocument = serialDocumentObj && serialDocumentObj.length>0 && type != 'referralGuide' ? serialDocumentObj[0].serialDocument : "Generado";
-            
-            if (serialDocumentObj && serialDocumentObj.length>0 && type == 'referralGuide')
-              serialDocument = serialDocumentObj.length==1 ? serialDocumentObj[0].serialDocument : "Varias";
+          if (
+            type != 'ticket' &&
+            obj.documentsMovement &&
+            obj.documentsMovement.length > 0
+          ) {
+            let serialDocumentObj = obj.documentsMovement.filter(
+              (item) => item.typeDocument === type,
+            );
+            let serialDocument =
+              serialDocumentObj &&
+              serialDocumentObj.length > 0 &&
+              type != 'referralGuide'
+                ? serialDocumentObj[0].serialDocument
+                : 'Generado';
+
+            if (
+              serialDocumentObj &&
+              serialDocumentObj.length > 0 &&
+              type == 'referralGuide'
+            )
+              serialDocument =
+                serialDocumentObj.length == 1
+                  ? serialDocumentObj[0].serialDocument
+                  : 'Varias';
 
             return (
               <Button
@@ -1010,19 +1055,19 @@ const OutputsTable = (props) => {
                 {serialDocument}
               </Button>
             );
-
           } else if (type == 'ticket') {
             return (
               <Button
                 variant='secondary'
                 sx={{fontSize: '1em'}}
                 /* disabled={type == 'referralGuide'} */
-                onClick={() => {window.open(obj.existSellTicket)}}
+                onClick={() => {
+                  window.open(obj.existSellTicket);
+                }}
               >
                 NRO. {obj.codMovement.split('-')[1]}
               </Button>
             );
-            
           } else {
             return (
               <Button
@@ -1122,8 +1167,10 @@ const OutputsTable = (props) => {
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toLowerCase();
     console.log('listPayload', listPayload);
     dispatch({type: GET_MOVEMENTS, payload: undefined});
-    (searchPrivilege("outputsTable") ? listPayload.request.payload.userCreated = null : listPayload.request.payload.userCreated = userDataRes.userId);
-    console.log("toGetMovements [filterData] ",listPayload)
+    searchPrivilege('outputsTable')
+      ? (listPayload.request.payload.userCreated = null)
+      : (listPayload.request.payload.userCreated = userDataRes.userId);
+    console.log('toGetMovements [filterData] ', listPayload);
     toGetMovements(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
@@ -1138,12 +1185,15 @@ const OutputsTable = (props) => {
     if (getRolUserRes)
       for (let objModules of getRolUserRes.modules) {
         for (let objSubModules of objModules.submodule) {
-          if (objSubModules.idFront == opcion && objSubModules.typeAccess == 'RESTRICTED'){
+          if (
+            objSubModules.idFront == opcion &&
+            objSubModules.typeAccess == 'RESTRICTED'
+          ) {
             access = false;
-          }            
+          }
         }
       }
-      console.log('submodule fin: ', access);
+    console.log('submodule fin: ', access);
 
     return access;
   }
@@ -1151,34 +1201,47 @@ const OutputsTable = (props) => {
   function validationClientType(selectedOutput1, documentType) {
     let validation = false;
 
-    if(selectedOutput1 && selectedOutput1.clientId) {
-
+    if (selectedOutput1 && selectedOutput1.clientId) {
       let client = selectedOutput1.clientId.split('-');
-      let clientDocumentType = client [0];
-      let clientNumberDocument = client [1];
+      let clientDocumentType = client[0];
+      let clientNumberDocument = client[1];
 
-      if (clientDocumentType != "RUC" && documentType == "receipt") {
+      if (clientDocumentType != 'RUC' && documentType == 'receipt') {
         validation = true;
-      } else if (clientDocumentType == "RUC" && (documentType == "referralGuide" || documentType == "distribution")) {
+      } else if (
+        clientDocumentType == 'RUC' &&
+        (documentType == 'referralGuide' || documentType == 'distribution')
+      ) {
         validation = true;
-      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '1' && (documentType == "receipt" || documentType == "bill")) {
+      } else if (
+        clientDocumentType == 'RUC' &&
+        clientNumberDocument.charAt(0) == '1' &&
+        (documentType == 'receipt' || documentType == 'bill')
+      ) {
         validation = true;
-      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '2' && documentType == "bill") {
+      } else if (
+        clientDocumentType == 'RUC' &&
+        clientNumberDocument.charAt(0) == '2' &&
+        documentType == 'bill'
+      ) {
         validation = true;
       }
     }
-    
-    console.log("selectedOutput1",selectedOutput1)
+
+    console.log('selectedOutput1', selectedOutput1);
     return validation;
   }
 
-
-  return  typeClient ? (
+  return typeClient ? (
     <Card sx={{p: 4}}>
-      <Stack sx={{
-        m: 2,
-      }} 
-      direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{
+          m: 2,
+        }}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -1235,9 +1298,9 @@ const OutputsTable = (props) => {
               <TableCell>Detalle productos</TableCell>
               <TableCell>Detalle documentos</TableCell>
               <TableCell>Boleta Venta relacionada</TableCell>
-              {typeClient == 'PN' ?
+              {typeClient == 'PN' ? (
                 <TableCell>Ticket Venta relacionada</TableCell>
-                : null}
+              ) : null}
               <TableCell>Guía de remisión relacionada</TableCell>
               <TableCell>Factura relacionada</TableCell>
               <TableCell>Ingreso relacionado</TableCell>
@@ -1276,10 +1339,10 @@ const OutputsTable = (props) => {
                         {showSubtypeMovement(obj.movementSubType)}
                       </TableCell>
                       <TableCell>
-                        {(obj.client 
-                          ? obj.numberDocumentClient + " - " 
-                          : '') + 
-                          (obj.client ? obj.client.denomination : obj.clientName)}
+                        {(obj.client ? obj.numberDocumentClient + ' - ' : '') +
+                          (obj.client
+                            ? obj.client.denomination
+                            : obj.clientName)}
                       </TableCell>
                       <TableCell
                         sx={{
@@ -1320,11 +1383,15 @@ const OutputsTable = (props) => {
                       <TableCell align='center'>
                         {statusObject(obj, obj.existReceipt, 'receipt')}
                       </TableCell>
-                      {typeClient == 'PN' ?
+                      {typeClient == 'PN' ? (
                         <TableCell align='center'>
-                          {statusObject(obj, (obj.existSellTicket ? true : false), 'ticket')}
+                          {statusObject(
+                            obj,
+                            obj.existSellTicket ? true : false,
+                            'ticket',
+                          )}
                         </TableCell>
-                        : null }
+                      ) : null}
                       <TableCell align='center'>
                         {statusObject(
                           obj,
@@ -1509,7 +1576,7 @@ const OutputsTable = (props) => {
       </TableContainer>
       {isLoading ? (
         <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          sx={{color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
           open={isLoading}
         >
           <AppLoader />
@@ -1526,7 +1593,7 @@ const OutputsTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/movementProducts/register?path=/output/*') ===
-        true && !popUp ? (
+          true && !popUp ? (
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
@@ -1538,22 +1605,17 @@ const OutputsTable = (props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportOutputs/*') ===
-          true && !popUp ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportDoc}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportOutputs/*') === true && !popUp ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportDoc}
+          >
+            Exportar todo
+          </Button>
         ) : null}
 
-        {!popUp ? (
-          <></> 
-        ) : (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        )}
+        {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
       <Dialog
         open={openStatus}
@@ -1630,7 +1692,7 @@ const OutputsTable = (props) => {
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Eliminar
           </MenuItem>
-        ) : null} 
+        ) : null}
 
         {localStorage
           .getItem('pathsBack')
@@ -1646,15 +1708,15 @@ const OutputsTable = (props) => {
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
-          ) &&
-        selectedOutput.movementSubType == 'sales'? (
+          ) && selectedOutput.movementSubType == 'sales' ? (
           <MenuItem onClick={() => setSellTicketDialog(true)}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
           </MenuItem>
         ) : null}
 
-        {validationClientType(selectedOutput,'receipt') && localStorage
+        {validationClientType(selectedOutput, 'receipt') &&
+        localStorage
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
@@ -1666,12 +1728,14 @@ const OutputsTable = (props) => {
             Generar Boleta Venta
           </MenuItem>
         ) : null}
-        
-        {validationClientType(selectedOutput,'referralGuide') && localStorage
+
+        {validationClientType(selectedOutput, 'referralGuide') &&
+        localStorage
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
-          ) && selectedOutput.movementSubType == 'sales' ? (
+          ) &&
+        selectedOutput.movementSubType == 'sales' ? (
           <MenuItem
             disabled={
               userDataRes.merchantSelected &&
@@ -1685,7 +1749,8 @@ const OutputsTable = (props) => {
           </MenuItem>
         ) : null}
 
-        {validationClientType(selectedOutput,'bill') && localStorage
+        {validationClientType(selectedOutput, 'bill') &&
+        localStorage
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/billOfOutput/*',
@@ -1709,7 +1774,9 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
           ) &&
-        (selectedOutput.existBill || selectedOutput.existReceipt || selectedOutput.existSellTicket) &&
+        (selectedOutput.existBill ||
+          selectedOutput.existReceipt ||
+          selectedOutput.existSellTicket) &&
         !selectedOutput.existIncome &&
         selectedOutput.movementSubType == 'sales' ? (
           <MenuItem onClick={doFinance}>
@@ -1718,7 +1785,8 @@ const OutputsTable = (props) => {
           </MenuItem>
         ) : null}
 
-        {validationClientType(selectedOutput,'distribution') && localStorage
+        {validationClientType(selectedOutput, 'distribution') &&
+        localStorage
           .getItem('pathsBack')
           .includes('/facturacion/deliveryDistribution/register') === true ? (
           <MenuItem
@@ -1739,7 +1807,6 @@ const OutputsTable = (props) => {
             Archivos
           </MenuItem>
         ) : null}
-
       </Menu>
 
       <Dialog
@@ -1819,43 +1886,51 @@ const OutputsTable = (props) => {
                     autoComplete='on'
                   >
                     <Grid container spacing={2} sx={{width: 1}}>
-
                       <Grid item xs={12}>
-                      <FormControl fullWidth sx={{my: 2}}>
-                        <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
-                          Medio de pago
-                        </InputLabel>
-                        <Select
-                          value={paymentMethod}
-                          name='methodToPay'
-                          labelId='methodToPay-label'
-                          label='Medio de pago'
-                          onChange={
-                            /* handleActualData */ (event) => {
-                              setPaymentMethod(event.target.value);
+                        <FormControl fullWidth sx={{my: 2}}>
+                          <InputLabel
+                            id='methodToPay-label'
+                            style={{fontWeight: 200}}
+                          >
+                            Medio de pago
+                          </InputLabel>
+                          <Select
+                            value={paymentMethod}
+                            name='methodToPay'
+                            labelId='methodToPay-label'
+                            label='Medio de pago'
+                            onChange={
+                              /* handleActualData */ (event) => {
+                                setPaymentMethod(event.target.value);
+                              }
                             }
-                          }
-                        >
-                          <MenuItem value='cash' style={{fontWeight: 200}}>
-                            Efectivo
-                          </MenuItem>
-                          <MenuItem value='yape' style={{fontWeight: 200}}>
-                            Yape
-                          </MenuItem>
-                          <MenuItem value='plin' style={{fontWeight: 200}}>
-                            Plin
-                          </MenuItem>
-                          <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
-                            Transferencia Bancaria
-                          </MenuItem>
-                          <MenuItem value='card' style={{fontWeight: 200}}>
-                            Tarjeta de crédito/débito
-                          </MenuItem>
-                          <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
-                            <IntlMessages id='common.bankDeposit' />
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
+                          >
+                            <MenuItem value='cash' style={{fontWeight: 200}}>
+                              Efectivo
+                            </MenuItem>
+                            <MenuItem value='yape' style={{fontWeight: 200}}>
+                              Yape
+                            </MenuItem>
+                            <MenuItem value='plin' style={{fontWeight: 200}}>
+                              Plin
+                            </MenuItem>
+                            <MenuItem
+                              value='bankTransfer'
+                              style={{fontWeight: 200}}
+                            >
+                              Transferencia Bancaria
+                            </MenuItem>
+                            <MenuItem value='card' style={{fontWeight: 200}}>
+                              Tarjeta de crédito/débito
+                            </MenuItem>
+                            <MenuItem
+                              value='bankDeposit'
+                              style={{fontWeight: 200}}
+                            >
+                              <IntlMessages id='common.bankDeposit' />
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
                       </Grid>
                       <Grid item xs={12}>
                         <AppTextField
@@ -1914,7 +1989,7 @@ const OutputsTable = (props) => {
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
     </Card>
-  ) : null 
+  ) : null;
 };
 
 export default OutputsTable;

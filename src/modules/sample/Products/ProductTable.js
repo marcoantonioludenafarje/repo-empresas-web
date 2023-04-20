@@ -344,13 +344,17 @@ const ProductTable = (arrayObjs, props) => {
       obj.typeProduct1 = showTypeText(obj.typeProduct);
       obj.businessProductCode1 = '' || obj.businessProductCode;
 
-      let dosificacion = "";
+      let dosificacion = '';
       for (let i = 0; i < obj.inputsProduct.length; i++) {
-          dosificacion += obj.inputsProduct[i].description + " - " + obj.inputsProduct[i].quantity + " | ";
+        dosificacion +=
+          obj.inputsProduct[i].description +
+          ' - ' +
+          obj.inputsProduct[i].quantity +
+          ' | ';
       }
-      dosificacion = dosificacion.replace(/\s*\|\s*$/, "");
+      dosificacion = dosificacion.replace(/\s*\|\s*$/, '');
       obj.dosificacion = dosificacion;
-      
+
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
         (({
@@ -358,7 +362,7 @@ const ProductTable = (arrayObjs, props) => {
           description,
           alias,
           customCodeProduct,
-          category,          
+          category,
           weight,
           costPriceUnit,
           priceBusinessMoneyWithIgv,
@@ -370,7 +374,7 @@ const ProductTable = (arrayObjs, props) => {
           description,
           alias,
           customCodeProduct,
-          category,          
+          category,
           weight,
           costPriceUnit,
           priceBusinessMoneyWithIgv,
@@ -393,7 +397,7 @@ const ProductTable = (arrayObjs, props) => {
     'Precio venta sugerido',
     'Stock inicial',
     'Tipo',
-    'Prod. relacionados'
+    'Prod. relacionados',
   ];
   const exportDoc = () => {
     var ws = XLSX.utils.json_to_sheet(cleanList());
@@ -583,12 +587,9 @@ const ProductTable = (arrayObjs, props) => {
   };
 
   const showTypeText = (type) => {
-    if (type == 'rawMaterial')
-      return 'Insumo';
-    if (type == 'intermediateProduct')
-      return 'Producto intermedio';
-    if (type == 'endProduct')
-      return 'Producto terminado';
+    if (type == 'rawMaterial') return 'Insumo';
+    if (type == 'intermediateProduct') return 'Producto intermedio';
+    if (type == 'endProduct') return 'Producto terminado';
   };
 
   const goToMovementsDetail = (product) => {
@@ -616,7 +617,12 @@ const ProductTable = (arrayObjs, props) => {
 
   return (
     <>
-      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <TextField
           label='Código'
           variant='outlined'
@@ -809,15 +815,14 @@ const ProductTable = (arrayObjs, props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportProducts/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportDoc}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportProducts/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportDoc}
+          >
+            Exportar todo
+          </Button>
         ) : null}
 
         {!popUp ? (

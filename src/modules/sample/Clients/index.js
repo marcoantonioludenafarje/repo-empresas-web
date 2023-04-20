@@ -26,8 +26,10 @@ import {
   CircularProgress,
   useTheme,
   useMediaQuery,
+  IconButton,
 } from '@mui/material';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -138,15 +140,18 @@ const ClientTable = (arrayObjs, props) => {
   };
 
   const handleNextPage = (event) => {
-    //console.log('Llamando al  handleNextPage', handleNextPage);    
-    listPayload.request.payload.LastEvaluatedKey = referralGuideLastEvalutedKey_pageListGuide;
-    console.log('listPayload111:handleNextPage:',listPayload)
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    listPayload.request.payload.LastEvaluatedKey =
+      referralGuideLastEvalutedKey_pageListGuide;
+    console.log('listPayload111:handleNextPage:', listPayload);
     getClients(listPayload);
     // setPage(page+1);
   };
 
   //GET APIS RES
-  const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(({clients}) => clients);
+  const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
+    ({clients}) => clients,
+  );
   console.log('clients123', listClients);
   const {deleteProviderRes} = useSelector(({providers}) => providers);
   console.log('deleteProviderRes', deleteProviderRes);
@@ -166,13 +171,13 @@ const ClientTable = (arrayObjs, props) => {
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
       listPayload.request.payload.LastEvaluatedKey = null;
-      dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+      dispatch({type: GET_CLIENTS, payload: {callType: 'firstTime'}});
       getClients(listPayload);
       setFirstload(false);
     }
   }, [userDataRes]);
   useEffect(() => {
-    dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+    dispatch({type: GET_CLIENTS, payload: {callType: 'firstTime'}});
 
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -232,7 +237,8 @@ const ClientTable = (arrayObjs, props) => {
       if (event.target.value == '') {
         listPayload.request.payload.denominationClient = '';
       } else {
-        listPayload.request.payload.denominationClient = event.target.value.toUpperCase();
+        listPayload.request.payload.denominationClient =
+          event.target.value.toUpperCase();
       }
     }
   };
@@ -240,7 +246,7 @@ const ClientTable = (arrayObjs, props) => {
   //BUTTONS BAR FUNCTIONS
   const searchClients = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
-    dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+    dispatch({type: GET_CLIENTS, payload: {callType: 'firstTime'}});
     getClients(listPayload);
   };
   const newClient = () => {
@@ -369,7 +375,7 @@ const ClientTable = (arrayObjs, props) => {
     setOpenStatus(false);
     setTimeout(() => {
       listPayload.request.payload.LastEvaluatedKey = null;
-      dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+      dispatch({type: GET_CLIENTS, payload: {callType: 'firstTime'}});
       getClients(listPayload);
     }, 2000);
   };
@@ -396,7 +402,12 @@ const ClientTable = (arrayObjs, props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2 } className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <FormControl sx={{my: 0, width: 140}}>
           <InputLabel id='categoria-label' style={{fontWeight: 200}}>
             Identificador
@@ -537,22 +548,17 @@ const ClientTable = (arrayObjs, props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportClients/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportToExcel}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportClients/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportToExcel}
+          >
+            Exportar todo
+          </Button>
         ) : null}
 
-        {!popUp ? (
-          <></> 
-        ) : (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        )}
+        {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
       <Dialog
         open={openStatus}

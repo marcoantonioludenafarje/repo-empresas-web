@@ -1083,7 +1083,7 @@ const GetReferralGuide = () => {
                     />
                   </Grid>
 
-                  <Grid xs={12} sm={10 } sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={10} sx={{px: 1, mt: 2}}>
                     <AppLowerCaseTextField
                       label='Correo de cliente'
                       name='clientEmail'
@@ -1270,7 +1270,6 @@ const GetReferralGuide = () => {
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
-
                       onClick={() => openSelectCarrier()}
                     >
                       Seleccionar transportista

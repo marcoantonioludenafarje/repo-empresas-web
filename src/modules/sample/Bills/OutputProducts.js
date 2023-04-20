@@ -67,7 +67,9 @@ const OutputProducts = ({data, toDelete, valueWithIGV}) => {
                   <TableCell>{obj.unitMeasure}</TableCell>
                   <TableCell>{obj.quantityMovement}</TableCell>
                   <TableCell>{obj.priceBusinessMoneyWithIgv}</TableCell>
-                  <TableCell>{valueWithIGV(obj.priceBusinessMoneyWithIgv)}</TableCell>
+                  <TableCell>
+                    {valueWithIGV(obj.priceBusinessMoneyWithIgv)}
+                  </TableCell>
                   <TableCell>{obj.subtotal}</TableCell>
                   <TableCell>{valueWithIGV(obj.subtotal)}</TableCell>
                   <TableCell>

@@ -306,7 +306,7 @@ const NewLocation = () => {
                 /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                <Grid item xs={8} sm={12}>
+                  <Grid item xs={8} sm={12}>
                     <AppUpperCaseTextField
                       label='Código *'
                       name='modularCode'

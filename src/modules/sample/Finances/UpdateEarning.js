@@ -122,7 +122,9 @@ const UpdateEarning = (props) => {
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [moneyUnit, setMoneyUnit] = React.useState(query.exchangeRate);
-  const [proofOfPaymentType, setProofOfPaymentType] = React.useState(query.proofOfPaymentType);
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState(
+    query.proofOfPaymentType,
+  );
   const [showAlert, setShowAlert] = React.useState(false);
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   const [statusEarning, setStatusEarning] = React.useState(query.status);
@@ -211,7 +213,7 @@ const UpdateEarning = (props) => {
     getBusinessParameter(businessParameterPayload);
     //dispatch({type: GET_CLIENTS, payload: undefined});
     listClientsPayload.request.payload.LastEvaluatedKey = null;
-    dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+    dispatch({type: GET_CLIENTS, payload: {callType: 'firstTime'}});
     setSelectedClient({});
     console.log('getClients:', listClientsPayload);
     getClients(listClientsPayload);
@@ -343,8 +345,7 @@ const UpdateEarning = (props) => {
       // if (listPayments.length > 0) {
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
-      newFinancePayload.request.payload.createdAt =
-        anotherValues.registerDate;
+      newFinancePayload.request.payload.createdAt = anotherValues.registerDate;
       newFinancePayload.request.payload.numberDocumentProvider =
         selectedClient.clientId.split('-')[1];
       newFinancePayload.request.payload.denominationProvider =
@@ -629,7 +630,10 @@ const UpdateEarning = (props) => {
                         sx={{textAlign: 'left'}}
                         value={proofOfPaymentType}
                         onChange={(event) => {
-                          console.log('Tipo de comprobante de pago', event.target.value);
+                          console.log(
+                            'Tipo de comprobante de pago',
+                            event.target.value,
+                          );
                           setProofOfPaymentType(event.target.value);
                         }}
                         name='proofOfPaymentType'
@@ -650,12 +654,14 @@ const UpdateEarning = (props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppUpperCaseTextField
-                      label={query.proofOfPaymentType
-                        ? translateValue(
-                            'PROOFOFPAYMENTNUMBER',
-                            query.proofOfPaymentType.toUpperCase(),
-                          )
-                        : 'Número de comprobante'}
+                      label={
+                        query.proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTNUMBER',
+                              query.proofOfPaymentType.toUpperCase(),
+                            )
+                          : 'Número de comprobante'
+                      }
                       disabled={query.serialNumberBill ? true : false}
                       name='nroBill'
                       variant='outlined'
@@ -685,12 +691,14 @@ const UpdateEarning = (props) => {
                       required
                       sx={{my: 2}}
                       value={value2}
-                      label={query.proofOfPaymentType
-                        ? translateValue(
-                            'PROOFOFPAYMENTDATE',
-                            query.proofOfPaymentType.toUpperCase(),
-                          )
-                        : 'Fecha de Comprobante'}
+                      label={
+                        query.proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTDATE',
+                              query.proofOfPaymentType.toUpperCase(),
+                            )
+                          : 'Fecha de Comprobante'
+                      }
                       /* maxDate={new Date()} */
                       inputFormat='dd/MM/yyyy'
                       name='initialDate'
@@ -761,12 +769,14 @@ const UpdateEarning = (props) => {
 
                   <Grid item xs={12}>
                     <AppTextField
-                      label={query.proofOfPaymentType
-                        ? translateValue(
-                            'PROOFOFPAYMENTTOTALAMOUNT',
-                            query.proofOfPaymentType.toUpperCase(),
-                          )
-                        : 'Monto comprobante (con igv)'}
+                      label={
+                        query.proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTTOTALAMOUNT',
+                              query.proofOfPaymentType.toUpperCase(),
+                            )
+                          : 'Monto comprobante (con igv)'
+                      }
                       name='totalAmounth'
                       variant='outlined'
                       sx={{

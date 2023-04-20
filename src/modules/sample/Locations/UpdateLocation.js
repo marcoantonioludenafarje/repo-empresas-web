@@ -119,7 +119,6 @@ const UpdateLocation = (props) => {
     ubigeo: '150101',
   });
 
-
   const [showAlert, setShowAlert] = React.useState(false);
   const [typeLocation, setTypeLocation] = React.useState(query.type);
   const dispatch = useDispatch();
@@ -193,7 +192,7 @@ const UpdateLocation = (props) => {
   };
 
   const handleData = (data, {setSubmitting}) => {
-    console.log("Esta funcionaod", data)
+    console.log('Esta funcionaod', data);
     setSubmitting(true);
     delete data.ubigeo;
     console.log('Data', data);
@@ -272,7 +271,7 @@ const UpdateLocation = (props) => {
   const handleField = (event) => {
     console.log('evento 12354', event);
     // objSelects[event.target.name] = event.target.value;
-    setTypeLocation(event.target.value)
+    setTypeLocation(event.target.value);
     console.log('ocjSelects', objSelects);
   };
 
@@ -327,158 +326,157 @@ const UpdateLocation = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({values,isSubmitting, setFieldValue}) => {
-          
+          {({values, isSubmitting, setFieldValue}) => {
             return (
               <>
-              <Form
-                id='principal-form'
-                style={{textAlign: 'left', justifyContent: 'center'}}
-                noValidate
-                autoComplete='on'
-              >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={12}>
-                    <AppUpperCaseTextField
-                      disabled
-                      label='Código *'
-                      name='modularCode'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppUpperCaseTextField
-                      label='Nombre *'
-                      name='locationName'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppUpperCaseTextField
-                      label='Dirección *'
-                      name='locationDetail'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Autocomplete
-                      disablePortal
-                      id='ubigeo'
-                      value={objUbigeo}
-                      isOptionEqualToValue={(option, value) =>
-                        option.ubigeo === value.ubigeo.toString()
-                      }
-                      getOptionLabel={(option) => option.label || ''}
-                      onChange={(option, value) => {
-                        if (
-                          typeof value === 'object' &&
-                          value != null &&
-                          value !== ''
-                        ) {
-                          console.log('objeto ubigeo', value);
-                          setObjUbigeo(value);
-                          setUbigeo(value.ubigeo.toString());
-                          objSelectsU.ubigeo = value.ubigeo.toString();
-                          setExistUbigeo(true);
-                        } else {
-                          setExistUbigeo(false);
-                        }
-                        console.log('ubigeo, punto de partida', value);
-                      }}
-                      options={parsedUbigeos}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label={<IntlMessages id='ubigeo.signUp' />}
-                          onChange={(event) => {
-                            console.log('event field', event.target.value);
-                            if (event.target.value === '') {
-                              console.log('si se cambia a null');
-                              setExistUbigeo(false);
-                            }
-                          }}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='type-label' style={{fontWeight: 200}}>
-                        Tipo
-                      </InputLabel>
-                      <Select
-                        defaultValue={query.type}
-                        name='type'
-                        labelId='type-label'
-                        label='Tipo'
-                        onChange={handleField}
-                      >
-                        <MenuItem
-                          value='PUNTO LLEGADA'
-                          style={{fontWeight: 200}}
-                        >
-                          PUNTO LLEGADA
-                        </MenuItem>
-                        <MenuItem
-                          value='PUNTO PARTIDA'
-                          style={{fontWeight: 200}}
-                        >
-                          PUNTO PARTIDA
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-
-                <ButtonGroup
-                  orientation='vertical'
-                  variant='outlined'
-                  sx={{width: 1, py: 3}}
-                  aria-label='outlined button group'
+                <Form
+                  id='principal-form'
+                  style={{textAlign: 'left', justifyContent: 'center'}}
+                  noValidate
+                  autoComplete='on'
                 >
-                  <Button
-                    form='principal-form'
-                    color='primary'
-                    sx={{mx: 'auto', width: '40%', py: 2}}
-                    type='submit'
-                    variant='contained'
-                    disabled={isSubmitting}
-                    startIcon={<SaveAltOutlinedIcon />}
+                  <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                    <Grid item xs={12}>
+                      <AppUpperCaseTextField
+                        disabled
+                        label='Código *'
+                        name='modularCode'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                          mx: 0,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <AppUpperCaseTextField
+                        label='Nombre *'
+                        name='locationName'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                          mx: 0,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <AppUpperCaseTextField
+                        label='Dirección *'
+                        name='locationDetail'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                          mx: 0,
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Autocomplete
+                        disablePortal
+                        id='ubigeo'
+                        value={objUbigeo}
+                        isOptionEqualToValue={(option, value) =>
+                          option.ubigeo === value.ubigeo.toString()
+                        }
+                        getOptionLabel={(option) => option.label || ''}
+                        onChange={(option, value) => {
+                          if (
+                            typeof value === 'object' &&
+                            value != null &&
+                            value !== ''
+                          ) {
+                            console.log('objeto ubigeo', value);
+                            setObjUbigeo(value);
+                            setUbigeo(value.ubigeo.toString());
+                            objSelectsU.ubigeo = value.ubigeo.toString();
+                            setExistUbigeo(true);
+                          } else {
+                            setExistUbigeo(false);
+                          }
+                          console.log('ubigeo, punto de partida', value);
+                        }}
+                        options={parsedUbigeos}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label={<IntlMessages id='ubigeo.signUp' />}
+                            onChange={(event) => {
+                              console.log('event field', event.target.value);
+                              if (event.target.value === '') {
+                                console.log('si se cambia a null');
+                                setExistUbigeo(false);
+                              }
+                            }}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormControl fullWidth sx={{my: 2}}>
+                        <InputLabel id='type-label' style={{fontWeight: 200}}>
+                          Tipo
+                        </InputLabel>
+                        <Select
+                          defaultValue={query.type}
+                          name='type'
+                          labelId='type-label'
+                          label='Tipo'
+                          onChange={handleField}
+                        >
+                          <MenuItem
+                            value='PUNTO LLEGADA'
+                            style={{fontWeight: 200}}
+                          >
+                            PUNTO LLEGADA
+                          </MenuItem>
+                          <MenuItem
+                            value='PUNTO PARTIDA'
+                            style={{fontWeight: 200}}
+                          >
+                            PUNTO PARTIDA
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+
+                  <ButtonGroup
+                    orientation='vertical'
+                    variant='outlined'
+                    sx={{width: 1, py: 3}}
+                    aria-label='outlined button group'
                   >
-                    Finalizar
-                  </Button>
-                  {/* <Button
+                    <Button
+                      form='principal-form'
+                      color='primary'
+                      sx={{mx: 'auto', width: '40%', py: 2}}
+                      type='submit'
+                      variant='contained'
+                      disabled={isSubmitting}
+                      startIcon={<SaveAltOutlinedIcon />}
+                    >
+                      Finalizar
+                    </Button>
+                    {/* <Button
                         sx={{mx: 'auto', width: '40%', py: 2}}
                         variant='outlined'
                         startIcon={<SaveAltOutlinedIcon />}
                       >
                         Guardar y registrar nuevo
                       </Button> */}
-                  {/* <Button
+                    {/* <Button
                     sx={{mx: 'auto', width: '40%', py: 2}}
                     variant='outlined'
                     startIcon={<ArrowCircleLeftOutlinedIcon />}
@@ -486,11 +484,8 @@ const UpdateLocation = (props) => {
                   >
                     Cancelar
                   </Button> */}
-                </ButtonGroup>
-              </Form>
-
-
-
+                  </ButtonGroup>
+                </Form>
               </>
             );
           }}

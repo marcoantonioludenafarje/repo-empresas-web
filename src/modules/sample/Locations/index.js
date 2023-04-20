@@ -432,14 +432,17 @@ const LocationTable = (arrayObjs, props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} 
-            direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <TextField
           label='Nombre'
           variant='outlined'
           name='nameToSearch'
           size='big'
-          
           onChange={(event) => {
             console.log(event.target.value);
             listPayload.request.payload.locationName = event.target.value;
@@ -454,8 +457,6 @@ const LocationTable = (arrayObjs, props) => {
             name='typeToSearch'
             labelId='type-label'
             label='Tipo'
-
-
             onChange={(event) => {
               console.log(event.target.value);
               listPayload.request.payload.type = event.target.value;
@@ -598,22 +599,17 @@ const LocationTable = (arrayObjs, props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/exportLocations/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportDoc}
-            >
-              Exportar todo
-            </Button>
+          .includes('/facturacion/exportLocations/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportDoc}
+          >
+            Exportar todo
+          </Button>
         ) : null}
 
-        {!popUp ? (
-          <></> 
-        ) : (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        )}
+        {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
       <Dialog
         open={openStatus}

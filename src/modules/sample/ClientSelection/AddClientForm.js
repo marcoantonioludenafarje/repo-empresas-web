@@ -92,10 +92,6 @@ const AddClientForm = ({sendData}) => {
   const {userDataRes} = useSelector(({user}) => user);
   const [basicUrl, setBasicUrl] = React.useState('');
 
-
-
-
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -115,7 +111,7 @@ const AddClientForm = ({sendData}) => {
     };
     //dispatch({type: GET_CLIENTS, payload: undefined});
     listClientsPayload.request.payload.LastEvaluatedKey = null;
-    dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+    dispatch({type: GET_CLIENTS, payload: {callType: 'firstTime'}});
     if (actualValues.clientSearch != '') {
       listClientsPayload.request.payload.denominationClient =
         actualValues.clientId;
@@ -171,12 +167,10 @@ const AddClientForm = ({sendData}) => {
     setSubmitting(false);
   };
 
-
   useEffect(() => {
-    let domain = (new URL(window.location.href));
-    setBasicUrl(domain.origin)
+    let domain = new URL(window.location.href);
+    setBasicUrl(domain.origin);
   }, []);
-
 
   return (
     <>
@@ -241,10 +235,6 @@ const AddClientForm = ({sendData}) => {
                     >
                       Seleccionar
                     </Button>
-
-
-
-
                   </Grid>
                 </Grid>
 
@@ -259,22 +249,23 @@ const AddClientForm = ({sendData}) => {
                   <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
                     <div>{`Listado de Clientes`}</div>
                     <Button
-                    sx={{mx: 'auto', mx: 1 , my: 1 ,py: 3}}
-                    variant='outlined'
-                    startIcon={<CachedIcon sx={{m: 1 , my: 'auto'}} />}
-                    onClick={() => handleClickOpen()}
+                      sx={{mx: 'auto', mx: 1, my: 1, py: 3}}
+                      variant='outlined'
+                      startIcon={<CachedIcon sx={{m: 1, my: 'auto'}} />}
+                      onClick={() => handleClickOpen()}
                     >
-                    {'Actualizar'}  
+                      {'Actualizar'}
                     </Button>
                     <Button
-                    sx={{mx: 'auto',py: 3 , mx: 1,  my: 1 }}
-                    variant='outlined'
-                    startIcon={<ArrowCircleLeftOutlinedIcon />}
-                    onClick={() => window.open(`${basicUrl}/sample/clients/new`)}
+                      sx={{mx: 'auto', py: 3, mx: 1, my: 1}}
+                      variant='outlined'
+                      startIcon={<ArrowCircleLeftOutlinedIcon />}
+                      onClick={() =>
+                        window.open(`${basicUrl}/sample/clients/new`)
+                      }
                     >
-                     Agregar nuevo Cliente
+                      Agregar nuevo Cliente
                     </Button>
-
                   </DialogTitle>
                   <DialogContent
                     sx={{display: 'flex', justifyContent: 'center'}}
