@@ -213,7 +213,7 @@ const UpdateEarning = (props) => {
     getBusinessParameter(businessParameterPayload);
     //dispatch({type: GET_CLIENTS, payload: undefined});
     listClientsPayload.request.payload.LastEvaluatedKey = null;
-    dispatch({type: GET_CLIENTS, payload: {callType: 'firstTime'}});
+    // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
     setSelectedClient({});
     console.log('getClients:', listClientsPayload);
     getClients(listClientsPayload);

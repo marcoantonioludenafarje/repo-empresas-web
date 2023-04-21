@@ -320,7 +320,7 @@ const NewOutput = (props) => {
       selectedProducts = selectedOutput.descriptionProductsInfo;
       selectedProducts.map((obj) => {
         obj['subtotal'] = Number(
-          (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(3),
+          (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(2),
         );
       });
       console.log('selectedProducts', selectedProducts);
@@ -515,11 +515,11 @@ const NewOutput = (props) => {
       });
       total = calculatedtotal;
     }
-    changeValueField('totalField', Number(total.toFixed(3)));
+    changeValueField('totalField', Number(total.toFixed(2)));
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(3))
+        ? Number((total + total * Number(query.igv)).toFixed(2))
         : total,
     );
     forceUpdate();
@@ -553,7 +553,7 @@ const NewOutput = (props) => {
             movementHeaderId: query.movementHeaderId,
             createdAt: Number(query.createdAt),
             clientId: query.clientId,
-            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(3)), //
+            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)), //
             issueDate: specialFormatToSunat(),
             serial: serial,
             documentIntern: query.documentIntern,
@@ -745,13 +745,13 @@ const NewOutput = (props) => {
     });
     total = calculatedtotal;
     console.log('total de las salidas', total);
-    changeValueField('totalField', Number(total.toFixed(3)));
+    changeValueField('totalField', Number(total.toFixed(2)));
     console.log('query', query);
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(3))
-        : total,
+        ? Number((total + total * Number(query.igv)).toFixed(2))
+        : Number(total.toFixed(2)),
     );
     console.log('total de los productos', total);
     forceUpdate();
