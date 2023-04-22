@@ -213,15 +213,7 @@ const NewClient = (props) => {
   useEffect(() => {
     switch (process) {
       case "CREATE_NEW_CLIENT":
-        if (loading) {
-
-
-        }else{
-
-          // Si dejo de cargar y 
-
-
-          // setSubmitting(false);
+        if (!loading && (successMessage || errorMessage)) {
           setOpenStatus(true);
 
         }
@@ -365,8 +357,18 @@ const NewClient = (props) => {
   };
 
   const sendStatus = () => {
-    setOpenStatus(false);
-    Router.push('/sample/clients/table');
+    
+    
+    setTimeout(() => {
+      console.log("Esto es el momento")
+      setOpenStatus(false);
+      Router.push('/sample/clients/table');
+
+    }, 2000);
+
+
+
+
   };
 
   const handleField = (event, setFieldValue) => {
@@ -388,28 +390,7 @@ const NewClient = (props) => {
   
 
   return identidad ?  (
-
-    loading ? (
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          color: (theme) => theme.palette.text.secondary,
-          justifyContent: 'center',
-          padding: 8,
-          '& .loading': {
-            marginLeft: 8,
-          },
-        }}
-      >
-        <CircularProgress size={16} />
-        <span className='loading'>Loading...</span>
-      </Box>
-
-
-    ) : 
-
-    (
+    
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
         <Typography
@@ -987,8 +968,29 @@ const NewClient = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={loading}
+        // onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        {/* <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Registro de cliente'}
+        </DialogTitle> */}
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+        <CircularProgress disableShrink />
+        </DialogContent>
+        {/* <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions> */}
+      </Dialog>
+
     </Card>
-  ) ): null
+   ): null
 };
 
 export default NewClient;

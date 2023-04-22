@@ -203,16 +203,38 @@ const UpdateClient = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-  const {listClients} = useSelector(({clients}) => clients);
-  console.log('listClients', listClients);
+  // const {listClients} = useSelector(({clients}) => clients);
+  // console.log('listClients', listClients);
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
-  const {updateClientRes} = useSelector(({clients}) => clients);
+  const {
+    listClients,
+    updateClientRes,
+    successMessage,
+    errorMessage,
+    process,
+    loading } = useSelector(({clients}) => clients);
   console.log('updateClientRes', updateClientRes);
-  const {successMessage} = useSelector(({finances}) => finances);
-  console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({finances}) => finances);
-  console.log('errorMessage', errorMessage);
+  // const {successMessage} = useSelector(({finances}) => finances);
+  // console.log('successMessage', successMessage);
+  // const {errorMessage} = useSelector(({finances}) => finances);
+  // console.log('errorMessage', errorMessage);
+
+
+  useEffect(() => {
+    switch (process) {
+      case "UPDATE_CLIENT":
+        if (!loading && (successMessage || errorMessage)) {
+          setOpenStatus(true);
+
+        }
+
+        break;
+      default:
+        console.log("Esto esta cool")
+    }
+
+  }, [loading]);
 
   if (listClients != undefined) {
     selectedClient = listClients.find(
@@ -245,20 +267,20 @@ const UpdateClient = (props) => {
       },
     },
   };
-  let newClientPayload = {
-    request: {
-      payload: {
-        clientId: query.clientId,
-        denominationClient: '',
-        addressClient: '',
-        nameContact: '',
-        numberContact: '',
-        emailContact: '',
-        emailClient: '',
-        extraInformationClient: '',
-      },
-    },
-  };
+  // let newClientPayload = {
+  //   request: {
+  //     payload: {
+  //       clientId: query.clientId,
+  //       denominationClient: '',
+  //       addressClient: '',
+  //       nameContact: '',
+  //       numberContact: '',
+  //       emailContact: '',
+  //       emailClient: '',
+  //       extraInformationClient: '',
+  //     },
+  //   },
+  // };
 
   let objSelects = {
     documentType: '',
@@ -278,6 +300,7 @@ const UpdateClient = (props) => {
       
     }else{ // DNI CE 
       extraTrama = {
+        
         givenName:data.givenName,
         lastName: data.lastName,
         secondLastName: data.secondLastName,
@@ -291,8 +314,7 @@ const UpdateClient = (props) => {
     let newClientPayload = {
       request: {
         payload: {
-          clients: [
-            {
+              clientId: query.clientId,
               typeDocumentClient: data.documentType,
               numberDocumentClient: data.nroDocument,
               denominationClient: data.name,
@@ -301,9 +323,8 @@ const UpdateClient = (props) => {
               numberContact: data.numberContact,
               extraInformationClient: data.extraInformationClient,
               ...extraTrama
-            },
-          ],
-          merchantId: userDataRes.merchantSelected.merchantId,
+  
+          // merchantId: userDataRes.merchantSelected.merchantId,
         },
       },
     };
@@ -367,8 +388,14 @@ const UpdateClient = (props) => {
   };
 
   const sendStatus = () => {
-    setOpenStatus(false);
-    Router.push('/sample/clients/table');
+
+    setTimeout(() => {
+      setOpenStatus(false);
+      Router.push('/sample/clients/table');
+
+    }, 2000);
+
+
   };
 
   const handleField = (event) => {
@@ -377,6 +404,14 @@ const UpdateClient = (props) => {
     console.log('objSelects', objSelects);
     setRUC(objSelects.documentType == 'RUC' ? true : false);
   };
+  const formatSentence = (phrase) => {
+   
+    let firstSentence= ((phrase.trim()).split(" ").filter(ele => ele !== "")).join(" ")
+   
+    return firstSentence.charAt(0).toUpperCase() + (firstSentence.slice(1)).toUpperCase()
+   
+   }
+   
 
   const inicializaIdentidad = () => {
     if (!identidad) {
@@ -417,6 +452,26 @@ const UpdateClient = (props) => {
                 style={{textAlign: 'left', justifyContent: 'center'}}
                 noValidate
                 autoComplete='on'
+                onChange={( value) => {
+                  console.log("Los values", values)
+                  if(["givenName", "lastName", "secondLastName"].includes(value.target.name) 
+                  && values.documentType == "DNI"){
+                    console.log("Aca es value", value)
+                    console.log("Esto es el nuevo name", value.target.name )
+                    console.log("Esto es el nuevo value", value.target.value )
+                    let givenName = formatSentence(value.target.name == "givenName" ? value.target.value : values["givenName"])
+                    let lastName = formatSentence(value.target.name == "lastName" ? value.target.value : values["lastName"])
+                    let secondLastName = formatSentence(value.target.name == "secondLastName" ? value.target.value : values["secondLastName"])
+                    let completeName = `${givenName} ${lastName} ${secondLastName}`
+                    // setFieldValue( "givenName" , givenName );
+                    // setFieldValue( "lastName" , lastName );
+                    // setFieldValue( "secondLastName" , secondLastName);
+                    setFieldValue( "name" , completeName);
+
+                  }
+
+                }}
+
                 /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
@@ -789,6 +844,26 @@ const UpdateClient = (props) => {
           }}
         </Formik>
       </Box>
+
+      <Dialog
+        open={loading}
+        // onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        {/* <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Registro de cliente'}
+        </DialogTitle> */}
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+        <CircularProgress disableShrink />
+        </DialogContent>
+        {/* <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions> */}
+      </Dialog>
 
       <Dialog
         open={open}
