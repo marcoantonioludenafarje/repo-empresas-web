@@ -172,12 +172,17 @@ const NewClient = (props) => {
   };
   const [dateRegister, setDateRegister] = React.useState(Date.now());
   //GET_VALUES_APIS
-  const {newClientRes} = useSelector(({clients}) => clients);
+  const {
+    newClientRes,
+    successMessage,
+    errorMessage,
+    process,
+    loading
+  } = useSelector(({clients}) => clients);
   console.log('newClientRes', newClientRes);
-  const {successMessage} = useSelector(({clients}) => clients);
-  console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({clients}) => clients);
-  console.log('errorMessage', errorMessage);
+
+
+
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   //const [config, setConfig] = useState({default_identification: 'DNI'});
@@ -204,13 +209,30 @@ const NewClient = (props) => {
       setMinTutorial(true);
     }, 2000);
   }, []);
+
+  useEffect(() => {
+    switch (process) {
+      case "CREATE_NEW_CLIENT":
+        if (!loading && (successMessage || errorMessage)) {
+          setOpenStatus(true);
+
+        }
+
+        break;
+      default:
+        console.log("Esto esta cool")
+    }
+
+  }, [loading]);
+
+
   useEffect(() => {
     if (userDataRes && userDataRes.merchantSelected) {
 
-        
-    //  setIdentidad(userDataRes.merchantSelected.typeClient == 'PN' ? 'DNI' : 'RUC' )
+     console.log("userDataRes.merchantSelected12", userDataRes.merchantSelected)
+     setIdentidad(userDataRes.merchantSelected.typeClient == 'PN' ? 'DNI' : 'RUC' )
 
-     setIdentidad('DNI' )
+    //  setIdentidad('DNI' )
      
 
     }
@@ -248,6 +270,8 @@ const NewClient = (props) => {
       }
 
     }
+
+
     let newClientPayload = {
       request: {
         payload: {
@@ -293,7 +317,8 @@ const NewClient = (props) => {
     toNewClient(newClientPayload);
     console.log('newClientPayload', newClientPayload);
     setSubmitting(false);
-    setOpenStatus(true);
+    // setSubmitting(false);
+    // setOpenStatus(true);
   };
 
   const showMessage = () => {
@@ -308,8 +333,9 @@ const NewClient = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha registrado la información <br />
-            correctamente
+            {/* Se ha registrado la información <br />
+            correctamente */}
+            {successMessage}
           </DialogContentText>
         </>
       );
@@ -321,7 +347,7 @@ const NewClient = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error al registrar.
+           {errorMessage}
           </DialogContentText>
         </>
       );
@@ -331,8 +357,18 @@ const NewClient = (props) => {
   };
 
   const sendStatus = () => {
-    setOpenStatus(false);
-    Router.push('/sample/clients/table');
+    
+    
+    setTimeout(() => {
+      console.log("Esto es el momento")
+      setOpenStatus(false);
+      Router.push('/sample/clients/table');
+
+    }, 2000);
+
+
+
+
   };
 
   const handleField = (event, setFieldValue) => {
@@ -932,8 +968,29 @@ const NewClient = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={loading}
+        // onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        {/* <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Registro de cliente'}
+        </DialogTitle> */}
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+        <CircularProgress disableShrink />
+        </DialogContent>
+        {/* <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions> */}
+      </Dialog>
+
     </Card>
-  ) : null;
+   ): null
 };
 
 export default NewClient;
