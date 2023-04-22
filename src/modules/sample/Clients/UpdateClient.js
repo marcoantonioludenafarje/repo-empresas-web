@@ -87,35 +87,90 @@ const validationSchema = yup.object({
       .required(<IntlMessages id='validation.required' />)
       .integer(<IntlMessages id='validation.number.integer' />)
       .max(maxLengthNumber, 'Solo puedes ecribir 11 carácteres como máximo'), */
-  numberDocumentClient: yup
-    .number()
-    .typeError(<IntlMessages id='validation.number' />)
-    .required(<IntlMessages id='validation.required' />)
-    .max(100000000000, 'Se puede ingresar como maximo 11 caracteres'),
-  denominationClient: yup
+  // numberDocumentClient: yup
+  //   .number()
+  //   .typeError(<IntlMessages id='validation.number' />)
+  //   .required(<IntlMessages id='validation.required' />)
+  //   .max(100000000000, 'Se puede ingresar como maximo 11 caracteres'),
+  // denominationClient: yup
+  //   .string()
+  //   .typeError(<IntlMessages id='validation.string' />)
+  //   .required(<IntlMessages id='validation.required' />),
+
+
+
+  
+
+    documentType: yup.string(),
+    nroDocument: yup
+      .number()
+      .typeError(<IntlMessages id='validation.number' />)
+      .required(<IntlMessages id='validation.required' />)
+      .max(100000000000, 'Se puede ingresar como maximo 11 caracteres'),
+    givenName: yup
     .string()
-    .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
-  addressClient: yup
+    .when("documentType", {
+      is: 'RUC',
+      then: yup.string().typeError(<IntlMessages id='validation.string' />),
+      otherwise:  yup.string().typeError(<IntlMessages id='validation.string' />).required("Es un campo obligatorio")
+    }),
+    // .typeError(<IntlMessages id='validation.string' />)
+    // .required(<IntlMessages id='validation.required' />),
+  
+    lastName: yup
     .string()
-    .required(<IntlMessages id='validation.required' />)
-    .typeError(<IntlMessages id='validation.string' />),
-  emailClient: yup
+    .when("documentType", {
+      is: 'RUC',
+      then: yup.string().typeError(<IntlMessages id='validation.string' />),
+      otherwise:  yup.string().typeError(<IntlMessages id='validation.string' />).required("Es un campo obligatorio")
+    }),
+    secondLastName: yup
     .string()
-    .typeError(<IntlMessages id='validation.number' />)
-    .email('Formato de correo invalido'),
-  emailContact: yup
-    .string()
-    .typeError(<IntlMessages id='validation.number' />)
-    .email('Formato de correo invalido'),
-  nameContact: yup.string().typeError(<IntlMessages id='validation.string' />),
-  numberContact: yup
-    .number()
-    .typeError(<IntlMessages id='validation.number' />)
-    .max(1000000000, 'Se puede ingresar como maximo 11 caracteres'),
-  extraInformationClient: yup
-    .string()
-    .typeError(<IntlMessages id='validation.string' />),
+    .when("documentType", {
+      is: 'RUC',
+      then: yup.string().typeError(<IntlMessages id='validation.string' />),
+      otherwise:  yup.string().typeError(<IntlMessages id='validation.string' />).required("Es un campo obligatorio")
+    }),
+    // .typeError(<IntlMessages id='validation.string' />)
+    // .required(<IntlMessages id='validation.required' />),
+  
+    name: yup
+      .string()
+      .typeError(<IntlMessages id='validation.string' />)
+      .required(<IntlMessages id='validation.required' />),
+    
+    addressClient: yup
+      .string()
+      .required(<IntlMessages id='validation.required' />)
+      .typeError(<IntlMessages id='validation.string' />),
+    emailClient: yup
+      .string()
+      .typeError(<IntlMessages id='validation.number' />)
+      .email('Formato de correo invalido'),
+    emailContact: yup
+      .string()
+      .typeError(<IntlMessages id='validation.number' />)
+      .email('Formato de correo invalido'),
+    nameContact: yup.string()
+    .when("documentType", {
+      is: 'RUC',
+      then: yup.string().typeError(<IntlMessages id='validation.string' />).required("Es un campo obligatorio"),
+      otherwise:  yup.string().typeError(<IntlMessages id='validation.string' />)
+    }),
+    numberContact: yup
+      .number()
+      .typeError(<IntlMessages id='validation.number' />)
+      .max(1000000000, 'Se puede ingresar como maximo 11 caracteres'),
+    birthDay: yup.date(),
+    // .when("documentType", {
+    //   is: 'RUC',
+    //   then: yup.string().typeError(<IntlMessages id='validation.date' />).required("Es un campo obligatorio"),
+    //   otherwise:  yup.string().typeError(<IntlMessages id='validation.date' />)
+    // }),
+    extraInformationClient: yup
+      .string()
+      .typeError(<IntlMessages id='validation.string' />),
+
 });
 let selectedClient = {};
 let typeAlert = '';
@@ -133,6 +188,7 @@ const UpdateClient = (props) => {
   const dispatch = useDispatch();
   const [isRUC, setRUC] = React.useState(false);
   const [identidad, setIdentidad] = React.useState('');
+  const [birthDay, setBirthDay] = React.useState(query.birthDay ? query.birthDay : new Date() );
 
   const toUpdateClient = (payload) => {
     dispatch(updateClient(payload));
@@ -165,10 +221,14 @@ const UpdateClient = (props) => {
     console.log('selectedClient', selectedClient);
   }
 
-  const defaultValues = {
-    typeDocumentClient: query.clientId.split('-')[0],
-    numberDocumentClient: query.clientId.split('-')[1],
-    denominationClient: query.denominationClient || '',
+  let defaultValues = {
+    documentType: query.clientId.split('-')[0],
+    nroDocument: query.clientId.split('-')[1],
+    givenName:query.givenName || '',
+    lastName: query.lastName || '',
+    secondLastName: query.secondLastName || '',
+    birthDay: query.birthDay || '',
+    name: query.denominationClient || '',
     addressClient: query.addressClient || '',
     emailClient: query.emailClient || '',
     emailContact: query.emailContact || '',
@@ -206,23 +266,50 @@ const UpdateClient = (props) => {
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
-    delete data.documentType;
-    console.log('Data', data);
-    console.log('objSelects', objSelects);
-    newClientPayload.request.payload.denominationClient =
-      data.denominationClient;
-    newClientPayload.request.payload.addressClient = data.addressClient;
-    newClientPayload.request.payload.emailClient = data.emailClient;
-    newClientPayload.request.payload.numberContact = data.numberContact;
-    if (isRUC) {
-      newClientPayload.request.payload.emailContact = data.emailContact;
-      newClientPayload.request.payload.nameContact = data.nameContact;
-    } else {
-      newClientPayload.request.payload.emailContact = data.emailClient;
-      newClientPayload.request.payload.nameContact = data.denominationClient;
+
+
+    let extraTrama
+    if(data.documentType== "RUC") {
+      extraTrama = {
+        emailContact: data.emailContact,
+        nameContact: data.nameContact,
+
+      }
+      
+    }else{ // DNI CE 
+      extraTrama = {
+        givenName:data.givenName,
+        lastName: data.lastName,
+        secondLastName: data.secondLastName,
+        birthDay: data.birthDay,
+        emailContact: data.emailClient,
+        nameContact: data.name
+      }
+
     }
-    newClientPayload.request.payload.extraInformationClient =
-      data.extraInformationClient;
+
+    let newClientPayload = {
+      request: {
+        payload: {
+          clients: [
+            {
+              typeDocumentClient: data.documentType,
+              numberDocumentClient: data.nroDocument,
+              denominationClient: data.name,
+              addressClient: data.addressClient,
+              emailClient:  data.emailClient,
+              numberContact: data.numberContact,
+              extraInformationClient: data.extraInformationClient,
+              ...extraTrama
+            },
+          ],
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+
+
+
     toUpdateClient(newClientPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -324,7 +411,7 @@ const UpdateClient = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({values, isSubmitting, setFieldValue}) => {
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -341,10 +428,10 @@ const UpdateClient = (props) => {
                       >
                         Identificador
                       </InputLabel>
-                      {inicializaIdentidad()}
+                      {/* {inicializaIdentidad()} */}
                       <Select
                         defaultValue={query.clientId.split('-')[0]}
-                        name='typeDocumentClient'
+                        name='documentType'
                         labelId='documentType-label'
                         label='Identificador'
                         onChange={handleField}
@@ -365,7 +452,7 @@ const UpdateClient = (props) => {
                     <AppTextField
                       disabled
                       label='Número Identificador *'
-                      name='numberDocumentClient'
+                      name='nroDocument'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -377,10 +464,13 @@ const UpdateClient = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  {values["documentType"] == 'RUC' ? 
+                  ( 
+                    <>
+                    <Grid item xs={12}>
                     <AppUpperCaseTextField
-                      label='Nombre / Razón Social *'
-                      name='denominationClient'
+                      label='Razón Social *'
+                      name='name'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -409,7 +499,7 @@ const UpdateClient = (props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppLowerCaseTextField
-                      label='Correo de cliente'
+                      label='Correo de la empresa'
                       name='emailClient'
                       variant='outlined'
                       sx={{
@@ -422,41 +512,39 @@ const UpdateClient = (props) => {
                       }}
                     />
                   </Grid>
-                  {isRUC ? (
-                    <>
-                    <Grid item xs={12}>
-                      <AppUpperCaseTextField
-                        label='Nombre de contacto'
-                        name='nameContact'
-                        variant='outlined'
-                        sx={{
-                          width: '100%',
-                          '& .MuiInputBase-input': {
-                            fontSize: 14,
-                          },
-                          my: 2,
-                          mx: 0,
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <AppLowerCaseTextField
-                        label='Correo de contacto'
-                        name='emailContact'
-                        variant='outlined'
-                        sx={{
-                          width: '100%',
-                          '& .MuiInputBase-input': {
-                            fontSize: 14,
-                          },
-                          my: 2,
-                          mx: 0,
-                        }}
-                      />
-                    </Grid>
-                    </>
-                  ) : null}
-                  <Grid item xs={12}>
+                  
+                        <Grid item xs={12}>
+                          <AppUpperCaseTextField
+                            label='Nombre de contacto'
+                            name='nameContact'
+                            variant='outlined'
+                            sx={{
+                              width: '100%',
+                              '& .MuiInputBase-input': {
+                                fontSize: 14,
+                              },
+                              my: 2,
+                              mx: 0,
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <AppLowerCaseTextField
+                            label='Correo de contacto'
+                            name='emailContact'
+                            variant='outlined'
+                            sx={{
+                              width: '100%',
+                              '& .MuiInputBase-input': {
+                                fontSize: 14,
+                              },
+                              my: 2,
+                              mx: 0,
+                            }}
+                          />
+                        </Grid>
+                  
+                        <Grid item xs={12}>
                     <AppTextField
                       label='Telefono fijo o celular de contacto'
                       name='numberContact'
@@ -488,7 +576,181 @@ const UpdateClient = (props) => {
                       }}
                     />
                   </Grid>
+                  
+                      </>
+
+                  ) : (
+                  <> 
+                   <Grid item xs={12}>
+                    <AppUpperCaseTextField
+                      label='Nombre*'
+                      name='givenName'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                    </Grid>
+                    <Grid item xs={12}>
+
+                    <AppUpperCaseTextField
+                      label='Apellido Paterno*'
+                      name='lastName'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                    </Grid>
+                    <Grid item xs={12}>
+                    <AppUpperCaseTextField
+                      label='Apellido Materno*'
+                      name='secondLastName'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                    <Grid item xs={12}>
+                    <AppTextField
+                      label='Nombre Completo *'
+                      name='name'
+                      disabled
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <DesktopDatePicker
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{
+                            my: 2,
+                            width: '100%',
+                            position: 'relative',
+                            bottom: '-8px',
+                          }}
+                          {...params}
+                        />
+                      )}
+                      required
+                      sx={{my: 2}}
+                      label='Fecha de nacimiento'
+                      value = {birthDay}
+                      /* maxDate={new Date()} */
+                      inputFormat='dd/MM/yyyy'
+                      name='birthDay'
+                      onChange={(newValue) => {
+                        // setValue2(newValue);
+                        console.log('date', newValue);
+                        setFieldValue( "birthDay" , newValue);
+                        setBirthDay(newValue)
+                      }}
+                    />
+                  </Grid>
+
+
+                  <Grid item xs={12}>
+                    <AppUpperCaseTextField
+                      label='Dirección *'
+                      name='addressClient'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppLowerCaseTextField
+                      label='Correo de cliente'
+                      name='emailClient'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                        <Grid item xs={12}>
+                    <AppTextField
+                      label='Telefono fijo o celular de cliente'
+                      name='numberContact'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Información adicional'
+                      multiline
+                      rows={4}
+                      name='extraInformationClient'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+
+
+
+
+                  </>
+
+                  ) }
+
+
+
+
+
                 </Grid>
+
+
 
                 <ButtonGroup
                   orientation='vertical'
