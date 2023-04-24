@@ -76,7 +76,7 @@ const rolesRoutesConfig = {
           messageId: 'sidebar.sample.movements',
           type: 'item',
           icon: <TableRowsOutlinedIcon fontSize='small' />,
-          url: '/sample/finances/table',
+          url: '/sample/contableMovements',
         },
         {
           id: 'movements',

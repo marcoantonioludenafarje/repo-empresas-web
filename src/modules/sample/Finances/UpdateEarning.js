@@ -59,6 +59,7 @@ import {
   simpleDateToDateObj,
   convertToDateWithoutTime,
   isObjEmpty,
+  translateValue,
 } from '../../../Utils/utils';
 import AddClientForm from '../ClientSelection/AddClientForm';
 import {onGetClients} from '../../../redux/actions/Clients';

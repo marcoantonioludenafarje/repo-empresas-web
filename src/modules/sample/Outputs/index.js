@@ -236,6 +236,7 @@ const OutputsTable = (props) => {
   let changeValueField;
   //UseStates
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [ticketResponseDialog, setTicketResponseDialog] = React.useState(false);
   const [eliminated, setEliminated] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
@@ -686,6 +687,55 @@ const OutputsTable = (props) => {
       query: selectedOutput,
     });
   };
+  const registerSuccess = () => {
+    return (
+      successMessage != undefined &&
+      generateSellTicketRes != undefined &&
+      !('error' in generateSellTicketRes)
+    );
+  };
+  const registerError = () => {
+    return (
+      (successMessage != undefined && generateSellTicketRes) ||
+      errorMessage != undefined
+    );
+  };
+  const showMessageTicketRegistration = () => {
+    if (registerSuccess()) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha registrado la información <br />
+            correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (registerError()) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al registrar. <br />
+            {generateSellTicketRes !== undefined && 'error' in generateSellTicketRes
+              ? generateSellTicketRes.error
+              : null}
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
+  };
   const getSellTicket = (data, {setSubmitting}) => {
     setSubmitting(true);
     handleClose();
@@ -739,8 +789,12 @@ const OutputsTable = (props) => {
       },
     };
     console.log('getSellTicket payload', finalPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
     toGenerateSellTicket(finalPayload);
     setIsLoading(true);
+    setTicketResponseDialog(true);
     setSubmitting(false);
   };
   const getReferralGuide = () => {
@@ -1708,7 +1762,8 @@ const OutputsTable = (props) => {
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
-          ) && selectedOutput.movementSubType == 'sales' ? (
+          ) && selectedOutput.movementSubType == 'sales'  &&
+          !selectedOutput.existSellTicket ? (
           <MenuItem onClick={() => setSellTicketDialog(true)}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
@@ -1987,6 +2042,26 @@ const OutputsTable = (props) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={ticketResponseDialog}
+        onClose={() => setTicketResponseDialog(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Registro de Ticket'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessageTicketRegistration()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={() => setTicketResponseDialog(false)}>
+            Aceptar
+          </Button>
+        </DialogActions>
       </Dialog>
     </Card>
   ) : null;
