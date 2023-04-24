@@ -794,6 +794,7 @@ const OutputsTable = (props) => {
     dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
     toGenerateSellTicket(finalPayload);
     setIsLoading(true);
+    setSellTicketDialog(false)
     setTicketResponseDialog(true);
     setSubmitting(false);
   };
@@ -1763,7 +1764,7 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
           ) && selectedOutput.movementSubType == 'sales'  &&
-          !selectedOutput.existSellTicket ? (
+          !selectedOutput.existSellTicket && !selectedOutput.existReceipt ? (
           <MenuItem onClick={() => setSellTicketDialog(true)}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
@@ -1777,7 +1778,7 @@ const OutputsTable = (props) => {
             '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
           ) &&
         selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existReceipt ? (
+        !selectedOutput.existReceipt && !selectedOutput.existSellTicket ? (
           <MenuItem onClick={getReceipt}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Boleta Venta
