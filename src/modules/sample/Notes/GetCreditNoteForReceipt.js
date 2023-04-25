@@ -289,12 +289,12 @@ const GetCreditNote = () => {
           : 0;
       if (receipt && Object.keys(receipt).length !== 0) {
         changeValueField(
-          'totalField',
-          receipt.totalPriceWithoutIgv /*  && receipt.totalPriceWithoutIgv !== ''
+          'totalField', Number(receipt.totalPriceWithoutIgv.toFixed(2))
+           /*  && receipt.totalPriceWithoutIgv !== ''
             ? receipt.totalPriceWithoutIgv
             : 0, */,
         );
-        changeValueField('totalFieldIgv', receipt.totalPriceWithIgv);
+        changeValueField('totalFieldIgv', Number(receipt.totalPriceWithIgv.toFixed(2)));
       }
       dispatch({type: GET_MOVEMENTS, payload: undefined});
       toGetMovements(listOutputsPayload);
@@ -549,12 +549,12 @@ const GetCreditNote = () => {
     total = Number(calculatedtotal.toFixed(3));
     console.log('total de las salidas', total);
     console.log('Productos seleccionados', selectedProducts);
-    changeValueField('totalField', Number(total.toFixed(3)));
+    changeValueField('totalField', Number(total.toFixed(2)));
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(3))
-        : Number(total.toFixed(3)),
+        ? Number((total + total * Number(query.igv)).toFixed(2))
+        : Number(total.toFixed(2)),
     );
     console.log('total de los productos', total);
     forceUpdate();
@@ -582,11 +582,11 @@ const GetCreditNote = () => {
         setSubTypeNote(creditNoteTypes[0].name);
       }
     }
-    changeValueField('totalField', Number(total.toFixed(3)));
+    changeValueField('totalField', Number(total.toFixed(2)));
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(3))
+        ? Number((total + total * Number(query.igv)).toFixed(2))
         : total,
     );
     forceUpdate();
