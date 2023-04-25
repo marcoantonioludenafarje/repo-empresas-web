@@ -1810,7 +1810,7 @@ const OutputsTable = (props) => {
             '/facturacion/accounting/movement/register?path=/billOfOutput/*',
           ) &&
         selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existBill ? (
+        !selectedOutput.existBill && !selectedOutput.existReceipt && !selectedOutput.existSellTicket ? (
           <MenuItem
             disabled={
               userDataRes.merchantSelected &&

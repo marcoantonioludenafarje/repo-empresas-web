@@ -84,7 +84,7 @@ import {
   convertToDateWithoutTime,
   toEpoch,
 } from '../../../Utils/utils';
-import MoreFiltersFinances from '../Filters/MoreFiltersFinances';
+import MoreFiltersContableMovements from '../Filters/MoreFiltersContableMovements';
 
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -1265,7 +1265,7 @@ const ContableMovements = (props) => {
             sx={{fontSize: '1.2em'}}
             id='alert-dialog-description'
           >
-            <MoreFiltersFinances sendData={filterData} />
+            <MoreFiltersContableMovements sendData={filterData} />
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
