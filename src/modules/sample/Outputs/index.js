@@ -1400,12 +1400,7 @@ const OutputsTable = (props) => {
                             : obj.clientName)}
                       </TableCell>
                       <TableCell
-                        sx={{
-                          display: style,
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '14px',
-                        }}
+                        align='center'
                       >
                         {/* {obj.descriptionProductsInfo
                           ? obj.descriptionProducts
@@ -2059,7 +2054,10 @@ const OutputsTable = (props) => {
           {showMessageTicketRegistration()}
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={() => setTicketResponseDialog(false)}>
+          <Button variant='outlined' onClick={() => {
+            dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
+            setTicketResponseDialog(false)
+            }}>
             Aceptar
           </Button>
         </DialogActions>
