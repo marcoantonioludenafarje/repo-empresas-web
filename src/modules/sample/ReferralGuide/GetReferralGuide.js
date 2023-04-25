@@ -1046,10 +1046,7 @@ const GetReferralGuide = () => {
                         >
                           Traslado a zona primaria
                         </MenuItem>
-                        <MenuItem
-                          value='return'
-                          style={{fontWeight: 200}}
-                        >
+                        <MenuItem value='return' style={{fontWeight: 200}}>
                           Devolución
                         </MenuItem>
                         <MenuItem value='others' style={{fontWeight: 200}}>

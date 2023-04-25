@@ -68,7 +68,7 @@ const MoreFiltersFinances = ({sendData}) => {
       ...data,
       typeDocument: typeDocument,
       typeIdentifier: typeIdentifier,
-      paymentMethod: paymentMethod
+      paymentMethod: paymentMethod,
     };
     console.log('info desde + filtros', filters);
     sendData(filters);
@@ -224,10 +224,7 @@ const MoreFiltersFinances = ({sendData}) => {
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth sx={{my: 2}}>
-                <InputLabel
-                  id='methodToPay-label'
-                  style={{fontWeight: 200}}
-                >
+                <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
                   Medio de pago
                 </InputLabel>
                 <Select
@@ -253,19 +250,13 @@ const MoreFiltersFinances = ({sendData}) => {
                   <MenuItem value='plin' style={{fontWeight: 200}}>
                     Plin
                   </MenuItem>
-                  <MenuItem
-                    value='bankTransfer'
-                    style={{fontWeight: 200}}
-                  >
+                  <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
                     Transferencia Bancaria
                   </MenuItem>
                   <MenuItem value='card' style={{fontWeight: 200}}>
                     Tarjeta de crédito/débito
                   </MenuItem>
-                  <MenuItem
-                    value='bankDeposit'
-                    style={{fontWeight: 200}}
-                  >
+                  <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
                     <IntlMessages id='common.bankDeposit' />
                   </MenuItem>
                 </Select>

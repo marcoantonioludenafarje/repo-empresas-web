@@ -10,37 +10,37 @@ import {
 
 const INIT_STATE = {
   loading: false,
-  process: "",
-  successMessage: "",
-  errorMessage: "",
+  process: '',
+  successMessage: '',
+  errorMessage: '',
 
   list: [],
   listClients: [],
   clientsLastEvalutedKey_pageListClients: null,
 };
 const clientsReducer = (state = INIT_STATE, action) => {
-  console.log("El action", action)
+  console.log('El action', action);
 
   switch (action.type) {
     case GET_CLIENTS:
-      console.log("action.payload1234", action.payload)
-      let request = action.request.request.payload
-      let lastEvaluatedKeyRequest = null 
-      let items= [];
-      let lastEvaluatedKey = "";
+      console.log('action.payload1234', action.payload);
+      let request = action.request.request.payload;
+      let lastEvaluatedKeyRequest = null;
+      let items = [];
+      let lastEvaluatedKey = '';
 
-      if(request && request.LastEvaluatedKey){
+      if (request && request.LastEvaluatedKey) {
         // En estos casos hay que agregar al listado actual de items
         items = [...state.listClients, ...action.payload.Items];
-        lastEvaluatedKey = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
-
-
-      }else{
+        lastEvaluatedKey = action.payload.LastEvaluatedKey
+          ? action.payload.LastEvaluatedKey
+          : null;
+      } else {
         // En estos casos hay que setear con lo que venga
         items = action.payload.Items;
-        lastEvaluatedKey = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
-
-      
+        lastEvaluatedKey = action.payload.LastEvaluatedKey
+          ? action.payload.LastEvaluatedKey
+          : null;
       }
 
       return {
@@ -67,38 +67,38 @@ const clientsReducer = (state = INIT_STATE, action) => {
         updateClientRes: action.payload,
       };
     case FETCH_START:
-      if(!action.payload || !action.payload.process){
-        action.payload = {process: "LIST_CLIENTS"}
+      if (!action.payload || !action.payload.process) {
+        action.payload = {process: 'LIST_CLIENTS'};
       }
-      return {...state, 
-        // error: '', 
+      return {
+        ...state,
+        // error: '',
         loading: true,
-        process: action.payload.process
+        process: action.payload.process,
       };
 
     case FETCH_SUCCESS:
-      if(!action.payload || !action.payload.process){
-        action.payload = {process: "LIST_CLIENTS", message: "Exito"}
+      if (!action.payload || !action.payload.process) {
+        action.payload = {process: 'LIST_CLIENTS', message: 'Exito'};
       }
       console.log('data de reducer FETCH_SUCCESS', action.payload);
       return {
         ...state,
-        loading:false,
+        loading: false,
         // successMessage: action.payload,
         process: action.payload.process,
         successMessage: action.payload.message,
-
       };
     case FETCH_ERROR:
       console.log('data de reducer FETCH_ERROR', action.payload);
-      if(!action.payload || !action.payload.process){
-        action.payload = {process: "LIST_CLIENTS", message: "Error"}
+      if (!action.payload || !action.payload.process) {
+        action.payload = {process: 'LIST_CLIENTS', message: 'Error'};
       }
 
       return {
         ...state,
         // errorMessage: action.payload,
-        loading:false,
+        loading: false,
         process: action.payload.process,
         errorMessage: action.payload.message,
       };

@@ -726,7 +726,8 @@ const OutputsTable = (props) => {
             id='alert-dialog-description'
           >
             Se ha producido un error al registrar. <br />
-            {generateSellTicketRes !== undefined && 'error' in generateSellTicketRes
+            {generateSellTicketRes !== undefined &&
+            'error' in generateSellTicketRes
               ? generateSellTicketRes.error
               : null}
           </DialogContentText>
@@ -794,7 +795,7 @@ const OutputsTable = (props) => {
     dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
     toGenerateSellTicket(finalPayload);
     setIsLoading(true);
-    setSellTicketDialog(false)
+    setSellTicketDialog(false);
     setTicketResponseDialog(true);
     setSubmitting(false);
   };
@@ -1399,9 +1400,7 @@ const OutputsTable = (props) => {
                             ? obj.client.denomination
                             : obj.clientName)}
                       </TableCell>
-                      <TableCell
-                        align='center'
-                      >
+                      <TableCell align='center'>
                         {/* {obj.descriptionProductsInfo
                           ? obj.descriptionProducts
                           : ''} */}
@@ -1758,8 +1757,11 @@ const OutputsTable = (props) => {
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
-          ) && selectedOutput.movementSubType == 'sales'  &&
-          !selectedOutput.existSellTicket && !selectedOutput.existReceipt && !selectedOutput.existBill ? (
+          ) &&
+        selectedOutput.movementSubType == 'sales' &&
+        !selectedOutput.existSellTicket &&
+        !selectedOutput.existReceipt &&
+        !selectedOutput.existBill ? (
           <MenuItem onClick={() => setSellTicketDialog(true)}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
@@ -1773,7 +1775,8 @@ const OutputsTable = (props) => {
             '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
           ) &&
         selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existReceipt && !selectedOutput.existSellTicket ? (
+        !selectedOutput.existReceipt &&
+        !selectedOutput.existSellTicket ? (
           <MenuItem onClick={getReceipt}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Boleta Venta
@@ -2054,10 +2057,13 @@ const OutputsTable = (props) => {
           {showMessageTicketRegistration()}
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={() => {
-            dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
-            setTicketResponseDialog(false)
-            }}>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
+              setTicketResponseDialog(false);
+            }}
+          >
             Aceptar
           </Button>
         </DialogActions>

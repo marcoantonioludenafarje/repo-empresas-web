@@ -71,12 +71,9 @@ import {
   GET_USER_DATA,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
-import { format, addHours } from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
+import {format, addHours} from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
 import {DesktopDatePicker, DateTimePicker, DateRangePicker} from '@mui/lab';
-import {
-  getFinances,
-  deleteFinance,
-} from '../../../redux/actions/Finances';
+import {getFinances, deleteFinance} from '../../../redux/actions/Finances';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {
@@ -85,11 +82,9 @@ import {
   translateValue,
   fixDecimals,
   convertToDateWithoutTime,
-  
   toEpoch,
 } from '../../../Utils/utils';
 import MoreFiltersFinances from '../Filters/MoreFiltersFinances';
-
 
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -147,7 +142,6 @@ const ContableMovements = (props) => {
   const endOfDay = addHours(new Date(startOfDay), 23); // Agregamos 23 horas a la fecha de inicio para obtener las 23:59 del día actual
   const [dateRange, setDateRange] = React.useState([startOfDay, endOfDay]); // Estado para el rango de fechas
 
-
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -167,7 +161,7 @@ const ContableMovements = (props) => {
         searchByBill: '',
         searchByContableMovement: '',
         typeList: '',
-        listReduced: true
+        listReduced: true,
       },
     },
   };
@@ -252,10 +246,10 @@ const ContableMovements = (props) => {
         listFinancesPayload.request.payload.searchByContableMovement =
           query.contableMovementId;
       }
-      
+
       listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
       listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
-      listFinancesPayload.request.payload.movementType = "";
+      listFinancesPayload.request.payload.movementType = '';
       toGetFinances(listFinancesPayload);
       if (monthYearStatus) {
         dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
@@ -270,8 +264,9 @@ const ContableMovements = (props) => {
   const searchFinances = () => {
     dispatch({type: GET_FINANCES, payload: []});
     listFinancesPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-    listFinancesPayload.request.payload.movementType = proofOfPaymentType == "TODOS" ? "" : proofOfPaymentType;
+      userDataRes.merchantSelected.merchantId;
+    listFinancesPayload.request.payload.movementType =
+      proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType;
     listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
     listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
     toGetFinances(listFinancesPayload);
@@ -633,14 +628,14 @@ const ContableMovements = (props) => {
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toLowerCase();
     listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
     listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
-    listFinancesPayload.request.payload.movementType = proofOfPaymentType == "TODOS" ? "" : proofOfPaymentType;
+    listFinancesPayload.request.payload.movementType =
+      proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType;
     listFinancesPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
+      userDataRes.merchantSelected.merchantId;
     if (dataFilters.paymentMethod == 'all') {
       dataFilters.paymentMethod = '';
     }
-    listFinancesPayload.request.payload.methodToPay =
-      dataFilters.paymentMethod;
+    listFinancesPayload.request.payload.methodToPay = dataFilters.paymentMethod;
     console.log('listFinancesPayload', listFinancesPayload);
     dispatch({type: GET_FINANCES, payload: []});
     toGetFinances(listFinancesPayload);
@@ -717,45 +712,39 @@ const ContableMovements = (props) => {
                   event.target.value;
               }
             }}
-            
             defaultValue={proofOfPaymentType}
           >
-            <MenuItem
-              value={'TODOS'}
-              style={{fontWeight: 200}}
-            >
+            <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
               TODOS
             </MenuItem>
-            <MenuItem
-              value={'INCOME'}
-              style={{fontWeight: 200}}
-            >
+            <MenuItem value={'INCOME'} style={{fontWeight: 200}}>
               INGRESOS
             </MenuItem>
-            <MenuItem
-              value={'EXPENSE'}
-              style={{fontWeight: 200}}
-            >
+            <MenuItem value={'EXPENSE'} style={{fontWeight: 200}}>
               EGRESOS
             </MenuItem>
           </Select>
         </FormControl>
         <DateRangePicker
-          label="Rango de fechas"
-          inputVariant="outlined"
+          label='Rango de fechas'
+          inputVariant='outlined'
           value={dateRange}
           inputFormat='dd/MM/yyyy hh:mm a'
           onChange={(newValue) => {
             setDateRange(newValue);
             console.log('date', newValue);
-            listFinancesPayload.request.payload.initialTime = toEpoch(newValue[0]);
-            listFinancesPayload.request.payload.finalTime = toEpoch(newValue[1]);
+            listFinancesPayload.request.payload.initialTime = toEpoch(
+              newValue[0],
+            );
+            listFinancesPayload.request.payload.finalTime = toEpoch(
+              newValue[1],
+            );
             console.log('payload de busqueda', listFinancesPayload);
           }}
           renderInput={(startProps, endProps) => (
             <React.Fragment>
-              <TextField {...startProps} label="Fecha de inicio" />
-              <TextField {...endProps} label="Fecha de fin" />
+              <TextField {...startProps} label='Fecha de inicio' />
+              <TextField {...endProps} label='Fecha de fin' />
             </React.Fragment>
           )}
         />
@@ -1225,7 +1214,6 @@ const ContableMovements = (props) => {
             Nuevo Egreso
           </Button>
         ) : null}
-
       </ButtonGroup>
 
       <Menu
@@ -1248,7 +1236,7 @@ const ContableMovements = (props) => {
           </MenuItem>
         ) : null}
       </Menu>
-      
+
       <Dialog
         open={moreFilters}
         onClose={() => setMoreFilters(false)}

@@ -140,7 +140,6 @@ const ClientTable = (arrayObjs, props) => {
     return () => setReload((value) => value + 1); // update the state to force render
   };
 
-
   //GET APIS RES
   const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
     ({clients}) => clients,
@@ -155,9 +154,8 @@ const ClientTable = (arrayObjs, props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-
   const handleNextPage = (event) => {
-    //console.log('Llamando al  handleNextPage', handleNextPage);  
+    //console.log('Llamando al  handleNextPage', handleNextPage);
     let listPayload = {
       request: {
         payload: {
@@ -165,22 +163,24 @@ const ClientTable = (arrayObjs, props) => {
           numberDocumentClient: '',
           denominationClient: '',
           merchantId: userDataRes.merchantSelected.merchantId,
-          LastEvaluatedKey: clientsLastEvalutedKey_pageListClients
+          LastEvaluatedKey: clientsLastEvalutedKey_pageListClients,
         },
       },
-    };  
+    };
     // listPayload.request.payload.LastEvaluatedKey = clientsLastEvalutedKey_pageListClients;
-    console.log('listPayload111:handleNextPage:',listPayload)
+    console.log('listPayload111:handleNextPage:', listPayload);
     getClients(listPayload);
     // setPage(page+1);
   };
 
   useEffect(() => {
-    console.log("Estamos userDataRes", userDataRes)
-    if (userDataRes && 
-      userDataRes.merchantSelected && 
-      userDataRes.merchantSelected.merchantId) {
-      console.log("Estamos entrando al getClients")
+    console.log('Estamos userDataRes', userDataRes);
+    if (
+      userDataRes &&
+      userDataRes.merchantSelected &&
+      userDataRes.merchantSelected.merchantId
+    ) {
+      console.log('Estamos entrando al getClients');
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_CLIENTS, payload: undefined});
@@ -194,7 +194,7 @@ const ClientTable = (arrayObjs, props) => {
             LastEvaluatedKey: null,
           },
         },
-      };  
+      };
       getClients(listPayload);
       // setFirstload(true);
     }
@@ -258,7 +258,7 @@ const ClientTable = (arrayObjs, props) => {
           merchantId: userDataRes.merchantSelected.merchantId,
         },
       },
-    };  
+    };
 
     if (event.target.name == 'docToSearch') {
       if (event.target.value == '') {
@@ -289,7 +289,7 @@ const ClientTable = (arrayObjs, props) => {
           LastEvaluatedKey: null,
         },
       },
-    };  
+    };
     listPayload.request.payload.LastEvaluatedKey = null;
     // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
     getClients(listPayload);
@@ -327,7 +327,6 @@ const ClientTable = (arrayObjs, props) => {
   };
 
   const exportToExcel = () => {
-
     // let listPayload = {
     //   request: {
     //     payload: {
@@ -338,7 +337,7 @@ const ClientTable = (arrayObjs, props) => {
     //       LastEvaluatedKey: null,
     //     },
     //   },
-    // };  
+    // };
 
     // const excelPayload = listPayload;
 
@@ -439,10 +438,10 @@ const ClientTable = (arrayObjs, props) => {
             numberDocumentClient: '',
             denominationClient: '',
             merchantId: userDataRes.merchantSelected.merchantId,
-            LastEvaluatedKey: null
+            LastEvaluatedKey: null,
           },
         },
-      };  
+      };
       // listPayload.request.payload.LastEvaluatedKey = null;
       // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
       getClients(listPayload);

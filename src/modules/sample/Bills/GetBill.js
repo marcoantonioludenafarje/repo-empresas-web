@@ -696,7 +696,7 @@ const NewOutput = (props) => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      if(!earningGeneration){
+      if (!earningGeneration) {
         setShowForms(true);
         dispatch({type: GET_MOVEMENTS, payload: []});
         toGetMovements(listPayload);
@@ -705,7 +705,7 @@ const NewOutput = (props) => {
         dispatch({type: GET_MOVEMENTS, payload: []});
         toGetMovements(listPayload);
         setOpenStatus(false);
-        Router.push('/sample/outputs/table')
+        Router.push('/sample/outputs/table');
       }
     } else if (registerError()) {
       setOpenStatus(false);

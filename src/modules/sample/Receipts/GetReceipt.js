@@ -213,10 +213,12 @@ const GetReceipt = (props) => {
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
     /* guide: '', */
-    receiver: query.clientId ? `${query.clientId.split('-')[1]} - ${
-      query.clientName ||
-      selectedOutput.clientName /* query.clientId.split('-')[2] */
-    }` : "",
+    receiver: query.clientId
+      ? `${query.clientId.split('-')[1]} - ${
+          query.clientName ||
+          selectedOutput.clientName /* query.clientId.split('-')[2] */
+        }`
+      : '',
     issueDate: Date.now(),
     wayToPay: Date.now(),
     methodToPay: 'Efectivo',
@@ -651,7 +653,7 @@ const GetReceipt = (props) => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      if(!earningGeneration){
+      if (!earningGeneration) {
         setShowForms(true);
         dispatch({type: GET_MOVEMENTS, payload: []});
         toGetMovements(listPayload);
@@ -660,7 +662,7 @@ const GetReceipt = (props) => {
         dispatch({type: GET_MOVEMENTS, payload: []});
         toGetMovements(listPayload);
         setOpenStatus(false);
-        Router.push('/sample/outputs/table')
+        Router.push('/sample/outputs/table');
       }
     } else if (registerError()) {
       setOpenStatus(false);
