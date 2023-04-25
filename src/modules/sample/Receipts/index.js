@@ -759,6 +759,32 @@ const ReceiptsTable = (props) => {
           <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
           Ver PDF
         </MenuItem>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/creditNote/register') === true ? (
+          <MenuItem
+            disabled={
+              userDataRes
+                ? !userDataRes.merchantSelected.isBillingEnabled
+                : false
+            }
+            onClick={() =>
+              Router.push({
+                pathname: '/sample/notes/registerForReceipt',
+                query: {
+                  idReceipt: selectedReceipt.movementHeaderId,
+                  movementId: selectedReceipt.outputId,
+                  nroReceipt: selectedReceipt.serialNumber,
+                  igv: selectedReceipt.igv,
+                  typeDocumentRelated: 'receipt'
+                },
+              })
+            }
+          >
+            <ReceiptOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            Generar nota
+          </MenuItem>
+        ) : null}
         {/* <MenuItem
           disabled={!dataBusinessRes.isReceiptingEnabled}
           onClick={() =>

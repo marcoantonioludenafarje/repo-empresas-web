@@ -126,7 +126,7 @@ const GetCreditNote = () => {
   const [typeDialog, setTypeDialog] = React.useState('');
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [moneyToConvert, setMoneyToConvert] = React.useState('');
-  const [selectedBill, setSelectedBill] = React.useState({});
+  const [selectedReceipt, setSelectedReceipt] = React.useState({});
   const [selectedClient, setSelectedClient] = React.useState({});
   const [selectedOutput, setSelectedOutput] = React.useState({});
   const [exchangeRate, setExchangeRate] = React.useState('');
@@ -138,7 +138,7 @@ const GetCreditNote = () => {
   const [typeResult, setTypeResult] = React.useState('');
   const [expirationDate, setExpirationDate] = React.useState(Date.now());
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [typeDocumentRelated, setTypeDocumentRelated] = React.useState("bill");
+  const [typeDocumentRelated, setTypeDocumentRelated] = React.useState("receipt");
   
   const [igvDefault, setIgvDefault] = React.useState(0);
   const prevMoneyToConvertRef = useRef();
@@ -155,9 +155,9 @@ const GetCreditNote = () => {
 
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
-  const {billItems_pageListBill, billLastEvalutedKey_pageListBill} =
+  const {receiptItems_pageListReceipt, receiptLastEvalutedKey_pageListReceipt} =
     useSelector(({movements}) => movements);
-  console.log('billItems_pageListBill', billItems_pageListBill);
+  console.log('receiptItems_pageListReceipt', receiptItems_pageListReceipt);
   const {addCreditNoteRes} = useSelector(({movements}) => movements);
   console.log('addCreditNoteRes', addCreditNoteRes);
   const {businessParameter} = useSelector(({general}) => general);
@@ -184,7 +184,7 @@ const GetCreditNote = () => {
 
   useEffect(() => {
     listDocuments = [];
-    changeValueField('nroBill', query.nroBill);
+    changeValueField('nroReceipt', query.nroReceipt);
     setTypeDocumentRelated(query.typeDocumentRelated)
     setTimeout(() => {
       setMinTutorial(true);
@@ -230,12 +230,12 @@ const GetCreditNote = () => {
 
   useEffect(() => {
     if (
-      selectedBill &&
-      selectedBill.referralGuides &&
-      Object.keys(selectedBill.referralGuides).length > 0
+      selectedReceipt &&
+      selectedReceipt.referralGuides &&
+      Object.keys(selectedReceipt.referralGuides).length > 0
     ) {
-      console.log('selectedBill.referralGuides', selectedBill.referralGuides);
-      selectedBill.referralGuides.map((obj) => {
+      console.log('selectedReceipt.referralGuides', selectedReceipt.referralGuides);
+      selectedReceipt.referralGuides.map((obj) => {
         listDocuments.push({
           dateDocument: obj.issueDate.split('-').join('/'),
           document: obj.serialDocument,
@@ -244,28 +244,28 @@ const GetCreditNote = () => {
       });
       console.log('listDocuments', listDocuments);
     }
-    if (selectedBill) {
+    if (selectedReceipt) {
       setSelectedClient({
-        denominationClient: selectedBill.denominationClient,
-        clientId: selectedBill.clientId,
-        emailClient: selectedBill.clientEmail ? selectedBill.clientEmail : '',
+        denominationClient: selectedReceipt.denominationClient,
+        clientId: selectedReceipt.clientId,
+        emailClient: selectedReceipt.clientEmail ? selectedReceipt.clientEmail : '',
       });
     }
-  }, [selectedBill]);
+  }, [selectedReceipt]);
 
   useEffect(() => {
     if (
-      billItems_pageListBill &&
-      Array.isArray(billItems_pageListBill) &&
-      billItems_pageListBill[0].movementType == 'BILL'
+      receiptItems_pageListReceipt &&
+      Array.isArray(receiptItems_pageListReceipt) &&
+      receiptItems_pageListReceipt[0].movementType == 'RECEIPT'
     ) {
-      let bill = billItems_pageListBill.find(
-        (obj) => obj.movementHeaderId == query.idBill,
+      let receipt = receiptItems_pageListReceipt.find(
+        (obj) => obj.movementHeaderId == query.idReceipt,
       );
-      setSelectedBill(bill);
-      console.log('Bill seleccionado', bill);
-      if (bill.productsInfo) {
-        selectedProducts = bill.productsInfo.map((obj) => {
+      setSelectedReceipt(receipt);
+      console.log('Receipt seleccionado', receipt);
+      if (receipt.productsInfo) {
+        selectedProducts = receipt.productsInfo.map((obj) => {
           let count = Number(obj.cantidad || obj.count || obj.quantityMovement);
           let price = Number(
             obj.precio_unitario ||
@@ -284,48 +284,48 @@ const GetCreditNote = () => {
       }
       console.log('selectedProducts', selectedProducts);
       total =
-        bill.totalPriceWithoutIgv && bill.totalPriceWithoutIgv.length > 0
-          ? bill.totalPriceWithoutIgv
+        receipt.totalPriceWithoutIgv && receipt.totalPriceWithoutIgv.length > 0
+          ? receipt.totalPriceWithoutIgv
           : 0;
-      if (bill && Object.keys(bill).length !== 0) {
+      if (receipt && Object.keys(receipt).length !== 0) {
         changeValueField(
           'totalField',
-          bill.totalPriceWithoutIgv /*  && bill.totalPriceWithoutIgv !== ''
-            ? bill.totalPriceWithoutIgv
+          receipt.totalPriceWithoutIgv /*  && receipt.totalPriceWithoutIgv !== ''
+            ? receipt.totalPriceWithoutIgv
             : 0, */,
         );
-        changeValueField('totalFieldIgv', bill.totalPriceWithIgv);
+        changeValueField('totalFieldIgv', receipt.totalPriceWithIgv);
       }
       dispatch({type: GET_MOVEMENTS, payload: undefined});
       toGetMovements(listOutputsPayload);
       forceUpdate();
     }
     if (
-      billItems_pageListBill &&
-      billItems_pageListBill[0].movementType == 'OUTPUT'
+      receiptItems_pageListReceipt &&
+      receiptItems_pageListReceipt[0].movementType == 'OUTPUT'
     ) {
-      console.log('billItems_pageListBill de salidas', billItems_pageListBill);
+      console.log('receiptItems_pageListReceipt de salidas', receiptItems_pageListReceipt);
       console.log('query.movementId', query.movementId);
-      let output = billItems_pageListBill.find(
+      let output = receiptItems_pageListReceipt.find(
         (obj) => obj.movementHeaderId == query.movementId,
       );
       console.log('output desde nota de credito', output);
       setSelectedOutput(output);
     }
-  }, [billItems_pageListBill]);
+  }, [receiptItems_pageListReceipt]);
 
   /* useEffect(() => {
-    if (Object.keys(selectedBill).length !== 0 && getMovementsRes) {
+    if (Object.keys(selectedReceipt).length !== 0 && getMovementsRes) {
       changeValueField(
         'totalField',
-        selectedBill.totalPriceWithoutIgv &&
-          selectedBill.totalPriceWithoutIgv !== ''
-          ? selectedBill.totalPriceWithoutIgv
+        selectedReceipt.totalPriceWithoutIgv &&
+          selectedReceipt.totalPriceWithoutIgv !== ''
+          ? selectedReceipt.totalPriceWithoutIgv
           : 0,
       );
-      changeValueField('totalFieldIgv', selectedBill.totalPriceWithIgv);
+      changeValueField('totalFieldIgv', selectedReceipt.totalPriceWithIgv);
     }
-  }, [getMovementsRes && selectedBill]); */
+  }, [getMovementsRes && selectedReceipt]); */
   /* useEffect(() => {
     if (selectedOutput) {
       listDocuments = selectedOutput.documentsMovement.map((obj) => {
@@ -343,7 +343,7 @@ const GetCreditNote = () => {
   console.log('query', query);
 
   const validationSchema = yup.object({
-    nroBill: yup
+    nroReceipt: yup
       .string()
       .typeError(<IntlMessages id='validation.string' />)
       .required(<IntlMessages id='validation.required' />),
@@ -380,9 +380,9 @@ const GetCreditNote = () => {
     return precioConIGV;
   };
   const defaultValues = {
-    nroBill: '',
-    totalField: selectedBill.totalPriceWithoutIgv,
-    totalFieldIgv: selectedBill.totalPriceWithIgv,
+    nroReceipt: '',
+    totalField: selectedReceipt.totalPriceWithoutIgv,
+    totalFieldIgv: selectedReceipt.totalPriceWithIgv,
     observation: '',
   };
 
@@ -421,35 +421,35 @@ const GetCreditNote = () => {
             merchantId: userDataRes.merchantSelected.merchantId,
             denominationMerchant:
               userDataRes.merchantSelected.denominationMerchant,
-            movementTypeMerchantId: selectedBill.movementTypeMerchantId,
-            movementHeaderId: selectedBill.movementHeaderId,
-            createdAt: selectedBill.createdAt,
+            movementTypeMerchantId: selectedReceipt.movementTypeMerchantId,
+            movementHeaderId: selectedReceipt.movementHeaderId,
+            createdAt: selectedReceipt.createdAt,
             contableMovementId: selectedOutput.contableMovementId || '',
             clientId: selectedClient.clientId,
             clientEmail: selectedClient.emailClient,
             totalPriceWithIgv: data.totalFieldIgv,
             issueDate: dateWithHyphen(issueDate),
-            serial: data.nroBill.split('-')[0],
+            serial: data.nroReceipt.split('-')[0],
             documentIntern: '',
             automaticSendSunat: true,
             automaticSendClient: true,
             creditSale: false,
-            previousTotalPriceWithIgv: selectedBill.totalPriceWithIgv,
-            previousTotalPriceWithoutIgv: selectedBill.totalPriceWithoutIgv,
+            previousTotalPriceWithIgv: selectedReceipt.totalPriceWithIgv,
+            previousTotalPriceWithoutIgv: selectedReceipt.totalPriceWithoutIgv,
             dueDate: dateWithHyphen(expirationDate),
             observation: data.observation,
-            igv: selectedBill.igv,
+            igv: selectedReceipt.igv,
             productsInfo: cleanProducts,
             documentsMovement: selectedOutput.documentsMovement
               ? selectedOutput.documentsMovement
               : [],
             referralGuides: cleanDocuments,
             typeDocumentRelated: query.typeDocumentRelated,
-            serialDocumentRelated: data.nroBill.split('-')[0],
-            numberDocumentRelated: data.nroBill.split('-')[1],
+            serialDocumentRelated: data.nroReceipt.split('-')[0],
+            numberDocumentRelated: data.nroReceipt.split('-')[1],
             typeNote: subTypeNote,
             movementType: creditNote ? 'CREDIT_NOTE' : 'DEBIT_NOTE',
-            outputId: selectedBill.outputId,
+            outputId: selectedReceipt.outputId,
             typePDF: userDataRes.merchantSelected.typeMerchant,
             folderMovement: selectedOutput.folderMovement,
           },
@@ -536,7 +536,7 @@ const GetCreditNote = () => {
     selectedProducts.map((obj) => {
       calculatedtotal += obj.subtotal;
     });
-    if (selectedBill.totalPriceWithIgv < calculatedtotal) {
+    if (selectedReceipt.totalPriceWithIgv < calculatedtotal) {
       setCreditNote(false);
       let newValue = creditNoteTypes.find(
         (obj) => obj.typeNote == 'debit',
@@ -571,7 +571,7 @@ const GetCreditNote = () => {
         calculatedtotal += obj.subtotal;
       });
       total = calculatedtotal;
-      if (selectedBill.totalPriceWithIgv < calculatedtotal) {
+      if (selectedReceipt.totalPriceWithIgv < calculatedtotal) {
         setCreditNote(false);
         let newValue = creditNoteTypes.find(
           (obj) => obj.typeNote == 'debit',
@@ -616,15 +616,15 @@ const GetCreditNote = () => {
   const closeDialog = () => {
     if (typeResult === 'statusResult') {
       if (
-        !(selectedOutput.existBill && selectedOutput.existReferralGuide) &&
+        !(selectedOutput.existReceipt && selectedOutput.existReferralGuide) &&
         addCreditNoteRes !== undefined &&
         !('error' in addCreditNoteRes)
       ) {
         dispatch({type: GET_MOVEMENTS, payload: undefined});
         /* toGetMovements(listPayload); */
-        Router.push('/sample/bills/table');
+        Router.push('/sample/receipts/table');
       } else {
-        Router.push('/sample/bills/table');
+        Router.push('/sample/receipts/table');
       }
     }
     setOpenDialog(false);
@@ -732,7 +732,7 @@ const GetCreditNote = () => {
                   <Grid item xs={6}>
                     <AppTextField
                       label={typeDocumentRelated == 'bill' ? 'Número Factura a modificar' : 'Número Boleta a modificar'}
-                      name='nroBill'
+                      name='nroReceipt'
                       disabled
                       variant='outlined'
                       sx={{
@@ -1311,7 +1311,7 @@ const GetCreditNote = () => {
               <Button
                 variant='outlined'
                 onClick={() => {
-                  Router.push('/sample/bills/table');
+                  Router.push('/sample/receipts/table');
                 }}
               >
                 Sí
