@@ -651,10 +651,17 @@ const GetReceipt = (props) => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      setShowForms(true);
-      dispatch({type: GET_MOVEMENTS, payload: []});
-      toGetMovements(listPayload);
-      setOpenStatus(false);
+      if(!earningGeneration){
+        setShowForms(true);
+        dispatch({type: GET_MOVEMENTS, payload: []});
+        toGetMovements(listPayload);
+        setOpenStatus(false);
+      } else {
+        dispatch({type: GET_MOVEMENTS, payload: []});
+        toGetMovements(listPayload);
+        setOpenStatus(false);
+        Router.push('/sample/outputs/table')
+      }
     } else if (registerError()) {
       setOpenStatus(false);
     } else {

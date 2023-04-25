@@ -897,9 +897,9 @@ const FinancesTable = (props) => {
               <TableCell>Observaciones</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Tipo de compra</TableCell>
-              <TableCell>Pagos de Factura</TableCell>
+              <TableCell>Pagos de Comprobantes</TableCell>
               <TableCell>Otros Pagos</TableCell>
-              <TableCell>Monto Factura(con igv)</TableCell>
+              <TableCell>Monto Comprobante(con igv)</TableCell>
               <TableCell>Monto a Pagar/Cobrar</TableCell>
               <TableCell>Monto pagado/Cobrado</TableCell>
               <TableCell>Deuda pendiente</TableCell>

@@ -71,7 +71,8 @@ import {
   GET_USER_DATA,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
-import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
+import { format, addHours } from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
+import {DesktopDatePicker, DateTimePicker, DateRangePicker} from '@mui/lab';
 import {
   getFinances,
   deleteFinance,
@@ -84,6 +85,8 @@ import {
   translateValue,
   fixDecimals,
   convertToDateWithoutTime,
+  
+  toEpoch,
 } from '../../../Utils/utils';
 import MoreFiltersFinances from '../Filters/MoreFiltersFinances';
 
@@ -135,9 +138,15 @@ const ContableMovements = (props) => {
   const [openDocuments, setOpenDocuments] = React.useState(false);
   const [moreFilters, setMoreFilters] = React.useState(false);
   const [financeType, setFinanceType] = React.useState('INCOME');
-  const [proofOfPaymentType, setProofOfPaymentType] = React.useState('all');
-  const [initialDate, setInitialDate] = React.useState(Date.now());
-  const [finalDate, setFinalDate] = React.useState(Date.now());
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState('TODOS');
+  const [initialTime, setInitialTime] = React.useState(Date.now());
+  const [finalTime, setFinalTime] = React.useState(Date.now());
+
+  const currentDate = new Date(); // Obtenemos la fecha actual
+  const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0)); // Modificamos la fecha actual para que sea a las 0 horas del día
+  const endOfDay = addHours(new Date(startOfDay), 23); // Agregamos 23 horas a la fecha de inicio para obtener las 23:59 del día actual
+  const [dateRange, setDateRange] = React.useState([startOfDay, endOfDay]); // Estado para el rango de fechas
+
 
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
@@ -154,11 +163,11 @@ const ContableMovements = (props) => {
         movementType: null,
         merchantId: '',
         createdAt: null,
-        monthMovement: null,
-        yearMovement: null,
+        methodToPay: '',
         searchByBill: '',
         searchByContableMovement: '',
         typeList: '',
+        listReduced: true
       },
     },
   };
@@ -243,9 +252,10 @@ const ContableMovements = (props) => {
         listFinancesPayload.request.payload.searchByContableMovement =
           query.contableMovementId;
       }
-      listFinancesPayload.request.payload.monthMovement =
-        getActualMonth().toUpperCase();
-      listFinancesPayload.request.payload.yearMovement = getYear();
+      
+      listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
+      listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+      listFinancesPayload.request.payload.movementType = "";
       toGetFinances(listFinancesPayload);
       if (monthYearStatus) {
         dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
@@ -258,12 +268,12 @@ const ContableMovements = (props) => {
   }, [userDataRes]);
 
   const searchFinances = () => {
-    if (
-      listFinancesPayload.request.payload.yearMovement == null
-    ) {
-      listFinancesPayload.request.payload.yearMovement = getYear();
-    }
     dispatch({type: GET_FINANCES, payload: []});
+    listFinancesPayload.request.payload.merchantId =
+        userDataRes.merchantSelected.merchantId;
+    listFinancesPayload.request.payload.movementType = proofOfPaymentType == "TODOS" ? "" : proofOfPaymentType;
+    listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
+    listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
     toGetFinances(listFinancesPayload);
     if (monthYearStatus) {
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
@@ -621,6 +631,16 @@ const ContableMovements = (props) => {
       dataFilters.nroIdentifier;
     listFinancesPayload.request.payload.denominationProvider =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toLowerCase();
+    listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
+    listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+    listFinancesPayload.request.payload.movementType = proofOfPaymentType == "TODOS" ? "" : proofOfPaymentType;
+    listFinancesPayload.request.payload.merchantId =
+        userDataRes.merchantSelected.merchantId;
+    if (dataFilters.paymentMethod == 'all') {
+      dataFilters.paymentMethod = '';
+    }
+    listFinancesPayload.request.payload.methodToPay =
+      dataFilters.paymentMethod;
     console.log('listFinancesPayload', listFinancesPayload);
     dispatch({type: GET_FINANCES, payload: []});
     toGetFinances(listFinancesPayload);
@@ -690,44 +710,64 @@ const ContableMovements = (props) => {
             onChange={(event) => {
               console.log(event.target.value);
               setProofOfPaymentType(event.target.value);
-              if (event.target.value == 'all') {
-                listFinancesPayload.request.payload.monthMovement = null;
+              if (event.target.value == 'TODOS') {
+                listFinancesPayload.request.payload.movementType = null;
               } else {
-                listFinancesPayload.request.payload.monthMovement =
+                listFinancesPayload.request.payload.movementType =
                   event.target.value;
               }
             }}
+            
             defaultValue={proofOfPaymentType}
           >
             <MenuItem
-              value={'all'}
+              value={'TODOS'}
               style={{fontWeight: 200}}
             >
               TODOS
             </MenuItem>
             <MenuItem
-              value={'earning'}
+              value={'INCOME'}
               style={{fontWeight: 200}}
             >
               INGRESOS
             </MenuItem>
             <MenuItem
-              value={'expense'}
+              value={'EXPENSE'}
               style={{fontWeight: 200}}
             >
               EGRESOS
             </MenuItem>
           </Select>
         </FormControl>
-        <DateTimePicker
+        <DateRangePicker
+          label="Rango de fechas"
+          inputVariant="outlined"
+          value={dateRange}
+          inputFormat='dd/MM/yyyy hh:mm a'
+          onChange={(newValue) => {
+            setDateRange(newValue);
+            console.log('date', newValue);
+            listFinancesPayload.request.payload.initialTime = toEpoch(newValue[0]);
+            listFinancesPayload.request.payload.finalTime = toEpoch(newValue[1]);
+            console.log('payload de busqueda', listFinancesPayload);
+          }}
+          renderInput={(startProps, endProps) => (
+            <React.Fragment>
+              <TextField {...startProps} label="Fecha de inicio" />
+              <TextField {...endProps} label="Fecha de fin" />
+            </React.Fragment>
+          )}
+        />
+        {/* <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
-          value={initialDate}
+          value={initialTime}
           label='Inicio'
           inputFormat='dd/MM/yyyy hh:mm a'
           onChange={(newValue) => {
-            setInitialDate(newValue);
+            setInitialTime(newValue);
             console.log('date', newValue);
-            listFinancesPayload.request.payload.initialDate = toEpoch(newValue);
+            listFinancesPayload.request.payload.initialTime = toEpoch(newValue);
             console.log('payload de busqueda', listFinancesPayload);
           }}
         />
@@ -735,14 +775,14 @@ const ContableMovements = (props) => {
           renderInput={(params) => <TextField size='small' {...params} />}
           label='Fin'
           inputFormat='dd/MM/yyyy hh:mm a'
-          value={finalDate}
+          value={finalTime}
           onChange={(newValue2) => {
-            setFinalDate(newValue2);
+            setFinalTime(newValue2);
             console.log('date 2', newValue2);
-            listFinancesPayload.request.payload.finalDate = toEpoch(newValue2);
+            listFinancesPayload.request.payload.finalTime = toEpoch(newValue2);
             console.log('payload de busqueda', listFinancesPayload);
           }}
-        />
+        /> */}
         <Button
           onClick={() => setMoreFilters(true)}
           startIcon={<FilterAltOutlinedIcon />}
@@ -757,14 +797,6 @@ const ContableMovements = (props) => {
           onClick={searchFinances}
         >
           Buscar
-        </Button>
-        <Button
-          startIcon={<ManageSearchOutlinedIcon />}
-          variant='contained'
-          color='secondary'
-          onClick={searchFinancesInDebt}
-        >
-          Deudas
         </Button>
       </Stack>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
@@ -796,9 +828,9 @@ const ContableMovements = (props) => {
               <TableCell>Observaciones</TableCell>
               <TableCell>Estado</TableCell>
               <TableCell>Tipo de compra</TableCell>
-              <TableCell>Pagos de Factura</TableCell>
+              <TableCell>Pagos de Comprobantes</TableCell>
               <TableCell>Otros Pagos</TableCell>
-              <TableCell>Monto Factura(con igv)</TableCell>
+              <TableCell>Monto Comprobante(con igv)</TableCell>
               <TableCell>Monto a Pagar/Cobrar</TableCell>
               <TableCell>Monto pagado/Cobrado</TableCell>
               <TableCell>Deuda pendiente</TableCell>
