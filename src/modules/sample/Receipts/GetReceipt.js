@@ -282,6 +282,10 @@ const GetReceipt = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
+    
+    if(userDataRes.merchantSelected.typeClient == "PN"){
+      setPaymentWay('debit')
+    }
     getBusinessParameter(businessParameterPayload);
     if (getMovementsRes !== undefined) {
       selectedOutput = getMovementsRes.find(

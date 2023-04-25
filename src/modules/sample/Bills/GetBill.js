@@ -241,6 +241,9 @@ const NewOutput = (props) => {
     selectedOutput = {loaded: false};
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
+    if(userDataRes.merchantSelected.typeClient == "PN"){
+      setPaymentWay('debit')
+    }
     dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
     getBusinessParameter(businessParameterPayload);
     if (getMovementsRes !== undefined) {
