@@ -1759,7 +1759,7 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
           ) && selectedOutput.movementSubType == 'sales'  &&
-          !selectedOutput.existSellTicket && !selectedOutput.existReceipt ? (
+          !selectedOutput.existSellTicket && !selectedOutput.existReceipt && !selectedOutput.existBill ? (
           <MenuItem onClick={() => setSellTicketDialog(true)}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket

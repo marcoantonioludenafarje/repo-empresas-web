@@ -213,10 +213,10 @@ const GetReceipt = (props) => {
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
     /* guide: '', */
-    receiver: `${query.clientId.split('-')[1]} - ${
+    receiver: query.clientId ? `${query.clientId.split('-')[1]} - ${
       query.clientName ||
       selectedOutput.clientName /* query.clientId.split('-')[2] */
-    }`,
+    }` : "",
     issueDate: Date.now(),
     wayToPay: Date.now(),
     methodToPay: 'Efectivo',
