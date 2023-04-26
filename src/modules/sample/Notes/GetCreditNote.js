@@ -138,8 +138,8 @@ const GetCreditNote = () => {
   const [typeResult, setTypeResult] = React.useState('');
   const [expirationDate, setExpirationDate] = React.useState(Date.now());
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [typeDocumentRelated, setTypeDocumentRelated] = React.useState("bill");
-  
+  const [typeDocumentRelated, setTypeDocumentRelated] = React.useState('bill');
+
   const [igvDefault, setIgvDefault] = React.useState(0);
   const prevMoneyToConvertRef = useRef();
   useEffect(() => {
@@ -185,7 +185,7 @@ const GetCreditNote = () => {
   useEffect(() => {
     listDocuments = [];
     changeValueField('nroBill', query.nroBill);
-    setTypeDocumentRelated(query.typeDocumentRelated)
+    setTypeDocumentRelated(query.typeDocumentRelated);
     setTimeout(() => {
       setMinTutorial(true);
     }, 2000);
@@ -290,11 +290,16 @@ const GetCreditNote = () => {
       if (bill && Object.keys(bill).length !== 0) {
         changeValueField(
           'totalField',
-          Number(bill.totalPriceWithoutIgv.toFixed(2)) /*  && bill.totalPriceWithoutIgv !== ''
+          Number(
+            bill.totalPriceWithoutIgv.toFixed(2),
+          ) /*  && bill.totalPriceWithoutIgv !== ''
             ? bill.totalPriceWithoutIgv
             : 0, */,
         );
-        changeValueField('totalFieldIgv', Number(bill.totalPriceWithIgv.toFixed(2)));
+        changeValueField(
+          'totalFieldIgv',
+          Number(bill.totalPriceWithIgv.toFixed(2)),
+        );
       }
       dispatch({type: GET_MOVEMENTS, payload: undefined});
       toGetMovements(listOutputsPayload);
@@ -452,6 +457,11 @@ const GetCreditNote = () => {
             outputId: selectedBill.outputId,
             typePDF: userDataRes.merchantSelected.typeMerchant,
             folderMovement: selectedOutput.folderMovement,
+            userCreated: userDataRes.userId,
+            userCreatedMetadata: {
+              nombreCompleto: userDataRes.nombreCompleto,
+              email: userDataRes.email,
+            },
           },
         },
       };
@@ -731,7 +741,11 @@ const GetCreditNote = () => {
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={6}>
                     <AppTextField
-                      label={typeDocumentRelated == 'bill' ? 'Número Factura a modificar' : 'Número Boleta a modificar'}
+                      label={
+                        typeDocumentRelated == 'bill'
+                          ? 'Número Factura a modificar'
+                          : 'Número Boleta a modificar'
+                      }
                       name='nroBill'
                       disabled
                       variant='outlined'

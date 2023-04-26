@@ -241,8 +241,8 @@ const NewOutput = (props) => {
     selectedOutput = {loaded: false};
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    if(userDataRes.merchantSelected.typeClient == "PN"){
-      setPaymentWay('debit')
+    if (userDataRes.merchantSelected.typeClient == 'PN') {
+      setPaymentWay('debit');
     }
     dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
     getBusinessParameter(businessParameterPayload);
@@ -593,6 +593,13 @@ const NewOutput = (props) => {
             documentsMovement: selectedOutput.documentsMovement,
             referralGuides: parsedDocuments,
             sendEmail: sendEmail,
+            userCreated: userDataRes.userId,
+            userCreatedMetadata: {
+              nombreCompleto: userDataRes.nombreCompleto,
+              email: userDataRes.email,
+            },
+            outputUserCreated: selectedOutput.userCreated,
+            outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
           },
         },
       };

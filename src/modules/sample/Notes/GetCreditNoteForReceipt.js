@@ -138,8 +138,9 @@ const GetCreditNote = () => {
   const [typeResult, setTypeResult] = React.useState('');
   const [expirationDate, setExpirationDate] = React.useState(Date.now());
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [typeDocumentRelated, setTypeDocumentRelated] = React.useState("receipt");
-  
+  const [typeDocumentRelated, setTypeDocumentRelated] =
+    React.useState('receipt');
+
   const [igvDefault, setIgvDefault] = React.useState(0);
   const prevMoneyToConvertRef = useRef();
   useEffect(() => {
@@ -185,7 +186,7 @@ const GetCreditNote = () => {
   useEffect(() => {
     listDocuments = [];
     changeValueField('nroReceipt', query.nroReceipt);
-    setTypeDocumentRelated(query.typeDocumentRelated)
+    setTypeDocumentRelated(query.typeDocumentRelated);
     setTimeout(() => {
       setMinTutorial(true);
     }, 2000);
@@ -234,7 +235,10 @@ const GetCreditNote = () => {
       selectedReceipt.referralGuides &&
       Object.keys(selectedReceipt.referralGuides).length > 0
     ) {
-      console.log('selectedReceipt.referralGuides', selectedReceipt.referralGuides);
+      console.log(
+        'selectedReceipt.referralGuides',
+        selectedReceipt.referralGuides,
+      );
       selectedReceipt.referralGuides.map((obj) => {
         listDocuments.push({
           dateDocument: obj.issueDate.split('-').join('/'),
@@ -248,7 +252,9 @@ const GetCreditNote = () => {
       setSelectedClient({
         denominationClient: selectedReceipt.denominationClient,
         clientId: selectedReceipt.clientId,
-        emailClient: selectedReceipt.clientEmail ? selectedReceipt.clientEmail : '',
+        emailClient: selectedReceipt.clientEmail
+          ? selectedReceipt.clientEmail
+          : '',
       });
     }
   }, [selectedReceipt]);
@@ -289,12 +295,16 @@ const GetCreditNote = () => {
           : 0;
       if (receipt && Object.keys(receipt).length !== 0) {
         changeValueField(
-          'totalField', Number(receipt.totalPriceWithoutIgv.toFixed(2))
-           /*  && receipt.totalPriceWithoutIgv !== ''
+          'totalField',
+          Number(receipt.totalPriceWithoutIgv.toFixed(2)),
+          /*  && receipt.totalPriceWithoutIgv !== ''
             ? receipt.totalPriceWithoutIgv
-            : 0, */,
+            : 0, */
         );
-        changeValueField('totalFieldIgv', Number(receipt.totalPriceWithIgv.toFixed(2)));
+        changeValueField(
+          'totalFieldIgv',
+          Number(receipt.totalPriceWithIgv.toFixed(2)),
+        );
       }
       dispatch({type: GET_MOVEMENTS, payload: undefined});
       toGetMovements(listOutputsPayload);
@@ -304,7 +314,10 @@ const GetCreditNote = () => {
       receiptItems_pageListReceipt &&
       receiptItems_pageListReceipt[0].movementType == 'OUTPUT'
     ) {
-      console.log('receiptItems_pageListReceipt de salidas', receiptItems_pageListReceipt);
+      console.log(
+        'receiptItems_pageListReceipt de salidas',
+        receiptItems_pageListReceipt,
+      );
       console.log('query.movementId', query.movementId);
       let output = receiptItems_pageListReceipt.find(
         (obj) => obj.movementHeaderId == query.movementId,
@@ -731,7 +744,11 @@ const GetCreditNote = () => {
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={6}>
                     <AppTextField
-                      label={typeDocumentRelated == 'bill' ? 'Número Factura a modificar' : 'Número Boleta a modificar'}
+                      label={
+                        typeDocumentRelated == 'bill'
+                          ? 'Número Factura a modificar'
+                          : 'Número Boleta a modificar'
+                      }
                       name='nroReceipt'
                       disabled
                       variant='outlined'

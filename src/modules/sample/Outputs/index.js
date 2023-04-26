@@ -786,6 +786,13 @@ const OutputsTable = (props) => {
           }),
           documentsMovement: selectedOutput.documentsMovement,
           referralGuides: [],
+          userCreated: userDataRes.userId,
+          userCreatedMetadata: {
+            nombreCompleto: userDataRes.nombreCompleto,
+            email: userDataRes.email,
+          },
+          outputUserCreated: selectedOutput.userCreated,
+          outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
         },
       },
     };
@@ -1810,7 +1817,9 @@ const OutputsTable = (props) => {
             '/facturacion/accounting/movement/register?path=/billOfOutput/*',
           ) &&
         selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existBill && !selectedOutput.existReceipt && !selectedOutput.existSellTicket ? (
+        !selectedOutput.existBill &&
+        !selectedOutput.existReceipt &&
+        !selectedOutput.existSellTicket ? (
           <MenuItem
             disabled={
               userDataRes.merchantSelected &&

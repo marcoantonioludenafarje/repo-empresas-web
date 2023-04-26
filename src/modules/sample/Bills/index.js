@@ -790,7 +790,7 @@ const BillsTable = (props) => {
                   movementId: selectedBill.outputId,
                   nroBill: selectedBill.serialNumberBill,
                   igv: selectedBill.igv,
-                  typeDocumentRelated: 'bill'
+                  typeDocumentRelated: 'bill',
                 },
               })
             }

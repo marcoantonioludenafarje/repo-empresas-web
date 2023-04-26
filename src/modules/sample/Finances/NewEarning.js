@@ -343,6 +343,15 @@ const NewEarning = (props) => {
 
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
+      newFinancePayload.request.payload.movements[0].outputUserCreated =
+        selectedOutput.userCreated;
+      newFinancePayload.request.payload.movements[0].outputUserCreatedMetadata =
+        selectedOutput.userCreatedMetadata;
+      newFinancePayload.request.payload.movements[0].proofOfPaymentUserCreated =
+        selectedOutput.proofOfPaymentUserCreated || '';
+      newFinancePayload.request.payload.movements[0].proofOfPaymentUserCreatedMetadata =
+        selectedOutput.proofOfPaymentUserCreatedMetadata || '';
+
       newFinancePayload.request.payload.movements[0].numberDocumentProvider =
         selectedClient.clientId.split('-')[1];
       newFinancePayload.request.payload.movements[0].denominationProvider =
@@ -376,6 +385,12 @@ const NewEarning = (props) => {
       newFinancePayload.request.payload.movements[0].otherPayConcepts = [];
       newFinancePayload.request.payload.movements[0].purchaseType =
         purchaseType;
+      (newFinancePayload.request.payload.movements[0].userCreated =
+        userDataRes.userId),
+        (newFinancePayload.request.payload.movements[0].userCreatedMetadata = {
+          nombreCompleto: userDataRes.nombreCompleto,
+          email: userDataRes.email,
+        });
       newFinancePayload.request.payload.movements[0].proofOfPaymentType =
         proofOfPaymentType;
       listPayments.map((obj, index) => {

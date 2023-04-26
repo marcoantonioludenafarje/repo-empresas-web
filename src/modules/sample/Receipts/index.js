@@ -776,7 +776,7 @@ const ReceiptsTable = (props) => {
                   movementId: selectedReceipt.outputId,
                   nroReceipt: selectedReceipt.serialNumber,
                   igv: selectedReceipt.igv,
-                  typeDocumentRelated: 'receipt'
+                  typeDocumentRelated: 'receipt',
                 },
               })
             }

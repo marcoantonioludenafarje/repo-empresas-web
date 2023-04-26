@@ -71,7 +71,7 @@ import {
   GET_USER_DATA,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
-import {format, addHours} from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
+import {format, addHours, addMinutes} from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
 import {DesktopDatePicker, DateTimePicker, DateRangePicker} from '@mui/lab';
 import {getFinances, deleteFinance} from '../../../redux/actions/Finances';
 import {useDispatch, useSelector} from 'react-redux';
@@ -136,10 +136,11 @@ const ContableMovements = (props) => {
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState('TODOS');
   const [initialTime, setInitialTime] = React.useState(Date.now());
   const [finalTime, setFinalTime] = React.useState(Date.now());
+  const [totalAmount, setTotalAmount] = React.useState(0);
 
   const currentDate = new Date(); // Obtenemos la fecha actual
   const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0)); // Modificamos la fecha actual para que sea a las 0 horas del día
-  const endOfDay = addHours(new Date(startOfDay), 23); // Agregamos 23 horas a la fecha de inicio para obtener las 23:59 del día actual
+  const endOfDay = addMinutes(addHours(new Date(startOfDay), 23), 59); // Agregamos 23 horas a la fecha de inicio para obtener las 23:59 del día actual
   const [dateRange, setDateRange] = React.useState([startOfDay, endOfDay]); // Estado para el rango de fechas
 
   const openMenu = Boolean(anchorEl);
@@ -231,6 +232,15 @@ const ContableMovements = (props) => {
   useEffect(() => {
     setMonthYearStatus(true);
   }, [month || year]);
+  useEffect(() => {
+    if (getFinancesRes && Array.isArray(getFinancesRes)) {
+      let total = 0;
+      getFinancesRes.forEach((obj) => {
+        total += obj.totalAmount;
+      });
+      setTotalAmount(total);
+    }
+  }, [getFinancesRes]);
   useEffect(() => {
     if (userDataRes) {
       listFinancesPayload.request.payload.merchantId =
@@ -729,7 +739,7 @@ const ContableMovements = (props) => {
           label='Rango de fechas'
           inputVariant='outlined'
           value={dateRange}
-          inputFormat='dd/MM/yyyy hh:mm a'
+          inputFormat={isMobile ? 'dd/MM/yyyy' : 'dd/MM/yyyy hh:mm a'}
           onChange={(newValue) => {
             setDateRange(newValue);
             console.log('date', newValue);
@@ -789,43 +799,37 @@ const ContableMovements = (props) => {
         </Button>
       </Stack>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
-        <Table
-          stickyHeader
-          size='small'
-          aria-label='simple table'
-          sx={{width: '150%'}}
-        >
+        <Table stickyHeader size='small' aria-label='simple table'>
           <TableHead>
             <TableRow>
-              <TableCell>Codigo</TableCell>
-              <TableCell>Tipo</TableCell>
-              <TableCell>Identificador negocio</TableCell>
-              <TableCell>Fecha de factura</TableCell>
-              <TableCell>Nombre / Razón social</TableCell>
-              <TableCell>Número de documento</TableCell>
-              <TableCell>Detalle documentos</TableCell>
-              <TableCell>Número de correlativo</TableCell>
-              {localStorage
-                .getItem('pathsBack')
-                .includes('/inventory/movementProducts/list?path=/input/*') &&
-              localStorage
-                .getItem('pathsBack')
-                .includes('/inventory/movementProducts/list?path=/output/*') ? (
-                <TableCell>Movimiento relacionado</TableCell>
-              ) : null}
-              <TableCell>Detalle de compra</TableCell>
-              <TableCell>Observaciones</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Tipo de compra</TableCell>
-              <TableCell>Pagos de Comprobantes</TableCell>
-              <TableCell>Otros Pagos</TableCell>
-              <TableCell>Monto Comprobante(con igv)</TableCell>
-              <TableCell>Monto a Pagar/Cobrar</TableCell>
-              <TableCell>Monto pagado/Cobrado</TableCell>
-              <TableCell>Deuda pendiente</TableCell>
-              <TableCell>Fecha registrada</TableCell>
-              <TableCell>Última actualización</TableCell>
-              <TableCell>Opciones</TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Codigo
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Tipo
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Fecha registrada
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Número de documento
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Fecha emisión de Comprobante
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Fecha vencimiento de Comprobante
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '9px' : '12px'}}>
+                Estado
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '12px' : '15px'}}>
+                Medio de Pago
+              </TableCell>
+              <TableCell>Monto Total</TableCell>
+              <TableCell>Vendedor</TableCell>
+              <TableCell>Recaudador</TableCell>
+              {/* <TableCell>Opciones</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -837,6 +841,7 @@ const ContableMovements = (props) => {
                 const paids = obj.payments;
                 const otherPayConcepts = obj.otherPayConcepts;
                 const movementType = showType(obj.movementType);
+
                 return (
                   <>
                     <TableRow
@@ -851,108 +856,37 @@ const ContableMovements = (props) => {
                           : obj.folderMovement.split('/').slice(-1)
                       }`}</TableCell>
                       <TableCell>{showType(obj.movementType)}</TableCell>
-                      <TableCell>{`${obj.typeDocumentProvider} ${obj.numberDocumentProvider}`}</TableCell>
-                      <TableCell>{obj.billIssueDate}</TableCell>
-                      <TableCell>{obj.denominationProvider}</TableCell>
-                      <TableCell>{obj.serialNumberBill}</TableCell>
-                      <TableCell align='center'>
-                        {obj.documentsMovement &&
-                        obj.documentsMovement.length != 0 ? (
-                          <IconButton
-                            onClick={() => checkDocuments(obj, index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : (
-                          <></>
-                        )}
-                      </TableCell>
                       <TableCell>
-                        {obj.folderMovement
-                          ? obj.folderMovement.split('/').slice(-1)
-                          : null}
+                        {convertToDateWithoutTime(obj.createdDate)}
                       </TableCell>
-                      {localStorage
-                        .getItem('pathsBack')
-                        .includes(
-                          '/inventory/movementProducts/list?path=/input/*',
-                        ) &&
-                      localStorage
-                        .getItem('pathsBack')
-                        .includes(
-                          '/inventory/movementProducts/list?path=/output/*',
-                        ) ? (
-                        <TableCell>
-                          {obj.movementHeaderId
-                            ? statusObject(
-                                obj,
-                                obj.movementHeaderId.length !== 0,
-                                obj.movementType.toLowerCase(),
-                                obj.codMovementRelated
-                                  ? showMinTypeRelated(
-                                      obj.codMovementRelated.split('-')[0],
-                                    )
-                                  : '',
-                                obj.codMovementRelated
-                                  ? obj.codMovementRelated.split('-')[1]
-                                  : '',
-                              )
-                            : null}
-                        </TableCell>
-                      ) : null}
-                      <TableCell>{obj.description}</TableCell>
-                      <TableCell>{obj.observation}</TableCell>
+                      <TableCell>{obj.serialNumberBill}</TableCell>
+                      <TableCell>{obj.billIssueDate}</TableCell>
+                      <TableCell>{obj.billIssueDate}</TableCell>
                       <TableCell>
                         {showStatus(obj.status, obj.movementType)}
                       </TableCell>
                       <TableCell>
-                        {obj.purchaseType
+                        {obj.methodToPay
                           ? translateValue(
                               'PAYMENTMETHOD',
-                              obj.purchaseType.toUpperCase(),
+                              obj.methodToPay.toUpperCase(),
                             )
                           : null}
-                      </TableCell>
-                      <TableCell>
-                        {paids && paids.length !== 0 ? (
-                          <IconButton
-                            onClick={() => checkPaids(obj, index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : null}
-                      </TableCell>
-                      <TableCell>
-                        {otherPayConcepts && otherPayConcepts.length !== 0 ? (
-                          <IconButton
-                            onClick={() => checkOtherPayConcepts(obj, index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : null}
                       </TableCell>
                       <TableCell>{`${moneySymbol} ${fixDecimals(
                         obj.totalAmount,
                       )}`}</TableCell>
-                      <TableCell>{`${moneySymbol} ${fixDecimals(
-                        obj.totalAmountWithConcepts,
-                      )}`}</TableCell>
                       <TableCell>
-                        {`${moneySymbol} ${fixDecimals(obj.paid)}`}
+                        {obj.outputUserCreatedMetadata
+                          ? obj.outputUserCreatedMetadata.nombreCompleto
+                          : ''}
                       </TableCell>
                       <TableCell>
-                        {`${moneySymbol} ${fixDecimals(obj.debt)}`}
+                        {obj.proofOfPaymentUserCreatedMetadata
+                          ? obj.proofOfPaymentUserCreatedMetadata.nombreCompleto
+                          : ''}
                       </TableCell>
-                      <TableCell>
-                        {convertToDateWithoutTime(obj.createdDate)}
-                      </TableCell>
-                      <TableCell>
-                        {convertToDateWithoutTime(obj.updatedDate)}
-                      </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <Button
                           id='basic-button'
                           aria-controls={openMenu ? 'basic-menu' : undefined}
@@ -962,7 +896,7 @@ const ContableMovements = (props) => {
                         >
                           <KeyboardArrowDownIcon />
                         </Button>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                     <TableRow key={`doc2-${index}`}>
                       <TableCell
@@ -1178,6 +1112,10 @@ const ContableMovements = (props) => {
                 sx={{m: '10px', position: 'relative'}}
               />
             )}
+            <TableRow>
+              <TableCell colSpan={8}>Total</TableCell>
+              <TableCell align='left'>S/ {totalAmount}</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -1192,12 +1130,11 @@ const ContableMovements = (props) => {
           .includes('/facturacion/accounting/movement/register') === true ? (
           <Button
             variant='outlined'
-            onClick={() => {
-              Router.push('/sample/finances/new-earning');
-            }}
-            startIcon={<AddCircleOutlineOutlinedIcon />}
+            color='secondary'
+            onClick={() => {}}
+            startIcon={<GridOnOutlinedIcon />}
           >
-            Nuevo Ingreso
+            Exportar Resumen
           </Button>
         ) : null}
 
@@ -1206,12 +1143,10 @@ const ContableMovements = (props) => {
           .includes('/facturacion/accounting/movement/register') === true ? (
           <Button
             variant='outlined'
-            startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={() => {
-              Router.push('/sample/finances/new-expense');
-            }}
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={() => {}}
           >
-            Nuevo Egreso
+            Exportar Detalle
           </Button>
         ) : null}
       </ButtonGroup>
