@@ -287,6 +287,7 @@ export const GET_FINANCES_FOR_RESULT_STATE = 'get_finances_for_result_state';
 export const ADD_FINANCE = 'add_finance';
 export const DELETE_FINANCE = 'delete_finance';
 export const UPDATE_FINANCE = 'update_finance';
+export const GENERATE_EXCEL_TEMPLATE_TO_MOVEMENTS_DETAIL = 'generate_excel_template_to_movements_detail';
 
 //ORDERS
 export const GET_ORDERS = 'get_orders';

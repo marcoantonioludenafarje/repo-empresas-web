@@ -7,6 +7,7 @@ import {
   DELETE_FINANCE,
   UPDATE_FINANCE,
   GET_FINANCES_FOR_RESULT_STATE,
+  GENERATE_EXCEL_TEMPLATE_TO_MOVEMENTS_DETAIL,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -95,6 +96,26 @@ export const updateFinance = (payload) => {
       })
       .catch((error) => {
         console.log('updateFinance error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const exportExcelTemplateMovementsDetails = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/accounting/movement/exportDetails', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelTemplateMovementsDetails resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_MOVEMENTS_DETAIL,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('exportExcelTemplateMovementsDetails error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

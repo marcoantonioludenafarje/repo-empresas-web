@@ -295,6 +295,7 @@ const ProviderTable = (arrayObjs, props) => {
   };
 
   useEffect(() => {
+    console.log('excelTemplateGeneratedToProvidersRes', excelTemplateGeneratedToProvidersRes);
     if (excelTemplateGeneratedToProvidersRes && downloadExcel) {
       setDownloadExcel(false);
       const byteCharacters = atob(excelTemplateGeneratedToProvidersRes);

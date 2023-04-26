@@ -69,6 +69,7 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  GENERATE_EXCEL_TEMPLATE_TO_MOVEMENTS_DETAIL,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {format, addHours, addMinutes} from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
@@ -85,6 +86,7 @@ import {
   toEpoch,
 } from '../../../Utils/utils';
 import MoreFiltersContableMovements from '../Filters/MoreFiltersContableMovements';
+import {exportExcelTemplateMovementsDetails} from '../../../redux/actions/Finances';
 
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -137,6 +139,10 @@ const ContableMovements = (props) => {
   const [initialTime, setInitialTime] = React.useState(Date.now());
   const [finalTime, setFinalTime] = React.useState(Date.now());
   const [totalAmount, setTotalAmount] = React.useState(0);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
+  const {excelTemplateGeneratedMovementsDetailRes} = useSelector(
+    ({general}) => general,
+  );
 
   const currentDate = new Date(); // Obtenemos la fecha actual
   const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0)); // Modificamos la fecha actual para que sea a las 0 horas del día
@@ -228,6 +234,9 @@ const ContableMovements = (props) => {
   const toDeleteFinance = (payload) => {
     dispatch(deleteFinance(payload));
   };
+  const toExportExcelTemplateMovementsDetails = (payload) => {
+    dispatch(exportExcelTemplateMovementsDetails(payload));
+  };
 
   useEffect(() => {
     setMonthYearStatus(true);
@@ -238,7 +247,7 @@ const ContableMovements = (props) => {
       getFinancesRes.forEach((obj) => {
         total += obj.totalAmount;
       });
-      setTotalAmount(total);
+      setTotalAmount(Number(total).toFixed(3));
     }
   }, [getFinancesRes]);
   useEffect(() => {
@@ -340,6 +349,61 @@ const ContableMovements = (props) => {
   };
   const handleClose2 = () => {
     setOpen2(false);
+  };
+
+  const exportToExcelDetail = () => {
+    listFinancesPayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
+    listFinancesPayload.request.payload.movementType =
+      proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType;
+    listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
+    listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+    const excelPayload = listFinancesPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_MOVEMENTS_DETAIL, payload: undefined});
+    toExportExcelTemplateMovementsDetails(excelPayload);
+    setDownloadExcel(true);
+  };
+
+  useEffect(() => {
+    console.log("entro1",excelTemplateGeneratedMovementsDetailRes)
+    console.log("entro1a",downloadExcel)
+    if (excelTemplateGeneratedMovementsDetailRes && downloadExcel) {
+      console.log("entro2",excelTemplateGeneratedMovementsDetailRes)
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelTemplateGeneratedMovementsDetailRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'MovementsDetails.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelTemplateGeneratedMovementsDetailRes, downloadExcel]);
+
+
+  const exportToExcelSummary = () => {
+    /*const excelPayload = listFinancesPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GET_FINANCES, payload: []});
+    dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
+    toExportExcelTemplateMovementsDetails(excelPayload);
+    setDownloadExcel(true);*/
   };
 
   const showMessage = () => {
@@ -815,10 +879,10 @@ const ContableMovements = (props) => {
                 Número de documento
               </TableCell>
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
-                Fecha emisión de Comprobante
+                Fecha emisión Comprobante
               </TableCell>
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
-                Fecha vencimiento de Comprobante
+                Fecha vencimiento Comprobante
               </TableCell>
               <TableCell sx={{width: isMobile ? '9px' : '12px'}}>
                 Estado
@@ -1131,7 +1195,7 @@ const ContableMovements = (props) => {
           <Button
             variant='outlined'
             color='secondary'
-            onClick={() => {}}
+            onClick={exportToExcelSummary}
             startIcon={<GridOnOutlinedIcon />}
           >
             Exportar Resumen
@@ -1144,7 +1208,7 @@ const ContableMovements = (props) => {
           <Button
             variant='outlined'
             startIcon={<GridOnOutlinedIcon />}
-            onClick={() => {}}
+            onClick={exportToExcelDetail}
           >
             Exportar Detalle
           </Button>
