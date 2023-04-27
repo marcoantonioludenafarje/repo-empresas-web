@@ -15,6 +15,8 @@ const INIT_STATE = {
 };
 
 const financesReducer = (state = INIT_STATE, action) => {
+  console.log('El action', action);
+  
   switch (action.type) {
     case GET_FINANCES:
       console.log('data de reducer GET_FINANCES', action.payload);
@@ -72,6 +74,15 @@ const financesReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case GENERATE_EXCEL_TEMPLATE_TO_MOVEMENTS_DETAIL:
+      console.log(
+        'data de reducer GENERATE_EXCEL_TEMPLATE_TO_MOVEMENTS_DETAIL',
+        action.payload,
+      );
+      return {
+        ...state,
+        excelTemplateGeneratedMovementsDetailRes: action.payload,
       };
     default:
       return state;
