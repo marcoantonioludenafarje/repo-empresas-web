@@ -405,61 +405,6 @@ const ContableMovements = (props) => {
     setOpen2(false);
   };
 
-  const exportToExcelDetail = () => {
-    listFinancesPayload.request.payload.merchantId =
-      userDataRes.merchantSelected.merchantId;
-    listFinancesPayload.request.payload.movementType =
-      proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType;
-    listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
-    listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
-    const excelPayload = listFinancesPayload;
-
-    console.log('excelPayload', excelPayload);
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_MOVEMENTS_DETAIL, payload: undefined});
-    toExportExcelTemplateMovementsDetails(excelPayload);
-    setDownloadExcel(true);
-  };
-
-  useEffect(() => {
-    console.log("entro1",excelTemplateGeneratedMovementsDetailRes)
-    console.log("entro1a",downloadExcel)
-    if (excelTemplateGeneratedMovementsDetailRes && downloadExcel) {
-      console.log("entro2",excelTemplateGeneratedMovementsDetailRes)
-      setDownloadExcel(false);
-      const byteCharacters = atob(excelTemplateGeneratedMovementsDetailRes);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'MovementsDetails.xlsx');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }, [excelTemplateGeneratedMovementsDetailRes, downloadExcel]);
-
-
-  const exportToExcelSummary = () => {
-    /*const excelPayload = listFinancesPayload;
-
-    console.log('excelPayload', excelPayload);
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GET_FINANCES, payload: []});
-    dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
-    toExportExcelTemplateMovementsDetails(excelPayload);
-    setDownloadExcel(true);*/
-  };
-
   const showMessage = () => {
     if (successMessage != undefined) {
       return (
