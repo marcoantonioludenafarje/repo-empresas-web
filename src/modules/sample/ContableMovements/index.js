@@ -861,7 +861,9 @@ const ContableMovements = (props) => {
                       </TableCell>
                       <TableCell>{obj.serialNumberBill}</TableCell>
                       <TableCell>{obj.billIssueDate}</TableCell>
-                      <TableCell>{obj.billIssueDate}</TableCell>
+                      <TableCell>
+                        {obj.billDueDate || obj.billIssueDate}
+                      </TableCell>
                       <TableCell>
                         {showStatus(obj.status, obj.movementType)}
                       </TableCell>

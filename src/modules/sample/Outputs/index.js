@@ -1290,7 +1290,9 @@ const OutputsTable = (props) => {
         validation = true;
       }
     }
-
+    if (documentType == 'receipt' && !selectedOutput1.clientId) {
+      validation = true;
+    }
     console.log('selectedOutput1', selectedOutput1);
     return validation;
   }
@@ -1402,7 +1404,9 @@ const OutputsTable = (props) => {
                         {showSubtypeMovement(obj.movementSubType)}
                       </TableCell>
                       <TableCell>
-                        {(obj.client ? obj.numberDocumentClient + ' - ' : '') +
+                        {(obj.clientId
+                          ? obj.numberDocumentClient + ' - '
+                          : '') +
                           (obj.client
                             ? obj.client.denomination
                             : obj.clientName)}

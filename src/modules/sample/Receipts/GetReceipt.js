@@ -339,9 +339,11 @@ const GetReceipt = (props) => {
     if (typeof selectedOutput === 'object') {
       changeValueField(
         'receiver',
-        `${query.clientId.split('-')[1]} - ${
-          selectedOutput.client.denomination
-        }`,
+        query.clientId
+          ? `${query.clientId.split('-')[1]} - ${
+              selectedOutput.client.denomination
+            }`
+          : 'Cliente No Definido',
       );
       changeValueField('clientEmail', selectedOutput.client.email);
       selectedProducts = selectedOutput.descriptionProductsInfo;
@@ -512,7 +514,7 @@ const GetReceipt = (props) => {
             movementHeaderId: query.movementHeaderId,
             contableMovementId: query.contableMovementId || '',
             createdAt: Number(query.createdAt),
-            clientId: query.clientId,
+            clientId: query.clientId || '',
             totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)),
             issueDate: specialFormatToSunat(Date.now()),
             serial: serial,
@@ -958,7 +960,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid sx={{px: 1, mt: 2}} xs={12} sm={6}>
+                  <Grid sx={{px: 1}} xs={12} sm={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='methodToPay-label'

@@ -202,6 +202,9 @@ const NewOutput = (props) => {
   //VARIABLES DE PARAMETROS
   let weight_unit;
   let changeValueField;
+  let getValueField;
+  let isFormikSubmitting;
+  let setFormikSubmitting;
   const [addIgv, setAddIgv] = React.useState(false);
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [isIgvChecked, setIsIgvChecked] = React.useState(false);
@@ -222,6 +225,9 @@ const NewOutput = (props) => {
   const [exchangeRate, setExchangeRate] = React.useState('');
   const [typeDocument, settypeDocument] = React.useState('sales');
   const [hasBill, setHasBill] = React.useState([]);
+  const [openClientComprobation, setOpenClientComprobation] =
+    React.useState(false);
+  const [isClientValidated, setIsClientValidated] = React.useState(false);
 
   const [minTutorial, setMinTutorial] = React.useState(false);
   const prevExchangeRateRef = useRef();
@@ -469,42 +475,60 @@ const NewOutput = (props) => {
     }
   };
 
-  const handleData = (data, {setSubmitting}) => {
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: ADD_MOVEMENT, payload: []});
-    setSubmitting(true);
-    let finalPayload;
-    let cleanDocuments = [];
-    listDocuments.map((obj) => {
-      cleanDocuments.push({
-        typeDocument: obj.typeDocument,
-        serialDocument: obj.document,
-        issueDate: obj.dateDocument,
-        ...getCarrier(obj),
+  const handleData = (data) => {
+    let localIsClientValidated = isClientValidated;
+    if (Object.keys(selectedClient).length != 0) {
+      setIsClientValidated(true);
+      localIsClientValidated = true;
+    } else {
+      setOpenClientComprobation(true);
+      setFormikSubmitting(false);
+    }
+
+    if (localIsClientValidated) {
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      dispatch({type: ADD_MOVEMENT, payload: []});
+      //setSubmitting(true);
+      setFormikSubmitting(true);
+      let finalPayload;
+      let cleanDocuments = [];
+      listDocuments.map((obj) => {
+        cleanDocuments.push({
+          typeDocument: obj.typeDocument,
+          serialDocument: obj.document,
+          issueDate: obj.dateDocument,
+          ...getCarrier(obj),
+        });
       });
-    });
-    if (selectedProducts.length > 0) {
-      if (
-        (typeDocument == 'sales' && selectedClient.clientId) ||
-        (typeDocument != 'sales' && !selectedClient.clientId)
-      ) {
+      if (selectedProducts.length > 0) {
+        // if (
+        //   (typeDocument == 'sales' && selectedClient.clientId) ||
+        //   (typeDocument != 'sales' && !selectedClient.clientId)
+        // ) {
+
+        let localDocumentIntern = '';
+        let localClientId = '';
+        if (Object.keys(selectedClient).length != 0) {
+          localDocumentIntern =
+            typeDocument == 'sales'
+              ? buildNewDoc(
+                  selectedClient.clientId.split('-')[1],
+                  cleanDocuments.length !== 0
+                    ? cleanDocuments[0].serialDocument
+                    : null,
+                )
+              : '';
+          localClientId =
+            typeDocument == 'sales' ? selectedClient.clientId : '';
+        }
         finalPayload = {
           request: {
             payload: {
               header: {
                 movementType: 'OUTPUT',
-                documentIntern:
-                  typeDocument == 'sales'
-                    ? buildNewDoc(
-                        selectedClient.clientId.split('-')[1],
-                        cleanDocuments.length !== 0
-                          ? cleanDocuments[0].serialDocument
-                          : null,
-                      )
-                    : '',
-                clientId:
-                  typeDocument == 'sales' ? selectedClient.clientId : '',
+                documentIntern: localDocumentIntern,
+                clientId: localClientId,
                 providerId: null,
                 merchantId: userDataRes.merchantSelected.merchantId,
                 quoteId: null,
@@ -512,13 +536,13 @@ const NewOutput = (props) => {
                 issueDate: toSimpleDate(dateRegister),
                 unitMeasureMoney: moneyToConvert,
                 igv: typeDocument == 'sales' ? addIgv : false,
-                finalTotalPrice: Number(data.totalField),
+                finalTotalPrice: Number(getValueField('totalField').value),
                 isGeneratedByTunexo: generateBill,
                 status: status,
                 movementSubType: typeDocument,
                 documentsMovement: cleanDocuments,
                 editTotal: editTotal,
-                observation: data.outputObservation,
+                observation: getValueField('outputObservation').value,
                 userCreated: userDataRes.userId,
                 userCreatedMetadata: {
                   nombreCompleto: userDataRes.nombreCompleto,
@@ -539,26 +563,28 @@ const NewOutput = (props) => {
         getAddMovement(finalPayload);
         console.log('Data formulario principal', finalPayload);
         /* selectedProducts = [];
-        selectedClient = {};
-        total = 0; */
+          selectedClient = {};
+          total = 0; */
         setTimeout(() => {
           setOpenStatus(true);
         }, 1000);
+        // } else {
+        //   if (typeDocument == 'sales') {
+        //     typeAlert = 'client';
+        //     setShowAlert(true);
+        //   }
+        //   if (typeDocument != 'sales') {
+        //     typeAlert = '';
+        //     setShowAlert(true);
+        //   }
+        // }
       } else {
-        if (typeDocument == 'sales') {
-          typeAlert = 'client';
-          setShowAlert(true);
-        }
-        if (typeDocument != 'sales') {
-          typeAlert = '';
-          setShowAlert(true);
-        }
+        typeAlert = 'product';
+        setShowAlert(true);
       }
-    } else {
-      typeAlert = 'product';
-      setShowAlert(true);
+      //setSubmitting(false);
+      setFormikSubmitting(false);
     }
-    setSubmitting(false);
   };
 
   const handleActualData = (event) => {
@@ -839,8 +865,11 @@ const NewOutput = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
+            setFormikSubmitting = setSubmitting;
+            isFormikSubmitting = isSubmitting;
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -1367,6 +1396,47 @@ const NewOutput = (props) => {
         </DialogActions>
       </Dialog>
 
+      <Dialog
+        open={openClientComprobation}
+        onClose={() => setOpenClientComprobation(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Cliente No Identificado'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea continuar con el registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            disabled={isFormikSubmitting}
+            variant='outlined'
+            onClick={() => {
+              setFormikSubmitting(true);
+              setIsClientValidated(true);
+              handleData();
+            }}
+          >
+            Sí
+          </Button>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              setOpenClientComprobation(false);
+            }}
+          >
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog
         open={showForms}
         onClose={() => Router.push('/sample/outputs/table')}
