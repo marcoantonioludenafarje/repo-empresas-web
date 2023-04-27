@@ -69,11 +69,13 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  EXPORT_EXCEL_MOVEMENTS_DETAILS,
+  EXPORT_EXCEL_MOVEMENTS_SUMMARY,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {format, addHours, addMinutes} from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
 import {DesktopDatePicker, DateTimePicker, DateRangePicker} from '@mui/lab';
-import {getFinances, deleteFinance} from '../../../redux/actions/Finances';
+import {getFinances, deleteFinance, exportExcelMovementsDetails, exportExcelMovementsSummary} from '../../../redux/actions/Finances';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {
@@ -137,6 +139,9 @@ const ContableMovements = (props) => {
   const [initialTime, setInitialTime] = React.useState(Date.now());
   const [finalTime, setFinalTime] = React.useState(Date.now());
   const [totalAmount, setTotalAmount] = React.useState(0);
+  const [downloadExcelDetails, setDownloadExcelDetails] = React.useState(false);
+  const [downloadExcelSummary, setDownloadExcelSummary] = React.useState(false);
+  const [lastPayload, setLastPayload] = React.useState("");
 
   const currentDate = new Date(); // Obtenemos la fecha actual
   const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0)); // Modificamos la fecha actual para que sea a las 0 horas del día
@@ -206,6 +211,8 @@ const ContableMovements = (props) => {
   const {successMessage} = useSelector(({finances}) => finances);
   const {errorMessage} = useSelector(({finances}) => finances);
   const {userAttributes} = useSelector(({user}) => user);
+  const {exportExcelMovementsDetailsRes} = useSelector(({finances}) => finances);
+  const {exportExcelMovementsSummaryRes} = useSelector(({finances}) => finances);
 
   const {jwtToken} = useSelector(({general}) => general);
   console.log('getFinancesRes', getFinancesRes);
@@ -228,7 +235,59 @@ const ContableMovements = (props) => {
   const toDeleteFinance = (payload) => {
     dispatch(deleteFinance(payload));
   };
+  const toGetExcelMovementsDetails = (payload) => {
+    dispatch(exportExcelMovementsDetails(payload))
+  };
+  const toGetExcelMovementsSummary = (payload) => {
+    dispatch(exportExcelMovementsSummary(payload));
+  };
 
+  useEffect(() => {
+    if (exportExcelMovementsDetailsRes && downloadExcelDetails) {
+      setDownloadExcelDetails(false);
+      const byteCharacters = atob(exportExcelMovementsDetailsRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `contableMovementsDetails.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      dispatch({type: EXPORT_EXCEL_MOVEMENTS_DETAILS, payload: undefined});
+    }
+  }, [exportExcelMovementsDetailsRes, downloadExcelDetails]);
+  useEffect(() => {
+    if (exportExcelMovementsSummaryRes && downloadExcelSummary) {
+      setDownloadExcelSummary(false);
+      const byteCharacters = atob(exportExcelMovementsSummaryRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `contableMovementsSummary.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      dispatch({type: EXPORT_EXCEL_MOVEMENTS_SUMMARY, payload: undefined});
+    }
+  }, [exportExcelMovementsSummaryRes, downloadExcelSummary]);
   useEffect(() => {
     setMonthYearStatus(true);
   }, [month || year]);
@@ -260,6 +319,7 @@ const ContableMovements = (props) => {
       listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
       listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
       listFinancesPayload.request.payload.movementType = '';
+      setLastPayload(listFinancesPayload);
       toGetFinances(listFinancesPayload);
       if (monthYearStatus) {
         dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
@@ -279,6 +339,7 @@ const ContableMovements = (props) => {
       proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType;
     listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
     listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+    setLastPayload(listFinancesPayload);
     toGetFinances(listFinancesPayload);
     if (monthYearStatus) {
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
@@ -303,6 +364,7 @@ const ContableMovements = (props) => {
     setOpenStatus(false);
     dispatch({type: GET_FINANCES, payload: []});
     setTimeout(() => {
+      setLastPayload(listFinancesPayload);
       toGetFinances(listFinancesPayload);
       if (monthYearStatus) {
         dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
@@ -617,15 +679,22 @@ const ContableMovements = (props) => {
     }/${fecha.getFullYear()}`;
     return fecha_actual;
   };
-
+  const getExcelMovementsSummary = () => {
+    dispatch({type: EXPORT_EXCEL_MOVEMENTS_SUMMARY, payload: undefined});
+    toGetExcelMovementsSummary(lastPayload);
+    setDownloadExcelSummary(true);
+  }
+  const getExcelMovementsDetails = () => {
+    dispatch({type: EXPORT_EXCEL_MOVEMENTS_DETAILS, payload: undefined});
+    toGetExcelMovementsDetails(lastPayload);
+    setDownloadExcelDetails(true);
+  }
   const filterData = (dataFilters) => {
+    (listFinancesPayload.request.payload.searchByBill = ''),
+    (listFinancesPayload.request.payload.typeDocumentProvider = '');
+    listFinancesPayload.request.payload.numberDocumentProvider = '';
+    listFinancesPayload.request.payload.denominationProvider = '';
     console.log('dataFilters', dataFilters);
-    // listPayload.request.payload.searchByDocument = buildFilter(
-    //   dataFilters.typeDocument,
-    //   dataFilters.nroDoc,
-    //   dataFilters.typeDocumentProvider,
-    //   dataFilters.nroIdentifier,
-    // );
     listFinancesPayload.request.payload.searchByBill = dataFilters.nroDoc;
     if (dataFilters.typeIdentifier == 'TODOS') {
       dataFilters.typeIdentifier = '';
@@ -648,15 +717,12 @@ const ContableMovements = (props) => {
     listFinancesPayload.request.payload.methodToPay = dataFilters.paymentMethod;
     console.log('listFinancesPayload', listFinancesPayload);
     dispatch({type: GET_FINANCES, payload: []});
+    setLastPayload(listFinancesPayload);
     toGetFinances(listFinancesPayload);
     if (monthYearStatus) {
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
       setMonthYearStatus(false);
     }
-    (listFinancesPayload.request.payload.searchByBill = ''),
-      (listFinancesPayload.request.payload.typeDocumentProvider = '');
-    listFinancesPayload.request.payload.numberDocumentProvider = '';
-    listFinancesPayload.request.payload.denominationProvider = '';
     setMoreFilters(false);
   };
 
@@ -1133,7 +1199,7 @@ const ContableMovements = (props) => {
           <Button
             variant='outlined'
             color='secondary'
-            onClick={() => {}}
+            onClick={getExcelMovementsSummary}
             startIcon={<GridOnOutlinedIcon />}
           >
             Exportar Resumen
@@ -1146,7 +1212,7 @@ const ContableMovements = (props) => {
           <Button
             variant='outlined'
             startIcon={<GridOnOutlinedIcon />}
-            onClick={() => {}}
+            onClick={getExcelMovementsDetails}
           >
             Exportar Detalle
           </Button>
