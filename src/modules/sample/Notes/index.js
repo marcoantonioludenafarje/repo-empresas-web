@@ -609,7 +609,7 @@ const CreditNotesTable = (props) => {
                       : null} */}
                   </TableCell>
                   <TableCell>{obj.clientId ? `${obj.clientId.split('-')[0]} - ${obj.clientId.split('-')[1]}` : ''}</TableCell>
-                  <TableCell>{obj.denominationClient}</TableCell>
+                  <TableCell>{obj.clientId ? obj.denominationClient : 'Cliente No Definido'}</TableCell>
                   <TableCell>{obj.observation}</TableCell>
                   <TableCell>
                     {obj.totalPriceWithoutIgv
