@@ -1859,7 +1859,10 @@ const OutputsTable = (props) => {
         // !selectedOutput.existReceipt &&
         // !selectedOutput.existBill 
         ? (
-          <MenuItem onClick={() => setSellTicketDialog(true)}>
+          <MenuItem onClick={() => {
+            setEarningGeneration(selectedOutput.contableMovementId ? false : true)
+            setSellTicketDialog(true)
+          }}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
           </MenuItem>
@@ -2118,7 +2121,7 @@ const OutputsTable = (props) => {
                           control={
                             <Checkbox
                               onChange={handleEarningGeneration}
-                              defaultChecked={true}
+                              defaultChecked={!selectedOutput.contableMovementId}
                             />
                           }
                         />

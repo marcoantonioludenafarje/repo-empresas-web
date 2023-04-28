@@ -204,7 +204,7 @@ const NewOutput = (props) => {
     Date.now() + 1 * 24 * 60 * 60 * 1000,
   );
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [earningGeneration, setEarningGeneration] = React.useState(query.billId ? false : true);
+  const [earningGeneration, setEarningGeneration] = React.useState(query.contableMovementId ? false : true);
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
   });
@@ -1149,7 +1149,7 @@ const NewOutput = (props) => {
                       control={
                         <Checkbox
                           onChange={handleEarningGeneration}
-                          defaultChecked={!query.billId}
+                          defaultChecked={!query.contableMovementId}
                         />
                       }
                     />

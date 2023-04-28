@@ -175,7 +175,7 @@ const GetReceipt = (props) => {
   const [serial, setSerial] = React.useState('');
   const [showSelectDoc, setShowSelectDoc] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [earningGeneration, setEarningGeneration] = React.useState(query.receiptId ? false : true);
+  const [earningGeneration, setEarningGeneration] = React.useState(query.contableMovementId ? false : true);
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   useEffect(() => {
@@ -1101,7 +1101,7 @@ const GetReceipt = (props) => {
                       control={
                         <Checkbox
                           onChange={handleEarningGeneration}
-                          defaultChecked={!query.receiptId}
+                          defaultChecked={!query.contableMovementId}
                         />
                       }
                     />
