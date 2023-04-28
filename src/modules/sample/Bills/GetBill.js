@@ -204,7 +204,7 @@ const NewOutput = (props) => {
     Date.now() + 1 * 24 * 60 * 60 * 1000,
   );
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [earningGeneration, setEarningGeneration] = React.useState(true);
+  const [earningGeneration, setEarningGeneration] = React.useState(query.billId ? false : true);
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
   });
@@ -553,6 +553,7 @@ const NewOutput = (props) => {
             folderMovement: query.folderMovement,
             movementTypeMerchantId: query.movementTypeMerchantId,
             contableMovementId: query.contableMovementId || '',
+            contableMovements: selectedOutput.contableMovements || [],
             movementHeaderId: query.movementHeaderId,
             createdAt: Number(query.createdAt),
             clientId: query.clientId,
@@ -1148,7 +1149,7 @@ const NewOutput = (props) => {
                       control={
                         <Checkbox
                           onChange={handleEarningGeneration}
-                          defaultChecked={true}
+                          defaultChecked={!query.billId}
                         />
                       }
                     />

@@ -817,13 +817,14 @@ const ContableMovements = (props) => {
           value={dateRange}
           inputFormat={isMobile ? 'dd/MM/yyyy' : 'dd/MM/yyyy hh:mm a'}
           onChange={(newValue) => {
-            setDateRange(newValue);
-            console.log('date', newValue);
+            const valueToEndOfTheDay = [newValue[0],addMinutes(addHours(newValue[1], 23), 59)];
+            setDateRange(valueToEndOfTheDay);
+            console.log('date', valueToEndOfTheDay);
             listFinancesPayload.request.payload.initialTime = toEpoch(
-              newValue[0],
+              valueToEndOfTheDay[0],
             );
             listFinancesPayload.request.payload.finalTime = toEpoch(
-              newValue[1],
+              valueToEndOfTheDay[1],
             );
             console.log('payload de busqueda', listFinancesPayload);
           }}

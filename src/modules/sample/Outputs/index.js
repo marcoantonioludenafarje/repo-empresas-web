@@ -243,6 +243,7 @@ const OutputsTable = (props) => {
   // const [open3, setOpen3] = React.useState(false);
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openDocuments, setOpenDocuments] = React.useState(false);
+  const [openContableMovements, setOpenContableMovements] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
   const [moreFilters, setMoreFilters] = React.useState(false);
   const [sellTicketDialog, setSellTicketDialog] = React.useState(false);
@@ -748,6 +749,7 @@ const OutputsTable = (props) => {
             userDataRes.merchantSelected.denominationMerchant,
           typePDF: userDataRes.merchantSelected.typeMerchant,
           folderMovement: selectedOutput.folderMovement,
+          contableMovements: selectedOutput.contableMovements || [],
           movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
           contableMovementId: selectedOutput.contableMovementId || '',
           movementHeaderId: selectedOutput.movementHeaderId,
@@ -1166,6 +1168,9 @@ const OutputsTable = (props) => {
     if (openDetails == true) {
       setOpenDetails(false);
     }
+    if (openContableMovements == true) {
+      setOpenContableMovements(false);
+    }
     setOpenDocuments(false);
     setOpenDocuments(true);
     if (openDocuments == true && rowNumber == index) {
@@ -1177,10 +1182,27 @@ const OutputsTable = (props) => {
     if (openDocuments == true) {
       setOpenDocuments(false);
     }
+    if (openContableMovements == true) {
+      setOpenContableMovements(false);
+    }
     setOpenDetails(false);
     setOpenDetails(true);
     if (openDetails == true && rowNumber == index) {
       setOpenDetails(false);
+    }
+    setRowNumber(index);
+  };
+  const checkContableMovementsInfo = (index) => {
+    if (openDocuments == true) {
+      setOpenDocuments(false);
+    }
+    if (openDetails == true) {
+      setOpenDetails(false);
+    }
+    setOpenContableMovements(false);
+    setOpenContableMovements(true);
+    if (openContableMovements == true && rowNumber == index) {
+      setOpenContableMovements(false);
     }
     setRowNumber(index);
   };
@@ -1368,7 +1390,8 @@ const OutputsTable = (props) => {
               ) : null}
               <TableCell>Guía de remisión relacionada</TableCell>
               <TableCell>Factura relacionada</TableCell>
-              <TableCell>Ingreso relacionado</TableCell>
+              <TableCell>Último ingreso</TableCell>
+              <TableCell>Ingresos</TableCell>
               <TableCell>Precio total sin IGV</TableCell>
               <TableCell>Precio total con IGV</TableCell>
               <TableCell>Estado</TableCell>
@@ -1477,6 +1500,19 @@ const OutputsTable = (props) => {
                             : '',
                         )}
                       </TableCell>
+                      <TableCell align='center'>
+                        {obj.contableMovements &&
+                        obj.contableMovements.length != 0 ? (
+                          <IconButton
+                            onClick={() => checkContableMovementsInfo(index)}
+                            size='small'
+                          >
+                            <FormatListBulletedIcon fontSize='small' />
+                          </IconButton>
+                        ) : (
+                          <></>
+                        )}
+                      </TableCell>
                       <TableCell>
                         {obj.totalPrice
                           ? `${obj.totalPrice.toFixed(3)} ${money_unit}`
@@ -1547,6 +1583,54 @@ const OutputsTable = (props) => {
                                           </TableCell>
                                           <TableCell>
                                             {subProduct.quantityMovement}
+                                          </TableCell>
+                                        </TableRow>
+                                      );
+                                    },
+                                  )
+                                ) : (
+                                  <></>
+                                )}
+                              </TableBody>
+                            </Table>
+                          </Box>
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow key={`cont-${index}`}>
+                      <TableCell
+                        style={{paddingBottom: 0, paddingTop: 0}}
+                        colSpan={6}
+                      >
+                        <Collapse
+                          in={openContableMovements && index == rowNumber}
+                          timeout='auto'
+                          unmountOnExit
+                        >
+                          <Box sx={{margin: 0}}>
+                            <Table size='small' aria-label='purchases'>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>Número documento</TableCell>
+                                  <TableCell>Fecha</TableCell>
+                                  <TableCell>Monto</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {obj.contableMovements !== undefined &&
+                                obj.contableMovements.length !== 0 ? (
+                                  obj.contableMovements.map(
+                                    (contableMovement, index) => {
+                                      return (
+                                        <TableRow key={index}>
+                                          <TableCell>
+                                            {contableMovement.serialNumberBill}
+                                          </TableCell>
+                                          <TableCell>
+                                            {contableMovement.billIssueDate}
+                                          </TableCell>
+                                          <TableCell>
+                                            {contableMovement.totalAmount}
                                           </TableCell>
                                         </TableRow>
                                       );
@@ -1769,10 +1853,11 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
           ) &&
-        selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existSellTicket &&
-        !selectedOutput.existReceipt &&
-        !selectedOutput.existBill ? (
+        selectedOutput.movementSubType == 'sales' 
+        // && !selectedOutput.existSellTicket &&
+        // !selectedOutput.existReceipt &&
+        // !selectedOutput.existBill 
+        ? (
           <MenuItem onClick={() => setSellTicketDialog(true)}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
@@ -1785,9 +1870,10 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
           ) &&
-        selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existReceipt &&
-        !selectedOutput.existSellTicket ? (
+        selectedOutput.movementSubType == 'sales' 
+        // && !selectedOutput.existReceipt &&
+        // !selectedOutput.existSellTicket 
+        ? (
           <MenuItem onClick={getReceipt}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Boleta Venta
@@ -1820,10 +1906,11 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/billOfOutput/*',
           ) &&
-        selectedOutput.movementSubType == 'sales' &&
-        !selectedOutput.existBill &&
-        !selectedOutput.existReceipt &&
-        !selectedOutput.existSellTicket ? (
+        selectedOutput.movementSubType == 'sales' 
+        // && !selectedOutput.existBill &&
+        // !selectedOutput.existReceipt &&
+        // !selectedOutput.existSellTicket 
+        ? (
           <MenuItem
             disabled={
               userDataRes.merchantSelected &&
@@ -1841,10 +1928,10 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
           ) &&
-        (selectedOutput.existBill ||
-          selectedOutput.existReceipt ||
-          selectedOutput.existSellTicket) &&
-        !selectedOutput.existIncome &&
+        // (selectedOutput.existBill ||
+        //   selectedOutput.existReceipt ||
+        //   selectedOutput.existSellTicket) &&
+        // !selectedOutput.existIncome &&
         selectedOutput.movementSubType == 'sales' ? (
           <MenuItem onClick={doFinance}>
             <InputIcon sx={{mr: 1, my: 'auto'}} />

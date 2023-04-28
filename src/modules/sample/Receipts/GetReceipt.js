@@ -175,7 +175,7 @@ const GetReceipt = (props) => {
   const [serial, setSerial] = React.useState('');
   const [showSelectDoc, setShowSelectDoc] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [earningGeneration, setEarningGeneration] = React.useState(true);
+  const [earningGeneration, setEarningGeneration] = React.useState(query.receiptId ? false : true);
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   useEffect(() => {
@@ -513,6 +513,7 @@ const GetReceipt = (props) => {
             movementTypeMerchantId: query.movementTypeMerchantId,
             movementHeaderId: query.movementHeaderId,
             contableMovementId: query.contableMovementId || '',
+            contableMovements: selectedOutput.contableMovements || [],
             createdAt: Number(query.createdAt),
             clientId: query.clientId || '',
             totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)),
@@ -932,7 +933,7 @@ const GetReceipt = (props) => {
                   </Grid> */}
                   <Grid xs={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
-                      label='Receptor'
+                      label='Cliente'
                       name='receiver'
                       disabled
                       variant='outlined'
@@ -945,7 +946,22 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid>
-
+                  <Grid sx={{px: 1, mt: 2}} xs={12}>
+                    <Button
+                      color='secondary'
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={() =>
+                        {query.clientId = ''
+                        changeValueField(
+                          'receiver', 'Cliente No Definido',
+                        );
+                        }
+                      }
+                    >
+                      Quitar Cliente
+                    </Button>
+                  </Grid>
                   {/* <Grid item xs={4}>
                     <AppTextField
                       label='Guía de remisión'
@@ -1084,7 +1100,7 @@ const GetReceipt = (props) => {
                       control={
                         <Checkbox
                           onChange={handleEarningGeneration}
-                          defaultChecked={true}
+                          defaultChecked={!query.receiptId}
                         />
                       }
                     />

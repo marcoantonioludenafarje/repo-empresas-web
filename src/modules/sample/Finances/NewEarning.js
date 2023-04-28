@@ -351,7 +351,8 @@ const NewEarning = (props) => {
         selectedOutput.proofOfPaymentUserCreated || '';
       newFinancePayload.request.payload.movements[0].proofOfPaymentUserCreatedMetadata =
         selectedOutput.proofOfPaymentUserCreatedMetadata || '';
-
+      newFinancePayload.request.payload.movements[0].contableMovements = 
+        selectedOutput.contableMovements || [],
       newFinancePayload.request.payload.movements[0].numberDocumentProvider =
         selectedClient.clientId.split('-')[1];
       newFinancePayload.request.payload.movements[0].denominationProvider =
