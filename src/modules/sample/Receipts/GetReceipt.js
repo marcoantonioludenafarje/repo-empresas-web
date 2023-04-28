@@ -292,21 +292,22 @@ const GetReceipt = (props) => {
         (input) => input.movementHeaderId == query.movementHeaderId,
       );
       console.log('selectedOutput', selectedOutput);
-      console.log(
-        'selectedOutput.documentsMovement',
-        selectedOutput.documentsMovement,
-      );
-      let filteredDocuments = selectedOutput.documentsMovement.filter(
-        (obj) => obj.typeDocument === 'referralGuide',
-      );
-      listDocuments = filteredDocuments.map((obj) => {
-        return {
-          dateDocument: obj.issueDate,
-          document: obj.serialDocument,
-          typeDocument: obj.typeDocument,
-        };
-      });
-      console.log('listDocuments', listDocuments);
+
+      if (selectedOutput) {
+        let filteredDocuments = selectedOutput.documentsMovement.filter(
+          (obj) => obj.typeDocument === 'referralGuide',
+        );
+        listDocuments = filteredDocuments.map((obj) => {
+          return {
+            dateDocument: obj.issueDate,
+            document: obj.serialDocument,
+            typeDocument: obj.typeDocument,
+          };
+        });
+        console.log('listDocuments', listDocuments);
+      }
+
+
     }
     setTimeout(() => {
       setMinTutorial(true);

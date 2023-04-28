@@ -943,7 +943,7 @@ const OutputsTable = (props) => {
     } else if (type == 'receipt') {
       Router.push({
         pathname: '/sample/receipts/table',
-        query: {referralGuideId: selectedOutput.receiptId},
+        query: {receiptId: selectedOutput.receiptId},
       });
     } else {
       return null;
