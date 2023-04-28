@@ -24,7 +24,7 @@ let listPayload = {
   },
 };
 
-const OutputProducts = ({data, toDelete, valueWithIGV}) => {
+const OutputProducts = ({data, toDelete, valueWithIGV, igvEnabled}) => {
   //FUNCIONES MENU
   const {userAttributes} = useSelector(({user}) => user);
 
@@ -47,9 +47,9 @@ const OutputProducts = ({data, toDelete, valueWithIGV}) => {
             <TableCell>Unidad</TableCell>
             <TableCell>Cantidad</TableCell>
             <TableCell>Valor unitario</TableCell>
-            <TableCell>Valor con IGV</TableCell>
+            {igvEnabled ? <TableCell>Valor con IGV</TableCell> : null}
             <TableCell>Subtotal</TableCell>
-            <TableCell>Subtotal con IGV</TableCell>
+            {igvEnabled ? <TableCell>Subtotal con IGV</TableCell> : null}
             <TableCell>Opciones</TableCell>
           </TableRow>
         </TableHead>
@@ -67,11 +67,15 @@ const OutputProducts = ({data, toDelete, valueWithIGV}) => {
                   <TableCell>{obj.unitMeasure}</TableCell>
                   <TableCell>{obj.quantityMovement}</TableCell>
                   <TableCell>{obj.priceBusinessMoneyWithIgv}</TableCell>
-                  <TableCell>
-                    {valueWithIGV(obj.priceBusinessMoneyWithIgv)}
-                  </TableCell>
+                  {igvEnabled ? (
+                    <TableCell>
+                      {valueWithIGV(obj.priceBusinessMoneyWithIgv)}
+                    </TableCell>
+                  ) : null}
                   <TableCell>{obj.subtotal}</TableCell>
-                  <TableCell>{valueWithIGV(obj.subtotal)}</TableCell>
+                  {igvEnabled ? (
+                    <TableCell>{valueWithIGV(obj.subtotal)}</TableCell>
+                  ) : null}
                   <TableCell>
                     <IconButton onClick={deleteProduct.bind(this, index)}>
                       <DeleteIcon />
@@ -93,5 +97,6 @@ OutputProducts.propTypes = {
   data: PropTypes.array.isRequired,
   toDelete: PropTypes.func.isRequired,
   valueWithIGV: PropTypes.func.isRequired,
+  igvEnabled: PropTypes.bool,
 };
 export default OutputProducts;

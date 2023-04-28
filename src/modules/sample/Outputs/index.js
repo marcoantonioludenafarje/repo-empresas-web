@@ -1996,6 +1996,12 @@ const OutputsTable = (props) => {
                             >
                               <IntlMessages id='common.bankDeposit' />
                             </MenuItem>
+                            <MenuItem
+                              value='giftCard'
+                              style={{fontWeight: 200}}
+                            >
+                              GiftCard
+                            </MenuItem>
                           </Select>
                         </FormControl>
                       </Grid>

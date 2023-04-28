@@ -475,7 +475,7 @@ const NewOutput = (props) => {
     }
   };
 
-  const handleData = (data) => {
+  const handleData = (data, client) => {
     let localIsClientValidated = isClientValidated;
     if (Object.keys(selectedClient).length != 0) {
       setIsClientValidated(true);
@@ -485,7 +485,7 @@ const NewOutput = (props) => {
       setFormikSubmitting(false);
     }
 
-    if (localIsClientValidated) {
+    if (localIsClientValidated || client == 'enabled') {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: ADD_MOVEMENT, payload: []});
@@ -1422,7 +1422,7 @@ const NewOutput = (props) => {
             onClick={() => {
               setFormikSubmitting(true);
               setIsClientValidated(true);
-              handleData();
+              handleData({data1: 'a'}, 'enabled');
             }}
           >
             Sí

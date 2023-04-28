@@ -1000,6 +1000,9 @@ const GetReceipt = (props) => {
                         <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
                           <IntlMessages id='common.bankDeposit' />
                         </MenuItem>
+                        <MenuItem value='giftCard' style={{fontWeight: 200}}>
+                          GiftCard
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -1218,6 +1221,7 @@ const GetReceipt = (props) => {
                   data={selectedProducts}
                   valueWithIGV={valueWithIGV}
                   toDelete={removeProduct}
+                  igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
 

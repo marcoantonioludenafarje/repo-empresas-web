@@ -901,6 +901,7 @@ const GetCreditNote = () => {
                   data={selectedProducts}
                   toDelete={removeProduct}
                   valueWithIGV={valueWithIGV}
+                  igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
 
