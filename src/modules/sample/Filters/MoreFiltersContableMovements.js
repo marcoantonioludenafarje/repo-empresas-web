@@ -259,6 +259,9 @@ const MoreFiltersContableMovements = ({sendData}) => {
                   <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
                     <IntlMessages id='common.bankDeposit' />
                   </MenuItem>
+                  <MenuItem value='giftCard' style={{fontWeight: 200}}>
+                    GiftCard
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Grid>

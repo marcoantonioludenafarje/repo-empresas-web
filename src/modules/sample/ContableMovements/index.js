@@ -75,7 +75,12 @@ import {
 import Router, {useRouter} from 'next/router';
 import {format, addHours, addMinutes} from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
 import {DesktopDatePicker, DateTimePicker, DateRangePicker} from '@mui/lab';
-import {getFinances, deleteFinance, exportExcelMovementsDetails, exportExcelMovementsSummary} from '../../../redux/actions/Finances';
+import {
+  getFinances,
+  deleteFinance,
+  exportExcelMovementsDetails,
+  exportExcelMovementsSummary,
+} from '../../../redux/actions/Finances';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {
@@ -142,7 +147,7 @@ const ContableMovements = (props) => {
   const [totalAmount, setTotalAmount] = React.useState(0);
   const [downloadExcelDetails, setDownloadExcelDetails] = React.useState(false);
   const [downloadExcelSummary, setDownloadExcelSummary] = React.useState(false);
-  const [lastPayload, setLastPayload] = React.useState("");
+  const [lastPayload, setLastPayload] = React.useState('');
 
   const currentDate = new Date(); // Obtenemos la fecha actual
   const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0)); // Modificamos la fecha actual para que sea a las 0 horas del día
@@ -212,8 +217,12 @@ const ContableMovements = (props) => {
   const {successMessage} = useSelector(({finances}) => finances);
   const {errorMessage} = useSelector(({finances}) => finances);
   const {userAttributes} = useSelector(({user}) => user);
-  const {exportExcelMovementsDetailsRes} = useSelector(({finances}) => finances);
-  const {exportExcelMovementsSummaryRes} = useSelector(({finances}) => finances);
+  const {exportExcelMovementsDetailsRes} = useSelector(
+    ({finances}) => finances,
+  );
+  const {exportExcelMovementsSummaryRes} = useSelector(
+    ({finances}) => finances,
+  );
 
   const {jwtToken} = useSelector(({general}) => general);
   console.log('getFinancesRes', getFinancesRes);
@@ -237,7 +246,7 @@ const ContableMovements = (props) => {
     dispatch(deleteFinance(payload));
   };
   const toGetExcelMovementsDetails = (payload) => {
-    dispatch(exportExcelMovementsDetails(payload))
+    dispatch(exportExcelMovementsDetails(payload));
   };
   const toGetExcelMovementsSummary = (payload) => {
     dispatch(exportExcelMovementsSummary(payload));
@@ -262,7 +271,7 @@ const ContableMovements = (props) => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       dispatch({type: EXPORT_EXCEL_MOVEMENTS_DETAILS, payload: undefined});
     }
   }, [exportExcelMovementsDetailsRes, downloadExcelDetails]);
@@ -285,7 +294,7 @@ const ContableMovements = (props) => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      
+
       dispatch({type: EXPORT_EXCEL_MOVEMENTS_SUMMARY, payload: undefined});
     }
   }, [exportExcelMovementsSummaryRes, downloadExcelSummary]);
@@ -684,15 +693,15 @@ const ContableMovements = (props) => {
     dispatch({type: EXPORT_EXCEL_MOVEMENTS_SUMMARY, payload: undefined});
     toGetExcelMovementsSummary(lastPayload);
     setDownloadExcelSummary(true);
-  }
+  };
   const getExcelMovementsDetails = () => {
     dispatch({type: EXPORT_EXCEL_MOVEMENTS_DETAILS, payload: undefined});
     toGetExcelMovementsDetails(lastPayload);
     setDownloadExcelDetails(true);
-  }
+  };
   const filterData = (dataFilters) => {
     (listFinancesPayload.request.payload.searchByBill = ''),
-    (listFinancesPayload.request.payload.typeDocumentProvider = '');
+      (listFinancesPayload.request.payload.typeDocumentProvider = '');
     listFinancesPayload.request.payload.numberDocumentProvider = '';
     listFinancesPayload.request.payload.denominationProvider = '';
     console.log('dataFilters', dataFilters);

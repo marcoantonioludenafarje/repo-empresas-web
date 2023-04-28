@@ -49,6 +49,7 @@ export const dictionary = {
     YAPE: <IntlMessages id='payment.method.yape' />,
     PLIN: <IntlMessages id='payment.method.plin' />,
     CARD: <IntlMessages id='payment.method.card' />,
+    GIFTCARD: <IntlMessages id='payment.method.giftCard' />,
   },
   CONCEPTACTION: {
     SUBTRACT: <IntlMessages id='otherPayConcept.action.subtract' />,

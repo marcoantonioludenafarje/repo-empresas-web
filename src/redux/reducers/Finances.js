@@ -16,7 +16,7 @@ const INIT_STATE = {
 
 const financesReducer = (state = INIT_STATE, action) => {
   console.log('El action', action);
-  
+
   switch (action.type) {
     case GET_FINANCES:
       console.log('data de reducer GET_FINANCES', action.payload);
@@ -52,13 +52,19 @@ const financesReducer = (state = INIT_STATE, action) => {
         updateFinanceRes: action.payload,
       };
     case EXPORT_EXCEL_MOVEMENTS_DETAILS:
-      console.log('data de reducer EXPORT_EXCEL_MOVEMENTS_DETAILS', action.payload);
+      console.log(
+        'data de reducer EXPORT_EXCEL_MOVEMENTS_DETAILS',
+        action.payload,
+      );
       return {
         ...state,
         exportExcelMovementsDetailsRes: action.payload,
       };
     case EXPORT_EXCEL_MOVEMENTS_SUMMARY:
-      console.log('data de reducer EXPORT_EXCEL_MOVEMENTS_SUMMARY', action.payload);
+      console.log(
+        'data de reducer EXPORT_EXCEL_MOVEMENTS_SUMMARY',
+        action.payload,
+      );
       return {
         ...state,
         exportExcelMovementsSummaryRes: action.payload,
