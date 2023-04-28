@@ -166,6 +166,7 @@ const BillsTable = (props) => {
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
   const documentSunat = 'bill';
+  const {moneySymbol} = useSelector(({general}) => general);
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
@@ -500,6 +501,7 @@ const BillsTable = (props) => {
         return null;
     }
   };
+
   const showCanceled = (bool) => {
     if (bool) {
       return (
@@ -509,6 +511,44 @@ const BillsTable = (props) => {
       );
     } else {
       return <></>;
+    }
+  };
+
+  const showDocument = (listDocument,type)  => {
+    if (listDocument) {
+      let documentObj = listDocument.filter(
+        (item) => item.typeDocument === type,
+      );
+
+      if (documentObj && documentObj.length>0) {
+        return (
+          <Button
+            variant='secondary'
+            sx={{fontSize: '1em'}}
+            /* disabled={type == 'referralGuide'} */
+            onClick={() => showObject(documentObj[0].noteId, type)}
+          >
+            Ver Nota Crédito
+          </Button>
+        );
+      }
+      else {
+        return <></>;
+      }
+
+    } else {
+      return <></>;
+    }
+  };
+
+  const showObject = (objetId, type) => {
+    if (type == 'creditNote') {
+      Router.push({
+        pathname: '/sample/notes/table',
+        query: {noteId: objetId},
+      });
+    } else {
+      return null;
     }
   };
 
@@ -594,11 +634,14 @@ const BillsTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell>Fecha de emisión</TableCell>
-              <TableCell>Número de serie</TableCell>
-              <TableCell>Número de factura</TableCell>
-              <TableCell>Receptor</TableCell>
+              <TableCell>Fecha emisión</TableCell>
+              <TableCell>Número serie</TableCell>
+              <TableCell>Número factura</TableCell>
+              <TableCell>Identificador Receptor</TableCell>
+              <TableCell>Nombre Receptor</TableCell>
               <TableCell>Observación</TableCell>
+              <TableCell>Subtotal</TableCell>
+              <TableCell>IGV</TableCell>
               <TableCell>Importe total</TableCell>
               <TableCell>Forma de pago</TableCell>
               <TableCell>Aceptado por Sunat</TableCell>
@@ -626,11 +669,22 @@ const BillsTable = (props) => {
                       ? obj.serialNumberBill.split('-')[1]
                       : ''}
                   </TableCell>
-                  <TableCell>{obj.denominationClient}</TableCell>
+                  <TableCell>{obj.clientId ? `${obj.clientId.split('-')[0]} - ${obj.clientId.split('-')[1]}` : ''}</TableCell>
+                  <TableCell>{obj.clientId ? obj.denominationClient : 'Cliente No Definido'}</TableCell>
                   <TableCell>{obj.observation}</TableCell>
                   <TableCell>
+                    {obj.totalPriceWithoutIgv
+                      ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv 
+                      ? `${moneySymbol} ${Number(obj.totalPriceWithIgv.toFixed(2)-obj.totalPriceWithoutIgv.toFixed(2)).toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
                     {obj.totalPriceWithIgv
-                      ? `${obj.totalPriceWithIgv.toFixed(2)} `
+                      ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(2)} `
                       : ''}
                   </TableCell>
                   <TableCell>{showPaymentMethod(obj.paymentMethod)}</TableCell>
@@ -638,7 +692,7 @@ const BillsTable = (props) => {
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
                   <TableCell align='center'>
-                    {showCanceled(obj.cancelStatus)}
+                    {showDocument(obj.documentsMovement,'creditNote')/*showCanceled(obj.cancelStatus)*/}
                   </TableCell>
                   <TableCell>
                     <Button

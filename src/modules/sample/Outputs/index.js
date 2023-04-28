@@ -249,6 +249,7 @@ const OutputsTable = (props) => {
   const [sellTicketDialog, setSellTicketDialog] = React.useState(false);
   const [earningGeneration, setEarningGeneration] = React.useState(true);
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
+  const {moneySymbol} = useSelector(({general}) => general);
   //MENU ANCHOR
   const [anchorEl, setAnchorEl] = React.useState(null);
   //FECHAS
@@ -944,7 +945,7 @@ const OutputsTable = (props) => {
     } else if (type == 'receipt') {
       Router.push({
         pathname: '/sample/receipts/table',
-        query: {referralGuideId: selectedOutput.receiptId},
+        query: {receiptId: selectedOutput.receiptId},
       });
     } else {
       return null;
@@ -1515,12 +1516,12 @@ const OutputsTable = (props) => {
                       </TableCell>
                       <TableCell>
                         {obj.totalPrice
-                          ? `${obj.totalPrice.toFixed(3)} ${money_unit}`
+                          ? `${moneySymbol} ${obj.totalPrice.toFixed(3)}`
                           : ''}
                       </TableCell>
                       <TableCell>
                         {obj.totalPriceWithIgv
-                          ? `${obj.totalPriceWithIgv.toFixed(3)} ${money_unit}`
+                          ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(3)}`
                           : ''}
                       </TableCell>
                       <TableCell>{showStatus(obj.status)}</TableCell>

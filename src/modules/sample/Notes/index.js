@@ -152,11 +152,14 @@ const CreditNotesTable = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const router = useRouter();
+  const {query} = router;
   const {excelTemplateGeneratedToNotesRes} = useSelector(
     ({general}) => general,
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
   const documentSunat = 'credit_Note';
+  const {moneySymbol} = useSelector(({general}) => general);
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
@@ -242,6 +245,11 @@ const CreditNotesTable = (props) => {
         userDataRes.merchantSelected.merchantId;
       businessParameterPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
+
+      if (Object.keys(query).length !== 0) {
+        console.log('Query con datos', query);
+        listPayload.request.payload.movementHeaderId = query.noteId;
+      }
 
       listPayload.request.payload.LastEvaluatedKey = null;
       toGetMovements(listPayload);
@@ -551,11 +559,14 @@ const CreditNotesTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell>Fecha de emisión</TableCell>
-              <TableCell>Número de serie</TableCell>
-              <TableCell>Número de factura</TableCell>
-              <TableCell>Receptor</TableCell>
+            <TableCell>Fecha emisión</TableCell>
+              <TableCell>Número serie</TableCell>
+              <TableCell>Número factura</TableCell>
+              <TableCell>Identificador Receptor</TableCell>
+              <TableCell>Nombre Receptor</TableCell>
               <TableCell>Observación</TableCell>
+              <TableCell>Subtotal</TableCell>
+              <TableCell>IGV</TableCell>
               <TableCell>Importe total</TableCell>
               <TableCell>Forma de pago</TableCell>
               <TableCell>Aceptado por Sunat</TableCell>
@@ -597,11 +608,22 @@ const CreditNotesTable = (props) => {
                       ? obj.documentIntern.split('-')[1]
                       : null} */}
                   </TableCell>
-                  <TableCell>{obj.denominationClient}</TableCell>
+                  <TableCell>{obj.clientId ? `${obj.clientId.split('-')[0]} - ${obj.clientId.split('-')[1]}` : ''}</TableCell>
+                  <TableCell>{obj.clientId ? obj.denominationClient : 'Cliente No Definido'}</TableCell>
                   <TableCell>{obj.observation}</TableCell>
                   <TableCell>
+                    {obj.totalPriceWithoutIgv
+                      ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv 
+                      ? `${moneySymbol} ${Number(obj.totalPriceWithIgv.toFixed(2)-obj.totalPriceWithoutIgv.toFixed(2)).toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
                     {obj.totalPriceWithIgv
-                      ? `${obj.totalPriceWithIgv.toFixed(2)} ${moneyUnit}`
+                      ? `${moneySymbol}  ${obj.totalPriceWithIgv.toFixed(2)}`
                       : ''}
                   </TableCell>
                   <TableCell>{showPaymentMethod(obj.movementType)}</TableCell>
