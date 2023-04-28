@@ -118,8 +118,7 @@ const validationSchema = yup.object({
   observation: yup.string().typeError(<IntlMessages id='validation.string' />),
   clientEmail: yup
     .string()
-    .email(<IntlMessages id='validation.emailFormat' />)
-    .required(<IntlMessages id='validation.required' />),
+    .email(<IntlMessages id='validation.emailFormat' />),
   transactionNumber: yup.string(),
 });
 
