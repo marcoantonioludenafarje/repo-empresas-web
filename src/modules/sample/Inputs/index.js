@@ -174,6 +174,7 @@ const InputsTable = (props) => {
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openDocuments, setOpenDocuments] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
+  const {moneySymbol} = useSelector(({general}) => general);
   //SELECCIÓN CALENDARIO
   const [value, setValue] = React.useState(Date.now() - 2678400000);
   const [value2, setValue2] = React.useState(Date.now());
@@ -969,14 +970,14 @@ const InputsTable = (props) => {
                         </TableCell>
                         <TableCell>
                           {obj.totalPrice
-                            ? `${obj.totalPrice.toFixed(3)} ${money_unit}`
+                            ? `${moneySymbol} ${obj.totalPrice.toFixed(3)}`
                             : ''}
                         </TableCell>
                         <TableCell>
                           {obj.totalPriceWithIgv
-                            ? `${obj.totalPriceWithIgv.toFixed(
+                            ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(
                                 3,
-                              )} ${money_unit}`
+                              )}`
                             : ''}
                         </TableCell>
                         <TableCell>{showIgv(obj.igv)}</TableCell>

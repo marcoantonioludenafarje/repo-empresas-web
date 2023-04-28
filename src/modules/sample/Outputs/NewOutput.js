@@ -811,7 +811,7 @@ const NewOutput = (props) => {
       let clientDocumentType = client[0];
       let clientNumberDocument = client[1];
 
-      if (clientDocumentType != 'RUC' && documentType == 'receipt') {
+      if ((!clientDocumentType || clientDocumentType != 'RUC') && documentType == 'receipt') {
         validation = true;
       } else if (
         clientDocumentType == 'RUC' &&
@@ -831,6 +831,8 @@ const NewOutput = (props) => {
       ) {
         validation = true;
       }
+    } else if (documentType == 'receipt') {
+      validation = true;
     }
 
     console.log('selectedOutput1', selectedClient);
