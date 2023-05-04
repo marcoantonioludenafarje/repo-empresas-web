@@ -544,6 +544,9 @@ const GetReceipt = (props) => {
                 customCodeProduct: obj.customCodeProduct,
                 description: obj.description,
                 unitMeasure: obj.unitMeasure,
+                businessProductCode: obj.businessProductCode,
+                taxCode: obj.taxCode,
+                igvCode: obj.igvCode,
               };
             }),
             documentsMovement: selectedOutput.documentsMovement,
@@ -1423,7 +1426,7 @@ const GetReceipt = (props) => {
               />
             </DialogTitle>
             <DialogContent>
-              <AddProductForm type='input' sendData={getNewProduct} />
+              <AddProductForm type='input' sendData={getNewProduct} igvEnabled={Number(query.igv) > 0 || query.igv == 'true'} />
             </DialogContent>
           </>
         ) : null}

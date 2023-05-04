@@ -1069,5 +1069,8 @@
   "transaction.type.output.acronym": "SAL",
   "transaction.type.input.acronym": "ENT",
   "transaction.type.income.acronym": "ING",
-  "transaction.type.expense.acronym": "EGR"
+  "transaction.type.expense.acronym": "EGR",
+  "finance.typeIGV.gravado": "Gravado",
+  "finance.typeIGV.exonerado": "Exonerado",
+  "finance.typeIGV.inafecto": "Inafecto"
 }

@@ -1222,6 +1222,30 @@ const OutputsTable = (props) => {
           query: {movementHeaderId: doc.referralGuideId},
         });
       }
+    } else if (doc.typeDocument == 'receipt') {
+      if (doc.receiptId) {
+        Router.push({
+          pathname: '/sample/receipts/table',
+          query: {receiptId: doc.receiptId},
+        });
+      }
+    } else {
+      return null;
+    }
+  };
+
+  const goToMovements = (contableMovement) => {
+    if (contableMovement.movementTypeMerchantId){
+      if (contableMovement.movementTypeMerchantId.split('-')[0] == 'OUTPUT') {
+        if (doc.billId) {
+          Router.push({
+            pathname: '/sample/bills/table',
+            query: {billId: doc.billId},
+          });
+        }
+      } else {
+        return null;
+      }
     } else {
       return null;
     }
@@ -1623,7 +1647,14 @@ const OutputsTable = (props) => {
                                   obj.contableMovements.map(
                                     (contableMovement, index) => {
                                       return (
-                                        <TableRow key={index}>
+                                        <TableRow
+                                          key={index}
+                                          sx={{cursor: 'pointer'}}
+                                          hover
+                                          onClick={() =>
+                                            goToMovements(contableMovement)
+                                          }
+                                        >
                                           <TableCell>
                                             {contableMovement.serialNumberBill}
                                           </TableCell>
