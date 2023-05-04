@@ -36,11 +36,10 @@ const formats = {
   quotation: '52',
   bill: 'FFF1-13',
   referralGuide: 'TTT1-18',
-  credit_Note: 'FFF1-21',
-  debit_Note: 'FFF1-16',
+  creditNote: 'FFF1-21',
+  debitNote: 'FFF1-16',
   receipt: 'BBB1-2',
   anyone: '',
-  sellticket: '12',
 };
 const typeDocs = [
   {name: 'quotation', message: <IntlMessages id='document.type.quotation' />},
@@ -49,25 +48,19 @@ const typeDocs = [
     name: 'referralGuide',
     message: <IntlMessages id='document.type.referralGuide' />,
   },
-  {
-    name: 'credit_Note',
-    message: <IntlMessages id='document.type.creditNote' />,
-  },
-  {name: 'debit_Note', message: <IntlMessages id='document.type.debitNote' />},
+  {name: 'creditNote', message: <IntlMessages id='document.type.creditNote' />},
+  {name: 'debitNote', message: <IntlMessages id='document.type.debitNote' />},
   {name: 'receipt', message: <IntlMessages id='document.type.receipt' />},
   {name: 'anyone', message: <IntlMessages id='document.type.anyone' />},
   {name: 'sellticket', message: <IntlMessages id='document.type.sellticket' />},
 ];
 
-const MoreFiltersDocumentSunat = ({sendData, ds}) => {
-  console.log('info inicial', ds);
-  const [typeDocument, setTypeDocument] = React.useState(ds);
-  const [docType, setDocType] = React.useState(ds);
+const MoreFiltersContableMovements = ({sendData}) => {
+  const [typeDocument, setTypeDocument] = React.useState('bill');
+  const [docType, setDocType] = React.useState('bill');
   const [typeIdentifier, setTypeIdentifier] = React.useState('TODOS');
-
+  const [paymentMethod, setPaymentMethod] = React.useState('all');
   let changeValueField;
-  const isNoteDocument =
-    ds == 'credit_Note' || ds == 'debit_Note' ? true : false;
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
@@ -75,6 +68,7 @@ const MoreFiltersDocumentSunat = ({sendData, ds}) => {
       ...data,
       typeDocument: typeDocument,
       typeIdentifier: typeIdentifier,
+      paymentMethod: paymentMethod,
     };
     console.log('info desde + filtros', filters);
     sendData(filters);
@@ -110,56 +104,43 @@ const MoreFiltersDocumentSunat = ({sendData, ds}) => {
               <Grid item xs={6}>
                 <FormControl fullWidth sx={{my: 0}}>
                   <InputLabel id='moneda-label' style={{fontWeight: 200}}>
-                    Tipo de documento Sunat
+                    Tipo de documento
                   </InputLabel>
-
-                  {!isNoteDocument ? (
-                    <Select
-                      name='documentType'
-                      labelId='documentType-label'
-                      label='Tipo de documento Sunat'
-                      value={typeDocument}
-                      disabled
-                    >
-                      <MenuItem value='bill' style={{fontWeight: 200}}>
-                        <IntlMessages id='document.type.bill' />
-                      </MenuItem>
-                      <MenuItem value='receipt' style={{fontWeight: 200}}>
-                        <IntlMessages id='document.type.receipt' />
-                      </MenuItem>
-                      <MenuItem value='sellticket' style={{fontWeight: 200}}>
-                        <IntlMessages id='document.type.sellticket' />
-                      </MenuItem>
-                      <MenuItem value='referralGuide' style={{fontWeight: 200}}>
-                        <IntlMessages id='document.type.referralGuide' />
-                      </MenuItem>
-                      <MenuItem value='credit_Note' style={{fontWeight: 200}}>
-                        <IntlMessages id='document.type.creditNote' />
-                      </MenuItem>
-                      <MenuItem value='debit_Note' style={{fontWeight: 200}}>
-                        <IntlMessages id='document.type.debitNote' />
-                      </MenuItem>
-                    </Select>
-                  ) : (
-                    <Select
-                      name='documentType'
-                      labelId='documentType-label'
-                      label='Tipo de documento Sunat'
-                      value={typeDocument}
-                      onChange={(event) => {
-                        console.log('event.target.value', event.target.value);
-                        setDocType(event.target.value);
-                        setTypeDocument(event.target.value);
-                      }}
-                    >
-                      <MenuItem value='credit_Note' style={{fontWeight: 200}}>
-                        <IntlMessages id='document.type.creditNote' />
-                      </MenuItem>
-                      <MenuItem value='debi_N_ote' style={{fontWeight: 200}}>
-                        <IntlMessages id='document.type.debitNote' />
-                      </MenuItem>
-                    </Select>
-                  )}
+                  <Select
+                    name='documentType'
+                    labelId='documentType-label'
+                    label='Tipo de documento'
+                    onChange={(event) => {
+                      console.log('event.target.value', event.target.value);
+                      setDocType(event.target.value);
+                      setTypeDocument(event.target.value);
+                    }}
+                    value={typeDocument}
+                    defaultValue='bill'
+                    disabled
+                  >
+                    <MenuItem value='anyone' style={{fontWeight: 200}}>
+                      <IntlMessages id='document.type.anyone' />
+                    </MenuItem>
+                    <MenuItem value='quotation' style={{fontWeight: 200}}>
+                      <IntlMessages id='document.type.quotation' />
+                    </MenuItem>
+                    <MenuItem value='bill' style={{fontWeight: 200}}>
+                      <IntlMessages id='document.type.bill' />
+                    </MenuItem>
+                    <MenuItem value='referralGuide' style={{fontWeight: 200}}>
+                      <IntlMessages id='document.type.referralGuide' />
+                    </MenuItem>
+                    <MenuItem value='creditNote' style={{fontWeight: 200}}>
+                      <IntlMessages id='document.type.creditNote' />
+                    </MenuItem>
+                    <MenuItem value='debitNote' style={{fontWeight: 200}}>
+                      <IntlMessages id='document.type.debitNote' />
+                    </MenuItem>
+                    <MenuItem value='receipt' style={{fontWeight: 200}}>
+                      <IntlMessages id='document.type.receipt' />
+                    </MenuItem>
+                  </Select>
                 </FormControl>
               </Grid>
 
@@ -241,7 +222,49 @@ const MoreFiltersDocumentSunat = ({sendData, ds}) => {
                 />
               </Grid>
             </Grid>
-
+            <Grid item xs={12}>
+              <FormControl fullWidth sx={{my: 2}}>
+                <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
+                  Medio de pago
+                </InputLabel>
+                <Select
+                  value={paymentMethod}
+                  name='methodToPay'
+                  labelId='methodToPay-label'
+                  label='Medio de pago'
+                  onChange={
+                    /* handleActualData */ (event) => {
+                      setPaymentMethod(event.target.value);
+                    }
+                  }
+                >
+                  <MenuItem value='all' style={{fontWeight: 200}}>
+                    Todos
+                  </MenuItem>
+                  <MenuItem value='cash' style={{fontWeight: 200}}>
+                    Efectivo
+                  </MenuItem>
+                  <MenuItem value='yape' style={{fontWeight: 200}}>
+                    Yape
+                  </MenuItem>
+                  <MenuItem value='plin' style={{fontWeight: 200}}>
+                    Plin
+                  </MenuItem>
+                  <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
+                    Transferencia Bancaria
+                  </MenuItem>
+                  <MenuItem value='card' style={{fontWeight: 200}}>
+                    Tarjeta de crédito/débito
+                  </MenuItem>
+                  <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
+                    <IntlMessages id='common.bankDeposit' />
+                  </MenuItem>
+                  <MenuItem value='giftCard' style={{fontWeight: 200}}>
+                    GiftCard
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
             <ButtonGroup
               orientation='vertical'
               variant='outlined'
@@ -266,9 +289,8 @@ const MoreFiltersDocumentSunat = ({sendData, ds}) => {
   );
 };
 
-MoreFiltersDocumentSunat.propTypes = {
+MoreFiltersContableMovements.propTypes = {
   sendData: PropTypes.func.isRequired,
-  ds: PropTypes.string,
 };
 
-export default MoreFiltersDocumentSunat;
+export default MoreFiltersContableMovements;

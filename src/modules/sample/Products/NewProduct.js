@@ -148,8 +148,8 @@ const validationSchema = yup.object({
     .required(<IntlMessages id='validation.required' />)
     .test(
       'maxDigitsAfterDecimal',
-      'El número puede contener como máximo 3 decimales',
-      (number) => /^\d+(\.\d{1,3})?$/.test(number),
+      'El número puede contener como máximo 10 decimales',
+      (number) => /^\d+(\.\d{1,10})?$/.test(number),
     ),
   referecialPriceSell: yup
     .number()
@@ -157,8 +157,8 @@ const validationSchema = yup.object({
     .required(<IntlMessages id='validation.required' />)
     .test(
       'maxDigitsAfterDecimal',
-      'El número puede contener como máximo 3 decimales',
-      (number) => /^\d+(\.\d{1,3})?$/.test(number),
+      'El número puede contener como máximo 10 decimales',
+      (number) => /^\d+(\.\d{1,10})?$/.test(number),
     ),
   weight: yup
     .number()
@@ -739,7 +739,7 @@ const NewProduct = (props) => {
             typeProduct == 'intermediateProduct'
           ) {
             setTypeAlert('faltaProduct');
-          } else */if (!goodStockComplexProducts) {
+          } else */ if (!goodStockComplexProducts) {
             setTypeAlert('maxStock');
           } else {
             setTypeAlert('');
@@ -932,7 +932,11 @@ const NewProduct = (props) => {
         >
           {({isSubmitting}) => (
             <Form style={{textAlign: 'left'}} noValidate autoComplete='on'>
-              <Grid container spacing={2} sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}>
+              <Grid
+                container
+                spacing={2}
+                sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}
+              >
                 <Grid item xs={12}>
                   <AppUpperCaseTextField
                     label='Código *'

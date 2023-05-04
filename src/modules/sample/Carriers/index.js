@@ -369,8 +369,13 @@ const CarrierTable = (arrayObjs, props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
-      <FormControl sx={{my: 0, width: 140}}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
+        <FormControl sx={{my: 0, width: 140}}>
           <InputLabel id='categoria-label' style={{fontWeight: 200}}>
             Identificador
           </InputLabel>
@@ -505,22 +510,17 @@ const CarrierTable = (arrayObjs, props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/exportCarriers/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportDoc}
-            >
-              Exportar todo
-            </Button>
+          .includes('/facturacion/exportCarriers/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportDoc}
+          >
+            Exportar todo
+          </Button>
         ) : null}
 
-        {!popUp ? (
-          <></> 
-        ) : (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        )}
+        {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
       <Dialog
         open={openStatus}

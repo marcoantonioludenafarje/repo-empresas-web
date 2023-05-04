@@ -817,8 +817,8 @@ const NewInput = (props) => {
                     />
                   </Grid>
                   {addIgv ? (
-                  <Grid item xs={6} sm={4}>
-                  <AppTextField
+                    <Grid item xs={6} sm={4}>
+                      <AppTextField
                         label={`Total ${moneyUnit} con IGV`}
                         name='totalFieldIgv'
                         defaultValue={0}
@@ -986,9 +986,15 @@ const NewInput = (props) => {
                 </Grid>
 
                 <Divider sx={{m: 2}} />
-              {/* <Grid item xs={6} sm={6}> */}
+                {/* <Grid item xs={6} sm={6}> */}
 
-                <Grid item xs={12} container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid
+                  item
+                  xs={12}
+                  container
+                  spacing={2}
+                  sx={{width: 500, margin: 'auto'}}
+                >
                   <Button
                     sx={{width: 1}}
                     variant='outlined'

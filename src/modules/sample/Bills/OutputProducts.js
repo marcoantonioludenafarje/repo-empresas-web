@@ -1,4 +1,6 @@
 import React, {useEffect} from 'react';
+import {useIntl} from 'react-intl';
+
 import {
   Table,
   TableBody,
@@ -24,7 +26,7 @@ let listPayload = {
   },
 };
 
-const OutputProducts = ({data, toDelete, valueWithIGV}) => {
+const OutputProducts = ({data, toDelete, valueWithIGV, igvEnabled}) => {
   //FUNCIONES MENU
   const {userAttributes} = useSelector(({user}) => user);
 
@@ -36,6 +38,42 @@ const OutputProducts = ({data, toDelete, valueWithIGV}) => {
     console.log('Index', index);
     toDelete(index);
   };
+  console.log ('data',data);
+  console.log ('toDelete',toDelete);
+  console.log ('valueWithIGV',valueWithIGV);
+  console.log ('igvEnabled',igvEnabled);
+
+  if (data && typeof data !== 'string' ) {
+    data.map((obj, index) => {
+      if (igvEnabled){
+        obj.taxCode = 1000;
+        obj.igvCode = 10;
+      }
+        
+      else {
+        obj.taxCode = 9998;
+        obj.igvCode = 30;
+      }
+        
+    });
+  }
+
+  const {messages} = useIntl();
+  const showTypeIGV = (type) => {  
+    switch (type) {
+      case 1000:
+        return messages['finance.typeIGV.gravado'];
+        break;
+      case 9997:
+        return messages['finance.typeIGV.exonerado'];
+        break;
+      case 9998:
+        return messages['finance.typeIGV.inafecto'];
+        break;
+      default:
+        return null;
+    }
+  }; 
 
   return (
     <TableContainer component={Paper}>
@@ -47,9 +85,10 @@ const OutputProducts = ({data, toDelete, valueWithIGV}) => {
             <TableCell>Unidad</TableCell>
             <TableCell>Cantidad</TableCell>
             <TableCell>Valor unitario</TableCell>
-            <TableCell>Valor con IGV</TableCell>
+            {igvEnabled ? <TableCell>Valor con IGV</TableCell> : null}
             <TableCell>Subtotal</TableCell>
-            <TableCell>Subtotal con IGV</TableCell>
+            {igvEnabled ? <TableCell>Subtotal con IGV</TableCell> : null}
+            <TableCell>Tipo IGV</TableCell>
             <TableCell>Opciones</TableCell>
           </TableRow>
         </TableHead>
@@ -67,9 +106,16 @@ const OutputProducts = ({data, toDelete, valueWithIGV}) => {
                   <TableCell>{obj.unitMeasure}</TableCell>
                   <TableCell>{obj.quantityMovement}</TableCell>
                   <TableCell>{obj.priceBusinessMoneyWithIgv}</TableCell>
-                  <TableCell>{valueWithIGV(obj.priceBusinessMoneyWithIgv)}</TableCell>
+                  {igvEnabled ? (
+                    <TableCell>
+                      {valueWithIGV(obj.priceBusinessMoneyWithIgv)}
+                    </TableCell>
+                  ) : null}
                   <TableCell>{obj.subtotal}</TableCell>
-                  <TableCell>{valueWithIGV(obj.subtotal)}</TableCell>
+                  {igvEnabled ? (
+                    <TableCell>{valueWithIGV(obj.subtotal)}</TableCell>
+                  ) : null}
+                  <TableCell>{showTypeIGV(obj.taxCode)}</TableCell>
                   <TableCell>
                     <IconButton onClick={deleteProduct.bind(this, index)}>
                       <DeleteIcon />
@@ -91,5 +137,6 @@ OutputProducts.propTypes = {
   data: PropTypes.array.isRequired,
   toDelete: PropTypes.func.isRequired,
   valueWithIGV: PropTypes.func.isRequired,
+  igvEnabled: PropTypes.bool,
 };
 export default OutputProducts;

@@ -32,7 +32,7 @@ import {
   GET_RECEIPT_PAGE_LISTGUIDE,
   GET_NOTE_PAGE_LISTGUIDE,
   GENERATE_SELL_TICKET,
-  REFERRAL_GUIDES_BATCH_CONSULT
+  REFERRAL_GUIDES_BATCH_CONSULT,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -44,7 +44,11 @@ export const getMovements = (payload) => {
     API.post('tunexo', '/inventory/movementProducts/list', {body: payload})
       .then((data) => {
         console.log('getMovements123 resultado', data);
-        dispatch({type: GET_MOVEMENTS, payload: data.response.payload, request: payload,});
+        dispatch({
+          type: GET_MOVEMENTS,
+          payload: data.response.payload,
+          request: payload,
+        });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -373,10 +377,6 @@ export const listNewRoutes = (payload) => {
   };
 };
 
-
-
-
-
 export const listDistributions = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -398,22 +398,24 @@ export const listDistributions = (payload) => {
   };
 };
 
-
-
-export const getDistribution= (payload) => {
+export const getDistribution = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    request('get',  `/distribution/deliveryDistribution/${payload.deliveryDistributionId}`, {
-    // request('get',  `/distribution/deliveryDistribution`, {
-      
-      body: payload,
-    })
+    request(
+      'get',
+      `/distribution/deliveryDistribution/${payload.deliveryDistributionId}`,
+      {
+        // request('get',  `/distribution/deliveryDistribution`, {
+
+        body: payload,
+      },
+    )
       .then((data) => {
         console.log('getDistribution resultado', data);
         dispatch({
           type: TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION,
           payload: data.data,
-          indexDistributionSelected: payload.indexDistributionSelected
+          indexDistributionSelected: payload.indexDistributionSelected,
         });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
@@ -444,7 +446,6 @@ export const generateDistribution = (payload) => {
   };
 };
 
-
 export const updateReferralGuideValue = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -470,19 +471,19 @@ export const updateReferralGuideValue = (payload) => {
   };
 };
 
-
-
 export const listPredefinedRoutes_____PageNewDistribution = (payload) => {
   console.log('payload10000', payload);
 
-  
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('get', '/distribution/routesPredefined', {
       body: payload,
     })
       .then((data) => {
-        console.log('listPredefinedRoutes_____PageNewDistribution resultado', data);
+        console.log(
+          'listPredefinedRoutes_____PageNewDistribution resultado',
+          data,
+        );
         dispatch({
           type: SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
           payload: data.data,
@@ -490,27 +491,28 @@ export const listPredefinedRoutes_____PageNewDistribution = (payload) => {
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
-        console.log('listPredefinedRoutes_____PageNewDistribution error', error);
+        console.log(
+          'listPredefinedRoutes_____PageNewDistribution error',
+          error,
+        );
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
-
 };
-
-
-
 
 export const listPredefinedRoutes_____PageListPredefinedRoutes = (payload) => {
   console.log('payload10000', payload);
 
-  
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('get', '/distribution/routesPredefined', {
       body: payload,
     })
       .then((data) => {
-        console.log('listPredefinedRoutes_____PageNewDistribution resultado', data);
+        console.log(
+          'listPredefinedRoutes_____PageNewDistribution resultado',
+          data,
+        );
         dispatch({
           type: SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
           payload: data.data,
@@ -518,25 +520,30 @@ export const listPredefinedRoutes_____PageListPredefinedRoutes = (payload) => {
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
-        console.log('listPredefinedRoutes_____PageNewDistribution error', error);
+        console.log(
+          'listPredefinedRoutes_____PageNewDistribution error',
+          error,
+        );
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
-
 };
 
-
-
-
 export const getPredefinedRoute_____PageListPredefinedRoutes = (payload) => {
-  
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    request('get', `/distribution/routesPredefined/${payload.routePredefinedId}`, {
-      body: payload,
-    })
+    request(
+      'get',
+      `/distribution/routesPredefined/${payload.routePredefinedId}`,
+      {
+        body: payload,
+      },
+    )
       .then((data) => {
-        console.log('getPredefinedRoute_PageListPredefinedRoutes resultado', data);
+        console.log(
+          'getPredefinedRoute_PageListPredefinedRoutes resultado',
+          data,
+        );
         dispatch({
           type: SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
           payload: data.data,
@@ -550,11 +557,9 @@ export const getPredefinedRoute_____PageListPredefinedRoutes = (payload) => {
       })
       .catch((error) => {
         console.log('getChildRoute error', error);
-      })
-    
-    
-    }
-  }
+      });
+  };
+};
 export const getReferralGuides_PageListGuide = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -562,7 +567,11 @@ export const getReferralGuides_PageListGuide = (payload) => {
     API.post('tunexo', '/inventory/referralGuides/v1/list', {body: payload})
       .then((data) => {
         console.log('getReferralGuides_PageListGuide resultado', data);
-        dispatch({type: GET_REFERRALGUIDE_PAGE_LISTGUIDE, payload: data.response.payload, request: payload,});
+        dispatch({
+          type: GET_REFERRALGUIDE_PAGE_LISTGUIDE,
+          payload: data.response.payload,
+          request: payload,
+        });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -572,16 +581,21 @@ export const getReferralGuides_PageListGuide = (payload) => {
   };
 };
 
-
 export const getPredefinedRoute_____PageNewDistribution = (payload) => {
-  
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    request('get', `/distribution/routesPredefined/${payload.routePredefinedId}`, {
-      body: payload,
-    })
+    request(
+      'get',
+      `/distribution/routesPredefined/${payload.routePredefinedId}`,
+      {
+        body: payload,
+      },
+    )
       .then((data) => {
-        console.log('getPredefinedRoute_PageListPredefinedRoutes resultado', data);
+        console.log(
+          'getPredefinedRoute_PageListPredefinedRoutes resultado',
+          data,
+        );
         dispatch({
           type: SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION,
           payload: data.data,
@@ -595,12 +609,9 @@ export const getPredefinedRoute_____PageNewDistribution = (payload) => {
       })
       .catch((error) => {
         console.log('getChildRoute error', error);
-
-      })
-    
-    
-    }
-  }
+      });
+  };
+};
 
 export const getBillItems_pageListBill = (payload) => {
   return (dispatch, getState) => {
@@ -609,7 +620,11 @@ export const getBillItems_pageListBill = (payload) => {
     API.post('tunexo', '/inventory/bills/v1/list', {body: payload})
       .then((data) => {
         console.log('getBillItems_pageListBill resultado', data);
-        dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: data.response.payload, request: payload,});
+        dispatch({
+          type: GET_BILL_PAGE_LISTGUIDE,
+          payload: data.response.payload,
+          request: payload,
+        });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -618,7 +633,6 @@ export const getBillItems_pageListBill = (payload) => {
       });
   };
 };
-
 
 export const registerNewDistribution_____PageNewDistribution = (payload) => {
   return (dispatch, getState) => {
@@ -639,9 +653,7 @@ export const registerNewDistribution_____PageNewDistribution = (payload) => {
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
-
 };
-
 
 export const getReceiptItems_pageListReceipt = (payload) => {
   return (dispatch, getState) => {
@@ -650,7 +662,11 @@ export const getReceiptItems_pageListReceipt = (payload) => {
     API.post('tunexo', '/inventory/receipts/v1/list', {body: payload})
       .then((data) => {
         console.log('getReceiptItems_pageListReceipt resultado', data);
-        dispatch({type: GET_RECEIPT_PAGE_LISTGUIDE, payload: data.response.payload, request: payload,});
+        dispatch({
+          type: GET_RECEIPT_PAGE_LISTGUIDE,
+          payload: data.response.payload,
+          request: payload,
+        });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -660,7 +676,6 @@ export const getReceiptItems_pageListReceipt = (payload) => {
   };
 };
 
-
 export const getNoteItems_pageListNote = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -668,30 +683,38 @@ export const getNoteItems_pageListNote = (payload) => {
     API.post('tunexo', '/inventory/notes/v1/list', {body: payload})
       .then((data) => {
         console.log('getNoteItems_pageListNote resultado', data);
-        dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: data.response.payload, request: payload,});
+        dispatch({
+          type: GET_NOTE_PAGE_LISTGUIDE,
+          payload: data.response.payload,
+          request: payload,
+        });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
         console.log('getNoteItems_pageListNote error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
-  }
+  };
 };
 
 export const referralGuidesBatchConsult = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     console.log('/facturacion/consultReferralGuideStatus', {body: payload});
-    API.post('tunexo', '/facturacion/consultReferralGuideStatus', {body: payload})
+    API.post('tunexo', '/facturacion/consultReferralGuideStatus', {
+      body: payload,
+    })
       .then((data) => {
         console.log('referralGuidesBatchConsult resultado', data);
-        dispatch({type: REFERRAL_GUIDES_BATCH_CONSULT, payload: data.response.payload});
+        dispatch({
+          type: REFERRAL_GUIDES_BATCH_CONSULT,
+          payload: data.response.payload,
+        });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
         console.log('referralGuidesBatchConsult error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
-  }
+  };
 };
-

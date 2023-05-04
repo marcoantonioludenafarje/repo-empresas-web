@@ -24,11 +24,12 @@ import {
   CircularProgress,
   Typography,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
@@ -44,7 +45,10 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import {red} from '@mui/material/colors';
-import {excelTemplateGeneratedToReceiptsRes, exportExcelTemplateToReceipts} from '../../../redux/actions/General';
+import {
+  excelTemplateGeneratedToReceiptsRes,
+  exportExcelTemplateToReceipts,
+} from '../../../redux/actions/General';
 import CloseIcon from '@mui/icons-material/Close';
 import MoreFiltersDocumentSunat from '../Filters/MoreFiltersDocumentSunat';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -68,7 +72,10 @@ import {
   translateValue,
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
-import {getReceiptItems_pageListReceipt, cancelInvoice} from '../../../redux/actions/Movements';
+import {
+  getReceiptItems_pageListReceipt,
+  cancelInvoice,
+} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -159,7 +166,8 @@ const ReceiptsTable = (props) => {
     ({general}) => general,
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
-  const documentSunat = "receipt";
+  const documentSunat = 'receipt';
+  const {moneySymbol} = useSelector(({general}) => general);
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
@@ -183,15 +191,17 @@ const ReceiptsTable = (props) => {
   };
 
   const handleNextPage = (event) => {
-    //console.log('Llamando al  handleNextPage', handleNextPage);    
-    listPayload.request.payload.LastEvaluatedKey = receiptLastEvalutedKey_pageListReceipt;
-    console.log('listPayload111:handleNextPage:',listPayload)
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    listPayload.request.payload.LastEvaluatedKey =
+      receiptLastEvalutedKey_pageListReceipt;
+    console.log('listPayload111:handleNextPage:', listPayload);
     toGetMovements(listPayload);
     // setPage(page+1);
   };
 
   //GET APIS RES
-  const {receiptItems_pageListReceipt, receiptLastEvalutedKey_pageListReceipt} = useSelector(({movements}) => movements);
+  const {receiptItems_pageListReceipt, receiptLastEvalutedKey_pageListReceipt} =
+    useSelector(({movements}) => movements);
   console.log('receiptItems_pageListReceipt', receiptItems_pageListReceipt);
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
@@ -235,7 +245,7 @@ const ReceiptsTable = (props) => {
       console.log('exchangerate', exchangeRate);
     }
   }, [globalParameter]);
-  
+
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
   const buildFilter = (typeDoc, numberDoc) => {
@@ -263,7 +273,10 @@ const ReceiptsTable = (props) => {
     listPayload.request.payload.denominationClient =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toUpperCase();
     console.log('listPayload', listPayload);
-    dispatch({type: GET_RECEIPT_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({
+      type: GET_RECEIPT_PAGE_LISTGUIDE,
+      payload: {callType: 'firstTime'},
+    });
     toGetMovements(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
@@ -276,12 +289,18 @@ const ReceiptsTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
-    dispatch({type: GET_RECEIPT_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({
+      type: GET_RECEIPT_PAGE_LISTGUIDE,
+      payload: {callType: 'firstTime'},
+    });
     toGetMovements(listPayload);
   };
   useEffect(() => {
-    dispatch({type: GET_RECEIPT_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
-    
+    dispatch({
+      type: GET_RECEIPT_PAGE_LISTGUIDE,
+      payload: {callType: 'firstTime'},
+    });
+
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 
@@ -478,6 +497,44 @@ const ReceiptsTable = (props) => {
     }
   };
 
+  const showDocument = (listDocument,type)  => {
+    if (listDocument) {
+      let documentObj = listDocument.filter(
+        (item) => item.typeDocument === type,
+      );
+
+      if (documentObj && documentObj.length>0) {
+        return (
+          <Button
+            variant='secondary'
+            sx={{fontSize: '1em'}}
+            /* disabled={type == 'referralGuide'} */
+            onClick={() => showObject(documentObj[0].noteId, type)}
+          >
+            Ver Nota Crédito
+          </Button>
+        );
+      }
+      else {
+        return <></>;
+      }
+
+    } else {
+      return <></>;
+    }
+  };
+
+  const showObject = (objetId, type) => {
+    if (type == 'creditNote') {
+      Router.push({
+        pathname: '/sample/notes/table',
+        query: {noteId: objetId},
+      });
+    } else {
+      return null;
+    }
+  };
+
   const setDeleteState = () => {
     setOpen2(true);
     handleClose();
@@ -507,7 +564,12 @@ const ReceiptsTable = (props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -558,11 +620,14 @@ const ReceiptsTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell>Fecha de emisión</TableCell>
-              <TableCell>Número de serie</TableCell>
-              <TableCell>Número de boleta</TableCell>
-              <TableCell>Receptor</TableCell>
+            <TableCell>Fecha emisión</TableCell>
+              <TableCell>Número serie</TableCell>
+              <TableCell>Número boleta</TableCell>
+              <TableCell>Identificador Receptor</TableCell>
+              <TableCell>Nombre Receptor</TableCell>
               <TableCell>Observación</TableCell>
+              <TableCell>Subtotal</TableCell>
+              <TableCell>IGV</TableCell>
               <TableCell>Importe total</TableCell>
               <TableCell>Forma de pago</TableCell>
               <TableCell>Aceptado por Sunat</TableCell>
@@ -571,7 +636,8 @@ const ReceiptsTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {receiptItems_pageListReceipt && Array.isArray(receiptItems_pageListReceipt) ? (
+            {receiptItems_pageListReceipt &&
+            Array.isArray(receiptItems_pageListReceipt) ? (
               receiptItems_pageListReceipt.sort(compare).map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -586,15 +652,26 @@ const ReceiptsTable = (props) => {
                       : ''}
                   </TableCell>
                   <TableCell>
-                  {obj.serialNumber && obj.serialNumber.includes('-')
+                    {obj.serialNumber && obj.serialNumber.includes('-')
                       ? obj.serialNumber.split('-')[1]
                       : ''}
                   </TableCell>
-                  <TableCell>{obj.denominationClient}</TableCell>
+                  <TableCell>{obj.clientId ? `${obj.clientId.split('-')[0]} - ${obj.clientId.split('-')[1]}` : ''}</TableCell>
+                  <TableCell>{obj.clientId ? obj.denominationClient : 'Cliente No Definido'}</TableCell>
                   <TableCell>{obj.observation}</TableCell>
                   <TableCell>
+                    {obj.totalPriceWithoutIgv
+                      ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv 
+                      ? `${moneySymbol} ${Number(obj.totalPriceWithIgv.toFixed(2)-obj.totalPriceWithoutIgv.toFixed(2)).toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
                     {obj.totalPriceWithIgv
-                      ? `${obj.totalPriceWithIgv.toFixed(2)} `
+                      ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(2)} `
                       : ''}
                   </TableCell>
                   <TableCell>{showPaymentMethod(obj.paymentMethod)}</TableCell>
@@ -602,7 +679,7 @@ const ReceiptsTable = (props) => {
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
                   <TableCell align='center'>
-                    {showCanceled(obj.cancelStatus)}
+                    {showDocument(obj.documentsMovement,'creditNote')/*showCanceled(obj.cancelStatus)*/}
                   </TableCell>
                   <TableCell>
                     <Button
@@ -637,15 +714,14 @@ const ReceiptsTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportReceipts/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportToExcel}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportReceipts/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportToExcel}
+          >
+            Exportar todo
+          </Button>
         ) : null}
       </ButtonGroup>
 
@@ -736,6 +812,32 @@ const ReceiptsTable = (props) => {
           <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
           Ver PDF
         </MenuItem>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/creditNote/register') === true ? (
+          <MenuItem
+            disabled={
+              userDataRes
+                ? !userDataRes.merchantSelected.isBillingEnabled
+                : false
+            }
+            onClick={() =>
+              Router.push({
+                pathname: '/sample/notes/registerForReceipt',
+                query: {
+                  idReceipt: selectedReceipt.movementHeaderId,
+                  movementId: selectedReceipt.outputId,
+                  nroReceipt: selectedReceipt.serialNumber,
+                  igv: selectedReceipt.igv,
+                  typeDocumentRelated: 'receipt',
+                },
+              })
+            }
+          >
+            <ReceiptOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            Generar nota
+          </MenuItem>
+        ) : null}
         {/* <MenuItem
           disabled={!dataBusinessRes.isReceiptingEnabled}
           onClick={() =>
@@ -792,12 +894,14 @@ const ReceiptsTable = (props) => {
             sx={{fontSize: '1.2em'}}
             id='alert-dialog-description'
           >
-            <MoreFiltersDocumentSunat sendData={filterData} ds={documentSunat} />
+            <MoreFiltersDocumentSunat
+              sendData={filterData}
+              ds={documentSunat}
+            />
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
-      
     </Card>
   );
 };

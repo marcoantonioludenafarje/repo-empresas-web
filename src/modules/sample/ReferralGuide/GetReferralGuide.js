@@ -1019,7 +1019,7 @@ const GetReferralGuide = () => {
                         >
                           Venta sujeta a confirmación del comprador
                         </MenuItem>
-                        <MenuItem value='BUY' style={{fontWeight: 200}}>
+                        <MenuItem value='buy' style={{fontWeight: 200}}>
                           Compra
                         </MenuItem>
                         <MenuItem
@@ -1045,6 +1045,9 @@ const GetReferralGuide = () => {
                           style={{fontWeight: 200}}
                         >
                           Traslado a zona primaria
+                        </MenuItem>
+                        <MenuItem value='return' style={{fontWeight: 200}}>
+                          Devolución
                         </MenuItem>
                         <MenuItem value='others' style={{fontWeight: 200}}>
                           Otros
@@ -1083,7 +1086,7 @@ const GetReferralGuide = () => {
                     />
                   </Grid>
 
-                  <Grid xs={12} sm={10 } sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={10} sx={{px: 1, mt: 2}}>
                     <AppLowerCaseTextField
                       label='Correo de cliente'
                       name='clientEmail'
@@ -1270,7 +1273,6 @@ const GetReferralGuide = () => {
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
-
                       onClick={() => openSelectCarrier()}
                     >
                       Seleccionar transportista

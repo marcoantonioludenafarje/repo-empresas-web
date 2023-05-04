@@ -462,10 +462,7 @@ const SignupAwsCognito = () => {
               </Box>
               <Box sx={{mb: {xs: 4, xl: 5}}}>
                 <FormControl fullWidth sx={{my: 2}}>
-                  <InputLabel
-                    id='typClient-label'
-                    style={{fontWeight: 200}}
-                  >
+                  <InputLabel id='typClient-label' style={{fontWeight: 200}}>
                     {<IntlMessages id='common.busines.typeClient' />}
                   </InputLabel>
                   <Select

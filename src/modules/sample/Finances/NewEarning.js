@@ -10,6 +10,7 @@ import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
+import {translateValue} from '../../../Utils/utils';
 import {
   Button,
   ButtonGroup,
@@ -136,6 +137,7 @@ const NewEarning = (props) => {
   const [totalAmountOfConcepts, setTotalAmountOfConcepts] = React.useState(0);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [typeIcon, setTypeIcon] = React.useState('2');
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState('bill');
   let changeValueField;
   const dispatch = useDispatch();
   const {getMovementsRes} = useSelector(({movements}) => movements);
@@ -341,6 +343,16 @@ const NewEarning = (props) => {
 
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
+      newFinancePayload.request.payload.movements[0].outputUserCreated =
+        selectedOutput.userCreated;
+      newFinancePayload.request.payload.movements[0].outputUserCreatedMetadata =
+        selectedOutput.userCreatedMetadata;
+      newFinancePayload.request.payload.movements[0].proofOfPaymentUserCreated =
+        selectedOutput.proofOfPaymentUserCreated || '';
+      newFinancePayload.request.payload.movements[0].proofOfPaymentUserCreatedMetadata =
+        selectedOutput.proofOfPaymentUserCreatedMetadata || '';
+      newFinancePayload.request.payload.movements[0].contableMovements = 
+        selectedOutput.contableMovements || [],
       newFinancePayload.request.payload.movements[0].numberDocumentProvider =
         selectedClient.clientId.split('-')[1];
       newFinancePayload.request.payload.movements[0].denominationProvider =
@@ -374,6 +386,14 @@ const NewEarning = (props) => {
       newFinancePayload.request.payload.movements[0].otherPayConcepts = [];
       newFinancePayload.request.payload.movements[0].purchaseType =
         purchaseType;
+      (newFinancePayload.request.payload.movements[0].userCreated =
+        userDataRes.userId),
+        (newFinancePayload.request.payload.movements[0].userCreatedMetadata = {
+          nombreCompleto: userDataRes.nombreCompleto,
+          email: userDataRes.email,
+        });
+      newFinancePayload.request.payload.movements[0].proofOfPaymentType =
+        proofOfPaymentType;
       listPayments.map((obj, index) => {
         newFinancePayload.request.payload.movements[0].payments.push({
           descriptionPayment: obj.description,
@@ -618,6 +638,40 @@ const NewEarning = (props) => {
                       Selecciona un cliente
                     </Button>
                   </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='proofOfPaymentType-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Tipo de Comprobante
+                      </InputLabel>
+                      <Select
+                        sx={{textAlign: 'left'}}
+                        value={proofOfPaymentType}
+                        onChange={(event) => {
+                          console.log(
+                            'Tipo de comprobante de pago',
+                            event.target.value,
+                          );
+                          setProofOfPaymentType(event.target.value);
+                        }}
+                        name='proofOfPaymentType'
+                        labelId='proofOfPaymentType-label'
+                        label='Tipo de Comprobante'
+                      >
+                        <MenuItem value='bill' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.bill']}
+                        </MenuItem>
+                        <MenuItem value='receipt' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.receipt']}
+                        </MenuItem>
+                        <MenuItem value='ticket' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.ticket']}
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={12} sx={{textAlign: 'center'}}>
                     <Typography
                       sx={{
@@ -630,7 +684,14 @@ const NewEarning = (props) => {
 
                   <Grid item xs={12}>
                     <AppUpperCaseTextField
-                      label='Número de factura'
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTNUMBER',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
                       name='nroBill'
                       variant='outlined'
                       sx={{
@@ -658,7 +719,14 @@ const NewEarning = (props) => {
                       required
                       sx={{my: 2}}
                       value={value2}
-                      label='Fecha de factura'
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTDATE',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
                       /* maxDate={new Date()} */
                       inputFormat='dd/MM/yyyy'
                       name='initialDate'
@@ -765,7 +833,14 @@ const NewEarning = (props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label='Monto Factura(con igv)'
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTTOTALAMOUNT',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
                       name='totalAmounth'
                       variant='outlined'
                       sx={{
@@ -784,7 +859,12 @@ const NewEarning = (props) => {
                         id='categoria-label'
                         style={{fontWeight: 200}}
                       >
-                        Estado de Cobro de Factura
+                        {proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTPAYSTATUS',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null}
                       </InputLabel>
                       <Select
                         sx={{textAlign: 'left'}}

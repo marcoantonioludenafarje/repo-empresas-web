@@ -23,7 +23,7 @@ import {
   Box,
   CircularProgress,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 

@@ -725,12 +725,12 @@ const UpdateProduct = (props) => {
     } else {
       /*if (selectedProducts.length === 0) {
         setTypeAlert('faltaProduct');
-      } else */if (!goodStockComplexProducts) {
+      } else */ if (!goodStockComplexProducts) {
         setTypeAlert('maxStock');
         setShowAlert(true);
       } else {
         setTypeAlert('');
-      }      
+      }
     }
     setSubmitting(false);
   };

@@ -59,7 +59,6 @@ const MoreFiltersFinances = ({sendData}) => {
   const [typeDocument, setTypeDocument] = React.useState('bill');
   const [docType, setDocType] = React.useState('bill');
   const [typeIdentifier, setTypeIdentifier] = React.useState('TODOS');
-
   let changeValueField;
 
   const handleData = (data, {setSubmitting}) => {
@@ -221,7 +220,6 @@ const MoreFiltersFinances = ({sendData}) => {
                 />
               </Grid>
             </Grid>
-
             <ButtonGroup
               orientation='vertical'
               variant='outlined'

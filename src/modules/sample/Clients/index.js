@@ -26,8 +26,10 @@ import {
   CircularProgress,
   useTheme,
   useMediaQuery,
+  IconButton,
 } from '@mui/material';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -84,16 +86,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let listPayload = {
-  request: {
-    payload: {
-      typeDocumentClient: '',
-      numberDocumentClient: '',
-      denominationClient: '',
-      merchantId: '',
-    },
-  },
-};
+// let listPayload = {
+//   request: {
+//     payload: {
+//       typeDocumentClient: '',
+//       numberDocumentClient: '',
+//       denominationClient: '',
+//       merchantId: '',
+//     },
+//   },
+// };
 let deletePayload = {
   request: {
     payload: {
@@ -108,13 +110,14 @@ const ClientTable = (arrayObjs, props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [firstload, setFirstload] = React.useState(true);
+  const [firstload, setFirstload] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+
   let popUp = false;
   let codProdSelected = '';
   const [loading, setLoading] = React.useState(true);
@@ -137,16 +140,10 @@ const ClientTable = (arrayObjs, props) => {
     return () => setReload((value) => value + 1); // update the state to force render
   };
 
-  const handleNextPage = (event) => {
-    //console.log('Llamando al  handleNextPage', handleNextPage);    
-    listPayload.request.payload.LastEvaluatedKey = referralGuideLastEvalutedKey_pageListGuide;
-    console.log('listPayload111:handleNextPage:',listPayload)
-    getClients(listPayload);
-    // setPage(page+1);
-  };
-
   //GET APIS RES
-  const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(({clients}) => clients);
+  const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
+    ({clients}) => clients,
+  );
   console.log('clients123', listClients);
   const {deleteProviderRes} = useSelector(({providers}) => providers);
   console.log('deleteProviderRes', deleteProviderRes);
@@ -157,22 +154,53 @@ const ClientTable = (arrayObjs, props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentClient: '',
+          numberDocumentClient: '',
+          denominationClient: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: clientsLastEvalutedKey_pageListClients,
+        },
+      },
+    };
+    // listPayload.request.payload.LastEvaluatedKey = clientsLastEvalutedKey_pageListClients;
+    console.log('listPayload111:handleNextPage:', listPayload);
+    getClients(listPayload);
+    // setPage(page+1);
+  };
+
   useEffect(() => {
-    if (userDataRes) {
+    console.log('Estamos userDataRes', userDataRes);
+    if (
+      userDataRes &&
+      userDataRes.merchantSelected &&
+      userDataRes.merchantSelected.merchantId
+    ) {
+      console.log('Estamos entrando al getClients');
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_CLIENTS, payload: undefined});
-
-      listPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-      listPayload.request.payload.LastEvaluatedKey = null;
-      dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
       getClients(listPayload);
-      setFirstload(false);
+      // setFirstload(true);
     }
   }, [userDataRes]);
   useEffect(() => {
-    dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+    // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
 
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -188,7 +216,7 @@ const ClientTable = (arrayObjs, props) => {
           },
         },
       };
-      listPayload.request.payload.typeDocumentClient = '';
+      // listPayload.request.payload.typeDocumentClient = '';
       toGetUserData(getUserDataPayload);
     }
   }, []);
@@ -221,6 +249,17 @@ const ClientTable = (arrayObjs, props) => {
   //BUSQUEDA
   const handleSearchValues = (event) => {
     console.log('Evento', event);
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentClient: '',
+          numberDocumentClient: '',
+          denominationClient: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+
     if (event.target.name == 'docToSearch') {
       if (event.target.value == '') {
         listPayload.request.payload.numberDocumentClient = '';
@@ -232,15 +271,27 @@ const ClientTable = (arrayObjs, props) => {
       if (event.target.value == '') {
         listPayload.request.payload.denominationClient = '';
       } else {
-        listPayload.request.payload.denominationClient = event.target.value.toUpperCase();
+        listPayload.request.payload.denominationClient =
+          event.target.value.toUpperCase();
       }
     }
   };
 
   //BUTTONS BAR FUNCTIONS
   const searchClients = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentClient: '',
+          numberDocumentClient: '',
+          denominationClient: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+        },
+      },
+    };
     listPayload.request.payload.LastEvaluatedKey = null;
-    dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+    // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
     getClients(listPayload);
   };
   const newClient = () => {
@@ -276,14 +327,26 @@ const ClientTable = (arrayObjs, props) => {
   };
 
   const exportToExcel = () => {
-    const excelPayload = listPayload;
+    // let listPayload = {
+    //   request: {
+    //     payload: {
+    //       typeDocumentClient: '',
+    //       numberDocumentClient: '',
+    //       denominationClient: '',
+    //       merchantId: userDataRes.merchantSelected.merchantId,
+    //       LastEvaluatedKey: null,
+    //     },
+    //   },
+    // };
 
-    console.log('excelPayload', excelPayload);
+    // const excelPayload = listPayload;
+
+    // console.log('excelPayload', excelPayload);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_CLIENTS, payload: undefined});
-    toExportExcelTemplateToClients(excelPayload);
-    setDownloadExcel(true);
+    // dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_CLIENTS, payload: undefined});
+    // toExportExcelTemplateToClients(listClients);
+    // setDownloadExcel(true);
   };
 
   useEffect(() => {
@@ -368,8 +431,19 @@ const ClientTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
-      listPayload.request.payload.LastEvaluatedKey = null;
-      dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      // listPayload.request.payload.LastEvaluatedKey = null;
+      // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
       getClients(listPayload);
     }, 2000);
   };
@@ -396,7 +470,12 @@ const ClientTable = (arrayObjs, props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2 } className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <FormControl sx={{my: 0, width: 140}}>
           <InputLabel id='categoria-label' style={{fontWeight: 200}}>
             Identificador
@@ -409,8 +488,8 @@ const ClientTable = (arrayObjs, props) => {
             sx={{maxWidth: 140}}
             onChange={(event) => {
               console.log('Está pasando por aquí?', event.target.value);
-              listPayload.request.payload.typeDocumentClient =
-                event.target.value;
+              // listPayload.request.payload.typeDocumentClient =
+              //   event.target.value;
             }}
           >
             <MenuItem value='' style={{fontWeight: 200}}>
@@ -434,8 +513,8 @@ const ClientTable = (arrayObjs, props) => {
           size='small'
           onChange={(event) => {
             console.log(event.target.value);
-            listPayload.request.payload.numberDocumentClient =
-              event.target.value;
+            // listPayload.request.payload.numberDocumentClient =
+            //   event.target.value;
           }}
         />
         <TextField
@@ -537,22 +616,17 @@ const ClientTable = (arrayObjs, props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportClients/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportToExcel}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportClients/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportToExcel}
+          >
+            Exportar todo
+          </Button>
         ) : null}
 
-        {!popUp ? (
-          <></> 
-        ) : (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        )}
+        {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
       <Dialog
         open={openStatus}

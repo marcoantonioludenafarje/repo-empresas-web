@@ -31,31 +31,27 @@ import {
   SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
   GENERATE_SELL_TICKET,
-  REFERRAL_GUIDES_BATCH_CONSULT
+  REFERRAL_GUIDES_BATCH_CONSULT,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
   list: [],
   getMovementsRes: [],
-  predefinedRoutes_PageListPredefinedRoutes:[],
+  predefinedRoutes_PageListPredefinedRoutes: [],
   lastEvaluatedKeys_PageListPredefinedRoutes: null,
   predefinedRoutes_PageNewDistribution: [],
   lastEvaluatedKeys_PageNewDistribution: null,
   selectedRoute_PageNewDistribution: null,
-  selectedRoute_PageListPredefinedRoutes:null,
-  referralGuideItems_pageListGuide: [], 
-  referralGuideLastEvalutedKey_pageListGuide: null, 
-  billItems_pageListBill: [], 
-  billLastEvalutedKey_pageListBill: null, 
-  receiptItems_pageListReceipt: [], 
+  selectedRoute_PageListPredefinedRoutes: null,
+  referralGuideItems_pageListGuide: [],
+  referralGuideLastEvalutedKey_pageListGuide: null,
+  billItems_pageListBill: [],
+  billLastEvalutedKey_pageListBill: null,
+  receiptItems_pageListReceipt: [],
   receiptLastEvalutedKey_pageListReceipt: null,
-  noteItems_pageListNote: [], 
-  noteLastEvalutedKey_pageListNote: null
+  noteItems_pageListNote: [],
+  noteLastEvalutedKey_pageListNote: null,
 };
-
-
-
-
 
 const movementsReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
@@ -66,51 +62,65 @@ const movementsReducer = (state = INIT_STATE, action) => {
       };
     case GET_REFERRALGUIDE_PAGE_LISTGUIDE:
       let itemsGR = [];
-      let lastEvaluatedKeyGR = "";
-      if(action.payload.callType !== "firstTime"){
-        itemsGR = [...state.referralGuideItems_pageListGuide, ...action.payload.Items];
-        lastEvaluatedKeyGR = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      let lastEvaluatedKeyGR = '';
+      if (action.payload.callType !== 'firstTime') {
+        itemsGR = [
+          ...state.referralGuideItems_pageListGuide,
+          ...action.payload.Items,
+        ];
+        lastEvaluatedKeyGR = action.payload.LastEvaluatedKey
+          ? action.payload.LastEvaluatedKey
+          : null;
       }
       return {
         ...state,
-        referralGuideItems_pageListGuide: itemsGR, 
-        referralGuideLastEvalutedKey_pageListGuide: lastEvaluatedKeyGR
+        referralGuideItems_pageListGuide: itemsGR,
+        referralGuideLastEvalutedKey_pageListGuide: lastEvaluatedKeyGR,
       };
     case GET_BILL_PAGE_LISTGUIDE:
       let itemsBL = [];
-      let lastEvaluatedKeyBL = "";
-      if(action.payload.callType !== "firstTime"){
+      let lastEvaluatedKeyBL = '';
+      if (action.payload.callType !== 'firstTime') {
         itemsBL = [...state.billItems_pageListBill, ...action.payload.Items];
-        lastEvaluatedKeyBL = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+        lastEvaluatedKeyBL = action.payload.LastEvaluatedKey
+          ? action.payload.LastEvaluatedKey
+          : null;
       }
       return {
         ...state,
-        billItems_pageListBill: itemsBL, 
-        billLastEvalutedKey_pageListBill: lastEvaluatedKeyBL
+        billItems_pageListBill: itemsBL,
+        billLastEvalutedKey_pageListBill: lastEvaluatedKeyBL,
       };
     case GET_RECEIPT_PAGE_LISTGUIDE:
       let itemsRC = [];
-      let lastEvaluatedKeyRC = "";
-      if(action.payload.callType !== "firstTime"){
-        itemsRC = [...state.receiptItems_pageListReceipt, ...action.payload.Items];
-        lastEvaluatedKeyRC = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+      let lastEvaluatedKeyRC = '';
+      if (action.payload.callType !== 'firstTime') {
+        itemsRC = [
+          ...state.receiptItems_pageListReceipt,
+          ...action.payload.Items,
+        ];
+        lastEvaluatedKeyRC = action.payload.LastEvaluatedKey
+          ? action.payload.LastEvaluatedKey
+          : null;
       }
       return {
         ...state,
-        receiptItems_pageListReceipt: itemsRC, 
-        receiptLastEvalutedKey_pageListReceipt: lastEvaluatedKeyRC
+        receiptItems_pageListReceipt: itemsRC,
+        receiptLastEvalutedKey_pageListReceipt: lastEvaluatedKeyRC,
       };
     case GET_NOTE_PAGE_LISTGUIDE:
       let itemsNO = [];
-      let lastEvaluatedKeyNO = "";
-      if(action.payload.callType !== "firstTime"){
+      let lastEvaluatedKeyNO = '';
+      if (action.payload.callType !== 'firstTime') {
         itemsNO = [...state.noteItems_pageListNote, ...action.payload.Items];
-        lastEvaluatedKeyNO = action.payload.LastEvaluatedKey ? action.payload.LastEvaluatedKey : null
+        lastEvaluatedKeyNO = action.payload.LastEvaluatedKey
+          ? action.payload.LastEvaluatedKey
+          : null;
       }
       return {
         ...state,
-        noteItems_pageListNote: itemsNO, 
-        noteLastEvalutedKey_pageListNote: lastEvaluatedKeyNO
+        noteItems_pageListNote: itemsNO,
+        noteLastEvalutedKey_pageListNote: lastEvaluatedKeyNO,
       };
     case GET_INVENTORY_PRODUCTS:
       console.log('data de reducer GET_INVENTORY_PRODUCTS', action.payload);
@@ -228,10 +238,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
         for (var i = 0; i < action.payload.Items.length; i++) {
           console.log('El i', i);
           console.log('action.payload123', action.payload);
-          deliveries = [
-            ...deliveries,
-            ...action.payload.Items[i].deliveries,
-          ];
+          deliveries = [...deliveries, ...action.payload.Items[i].deliveries];
         }
       }
 
@@ -253,17 +260,21 @@ const movementsReducer = (state = INIT_STATE, action) => {
       };
 
     case TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION:
-      console.log('data de reducer TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION', action.payload);
-      let indexDistribution =  action.indexDistributionSelected
-      console.log("indexDistribution ahora si papu", indexDistribution)
-      console.log("action.payload", action.payload)
-      
-      let newListDistributions = state.listDistribution
-      newListDistributions[indexDistribution].deliveries = action.payload.deliveries
-      // listDistribution[i].deliveries= 
+      console.log(
+        'data de reducer TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION',
+        action.payload,
+      );
+      let indexDistribution = action.indexDistributionSelected;
+      console.log('indexDistribution ahora si papu', indexDistribution);
+      console.log('action.payload', action.payload);
+
+      let newListDistributions = state.listDistribution;
+      newListDistributions[indexDistribution].deliveries =
+        action.payload.deliveries;
+      // listDistribution[i].deliveries=
       return {
         ...state,
-        listDistribution: newListDistributions
+        listDistribution: newListDistributions,
       };
 
     case GENERATE_DISTRIBUTION:
@@ -300,7 +311,6 @@ const movementsReducer = (state = INIT_STATE, action) => {
         updateGenerateReferralGuideRes: action.payload,
       };
 
-
     case SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION:
       console.log(
         'data de reducer SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION',
@@ -310,25 +320,24 @@ const movementsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         predefinedRoutes_PageNewDistribution: action.payload.Items,
-        lastEvaluatedKeys_PageNewDistribution : action.payload.LastEvaluatedKey,
+        lastEvaluatedKeys_PageNewDistribution: action.payload.LastEvaluatedKey,
         // listRoute: action.payload.Items,
         // action.payload.Items
       };
 
     case SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION:
-        let newItems = state.predefinedRoutes_PageNewDistribution
-        let item = newItems.filter(item => item.routePredefinedId == action.payload.routePredefinedId)
-        item[0].deliveries = action.payload.deliveries
-        console.log("Estamos actualizando el listRoute", newItems)
+      let newItems = state.predefinedRoutes_PageNewDistribution;
+      let item = newItems.filter(
+        (item) => item.routePredefinedId == action.payload.routePredefinedId,
+      );
+      item[0].deliveries = action.payload.deliveries;
+      console.log('Estamos actualizando el listRoute', newItems);
       return {
-          ...state,
-          predefinedRoutes_PageNewDistribution: newItems,
-          // listRoute: newItems,
-          selectedRoute_PageNewDistribution:action.payload,
+        ...state,
+        predefinedRoutes_PageNewDistribution: newItems,
+        // listRoute: newItems,
+        selectedRoute_PageNewDistribution: action.payload,
       };
-
-
-
 
     case SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
       console.log(
@@ -339,27 +348,24 @@ const movementsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         predefinedRoutes_PageListPredefinedRoutes: action.payload.Items,
-        lastEvaluatedKeys_PageListPredefinedRoutes : action.payload.LastEvaluatedKey,
+        lastEvaluatedKeys_PageListPredefinedRoutes:
+          action.payload.LastEvaluatedKey,
         // listRoute: action.payload.Items,
         // action.payload.Items
       };
 
     case SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
       return {
-          ...state,
+        ...state,
 
-          selectedRoute_PageListPredefinedRoutes:action.payload,
+        selectedRoute_PageListPredefinedRoutes: action.payload,
       };
-  
+
     case REFERRAL_GUIDES_BATCH_CONSULT:
       return {
-          ...state,
-          referralGuidesBatchConsultRes: action.payload,
+        ...state,
+        referralGuidesBatchConsultRes: action.payload,
       };
-
-
-      
-      
 
     // case SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
     //   console.log(
@@ -372,7 +378,6 @@ const movementsReducer = (state = INIT_STATE, action) => {
     //     predefinedRoutes_PageListPredefinedRoutes,
     //     lastEvaluatedKeys_PageListPredefinedRoutes
     //   };
-      
 
     // case SET_ROUTE_PREDEFINED_TO_UPDATE_____PAGE_LIST_PREDEFINED_ROUTES:
     //   console.log(

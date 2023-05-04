@@ -501,7 +501,9 @@ const Distribution = () => {
                       renderInput={(params) => (
                         <TextField {...params} sx={{width: 1}} />
                       )}
-                      label={<IntlMessages id='dashboard.iinitialDateTimeTras' />}
+                      label={
+                        <IntlMessages id='dashboard.iinitialDateTimeTras' />
+                      }
                       inputFormat='dd/MM/yyyy hh:mm a'
                       value={initialDate}
                       onChange={(newDate) => {

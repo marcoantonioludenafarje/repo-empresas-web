@@ -40,7 +40,7 @@ import {
   FETCH_ERROR,
   LIST_ROUTE,
   SET_DELIVERIES_SIMPLE,
-  SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES
+  SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {
@@ -135,14 +135,14 @@ const PredefinedRoutes = () => {
   const {query} = router;
   console.log('query', query);
 
-  const {predefinedRoutes_PageListPredefinedRoutes, 
-    lastEvaluatedKeys_PageListPredefinedRoutes, 
-    selectedRoute_PageListPredefinedRoutes} = useSelector(({movements}) => movements);
+  const {
+    predefinedRoutes_PageListPredefinedRoutes,
+    lastEvaluatedKeys_PageListPredefinedRoutes,
+    selectedRoute_PageListPredefinedRoutes,
+  } = useSelector(({movements}) => movements);
   // console.log('listRoute', listRoute);
 
-  const {deliveries} = useSelector(
-    ({movements}) => movements,
-  );
+  const {deliveries} = useSelector(({movements}) => movements);
 
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
@@ -173,8 +173,8 @@ const PredefinedRoutes = () => {
     // listRoutesPayload.request.payload.LastEvaluatedKey = LastEvaluatedKey;
     let payload = {
       merchantId: userDataRes.merchantSelected.merchantId,
-      LastEvaluatedKey:lastEvaluatedKeys_PageListPredefinedRoutes
-    }
+      LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
+    };
     dispatch(listPredefinedRoutes_____PageListPredefinedRoutes(payload));
     // setPage(page+1);
   };
@@ -200,18 +200,15 @@ const PredefinedRoutes = () => {
 
   useEffect(() => {
     console.log('Reseteando todo');
-    if(userDataRes &&  userDataRes.merchantSelected) {
-
+    if (userDataRes && userDataRes.merchantSelected) {
       let payload = {
         merchantId: userDataRes.merchantSelected.merchantId,
-        LastEvaluatedKey:lastEvaluatedKeys_PageListPredefinedRoutes
-      }
+        LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
+      };
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: LIST_ROUTE, payload: undefined});
       toListRoutes(payload);
-
-
     }
   }, []);
 
@@ -270,7 +267,9 @@ const PredefinedRoutes = () => {
 
   const downloadOriginalFile = (path, merchant) => {
     console.log('Descargar original');
-    window.open(`https://d2moc5ro519bc0.cloudfront.net/merchant/${merchant}/${path}`);
+    window.open(
+      `https://d2moc5ro519bc0.cloudfront.net/merchant/${merchant}/${path}`,
+    );
   };
 
   const downloadTranslatedFile = () => {
@@ -286,7 +285,9 @@ const PredefinedRoutes = () => {
   };
 
   const findRoute = (routeId) => {
-    return predefinedRoutes_PageListPredefinedRoutes.find((obj) => obj.routePredefinedId == routeId);
+    return predefinedRoutes_PageListPredefinedRoutes.find(
+      (obj) => obj.routePredefinedId == routeId,
+    );
   };
 
   const handleClick = (routeId, event) => {
@@ -307,19 +308,18 @@ const PredefinedRoutes = () => {
 
   const handleClickOpen = (type) => {
     console.log('Veamos el total', selectedRoute);
-    console.log("El type", type)
+    console.log('El type', type);
     let routePredefinedId = selectedRoute.routePredefinedId;
     console.log('EY que tal', userDataRes.merchantSelected.merchantId);
     dispatch({
       type: SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
       payload: null,
-    })
+    });
 
     toGetPredefinedRoute({
       routePredefinedId,
       merchantId: userDataRes.merchantSelected.merchantId,
     });
-
 
     setOpen(true);
     // toGetPredefinedRoute()
@@ -345,26 +345,30 @@ const PredefinedRoutes = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {predefinedRoutes_PageListPredefinedRoutes 
-                && Array.isArray(predefinedRoutes_PageListPredefinedRoutes) ? (
-                  predefinedRoutes_PageListPredefinedRoutes.sort(compare).map((obj, index) => {
-                    const routes = obj.deliveries;
-                    return (
-                      <>
-                        <TableRow
-                          sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                          key={`route${index}`}
-                        >
-                          <TableCell>{`${justDate(obj.createdAt)} ${justTime(
-                            obj.createdAt,
-                          )}`}</TableCell>
-                          <TableCell>{obj.routeName}</TableCell>
-                          <TableCell>
-                            {obj.routesChildId && obj.routesChildId.length > 0
-                              ? obj.cantDeliveries
-                              : routes.length}
-                          </TableCell>
-                          {/* <TableCell>
+                {predefinedRoutes_PageListPredefinedRoutes &&
+                Array.isArray(predefinedRoutes_PageListPredefinedRoutes) ? (
+                  predefinedRoutes_PageListPredefinedRoutes
+                    .sort(compare)
+                    .map((obj, index) => {
+                      const routes = obj.deliveries;
+                      return (
+                        <>
+                          <TableRow
+                            sx={{
+                              '&:last-child td, &:last-child th': {border: 0},
+                            }}
+                            key={`route${index}`}
+                          >
+                            <TableCell>{`${justDate(obj.createdAt)} ${justTime(
+                              obj.createdAt,
+                            )}`}</TableCell>
+                            <TableCell>{obj.routeName}</TableCell>
+                            <TableCell>
+                              {obj.routesChildId && obj.routesChildId.length > 0
+                                ? obj.cantDeliveries
+                                : routes.length}
+                            </TableCell>
+                            {/* <TableCell>
 
                           <IconButton
                             onClick={() => checkRoutes(obj, index)}
@@ -374,26 +378,26 @@ const PredefinedRoutes = () => {
                           </IconButton>
                  
                       </TableCell> */}
-                          <TableCell>
-                            <Button
-                              id='basic-button'
-                              aria-controls={
-                                openMenu ? 'basic-menu' : undefined
-                              }
-                              aria-haspopup='true'
-                              aria-expanded={openMenu ? 'true' : undefined}
-                              onClick={handleClick.bind(
-                                this,
-                                obj.routePredefinedId,
-                              )}
-                            >
-                              <KeyboardArrowDownIcon />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      </>
-                    );
-                  })
+                            <TableCell>
+                              <Button
+                                id='basic-button'
+                                aria-controls={
+                                  openMenu ? 'basic-menu' : undefined
+                                }
+                                aria-haspopup='true'
+                                aria-expanded={openMenu ? 'true' : undefined}
+                                onClick={handleClick.bind(
+                                  this,
+                                  obj.routePredefinedId,
+                                )}
+                              >
+                                <KeyboardArrowDownIcon />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        </>
+                      );
+                    })
                 ) : (
                   <CircularProgress
                     disableShrink
@@ -435,7 +439,7 @@ const PredefinedRoutes = () => {
               'aria-labelledby': 'basic-button',
             }}
           >
-            <MenuItem onClick={handleClickOpen.bind(this,'detailRoute')}>
+            <MenuItem onClick={handleClickOpen.bind(this, 'detailRoute')}>
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Ver detalle
             </MenuItem>
@@ -444,7 +448,15 @@ const PredefinedRoutes = () => {
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Actualizar en mantenimiento
             </MenuItem>
-            <MenuItem disabled={!selectedRoute.originalExcel} onClick={() => downloadOriginalFile(selectedRoute.originalExcel, selectedRoute.merchantId)}>
+            <MenuItem
+              disabled={!selectedRoute.originalExcel}
+              onClick={() =>
+                downloadOriginalFile(
+                  selectedRoute.originalExcel,
+                  selectedRoute.merchantId,
+                )
+              }
+            >
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Descargar original
             </MenuItem>
@@ -465,8 +477,11 @@ const PredefinedRoutes = () => {
             {typeDialog == 'detailRoute' ? (
               <>
                 <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                  
-                  {`Rutas(${selectedRoute_PageListPredefinedRoutes ? selectedRoute_PageListPredefinedRoutes.cantDeliveries : ''} puntos)`}
+                  {`Rutas(${
+                    selectedRoute_PageListPredefinedRoutes
+                      ? selectedRoute_PageListPredefinedRoutes.cantDeliveries
+                      : ''
+                  } puntos)`}
                   {/* { selectedRoute_PageListPredefinedRoutes && selectedRoute_PageListPredefinedRoutes.deliveries
                    && selectedRoute_PageListPredefinedRoutes.deliveries.length >0  ? 
                    `Rutas (${selectedRoute_PageListPredefinedRoutes.deliveries.length} puntos)` : `Rutas (Cargando ... ${selectedRoute_PageListPredefinedRoutes.deliveries.length} puntos)`} */}
@@ -476,46 +491,30 @@ const PredefinedRoutes = () => {
                   />
                 </DialogTitle>
                 <DialogContent>
-
-                    <Table size='small' aria-label='purchases'>
-                      <TableHead sx={{backgroundColor: '#ededed'}}>
-                        <TableRow>
-                          <TableCell>
-                            Dirección de punto de partida
-                          </TableCell>
-                          <TableCell>
-                            Ubigeo de punto de partida
-                          </TableCell>
-                          <TableCell>
-                            Dirección de punto de llegada
-                          </TableCell>
-                          <TableCell>
-                            Ubigeo de punto de llegada
-                          </TableCell>
-                          <TableCell>
-                            Documento de conductor
-                          </TableCell>
-                          <TableCell>Nombre de conductor</TableCell>
-                          <TableCell>
-                            Apellidos de conductor
-                          </TableCell>
-                          <TableCell>
-                            Licencia de conductor
-                          </TableCell>
-                          <TableCell>Placa</TableCell>
-                          <TableCell>Productos</TableCell>
-                          <TableCell>Observaciones</TableCell>
-                          <TableCell>Peso total</TableCell>
-                          <TableCell>Número de paquetes</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {selectedRoute_PageListPredefinedRoutes && 
-                          selectedRoute_PageListPredefinedRoutes.deliveries.length >0
-                          
-                          ? selectedRoute_PageListPredefinedRoutes.deliveries
-                          
-                          .map((route, index2) => {
+                  <Table size='small' aria-label='purchases'>
+                    <TableHead sx={{backgroundColor: '#ededed'}}>
+                      <TableRow>
+                        <TableCell>Dirección de punto de partida</TableCell>
+                        <TableCell>Ubigeo de punto de partida</TableCell>
+                        <TableCell>Dirección de punto de llegada</TableCell>
+                        <TableCell>Ubigeo de punto de llegada</TableCell>
+                        <TableCell>Documento de conductor</TableCell>
+                        <TableCell>Nombre de conductor</TableCell>
+                        <TableCell>Apellidos de conductor</TableCell>
+                        <TableCell>Licencia de conductor</TableCell>
+                        <TableCell>Placa</TableCell>
+                        <TableCell>Productos</TableCell>
+                        <TableCell>Observaciones</TableCell>
+                        <TableCell>Peso total</TableCell>
+                        <TableCell>Número de paquetes</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {selectedRoute_PageListPredefinedRoutes &&
+                      selectedRoute_PageListPredefinedRoutes.deliveries.length >
+                        0
+                        ? selectedRoute_PageListPredefinedRoutes.deliveries.map(
+                            (route, index2) => {
                               const products = route.productsInfo;
                               return (
                                 <>
@@ -553,14 +552,10 @@ const PredefinedRoutes = () => {
                                       {route.carrierPlateNumber}
                                     </TableCell>
                                     <TableCell>
-                                      {products &&
-                                      products.length !== 0 ? (
+                                      {products && products.length !== 0 ? (
                                         <IconButton
                                           onClick={() =>
-                                            checkProducts(
-                                              route,
-                                              index2,
-                                            )
+                                            checkProducts(route, index2)
                                           }
                                           size='small'
                                         >
@@ -581,14 +576,10 @@ const PredefinedRoutes = () => {
                                     </TableCell>
                                   </TableRow>
                                   <TableRow key={`sub-${index2}`}>
-                                    <TableCell
-                                      sx={{p: 0}}
-                                      colSpan={10}
-                                    >
+                                    <TableCell sx={{p: 0}} colSpan={10}>
                                       <Collapse
                                         in={
-                                          openProducts &&
-                                          index2 === rowNumber2
+                                          openProducts && index2 === rowNumber2
                                         }
                                         timeout='auto'
                                         unmountOnExit
@@ -600,30 +591,21 @@ const PredefinedRoutes = () => {
                                           >
                                             <TableHead
                                               sx={{
-                                                backgroundColor:
-                                                  '#ededed',
+                                                backgroundColor: '#ededed',
                                               }}
                                             >
                                               <TableRow>
-                                                <TableCell>
-                                                  Código
-                                                </TableCell>
+                                                <TableCell>Código</TableCell>
                                                 <TableCell>
                                                   Descripción
                                                 </TableCell>
-                                                <TableCell>
-                                                  Cantidad
-                                                </TableCell>
+                                                <TableCell>Cantidad</TableCell>
                                               </TableRow>
                                             </TableHead>
                                             <TableBody>
-                                              {products &&
-                                              products.length !== 0
+                                              {products && products.length !== 0
                                                 ? products.map(
-                                                    (
-                                                      product,
-                                                      index3,
-                                                    ) => {
+                                                    (product, index3) => {
                                                       return (
                                                         <TableRow
                                                           key={`${index3}-${index3}`}
@@ -657,11 +639,11 @@ const PredefinedRoutes = () => {
                                   </TableRow>
                                 </>
                               );
-                            })
-                          : null}
-                      </TableBody>
-                      </Table>
-
+                            },
+                          )
+                        : null}
+                    </TableBody>
+                  </Table>
                 </DialogContent>
               </>
             ) : null}

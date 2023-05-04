@@ -24,11 +24,12 @@ import {
   CircularProgress,
   Typography,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
@@ -69,7 +70,10 @@ import {
   translateValue,
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
-import {getBillItems_pageListBill, cancelInvoice} from '../../../redux/actions/Movements';
+import {
+  getBillItems_pageListBill,
+  cancelInvoice,
+} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -161,7 +165,8 @@ const BillsTable = (props) => {
     ({general}) => general,
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
-  const documentSunat = "bill";
+  const documentSunat = 'bill';
+  const {moneySymbol} = useSelector(({general}) => general);
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
@@ -185,9 +190,10 @@ const BillsTable = (props) => {
   };
 
   const handleNextPage = (event) => {
-    //console.log('Llamando al  handleNextPage', handleNextPage);    
-    listPayload.request.payload.LastEvaluatedKey = billLastEvalutedKey_pageListBill;
-    console.log('listPayload111:handleNextPage:',listPayload)
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    listPayload.request.payload.LastEvaluatedKey =
+      billLastEvalutedKey_pageListBill;
+    console.log('listPayload111:handleNextPage:', listPayload);
     toGetMovements(listPayload);
     // setPage(page+1);
   };
@@ -197,7 +203,8 @@ const BillsTable = (props) => {
   let exchangeRate;
 
   //GET APIS RES
-  const {billItems_pageListBill, billLastEvalutedKey_pageListBill} = useSelector(({movements}) => movements);
+  const {billItems_pageListBill, billLastEvalutedKey_pageListBill} =
+    useSelector(({movements}) => movements);
   //const {getMovementsRes} = useSelector(({movements}) => movements);
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
@@ -287,7 +294,7 @@ const BillsTable = (props) => {
     listPayload.request.payload.denominationClient =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toUpperCase();
     console.log('listPayload', listPayload);
-    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     toGetMovements(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
@@ -300,13 +307,13 @@ const BillsTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
-    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     toGetMovements(listPayload);
   };
 
   useEffect(() => {
-    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
-    
+    dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
+
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
@@ -494,6 +501,7 @@ const BillsTable = (props) => {
         return null;
     }
   };
+
   const showCanceled = (bool) => {
     if (bool) {
       return (
@@ -503,6 +511,44 @@ const BillsTable = (props) => {
       );
     } else {
       return <></>;
+    }
+  };
+
+  const showDocument = (listDocument,type)  => {
+    if (listDocument) {
+      let documentObj = listDocument.filter(
+        (item) => item.typeDocument === type,
+      );
+
+      if (documentObj && documentObj.length>0) {
+        return (
+          <Button
+            variant='secondary'
+            sx={{fontSize: '1em'}}
+            /* disabled={type == 'referralGuide'} */
+            onClick={() => showObject(documentObj[0].noteId, type)}
+          >
+            Ver Nota Crédito
+          </Button>
+        );
+      }
+      else {
+        return <></>;
+      }
+
+    } else {
+      return <></>;
+    }
+  };
+
+  const showObject = (objetId, type) => {
+    if (type == 'creditNote') {
+      Router.push({
+        pathname: '/sample/notes/table',
+        query: {noteId: objetId},
+      });
+    } else {
+      return null;
     }
   };
 
@@ -532,8 +578,12 @@ const BillsTable = (props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} 
-            direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -584,11 +634,14 @@ const BillsTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell>Fecha de emisión</TableCell>
-              <TableCell>Número de serie</TableCell>
-              <TableCell>Número de factura</TableCell>
-              <TableCell>Receptor</TableCell>
+              <TableCell>Fecha emisión</TableCell>
+              <TableCell>Número serie</TableCell>
+              <TableCell>Número factura</TableCell>
+              <TableCell>Identificador Receptor</TableCell>
+              <TableCell>Nombre Receptor</TableCell>
               <TableCell>Observación</TableCell>
+              <TableCell>Subtotal</TableCell>
+              <TableCell>IGV</TableCell>
               <TableCell>Importe total</TableCell>
               <TableCell>Forma de pago</TableCell>
               <TableCell>Aceptado por Sunat</TableCell>
@@ -607,8 +660,8 @@ const BillsTable = (props) => {
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
-                    {obj.serialNumberBill && obj.serialNumberBill.includes('-') 
-                      ? obj.serialNumberBill.split('-')[0] 
+                    {obj.serialNumberBill && obj.serialNumberBill.includes('-')
+                      ? obj.serialNumberBill.split('-')[0]
                       : ''}
                   </TableCell>
                   <TableCell>
@@ -616,11 +669,22 @@ const BillsTable = (props) => {
                       ? obj.serialNumberBill.split('-')[1]
                       : ''}
                   </TableCell>
-                  <TableCell>{obj.denominationClient}</TableCell>
+                  <TableCell>{obj.clientId ? `${obj.clientId.split('-')[0]} - ${obj.clientId.split('-')[1]}` : ''}</TableCell>
+                  <TableCell>{obj.clientId ? obj.denominationClient : 'Cliente No Definido'}</TableCell>
                   <TableCell>{obj.observation}</TableCell>
                   <TableCell>
+                    {obj.totalPriceWithoutIgv
+                      ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv 
+                      ? `${moneySymbol} ${Number(obj.totalPriceWithIgv.toFixed(2)-obj.totalPriceWithoutIgv.toFixed(2)).toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
                     {obj.totalPriceWithIgv
-                      ? `${obj.totalPriceWithIgv.toFixed(2)} `
+                      ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(2)} `
                       : ''}
                   </TableCell>
                   <TableCell>{showPaymentMethod(obj.paymentMethod)}</TableCell>
@@ -628,7 +692,7 @@ const BillsTable = (props) => {
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
                   <TableCell align='center'>
-                    {showCanceled(obj.cancelStatus)}
+                    {showDocument(obj.documentsMovement,'creditNote')/*showCanceled(obj.cancelStatus)*/}
                   </TableCell>
                   <TableCell>
                     <Button
@@ -663,15 +727,14 @@ const BillsTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportBills/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportToExcel}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportBills/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportToExcel}
+          >
+            Exportar todo
+          </Button>
         ) : null}
       </ButtonGroup>
 
@@ -780,7 +843,8 @@ const BillsTable = (props) => {
                   idBill: selectedBill.movementHeaderId,
                   movementId: selectedBill.outputId,
                   nroBill: selectedBill.serialNumberBill,
-                  igv: selectedBill.igv
+                  igv: selectedBill.igv,
+                  typeDocumentRelated: 'bill',
                 },
               })
             }
@@ -833,12 +897,14 @@ const BillsTable = (props) => {
             sx={{fontSize: '1.2em'}}
             id='alert-dialog-description'
           >
-            <MoreFiltersDocumentSunat sendData={filterData} ds={documentSunat} />
+            <MoreFiltersDocumentSunat
+              sendData={filterData}
+              ds={documentSunat}
+            />
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
-
     </Card>
   );
 };

@@ -7,6 +7,8 @@ import {
   DELETE_FINANCE,
   UPDATE_FINANCE,
   GET_FINANCES_FOR_RESULT_STATE,
+  EXPORT_EXCEL_MOVEMENTS_DETAILS,
+  EXPORT_EXCEL_MOVEMENTS_SUMMARY,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -95,6 +97,46 @@ export const updateFinance = (payload) => {
       })
       .catch((error) => {
         console.log('updateFinance error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const exportExcelMovementsDetails = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/accounting/movement/exportDetails', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelMovementsDetails resultado', data);
+        dispatch({
+          type: EXPORT_EXCEL_MOVEMENTS_DETAILS,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+      })
+      .catch((error) => {
+        console.log('exportExcelMovementsDetails error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const exportExcelMovementsSummary = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/accounting/movement/exportSummary', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelMovementsSummary resultado', data);
+        dispatch({
+          type: EXPORT_EXCEL_MOVEMENTS_SUMMARY,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+      })
+      .catch((error) => {
+        console.log('exportExcelMovementsSummary error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

@@ -126,18 +126,17 @@ const useStyles = makeStyles((theme) => ({
 let selectedDelivery = {};
 let selectedDistribution = '';
 
-
 const Distribution = (props) => {
-  const {getMovementsRes, 
-    predefinedRoutes_PageNewDistribution, 
-    successMessage, 
+  const {
+    getMovementsRes,
+    predefinedRoutes_PageNewDistribution,
+    successMessage,
     generateDistributionRes,
-     errorMessage,
-     deliveries, LastEvaluatedKeyChildRoute,
-     selectedRoute_PageNewDistribution,
-    } = useSelector(({movements}) => movements);
-
-
+    errorMessage,
+    deliveries,
+    LastEvaluatedKeyChildRoute,
+    selectedRoute_PageNewDistribution,
+  } = useSelector(({movements}) => movements);
 
   const emptyRoute = {
     empty: true,
@@ -200,49 +199,54 @@ const Distribution = (props) => {
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
 
-
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   const {jwtToken} = useSelector(({general}) => general);
-
 
   const toGetChildRoutes = (payload) => {
     dispatch(getChildRoutes(payload));
   };
 
   const toListPredefinedRoutes = () => {
-    dispatch(listPredefinedRoutes_____PageNewDistribution({merchantId: userDataRes.merchantSelected.merchantId}));
+    dispatch(
+      listPredefinedRoutes_____PageNewDistribution({
+        merchantId: userDataRes.merchantSelected.merchantId,
+      }),
+    );
   };
 
   const toGetPredefinedRoute = () => {
-    dispatch(getPredefinedRoute_____PageNewDistribution(
-      {merchantId: userDataRes.merchantSelected.merchantId, 
-        routePredefinedId : selectedRoute.routePredefinedId }
-    ));
-  }
+    dispatch(
+      getPredefinedRoute_____PageNewDistribution({
+        merchantId: userDataRes.merchantSelected.merchantId,
+        routePredefinedId: selectedRoute.routePredefinedId,
+      }),
+    );
+  };
 
   const toRegisterNewDistribution = (payload) => {
     dispatch(registerNewDistribution_____PageNewDistribution(payload));
   };
 
   useEffect(() => {
-    console.log("Se selecciono en un selectedRoute", selectedRoute)
-    if(selectedRoute && selectedRoute.deliveries){
-
-      if (selectedRoute.routesChildId && 
-        selectedRoute.routesChildId.length > 0 && 
-        selectedRoute.deliveries.length == 0) {
-        console.log("LLamara la primera condicional")
+    console.log('Se selecciono en un selectedRoute', selectedRoute);
+    if (selectedRoute && selectedRoute.deliveries) {
+      if (
+        selectedRoute.routesChildId &&
+        selectedRoute.routesChildId.length > 0 &&
+        selectedRoute.deliveries.length == 0
+      ) {
+        console.log('LLamara la primera condicional');
         // getChildRoutesPayload.request.payload.deliveryFatherId =
         //   initialRoute.routePredefinedId;
 
         setRoutes([]);
         // toGetChildRoutes(getChildRoutesPayload);
-        toGetPredefinedRoute()
+        toGetPredefinedRoute();
 
         // Ahora chekaremos la sgte casuistica simple
-      } else if(selectedRoute && selectedRoute.deliveries.length>0) {
-        console.log("Finalmente entro a setear los routes")
+      } else if (selectedRoute && selectedRoute.deliveries.length > 0) {
+        console.log('Finalmente entro a setear los routes');
         let deliveries = selectedRoute.deliveries.map((obj) => {
           obj.products = obj.productsInfo;
           obj.totalWeight = obj.totalGrossWeight;
@@ -258,15 +262,8 @@ const Distribution = (props) => {
         console.log('initial deliveries', deliveries);
         setRoutes(deliveries);
       }
-
-
     }
-
-
-
   }, [selectedRoute]);
-  
-
 
   useEffect(() => {
     console.log('Aca vienen los deliveries', deliveries);
@@ -292,15 +289,13 @@ const Distribution = (props) => {
   }, [deliveries]);
 
   useEffect(() => {
-
-    console.log("userDataRes12000", userDataRes )
-    if(userDataRes && userDataRes.merchantSelected){
-
+    console.log('userDataRes12000', userDataRes);
+    if (userDataRes && userDataRes.merchantSelected) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: GET_PRODUCTS, payload: undefined});
       // topredefinedRoutes_PageNewDistributions(predefinedRoutes_PageNewDistributionsPayload);
-      toListPredefinedRoutes()
+      toListPredefinedRoutes();
       let listPayload = {
         request: {
           payload: {
@@ -344,9 +339,6 @@ const Distribution = (props) => {
       setTimeout(() => {
         setMinTutorial(true);
       }, 2000);
-
-
-
     }
   }, [userDataRes]);
 
@@ -360,9 +352,6 @@ const Distribution = (props) => {
       setSerial(serieParameter.metadata ? serieParameter.metadata : '');
     }
   }, [businessParameter]);
-
- 
-
 
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -430,13 +419,13 @@ const Distribution = (props) => {
                 numberOfPackages: route.numberPackages,
                 observationDelivery: route.observationDelivery,
                 startingPointAddress: route.startingAddress,
-                startingInternalCode: route.startingInternalCode || "",
+                startingInternalCode: route.startingInternalCode || '',
                 startingPointUbigeo: completeWithZeros(
                   route.startingPointUbigeo,
                   6,
                 ),
                 arrivalPointAddress: route.arrivalAddress,
-                arrivalInternalCode: route.arrivalInternalCode || "",
+                arrivalInternalCode: route.arrivalInternalCode || '',
                 arrivalPointUbigeo: completeWithZeros(
                   route.arrivalPointUbigeo,
                   6,
@@ -576,8 +565,6 @@ const Distribution = (props) => {
 
     setSelectedRouteId(event.target.value);
     setSelectedRoute(selectedNewRoute);
-
-
   };
 
   const onChangeInitialDate = (event) => {
@@ -671,33 +658,38 @@ const Distribution = (props) => {
   };
 
   useEffect(() => {
-    console.log("Este es el predefinedRoutes_PageNewDistribution 1234", predefinedRoutes_PageNewDistribution)
-    console.log("Este es el selectedRoute_PageNewDistribution", selectedRoute_PageNewDistribution)
+    console.log(
+      'Este es el predefinedRoutes_PageNewDistribution 1234',
+      predefinedRoutes_PageNewDistribution,
+    );
+    console.log(
+      'Este es el selectedRoute_PageNewDistribution',
+      selectedRoute_PageNewDistribution,
+    );
     // Si es que no existe el selectedRoute entonces seleccionamos
     // por defecto el predefinedRoutes_PageNewDistribution
-    if (predefinedRoutes_PageNewDistribution && predefinedRoutes_PageNewDistribution.length >0 && !selectedRoute.routePredefinedId) {
+    if (
+      predefinedRoutes_PageNewDistribution &&
+      predefinedRoutes_PageNewDistribution.length > 0 &&
+      !selectedRoute.routePredefinedId
+    ) {
       const initialRoute = predefinedRoutes_PageNewDistribution[0];
       setSelectedRouteId(initialRoute.routePredefinedId);
       setSelectedRoute(initialRoute);
-
-
-    }else if(predefinedRoutes_PageNewDistribution && predefinedRoutes_PageNewDistribution.length >0 
-      && selectedRoute_PageNewDistribution.routePredefinedId){
-        console.log("Entro por aca selectedRoute_PageNewDistribution" )
+    } else if (
+      predefinedRoutes_PageNewDistribution &&
+      predefinedRoutes_PageNewDistribution.length > 0 &&
+      selectedRoute_PageNewDistribution.routePredefinedId
+    ) {
+      console.log('Entro por aca selectedRoute_PageNewDistribution');
       // let itemModified =  predefinedRoutes_PageNewDistribution.filter(ele => ele.routePredefinedId == selectedRoute.routePredefinedId )
       // if(itemModified.length>0 && itemModified[0].deliveries.length>0){
-        setSelectedRouteId(selectedRoute_PageNewDistribution.routePredefinedId)
-        setSelectedRoute(selectedRoute_PageNewDistribution);
-
+      setSelectedRouteId(selectedRoute_PageNewDistribution.routePredefinedId);
+      setSelectedRoute(selectedRoute_PageNewDistribution);
 
       // }
-
-
-
     }
   }, [predefinedRoutes_PageNewDistribution, selectedRoute_PageNewDistribution]);
-
-
 
   return (
     <Card sx={{p: 4}}>
@@ -785,7 +777,9 @@ const Distribution = (props) => {
                       renderInput={(params) => (
                         <TextField {...params} sx={{width: 1}} />
                       )}
-                      label={<IntlMessages id='dashboard.initialDateTimeTras' />}
+                      label={
+                        <IntlMessages id='dashboard.initialDateTimeTras' />
+                      }
                       inputFormat='dd/MM/yyyy hh:mm a'
                       value={initialDate}
                       onChange={(newDate) => {
@@ -871,17 +865,19 @@ const Distribution = (props) => {
                         MenuProps={{PaperProps: {style: {maxHeight: 200}}}}
                       >
                         {predefinedRoutes_PageNewDistribution &&
-                          predefinedRoutes_PageNewDistribution.sort(compare).map((route, index) => {
-                            return (
-                              <MenuItem
-                                value={route.routePredefinedId}
-                                key={index}
-                                style={{fontWeight: 200}}
-                              >
-                                {route.routeName}
-                              </MenuItem>
-                            );
-                          })}
+                          predefinedRoutes_PageNewDistribution
+                            .sort(compare)
+                            .map((route, index) => {
+                              return (
+                                <MenuItem
+                                  value={route.routePredefinedId}
+                                  key={index}
+                                  style={{fontWeight: 200}}
+                                >
+                                  {route.routeName}
+                                </MenuItem>
+                              );
+                            })}
                       </Select>
                     </FormControl>
                   </Grid>

@@ -202,6 +202,9 @@ const NewOutput = (props) => {
   //VARIABLES DE PARAMETROS
   let weight_unit;
   let changeValueField;
+  let getValueField;
+  let isFormikSubmitting;
+  let setFormikSubmitting;
   const [addIgv, setAddIgv] = React.useState(false);
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [isIgvChecked, setIsIgvChecked] = React.useState(false);
@@ -222,6 +225,9 @@ const NewOutput = (props) => {
   const [exchangeRate, setExchangeRate] = React.useState('');
   const [typeDocument, settypeDocument] = React.useState('sales');
   const [hasBill, setHasBill] = React.useState([]);
+  const [openClientComprobation, setOpenClientComprobation] =
+    React.useState(false);
+  const [isClientValidated, setIsClientValidated] = React.useState(false);
 
   const [minTutorial, setMinTutorial] = React.useState(false);
   const prevExchangeRateRef = useRef();
@@ -258,7 +264,7 @@ const NewOutput = (props) => {
   const {userDataRes} = useSelector(({user}) => user);
   const {getRolUserRes} = useSelector(({general}) => general);
   console.log('Esto es getRolUserRes', getRolUserRes);
-  
+
   //SETEANDO PARAMETROS
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
@@ -407,6 +413,7 @@ const NewOutput = (props) => {
     );
   };
   const getClient = (client) => {
+    console.log('Estoy en el getClient');
     selectedClient = client;
     console.log('Cliente seleccionado', client);
     setOpen(false);
@@ -468,42 +475,60 @@ const NewOutput = (props) => {
     }
   };
 
-  const handleData = (data, {setSubmitting}) => {
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: ADD_MOVEMENT, payload: []});
-    setSubmitting(true);
-    let finalPayload;
-    let cleanDocuments = [];
-    listDocuments.map((obj) => {
-      cleanDocuments.push({
-        typeDocument: obj.typeDocument,
-        serialDocument: obj.document,
-        issueDate: obj.dateDocument,
-        ...getCarrier(obj),
+  const handleData = (data, client) => {
+    let localIsClientValidated = isClientValidated;
+    if (Object.keys(selectedClient).length != 0) {
+      setIsClientValidated(true);
+      localIsClientValidated = true;
+    } else {
+      setOpenClientComprobation(true);
+      setFormikSubmitting(false);
+    }
+
+    if (localIsClientValidated || client == 'enabled') {
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      dispatch({type: ADD_MOVEMENT, payload: []});
+      //setSubmitting(true);
+      setFormikSubmitting(true);
+      let finalPayload;
+      let cleanDocuments = [];
+      listDocuments.map((obj) => {
+        cleanDocuments.push({
+          typeDocument: obj.typeDocument,
+          serialDocument: obj.document,
+          issueDate: obj.dateDocument,
+          ...getCarrier(obj),
+        });
       });
-    });
-    if (selectedProducts.length > 0) {
-      if (
-        (typeDocument == 'sales' && selectedClient.clientId) ||
-        (typeDocument != 'sales' && !selectedClient.clientId)
-      ) {
+      if (selectedProducts.length > 0) {
+        // if (
+        //   (typeDocument == 'sales' && selectedClient.clientId) ||
+        //   (typeDocument != 'sales' && !selectedClient.clientId)
+        // ) {
+
+        let localDocumentIntern = '';
+        let localClientId = '';
+        if (Object.keys(selectedClient).length != 0) {
+          localDocumentIntern =
+            typeDocument == 'sales'
+              ? buildNewDoc(
+                  selectedClient.clientId.split('-')[1],
+                  cleanDocuments.length !== 0
+                    ? cleanDocuments[0].serialDocument
+                    : null,
+                )
+              : '';
+          localClientId =
+            typeDocument == 'sales' ? selectedClient.clientId : '';
+        }
         finalPayload = {
           request: {
             payload: {
               header: {
                 movementType: 'OUTPUT',
-                documentIntern:
-                  typeDocument == 'sales'
-                    ? buildNewDoc(
-                        selectedClient.clientId.split('-')[1],
-                        cleanDocuments.length !== 0
-                          ? cleanDocuments[0].serialDocument
-                          : null,
-                      )
-                    : '',
-                clientId:
-                  typeDocument == 'sales' ? selectedClient.clientId : '',
+                documentIntern: localDocumentIntern,
+                clientId: localClientId,
                 providerId: null,
                 merchantId: userDataRes.merchantSelected.merchantId,
                 quoteId: null,
@@ -511,13 +536,13 @@ const NewOutput = (props) => {
                 issueDate: toSimpleDate(dateRegister),
                 unitMeasureMoney: moneyToConvert,
                 igv: typeDocument == 'sales' ? addIgv : false,
-                finalTotalPrice: Number(data.totalField),
+                finalTotalPrice: Number(getValueField('totalField').value),
                 isGeneratedByTunexo: generateBill,
                 status: status,
                 movementSubType: typeDocument,
                 documentsMovement: cleanDocuments,
                 editTotal: editTotal,
-                observation: data.outputObservation,
+                observation: getValueField('outputObservation').value,
                 userCreated: userDataRes.userId,
                 userCreatedMetadata: {
                   nombreCompleto: userDataRes.nombreCompleto,
@@ -538,26 +563,28 @@ const NewOutput = (props) => {
         getAddMovement(finalPayload);
         console.log('Data formulario principal', finalPayload);
         /* selectedProducts = [];
-        selectedClient = {};
-        total = 0; */
+          selectedClient = {};
+          total = 0; */
         setTimeout(() => {
           setOpenStatus(true);
         }, 1000);
+        // } else {
+        //   if (typeDocument == 'sales') {
+        //     typeAlert = 'client';
+        //     setShowAlert(true);
+        //   }
+        //   if (typeDocument != 'sales') {
+        //     typeAlert = '';
+        //     setShowAlert(true);
+        //   }
+        // }
       } else {
-        if (typeDocument == 'sales') {
-          typeAlert = 'client';
-          setShowAlert(true);
-        }
-        if (typeDocument != 'sales') {
-          typeAlert = '';
-          setShowAlert(true);
-        }
+        typeAlert = 'product';
+        setShowAlert(true);
       }
-    } else {
-      typeAlert = 'product';
-      setShowAlert(true);
+      //setSubmitting(false);
+      setFormikSubmitting(false);
     }
-    setSubmitting(false);
   };
 
   const handleActualData = (event) => {
@@ -674,33 +701,33 @@ const NewOutput = (props) => {
         },
       };
 
-      
       //dispatch({type: GET_MOVEMENTS, payload: []});
       console.log('Este es el listPayload NewOutput', listPayload);
       toGetMovements(listPayload);
-      if (localStorage
-        .getItem('pathsBack')
-        .includes(
-          '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
-        ) ||
+      if (
+        localStorage
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+          ) ||
         localStorage
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
           ) ||
         localStorage
-        .getItem('pathsBack')
-        .includes(
-          '/facturacion/accounting/movement/register?path=/billOfOutput/*',
-        ) ||
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/billOfOutput/*',
+          ) ||
         localStorage
-        .getItem('pathsBack')
-        .includes(
-          '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
-        ))
-          setShowForms(true);
-      else
-        Router.push('/sample/outputs/table');
+          .getItem('pathsBack')
+          .includes(
+            '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
+          )
+      )
+        setShowForms(true);
+      else Router.push('/sample/outputs/table');
     } else {
       Router.push('/sample/outputs/table');
     }
@@ -763,12 +790,15 @@ const NewOutput = (props) => {
     if (getRolUserRes)
       for (let objModules of getRolUserRes.modules) {
         for (let objSubModules of objModules.submodule) {
-          if (objSubModules.idFront == opcion && objSubModules.typeAccess == 'RESTRICTED'){
+          if (
+            objSubModules.idFront == opcion &&
+            objSubModules.typeAccess == 'RESTRICTED'
+          ) {
             access = false;
-          }            
+          }
         }
       }
-      console.log('submodule fin: ', access);
+    console.log('submodule fin: ', access);
 
     return access;
   }
@@ -778,21 +808,34 @@ const NewOutput = (props) => {
 
     if (selectedClient.clientId) {
       let client = selectedClient.clientId.split('-');
-      let clientDocumentType = client [0];
-      let clientNumberDocument = client [1];
+      let clientDocumentType = client[0];
+      let clientNumberDocument = client[1];
 
-      if (clientDocumentType != "RUC" && documentType == "receipt") {
+      if ((!clientDocumentType || clientDocumentType != 'RUC') && documentType == 'receipt') {
         validation = true;
-      } else if (clientDocumentType == "RUC" && (documentType == "referralGuide" || documentType == "distribution")) {
+      } else if (
+        clientDocumentType == 'RUC' &&
+        (documentType == 'referralGuide' || documentType == 'distribution')
+      ) {
         validation = true;
-      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '1' && (documentType == "receipt" || documentType == "bill")) {
+      } else if (
+        clientDocumentType == 'RUC' &&
+        clientNumberDocument.charAt(0) == '1' &&
+        (documentType == 'receipt' || documentType == 'bill')
+      ) {
         validation = true;
-      } else if (clientDocumentType == "RUC" && clientNumberDocument.charAt(0) == '2' && documentType == "bill") {
+      } else if (
+        clientDocumentType == 'RUC' &&
+        clientNumberDocument.charAt(0) == '2' &&
+        documentType == 'bill'
+      ) {
         validation = true;
       }
+    } else if (documentType == 'receipt') {
+      validation = true;
     }
-    
-    console.log("selectedOutput1",selectedClient)
+
+    console.log('selectedOutput1', selectedClient);
     return validation;
   }
 
@@ -824,8 +867,11 @@ const NewOutput = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
+            setFormikSubmitting = setSubmitting;
+            isFormikSubmitting = isSubmitting;
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -1051,7 +1097,11 @@ const NewOutput = (props) => {
 
                 <Divider sx={{m: 2}} />
 
-                <Grid container spacing={2} sx={{maxWidth: 500, margin: 'auto'}}>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, margin: 'auto'}}
+                >
                   <Button
                     sx={{width: 1}}
                     variant='outlined'
@@ -1349,6 +1399,47 @@ const NewOutput = (props) => {
       </Dialog>
 
       <Dialog
+        open={openClientComprobation}
+        onClose={() => setOpenClientComprobation(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Cliente No Identificado'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea continuar con el registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            disabled={isFormikSubmitting}
+            variant='outlined'
+            onClick={() => {
+              setFormikSubmitting(true);
+              setIsClientValidated(true);
+              handleData({data1: 'a'}, 'enabled');
+            }}
+          >
+            Sí
+          </Button>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              setOpenClientComprobation(false);
+            }}
+          >
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={showForms}
         onClose={() => Router.push('/sample/outputs/table')}
         sx={{textAlign: 'center'}}
@@ -1362,131 +1453,127 @@ const NewOutput = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            {getMovementsRes.length !== 0 ? 
-              (
-                <>
-                  {validationClientType('referralGuide') && 
-                    !hasBill.includes('referralGuide') &&
-                    localStorage
-                    .getItem('pathsBack')
-                    .includes(
-                      '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
-                    ) ? (
-                    <Button
-                      color='primary'
-                      sx={{width: 1, px: 7, my: 2}}
-                      variant='contained'
-                      onClick={() => {
-                        Router.push({
-                          pathname: '/sample/referral-guide/get',
-                          query: getMovementsRes.find(
-                            (obj) =>
-                              obj.movementHeaderId ==
-                              addMovementRes.movementHeaderId,
-                          ),
-                        });
-                      }}
-                    >
-                      Generar Guía de remisión
-                    </Button>
-                  ) : null}
-                  {validationClientType('receipt') && 
-                    !hasBill.includes('bill') &&
-                    localStorage
-                    .getItem('pathsBack')
-                    .includes(
-                      '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
-                    ) ? (
-                    <Button
-                      color='primary'
-                      sx={{width: 1, px: 7, my: 2}}
-                      variant='contained'
-                      onClick={() => {
-                        Router.push({
-                          pathname: '/sample/receipts/get',
-                          query: getMovementsRes.find(
-                            (obj) =>
-                              obj.movementHeaderId ==
-                              addMovementRes.movementHeaderId,
-                          ),
-                        });
-                      }}
-                    >
-                      Generar Boleta De Venta
-                    </Button>
-                  ) : null}
-                  {validationClientType('bill') && 
-                    !hasBill.includes('bill')  &&
-                    localStorage
-                    .getItem('pathsBack')
-                    .includes(
-                      '/facturacion/accounting/movement/register?path=/billOfOutput/*',
-                    ) ? (
-                    <Button
-                      color='primary'
-                      sx={{width: 1, px: 7, my: 2}}
-                      variant='contained'
-                      onClick={() => {
-                        Router.push({
-                          pathname: '/sample/bills/get',
-                          query: getMovementsRes.find(
-                            (obj) =>
-                              obj.movementHeaderId ==
-                              addMovementRes.movementHeaderId,
-                          ),
-                        });
-                      }}
-                    >
-                      Generar Factura
-                    </Button>
-                  ) : null}
-                  {hasBill.includes('bill') &&
-                    localStorage
-                    .getItem('pathsBack')
-                    .includes(
-                      '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
-                    ) ? (
-                    <Button
-                      color='primary'
-                      sx={{width: 1, px: 7, my: 2}}
-                      variant='contained'
-                      onClick={() => {
-                        Router.push({
-                          pathname: '/sample/finances/new-earning',
-                          query: getMovementsRes.find(
-                            (obj) =>
-                              obj.movementHeaderId ==
-                              addMovementRes.movementHeaderId,
-                          ),
-                        });
-                      }}
-                    >
-                      Generar Ingreso
-                    </Button>
-                  ) : null}
+            {getMovementsRes.length !== 0 ? (
+              <>
+                {validationClientType('referralGuide') &&
+                !hasBill.includes('referralGuide') &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
+                  ) ? (
                   <Button
                     color='primary'
                     sx={{width: 1, px: 7, my: 2}}
-                    variant='outlined'
-                    onClick={() => Router.push('/sample/outputs/table')}
-                    // onClick={() => {
-                    //   Router.push({
-                    //     pathname: '/sample/outputs/table',
-                    //     query: {
-                    //       operationBack: true
-                    //     },
-                    //   });
-                    // }}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/referral-guide/get',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
                   >
-                    Ir a Listado
+                    Generar Guía de remisión
                   </Button>
-                </>
-              ) 
-
-              
-              : (
-                <CircularProgress />
-              )}
+                ) : null}
+                {validationClientType('receipt') &&
+                !hasBill.includes('bill') &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+                  ) ? (
+                  <Button
+                    color='primary'
+                    sx={{width: 1, px: 7, my: 2}}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/receipts/get',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
+                  >
+                    Generar Boleta De Venta
+                  </Button>
+                ) : null}
+                {validationClientType('bill') &&
+                !hasBill.includes('bill') &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/billOfOutput/*',
+                  ) ? (
+                  <Button
+                    color='primary'
+                    sx={{width: 1, px: 7, my: 2}}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/bills/get',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
+                  >
+                    Generar Factura
+                  </Button>
+                ) : null}
+                {hasBill.includes('bill') &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
+                  ) ? (
+                  <Button
+                    color='primary'
+                    sx={{width: 1, px: 7, my: 2}}
+                    variant='contained'
+                    onClick={() => {
+                      Router.push({
+                        pathname: '/sample/finances/new-earning',
+                        query: getMovementsRes.find(
+                          (obj) =>
+                            obj.movementHeaderId ==
+                            addMovementRes.movementHeaderId,
+                        ),
+                      });
+                    }}
+                  >
+                    Generar Ingreso
+                  </Button>
+                ) : null}
+                <Button
+                  color='primary'
+                  sx={{width: 1, px: 7, my: 2}}
+                  variant='outlined'
+                  onClick={() => Router.push('/sample/outputs/table')}
+                  // onClick={() => {
+                  //   Router.push({
+                  //     pathname: '/sample/outputs/table',
+                  //     query: {
+                  //       operationBack: true
+                  //     },
+                  //   });
+                  // }}
+                >
+                  Ir a Listado
+                </Button>
+              </>
+            ) : (
+              <CircularProgress />
+            )}
           </DialogContentText>
         </DialogContent>
       </Dialog>

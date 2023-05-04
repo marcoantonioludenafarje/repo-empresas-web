@@ -24,11 +24,12 @@ import {
   CircularProgress,
   Typography,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
@@ -68,7 +69,10 @@ import {
   translateValue,
 } from '../../../Utils/utils';
 import AddReasonForm from './AddReasonForm';
-import {getNoteItems_pageListNote, cancelInvoice} from '../../../redux/actions/Movements';
+import {
+  getNoteItems_pageListNote,
+  cancelInvoice,
+} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -148,11 +152,14 @@ const CreditNotesTable = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const router = useRouter();
+  const {query} = router;
   const {excelTemplateGeneratedToNotesRes} = useSelector(
     ({general}) => general,
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
-  const documentSunat = "credit_Note";
+  const documentSunat = 'credit_Note';
+  const {moneySymbol} = useSelector(({general}) => general);
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
@@ -176,15 +183,17 @@ const CreditNotesTable = (props) => {
   };
 
   const handleNextPage = (event) => {
-    //console.log('Llamando al  handleNextPage', handleNextPage);    
-    listPayload.request.payload.LastEvaluatedKey = noteLastEvalutedKey_pageListNote;
-    console.log('listPayload111:handleNextPage:',listPayload)
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    listPayload.request.payload.LastEvaluatedKey =
+      noteLastEvalutedKey_pageListNote;
+    console.log('listPayload111:handleNextPage:', listPayload);
     toGetMovements(listPayload);
     // setPage(page+1);
   };
 
   //GET APIS RES
-  const {noteItems_pageListNote, noteLastEvalutedKey_pageListNote} = useSelector(({movements}) => movements);
+  const {noteItems_pageListNote, noteLastEvalutedKey_pageListNote} =
+    useSelector(({movements}) => movements);
   console.log('noteItems_pageListNote', noteItems_pageListNote);
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
@@ -204,9 +213,8 @@ const CreditNotesTable = (props) => {
   let weight_unit;
   let exchangeRate;
 
-  
   useEffect(() => {
-    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 
@@ -237,7 +245,12 @@ const CreditNotesTable = (props) => {
         userDataRes.merchantSelected.merchantId;
       businessParameterPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
-      
+
+      if (Object.keys(query).length !== 0) {
+        console.log('Query con datos', query);
+        listPayload.request.payload.movementHeaderId = query.noteId;
+      }
+
       listPayload.request.payload.LastEvaluatedKey = null;
       toGetMovements(listPayload);
       getBusinessParameter(businessParameterPayload);
@@ -292,7 +305,7 @@ const CreditNotesTable = (props) => {
     listPayload.request.payload.denominationClient =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toUpperCase();
     console.log('listPayload', listPayload);
-    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     toGetMovements(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
@@ -305,7 +318,7 @@ const CreditNotesTable = (props) => {
   const searchInputs = () => {
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
-    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: "firstTime"}});
+    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     toGetMovements(listPayload);
   };
 
@@ -490,7 +503,12 @@ const CreditNotesTable = (props) => {
 
   return (
     <Card sx={{p: 4}}>
-      <Stack sx={{m: 2}} direction={isMobile ? 'column' : 'row'} spacing={2} className={classes.stack}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -541,11 +559,14 @@ const CreditNotesTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell>Fecha de emisión</TableCell>
-              <TableCell>Número de serie</TableCell>
-              <TableCell>Número de factura</TableCell>
-              <TableCell>Receptor</TableCell>
+            <TableCell>Fecha emisión</TableCell>
+              <TableCell>Número serie</TableCell>
+              <TableCell>Número factura</TableCell>
+              <TableCell>Identificador Receptor</TableCell>
+              <TableCell>Nombre Receptor</TableCell>
               <TableCell>Observación</TableCell>
+              <TableCell>Subtotal</TableCell>
+              <TableCell>IGV</TableCell>
               <TableCell>Importe total</TableCell>
               <TableCell>Forma de pago</TableCell>
               <TableCell>Aceptado por Sunat</TableCell>
@@ -566,7 +587,7 @@ const CreditNotesTable = (props) => {
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')
                       ? obj.serialNumber.split('-')[0]
-                      : null} 
+                      : null}
                     {/* {obj.serialNumber &&
                     typeof obj.serialNumber === 'string' &&
                     obj.serialNumber.length !== 0
@@ -587,11 +608,22 @@ const CreditNotesTable = (props) => {
                       ? obj.documentIntern.split('-')[1]
                       : null} */}
                   </TableCell>
-                  <TableCell>{obj.denominationClient}</TableCell>
+                  <TableCell>{obj.clientId ? `${obj.clientId.split('-')[0]} - ${obj.clientId.split('-')[1]}` : ''}</TableCell>
+                  <TableCell>{obj.clientId ? obj.denominationClient : 'Cliente No Definido'}</TableCell>
                   <TableCell>{obj.observation}</TableCell>
                   <TableCell>
+                    {obj.totalPriceWithoutIgv
+                      ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv 
+                      ? `${moneySymbol} ${Number(obj.totalPriceWithIgv.toFixed(2)-obj.totalPriceWithoutIgv.toFixed(2)).toFixed(2)} `
+                      : ''}
+                  </TableCell>
+                  <TableCell>
                     {obj.totalPriceWithIgv
-                      ? `${obj.totalPriceWithIgv.toFixed(2)} ${moneyUnit}`
+                      ? `${moneySymbol}  ${obj.totalPriceWithIgv.toFixed(2)}`
                       : ''}
                   </TableCell>
                   <TableCell>{showPaymentMethod(obj.movementType)}</TableCell>
@@ -634,15 +666,14 @@ const CreditNotesTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportCreditDebitNotes/*') ===
-          true ? (
-            <Button
-              variant='outlined'
-              startIcon={<GridOnOutlinedIcon />}
-              onClick={exportToExcel}
-            >
-              Exportar todo
-            </Button>
+          .includes('/inventory/exportCreditDebitNotes/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportToExcel}
+          >
+            Exportar todo
+          </Button>
         ) : null}
       </ButtonGroup>
 
@@ -781,12 +812,14 @@ const CreditNotesTable = (props) => {
             sx={{fontSize: '1.2em'}}
             id='alert-dialog-description'
           >
-            <MoreFiltersDocumentSunat sendData={filterData} ds={documentSunat} />
+            <MoreFiltersDocumentSunat
+              sendData={filterData}
+              ds={documentSunat}
+            />
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
-
     </Card>
   );
 };

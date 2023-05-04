@@ -164,7 +164,10 @@ const BulkLoad = (props) => {
   const {excelTemplateGeneratedToBulkLoadRes} = useSelector(
     ({general}) => general,
   );
-  console.log("excelTemplateGeneratedToBulkLoadRes",excelTemplateGeneratedToBulkLoadRes)
+  console.log(
+    'excelTemplateGeneratedToBulkLoadRes',
+    excelTemplateGeneratedToBulkLoadRes,
+  );
 
   const toUpdateCatalogs = (payload) => {
     dispatch(updateCatalogs(payload));
@@ -303,9 +306,7 @@ const BulkLoad = (props) => {
                   product['DESCRIPCION'] +
                   "' tiene el símbolo | o el - en su CÓDIGO, debe de retirarlos.  ";
               }
-              product['CODIGO'] = product['CODIGO']
-                .toString().
-                toUpperCase();
+              product['CODIGO'] = product['CODIGO'].toString().toUpperCase();
             }
 
             if (!product['DESCRIPCION']) {
@@ -337,9 +338,7 @@ const BulkLoad = (props) => {
                   product['DESCRIPCION'] +
                   "' tiene el símbolo | o el - en su ALIAS, debe de retirarlos.  ";
               }
-              product['ALIAS'] = product['ALIAS']
-              .toString()
-              .toUpperCase();
+              product['ALIAS'] = product['ALIAS'].toString().toUpperCase();
             }
 
             //jalar categoria y validar
@@ -643,9 +642,7 @@ const BulkLoad = (props) => {
                 delivery['COD_INTERNO'] +
                 "' debe de tener LUGAR.  ";
             } else {
-              delivery['LUGAR'] = delivery['LUGAR']
-                .toString()
-                .toUpperCase();
+              delivery['LUGAR'] = delivery['LUGAR'].toString().toUpperCase();
             }
 
             if (!delivery['UBIGEO']) {
@@ -655,9 +652,7 @@ const BulkLoad = (props) => {
                 delivery['LUGAR'] +
                 "' debe de tener UBIGEO.  ";
             } else {
-              delivery['UBIGEO'] = delivery['UBIGEO']
-                .toString()
-                .toUpperCase();
+              delivery['UBIGEO'] = delivery['UBIGEO'].toString().toUpperCase();
               const matchUbigeo = originalUbigeos.find(
                 (d) => d.ubigeo == delivery['UBIGEO'],
               );
@@ -708,9 +703,7 @@ const BulkLoad = (props) => {
                 origin['COD_INTERNO'] +
                 "' debe de tener LUGAR.  ";
             } else {
-              origin['LUGAR'] = origin['LUGAR']
-                .toString()
-                .toUpperCase();
+              origin['LUGAR'] = origin['LUGAR'].toString().toUpperCase();
             }
 
             if (!origin['UBIGEO']) {
@@ -720,9 +713,7 @@ const BulkLoad = (props) => {
                 origin['LUGAR'] +
                 "' debe de tener UBIGEO.  ";
             } else {
-              origin['UBIGEO'] = origin['UBIGEO']
-                .toString()
-                .toUpperCase();
+              origin['UBIGEO'] = origin['UBIGEO'].toString().toUpperCase();
               const matchUbigeo = originalUbigeos.find(
                 (d) => d.ubigeo == origin['UBIGEO'],
               );
@@ -800,9 +791,7 @@ const BulkLoad = (props) => {
                 driver['NRO IDENTIFICADOR'] +
                 "' debe de tener NOMBRES.  ";
             } else {
-              driver['NOMBRES'] = driver['NOMBRES']
-                .toString()
-                .toUpperCase();
+              driver['NOMBRES'] = driver['NOMBRES'].toString().toUpperCase();
             }
 
             if (!driver['APELLIDOS']) {
@@ -826,9 +815,7 @@ const BulkLoad = (props) => {
                 driver['APELLIDOS'] +
                 "' debe de tener LICENCIA.  ";
             } else {
-              driver['LICENCIA'] = driver['LICENCIA']
-                .toString()
-                .toUpperCase();
+              driver['LICENCIA'] = driver['LICENCIA'].toString().toUpperCase();
             }
           });
 

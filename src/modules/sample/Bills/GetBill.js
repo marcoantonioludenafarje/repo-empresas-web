@@ -118,8 +118,8 @@ const validationSchema = yup.object({
   observation: yup.string().typeError(<IntlMessages id='validation.string' />),
   clientEmail: yup
     .string()
-    .email(<IntlMessages id='validation.emailFormat' />)
-    .required(<IntlMessages id='validation.required' />),
+    .email(<IntlMessages id='validation.emailFormat' />),
+  transactionNumber: yup.string(),
 });
 
 //FORCE UPDATE
@@ -199,9 +199,11 @@ const NewOutput = (props) => {
   const [serial, setSerial] = React.useState('');
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
-  const [expirationDate, setExpirationDate] = React.useState(Date.now() + 1 * 24 * 60 * 60 * 1000);
+  const [expirationDate, setExpirationDate] = React.useState(
+    Date.now() + 1 * 24 * 60 * 60 * 1000,
+  );
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [earningGeneration, setEarningGeneration] = React.useState(true);
+  const [earningGeneration, setEarningGeneration] = React.useState(query.contableMovementId ? false : true);
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
   });
@@ -238,6 +240,9 @@ const NewOutput = (props) => {
     selectedOutput = {loaded: false};
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
+    if (userDataRes.merchantSelected.typeClient == 'PN') {
+      setPaymentWay('debit');
+    }
     dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
     getBusinessParameter(businessParameterPayload);
     if (getMovementsRes !== undefined) {
@@ -307,14 +312,17 @@ const NewOutput = (props) => {
       typeof selectedOutput === 'object' &&
       selectedOutput.loaded == true
     ) {
-      changeValueField('receiver', `${query.clientId.split('-')[1]} - ${
-        selectedOutput.client.denomination
-      }`)
-      changeValueField('clientEmail', selectedOutput.client.email)
+      changeValueField(
+        'receiver',
+        `${query.clientId.split('-')[1]} - ${
+          selectedOutput.client.denomination
+        }`,
+      );
+      changeValueField('clientEmail', selectedOutput.client.email);
       selectedProducts = selectedOutput.descriptionProductsInfo;
       selectedProducts.map((obj) => {
         obj['subtotal'] = Number(
-          (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(3),
+          (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(2),
         );
       });
       console.log('selectedProducts', selectedProducts);
@@ -400,6 +408,7 @@ const NewOutput = (props) => {
     totalFieldIgv: fixDecimals(query.totalPriceWithIgv),
     money_unit: money_unit,
     clientEmail: query.clientEmail,
+    transactionNumber: '',
   };
   const actualValues = {
     nroBill: '',
@@ -477,9 +486,9 @@ const NewOutput = (props) => {
 
   const valueWithIGV = (value) => {
     const IGV = igvDefault;
-    const precioConIGV =( value * (1 + IGV)).toFixed(10);
+    const precioConIGV = (value * (1 + IGV)).toFixed(10);
     return precioConIGV;
-  }
+  };
 
   const showListDocumentsSelected = () => {
     const total = listDocuments.reduce((count, element) => {
@@ -508,11 +517,11 @@ const NewOutput = (props) => {
       });
       total = calculatedtotal;
     }
-    changeValueField('totalField', Number(total.toFixed(3)));
+    changeValueField('totalField', Number(total.toFixed(2)));
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(3))
+        ? Number((total + total * Number(query.igv)).toFixed(2))
         : total,
     );
     forceUpdate();
@@ -543,19 +552,21 @@ const NewOutput = (props) => {
             folderMovement: query.folderMovement,
             movementTypeMerchantId: query.movementTypeMerchantId,
             contableMovementId: query.contableMovementId || '',
+            contableMovements: selectedOutput.contableMovements || [],
             movementHeaderId: query.movementHeaderId,
             createdAt: Number(query.createdAt),
             clientId: query.clientId,
-            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(3)), //
+            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)), //
             issueDate: specialFormatToSunat(),
             serial: serial,
             documentIntern: query.documentIntern,
             clientEmail: data.clientEmail,
+            transactionNumber: data.transactionNumber || '',
             /* numberBill: 3, */
             automaticSendSunat: /* sendSunat */ true,
             automaticSendClient: /* sendClient */ true,
             referralGuide: data.guide ? true : false,
-            creditSale: paymentWay == "credit",
+            creditSale: paymentWay == 'credit',
             methodToPay: paymentMethod,
             earningGeneration: earningGeneration,
             referralGuideSerial: data.guide ? data.guide : '',
@@ -577,11 +588,20 @@ const NewOutput = (props) => {
                 description: obj.description,
                 unitMeasure: obj.unitMeasure,
                 businessProductCode: obj.businessProductCode,
+                taxCode: obj.taxCode,
+                igvCode: obj.igvCode,
               };
             }),
             documentsMovement: selectedOutput.documentsMovement,
             referralGuides: parsedDocuments,
-            sendEmail: sendEmail
+            sendEmail: sendEmail,
+            userCreated: userDataRes.userId,
+            userCreatedMetadata: {
+              nombreCompleto: userDataRes.nombreCompleto,
+              email: userDataRes.email,
+            },
+            outputUserCreated: selectedOutput.userCreated,
+            outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
           },
         },
       };
@@ -688,10 +708,17 @@ const NewOutput = (props) => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      setShowForms(true);
-      dispatch({type: GET_MOVEMENTS, payload: []});
-      toGetMovements(listPayload);
-      setOpenStatus(false);
+      if (!earningGeneration) {
+        setShowForms(true);
+        dispatch({type: GET_MOVEMENTS, payload: []});
+        toGetMovements(listPayload);
+        setOpenStatus(false);
+      } else {
+        dispatch({type: GET_MOVEMENTS, payload: []});
+        toGetMovements(listPayload);
+        setOpenStatus(false);
+        Router.push('/sample/outputs/table');
+      }
     } else if (registerError()) {
       setOpenStatus(false);
     } else {
@@ -737,13 +764,13 @@ const NewOutput = (props) => {
     });
     total = calculatedtotal;
     console.log('total de las salidas', total);
-    changeValueField('totalField', Number(total.toFixed(3)));
+    changeValueField('totalField', Number(total.toFixed(2)));
     console.log('query', query);
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(3))
-        : total,
+        ? Number((total + total * Number(query.igv)).toFixed(2))
+        : Number(total.toFixed(2)),
     );
     console.log('total de los productos', total);
     forceUpdate();
@@ -817,7 +844,11 @@ const NewOutput = (props) => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}
+                >
                   <Grid item xs={6} sm={6}>
                     <AppTextField
                       label='Nro Factura'
@@ -994,34 +1025,12 @@ const NewOutput = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6}>
                     <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
-                        Forma de pago
-                      </InputLabel>
-                      <Select
-                        value={paymentWay}
-                        name='wayToPay'
-                        labelId='wayToPay-label'
-                        label='Forma de pago'
-                        onChange={
-                          /* handleActualData */ (event) => {
-                            setPaymentWay(event.target.value);
-                          }
-                        }
+                      <InputLabel
+                        id='methodToPay-label'
+                        style={{fontWeight: 200}}
                       >
-                        <MenuItem value='credit' style={{fontWeight: 200}}>
-                          Credito
-                        </MenuItem>
-                        <MenuItem value='debit' style={{fontWeight: 200}}>
-                          Al contado
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
                         Medio de pago
                       </InputLabel>
                       <Select
@@ -1044,7 +1053,10 @@ const NewOutput = (props) => {
                         <MenuItem value='plin' style={{fontWeight: 200}}>
                           Plin
                         </MenuItem>
-                        <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
+                        <MenuItem
+                          value='bankTransfer'
+                          style={{fontWeight: 200}}
+                        >
                           Transferencia Bancaria
                         </MenuItem>
                         <MenuItem value='card' style={{fontWeight: 200}}>
@@ -1052,6 +1064,49 @@ const NewOutput = (props) => {
                         </MenuItem>
                         <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
                           <IntlMessages id='common.bankDeposit' />
+                        </MenuItem>
+                        <MenuItem value='giftCard' style={{fontWeight: 200}}>
+                          GiftCard
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <AppTextField
+                      label='Número de transacción'
+                      disabled={paymentMethod == 'cash'}
+                      name='transactionNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
+                        Forma de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentWay}
+                        name='wayToPay'
+                        labelId='wayToPay-label'
+                        label='Forma de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentWay(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='credit' style={{fontWeight: 200}}>
+                          Credito
+                        </MenuItem>
+                        <MenuItem value='debit' style={{fontWeight: 200}}>
+                          Al contado
                         </MenuItem>
                       </Select>
                     </FormControl>
@@ -1087,7 +1142,7 @@ const NewOutput = (props) => {
                   </Grid>
                   <Grid
                     item
-                    xs={6}
+                    xs={12}
                     sx={{display: 'flex', alignItems: 'center'}}
                   >
                     <FormControlLabel
@@ -1095,7 +1150,7 @@ const NewOutput = (props) => {
                       control={
                         <Checkbox
                           onChange={handleEarningGeneration}
-                          defaultChecked={true}
+                          defaultChecked={!query.contableMovementId}
                         />
                       }
                     />
@@ -1200,6 +1255,7 @@ const NewOutput = (props) => {
                   data={selectedProducts}
                   valueWithIGV={valueWithIGV}
                   toDelete={removeProduct}
+                  igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
 
@@ -1388,7 +1444,7 @@ const NewOutput = (props) => {
               />
             </DialogTitle>
             <DialogContent>
-              <AddProductForm type='input' sendData={getNewProduct} />
+              <AddProductForm type='input' sendData={getNewProduct} igvEnabled={Number(query.igv) > 0 || query.igv == 'true'} />
             </DialogContent>
           </>
         ) : null}

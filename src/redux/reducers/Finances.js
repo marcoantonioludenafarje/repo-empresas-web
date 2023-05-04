@@ -6,6 +6,8 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_FINANCES_FOR_RESULT_STATE,
+  EXPORT_EXCEL_MOVEMENTS_DETAILS,
+  EXPORT_EXCEL_MOVEMENTS_SUMMARY,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -13,6 +15,8 @@ const INIT_STATE = {
 };
 
 const financesReducer = (state = INIT_STATE, action) => {
+  console.log('El action', action);
+
   switch (action.type) {
     case GET_FINANCES:
       console.log('data de reducer GET_FINANCES', action.payload);
@@ -46,6 +50,24 @@ const financesReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         updateFinanceRes: action.payload,
+      };
+    case EXPORT_EXCEL_MOVEMENTS_DETAILS:
+      console.log(
+        'data de reducer EXPORT_EXCEL_MOVEMENTS_DETAILS',
+        action.payload,
+      );
+      return {
+        ...state,
+        exportExcelMovementsDetailsRes: action.payload,
+      };
+    case EXPORT_EXCEL_MOVEMENTS_SUMMARY:
+      console.log(
+        'data de reducer EXPORT_EXCEL_MOVEMENTS_SUMMARY',
+        action.payload,
+      );
+      return {
+        ...state,
+        exportExcelMovementsSummaryRes: action.payload,
       };
     case FETCH_SUCCESS:
       console.log('data de reducer FETCH_SUCCESS', action.payload);

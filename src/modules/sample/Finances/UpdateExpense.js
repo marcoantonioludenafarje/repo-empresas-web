@@ -225,7 +225,7 @@ const UpdateExpense = (props) => {
     getBusinessParameter(businessParameterPayload);
     //dispatch({type: GET_PROVIDERS, payload: undefined});
     listProvidersPayload.request.payload.LastEvaluatedKey = null;
-    dispatch({type: GET_PROVIDERS, payload: {callType: "firstTime"}});
+    dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
     getProviders(listProvidersPayload);
     listPayments = [];
     selectedExpense.payments.map((obj) => {
@@ -355,8 +355,7 @@ const UpdateExpense = (props) => {
       // if (listPayments.length > 0) {
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
-      newFinancePayload.request.payload.createdAt =
-        anotherValues.regsiterDate;
+      newFinancePayload.request.payload.createdAt = anotherValues.regsiterDate;
       newFinancePayload.request.payload.numberDocumentProvider =
         selectedProvider.providerId.split('-')[1];
       newFinancePayload.request.payload.denominationProvider =

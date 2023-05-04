@@ -69,16 +69,19 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  EXPORT_EXCEL_MOVEMENTS_DETAILS,
+  EXPORT_EXCEL_MOVEMENTS_SUMMARY,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
-import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
+import {format, addHours, addMinutes} from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
+import {DesktopDatePicker, DateTimePicker, DateRangePicker} from '@mui/lab';
 import {
   getFinances,
   deleteFinance,
-  getFinancesForResultState,
+  exportExcelMovementsDetails,
+  exportExcelMovementsSummary,
 } from '../../../redux/actions/Finances';
 import {useDispatch, useSelector} from 'react-redux';
-import ResultState from './ResultState';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {
   getYear,
@@ -86,52 +89,10 @@ import {
   translateValue,
   fixDecimals,
   convertToDateWithoutTime,
+  toEpoch,
 } from '../../../Utils/utils';
-import OtherPayConceptsTable from './OtherPayConceptsTable';
-import MoreFiltersFinances from '../Filters/MoreFiltersFinances';
-let listFinancesPayload = {
-  request: {
-    payload: {
-      initialTime: null,
-      finalTime: null,
-      movementType: null,
-      merchantId: '',
-      createdAt: null,
-      monthMovement: null,
-      yearMovement: null,
-      searchByBill: '',
-      searchByContableMovement: '',
-      typeList: '',
-    },
-  },
-};
-let listFinancesForResultStatePayload = {
-  request: {
-    payload: {
-      initialTime: null,
-      finalTime: null,
-      movementType: null,
-      merchantId: '',
-      createdAt: null,
-      monthMovement: null,
-      yearMovement: null,
-      searchByBill: '',
-      searchByContableMovement: '',
-      typeList: '',
-    },
-  },
-};
-let deletePayload = {
-  request: {
-    payload: {
-      contableMovementId: '',
-      movementHeaderId: '',
-      movementTypeMerchantId: '',
-    },
-  },
-};
-let codFinanceSelected = '';
-let selectedFinance = '';
+import MoreFiltersContableMovements from '../Filters/MoreFiltersContableMovements';
+import {exportExcelTemplateMovementsDetails} from '../../../redux/actions/Finances';
 
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -162,7 +123,7 @@ const months = {
   December: 'Diciembre',
 };
 
-const FinancesTable = (props) => {
+const ContableMovements = (props) => {
   const classes = useStyles(props);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -173,7 +134,6 @@ const FinancesTable = (props) => {
   const [monthYearStatus, setMonthYearStatus] = React.useState(true);
   const [month, setMonth] = React.useState(getActualMonth().toUpperCase());
   const [year, setYear] = React.useState(getYear());
-  const [resultState, setResultState] = React.useState(false);
   const [openPaids, setOpenPaids] = React.useState(false);
   const [openOtherPayConcepts, setOpenOtherPayConcepts] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
@@ -181,6 +141,18 @@ const FinancesTable = (props) => {
   const [openDocuments, setOpenDocuments] = React.useState(false);
   const [moreFilters, setMoreFilters] = React.useState(false);
   const [financeType, setFinanceType] = React.useState('INCOME');
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState('TODOS');
+  const [initialTime, setInitialTime] = React.useState(Date.now());
+  const [finalTime, setFinalTime] = React.useState(Date.now());
+  const [totalAmount, setTotalAmount] = React.useState(0);
+  const [downloadExcelDetails, setDownloadExcelDetails] = React.useState(false);
+  const [downloadExcelSummary, setDownloadExcelSummary] = React.useState(false);
+  const [lastPayload, setLastPayload] = React.useState('');
+
+  const currentDate = new Date(); // Obtenemos la fecha actual
+  const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0)); // Modificamos la fecha actual para que sea a las 0 horas del día
+  const endOfDay = addMinutes(addHours(new Date(startOfDay), 23), 59); // Agregamos 23 horas a la fecha de inicio para obtener las 23:59 del día actual
+  const [dateRange, setDateRange] = React.useState([startOfDay, endOfDay]); // Estado para el rango de fechas
 
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
@@ -188,6 +160,34 @@ const FinancesTable = (props) => {
   const {query} = router;
   console.log('query', query);
   const {userDataRes} = useSelector(({user}) => user);
+
+  let listFinancesPayload = {
+    request: {
+      payload: {
+        initialTime: null,
+        finalTime: null,
+        movementType: null,
+        merchantId: '',
+        createdAt: null,
+        methodToPay: '',
+        searchByBill: '',
+        searchByContableMovement: '',
+        typeList: '',
+        listReduced: true,
+      },
+    },
+  };
+  let deletePayload = {
+    request: {
+      payload: {
+        contableMovementId: '',
+        movementHeaderId: '',
+        movementTypeMerchantId: '',
+      },
+    },
+  };
+  let codFinanceSelected = '';
+  let selectedFinance = '';
 
   useEffect(() => {
     if (!userDataRes) {
@@ -209,7 +209,6 @@ const FinancesTable = (props) => {
     }
   }, []);
   const {getFinancesRes} = useSelector(({finances}) => finances);
-  const {getFinancesForResultStateRes} = useSelector(({finances}) => finances);
   const {deleteFinanceRes} = useSelector(({finances}) => finances);
   const {businessParameter} = useSelector(({general}) => general);
   const {moneyUnitBusiness} = useSelector(({general}) => general);
@@ -218,10 +217,15 @@ const FinancesTable = (props) => {
   const {successMessage} = useSelector(({finances}) => finances);
   const {errorMessage} = useSelector(({finances}) => finances);
   const {userAttributes} = useSelector(({user}) => user);
+  const {exportExcelMovementsDetailsRes} = useSelector(
+    ({finances}) => finances,
+  );
+  const {exportExcelMovementsSummaryRes} = useSelector(
+    ({finances}) => finances,
+  );
 
   const {jwtToken} = useSelector(({general}) => general);
   console.log('getFinancesRes', getFinancesRes);
-  console.log('getFinancesForResultStateRes', getFinancesForResultStateRes);
   console.log('deleteFinanceRes', deleteFinanceRes);
   console.log('businessParameter', businessParameter);
   console.log('moneyUnitBusiness', moneyUnitBusiness);
@@ -238,21 +242,77 @@ const FinancesTable = (props) => {
   const toGetFinancesInDebt = (payload) => {
     dispatch(getFinances(payload, jwtToken));
   };
-  const toGetFinancesForResultState = (payload) => {
-    dispatch(getFinancesForResultState(payload, jwtToken));
-  };
   const toDeleteFinance = (payload) => {
     dispatch(deleteFinance(payload));
   };
+  const toGetExcelMovementsDetails = (payload) => {
+    dispatch(exportExcelMovementsDetails(payload));
+  };
+  const toGetExcelMovementsSummary = (payload) => {
+    dispatch(exportExcelMovementsSummary(payload));
+  };
 
+  useEffect(() => {
+    if (exportExcelMovementsDetailsRes && downloadExcelDetails) {
+      setDownloadExcelDetails(false);
+      const byteCharacters = atob(exportExcelMovementsDetailsRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `contableMovementsDetails.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      dispatch({type: EXPORT_EXCEL_MOVEMENTS_DETAILS, payload: undefined});
+    }
+  }, [exportExcelMovementsDetailsRes, downloadExcelDetails]);
+  useEffect(() => {
+    if (exportExcelMovementsSummaryRes && downloadExcelSummary) {
+      setDownloadExcelSummary(false);
+      const byteCharacters = atob(exportExcelMovementsSummaryRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `contableMovementsSummary.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      dispatch({type: EXPORT_EXCEL_MOVEMENTS_SUMMARY, payload: undefined});
+    }
+  }, [exportExcelMovementsSummaryRes, downloadExcelSummary]);
   useEffect(() => {
     setMonthYearStatus(true);
   }, [month || year]);
   useEffect(() => {
+    if (getFinancesRes && Array.isArray(getFinancesRes)) {
+      let total = 0;
+      getFinancesRes.forEach((obj) => {
+        total += obj.totalAmount;
+      });
+      setTotalAmount(Number(total).toFixed(3));
+    }
+  }, [getFinancesRes]);
+  useEffect(() => {
     if (userDataRes) {
       listFinancesPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-      listFinancesForResultStatePayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
 
       dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -265,17 +325,14 @@ const FinancesTable = (props) => {
         listFinancesPayload.request.payload.searchByContableMovement =
           query.contableMovementId;
       }
-      listFinancesPayload.request.payload.monthMovement =
-        getActualMonth().toUpperCase();
-      listFinancesPayload.request.payload.yearMovement = getYear();
+
+      listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
+      listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+      listFinancesPayload.request.payload.movementType = '';
+      setLastPayload(listFinancesPayload);
       toGetFinances(listFinancesPayload);
       if (monthYearStatus) {
         dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
-        listFinancesForResultStatePayload.request.payload.monthMovement =
-          getActualMonth().toUpperCase();
-        listFinancesForResultStatePayload.request.payload.yearMovement =
-          getYear();
-        toGetFinancesForResultState(listFinancesForResultStatePayload);
         setMonthYearStatus(false);
       }
       if (Object.keys(query).length !== 0) {
@@ -285,19 +342,17 @@ const FinancesTable = (props) => {
   }, [userDataRes]);
 
   const searchFinances = () => {
-    if (
-      listFinancesPayload.request.payload.yearMovement == null ||
-      listFinancesForResultStatePayload.request.payload.yearMovement == null
-    ) {
-      listFinancesPayload.request.payload.yearMovement = getYear();
-      listFinancesForResultStatePayload.request.payload.yearMovement =
-        getYear();
-    }
     dispatch({type: GET_FINANCES, payload: []});
+    listFinancesPayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
+    listFinancesPayload.request.payload.movementType =
+      proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType;
+    listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
+    listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+    setLastPayload(listFinancesPayload);
     toGetFinances(listFinancesPayload);
     if (monthYearStatus) {
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
-      toGetFinancesForResultState(listFinancesForResultStatePayload);
       setMonthYearStatus(false);
     }
   };
@@ -310,44 +365,19 @@ const FinancesTable = (props) => {
     toGetFinancesInDebt(listFinancesInDebt);
     if (monthYearStatus) {
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
-      toGetFinancesForResultState(listFinancesForResultStatePayload);
       setMonthYearStatus(false);
     }
     listFinancesInDebt.request.payload.typeList = '';
-  };
-
-  const searchFinancesForResultState = () => {
-    // let listFinancesForResultState = {
-    //   request: {
-    //     payload: {
-    //       initialTime: null,
-    //       finalTime: null,
-    //       movementType: null,
-    //       merchantId: listFinancesPayload.request.payload.merchantId,
-    //       createdAt: null,
-    //       monthMovement: listFinancesPayload.request.payload.monthMovement,
-    //       yearMovement: listFinancesPayload.request.payload.yearMovement.toString(),
-    //       searchByBill: '',
-    //       searchByContableMovement: '',
-    //       typeList: '',
-    //     },
-    //   },
-    // };
-    // dispatch({type: GET_FINANCES, payload: []});
-    // setTimeout(() => {
-    //   toGetFinancesForResultState(listFinancesForResultState);
-    // }, 2200);
-    setResultState(true);
   };
 
   const sendStatus = () => {
     setOpenStatus(false);
     dispatch({type: GET_FINANCES, payload: []});
     setTimeout(() => {
+      setLastPayload(listFinancesPayload);
       toGetFinances(listFinancesPayload);
       if (monthYearStatus) {
         dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
-        toGetFinancesForResultState(listFinancesForResultStatePayload);
         setMonthYearStatus(false);
       }
     }, 2200);
@@ -659,15 +689,22 @@ const FinancesTable = (props) => {
     }/${fecha.getFullYear()}`;
     return fecha_actual;
   };
-
+  const getExcelMovementsSummary = () => {
+    dispatch({type: EXPORT_EXCEL_MOVEMENTS_SUMMARY, payload: undefined});
+    toGetExcelMovementsSummary(lastPayload);
+    setDownloadExcelSummary(true);
+  };
+  const getExcelMovementsDetails = () => {
+    dispatch({type: EXPORT_EXCEL_MOVEMENTS_DETAILS, payload: undefined});
+    toGetExcelMovementsDetails(lastPayload);
+    setDownloadExcelDetails(true);
+  };
   const filterData = (dataFilters) => {
+    (listFinancesPayload.request.payload.searchByBill = ''),
+      (listFinancesPayload.request.payload.typeDocumentProvider = '');
+    listFinancesPayload.request.payload.numberDocumentProvider = '';
+    listFinancesPayload.request.payload.denominationProvider = '';
     console.log('dataFilters', dataFilters);
-    // listPayload.request.payload.searchByDocument = buildFilter(
-    //   dataFilters.typeDocument,
-    //   dataFilters.nroDoc,
-    //   dataFilters.typeDocumentProvider,
-    //   dataFilters.nroIdentifier,
-    // );
     listFinancesPayload.request.payload.searchByBill = dataFilters.nroDoc;
     if (dataFilters.typeIdentifier == 'TODOS') {
       dataFilters.typeIdentifier = '';
@@ -678,18 +715,24 @@ const FinancesTable = (props) => {
       dataFilters.nroIdentifier;
     listFinancesPayload.request.payload.denominationProvider =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toLowerCase();
+    listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
+    listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+    listFinancesPayload.request.payload.movementType =
+      proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType;
+    listFinancesPayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
+    if (dataFilters.paymentMethod == 'all') {
+      dataFilters.paymentMethod = '';
+    }
+    listFinancesPayload.request.payload.methodToPay = dataFilters.paymentMethod;
     console.log('listFinancesPayload', listFinancesPayload);
     dispatch({type: GET_FINANCES, payload: []});
+    setLastPayload(listFinancesPayload);
     toGetFinances(listFinancesPayload);
     if (monthYearStatus) {
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
-      toGetFinancesForResultState(listFinancesForResultStatePayload);
       setMonthYearStatus(false);
     }
-    (listFinancesPayload.request.payload.searchByBill = ''),
-      (listFinancesPayload.request.payload.typeDocumentProvider = '');
-    listFinancesPayload.request.payload.numberDocumentProvider = '';
-    listFinancesPayload.request.payload.denominationProvider = '';
     setMoreFilters(false);
   };
 
@@ -701,7 +744,7 @@ const FinancesTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
-        <ToggleButtonGroup
+        {/* <ToggleButtonGroup
           value={financeType}
           exclusive
           onChange={(event) => {
@@ -736,113 +779,85 @@ const FinancesTable = (props) => {
           >
             <IntlMessages id='sidebar.sample.expenses' />
           </StyledToggleButton>
-        </ToggleButtonGroup>
+        </ToggleButtonGroup> */}
         <FormControl sx={{my: 0, width: 160}}>
           <InputLabel id='moneda-label' style={{fontWeight: 200}}>
-            Mes
+            Tipo de Comprobante
           </InputLabel>
           <Select
-            name='month_unit'
-            labelId='month-label'
-            label='Mes'
+            name='proofOfPaymentType'
+            labelId='proofOfPaymentType-label'
+            label='Tipo de Comprobante'
             onChange={(event) => {
               console.log(event.target.value);
-              setMonth(event.target.value);
-              if (event.target.value == 'ALL') {
-                listFinancesPayload.request.payload.monthMovement = null;
+              setProofOfPaymentType(event.target.value);
+              if (event.target.value == 'TODOS') {
+                listFinancesPayload.request.payload.movementType = null;
               } else {
-                listFinancesPayload.request.payload.monthMovement =
-                  event.target.value;
-                listFinancesForResultStatePayload.request.payload.monthMovement =
+                listFinancesPayload.request.payload.movementType =
                   event.target.value;
               }
             }}
-            defaultValue={getActualMonth().toUpperCase()}
+            defaultValue={proofOfPaymentType}
           >
-            {Object.keys(months).map((monthName, index) => {
-              return (
-                <MenuItem
-                  key={index}
-                  value={monthName.toUpperCase()}
-                  style={{fontWeight: 200}}
-                >
-                  {months[monthName]}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-        <TextField
-          id='outlined-number'
-          label='Año'
-          type='number'
-          defaultValue={getYear()}
-          onChange={() => {
-            setYear(event.target.value);
-            listFinancesPayload.request.payload.yearMovement =
-              event.target.value;
-            listFinancesForResultStatePayload.request.payload.yearMovement =
-              event.target.value;
-          }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        {/* <TextField
-          label='Número de Documento'
-          variant='outlined'
-          name='searchByBill'
-          onChange={handleSearchValues}
-        />
-        <FormControl sx={{my: 0, width: 100}}>
-          <InputLabel id='categoria-label' style={{fontWeight: 200}}>
-            Identificador
-          </InputLabel>
-          <Select
-            defaultValue='TODOS'
-            name='typeDocumentProvider'
-            labelId='documentType-label'
-            label='Identificador'
-            onChange={(event) => {
-              console.log(event.target.value);
-              listFinancesPayload.request.payload.typeDocumentProvider =
-                event.target.value;
-              if(event.target.value == "TODOS"){
-                listFinancesPayload.request.payload.typeDocumentProvider = ""
-              }
-            }}
-          >
-            <MenuItem value='TODOS' style={{fontWeight: 200}}>
+            <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
               TODOS
             </MenuItem>
-            <MenuItem value='RUC' style={{fontWeight: 200}}>
-              RUC
+            <MenuItem value={'INCOME'} style={{fontWeight: 200}}>
+              INGRESOS
             </MenuItem>
-            <MenuItem value='DNI' style={{fontWeight: 200}}>
-              DNI
-            </MenuItem>
-            <MenuItem value='foreignerscard' style={{fontWeight: 200}}>
-              CE
+            <MenuItem value={'EXPENSE'} style={{fontWeight: 200}}>
+              EGRESOS
             </MenuItem>
           </Select>
         </FormControl>
-        <TextField
-          label='Nro Identificador'
-          variant='outlined'
-          name='numberDocumentProvider'
-          size='small'
-          onChange={(event) => {
-            console.log(event.target.value);
-            listFinancesPayload.request.payload.numberDocumentProvider =
-              event.target.value;
+        <DateRangePicker
+          label='Rango de fechas'
+          inputVariant='outlined'
+          value={dateRange}
+          inputFormat={isMobile ? 'dd/MM/yyyy' : 'dd/MM/yyyy hh:mm a'}
+          onChange={(newValue) => {
+            const valueToEndOfTheDay = [newValue[0],addMinutes(addHours(newValue[1], 23), 59)];
+            setDateRange(valueToEndOfTheDay);
+            console.log('date', valueToEndOfTheDay);
+            listFinancesPayload.request.payload.initialTime = toEpoch(
+              valueToEndOfTheDay[0],
+            );
+            listFinancesPayload.request.payload.finalTime = toEpoch(
+              valueToEndOfTheDay[1],
+            );
+            console.log('payload de busqueda', listFinancesPayload);
+          }}
+          renderInput={(startProps, endProps) => (
+            <React.Fragment>
+              <TextField {...startProps} label='Fecha de inicio' />
+              <TextField {...endProps} label='Fecha de fin' />
+            </React.Fragment>
+          )}
+        />
+        {/* <DateTimePicker
+          renderInput={(params) => <TextField size='small' {...params} />}
+          value={initialTime}
+          label='Inicio'
+          inputFormat='dd/MM/yyyy hh:mm a'
+          onChange={(newValue) => {
+            setInitialTime(newValue);
+            console.log('date', newValue);
+            listFinancesPayload.request.payload.initialTime = toEpoch(newValue);
+            console.log('payload de busqueda', listFinancesPayload);
           }}
         />
-        <TextField
-          label='Nombre / Razón social'
-          variant='outlined'
-          name='searchByDenominationProvider'
-          size='small'
-          onChange={handleSearchValues}
+        <DateTimePicker
+          renderInput={(params) => <TextField size='small' {...params} />}
+          label='Fin'
+          inputFormat='dd/MM/yyyy hh:mm a'
+          value={finalTime}
+          onChange={(newValue2) => {
+            setFinalTime(newValue2);
+            console.log('date 2', newValue2);
+            listFinancesPayload.request.payload.finalTime = toEpoch(newValue2);
+            console.log('payload de busqueda', listFinancesPayload);
+          }}
         /> */}
         <Button
           onClick={() => setMoreFilters(true)}
@@ -859,53 +874,39 @@ const FinancesTable = (props) => {
         >
           Buscar
         </Button>
-        <Button
-          startIcon={<ManageSearchOutlinedIcon />}
-          variant='contained'
-          color='secondary'
-          onClick={searchFinancesInDebt}
-        >
-          Deudas
-        </Button>
       </Stack>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
-        <Table
-          stickyHeader
-          size='small'
-          aria-label='simple table'
-          sx={{width: '150%'}}
-        >
+        <Table stickyHeader size='small' aria-label='simple table'>
           <TableHead>
             <TableRow>
-              <TableCell>Codigo</TableCell>
-              <TableCell>Tipo</TableCell>
-              <TableCell>Identificador negocio</TableCell>
-              <TableCell>Fecha de factura</TableCell>
-              <TableCell>Nombre / Razón social</TableCell>
-              <TableCell>Número de documento</TableCell>
-              <TableCell>Detalle documentos</TableCell>
-              <TableCell>Número de correlativo</TableCell>
-              {localStorage
-                .getItem('pathsBack')
-                .includes('/inventory/movementProducts/list?path=/input/*') &&
-              localStorage
-                .getItem('pathsBack')
-                .includes('/inventory/movementProducts/list?path=/output/*') ? (
-                <TableCell>Movimiento relacionado</TableCell>
-              ) : null}
-              <TableCell>Detalle de compra</TableCell>
-              <TableCell>Observaciones</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Tipo de compra</TableCell>
-              <TableCell>Pagos de Comprobantes</TableCell>
-              <TableCell>Otros Pagos</TableCell>
-              <TableCell>Monto Comprobante(con igv)</TableCell>
-              <TableCell>Monto a Pagar/Cobrar</TableCell>
-              <TableCell>Monto pagado/Cobrado</TableCell>
-              <TableCell>Deuda pendiente</TableCell>
-              <TableCell>Fecha registrada</TableCell>
-              <TableCell>Última actualización</TableCell>
-              <TableCell>Opciones</TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Codigo
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Tipo
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Fecha registrada
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Número de documento
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Fecha emisión Comprobante
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Fecha vencimiento Comprobante
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '9px' : '12px'}}>
+                Estado
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '12px' : '15px'}}>
+                Medio de Pago
+              </TableCell>
+              <TableCell>Monto Total</TableCell>
+              <TableCell>Vendedor</TableCell>
+              <TableCell>Recaudador</TableCell>
+              {/* <TableCell>Opciones</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -917,6 +918,7 @@ const FinancesTable = (props) => {
                 const paids = obj.payments;
                 const otherPayConcepts = obj.otherPayConcepts;
                 const movementType = showType(obj.movementType);
+
                 return (
                   <>
                     <TableRow
@@ -931,108 +933,39 @@ const FinancesTable = (props) => {
                           : obj.folderMovement.split('/').slice(-1)
                       }`}</TableCell>
                       <TableCell>{showType(obj.movementType)}</TableCell>
-                      <TableCell>{`${obj.typeDocumentProvider} ${obj.numberDocumentProvider}`}</TableCell>
-                      <TableCell>{obj.billIssueDate}</TableCell>
-                      <TableCell>{obj.denominationProvider}</TableCell>
-                      <TableCell>{obj.serialNumberBill}</TableCell>
-                      <TableCell align='center'>
-                        {obj.documentsMovement &&
-                        obj.documentsMovement.length != 0 ? (
-                          <IconButton
-                            onClick={() => checkDocuments(obj, index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : (
-                          <></>
-                        )}
-                      </TableCell>
                       <TableCell>
-                        {obj.folderMovement
-                          ? obj.folderMovement.split('/').slice(-1)
-                          : null}
+                        {convertToDateWithoutTime(obj.createdDate)}
                       </TableCell>
-                      {localStorage
-                        .getItem('pathsBack')
-                        .includes(
-                          '/inventory/movementProducts/list?path=/input/*',
-                        ) &&
-                      localStorage
-                        .getItem('pathsBack')
-                        .includes(
-                          '/inventory/movementProducts/list?path=/output/*',
-                        ) ? (
-                        <TableCell>
-                          {obj.movementHeaderId
-                            ? statusObject(
-                                obj,
-                                obj.movementHeaderId.length !== 0,
-                                obj.movementType.toLowerCase(),
-                                obj.codMovementRelated
-                                  ? showMinTypeRelated(
-                                      obj.codMovementRelated.split('-')[0],
-                                    )
-                                  : '',
-                                obj.codMovementRelated
-                                  ? obj.codMovementRelated.split('-')[1]
-                                  : '',
-                              )
-                            : null}
-                        </TableCell>
-                      ) : null}
-                      <TableCell>{obj.description}</TableCell>
-                      <TableCell>{obj.observation}</TableCell>
+                      <TableCell>{obj.serialNumberBill}</TableCell>
+                      <TableCell>{obj.billIssueDate}</TableCell>
+                      <TableCell>
+                        {obj.billDueDate || obj.billIssueDate}
+                      </TableCell>
                       <TableCell>
                         {showStatus(obj.status, obj.movementType)}
                       </TableCell>
                       <TableCell>
-                        {obj.purchaseType
+                        {obj.methodToPay
                           ? translateValue(
                               'PAYMENTMETHOD',
-                              obj.purchaseType.toUpperCase(),
+                              obj.methodToPay.toUpperCase(),
                             )
                           : null}
-                      </TableCell>
-                      <TableCell>
-                        {paids && paids.length !== 0 ? (
-                          <IconButton
-                            onClick={() => checkPaids(obj, index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : null}
-                      </TableCell>
-                      <TableCell>
-                        {otherPayConcepts && otherPayConcepts.length !== 0 ? (
-                          <IconButton
-                            onClick={() => checkOtherPayConcepts(obj, index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : null}
                       </TableCell>
                       <TableCell>{`${moneySymbol} ${fixDecimals(
                         obj.totalAmount,
                       )}`}</TableCell>
-                      <TableCell>{`${moneySymbol} ${fixDecimals(
-                        obj.totalAmountWithConcepts,
-                      )}`}</TableCell>
                       <TableCell>
-                        {`${moneySymbol} ${fixDecimals(obj.paid)}`}
+                        {obj.outputUserCreatedMetadata
+                          ? obj.outputUserCreatedMetadata.nombreCompleto
+                          : ''}
                       </TableCell>
                       <TableCell>
-                        {`${moneySymbol} ${fixDecimals(obj.debt)}`}
+                        {obj.proofOfPaymentUserCreatedMetadata
+                          ? obj.proofOfPaymentUserCreatedMetadata.nombreCompleto
+                          : ''}
                       </TableCell>
-                      <TableCell>
-                        {convertToDateWithoutTime(obj.createdDate)}
-                      </TableCell>
-                      <TableCell>
-                        {convertToDateWithoutTime(obj.updatedDate)}
-                      </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <Button
                           id='basic-button'
                           aria-controls={openMenu ? 'basic-menu' : undefined}
@@ -1042,7 +975,7 @@ const FinancesTable = (props) => {
                         >
                           <KeyboardArrowDownIcon />
                         </Button>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                     <TableRow key={`doc2-${index}`}>
                       <TableCell
@@ -1258,6 +1191,10 @@ const FinancesTable = (props) => {
                 sx={{m: '10px', position: 'relative'}}
               />
             )}
+            <TableRow>
+              <TableCell colSpan={8}>Total</TableCell>
+              <TableCell align='left'>S/ {totalAmount}</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -1272,12 +1209,11 @@ const FinancesTable = (props) => {
           .includes('/facturacion/accounting/movement/register') === true ? (
           <Button
             variant='outlined'
-            onClick={() => {
-              Router.push('/sample/finances/new-earning');
-            }}
-            startIcon={<AddCircleOutlineOutlinedIcon />}
+            color='secondary'
+            onClick={getExcelMovementsSummary}
+            startIcon={<GridOnOutlinedIcon />}
           >
-            Nuevo Ingreso
+            Exportar Resumen
           </Button>
         ) : null}
 
@@ -1286,24 +1222,12 @@ const FinancesTable = (props) => {
           .includes('/facturacion/accounting/movement/register') === true ? (
           <Button
             variant='outlined'
-            startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={() => {
-              Router.push('/sample/finances/new-expense');
-            }}
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={getExcelMovementsDetails}
           >
-            Nuevo Egreso
+            Exportar Detalle
           </Button>
         ) : null}
-
-        <Button
-          disabled={!(getFinancesRes && Array.isArray(getFinancesRes))}
-          onClick={() => {
-            searchFinancesForResultState();
-          }}
-          variant='outlined'
-        >
-          Generar estado de resultado
-        </Button>
       </ButtonGroup>
 
       <Menu
@@ -1317,30 +1241,6 @@ const FinancesTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/accounting/movement/update') === true ? (
-          <MenuItem onClick={goToUpdate}>
-            <CachedIcon sx={{mr: 1, my: 'auto'}} />
-            Actualizar
-          </MenuItem>
-        ) : null}
-        {localStorage
-          .getItem('pathsBack')
-          .includes('/facturacion/accounting/movement/delete') === true ? (
-          <MenuItem onClick={setDeleteState}>
-            <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
-            Eliminar
-          </MenuItem>
-        ) : null}
-        {localStorage
-          .getItem('pathsBack')
-          .includes('/facturacion/accounting/movement/list') === true ? (
-          <MenuItem disabled>
-            <GridOnOutlinedIcon sx={{mr: 1, my: 'auto'}} />
-            Exportar
-          </MenuItem>
-        ) : null}
-        {localStorage
-          .getItem('pathsBack')
           .includes(
             '/utility/listObjectsPathMerchant?path=/Movimientos contables/*',
           ) === true ? (
@@ -1349,103 +1249,8 @@ const FinancesTable = (props) => {
             Archivos
           </MenuItem>
         ) : null}
-        {/* 
-        {localStorage.getItem('pathsBack').includes('/facturacion/accounting/movement/update') === true ? (
-
-        ) : null} */}
       </Menu>
 
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar finanza'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={sendStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={open2}
-        onClose={handleClose2}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar finanza'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
-          <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
-            id='alert-dialog-description'
-          >
-            ¿Desea eliminar realmente la información seleccionada?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={confirmDelete}>
-            Sí
-          </Button>
-          <Button variant='outlined' onClick={handleClose2}>
-            No
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={resultState}
-        onClose={() => setResultState(false)}
-        fullWidth
-        maxWidth='xl'
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Estado de Resultado'}
-          <IconButton
-            aria-label='close'
-            onClick={() => setResultState(false)}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex'}}>
-          <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
-            id='alert-dialog-description'
-          >
-            <ResultState
-              // data={{
-              //   yearMovement: listFinancesPayload.request.payload.yearMovement,
-              //   monthMovement: listFinancesPayload.request.payload.monthMovement,
-              //   merchantId: listFinancesPayload.request.payload.merchantId
-              // }}
-              data={getFinancesForResultStateRes}
-              principalYear={listFinancesPayload.request.payload.yearMovement}
-              principalMonth={listFinancesPayload.request.payload.monthMovement}
-            />
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
       <Dialog
         open={moreFilters}
         onClose={() => setMoreFilters(false)}
@@ -1474,7 +1279,7 @@ const FinancesTable = (props) => {
             sx={{fontSize: '1.2em'}}
             id='alert-dialog-description'
           >
-            <MoreFiltersFinances sendData={filterData} />
+            <MoreFiltersContableMovements sendData={filterData} />
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
@@ -1483,4 +1288,4 @@ const FinancesTable = (props) => {
   );
 };
 
-export default FinancesTable;
+export default ContableMovements;

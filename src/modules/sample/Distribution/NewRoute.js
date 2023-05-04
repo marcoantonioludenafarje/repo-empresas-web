@@ -273,7 +273,7 @@ const Distribution = (props) => {
       request: {
         payload: {
           userActor: userAttributes['sub'],
-          excel: excelBase64 ? excelBase64 : "",
+          excel: excelBase64 ? excelBase64 : '',
           merchantId: userDataRes.merchantSelected.merchantId,
           routeName: data.routeName,
           deliveries: routes.map((obj) => {
@@ -286,13 +286,13 @@ const Distribution = (props) => {
                 numberOfPackages: obj.numberPackages,
                 observationDelivery: obj.observationDelivery,
                 startingPointAddress: obj.startingAddress,
-                startingInternalCode: obj.startingInternalCode || "",
+                startingInternalCode: obj.startingInternalCode || '',
                 startingPointUbigeo: completeWithZeros(
                   obj.startingPointUbigeo,
                   6,
                 ),
                 arrivalPointAddress: obj.arrivalAddress,
-                arrivalInternalCode: obj.arrivalInternalCode || "",
+                arrivalInternalCode: obj.arrivalInternalCode || '',
                 arrivalPointUbigeo: completeWithZeros(
                   obj.arrivalPointUbigeo,
                   6,
@@ -655,7 +655,7 @@ const Distribution = (props) => {
     setExcelBase64({
       base64: fileString,
       name: name,
-      type: type
+      type: type,
     });
   };
   const getBase64 = (file) => {

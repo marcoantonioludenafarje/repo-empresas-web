@@ -175,7 +175,7 @@ const GetReceipt = (props) => {
   const [serial, setSerial] = React.useState('');
   const [showSelectDoc, setShowSelectDoc] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [earningGeneration, setEarningGeneration] = React.useState(true);
+  const [earningGeneration, setEarningGeneration] = React.useState(query.contableMovementId ? false : true);
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   useEffect(() => {
@@ -210,14 +210,15 @@ const GetReceipt = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
     /* guide: '', */
-    receiver: `${query.clientId.split('-')[1]} - ${
-      query.clientName ||
-      selectedOutput.clientName /* query.clientId.split('-')[2] */
-    }`,
+    receiver: query.clientId
+      ? `${query.clientId.split('-')[1]} - ${
+          query.clientName ||
+          selectedOutput.clientName /* query.clientId.split('-')[2] */
+        }`
+      : '',
     issueDate: Date.now(),
     wayToPay: Date.now(),
     methodToPay: 'Efectivo',
@@ -225,6 +226,7 @@ const GetReceipt = (props) => {
     totalFieldIgv: Number(query.totalPriceWithIgv),
     money_unit: money_unit,
     clientEmail: query.clientEmail,
+    transactionNumber: '',
   };
   const actualValues = {
     nroReceipt: '',
@@ -268,43 +270,44 @@ const GetReceipt = (props) => {
   };
 
   //const calcularPrecioConIGV = (precioSinIGV, priceBusinessMoneyWithIgv) => {
-    //const IGV = igvDefault;
-    //const precioConIGV = priceBusinessMoneyWithIgv * (1 + IGV);
-    //return precioConIGV;
+  //const IGV = igvDefault;
+  //const precioConIGV = priceBusinessMoneyWithIgv * (1 + IGV);
+  //return precioConIGV;
   //}
-  
-  useEffect(() => {
-    
 
-  })
-  
+  useEffect(() => {});
 
   useEffect(() => {
     selectedOutput = {};
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
+
+    if (userDataRes.merchantSelected.typeClient == 'PN') {
+      setPaymentWay('debit');
+    }
     getBusinessParameter(businessParameterPayload);
     if (getMovementsRes !== undefined) {
       selectedOutput = getMovementsRes.find(
         (input) => input.movementHeaderId == query.movementHeaderId,
       );
       console.log('selectedOutput', selectedOutput);
-      console.log(
-        'selectedOutput.documentsMovement',
-        selectedOutput.documentsMovement,
-      );
-      let filteredDocuments = selectedOutput.documentsMovement.filter(
-        (obj) => obj.typeDocument === 'referralGuide',
-      );
-      listDocuments = filteredDocuments.map((obj) => {
-        return {
-          dateDocument: obj.issueDate,
-          document: obj.serialDocument,
-          typeDocument: obj.typeDocument,
-        };
-      });
-      console.log('listDocuments', listDocuments);
+
+      if (selectedOutput) {
+        let filteredDocuments = selectedOutput.documentsMovement.filter(
+          (obj) => obj.typeDocument === 'referralGuide',
+        );
+        listDocuments = filteredDocuments.map((obj) => {
+          return {
+            dateDocument: obj.issueDate,
+            document: obj.serialDocument,
+            typeDocument: obj.typeDocument,
+          };
+        });
+        console.log('listDocuments', listDocuments);
+      }
+
+
     }
     setTimeout(() => {
       setMinTutorial(true);
@@ -335,14 +338,19 @@ const GetReceipt = (props) => {
 
   useEffect(() => {
     if (typeof selectedOutput === 'object') {
-      changeValueField('receiver', `${query.clientId.split('-')[1]} - ${
-        selectedOutput.client.denomination
-      }`)
-      changeValueField('clientEmail', selectedOutput.client.email)
+      changeValueField(
+        'receiver',
+        query.clientId
+          ? `${query.clientId.split('-')[1]} - ${
+              selectedOutput.client.denomination
+            }`
+          : 'Cliente No Definido',
+      );
+      changeValueField('clientEmail', selectedOutput.client.email);
       selectedProducts = selectedOutput.descriptionProductsInfo;
       selectedProducts.map((obj) => {
         obj['subtotal'] = Number(
-          (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(3),
+          (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(2),
         );
       });
       console.log('selectedProducts', selectedProducts);
@@ -409,7 +417,6 @@ const GetReceipt = (props) => {
     }
   }, [globalParameter != undefined && moneyUnit, moneyToConvert]);
 
-  
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
   const cancel = () => {
@@ -445,9 +452,9 @@ const GetReceipt = (props) => {
 
   const valueWithIGV = (value) => {
     const IGV = igvDefault;
-    const precioConIGV =( value * (1 + IGV)).toFixed(10);
+    const precioConIGV = (value * (1 + IGV)).toFixed(10);
     return precioConIGV;
-  }
+  };
 
   const showListDocumentsSelected = () => {
     const total = listDocuments.reduce((count, element) => {
@@ -475,11 +482,11 @@ const GetReceipt = (props) => {
       });
       total = calculatedtotal;
     }
-    changeValueField('totalField', Number(total.toFixed(3)));
+    changeValueField('totalField', Number(total.toFixed(2)));
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * 0.18).toFixed(3))
+        ? Number((total + total * 0.18).toFixed(2))
         : total,
     );
     forceUpdate();
@@ -507,18 +514,20 @@ const GetReceipt = (props) => {
             movementTypeMerchantId: query.movementTypeMerchantId,
             movementHeaderId: query.movementHeaderId,
             contableMovementId: query.contableMovementId || '',
+            contableMovements: selectedOutput.contableMovements || [],
             createdAt: Number(query.createdAt),
-            clientId: query.clientId,
-            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(3)),
+            clientId: query.clientId || '',
+            totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)),
             issueDate: specialFormatToSunat(Date.now()),
             serial: serial,
             documentIntern: query.documentIntern,
             clientEmail: data.clientEmail,
+            transactionNumber: data.transactionNumber || '',
             /* numberBill: 3, */
             automaticSendSunat: true,
             automaticSendClient: true,
             referralGuide: data.guide ? true : false,
-            creditSale: paymentWay == "credit",
+            creditSale: paymentWay == 'credit',
             methodToPay: paymentMethod,
             earningGeneration: earningGeneration,
             referralGuideSerial: data.guide ? data.guide : '',
@@ -535,6 +544,9 @@ const GetReceipt = (props) => {
                 customCodeProduct: obj.customCodeProduct,
                 description: obj.description,
                 unitMeasure: obj.unitMeasure,
+                businessProductCode: obj.businessProductCode,
+                taxCode: obj.taxCode,
+                igvCode: obj.igvCode,
               };
             }),
             documentsMovement: selectedOutput.documentsMovement,
@@ -543,7 +555,14 @@ const GetReceipt = (props) => {
             folderMovement: query.folderMovement,
             denominationMerchant:
               userDataRes.merchantSelected.denominationMerchant,
-            sendEmail: sendEmail
+            sendEmail: sendEmail,
+            userCreated: userDataRes.userId,
+            userCreatedMetadata: {
+              nombreCompleto: userDataRes.nombreCompleto,
+              email: userDataRes.email,
+            },
+            outputUserCreated: selectedOutput.userCreated,
+            outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
           },
         },
       };
@@ -652,10 +671,17 @@ const GetReceipt = (props) => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      setShowForms(true);
-      dispatch({type: GET_MOVEMENTS, payload: []});
-      toGetMovements(listPayload);
-      setOpenStatus(false);
+      if (!earningGeneration) {
+        setShowForms(true);
+        dispatch({type: GET_MOVEMENTS, payload: []});
+        toGetMovements(listPayload);
+        setOpenStatus(false);
+      } else {
+        dispatch({type: GET_MOVEMENTS, payload: []});
+        toGetMovements(listPayload);
+        setOpenStatus(false);
+        Router.push('/sample/outputs/table');
+      }
     } else if (registerError()) {
       setOpenStatus(false);
     } else {
@@ -709,12 +735,12 @@ const GetReceipt = (props) => {
     });
     total = calculatedtotal;
     console.log('total de las salidas', total);
-    changeValueField('totalField', Number(total.toFixed(3)));
+    changeValueField('totalField', Number(total.toFixed(2)));
     changeValueField(
       'totalFieldIgv',
       query.igv && Number(query.igv) > 0
-        ? Number((total + total * igv).toFixed(3))
-        : total,
+        ? Number((total + total * igv).toFixed(2))
+        : Number(total.toFixed(2)),
     );
     console.log('total de los productos', total);
     forceUpdate();
@@ -761,8 +787,7 @@ const GetReceipt = (props) => {
           GENERAR BOLETA DE VENTA
         </Typography>
       </Box>
-      <Box
-      >
+      <Box>
         <AppPageMeta />
 
         <Formik
@@ -870,13 +895,20 @@ const GetReceipt = (props) => {
                     />
                   </Grid>
                   <Grid
-                    xs={6} sm={4}
-                    sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2, mr: 0}}
+                    xs={6}
+                    sm={4}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      px: 1,
+                      mt: 2,
+                      mr: 0,
+                    }}
                   >
                     <FormControlLabel
                       label='IGV'
                       disabled
-                      sx={{mr:1}}
+                      sx={{mr: 1}}
                       control={
                         <Checkbox
                           onChange={handleIGV}
@@ -905,7 +937,7 @@ const GetReceipt = (props) => {
                   </Grid> */}
                   <Grid xs={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
-                      label='Receptor'
+                      label='Cliente'
                       name='receiver'
                       disabled
                       variant='outlined'
@@ -918,7 +950,22 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid>
-
+                  <Grid sx={{px: 1, mt: 2}} xs={12}>
+                    <Button
+                      color='secondary'
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={() =>
+                        {query.clientId = ''
+                        changeValueField(
+                          'receiver', 'Cliente No Definido',
+                        );
+                        }
+                      }
+                    >
+                      Quitar Cliente
+                    </Button>
+                  </Grid>
                   {/* <Grid item xs={4}>
                     <AppTextField
                       label='Guía de remisión'
@@ -933,34 +980,12 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid> */}
-                  <Grid xs={6} sx={{px: 1, mt: 2}}>
+                  <Grid sx={{px: 1}} xs={12} sm={6}>
                     <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
-                        Forma de pago
-                      </InputLabel>
-                      <Select
-                        value={paymentWay}
-                        name='wayToPay'
-                        labelId='wayToPay-label'
-                        label='Forma de pago'
-                        onChange={
-                          /* handleActualData */ (event) => {
-                            setPaymentWay(event.target.value);
-                          }
-                        }
+                      <InputLabel
+                        id='methodToPay-label'
+                        style={{fontWeight: 200}}
                       >
-                        <MenuItem value='credit' style={{fontWeight: 200}}>
-                          Credito
-                        </MenuItem>
-                        <MenuItem value='debit' style={{fontWeight: 200}}>
-                          Al contado
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid sx={{px: 1, mt: 2}} xs={6}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
                         Medio de pago
                       </InputLabel>
                       <Select
@@ -983,7 +1008,10 @@ const GetReceipt = (props) => {
                         <MenuItem value='plin' style={{fontWeight: 200}}>
                           Plin
                         </MenuItem>
-                        <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
+                        <MenuItem
+                          value='bankTransfer'
+                          style={{fontWeight: 200}}
+                        >
                           Transferencia Bancaria
                         </MenuItem>
                         <MenuItem value='card' style={{fontWeight: 200}}>
@@ -991,6 +1019,49 @@ const GetReceipt = (props) => {
                         </MenuItem>
                         <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
                           <IntlMessages id='common.bankDeposit' />
+                        </MenuItem>
+                        <MenuItem value='giftCard' style={{fontWeight: 200}}>
+                          GiftCard
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <AppTextField
+                      label='Número de transacción'
+                      disabled={paymentMethod == 'cash'}
+                      name='transactionNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid xs={6} sx={{px: 1, mt: 2}}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
+                        Forma de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentWay}
+                        name='wayToPay'
+                        labelId='wayToPay-label'
+                        label='Forma de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentWay(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='credit' style={{fontWeight: 200}}>
+                          Credito
+                        </MenuItem>
+                        <MenuItem value='debit' style={{fontWeight: 200}}>
+                          Al contado
                         </MenuItem>
                       </Select>
                     </FormControl>
@@ -1025,7 +1096,7 @@ const GetReceipt = (props) => {
                     </FormControl>
                   </Grid>
                   <Grid
-                    xs={6}
+                    xs={12}
                     sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
                   >
                     <FormControlLabel
@@ -1033,7 +1104,7 @@ const GetReceipt = (props) => {
                       control={
                         <Checkbox
                           onChange={handleEarningGeneration}
-                          defaultChecked={true}
+                          defaultChecked={!query.contableMovementId}
                         />
                       }
                     />
@@ -1057,8 +1128,12 @@ const GetReceipt = (props) => {
                     </Button>
                   </Grid>
                 </Grid>
-                
-                <Grid container spacing={2} sx={{maxWidth: 500, mx: 'auto', mb: 4, mt: 4}}>
+
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, mx: 'auto', mb: 4, mt: 4}}
+                >
                   {/* <Grid item xs={4}>
                     <DateTimePicker
                       renderInput={(params) => (
@@ -1134,8 +1209,7 @@ const GetReceipt = (props) => {
                       label='Enviar correo a SUNAT'
                     />
                   </Grid> */}
-                  <Grid 
-                    sx={{px: 1, mt: 2}} xs={12}>
+                  <Grid sx={{px: 1, mt: 2}} xs={12}>
                     <AppTextField
                       label='Observación'
                       name='observation'
@@ -1151,8 +1225,7 @@ const GetReceipt = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={12} 
-                    sx={{px: 1, mt: 2, my: 2}}>
+                  <Grid xs={12} sx={{px: 1, mt: 2, my: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -1168,6 +1241,7 @@ const GetReceipt = (props) => {
                   data={selectedProducts}
                   valueWithIGV={valueWithIGV}
                   toDelete={removeProduct}
+                  igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
 
@@ -1352,7 +1426,7 @@ const GetReceipt = (props) => {
               />
             </DialogTitle>
             <DialogContent>
-              <AddProductForm type='input' sendData={getNewProduct} />
+              <AddProductForm type='input' sendData={getNewProduct} igvEnabled={Number(query.igv) > 0 || query.igv == 'true'} />
             </DialogContent>
           </>
         ) : null}

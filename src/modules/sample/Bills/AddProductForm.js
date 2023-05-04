@@ -49,6 +49,8 @@ const defaultValues = {
   priceProduct: '',
   count: '',
   unitMeasure: '',
+  taxCode: '',
+  igvCode: '',
 };
 const actualValues = {
   productSearch: '',
@@ -56,6 +58,8 @@ const actualValues = {
   count: '',
   subTotal: '',
   unitMeasure: '',
+  taxCode: '',
+  igvCode: '',
 };
 
 const maxLength = 11111111111111111111; //20 caracteres
@@ -78,7 +82,7 @@ const validationSchema = yup.object({
 
 let selectedProduct = {};
 
-const AddProductForm = ({sendData, type}) => {
+const AddProductForm = ({sendData, type, igvEnabled}) => {
   const useStyles = {
     container: {
       textAlign: 'center',
@@ -120,6 +124,7 @@ const AddProductForm = ({sendData, type}) => {
   const prodcutSearch = '';
   let changeValueField;
   console.log('funcion recibida', sendData);
+  console.log('igv recibida', igvEnabled);
   let typeAlert = 'faltaProduct';
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
@@ -137,6 +142,7 @@ const AddProductForm = ({sendData, type}) => {
   const [open, setOpen] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
   const [typeElement, setTypeElement] = React.useState('NIU');
+  const [typeElement1, setTypeElement1] = React.useState('1000');
   const [proSearch, setProSearch] = React.useState();
   const [nameChanged, setNameChanged] = React.useState(false);
   const handleClose = () => {
@@ -217,6 +223,9 @@ const AddProductForm = ({sendData, type}) => {
             Number(data.count) * Number(data.priceProduct),
           ).toFixed(3),
           businessProductCode: selectedProduct.businessProductCode,
+          taxCode: typeElement1,
+          igvCode: SelectIgvCode(typeElement1),
+
         });
         actualValues.productSearch = '';
         actualValues.priceProduct = '';
@@ -231,8 +240,35 @@ const AddProductForm = ({sendData, type}) => {
     setSubmitting(false);
   };
 
+  const SelectIgvCode = (taxCode) => {  
+    switch (taxCode) {
+      case 1000:
+        return 10;
+        break;
+      case 9997:
+        return 20;
+        break;
+      case 9998:
+        return 30;
+        break;
+      default:
+        return null;
+    }
+  }; 
+
+  const setDefaultTypeElement1 = () => {  
+    if (igvEnabled) {
+      setTypeElement1(1000);
+    } else {
+      setTypeElement1(9998);
+    }
+  }; 
+
   const handleTypeElement = (event) => {
     setTypeElement(event.target.value);
+  };
+  const handleTypeElement1 = (event) => {
+    setTypeElement1(event.target.value);
   };
 
   return (
@@ -339,6 +375,30 @@ const AddProductForm = ({sendData, type}) => {
                     />
                   </Grid>
                   <Grid item xs={4}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel id='taxCode-label'>Tipo IGV</InputLabel>
+                      <Select
+                        name='taxCode'
+                        label='Tipo IGV'
+                        labelId='taxCode-label'
+                        onChange={handleTypeElement1}
+                        defaultValue={setDefaultTypeElement1}
+                        value={typeElement1}
+                        disabled={true}
+                      >
+                        <MenuItem value='1000' style={{fontWeight: 200}}>
+                          Gravado
+                        </MenuItem>
+                        <MenuItem value='9998' style={{fontWeight: 200}}>
+                          Inafecto
+                        </MenuItem>
+                        <MenuItem value='9997' style={{fontWeight: 200}}>
+                          Exonerado
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={4}>
                     <Button
                       color='primary'
                       type='submit'
@@ -415,6 +475,7 @@ const AddProductForm = ({sendData, type}) => {
 AddProductForm.propTypes = {
   sendData: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
+  //igvEnabled: PropTypes.func.isNot
 };
 
 export default AddProductForm;
