@@ -256,7 +256,7 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
     }
   }; 
 
-  const setDefaultTypeElement1 = () => {
+  const setDefaultTypeElement1 = () => {  
     if (igvEnabled) {
       setTypeElement1(1000);
     } else {
