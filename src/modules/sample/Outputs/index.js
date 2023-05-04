@@ -1503,6 +1503,7 @@ const OutputsTable = (props) => {
                           'referralGuide',
                         )}
                       </TableCell>
+                      {/* factura */}
                       <TableCell align='center'>
                         {statusObject(obj, obj.existBill, 'bill')}
                       </TableCell>

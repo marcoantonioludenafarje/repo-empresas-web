@@ -1072,7 +1072,7 @@ const NewOutput = (props) => {
                   sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
                 >
                   {typeDocument == 'sales' ? (
-                    <Grid item xs={8}>
+                    <Grid item xs={12} sm={12}>
                       <Button
                         sx={{width: 1}}
                         variant='outlined'

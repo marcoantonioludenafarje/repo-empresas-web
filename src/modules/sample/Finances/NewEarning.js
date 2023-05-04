@@ -766,7 +766,7 @@ const NewEarning = (props) => {
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='purchaseType-label'
@@ -794,7 +794,43 @@ const NewEarning = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-
+                  <Grid item xs={6}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
+                        Medio de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentMethod}
+                        name='methodToPay'
+                        labelId='methodToPay-label'
+                        label='Medio de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentMethod(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='cash' style={{fontWeight: 200}}>
+                          Efectivo
+                        </MenuItem>
+                        <MenuItem value='yape' style={{fontWeight: 200}}>
+                          Yape
+                        </MenuItem>
+                        <MenuItem value='plin' style={{fontWeight: 200}}>
+                          Plin
+                        </MenuItem>
+                        <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
+                          Transferencia Bancaria
+                        </MenuItem>
+                        <MenuItem value='card' style={{fontWeight: 200}}>
+                          Tarjeta de crédito/débito
+                        </MenuItem>
+                        <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
+                          <IntlMessages id='common.bankDeposit' />
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
                   <Grid item xs={12}>
                     <AppTextField
                       label={
