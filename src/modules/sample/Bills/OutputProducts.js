@@ -111,9 +111,9 @@ const OutputProducts = ({
                       {obj.taxCode == 1000 ? valueWithIGV(obj.priceBusinessMoneyWithIgv) : obj.priceBusinessMoneyWithIgv}
                     </TableCell>
                   ) : null}
-                  <TableCell>{obj.subtotal}</TableCell>
+                  <TableCell>{Number((obj.subtotal).toFixed(2))}</TableCell>
                   {igvEnabled ? (
-                    <TableCell>{obj.taxCode == 1000 ? valueWithIGV(obj.subtotal) : obj.subtotal}</TableCell>
+                    <TableCell>{obj.taxCode == 1000 ? Number(valueWithIGV(obj.subtotal)).toFixed(2) : Number((obj.subtotal).toFixed(2))}</TableCell>
                   ) : null}
                   {/* <TableCell>{showTypeIGV(obj.taxCode)}</TableCell> */}
                   <TableCell>

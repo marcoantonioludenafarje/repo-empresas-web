@@ -378,7 +378,7 @@ const GetReceipt = (props) => {
         'totalFieldIgv',
         query.igv && fixDecimals(query.igv) > 0
           ? fixDecimals(total + fixDecimals(total * fixDecimals(query.igv)))
-          : total,
+          : Number(total.toFixed(2)),
       );
     }
   }, [exchangeRate]);
@@ -494,7 +494,7 @@ const GetReceipt = (props) => {
       total = calculatedtotal;
     }
     changeValueField('totalField', Number(total.toFixed(2)));
-    changeValueField('totalFieldIgv', totalWithIgv);
+    changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
     forceUpdate();
   };
   const changeTaxCode = (index, taxCode) => {
@@ -533,7 +533,7 @@ const GetReceipt = (props) => {
       }
     });
     total = calculatedtotalIgv;
-    changeValueField('totalFieldIgv', calculatedtotalIgv);
+    changeValueField('totalFieldIgv', Number((calculatedtotalIgv).toFixed(2)));
     forceUpdate();
   };
   const handleData = (data, {setSubmitting}) => {
@@ -789,7 +789,7 @@ const GetReceipt = (props) => {
     });
     total = calculatedtotal;
     changeValueField('totalField', Number(total.toFixed(2)));
-    changeValueField('totalFieldIgv', totalWithIgv);
+    changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
     console.log('total de los productos', total);
     forceUpdate();
   };
