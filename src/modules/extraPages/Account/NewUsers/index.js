@@ -34,6 +34,7 @@ import {
   FETCH_SUCCESS,
   REGISTER_USER,
 } from '../../../../shared/constants/ActionTypes';
+import {listUser} from '../../../../redux/actions/User';
 
 const validationSchema = yup.object({
   email: yup
@@ -44,10 +45,18 @@ const validationSchema = yup.object({
 });
 let uniqueRol = {};
 
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
+
 const NewUsers = () => {
   const [profile, setProfile] = React.useState('administrator');
   const [openStatus, setOpenStatus] = React.useState(false);
   const dispatch = useDispatch();
+
+  const {listUserRes} = useSelector(({user}) => user);
 
   const {registerUserRes} = useSelector(({user}) => user);
   console.log('registerUserRes', registerUserRes);
@@ -68,6 +77,11 @@ const NewUsers = () => {
     dispatch(registerUser(payload));
   };
 
+  const toListUser = (payload) => {
+    dispatch(listUser(payload));
+  };
+
+
   const registerSuccess = () => {
     return (
       successMessage != undefined &&
@@ -83,7 +97,7 @@ const NewUsers = () => {
     );
   };
 
-  const sendStatus = () => {
+  /*const sendStatus = () => {
     if (registerSuccess()) {
       setOpenStatus(false);
     } else if (registerError()) {
@@ -91,6 +105,21 @@ const NewUsers = () => {
     } else {
       setOpenStatus(false);
     }
+  };*/
+
+
+  const sendStatus = () => {
+    setTimeout(() => {
+      setOpenStatus(false);
+    }, 2000);
+    let listUserPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+    toListUser(listUserPayload);
   };
 
   const showMessage = () => { 
