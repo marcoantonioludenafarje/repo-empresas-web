@@ -3,6 +3,7 @@ import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import {useIntl} from 'react-intl';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import Box from '@mui/material/Box';
 import Link from 'next/link';
@@ -60,7 +61,7 @@ const SigninAwsCognito = () => {
           {({isSubmitting}) => (
             <Form style={{textAlign: 'left'}} noValidate autoComplete='off'>
               <Box sx={{mb: {xs: 5, xl: 8}}}>
-                <AppTextField
+                <AppLowerCaseTextField
                   placeholder={messages['common.email']}
                   label={<IntlMessages id='common.email' />}
                   name='email'
