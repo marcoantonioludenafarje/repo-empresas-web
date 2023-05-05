@@ -93,52 +93,56 @@ const NewUsers = () => {
     }
   };
 
-  const showMessage = () => {
-    if (registerSuccess()) {
-      return (
-        <>
-          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            <CheckCircleOutlineOutlinedIcon
-              color='success'
-              sx={{fontSize: '6em', mx: 2}}
-            />
-            <DialogContentText
-              sx={{fontSize: '1.2em', m: 'auto'}}
-              id='alert-dialog-description'
-            >
-              Se ha registrado la información <br />
-              correctamente
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions sx={{justifyContent: 'center'}}>
-            <Button variant='outlined' onClick={sendStatus}>
-              Aceptar
-            </Button>
-          </DialogActions>
-        </>
-      );
-    } else if (registerError()) {
-      return (
-        <>
-          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            <CancelOutlinedIcon
-              sx={{fontSize: '6em', mx: 2, color: red[500]}}
-            />
-            <DialogContentText
-              sx={{fontSize: '1.2em', m: 'auto'}}
-              id='alert-dialog-description'
-            >
-              Se ha producido un error al registrar. <br />
-              {/* {registerError() ? registerUserRes : null} */}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions sx={{justifyContent: 'center'}}>
-            <Button variant='outlined' onClick={() => setOpenStatus(false)}>
-              Aceptar
-            </Button>
-          </DialogActions>
-        </>
-      );
+  const showMessage = () => { 
+    if (successMessage != undefined && registerUserRes != undefined) {
+      if (registerSuccess()) {
+        return (
+          <>
+            <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+              <CheckCircleOutlineOutlinedIcon
+                color='success'
+                sx={{fontSize: '6em', mx: 2}}
+              />
+              <DialogContentText
+                sx={{fontSize: '1.2em', m: 'auto'}}
+                id='alert-dialog-description'
+              >
+                Se ha registrado la información <br />
+                correctamente
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions sx={{justifyContent: 'center'}}>
+              <Button variant='outlined' onClick={sendStatus}>
+                Aceptar
+              </Button>
+            </DialogActions>
+          </>
+        );
+      } else if (registerError()) {
+        return (
+          <>
+            <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+              <CancelOutlinedIcon
+                sx={{fontSize: '6em', mx: 2, color: red[500]}}
+              />
+              <DialogContentText
+                sx={{fontSize: '1.2em', m: 'auto'}}
+                id='alert-dialog-description'
+              >
+                Se ha producido un error al registrar. <br />
+                {/* {registerError() ? registerUserRes : null} */}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions sx={{justifyContent: 'center'}}>
+              <Button variant='outlined' onClick={() => setOpenStatus(false)}>
+                Aceptar
+              </Button>
+            </DialogActions>
+          </>
+        );
+      } else {
+        return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
+      }
     } else {
       return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
     }

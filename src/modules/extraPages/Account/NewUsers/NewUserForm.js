@@ -3,6 +3,7 @@ import {Box, Button} from '@mui/material';
 import AppGridContainer from '../../../../@crema/core/AppGridContainer';
 import Grid from '@mui/material/Grid';
 import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
 import {FormControl, InputLabel, Select, MenuItem} from '@mui/material';
 import PropTypes from 'prop-types';
 
@@ -109,7 +110,7 @@ const NewUserForm = ({values, moveData}) => {
     <Form autoComplete='off'>
       <AppGridContainer spacing={4}>
         <Grid item xs={5} md={5}>
-          <AppTextField
+          <AppLowerCaseTextField
             name='email'
             fullWidth
             label={<IntlMessages id='common.email' />}
