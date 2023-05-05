@@ -817,7 +817,10 @@ const ContableMovements = (props) => {
           value={dateRange}
           inputFormat={isMobile ? 'dd/MM/yyyy' : 'dd/MM/yyyy hh:mm a'}
           onChange={(newValue) => {
-            const valueToEndOfTheDay = [newValue[0],addMinutes(addHours(newValue[1], 23), 59)];
+            const valueToEndOfTheDay = [
+              newValue[0],
+              addMinutes(addHours(newValue[1], 23), 59),
+            ];
             setDateRange(valueToEndOfTheDay);
             console.log('date', valueToEndOfTheDay);
             listFinancesPayload.request.payload.initialTime = toEpoch(

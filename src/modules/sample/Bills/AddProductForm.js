@@ -50,7 +50,6 @@ const defaultValues = {
   count: '',
   unitMeasure: '',
   taxCode: '',
-  igvCode: '',
 };
 const actualValues = {
   productSearch: '',
@@ -59,7 +58,6 @@ const actualValues = {
   subTotal: '',
   unitMeasure: '',
   taxCode: '',
-  igvCode: '',
 };
 
 const maxLength = 11111111111111111111; //20 caracteres
@@ -142,7 +140,7 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
   const [open, setOpen] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
   const [typeElement, setTypeElement] = React.useState('NIU');
-  const [typeElement1, setTypeElement1] = React.useState('1000');
+  const [typeTaxCode, setTypeTaxCode] = React.useState(igvEnabled ? '1000' : '9998');
   const [proSearch, setProSearch] = React.useState();
   const [nameChanged, setNameChanged] = React.useState(false);
   const handleClose = () => {
@@ -206,6 +204,26 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
       });
       delete selectedProduct['referencialPriceProduct'];
       if (true) {
+        // console.log("addProductForm", {
+        //   product:
+        //     data.productSearch === selectedProduct.description
+        //       ? selectedProduct.product
+        //       : '',
+        //   description: data.productSearch,
+        //   unitMeasure: typeElement,
+        //   customCodeProduct:
+        //     selectedProduct.customCodeProduct !== undefined
+        //       ? selectedProduct.customCodeProduct
+        //       : '',
+        //   quantityMovement: Number(data.count),
+        //   priceBusinessMoneyWithIgv: Number(data.priceProduct),
+        //   subtotal: Number(
+        //     Number(data.count) * Number(data.priceProduct),
+        //   ).toFixed(3),
+        //   businessProductCode: selectedProduct.businessProductCode,
+        //   taxCode: Number(typeTaxCode),
+        //   igvCode: Number(SelectIgvCode(typeTaxCode)),
+        // })
         sendData({
           product:
             data.productSearch === selectedProduct.description
@@ -223,9 +241,7 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
             Number(data.count) * Number(data.priceProduct),
           ).toFixed(3),
           businessProductCode: selectedProduct.businessProductCode,
-          taxCode: typeElement1,
-          igvCode: SelectIgvCode(typeElement1),
-
+          taxCode: Number(typeTaxCode),
         });
         actualValues.productSearch = '';
         actualValues.priceProduct = '';
@@ -240,7 +256,7 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
     setSubmitting(false);
   };
 
-  const SelectIgvCode = (taxCode) => {  
+  const SelectIgvCode = (taxCode) => {
     switch (taxCode) {
       case 1000:
         return 10;
@@ -254,21 +270,21 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
       default:
         return null;
     }
-  }; 
+  };
 
-  const setDefaultTypeElement1 = () => {  
+  const setDefaultTypeElement1 = () => {
     if (igvEnabled) {
-      setTypeElement1(1000);
+      setTypeTaxCode(1000);
     } else {
-      setTypeElement1(9998);
+      setTypeTaxCode(9998);
     }
-  }; 
+  };
 
   const handleTypeElement = (event) => {
     setTypeElement(event.target.value);
   };
   const handleTypeElement1 = (event) => {
-    setTypeElement1(event.target.value);
+    setTypeTaxCode(event.target.value);
   };
 
   return (
@@ -382,9 +398,9 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
                         label='Tipo IGV'
                         labelId='taxCode-label'
                         onChange={handleTypeElement1}
-                        defaultValue={setDefaultTypeElement1}
-                        value={typeElement1}
-                        disabled={true}
+                        //defaultValue={'9998'}
+                        value={typeTaxCode}
+                        disabled={!igvEnabled}
                       >
                         <MenuItem value='1000' style={{fontWeight: 200}}>
                           Gravado

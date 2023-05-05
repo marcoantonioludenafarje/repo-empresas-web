@@ -164,13 +164,19 @@ const ProductMovementTable = (props) => {
   };
   const convertToDate = (miliseconds) => {
     const fecha = new Date(miliseconds);
-    const fecha_actual = `${fecha.getDate()}/${fecha.getMonth()< 9 ? `0${fecha.getMonth() +1 }`: fecha.getMonth() + 1}/${fecha.getFullYear()} - ${fecha.getHours()}:${fecha.getMinutes() < 10 ? `0${fecha.getMinutes()}`: fecha.getMinutes()}:${fecha.getSeconds()}`;
+    const fecha_actual = `${fecha.getDate()}/${
+      fecha.getMonth() < 9 ? `0${fecha.getMonth() + 1}` : fecha.getMonth() + 1
+    }/${fecha.getFullYear()} - ${fecha.getHours()}:${
+      fecha.getMinutes() < 10 ? `0${fecha.getMinutes()}` : fecha.getMinutes()
+    }:${fecha.getSeconds()}`;
     return fecha_actual;
   };
-  
+
   const convertToDatePretty = (miliseconds) => {
     const fecha = new Date(miliseconds);
-    const fecha_actual = `${fecha.getMonth() + 1}/${fecha.getDate()}/${fecha.getFullYear()}`;
+    const fecha_actual = `${
+      fecha.getMonth() + 1
+    }/${fecha.getDate()}/${fecha.getFullYear()}`;
     return fecha_actual;
   };
 
@@ -189,12 +195,30 @@ const ProductMovementTable = (props) => {
             </Button>
           );
         } else {
-          if (type != 'ticket' && obj.documentsMovement && obj.documentsMovement.length>0) {
-            let serialDocumentObj = obj.documentsMovement.filter( item => item.typeDocument === type);
-            let serialDocument = serialDocumentObj && serialDocumentObj.length>0 && type != 'referralGuide' ? serialDocumentObj[0].serialDocument : "Generado";
-            
-            if (serialDocumentObj && serialDocumentObj.length>0 && type == 'referralGuide')
-              serialDocument = serialDocumentObj.length==1 ? serialDocumentObj[0].serialDocument : "Varias";
+          if (
+            type != 'ticket' &&
+            obj.documentsMovement &&
+            obj.documentsMovement.length > 0
+          ) {
+            let serialDocumentObj = obj.documentsMovement.filter(
+              (item) => item.typeDocument === type,
+            );
+            let serialDocument =
+              serialDocumentObj &&
+              serialDocumentObj.length > 0 &&
+              type != 'referralGuide'
+                ? serialDocumentObj[0].serialDocument
+                : 'Generado';
+
+            if (
+              serialDocumentObj &&
+              serialDocumentObj.length > 0 &&
+              type == 'referralGuide'
+            )
+              serialDocument =
+                serialDocumentObj.length == 1
+                  ? serialDocumentObj[0].serialDocument
+                  : 'Varias';
 
             return (
               <Button
@@ -206,19 +230,19 @@ const ProductMovementTable = (props) => {
                 {serialDocument}
               </Button>
             );
-
           } else if (type == 'ticket') {
             return (
               <Button
                 variant='secondary'
                 sx={{fontSize: '1em'}}
                 /* disabled={type == 'referralGuide'} */
-                onClick={() => {window.open(obj.existSellTicket)}}
+                onClick={() => {
+                  window.open(obj.existSellTicket);
+                }}
               >
                 NRO. {obj.codMovement.split('-')[1]}
               </Button>
             );
-            
           } else {
             return (
               <Button
@@ -247,7 +271,7 @@ const ProductMovementTable = (props) => {
       return 'No aplica';
     }
   };
-  
+
   //GET APIS RES
   const {loading} = useSelector(({common}) => common);
   const {getMovementsRes} = useSelector(({movements}) => movements);

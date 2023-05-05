@@ -351,10 +351,10 @@ const NewEarning = (props) => {
         selectedOutput.proofOfPaymentUserCreated || '';
       newFinancePayload.request.payload.movements[0].proofOfPaymentUserCreatedMetadata =
         selectedOutput.proofOfPaymentUserCreatedMetadata || '';
-      newFinancePayload.request.payload.movements[0].contableMovements = 
-        selectedOutput.contableMovements || [],
-      newFinancePayload.request.payload.movements[0].numberDocumentProvider =
-        selectedClient.clientId.split('-')[1];
+      (newFinancePayload.request.payload.movements[0].contableMovements =
+        selectedOutput.contableMovements || []),
+        (newFinancePayload.request.payload.movements[0].numberDocumentProvider =
+          selectedClient.clientId.split('-')[1]);
       newFinancePayload.request.payload.movements[0].denominationProvider =
         selectedClient.denominationClient;
       newFinancePayload.request.payload.movements[0].providerId =
@@ -796,7 +796,10 @@ const NewEarning = (props) => {
                   </Grid>
                   <Grid item xs={6}>
                     <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='methodToPay-label' style={{fontWeight: 200}}>
+                      <InputLabel
+                        id='methodToPay-label'
+                        style={{fontWeight: 200}}
+                      >
                         Medio de pago
                       </InputLabel>
                       <Select
@@ -819,7 +822,10 @@ const NewEarning = (props) => {
                         <MenuItem value='plin' style={{fontWeight: 200}}>
                           Plin
                         </MenuItem>
-                        <MenuItem value='bankTransfer' style={{fontWeight: 200}}>
+                        <MenuItem
+                          value='bankTransfer'
+                          style={{fontWeight: 200}}
+                        >
                           Transferencia Bancaria
                         </MenuItem>
                         <MenuItem value='card' style={{fontWeight: 200}}>

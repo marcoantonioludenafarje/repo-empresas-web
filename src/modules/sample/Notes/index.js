@@ -559,7 +559,7 @@ const CreditNotesTable = (props) => {
         >
           <TableHead>
             <TableRow>
-            <TableCell>Fecha emisión</TableCell>
+              <TableCell>Fecha emisión</TableCell>
               <TableCell>Número serie</TableCell>
               <TableCell>Número factura</TableCell>
               <TableCell>Identificador Receptor</TableCell>
@@ -608,8 +608,18 @@ const CreditNotesTable = (props) => {
                       ? obj.documentIntern.split('-')[1]
                       : null} */}
                   </TableCell>
-                  <TableCell>{obj.clientId ? `${obj.clientId.split('-')[0]} - ${obj.clientId.split('-')[1]}` : ''}</TableCell>
-                  <TableCell>{obj.clientId ? obj.denominationClient : 'Cliente No Definido'}</TableCell>
+                  <TableCell>
+                    {obj.clientId
+                      ? `${obj.clientId.split('-')[0]} - ${
+                          obj.clientId.split('-')[1]
+                        }`
+                      : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.clientId
+                      ? obj.denominationClient
+                      : 'Cliente No Definido'}
+                  </TableCell>
                   <TableCell>{obj.observation}</TableCell>
                   <TableCell>
                     {obj.totalPriceWithoutIgv
@@ -617,8 +627,11 @@ const CreditNotesTable = (props) => {
                       : ''}
                   </TableCell>
                   <TableCell>
-                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv 
-                      ? `${moneySymbol} ${Number(obj.totalPriceWithIgv.toFixed(2)-obj.totalPriceWithoutIgv.toFixed(2)).toFixed(2)} `
+                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv
+                      ? `${moneySymbol} ${Number(
+                          obj.totalPriceWithIgv.toFixed(2) -
+                            obj.totalPriceWithoutIgv.toFixed(2),
+                        ).toFixed(2)} `
                       : ''}
                   </TableCell>
                   <TableCell>

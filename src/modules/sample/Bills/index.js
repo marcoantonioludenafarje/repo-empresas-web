@@ -514,13 +514,13 @@ const BillsTable = (props) => {
     }
   };
 
-  const showDocument = (listDocument,type)  => {
+  const showDocument = (listDocument, type) => {
     if (listDocument) {
       let documentObj = listDocument.filter(
         (item) => item.typeDocument === type,
       );
 
-      if (documentObj && documentObj.length>0) {
+      if (documentObj && documentObj.length > 0) {
         return (
           <Button
             variant='secondary'
@@ -531,11 +531,9 @@ const BillsTable = (props) => {
             Ver Nota Crédito
           </Button>
         );
-      }
-      else {
+      } else {
         return <></>;
       }
-
     } else {
       return <></>;
     }
@@ -669,8 +667,18 @@ const BillsTable = (props) => {
                       ? obj.serialNumberBill.split('-')[1]
                       : ''}
                   </TableCell>
-                  <TableCell>{obj.clientId ? `${obj.clientId.split('-')[0]} - ${obj.clientId.split('-')[1]}` : ''}</TableCell>
-                  <TableCell>{obj.clientId ? obj.denominationClient : 'Cliente No Definido'}</TableCell>
+                  <TableCell>
+                    {obj.clientId
+                      ? `${obj.clientId.split('-')[0]} - ${
+                          obj.clientId.split('-')[1]
+                        }`
+                      : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.clientId
+                      ? obj.denominationClient
+                      : 'Cliente No Definido'}
+                  </TableCell>
                   <TableCell>{obj.observation}</TableCell>
                   <TableCell>
                     {obj.totalPriceWithoutIgv
@@ -678,8 +686,11 @@ const BillsTable = (props) => {
                       : ''}
                   </TableCell>
                   <TableCell>
-                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv 
-                      ? `${moneySymbol} ${Number(obj.totalPriceWithIgv.toFixed(2)-obj.totalPriceWithoutIgv.toFixed(2)).toFixed(2)} `
+                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv
+                      ? `${moneySymbol} ${Number(
+                          obj.totalPriceWithIgv.toFixed(2) -
+                            obj.totalPriceWithoutIgv.toFixed(2),
+                        ).toFixed(2)} `
                       : ''}
                   </TableCell>
                   <TableCell>
@@ -692,7 +703,12 @@ const BillsTable = (props) => {
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
                   <TableCell align='center'>
-                    {showDocument(obj.documentsMovement,'creditNote')/*showCanceled(obj.cancelStatus)*/}
+                    {
+                      showDocument(
+                        obj.documentsMovement,
+                        'creditNote',
+                      ) /*showCanceled(obj.cancelStatus)*/
+                    }
                   </TableCell>
                   <TableCell>
                     <Button

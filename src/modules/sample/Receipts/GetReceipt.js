@@ -154,6 +154,7 @@ const GetReceipt = (props) => {
   let money_unit;
   let weight_unit;
   let changeValueField;
+  let getValueField;
   let objSelects = {};
 
   /* const [exchangeRate, setExchangeRate] = React.useState(); */
@@ -175,7 +176,9 @@ const GetReceipt = (props) => {
   const [serial, setSerial] = React.useState('');
   const [showSelectDoc, setShowSelectDoc] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [earningGeneration, setEarningGeneration] = React.useState(query.contableMovementId ? false : true);
+  const [earningGeneration, setEarningGeneration] = React.useState(
+    query.contableMovementId ? false : true,
+  );
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   useEffect(() => {
@@ -306,8 +309,6 @@ const GetReceipt = (props) => {
         });
         console.log('listDocuments', listDocuments);
       }
-
-
     }
     setTimeout(() => {
       setMinTutorial(true);
@@ -337,6 +338,10 @@ const GetReceipt = (props) => {
   }, [selectedOutput]);
 
   useEffect(() => {
+    console.log('selectedProducts change', selectedProducts);
+  }, [selectedProducts]);
+
+  useEffect(() => {
     if (typeof selectedOutput === 'object') {
       changeValueField(
         'receiver',
@@ -352,6 +357,7 @@ const GetReceipt = (props) => {
         obj['subtotal'] = Number(
           (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(2),
         );
+        obj['taxCode'] = (Number(query.igv) > 0 || query.igv == 'true') ? 1000 : 9998
       });
       console.log('selectedProducts', selectedProducts);
     }
@@ -473,25 +479,63 @@ const GetReceipt = (props) => {
   const removeProduct = (index) => {
     /* total -= Number(selectedProducts[index].subtotal); */
     selectedProducts.splice(index, 1);
+    let totalWithIgv = 0;
     if (selectedProducts.length == 0) {
       total = 0;
     } else {
       let calculatedtotal = 0;
       selectedProducts.map((obj) => {
         calculatedtotal += obj.subtotal;
+        totalWithIgv +=
+          obj.taxCode == 1000 && query.igv && Number(query.igv) > 0
+            ? Number((obj.subtotal * (1 + igvDefault)).toFixed(2))
+            : obj.subtotal;
       });
       total = calculatedtotal;
     }
     changeValueField('totalField', Number(total.toFixed(2)));
-    changeValueField(
-      'totalFieldIgv',
-      query.igv && Number(query.igv) > 0
-        ? Number((total + total * 0.18).toFixed(2))
-        : total,
-    );
+    changeValueField('totalFieldIgv', totalWithIgv);
     forceUpdate();
   };
+  const changeTaxCode = (index, taxCode) => {
+    console.log('selectedProducts wtf', selectedProducts);
+    console.log('selectedProducts index', index);
 
+    console.log('selectedProducts product', selectedProducts[index]);
+    console.log('selectedProducts taxCode', taxCode);
+    const subTotalWithPreviousTaxCode =
+      selectedProducts[index].taxCode == 1000 &&
+      query.igv &&
+      Number(query.igv) > 0
+        ? Number((selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2))
+        : Number(selectedProducts[index].subtotal);
+    const subTotalWithNextTaxCode =
+      taxCode == 1000 && query.igv && Number(query.igv) > 0
+        ? Number((selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2))
+        : Number(selectedProducts[index].subtotal);
+    let calculatedtotalIgv =
+      getValueField('totalFieldIgv').value -
+      subTotalWithPreviousTaxCode +
+      subTotalWithNextTaxCode;
+
+
+    let actualProduct = {
+      ...selectedProducts[index],
+      taxCode: taxCode,
+    };
+    // selectedProducts[index].taxCode = product.taxCode;
+    console.log('selectedProducts product 2', actualProduct);
+    selectedProducts = selectedProducts.map((obj, i) => {
+      if (i == index) {
+        return actualProduct;
+      } else {
+        return obj;
+      }
+    });
+    total = calculatedtotalIgv;
+    changeValueField('totalFieldIgv', calculatedtotalIgv);
+    forceUpdate();
+  };
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -506,6 +550,11 @@ const GetReceipt = (props) => {
     });
     console.log('parsedDocuments', parsedDocuments);
     let finalPayload;
+    const listTypeIgvCode = {
+      "1000": 10,
+      "9997": 20,
+      "9998": 30
+    }
     try {
       finalPayload = {
         request: {
@@ -546,7 +595,7 @@ const GetReceipt = (props) => {
                 unitMeasure: obj.unitMeasure,
                 businessProductCode: obj.businessProductCode,
                 taxCode: obj.taxCode,
-                igvCode: obj.igvCode,
+                igvCode: listTypeIgvCode[`${obj.taxCode}`]
               };
             }),
             documentsMovement: selectedOutput.documentsMovement,
@@ -729,19 +778,18 @@ const GetReceipt = (props) => {
       });
     }
     selectedProducts.push(product);
+    let totalWithIgv = 0;
     let calculatedtotal = 0;
     selectedProducts.map((obj) => {
-      calculatedtotal += obj.subtotal;
+      calculatedtotal += Number(obj.subtotal);
+      totalWithIgv +=
+        (obj.taxCode == 1000 && query.igv && Number(query.igv) > 0)
+          ? Number((Number(obj.subtotal) * (1 + igvDefault)).toFixed(2))
+          : Number(obj.subtotal);
     });
     total = calculatedtotal;
-    console.log('total de las salidas', total);
     changeValueField('totalField', Number(total.toFixed(2)));
-    changeValueField(
-      'totalFieldIgv',
-      query.igv && Number(query.igv) > 0
-        ? Number((total + total * igv).toFixed(2))
-        : Number(total.toFixed(2)),
-    );
+    changeValueField('totalFieldIgv', totalWithIgv);
     console.log('total de los productos', total);
     forceUpdate();
   };
@@ -796,8 +844,9 @@ const GetReceipt = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
             return (
               <Form
                 noValidate
@@ -955,13 +1004,10 @@ const GetReceipt = (props) => {
                       color='secondary'
                       sx={{width: 1}}
                       variant='outlined'
-                      onClick={() =>
-                        {query.clientId = ''
-                        changeValueField(
-                          'receiver', 'Cliente No Definido',
-                        );
-                        }
-                      }
+                      onClick={() => {
+                        query.clientId = '';
+                        changeValueField('receiver', 'Cliente No Definido');
+                      }}
                     >
                       Quitar Cliente
                     </Button>
@@ -1241,6 +1287,7 @@ const GetReceipt = (props) => {
                   data={selectedProducts}
                   valueWithIGV={valueWithIGV}
                   toDelete={removeProduct}
+                  toChangeTaxCode={changeTaxCode}
                   igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
@@ -1426,7 +1473,11 @@ const GetReceipt = (props) => {
               />
             </DialogTitle>
             <DialogContent>
-              <AddProductForm type='input' sendData={getNewProduct} igvEnabled={Number(query.igv) > 0 || query.igv == 'true'} />
+              <AddProductForm
+                type='input'
+                sendData={getNewProduct}
+                igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
+              />
             </DialogContent>
           </>
         ) : null}

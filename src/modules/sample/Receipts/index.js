@@ -497,13 +497,13 @@ const ReceiptsTable = (props) => {
     }
   };
 
-  const showDocument = (listDocument,type)  => {
+  const showDocument = (listDocument, type) => {
     if (listDocument) {
       let documentObj = listDocument.filter(
         (item) => item.typeDocument === type,
       );
 
-      if (documentObj && documentObj.length>0) {
+      if (documentObj && documentObj.length > 0) {
         return (
           <Button
             variant='secondary'
@@ -514,11 +514,9 @@ const ReceiptsTable = (props) => {
             Ver Nota Crédito
           </Button>
         );
-      }
-      else {
+      } else {
         return <></>;
       }
-
     } else {
       return <></>;
     }
@@ -620,7 +618,7 @@ const ReceiptsTable = (props) => {
         >
           <TableHead>
             <TableRow>
-            <TableCell>Fecha emisión</TableCell>
+              <TableCell>Fecha emisión</TableCell>
               <TableCell>Número serie</TableCell>
               <TableCell>Número boleta</TableCell>
               <TableCell>Identificador Receptor</TableCell>
@@ -656,8 +654,18 @@ const ReceiptsTable = (props) => {
                       ? obj.serialNumber.split('-')[1]
                       : ''}
                   </TableCell>
-                  <TableCell>{obj.clientId ? `${obj.clientId.split('-')[0]} - ${obj.clientId.split('-')[1]}` : ''}</TableCell>
-                  <TableCell>{obj.clientId ? obj.denominationClient : 'Cliente No Definido'}</TableCell>
+                  <TableCell>
+                    {obj.clientId
+                      ? `${obj.clientId.split('-')[0]} - ${
+                          obj.clientId.split('-')[1]
+                        }`
+                      : ''}
+                  </TableCell>
+                  <TableCell>
+                    {obj.clientId
+                      ? obj.denominationClient
+                      : 'Cliente No Definido'}
+                  </TableCell>
                   <TableCell>{obj.observation}</TableCell>
                   <TableCell>
                     {obj.totalPriceWithoutIgv
@@ -665,8 +673,11 @@ const ReceiptsTable = (props) => {
                       : ''}
                   </TableCell>
                   <TableCell>
-                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv 
-                      ? `${moneySymbol} ${Number(obj.totalPriceWithIgv.toFixed(2)-obj.totalPriceWithoutIgv.toFixed(2)).toFixed(2)} `
+                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv
+                      ? `${moneySymbol} ${Number(
+                          obj.totalPriceWithIgv.toFixed(2) -
+                            obj.totalPriceWithoutIgv.toFixed(2),
+                        ).toFixed(2)} `
                       : ''}
                   </TableCell>
                   <TableCell>
@@ -679,7 +690,12 @@ const ReceiptsTable = (props) => {
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
                   <TableCell align='center'>
-                    {showDocument(obj.documentsMovement,'creditNote')/*showCanceled(obj.cancelStatus)*/}
+                    {
+                      showDocument(
+                        obj.documentsMovement,
+                        'creditNote',
+                      ) /*showCanceled(obj.cancelStatus)*/
+                    }
                   </TableCell>
                   <TableCell>
                     <Button

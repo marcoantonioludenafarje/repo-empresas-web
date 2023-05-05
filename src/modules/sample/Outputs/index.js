@@ -243,7 +243,8 @@ const OutputsTable = (props) => {
   // const [open3, setOpen3] = React.useState(false);
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openDocuments, setOpenDocuments] = React.useState(false);
-  const [openContableMovements, setOpenContableMovements] = React.useState(false);
+  const [openContableMovements, setOpenContableMovements] =
+    React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
   const [moreFilters, setMoreFilters] = React.useState(false);
   const [sellTicketDialog, setSellTicketDialog] = React.useState(false);
@@ -1235,7 +1236,7 @@ const OutputsTable = (props) => {
   };
 
   const goToMovements = (contableMovement) => {
-    if (contableMovement.movementTypeMerchantId){
+    if (contableMovement.movementTypeMerchantId) {
       if (contableMovement.movementTypeMerchantId.split('-')[0] == 'OUTPUT') {
         if (doc.billId) {
           Router.push({
@@ -1885,16 +1886,18 @@ const OutputsTable = (props) => {
           .getItem('pathsBack')
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
-          ) &&
-        selectedOutput.movementSubType == 'sales' 
-        // && !selectedOutput.existSellTicket &&
-        // !selectedOutput.existReceipt &&
-        // !selectedOutput.existBill 
-        ? (
-          <MenuItem onClick={() => {
-            setEarningGeneration(selectedOutput.contableMovementId ? false : true)
-            setSellTicketDialog(true)
-          }}>
+          ) && selectedOutput.movementSubType == 'sales' ? (
+          // && !selectedOutput.existSellTicket &&
+          // !selectedOutput.existReceipt &&
+          // !selectedOutput.existBill
+          <MenuItem
+            onClick={() => {
+              setEarningGeneration(
+                selectedOutput.contableMovementId ? false : true,
+              );
+              setSellTicketDialog(true);
+            }}
+          >
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
           </MenuItem>
@@ -1906,10 +1909,9 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
           ) &&
-        selectedOutput.movementSubType == 'sales' 
-        // && !selectedOutput.existReceipt &&
-        // !selectedOutput.existSellTicket 
-        ? (
+        selectedOutput.movementSubType == 'sales' ? (
+          // && !selectedOutput.existReceipt &&
+          // !selectedOutput.existSellTicket
           <MenuItem onClick={getReceipt}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Boleta Venta
@@ -1942,11 +1944,10 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/billOfOutput/*',
           ) &&
-        selectedOutput.movementSubType == 'sales' 
-        // && !selectedOutput.existBill &&
-        // !selectedOutput.existReceipt &&
-        // !selectedOutput.existSellTicket 
-        ? (
+        selectedOutput.movementSubType == 'sales' ? (
+          // && !selectedOutput.existBill &&
+          // !selectedOutput.existReceipt &&
+          // !selectedOutput.existSellTicket
           <MenuItem
             disabled={
               userDataRes.merchantSelected &&
@@ -2153,7 +2154,9 @@ const OutputsTable = (props) => {
                           control={
                             <Checkbox
                               onChange={handleEarningGeneration}
-                              defaultChecked={!selectedOutput.contableMovementId}
+                              defaultChecked={
+                                !selectedOutput.contableMovementId
+                              }
                             />
                           }
                         />

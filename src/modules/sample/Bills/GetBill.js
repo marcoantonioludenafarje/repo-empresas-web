@@ -116,9 +116,7 @@ const maxLength = 11111111111111111111; //20 caracteres
 const validationSchema = yup.object({
   guide: yup.string().typeError(<IntlMessages id='validation.string' />),
   observation: yup.string().typeError(<IntlMessages id='validation.string' />),
-  clientEmail: yup
-    .string()
-    .email(<IntlMessages id='validation.emailFormat' />),
+  clientEmail: yup.string().email(<IntlMessages id='validation.emailFormat' />),
   transactionNumber: yup.string(),
 });
 
@@ -203,7 +201,9 @@ const NewOutput = (props) => {
     Date.now() + 1 * 24 * 60 * 60 * 1000,
   );
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [earningGeneration, setEarningGeneration] = React.useState(query.contableMovementId ? false : true);
+  const [earningGeneration, setEarningGeneration] = React.useState(
+    query.contableMovementId ? false : true,
+  );
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
   });
@@ -1444,7 +1444,11 @@ const NewOutput = (props) => {
               />
             </DialogTitle>
             <DialogContent>
-              <AddProductForm type='input' sendData={getNewProduct} igvEnabled={Number(query.igv) > 0 || query.igv == 'true'} />
+              <AddProductForm
+                type='input'
+                sendData={getNewProduct}
+                igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
+              />
             </DialogContent>
           </>
         ) : null}
