@@ -10,6 +10,7 @@ import Box from '@mui/material/Box';
 import IntlMessages from '@crema/utility/IntlMessages';
 import {useIntl} from 'react-intl';
 import AppTextField from '@crema/core/AppFormComponents/AppTextField';
+import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
 import {useAuthMethod} from '@crema/utility/AuthHooks';
 import {Fonts} from '../../../shared/constants/AppEnums';
 import {useRouter} from 'next/router';
@@ -55,7 +56,7 @@ const SigninJwtAuth = () => {
           {({isSubmitting}) => (
             <Form style={{textAlign: 'left'}} noValidate autoComplete='off'>
               <Box sx={{mb: {xs: 5, xl: 8}}}>
-                <AppTextField
+                <AppLowerCaseTextField
                   placeholder={messages['common.email']}
                   name='email'
                   label={<IntlMessages id='common.email' />}

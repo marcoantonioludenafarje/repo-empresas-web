@@ -46,7 +46,7 @@ const UserManagement = ({data}) => {
     let listUserPayload = {
       request: {
         payload: {
-          merchantId: userDataRes.merchantMasterId,
+          merchantId: userDataRes.merchantSelected.merchantId,
         },
       },
     };
