@@ -686,9 +686,9 @@ const FileExplorer = (props) => {
               <TableCell align='center' sx={{width: '10%'}}>
                 Cambiar Nombre
               </TableCell>
-              {/* <TableCell align='center' sx={{width: '10%'}}>
+              <TableCell align='center' sx={{width: '10%'}}>
                 Eliminar
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -773,13 +773,13 @@ const FileExplorer = (props) => {
                         </TableCell>
                       ) : null}
 
-                      {/* {localStorage
+                      {localStorage
                         .getItem('pathsBack')
                         .includes(
                           '/utility/deleteObjectsPathMerchant?path=/*',
                         ) === true ? (
                         <TableCell align='right' sx={{textAlign: 'center'}}>
-                          <IconButton
+                          {/* <IconButton
                             disabled={
                               !localStorage
                                 .getItem('pathsBack')
@@ -790,9 +790,9 @@ const FileExplorer = (props) => {
                             onClick={setDeleteState.bind(this, folder)}
                           >
                             <DeleteIcon />
-                          </IconButton>
+                          </IconButton> */}
                         </TableCell>
-                      ) : null} */}
+                      ) : null}
                     </TableRow>
                   );
                 }
