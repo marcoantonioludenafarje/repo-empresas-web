@@ -557,7 +557,8 @@ const NewOutput = (props) => {
             createdAt: Number(query.createdAt),
             clientId: query.clientId,
             totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)), //
-            issueDate: specialFormatToSunat(),
+            //issueDate: specialFormatToSunat(),
+            issueDate: dateWithHyphen(value),
             serial: serial,
             documentIntern: query.documentIntern,
             clientEmail: data.clientEmail,
