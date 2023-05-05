@@ -1236,19 +1236,15 @@ const OutputsTable = (props) => {
   };
 
   const goToMovements = (contableMovement) => {
-    if (contableMovement.movementTypeMerchantId) {
-      if (contableMovement.movementTypeMerchantId.split('-')[0] == 'OUTPUT') {
-        if (doc.billId) {
-          Router.push({
-            pathname: '/sample/bills/table',
-            query: {billId: doc.billId},
-          });
-        }
-      } else {
-        return null;
-      }
+    console.log("1","")
+    if (contableMovement.contableMovementId){
+      console.log("4","")
+      Router.push({
+        pathname: '/sample/finances/table',
+        query: {contableMovementId: contableMovement.contableMovementId},
+      });
     } else {
-      return null;
+        return null;
     }
   };
 
