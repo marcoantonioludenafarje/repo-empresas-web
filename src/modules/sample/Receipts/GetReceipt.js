@@ -286,7 +286,7 @@ const GetReceipt = (props) => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
 
-    if (userDataRes.merchantSelected.typeClient == 'PN') {
+    if (userDataRes.merchantSelected.typeClient == 'PN' || userDataRes.merchantSelected.paymentWay == 'debit') {
       setPaymentWay('debit');
     }
     getBusinessParameter(businessParameterPayload);
