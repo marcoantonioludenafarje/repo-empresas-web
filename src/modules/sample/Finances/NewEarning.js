@@ -384,6 +384,10 @@ const NewEarning = (props) => {
         } else { */
       newFinancePayload.request.payload.movements[0].payments = [];
       newFinancePayload.request.payload.movements[0].otherPayConcepts = [];
+      newFinancePayload.request.payload.movements[0].methodToPay =
+        paymentMethod;
+      newFinancePayload.request.payload.movements[0].transactionNumber =
+        paymentMethod;
       newFinancePayload.request.payload.movements[0].purchaseType =
         purchaseType;
       (newFinancePayload.request.payload.movements[0].userCreated =
@@ -764,35 +768,6 @@ const NewEarning = (props) => {
                         my: 2,
                       }}
                     />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel
-                        id='purchaseType-label'
-                        style={{fontWeight: 200}}
-                      >
-                        q{' '}
-                      </InputLabel>
-                      <Select
-                        sx={{textAlign: 'left'}}
-                        value={purchaseType}
-                        onChange={(event) => {
-                          console.log('tipo de compra', event.target.value);
-                          setPurchaseType(event.target.value);
-                        }}
-                        name='purchaseType'
-                        labelId='purchaseType-label'
-                        label='Tipo de compra'
-                      >
-                        <MenuItem value='cash' style={{fontWeight: 200}}>
-                          {messages['finance.purchase.type.cash']}
-                        </MenuItem>
-                        <MenuItem value='credit' style={{fontWeight: 200}}>
-                          {messages['finance.purchase.type.credit']}
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
                   </Grid>
                   <Grid item xs={6}>
                     <FormControl fullWidth sx={{my: 2}}>
