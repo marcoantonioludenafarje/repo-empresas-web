@@ -327,26 +327,24 @@ const ClientTable = (arrayObjs, props) => {
   };
 
   const exportToExcel = () => {
-    // let listPayload = {
-    //   request: {
-    //     payload: {
-    //       typeDocumentClient: '',
-    //       numberDocumentClient: '',
-    //       denominationClient: '',
-    //       merchantId: userDataRes.merchantSelected.merchantId,
-    //       LastEvaluatedKey: null,
-    //     },
-    //   },
-    // };
-
-    // const excelPayload = listPayload;
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentClient: '',
+          numberDocumentClient: '',
+          denominationClient: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+        },
+      },
+    };
 
     // console.log('excelPayload', excelPayload);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    // dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_CLIENTS, payload: undefined});
-    // toExportExcelTemplateToClients(listClients);
-    // setDownloadExcel(true);
+    dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_CLIENTS, payload: undefined});
+    toExportExcelTemplateToClients(listPayload);
+    setDownloadExcel(true);
   };
 
   useEffect(() => {
