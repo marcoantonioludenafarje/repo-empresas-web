@@ -61,7 +61,7 @@ const SigninAwsCognito = () => {
           {({isSubmitting}) => (
             <Form style={{textAlign: 'left'}} noValidate autoComplete='off'>
               <Box sx={{mb: {xs: 5, xl: 8}}}>
-                <AppLowerCaseTextField
+                <AppTextField
                   placeholder={messages['common.email']}
                   label={<IntlMessages id='common.email' />}
                   name='email'
