@@ -565,7 +565,10 @@ const CreditNotesTable = (props) => {
               <TableCell>Identificador Receptor</TableCell>
               <TableCell>Nombre Receptor</TableCell>
               <TableCell>Observación</TableCell>
-              <TableCell>Subtotal</TableCell>
+              {/* <TableCell>Subtotal</TableCell> */}
+              {/* <TableCell>Inafecta</TableCell>
+              <TableCell>Exonerada</TableCell>
+              <TableCell>Gravada</TableCell> */}
               <TableCell>IGV</TableCell>
               <TableCell>Importe total</TableCell>
               <TableCell>Forma de pago</TableCell>
@@ -621,7 +624,7 @@ const CreditNotesTable = (props) => {
                       : 'Cliente No Definido'}
                   </TableCell>
                   <TableCell>{obj.observation}</TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     {obj.totalPriceWithoutIgv
                       ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
                       : ''}
@@ -633,7 +636,11 @@ const CreditNotesTable = (props) => {
                             obj.totalPriceWithoutIgv.toFixed(2),
                         ).toFixed(2)} `
                       : ''}
-                  </TableCell>
+                  </TableCell> */}
+                  {/* <TableCell>{obj.totalTaxFree ? `${moneySymbol} ${obj.totalTaxFree.toFixed(2)} ` : `${moneySymbol} 0` }</TableCell>
+                  <TableCell>{obj.totalTaxExempt ? `${moneySymbol} ${obj.totalTaxExempt.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell>
+                  <TableCell>{obj.totalTaxed ? `${moneySymbol} ${obj.totalTaxed.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell> */}
+                  <TableCell>{obj.totalIgv ? `${moneySymbol} ${obj.totalIgv.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell>
                   <TableCell>
                     {obj.totalPriceWithIgv
                       ? `${moneySymbol}  ${obj.totalPriceWithIgv.toFixed(2)}`

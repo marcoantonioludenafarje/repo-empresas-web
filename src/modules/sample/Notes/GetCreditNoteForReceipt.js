@@ -283,6 +283,8 @@ const GetCreditNote = () => {
             description: obj.descripcion || obj.description,
             unitMeasure: obj.unidad_de_medida || obj.unitMeasure,
             quantityMovement: count,
+            taxCode: obj.taxCode || "",
+            igvCode: obj.igvCode || "",
             priceBusinessMoneyWithIgv: price,
             subtotal: obj.subtotal || Number((price * count).toFixed(3)),
           };
@@ -311,21 +313,39 @@ const GetCreditNote = () => {
       forceUpdate();
     }
     if (
-      receiptItems_pageListReceipt &&
-      receiptItems_pageListReceipt[0].movementType == 'OUTPUT'
+      getMovementsRes &&
+      getMovementsRes[0].movementType == 'OUTPUT'
     ) {
       console.log(
-        'receiptItems_pageListReceipt de salidas',
-        receiptItems_pageListReceipt,
+        'getMovementsRes de salidas',
+        getMovementsRes,
       );
       console.log('query.movementId', query.movementId);
-      let output = receiptItems_pageListReceipt.find(
+      let output = getMovementsRes.find(
         (obj) => obj.movementHeaderId == query.movementId,
       );
       console.log('output desde nota de credito', output);
       setSelectedOutput(output);
     }
   }, [receiptItems_pageListReceipt]);
+
+  useEffect(() => {
+    if (
+      getMovementsRes &&
+      getMovementsRes[0].movementType == 'OUTPUT'
+    ) {
+      console.log(
+        'getMovementsRes de salidas',
+        getMovementsRes,
+      );
+      console.log('query.movementId', query.movementId);
+      let output = getMovementsRes.find(
+        (obj) => obj.movementHeaderId == query.movementId,
+      );
+      console.log('output desde nota de credito', output);
+      setSelectedOutput(output);
+    }
+  }, [getMovementsRes]);
 
   /* useEffect(() => {
     if (Object.keys(selectedReceipt).length !== 0 && getMovementsRes) {
@@ -425,6 +445,8 @@ const GetCreditNote = () => {
           customCodeProduct: obj.customCodeProduct ? obj.customCodeProduct : '',
           description: obj.description,
           unitMeasure: obj.unitMeasure,
+          taxCode: obj.taxCode || "",
+          igvCode: obj.igvCode || "",
         });
       });
       console.log('cleanProducts', cleanProducts);
