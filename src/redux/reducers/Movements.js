@@ -32,6 +32,8 @@ import {
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
   GENERATE_SELL_TICKET,
   REFERRAL_GUIDES_BATCH_CONSULT,
+  CANCEL_REFERRAL_GUIDE,
+  UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -77,6 +79,10 @@ const movementsReducer = (state = INIT_STATE, action) => {
         referralGuideItems_pageListGuide: itemsGR,
         referralGuideLastEvalutedKey_pageListGuide: lastEvaluatedKeyGR,
       };
+    case UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST:
+      return {
+        referralGuideItems_pageListGuide: action.payload
+      }
     case GET_BILL_PAGE_LISTGUIDE:
       let itemsBL = [];
       let lastEvaluatedKeyBL = '';
@@ -367,6 +373,11 @@ const movementsReducer = (state = INIT_STATE, action) => {
         referralGuidesBatchConsultRes: action.payload,
       };
 
+    case CANCEL_REFERRAL_GUIDE:
+      return {
+        ...state,
+        cancelReferralGuideRes: action.payload,
+      };
     // case SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
     //   console.log(
     //     'data de reducer SET_LIST_ROUTE_PREDEFINED',

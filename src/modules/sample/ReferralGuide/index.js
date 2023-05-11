@@ -86,6 +86,7 @@ import {
   getReferralGuides_PageListGuide,
   cancelInvoice,
   referralGuidesBatchConsult,
+  cancelReferralGuide
 } from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -97,6 +98,8 @@ import {
   GET_REFERRALGUIDE_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_REFERRALGUIDES,
   REFERRAL_GUIDES_BATCH_CONSULT,
+  CANCEL_REFERRAL_GUIDE,
+  UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -209,6 +212,9 @@ const ReferralGuidesTable = (props) => {
   const toReferralGuidesBatchConsult = (payload) => {
     dispatch(referralGuidesBatchConsult(payload));
   };
+  const toCancelReferralGuide = (payload) => {
+    dispatch(cancelReferralGuide(payload));
+  };
 
   const useForceUpdate = () => {
     return () => setReload((value) => value + 1); // update the state to force render
@@ -307,6 +313,22 @@ const ReferralGuidesTable = (props) => {
     listPayload.request.payload.numberDocumentClient = '';
     listPayload.request.payload.denominationClient = '';
     setMoreFilters(false);
+  };
+
+  const cancelReferralGuideFunction = (id) => {
+    const cancelReferralGuidePayload = {
+      request:{
+        payload:{
+          movementHeaderId: id
+        }
+      }
+    }
+    console.log('payload anular factura', cancelReferralGuidePayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: CANCEL_REFERRAL_GUIDE, payload: undefined});
+    toCancelReferralGuide(cancelReferralGuidePayload);
+    setOpenStatus(true);
   };
 
   //BUTTONS BAR FUNCTIONS
@@ -432,7 +454,6 @@ const ReferralGuidesTable = (props) => {
       setIsLoading(true);
     }
   };
-
   useEffect(() => {
     if (referralGuidesBatchConsultRes) {
       setIsLoading(false);
@@ -466,6 +487,21 @@ const ReferralGuidesTable = (props) => {
     }
   }, [excelTemplateGeneratedToReferralGuidesRes, downloadExcel]);
 
+  const updateCancelReferralGuideList = () => {
+    if(successMessage != undefined){
+      const newListItems = referralGuideItems_pageListGuide.map((obj)=>{
+        if(obj.movementHeaderId == selectedReferralGuide.movementHeaderId){
+          obj.cancelStatus = true;
+        }
+        return obj
+  
+      })
+      dispatch({
+        type: UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST,
+        payload: newListItems,
+      });
+    }
+  }
   const showMessage = () => {
     if (successMessage != undefined) {
       return (
@@ -478,7 +514,7 @@ const ReferralGuidesTable = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se elimino correctamente.
+            Se anuló correctamente.
           </DialogContentText>
         </>
       );
@@ -490,7 +526,7 @@ const ReferralGuidesTable = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error al tratar de eliminar.
+            Se ha producido un error al tratar de anular.
           </DialogContentText>
         </>
       );
@@ -830,7 +866,10 @@ const ReferralGuidesTable = (props) => {
           {showMessage()}
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={() => setOpenStatus(false)}>
+          <Button variant='outlined' onClick={() => {
+            setOpenStatus(false)
+            updateCancelReferralGuideList()
+          }}>
             Aceptar
           </Button>
         </DialogActions>
@@ -853,7 +892,7 @@ const ReferralGuidesTable = (props) => {
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Consultar Estado
         </MenuItem>
-        <MenuItem onClick={CancelOptionOpen}>Anular</MenuItem>
+        <MenuItem onClick={CancelOptionOpen} disabled={selectedReferralGuide.cancelStatus}>Anular</MenuItem>
       </Menu>
 
       <Dialog open={openError} onClose={() => setOpenError(false)}>
@@ -866,9 +905,18 @@ const ReferralGuidesTable = (props) => {
           Anulación de Guías de remisión
         </DialogTitle>
         <DialogContent>
-          La anulación legal se realiza a traves del portal de Sunat, puede
-          seguir el siguiente tutorial:
+        La anulación legal de una factura se debe realizar a través del portal de Sunat. Para ayudar en este proceso, le proporcionamos un tutorial que puede seguir fácilmente: 
+        <br/>
+        Además, en nuestro sistema, también puede optar por marcar la factura como anulada para mantener su registro interno actualizado.
         </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={() => {
+            setOpen(false);
+            cancelReferralGuideFunction(selectedReferralGuide.movementHeaderId)
+            }}>
+            Anular internamente
+          </Button>
+        </DialogActions>
       </Dialog>
 
       <Dialog

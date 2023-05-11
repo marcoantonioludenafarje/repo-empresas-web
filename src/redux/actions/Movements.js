@@ -33,6 +33,7 @@ import {
   GET_NOTE_PAGE_LISTGUIDE,
   GENERATE_SELL_TICKET,
   REFERRAL_GUIDES_BATCH_CONSULT,
+  CANCEL_REFERRAL_GUIDE
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -714,6 +715,27 @@ export const referralGuidesBatchConsult = (payload) => {
       })
       .catch((error) => {
         console.log('referralGuidesBatchConsult error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const cancelReferralGuide = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/referralGuide/cancel', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('cancelReferralGuide resultado', data);
+        dispatch({
+          type: CANCEL_REFERRAL_GUIDE,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('cancelReferralGuide error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
