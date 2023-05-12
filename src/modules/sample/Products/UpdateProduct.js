@@ -158,6 +158,16 @@ const validationSchema = yup.object({
       'El número puede contener como máximo 3 decimales',
       (number) => /^\d+(\.\d{1,3})?$/.test(number),
     ),
+  sumQuantity: yup
+    .number()
+    .typeError(<IntlMessages id='validation.number' />)
+    .required(<IntlMessages id='validation.required' />)
+    .max(maxLengthNumber, <IntlMessages id='validation.maxLength' />)
+    .test(
+      'maxDigitsAfterDecimal',
+      'El número puede contener como máximo 3 decimales',
+      (number) => /^\d+(\.\d{1,3})?$/.test(number),
+    ),
   initialStock: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
@@ -197,6 +207,8 @@ let objSelects = {
   category: '',
   typeProduct: 'rawMaterial',
   unitMeasure: 'NIU',
+  secondaryUnitMeasure: 'ML',
+  sumQuantity: 0,
   unitMeasureWeight: null,
   unitMeasureMoney: null,
   tags: {},
@@ -241,6 +253,9 @@ const UpdateProduct = (props) => {
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const [typeIcon, setTypeIcon] = React.useState('2');
+  const [secondaryUnitMeasure, setSecondaryUnitMeasure] = React.useState(
+    query.secondaryUnitMeasure || 'ML',
+  );
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
   });
@@ -335,6 +350,8 @@ const UpdateProduct = (props) => {
     customCodeProduct: query.customCodeProduct,
     referecialPriceSell: Number(query.sellPriceUnit),
     costPriceUnit: Number(query.costPriceUnit),
+    secondaryUnitMeasure: query.secondaryUnitMeasure || 'ML',
+    sumQuantity: Number(query.sumQuantity || 0),
     weight: Number(query.weight),
     category: {
       description: query.category,
@@ -537,6 +554,12 @@ const UpdateProduct = (props) => {
     setTypeProduct(event.target.value);
     console.log('ocjSelects', objSelects);
   };
+  const handleFieldSum = (event) => {
+    console.log('evento', event);
+    objSelects[event.target.name] = event.target.value;
+    setSecondaryUnitMeasure(event.target.value);
+    console.log('ocjSelects', objSelects);
+  };
   const handleFieldCategory = (event) => {
     console.log('evento', event);
     //setSelectedCategory(event.target.value);
@@ -679,6 +702,8 @@ const UpdateProduct = (props) => {
             unitMeasure: obj.unitMeasure,
             customCodeProduct: obj.customCodeProduct || '',
             businessProductCode: obj.businessProductCode,
+            secondaryUnitMeasure: obj.secondaryUnitMeasure || '',
+            sumQuantity: obj.sumQuantity || 0,
           });
         });
       }
@@ -700,6 +725,8 @@ const UpdateProduct = (props) => {
             costPriceUnit: Number(data.costPriceUnit),
             sellPriceUnit: Number(data.referecialPriceSell),
             weight: Number(data.weight),
+            secondaryUnitMeasure: secondaryUnitMeasure,
+            sumQuantity: Number(data.sumQuantity),
             initialStock: parseInt(Number(data.initialStock)),
             imgKey: null,
             customCodeProduct: data.customCodeProduct,
@@ -1023,6 +1050,53 @@ const UpdateProduct = (props) => {
                     <AppTextField
                       label={`Peso (${weight_unit}) *`}
                       name='weight'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='secondaryUnitMeasure-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Unidad de medida secundaria
+                      </InputLabel>
+                      <Select
+                        defaultValue='ML'
+                        name='secondaryUnitMeasure'
+                        labelId='secondaryUnitMeasure-label'
+                        label='Unidad de medida secundaria'
+                        onChange={handleFieldSum}
+                      >
+                        <MenuItem value='ML' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.ml' />
+                        </MenuItem>
+                        <MenuItem value='L' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.l' />
+                        </MenuItem>
+                        <MenuItem value='MGR' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.mgr' />
+                        </MenuItem>
+                        <MenuItem value='GR' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.gr' />
+                        </MenuItem>
+                        <MenuItem value='TM' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.tm' />
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={`Cantidad (${secondaryUnitMeasure})`}
+                      name='sumQuantity'
                       variant='outlined'
                       sx={{
                         width: '100%',

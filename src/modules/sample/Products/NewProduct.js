@@ -170,6 +170,16 @@ const validationSchema = yup.object({
       'El número puede contener como máximo 3 decimales',
       (number) => /^\d+(\.\d{1,3})?$/.test(number),
     ),
+  sumQuantity: yup
+    .number()
+    .typeError(<IntlMessages id='validation.number' />)
+    .required(<IntlMessages id='validation.required' />)
+    .max(maxLengthNumber, <IntlMessages id='validation.maxLength' />)
+    .test(
+      'maxDigitsAfterDecimal',
+      'El número puede contener como máximo 3 decimales',
+      (number) => /^\d+(\.\d{1,3})?$/.test(number),
+    ),
   initialStock: yup
     .number()
     // .moreThan(0)
@@ -186,6 +196,8 @@ const defaultValues = {
   description: '',
   alias: '',
   customCodeProduct: '',
+  secondaryUnitMeasure: '',
+  sumQuantity: 0,
   costPriceUnit: undefined,
   referecialPriceSell: undefined,
   weight: undefined,
@@ -233,6 +245,8 @@ let objSelects = {
   category: '',
   typeProduct: 'rawMaterial',
   unitMeasure: 'NIU',
+  secondaryUnitMeasure: 'ML',
+  sumQuantity: 0,
   unitMeasureWeight: null,
   unitMeasureMoney: null,
   tags: {},
@@ -245,6 +259,7 @@ const NewProduct = (props) => {
   const forceUpdate = useForceUpdate();
   const router = useRouter();
   let errorToRegister = false;
+  let getValueField;
   const [lengthProducts, setLengthProducts] = React.useState(0);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
@@ -265,6 +280,7 @@ const NewProduct = (props) => {
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const [typeIcon, setTypeIcon] = React.useState('2');
+  const [secondaryUnitMeasure, setSecondaryUnitMeasure] = React.useState('ML');
 
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
@@ -508,6 +524,12 @@ const NewProduct = (props) => {
     setTypeProduct(event.target.value);
     console.log('ocjSelects', objSelects);
   };
+  const handleFieldSum = (event) => {
+    console.log('evento', event);
+    objSelects[event.target.name] = event.target.value;
+    setSecondaryUnitMeasure(event.target.value);
+    console.log('ocjSelects', objSelects);
+  };
   const handleFieldCategory = (event) => {
     console.log('evento', event);
     setSelectedCategory(event.target.value);
@@ -656,6 +678,8 @@ const NewProduct = (props) => {
                 weight: obj.weight,
                 unitMeasure: obj.unitMeasure,
                 customCodeProduct: obj.customCodeProduct || '',
+                secondaryUnitMeasure: obj.secondaryUnitMeasure || '',
+                sumQuantity: obj.sumQuantity || 0,
                 businessProductCode: obj.businessProductCode,
               });
             });
@@ -682,6 +706,8 @@ const NewProduct = (props) => {
                     weight: Number(data.weight),
                     initialStock: parseInt(Number(data.initialStock)),
                     customCodeProduct: data.customCodeProduct,
+                    secondaryUnitMeasure: secondaryUnitMeasure,
+                    sumQuantity: Number(data.sumQuantity),
                     title: data.title,
                     commercialDescription: data.commercialDescription,
                     unitMeasureWeight: weight_unit,
@@ -713,6 +739,8 @@ const NewProduct = (props) => {
                     weight: Number(data.weight),
                     initialStock: parseInt(Number(data.initialStock)),
                     customCodeProduct: data.customCodeProduct,
+                    secondaryUnitMeasure: secondaryUnitMeasure,
+                    sumQuantity: Number(data.sumQuantity),
                     title: data.title,
                     commercialDescription: data.commercialDescription,
                     unitMeasureWeight: weight_unit,
@@ -930,327 +958,380 @@ const NewProduct = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting}) => (
-            <Form style={{textAlign: 'left'}} noValidate autoComplete='on'>
-              <Grid
-                container
-                spacing={2}
-                sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}
-              >
-                <Grid item xs={12}>
-                  <AppUpperCaseTextField
-                    label='Código *'
-                    name='businessProductCode'
-                    variant='outlined'
-                    onChange={handleFieldProduct}
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AppUpperCaseTextField
-                    label='Descripción *'
-                    name='description'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
+          {({isSubmitting, getFieldProps}) => {
+            getValueField = getFieldProps;
 
-                <Grid item xs={12}>
-                  <AppUpperCaseTextField
-                    label='Alias *'
-                    name='alias'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
+            return (
+              <Form style={{textAlign: 'left'}} noValidate autoComplete='on'>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}
+                >
+                  <Grid item xs={12}>
+                    <AppUpperCaseTextField
+                      label='Código *'
+                      name='businessProductCode'
+                      variant='outlined'
+                      onChange={handleFieldProduct}
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppUpperCaseTextField
+                      label='Descripción *'
+                      name='description'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
 
-                <Grid item xs={12}>
-                  <AppTextField
-                    label='Código aduanero (opcional)'
-                    name='customCodeProduct'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                  <Typography
-                    sx={{
-                      mx: 2,
-                      mb: 3,
-                      cursor: 'pointer',
-                      color: '#5194c4',
-                      textDecoration: 'underline',
-                    }}
-                    onClick={() =>
-                      window.open(
-                        'https://colombiacompra.gov.co/clasificador-de-bienes-y-Servicios',
-                      )
-                    }
-                  >
-                    Consúltalo aquí
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth sx={{my: 2}}>
-                    <InputLabel id='categoria-label' style={{fontWeight: 200}}>
-                      Categoría *
-                    </InputLabel>
-                    <Select
-                      value={selectedCategory}
-                      name='category'
-                      labelId='categoria-label'
-                      label='Categoría'
-                      onChange={handleFieldCategory}
+                  <Grid item xs={12}>
+                    <AppUpperCaseTextField
+                      label='Alias *'
+                      name='alias'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Código aduanero (opcional)'
+                      name='customCodeProduct'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                    <Typography
+                      sx={{
+                        mx: 2,
+                        mb: 3,
+                        cursor: 'pointer',
+                        color: '#5194c4',
+                        textDecoration: 'underline',
+                      }}
+                      onClick={() =>
+                        window.open(
+                          'https://colombiacompra.gov.co/clasificador-de-bienes-y-Servicios',
+                        )
+                      }
                     >
-                      {categories &&
-                      Array.isArray(categories) &&
-                      categories.length >= 1
-                        ? categories.map((obj, index) => {
-                            return (
-                              <MenuItem
-                                key={index}
-                                value={obj}
-                                style={{fontWeight: 200}}
-                              >
-                                {obj.description}
-                              </MenuItem>
-                            );
-                          })
-                        : null}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <AppTextField
-                    label={`Peso (${weight_unit}) *`}
-                    name='weight'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AppTextField
-                    label={`Precio costo sugerido (${money_unit}) *`}
-                    name='costPriceUnit'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                {/* <Typography variant='caption' display='block' gutterBottom>
-                Solo se registran hasta 3 decimales
-              </Typography> */}
-                <Grid item xs={12}>
-                  <AppTextField
-                    label={`Precio venta sugerido (${money_unit}) *`}
-                    name='referecialPriceSell'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AppTextField
-                    label='Stock inicial *'
-                    name='initialStock'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl fullWidth sx={{my: 2}}>
-                    <InputLabel
-                      id='typeProduct-label'
-                      style={{fontWeight: 200}}
-                    >
-                      Tipo de producto *
-                    </InputLabel>
-                    <Select
-                      defaultValue='rawMaterial'
-                      name='typeProduct'
-                      labelId='typeProduct-label'
-                      label='Tipo de producto'
-                      onChange={handleFieldType}
-                    >
-                      <MenuItem value='rawMaterial' style={{fontWeight: 200}}>
-                        <IntlMessages id='product.type.rawMaterial' />
-                      </MenuItem>
-                      <MenuItem
-                        value='intermediateProduct'
+                      Consúltalo aquí
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='categoria-label'
                         style={{fontWeight: 200}}
                       >
-                        <IntlMessages id='product.type.intermediateProduct' />
-                      </MenuItem>
-                      <MenuItem value='endProduct' style={{fontWeight: 200}}>
-                        <IntlMessages id='product.type.endProduct' />
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                  {typeProduct != 'rawMaterial' ? (
-                    <Box sx={{textAlign: 'center'}}>
-                      <Button
-                        sx={{width: 1 / 2, mb: 4}}
-                        variant='outlined'
-                        onClick={handleClickOpen}
+                        Categoría *
+                      </InputLabel>
+                      <Select
+                        value={selectedCategory}
+                        name='category'
+                        labelId='categoria-label'
+                        label='Categoría'
+                        onChange={handleFieldCategory}
                       >
-                        Añade productos
-                      </Button>
-                      <SubProducts
-                        arrayObjs={selectedProducts}
-                        toDelete={removeProduct}
-                      />
-                    </Box>
-                  ) : (
-                    <></>
-                  )}
-
-                  <Collapse in={showAlert}>
-                    <Alert
-                      severity='error'
-                      action={
-                        <IconButton
-                          aria-label='close'
-                          color='inherit'
-                          size='small'
-                          onClick={() => {
-                            setShowAlert(false);
-                          }}
+                        {categories &&
+                        Array.isArray(categories) &&
+                        categories.length >= 1
+                          ? categories.map((obj, index) => {
+                              return (
+                                <MenuItem
+                                  key={index}
+                                  value={obj}
+                                  style={{fontWeight: 200}}
+                                >
+                                  {obj.description}
+                                </MenuItem>
+                              );
+                            })
+                          : null}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={`Peso (${weight_unit}) *`}
+                      name='weight'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='secondaryUnitMeasure-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Unidad de medida secundaria
+                      </InputLabel>
+                      <Select
+                        defaultValue='ML'
+                        name='secondaryUnitMeasure'
+                        labelId='secondaryUnitMeasure-label'
+                        label='Unidad de medida secundaria'
+                        onChange={handleFieldSum}
+                      >
+                        <MenuItem value='ML' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.ml' />
+                        </MenuItem>
+                        <MenuItem value='L' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.l' />
+                        </MenuItem>
+                        <MenuItem value='MGR' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.mgr' />
+                        </MenuItem>
+                        <MenuItem value='GR' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.gr' />
+                        </MenuItem>
+                        <MenuItem value='TM' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.secondaryUnitMeasure.tm' />
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={`Cantidad (${secondaryUnitMeasure})`}
+                      name='sumQuantity'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={`Precio costo sugerido (${money_unit}) *`}
+                      name='costPriceUnit'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  {/* <Typography variant='caption' display='block' gutterBottom>
+                Solo se registran hasta 3 decimales
+              </Typography> */}
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={`Precio venta sugerido (${money_unit}) *`}
+                      name='referecialPriceSell'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Stock inicial *'
+                      name='initialStock'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='typeProduct-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Tipo de producto *
+                      </InputLabel>
+                      <Select
+                        defaultValue='rawMaterial'
+                        name='typeProduct'
+                        labelId='typeProduct-label'
+                        label='Tipo de producto'
+                        onChange={handleFieldType}
+                      >
+                        <MenuItem value='rawMaterial' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.type.rawMaterial' />
+                        </MenuItem>
+                        <MenuItem
+                          value='intermediateProduct'
+                          style={{fontWeight: 200}}
                         >
-                          <CloseIcon fontSize='inherit' />
-                        </IconButton>
-                      }
-                      sx={{mb: 2}}
-                    >
-                      {typeAlert == 'faltaProduct' ? (
-                        'Selecciona un producto.'
-                      ) : (
-                        <></>
-                      )}
-                      {typeAlert == 'maxStock' ? (
-                        'No puedes sobrepasar el stock.'
-                      ) : (
-                        <></>
-                      )}
-                      {typeAlert == 'limitCatalog' ? (
-                        'Se alcanzó el límite de registros de productos.'
-                      ) : (
-                        <></>
-                      )}
-                    </Alert>
-                  </Collapse>
-                </Grid>
-                {sectionEcommerce === true ? (
-                  <>
-                    <Grid item xs={12} md={12}>
-                      <FormGroup
-                        sx={{
-                          ml: 2,
-                        }}
-                      >
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={publish}
-                              onChange={handlePublicChange}
-                            />
-                          }
-                          label='Mantener Público en Ecommerce'
+                          <IntlMessages id='product.type.intermediateProduct' />
+                        </MenuItem>
+                        <MenuItem value='endProduct' style={{fontWeight: 200}}>
+                          <IntlMessages id='product.type.endProduct' />
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                    {typeProduct != 'rawMaterial' ? (
+                      <Box sx={{textAlign: 'center'}}>
+                        <Button
+                          sx={{width: 1 / 2, mb: 4}}
+                          variant='outlined'
+                          onClick={handleClickOpen}
+                        >
+                          Añade productos
+                        </Button>
+                        <SubProducts
+                          arrayObjs={selectedProducts}
+                          toDelete={removeProduct}
                         />
-                      </FormGroup>
-                    </Grid>
-                    {publish && (
-                      <>
-                        <Typography
-                          component='h3'
+                      </Box>
+                    ) : (
+                      <></>
+                    )}
+
+                    <Collapse in={showAlert}>
+                      <Alert
+                        severity='error'
+                        action={
+                          <IconButton
+                            aria-label='close'
+                            color='inherit'
+                            size='small'
+                            onClick={() => {
+                              setShowAlert(false);
+                            }}
+                          >
+                            <CloseIcon fontSize='inherit' />
+                          </IconButton>
+                        }
+                        sx={{mb: 2}}
+                      >
+                        {typeAlert == 'faltaProduct' ? (
+                          'Selecciona un producto.'
+                        ) : (
+                          <></>
+                        )}
+                        {typeAlert == 'maxStock' ? (
+                          'No puedes sobrepasar el stock.'
+                        ) : (
+                          <></>
+                        )}
+                        {typeAlert == 'limitCatalog' ? (
+                          'Se alcanzó el límite de registros de productos.'
+                        ) : (
+                          <></>
+                        )}
+                      </Alert>
+                    </Collapse>
+                  </Grid>
+                  {sectionEcommerce === true ? (
+                    <>
+                      <Grid item xs={12} md={12}>
+                        <FormGroup
                           sx={{
-                            fontSize: 16,
-                            fontWeight: Fonts.BOLD,
-                            ml: {xs: 3, lg: 4},
+                            ml: 2,
                           }}
                         >
-                          Sección Ecommerce (opcional)
-                        </Typography>
-                        <Grid item xs={12}>
-                          <AppTextField
-                            label='Título del Producto de forma pública'
-                            name='title'
-                            variant='outlined'
-                            sx={{
-                              width: '100%',
-                              '& .MuiInputBase-input': {
-                                fontSize: 14,
-                              },
-                              my: 2,
-                            }}
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={publish}
+                                onChange={handlePublicChange}
+                              />
+                            }
+                            label='Mantener Público en Ecommerce'
                           />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <AppTextField
-                            label='Descripción de forma pública'
-                            name='commercialDescription'
-                            multiline
-                            rows={4}
-                            variant='outlined'
+                        </FormGroup>
+                      </Grid>
+                      {publish && (
+                        <>
+                          <Typography
+                            component='h3'
                             sx={{
-                              width: '100%',
-                              '& .MuiInputBase-input': {
-                                fontSize: 14,
-                              },
-                              my: 2,
+                              fontSize: 16,
+                              fontWeight: Fonts.BOLD,
+                              ml: {xs: 3, lg: 4},
                             }}
-                          />
-                        </Grid>
-                        {ecommerce_params &&
-                        Array.isArray(ecommerce_params) &&
-                        ecommerce_params.length >= 1 ? (
-                          ecommerce_params.map((obj, index) => {
-                            return (
-                              <Grid key={index} item xs={12}>
-                                {/* <FormControl fullWidth sx={{my: 2}}>
+                          >
+                            Sección Ecommerce (opcional)
+                          </Typography>
+                          <Grid item xs={12}>
+                            <AppTextField
+                              label='Título del Producto de forma pública'
+                              name='title'
+                              variant='outlined'
+                              sx={{
+                                width: '100%',
+                                '& .MuiInputBase-input': {
+                                  fontSize: 14,
+                                },
+                                my: 2,
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <AppTextField
+                              label='Descripción de forma pública'
+                              name='commercialDescription'
+                              multiline
+                              rows={4}
+                              variant='outlined'
+                              sx={{
+                                width: '100%',
+                                '& .MuiInputBase-input': {
+                                  fontSize: 14,
+                                },
+                                my: 2,
+                              }}
+                            />
+                          </Grid>
+                          {ecommerce_params &&
+                          Array.isArray(ecommerce_params) &&
+                          ecommerce_params.length >= 1 ? (
+                            ecommerce_params.map((obj, index) => {
+                              return (
+                                <Grid key={index} item xs={12}>
+                                  {/* <FormControl fullWidth sx={{my: 2}}>
                                   <FormLabel component="legend"> {obj.featureName}</FormLabel>
                                   <Select
                                     key={'SelectFilter' + index}
@@ -1287,77 +1368,77 @@ const NewProduct = (props) => {
                                     </MenuItem>
                                   </Select>
                                 </FormControl> */}
-                                <FormControl
-                                  sx={{m: 3}}
-                                  component='fieldset'
-                                  variant='standard'
-                                >
-                                  <FormLabel sx={{ml: -3}} component='legend'>
-                                    {obj.featureName}
-                                  </FormLabel>
-                                  <FormGroup>
-                                    {obj.values &&
-                                    Array.isArray(obj.values) &&
-                                    obj.values.length >= 1 ? (
-                                      obj.values.map((objV, index) => {
-                                        return (
-                                          <FormControlLabel
-                                            key={`featureOption-${index}`}
-                                            control={
-                                              <Checkbox
-                                                value={Number(index) + 1}
-                                                checked={selectedFilters[
-                                                  obj.featureName
-                                                ].includes(Number(index) + 1)}
-                                                onChange={handleFieldFilter2}
-                                                name={obj.featureName}
-                                              />
-                                            }
-                                            label={objV.name}
-                                          />
-                                        );
-                                      })
-                                    ) : (
-                                      <></>
-                                    )}
-                                  </FormGroup>
-                                  {/* <FormHelperText>Be careful</FormHelperText> */}
-                                </FormControl>
-                              </Grid>
-                            );
-                          })
-                        ) : (
-                          <></>
-                        )}
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <></>
-                )}
-                {/* IMPORTANTE NO BORRAR */}
-                <Grid item xs={12} md={12}>
-                  <Button
-                    variant='contained'
-                    color='secondary'
-                    component='label'
-                  >
-                    Subir imágenes
-                    <input
-                      type='file'
-                      hidden
-                      multiple
-                      onChange={getImage}
-                      id='imgInp'
-                      name='imgInp'
-                      accept='.png, .jpeg, .jpg'
-                    />
-                  </Button>
-                </Grid>
-                {/* <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
+                                  <FormControl
+                                    sx={{m: 3}}
+                                    component='fieldset'
+                                    variant='standard'
+                                  >
+                                    <FormLabel sx={{ml: -3}} component='legend'>
+                                      {obj.featureName}
+                                    </FormLabel>
+                                    <FormGroup>
+                                      {obj.values &&
+                                      Array.isArray(obj.values) &&
+                                      obj.values.length >= 1 ? (
+                                        obj.values.map((objV, index) => {
+                                          return (
+                                            <FormControlLabel
+                                              key={`featureOption-${index}`}
+                                              control={
+                                                <Checkbox
+                                                  value={Number(index) + 1}
+                                                  checked={selectedFilters[
+                                                    obj.featureName
+                                                  ].includes(Number(index) + 1)}
+                                                  onChange={handleFieldFilter2}
+                                                  name={obj.featureName}
+                                                />
+                                              }
+                                              label={objV.name}
+                                            />
+                                          );
+                                        })
+                                      ) : (
+                                        <></>
+                                      )}
+                                    </FormGroup>
+                                    {/* <FormHelperText>Be careful</FormHelperText> */}
+                                  </FormControl>
+                                </Grid>
+                              );
+                            })
+                          ) : (
+                            <></>
+                          )}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                  {/* IMPORTANTE NO BORRAR */}
+                  <Grid item xs={12} md={12}>
+                    <Button
+                      variant='contained'
+                      color='secondary'
+                      component='label'
+                    >
+                      Subir imágenes
+                      <input
+                        type='file'
+                        hidden
+                        multiple
+                        onChange={getImage}
+                        id='imgInp'
+                        name='imgInp'
+                        accept='.png, .jpeg, .jpg'
+                      />
+                    </Button>
+                  </Grid>
+                  {/* <Box className={classes.imgPreview} sx={{my: 1, p: 4}}>
                   <img id='preview' className={classes.img} src=''></img>
                 </Box> */}
-                {/* {selectedImages ? (
+                  {/* {selectedImages ? (
                   selectedImages.map((photo) => {
                     return (
                       <Grid item xs={12}  md={4}>
@@ -1373,77 +1454,77 @@ const NewProduct = (props) => {
                 ) : (
                   <></>
                 )} */}
-                {selectedImages.length > 0 ? (
-                  <ImageList
-                    sx={{
-                      width: 500,
-                      // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
-                      transform: 'translateZ(0)',
-                      my: 1,
-                      p: 4,
-                    }}
-                    rowHeight={200}
-                    gap={1}
-                  >
-                    {selectedImages.map((item, index) => {
-                      const cols = item.featured ? 2 : 1;
-                      const rows = item.featured ? 2 : 1;
+                  {selectedImages.length > 0 ? (
+                    <ImageList
+                      sx={{
+                        width: 500,
+                        // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
+                        transform: 'translateZ(0)',
+                        my: 1,
+                        p: 4,
+                      }}
+                      rowHeight={200}
+                      gap={1}
+                    >
+                      {selectedImages.map((item, index) => {
+                        const cols = item.featured ? 2 : 1;
+                        const rows = item.featured ? 2 : 1;
 
-                      return (
-                        <ImageListItem key={item} cols={cols} rows={rows}>
-                          <img
-                            className={classes.img}
-                            src={item}
-                            key={item}
-                          ></img>
-                          <ImageListItemBar
-                            sx={{
-                              background:
-                                'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
-                                'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
-                            }}
-                            // title={"Prueba"}
-                            position='top'
-                            actionIcon={
-                              <IconButton
-                                sx={{color: 'white'}}
-                                aria-label={`star prueba`}
-                                onClick={() => {
-                                  deleteImage(index, item);
-                                }}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            }
-                            actionPosition='left'
-                          />
-                        </ImageListItem>
-                      );
-                    })}
-                  </ImageList>
-                ) : (
-                  <></>
-                )}
-              </Grid>
+                        return (
+                          <ImageListItem key={item} cols={cols} rows={rows}>
+                            <img
+                              className={classes.img}
+                              src={item}
+                              key={item}
+                            ></img>
+                            <ImageListItemBar
+                              sx={{
+                                background:
+                                  'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+                                  'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+                              }}
+                              // title={"Prueba"}
+                              position='top'
+                              actionIcon={
+                                <IconButton
+                                  sx={{color: 'white'}}
+                                  aria-label={`star prueba`}
+                                  onClick={() => {
+                                    deleteImage(index, item);
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              }
+                              actionPosition='left'
+                            />
+                          </ImageListItem>
+                        );
+                      })}
+                    </ImageList>
+                  ) : (
+                    <></>
+                  )}
+                </Grid>
 
-              <ButtonGroup
-                orientation='vertical'
-                variant='outlined'
-                sx={{width: 1, my: 3}}
-                aria-label='outlined button group'
-              >
-                <Button
-                  color='primary'
-                  type='submit'
-                  sx={{mx: 'auto', width: '50%', py: 3}}
-                  variant='contained'
-                  size='medium'
-                  //disabled={isSubmitting}
-                  startIcon={<SaveAltOutlinedIcon />}
+                <ButtonGroup
+                  orientation='vertical'
+                  variant='outlined'
+                  sx={{width: 1, my: 3}}
+                  aria-label='outlined button group'
                 >
-                  Finalizar
-                </Button>
-                {/* <Button
+                  <Button
+                    color='primary'
+                    type='submit'
+                    sx={{mx: 'auto', width: '50%', py: 3}}
+                    variant='contained'
+                    size='medium'
+                    //disabled={isSubmitting}
+                    startIcon={<SaveAltOutlinedIcon />}
+                  >
+                    Finalizar
+                  </Button>
+                  {/* <Button
                   sx={{mx: 'auto', width: '80%', py: 3}}
                   variant='outlined'
                   size='medium'
@@ -1451,116 +1532,117 @@ const NewProduct = (props) => {
                 >
                   Guardar y registrar nuevo
                 </Button> */}
-                <Button
-                  sx={{mx: 'auto', width: '50%', py: 3}}
-                  variant='outlined'
-                  size='medium'
-                  startIcon={<ArrowCircleLeftOutlinedIcon />}
-                  onClick={cancel}
-                >
-                  Cancelar
-                </Button>
-              </ButtonGroup>
-              {minTutorial ? (
-                <Box
-                  sx={{
-                    position: 'fixed',
-                    right: 0,
-                    top: {xs: 325, xl: 305},
-                    zIndex: 1110,
-                  }}
-                  className='customizerOption'
-                >
+                  <Button
+                    sx={{mx: 'auto', width: '50%', py: 3}}
+                    variant='outlined'
+                    size='medium'
+                    startIcon={<ArrowCircleLeftOutlinedIcon />}
+                    onClick={cancel}
+                  >
+                    Cancelar
+                  </Button>
+                </ButtonGroup>
+                {minTutorial ? (
                   <Box
                     sx={{
-                      borderRadius: '30px 0 0 30px',
-                      mb: 1,
-                      backgroundColor: orange[500],
-                      '&:hover': {
-                        backgroundColor: orange[700],
-                      },
-                      '& button': {
-                        borderRadius: '30px 0 0 30px',
-
-                        '&:focus': {
-                          borderRadius: '30px 0 0 30px',
-                        },
-                      },
+                      position: 'fixed',
+                      right: 0,
+                      top: {xs: 325, xl: 305},
+                      zIndex: 1110,
                     }}
+                    className='customizerOption'
                   >
-                    <IconButton
+                    <Box
                       sx={{
-                        mt: 1,
-                        '& svg': {
-                          height: 35,
-                          width: 35,
+                        borderRadius: '30px 0 0 30px',
+                        mb: 1,
+                        backgroundColor: orange[500],
+                        '&:hover': {
+                          backgroundColor: orange[700],
                         },
-                        color: 'white',
-                        pr: 5,
+                        '& button': {
+                          borderRadius: '30px 0 0 30px',
+
+                          '&:focus': {
+                            borderRadius: '30px 0 0 30px',
+                          },
+                        },
                       }}
-                      edge='end'
-                      color='inherit'
-                      aria-label='open drawer'
-                      onMouseOver={() => changeIcon()}
-                      onMouseLeave={() => changeIcon2()}
-                      onClick={() =>
-                        window.open('https://youtu.be/bjjUFNapWiY/')
-                      }
                     >
-                      {iconSelected()}
-                    </IconButton>
+                      <IconButton
+                        sx={{
+                          mt: 1,
+                          '& svg': {
+                            height: 35,
+                            width: 35,
+                          },
+                          color: 'white',
+                          pr: 5,
+                        }}
+                        edge='end'
+                        color='inherit'
+                        aria-label='open drawer'
+                        onMouseOver={() => changeIcon()}
+                        onMouseLeave={() => changeIcon2()}
+                        onClick={() =>
+                          window.open('https://youtu.be/bjjUFNapWiY/')
+                        }
+                      >
+                        {iconSelected()}
+                      </IconButton>
+                    </Box>
                   </Box>
-                </Box>
-              ) : (
-                <Box
-                  sx={{
-                    position: 'fixed',
-                    right: 0,
-                    top: {xs: 325, xl: 305},
-                    zIndex: 1110,
-                  }}
-                  className='customizerOption'
-                >
+                ) : (
                   <Box
                     sx={{
-                      borderRadius: '30px 0 0 30px',
-                      mb: 1,
-                      backgroundColor: orange[500],
-                      '&:hover': {
-                        backgroundColor: orange[700],
-                      },
-                      '& button': {
-                        borderRadius: '30px 0 0 30px',
-
-                        '&:focus': {
-                          borderRadius: '30px 0 0 30px',
-                        },
-                      },
+                      position: 'fixed',
+                      right: 0,
+                      top: {xs: 325, xl: 305},
+                      zIndex: 1110,
                     }}
+                    className='customizerOption'
                   >
-                    <IconButton
+                    <Box
                       sx={{
-                        mt: 1,
-                        '& svg': {
-                          height: 35,
-                          width: 35,
+                        borderRadius: '30px 0 0 30px',
+                        mb: 1,
+                        backgroundColor: orange[500],
+                        '&:hover': {
+                          backgroundColor: orange[700],
                         },
-                        color: 'white',
+                        '& button': {
+                          borderRadius: '30px 0 0 30px',
+
+                          '&:focus': {
+                            borderRadius: '30px 0 0 30px',
+                          },
+                        },
                       }}
-                      edge='end'
-                      color='inherit'
-                      aria-label='open drawer'
-                      onClick={() =>
-                        window.open('https://youtu.be/bjjUFNapWiY/')
-                      }
                     >
-                      {iconSelected()}
-                    </IconButton>
+                      <IconButton
+                        sx={{
+                          mt: 1,
+                          '& svg': {
+                            height: 35,
+                            width: 35,
+                          },
+                          color: 'white',
+                        }}
+                        edge='end'
+                        color='inherit'
+                        aria-label='open drawer'
+                        onClick={() =>
+                          window.open('https://youtu.be/bjjUFNapWiY/')
+                        }
+                      >
+                        {iconSelected()}
+                      </IconButton>
+                    </Box>
                   </Box>
-                </Box>
-              )}
-            </Form>
-          )}
+                )}
+              </Form>
+            );
+          }}
         </Formik>
         <Dialog
           open={open}
