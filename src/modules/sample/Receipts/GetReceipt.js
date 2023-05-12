@@ -334,10 +334,14 @@ const GetReceipt = (props) => {
     selectedProducts = isObjEmpty(query)
       ? []
       : selectedOutput.descriptionProductsInfo;
-    total = selectedOutput.totalPriceWithoutIgv
-      ? selectedOutput.totalPriceWithoutIgv
-      : selectedOutput.totalPriceWithIgv;
-    selectedClient = {clientId: query.clientId, clientName: query.clientName};
+    total = (selectedOutput 
+      ? (selectedOutput.totalPriceWithoutIgv
+        ? selectedOutput.totalPriceWithoutIgv
+        : selectedOutput.totalPriceWithIgv) 
+      : 0 );
+    selectedClient = isObjEmpty(query)
+      ? []
+      :{clientId: query.clientId, clientName: query.clientName};
   }, [selectedOutput]);
 
   useEffect(() => {

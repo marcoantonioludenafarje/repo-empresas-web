@@ -54,8 +54,8 @@ const validationSchema = yup.object({
     .positive(<IntlMessages id='validation.positive' />)
     .test(
       'maxDigitsAfterDecimal',
-      'El número puede contener como máximo 3 decimales',
-      (number) => /^\d+(\.\d{1,3})?$/.test(number),
+      'El número puede contener como máximo 10 decimales',
+      (number) => /^\d+(\.\d{1,10})?$/.test(number),
     ),
   count: yup
     .number()
