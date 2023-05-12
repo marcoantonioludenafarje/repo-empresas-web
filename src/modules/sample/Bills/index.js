@@ -68,11 +68,13 @@ import {
   toEpoch,
   convertToDateWithoutTime,
   translateValue,
+  dateWithHyphen
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
 import {
   getBillItems_pageListBill,
   cancelInvoice,
+  addCreditNote
 } from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -82,6 +84,7 @@ import {
   GET_USER_DATA,
   GET_BILL_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_BILLS,
+  ADD_CREDIT_NOTE
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -556,20 +559,64 @@ const BillsTable = (props) => {
   };
 
   const cancelBill = (reason) => {
-    console.log('Razón', reason);
-    cancelInvoicePayload.request.payload.reason = reason;
-    cancelInvoicePayload.request.payload.serial =
-      selectedBill.serialNumberBill.split('-')[0];
-    cancelInvoicePayload.request.payload.numberBill =
-      selectedBill.serialNumberBill.split('-')[1];
-    cancelInvoicePayload.request.payload.movementHeaderId =
-      selectedBill.movementHeaderId;
-    cancelInvoicePayload.request.payload.outputId = selectedBill.outputId;
-    console.log('payload anular factura', cancelInvoicePayload);
+    const actualTime = Date.now();
+    let cleanDocuments = [];
+    selectedBill.referralGuides.map((obj) => {
+        cleanDocuments.push({
+            issueDate: obj.issueDate.split('-').join('/'),
+            serialDocument: obj.serialDocument,
+        });
+      });
+    let finalPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          denominationMerchant:
+            userDataRes.merchantSelected.denominationMerchant,
+          movementTypeMerchantId: selectedBill.movementTypeMerchantId,
+          movementHeaderId: selectedBill.movementHeaderId,
+          createdAt: selectedBill.createdAt,
+          serial: selectedBill.serialNumberBill.split('-')[0],
+          documentIntern: '',
+          automaticSendSunat: true,
+          automaticSendClient: true,
+          creditSale: false,
+          previousTotalPriceWithIgv: selectedBill.totalPriceWithIgv,
+          previousTotalPriceWithoutIgv: selectedBill.totalPriceWithoutIgv,
+          igv: selectedBill.igv,
+          serialDocumentRelated: selectedBill.serialNumberBill.split('-')[0],
+          numberDocumentRelated: selectedBill.serialNumberBill.split('-')[1],
+          movementType: 'CREDIT_NOTE',
+          outputId: selectedBill.outputId,
+          typePDF: userDataRes.merchantSelected.typeMerchant,
+          userCreated: userDataRes.userId,
+          userCreatedMetadata: {
+            nombreCompleto: userDataRes.nombreCompleto,
+            email: userDataRes.email,
+          },
+          productsInfo: selectedBill.productsInfo,
+          dueDate: dateWithHyphen(actualTime),
+          issueDate: dateWithHyphen(actualTime),
+          totalPriceWithIgv: selectedBill.totalPriceWithIgv,
+          observation: reason,
+          clientId: selectedBill.clientId,
+          clientEmail: selectedBill.emailClient,
+          typeDocumentRelated: 'bill',
+          typeNote: 'operationCancellation',
+          referralGuides: cleanDocuments,
+          // documentsMovement: selectedOutput.documentsMovement
+          //   ? selectedOutput.documentsMovement
+          //   : [],
+          // contableMovementId: selectedOutput.contableMovementId || '',
+          // folderMovement: selectedOutput.folderMovement,
+        },
+      },
+    };
+    console.log('cancelBill payload', finalPayload);
+    dispatch({type: CANCEL_INVOICE, payload: undefined});
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: CANCEL_INVOICE, payload: undefined});
-    toCancelInvoice(cancelInvoicePayload);
+    toCancelInvoice(finalPayload);
     setOpenStatus(true);
     setOpenForm(false);
   };
@@ -870,7 +917,7 @@ const BillsTable = (props) => {
           </MenuItem>
         ) : null}
 
-        {/*  {!selectedBill.cancelStatus &&
+         {!selectedBill.cancelStatus &&
         localStorage
           .getItem('pathsBack')
           .includes('/facturacion/bill/cancel') ? (
@@ -882,7 +929,7 @@ const BillsTable = (props) => {
             <DoDisturbAltIcon sx={{mr: 1, my: 'auto'}} />
             Anular
           </MenuItem>
-        ) : null} */}
+        ) : null}
       </Menu>
 
       <Dialog
