@@ -57,7 +57,6 @@ const OutputProducts = ({
   console.log('valueWithIGV', valueWithIGV);
   console.log('igvEnabled', igvEnabled);
 
-
   const {messages} = useIntl();
   const showTypeIGV = (type) => {
     switch (type) {
@@ -108,12 +107,18 @@ const OutputProducts = ({
                   <TableCell>{obj.priceBusinessMoneyWithIgv}</TableCell>
                   {igvEnabled ? (
                     <TableCell>
-                      {obj.taxCode == 1000 ? valueWithIGV(obj.priceBusinessMoneyWithIgv) : obj.priceBusinessMoneyWithIgv}
+                      {obj.taxCode == 1000
+                        ? valueWithIGV(obj.priceBusinessMoneyWithIgv)
+                        : obj.priceBusinessMoneyWithIgv}
                     </TableCell>
                   ) : null}
-                  <TableCell>{Number((obj.subtotal).toFixed(2))}</TableCell>
+                  <TableCell>{Number(obj.subtotal.toFixed(2))}</TableCell>
                   {igvEnabled ? (
-                    <TableCell>{obj.taxCode == 1000 ? Number(valueWithIGV(obj.subtotal)).toFixed(2) : Number((obj.subtotal).toFixed(2))}</TableCell>
+                    <TableCell>
+                      {obj.taxCode == 1000
+                        ? Number(valueWithIGV(obj.subtotal)).toFixed(2)
+                        : Number(obj.subtotal.toFixed(2))}
+                    </TableCell>
                   ) : null}
                   {/* <TableCell>{showTypeIGV(obj.taxCode)}</TableCell> */}
                   <TableCell>
@@ -122,7 +127,9 @@ const OutputProducts = ({
                         labelId='demo-simple-select-standard-label'
                         id={`taxCode${index}`}
                         value={obj.taxCode}
-                        defaultValue={(obj.taxCode) ? obj.taxCode : igvEnabled ? 1000 : 9998 }
+                        defaultValue={
+                          obj.taxCode ? obj.taxCode : igvEnabled ? 1000 : 9998
+                        }
                         onChange={(event) => {
                           changeTaxCode(index, event.target.value);
                         }}

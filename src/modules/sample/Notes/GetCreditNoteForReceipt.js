@@ -283,8 +283,8 @@ const GetCreditNote = () => {
             description: obj.descripcion || obj.description,
             unitMeasure: obj.unidad_de_medida || obj.unitMeasure,
             quantityMovement: count,
-            taxCode: obj.taxCode || "",
-            igvCode: obj.igvCode || "",
+            taxCode: obj.taxCode || '',
+            igvCode: obj.igvCode || '',
             priceBusinessMoneyWithIgv: price,
             subtotal: obj.subtotal || Number((price * count).toFixed(3)),
           };
@@ -312,14 +312,8 @@ const GetCreditNote = () => {
       toGetMovements(listOutputsPayload);
       forceUpdate();
     }
-    if (
-      getMovementsRes &&
-      getMovementsRes[0].movementType == 'OUTPUT'
-    ) {
-      console.log(
-        'getMovementsRes de salidas',
-        getMovementsRes,
-      );
+    if (getMovementsRes && getMovementsRes[0].movementType == 'OUTPUT') {
+      console.log('getMovementsRes de salidas', getMovementsRes);
       console.log('query.movementId', query.movementId);
       let output = getMovementsRes.find(
         (obj) => obj.movementHeaderId == query.movementId,
@@ -330,14 +324,8 @@ const GetCreditNote = () => {
   }, [receiptItems_pageListReceipt]);
 
   useEffect(() => {
-    if (
-      getMovementsRes &&
-      getMovementsRes[0].movementType == 'OUTPUT'
-    ) {
-      console.log(
-        'getMovementsRes de salidas',
-        getMovementsRes,
-      );
+    if (getMovementsRes && getMovementsRes[0].movementType == 'OUTPUT') {
+      console.log('getMovementsRes de salidas', getMovementsRes);
       console.log('query.movementId', query.movementId);
       let output = getMovementsRes.find(
         (obj) => obj.movementHeaderId == query.movementId,
@@ -445,8 +433,8 @@ const GetCreditNote = () => {
           customCodeProduct: obj.customCodeProduct ? obj.customCodeProduct : '',
           description: obj.description,
           unitMeasure: obj.unitMeasure,
-          taxCode: obj.taxCode || "",
-          igvCode: obj.igvCode || "",
+          taxCode: obj.taxCode || '',
+          igvCode: obj.igvCode || '',
         });
       });
       console.log('cleanProducts', cleanProducts);

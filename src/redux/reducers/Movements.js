@@ -33,7 +33,7 @@ import {
   GENERATE_SELL_TICKET,
   REFERRAL_GUIDES_BATCH_CONSULT,
   CANCEL_REFERRAL_GUIDE,
-  UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST
+  UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -81,8 +81,8 @@ const movementsReducer = (state = INIT_STATE, action) => {
       };
     case UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST:
       return {
-        referralGuideItems_pageListGuide: action.payload
-      }
+        referralGuideItems_pageListGuide: action.payload,
+      };
     case GET_BILL_PAGE_LISTGUIDE:
       let itemsBL = [];
       let lastEvaluatedKeyBL = '';

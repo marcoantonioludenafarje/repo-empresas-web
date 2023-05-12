@@ -81,7 +81,6 @@ const NewUsers = () => {
     dispatch(listUser(payload));
   };
 
-
   const registerSuccess = () => {
     return (
       successMessage != undefined &&
@@ -107,7 +106,6 @@ const NewUsers = () => {
     }
   };*/
 
-
   const sendStatus = () => {
     setTimeout(() => {
       setOpenStatus(false);
@@ -122,7 +120,7 @@ const NewUsers = () => {
     toListUser(listUserPayload);
   };
 
-  const showMessage = () => { 
+  const showMessage = () => {
     if (successMessage != undefined && registerUserRes != undefined) {
       if (registerSuccess()) {
         return (

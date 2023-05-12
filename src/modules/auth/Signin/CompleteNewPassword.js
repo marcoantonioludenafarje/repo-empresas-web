@@ -74,7 +74,9 @@ const CompleteNewPassword = () => {
             mb: {xs: 4, lg: 6},
           }}
         >
-          Importante: La nueva clave debe de tener: Al menos 8 dígitos, al menos una letra en mayúscula, al menos una letra en minúscula, al menos un número y al menos un caracter especial.
+          Importante: La nueva clave debe de tener: Al menos 8 dígitos, al menos
+          una letra en mayúscula, al menos una letra en minúscula, al menos un
+          número y al menos un caracter especial.
         </Box>
 
         <Box sx={{flex: 1, display: 'flex', flexDirection: 'column'}}>

@@ -417,7 +417,7 @@ const NewClient = (props) => {
                     ['givenName', 'lastName', 'secondLastName'].includes(
                       value.target.name,
                     ) &&
-                    ["DNI", "CE"].includes(values.documentType)
+                    ['DNI', 'CE'].includes(values.documentType)
                   ) {
                     console.log('Aca es value', value);
                     console.log('Esto es el nuevo name', value.target.name);

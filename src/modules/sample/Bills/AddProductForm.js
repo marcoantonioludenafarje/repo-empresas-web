@@ -140,7 +140,9 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
   const [open, setOpen] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
   const [typeElement, setTypeElement] = React.useState('NIU');
-  const [typeTaxCode, setTypeTaxCode] = React.useState(igvEnabled ? '1000' : '9998');
+  const [typeTaxCode, setTypeTaxCode] = React.useState(
+    igvEnabled ? '1000' : '9998',
+  );
   const [proSearch, setProSearch] = React.useState();
   const [nameChanged, setNameChanged] = React.useState(false);
   const handleClose = () => {
@@ -491,7 +493,7 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
 AddProductForm.propTypes = {
   sendData: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
-  //igvEnabled: PropTypes.func.isNot
+  igvEnabled: PropTypes.bool,
 };
 
 export default AddProductForm;

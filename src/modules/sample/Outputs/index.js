@@ -1236,15 +1236,15 @@ const OutputsTable = (props) => {
   };
 
   const goToMovements = (contableMovement) => {
-    console.log("1","")
-    if (contableMovement.contableMovementId){
-      console.log("4","")
+    console.log('1', '');
+    if (contableMovement.contableMovementId) {
+      console.log('4', '');
       Router.push({
         pathname: '/sample/finances/table',
         query: {contableMovementId: contableMovement.contableMovementId},
       });
     } else {
-        return null;
+      return null;
     }
   };
 

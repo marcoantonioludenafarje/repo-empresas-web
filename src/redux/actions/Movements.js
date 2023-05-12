@@ -33,7 +33,7 @@ import {
   GET_NOTE_PAGE_LISTGUIDE,
   GENERATE_SELL_TICKET,
   REFERRAL_GUIDES_BATCH_CONSULT,
-  CANCEL_REFERRAL_GUIDE
+  CANCEL_REFERRAL_GUIDE,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';

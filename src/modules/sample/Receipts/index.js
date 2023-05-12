@@ -686,7 +686,11 @@ const ReceiptsTable = (props) => {
                   {/* <TableCell>{obj.totalTaxFree ? `${moneySymbol} ${obj.totalTaxFree.toFixed(2)} ` : `${moneySymbol} 0` }</TableCell>
                   <TableCell>{obj.totalTaxExempt ? `${moneySymbol} ${obj.totalTaxExempt.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell>
                   <TableCell>{obj.totalTaxed ? `${moneySymbol} ${obj.totalTaxed.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell> */}
-                  <TableCell>{obj.totalIgv ? `${moneySymbol} ${obj.totalIgv.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell>
+                  <TableCell>
+                    {obj.totalIgv
+                      ? `${moneySymbol} ${obj.totalIgv.toFixed(2)} `
+                      : `${moneySymbol} 0`}
+                  </TableCell>
                   <TableCell>
                     {obj.totalPriceWithIgv
                       ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(2)} `

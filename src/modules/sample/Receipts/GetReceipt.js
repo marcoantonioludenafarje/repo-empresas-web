@@ -286,7 +286,10 @@ const GetReceipt = (props) => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
 
-    if (userDataRes.merchantSelected.typeClient == 'PN' || userDataRes.merchantSelected.paymentWay == 'debit') {
+    if (
+      userDataRes.merchantSelected.typeClient == 'PN' ||
+      userDataRes.merchantSelected.paymentWay == 'debit'
+    ) {
       setPaymentWay('debit');
     }
     getBusinessParameter(businessParameterPayload);
@@ -357,7 +360,8 @@ const GetReceipt = (props) => {
         obj['subtotal'] = Number(
           (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(2),
         );
-        obj['taxCode'] = (Number(query.igv) > 0 || query.igv == 'true') ? 1000 : 9998
+        obj['taxCode'] =
+          Number(query.igv) > 0 || query.igv == 'true' ? 1000 : 9998;
       });
       console.log('selectedProducts', selectedProducts);
     }
@@ -507,17 +511,20 @@ const GetReceipt = (props) => {
       selectedProducts[index].taxCode == 1000 &&
       query.igv &&
       Number(query.igv) > 0
-        ? Number((selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2))
+        ? Number(
+            (selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2),
+          )
         : Number(selectedProducts[index].subtotal);
     const subTotalWithNextTaxCode =
       taxCode == 1000 && query.igv && Number(query.igv) > 0
-        ? Number((selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2))
+        ? Number(
+            (selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2),
+          )
         : Number(selectedProducts[index].subtotal);
     let calculatedtotalIgv =
       getValueField('totalFieldIgv').value -
       subTotalWithPreviousTaxCode +
       subTotalWithNextTaxCode;
-
 
     let actualProduct = {
       ...selectedProducts[index],
@@ -533,7 +540,7 @@ const GetReceipt = (props) => {
       }
     });
     total = calculatedtotalIgv;
-    changeValueField('totalFieldIgv', Number((calculatedtotalIgv).toFixed(2)));
+    changeValueField('totalFieldIgv', Number(calculatedtotalIgv.toFixed(2)));
     forceUpdate();
   };
   const handleData = (data, {setSubmitting}) => {
@@ -551,10 +558,10 @@ const GetReceipt = (props) => {
     console.log('parsedDocuments', parsedDocuments);
     let finalPayload;
     const listTypeIgvCode = {
-      "1000": 10,
-      "9997": 20,
-      "9998": 30
-    }
+      1000: 10,
+      9997: 20,
+      9998: 30,
+    };
     try {
       finalPayload = {
         request: {
@@ -595,7 +602,7 @@ const GetReceipt = (props) => {
                 unitMeasure: obj.unitMeasure,
                 businessProductCode: obj.businessProductCode,
                 taxCode: obj.taxCode,
-                igvCode: listTypeIgvCode[`${obj.taxCode}`]
+                igvCode: listTypeIgvCode[`${obj.taxCode}`],
               };
             }),
             documentsMovement: selectedOutput.documentsMovement,
@@ -783,7 +790,7 @@ const GetReceipt = (props) => {
     selectedProducts.map((obj) => {
       calculatedtotal += Number(obj.subtotal);
       totalWithIgv +=
-        (obj.taxCode == 1000 && query.igv && Number(query.igv) > 0)
+        obj.taxCode == 1000 && query.igv && Number(query.igv) > 0
           ? Number((Number(obj.subtotal) * (1 + igvDefault)).toFixed(2))
           : Number(obj.subtotal);
     });

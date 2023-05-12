@@ -68,13 +68,13 @@ import {
   toEpoch,
   convertToDateWithoutTime,
   translateValue,
-  dateWithHyphen
+  dateWithHyphen,
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
 import {
   getBillItems_pageListBill,
   cancelInvoice,
-  addCreditNote
+  addCreditNote,
 } from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -84,7 +84,7 @@ import {
   GET_USER_DATA,
   GET_BILL_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_BILLS,
-  ADD_CREDIT_NOTE
+  ADD_CREDIT_NOTE,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -562,11 +562,11 @@ const BillsTable = (props) => {
     const actualTime = Date.now();
     let cleanDocuments = [];
     selectedBill.referralGuides.map((obj) => {
-        cleanDocuments.push({
-            issueDate: obj.issueDate.split('-').join('/'),
-            serialDocument: obj.serialDocument,
-        });
+      cleanDocuments.push({
+        issueDate: obj.issueDate.split('-').join('/'),
+        serialDocument: obj.serialDocument,
       });
+    });
     let finalPayload = {
       request: {
         payload: {
@@ -917,7 +917,7 @@ const BillsTable = (props) => {
           </MenuItem>
         ) : null}
 
-         {!selectedBill.cancelStatus &&
+        {!selectedBill.cancelStatus &&
         localStorage
           .getItem('pathsBack')
           .includes('/facturacion/bill/cancel') ? (
