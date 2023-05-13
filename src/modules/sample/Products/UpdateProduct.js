@@ -162,7 +162,7 @@ const validationSchema = yup.object({
     .number()
     .typeError(<IntlMessages id='validation.number' />)
     .required(<IntlMessages id='validation.required' />)
-    .max(maxLengthNumber, <IntlMessages id='validation.maxLength' />)
+    .max(maxLength, <IntlMessages id='validation.maxLength' />)
     .test(
       'maxDigitsAfterDecimal',
       'El número puede contener como máximo 3 decimales',
