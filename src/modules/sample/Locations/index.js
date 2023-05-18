@@ -92,11 +92,11 @@ const useStyles = makeStyles((theme) => ({
 let listPayload = {
   request: {
     payload: {
-      locationName: null,
-      type: null,
-      ubigeo: null,
-      merchantId: null,
-      modularCode: null,
+      locationName: '',
+      type: '',
+      ubigeo: '',
+      merchantId: '',
+      modularCode: '',
     },
   },
 };
@@ -228,14 +228,14 @@ const LocationTable = (arrayObjs, props) => {
     if (event.target.name == 'nameToSearch') {
       console.log('nameToSearch:' + event.target.value);
       if (event.target.value == '') {
-        listPayload.request.payload.locationName = null;
+        listPayload.request.payload.locationName = '';
       } else {
         listPayload.request.payload.locationName = event.target.value;
       }
     }
     if (event.target.name == 'typeToSearch') {
       if (event.target.value == '') {
-        listPayload.request.payload.type = null;
+        listPayload.request.payload.type = '';
       } else {
         listPayload.request.payload.type = event.target.value;
       }
@@ -245,7 +245,7 @@ const LocationTable = (arrayObjs, props) => {
         'ubigeoToSearch:' + event.target.value + ':' + objUbigeo.ubigeo,
       );
       if (event.target.value == '') {
-        listPayload.request.payload.ubigeo = null;
+        listPayload.request.payload.ubigeo = '';
       } else {
         listPayload.request.payload.ubigeo = objUbigeo.ubigeo;
       }
