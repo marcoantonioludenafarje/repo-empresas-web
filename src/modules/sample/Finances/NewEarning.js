@@ -384,6 +384,10 @@ const NewEarning = (props) => {
         } else { */
       newFinancePayload.request.payload.movements[0].payments = [];
       newFinancePayload.request.payload.movements[0].otherPayConcepts = [];
+      newFinancePayload.request.payload.movements[0].methodToPay =
+        paymentMethod;
+      newFinancePayload.request.payload.movements[0].transactionNumber =
+        paymentMethod;
       newFinancePayload.request.payload.movements[0].purchaseType =
         purchaseType;
       (newFinancePayload.request.payload.movements[0].userCreated =
@@ -836,6 +840,21 @@ const NewEarning = (props) => {
                         </MenuItem>
                       </Select>
                     </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <AppTextField
+                      label='Número de transacción'
+                      disabled={paymentMethod == 'cash'}
+                      name='transactionNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField

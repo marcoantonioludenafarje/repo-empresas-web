@@ -63,6 +63,14 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {array} from 'prop-types';
 
+const listDefaultNames = [
+  'Papelera de Reciclaje',
+  'entradas',
+  'movimientos_contables',
+  'productos',
+  'salidas',
+  'zipCollection',
+];
 const maxLength = 11111111111111111111; //20 caracteres
 const validationSchema = yup.object({
   name: yup
@@ -686,9 +694,9 @@ const FileExplorer = (props) => {
               <TableCell align='center' sx={{width: '10%'}}>
                 Cambiar Nombre
               </TableCell>
-              {/* <TableCell align='center' sx={{width: '10%'}}>
+              <TableCell align='center' sx={{width: '10%'}}>
                 Eliminar
-              </TableCell> */}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -758,41 +766,44 @@ const FileExplorer = (props) => {
                           '/utility/changeNameObjectsPathMerchant?path=/*',
                         ) === true ? (
                         <TableCell align='right' sx={{textAlign: 'center'}}>
-                          <IconButton
-                            disabled={
-                              !localStorage
-                                .getItem('pathsBack')
-                                .includes(
-                                  '/utility/changeNameObjectsPathMerchant?path=/*',
-                                )
-                            }
-                            onClick={changeName.bind(this, folder)}
-                          >
-                            <EditIcon />
-                          </IconButton>
+                          {!actualPath && !listDefaultNames.includes(folder) ? (
+                            <IconButton
+                              disabled={
+                                !localStorage
+                                  .getItem('pathsBack')
+                                  .includes(
+                                    '/utility/changeNameObjectsPathMerchant?path=/*',
+                                  )
+                              }
+                              onClick={changeName.bind(this, folder)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          ) : null}
                         </TableCell>
                       ) : null}
-
-                      {/* {localStorage
+                      {localStorage
                         .getItem('pathsBack')
                         .includes(
                           '/utility/deleteObjectsPathMerchant?path=/*',
                         ) === true ? (
                         <TableCell align='right' sx={{textAlign: 'center'}}>
-                          <IconButton
-                            disabled={
-                              !localStorage
-                                .getItem('pathsBack')
-                                .includes(
-                                  '/utility/deleteObjectsPathMerchant?path=/*',
-                                )
-                            }
-                            onClick={setDeleteState.bind(this, folder)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
+                          {!actualPath && !listDefaultNames.includes(folder) ? (
+                            <IconButton
+                              disabled={
+                                !localStorage
+                                  .getItem('pathsBack')
+                                  .includes(
+                                    '/utility/deleteObjectsPathMerchant?path=/*',
+                                  )
+                              }
+                              onClick={setDeleteState.bind(this, folder)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          ) : null}
                         </TableCell>
-                      ) : null} */}
+                      ) : null}
                     </TableRow>
                   );
                 }
@@ -923,7 +934,7 @@ const FileExplorer = (props) => {
         </TableContainer>
       </Card>
       <Dialog
-        //open={open}
+        open={open}
         onClose={handleClose}
         maxWidth='lg'
         sx={{textAlign: 'center'}}
@@ -931,7 +942,7 @@ const FileExplorer = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Cambiar Nombre'}
+          {'Crear Carpeta'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <Formik
@@ -987,7 +998,7 @@ const FileExplorer = (props) => {
       </Dialog>
 
       <Dialog
-        //open={open2}
+        open={open2}
         onClose={handleClose2}
         sx={{textAlign: 'center'}}
         aria-labelledby='alert-dialog-title'
