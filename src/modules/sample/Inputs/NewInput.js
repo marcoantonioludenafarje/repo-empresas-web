@@ -630,7 +630,18 @@ const NewInput = (props) => {
       !(isBill.includes('bill') && isBill.includes('referralGuide')) &&
       typeDocument === 'buys'
     ) {
-      dispatch({type: GET_MOVEMENTS, payload: []});
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: null,
+            finalTime: null,
+            businessProductCode: null,
+            movementType: 'INPUT',
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
+      //dispatch({type: GET_MOVEMENTS, payload: []});
       toGetMovements(listPayload);
       setShowForms(true);
     } else {

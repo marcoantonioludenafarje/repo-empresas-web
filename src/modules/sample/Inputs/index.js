@@ -171,6 +171,7 @@ const InputsTable = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [moreFilters, setMoreFilters] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [open2valida, setOpen2valida] = React.useState(false);
   const [openDetails, setOpenDetails] = React.useState(false);
   const [openDocuments, setOpenDocuments] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
@@ -465,7 +466,11 @@ const InputsTable = (props) => {
     }, 1000);
   };
   const setDeleteState = () => {
-    setOpen2(true);
+    console.log('setDeleteState', selectedInput);
+    if (!selectedInput.existBill && !selectedInput.existIncome && !selectedInput.existReceipt && !selectedInput.existReferralGuide)
+      setOpen2(true);
+    else
+      setOpen2valida(true);
     handleClose();
   };
   const goToMoves = () => {
@@ -536,6 +541,10 @@ const InputsTable = (props) => {
 
   const handleClose2 = () => {
     setOpen2(false);
+  };
+
+  const handleClose2valida = () => {
+    setOpen2valida(false);
   };
 
   const goToFile = () => {
@@ -1212,7 +1221,31 @@ const InputsTable = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-
+      <Dialog
+        open={open2valida}
+        onClose={handleClose2valida}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar entrada'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            No es posible eliminar la entrada dado que tiene documentos y/o egresos activos relacionados
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={handleClose2valida}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog
         open={moreFilters}
         onClose={() => setMoreFilters(false)}
