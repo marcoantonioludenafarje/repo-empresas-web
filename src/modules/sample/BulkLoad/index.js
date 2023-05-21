@@ -292,7 +292,7 @@ const BulkLoad = (props) => {
               msjError =
                 msjError +
                 "Validación de PRODUCTO: '" +
-                product['DESCRIPCION'] +
+                product['ALIAS'] +
                 "' debe de tener un código.  ";
             } else {
               console.log('El producto codigo', product['CODIGO']);
@@ -303,22 +303,20 @@ const BulkLoad = (props) => {
                 msjError =
                   msjError +
                   "Validación de PRODUCTO: '" +
-                  product['DESCRIPCION'] +
+                  product['ALIAS'] +
                   "' tiene el símbolo | o el - en su CÓDIGO, debe de retirarlos.  ";
               }
               product['CODIGO'] = product['CODIGO'].toString().toUpperCase();
             }
 
-            if (!product['DESCRIPCION']) {
+            if (!product['ALIAS']) {
               msjError =
                 msjError +
                 "Validación de PRODUCTO: Con código: '" +
                 product['CODIGO'] +
                 "' debe de tener una descripción.  ";
             } else {
-              product['DESCRIPCION'] = product['DESCRIPCION']
-                .toString()
-                .toUpperCase();
+              product['ALIAS'] = product['ALIAS'].toString().toUpperCase();
             }
 
             if (!product['ALIAS']) {
@@ -335,7 +333,7 @@ const BulkLoad = (props) => {
                 msjError =
                   msjError +
                   "Validación de PRODUCTO: '" +
-                  product['DESCRIPCION'] +
+                  product['ALIAS'] +
                   "' tiene el símbolo | o el - en su ALIAS, debe de retirarlos.  ";
               }
               product['ALIAS'] = product['ALIAS'].toString().toUpperCase();
@@ -346,7 +344,7 @@ const BulkLoad = (props) => {
               msjError =
                 msjError +
                 "Validación de PRODUCTO: '" +
-                product['DESCRIPCION'] +
+                product['ALIAS'] +
                 "' debe de tener una CATEGORIA.  ";
             } else {
               ///validar q coincida con lista de categorías
@@ -357,7 +355,7 @@ const BulkLoad = (props) => {
                 msjError =
                   msjError +
                   "Validación de PRODUCTO: '" +
-                  product['DESCRIPCION'] +
+                  product['ALIAS'] +
                   "' debe de tener un PESO.  ";
               } else {
                 /*if (!product['PESO (Kg)']>=0
@@ -372,7 +370,7 @@ const BulkLoad = (props) => {
                 msjError =
                   msjError +
                   "Validación de PRODUCTO: '" +
-                  product['DESCRIPCION'] +
+                  product['ALIAS'] +
                   "' debe de tener un PRECIO COSTO.  ";
               } else {
                 /*if (!product['PESO (Kg)']>=0
@@ -387,7 +385,7 @@ const BulkLoad = (props) => {
                 msjError =
                   msjError +
                   "Validación de PRODUCTO: '" +
-                  product['DESCRIPCION'] +
+                  product['ALIAS'] +
                   "' debe de tener un PRECIO VENTA.  ";
               } else {
                 /*if (!product['PESO (Kg)']>=0
@@ -402,7 +400,7 @@ const BulkLoad = (props) => {
                 msjError =
                   msjError +
                   "Validación de PRODUCTO: '" +
-                  product['DESCRIPCION'] +
+                  product['ALIAS'] +
                   "' debe de tener un STOCK INICIAL.  ";
               } else {
                 /*if (!product['PESO (Kg)']>=0
@@ -416,7 +414,7 @@ const BulkLoad = (props) => {
               msjError =
                 msjError +
                 "Validación de PRODUCTO: '" +
-                product['DESCRIPCION'] +
+                product['ALIAS'] +
                 "' debe de tener un TIPO PRODUCTO.  ";
             } else {
               const matchTipoProducto = tipoProducto.tipos.find(
@@ -440,7 +438,7 @@ const BulkLoad = (props) => {
                     msjError =
                       msjError +
                       "Validación de PRODUCTO: '" +
-                      product['DESCRIPCION'] +
+                      product['ALIAS'] +
                       "', con DOSIFICACIÓN: '" +
                       tempprod +
                       "' Debe de tener la estructura: PRODUCTO - CANTIDAD.  ";
