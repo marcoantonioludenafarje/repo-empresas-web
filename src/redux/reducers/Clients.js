@@ -23,6 +23,7 @@ const clientsReducer = (state = INIT_STATE, action) => {
 
   switch (action.type) {
     case GET_CLIENTS:
+      console.log('actionClient1234', action);
       console.log('action.payload1234', action.payload);
       let request = action.request.request.payload;
       let lastEvaluatedKeyRequest = null;

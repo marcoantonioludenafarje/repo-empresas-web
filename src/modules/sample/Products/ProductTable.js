@@ -25,6 +25,7 @@ import {
   Collapse,
   useTheme,
   useMediaQuery,
+  TableSortLabel
 } from '@mui/material';
 import {
   getYear,
@@ -59,7 +60,7 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {onGetProducts, deleteProduct} from '../../../redux/actions/Products';
+import {onGetProducts, deleteProduct, getAllProducts} from '../../../redux/actions/Products';
 import AddFinishedProduct from './AddFinishedProduct';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -68,6 +69,7 @@ import {
   FETCH_ERROR,
   GET_USER_DATA,
   GET_MOVEMENTS,
+  ALL_PRODUCTS,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
 import {getShopProducts} from '../../../redux/actions/User';
@@ -87,15 +89,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let listPayload = {
-  request: {
-    payload: {
-      businessProductCode: null,
-      description: null,
-      merchantId: '',
-    },
-  },
-};
+// let listPayload = {
+//   request: {
+//     payload: {
+//       businessProductCode: null,
+//       description: null,
+//       merchantId: '',
+//     },
+//   },
+// };
 let deletePayload = {
   request: {
     payload: {
@@ -124,12 +126,17 @@ let globalParameterPayload = {
     },
   },
 };
-
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const ProductTable = (arrayObjs, props) => {
   const classes = useStyles(props);
   const history = useHistory();
   const dispatch = useDispatch();
   const theme = useTheme();
+  const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [firstload, setFirstload] = React.useState(true);
   const [open, setOpen] = React.useState(false);
@@ -142,12 +149,14 @@ const ProductTable = (arrayObjs, props) => {
   const [fast, setFast] = React.useState({});
   const [openDetails, setOpenDetails] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
+  const [descriptionProduct, setDescriptionProduct] = React.useState('');
+  const [businessProductCode, setBusinessProductCode] = React.useState('');
   let popUp = false;
   let codProdSelected = '';
 
   //API FUNCTIONSupdateMovement
-  const getProducts = (payload) => {
-    dispatch(onGetProducts(payload));
+  const toGetAllProducts = (payload) => {
+    dispatch(getAllProducts(payload));
   };
   const toDeleteProduct = (payload) => {
     dispatch(deleteProduct(payload));
@@ -158,10 +167,11 @@ const ProductTable = (arrayObjs, props) => {
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
-
-  const useForceUpdate = () => {
-    return () => setReload((value) => value + 1); // update the state to force render
+  const getProducts = (payload) => {
+    dispatch(onGetProducts(payload));
   };
+
+
 
   let money_unit;
   let weight_unit;
@@ -184,9 +194,73 @@ const ProductTable = (arrayObjs, props) => {
   console.log('userAttributes', userAttributes);
   const {userDataRes} = useSelector(({user}) => user);
   console.log('userDataRes', userDataRes);
-  const {allProductsRes} = useSelector(({products}) => products);
+  const {allProductsRes, productsLastEvaluatedKey_pageListProducts} = useSelector(({products}) => products);
   console.log('allProductsRes', allProductsRes);
 
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
+
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    let listPayload = {
+      request: {
+        payload: {
+          businessProductCode: '',
+          description: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: productsLastEvaluatedKey_pageListProducts,
+        },
+      },
+    };
+    // listPayload.request.payload.LastEvaluatedKey = productsLastEvaluatedKey_pageListProducts;
+    console.log('listPayload111:handleNextPage:', listPayload);
+    getClients(listPayload);
+    // setPage(page+1);
+  };
+
+  // Función para manejar el clic en el encabezado de la tabla
+  const handleSort = (field) => {
+    if (orderBy === field) {
+      // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+      const sortedProducts = [...allProductsRes].sort((a, b) => {
+        const descriptionA = a[`${field}`].toString() ?? '';
+        const descriptionB = b[`${field}`].toString() ?? '';
+        if (order === 'asc') {
+          return descriptionA.localeCompare(descriptionB);
+        } else {
+          return descriptionB.localeCompare(descriptionA);
+        }
+      });
+      dispatch({
+        type: ALL_PRODUCTS,
+        payload: sortedProducts,
+        handleSort: true,
+      });
+      forceUpdate();
+    } else {
+      // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
+      setOrderBy(field);
+      setOrder('asc');
+      // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
+      const sortedProducts = [...allProductsRes].sort((a, b) => {
+        const descriptionA = a[`${field}`].toString() ?? '';
+        const descriptionB = b[`${field}`].toString() ?? '';
+        return descriptionB.localeCompare(descriptionA);
+      });
+      dispatch({
+        type: ALL_PRODUCTS,
+        payload: sortedProducts,
+        handleSort: true,
+      });
+      forceUpdate();
+    }
+  };
+  useEffect(() => {
+    if (allProductsRes) {
+      forceUpdate();
+    }
+  }, [allProductsRes]);
   console.log('token en product', localStorage.getItem('jwt'));
   console.log('pathsBack en product', localStorage.getItem('pathsBack'));
   useEffect(() => {
@@ -213,16 +287,25 @@ const ProductTable = (arrayObjs, props) => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_PRODUCTS, payload: undefined});
-
-      listPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
+      //dispatch({type: GET_PRODUCTS, payload: undefined});
+      let listPayload = {
+        request: {
+          payload: {
+            businessProductCode: '',
+            description: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      // listPayload.request.payload.merchantId =
+      //   userDataRes.merchantSelected.merchantId;
       deletePayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
       businessParameterPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
 
-      getProducts(listPayload);
+      toGetAllProducts(listPayload);
       getBusinessParameter(businessParameterPayload);
       getGlobalParameter(globalParameterPayload);
       setFirstload(false);
@@ -280,23 +363,38 @@ const ProductTable = (arrayObjs, props) => {
     console.log('Evento', event);
     if (event.target.name == 'codeToSearch') {
       if (event.target.value == '') {
-        listPayload.request.payload.businessProductCode = null;
+        //listPayload.request.payload.businessProductCode = null;
+        setBusinessProductCode(null);
       } else {
-        listPayload.request.payload.businessProductCode = event.target.value;
+        //listPayload.request.payload.businessProductCode = event.target.value;
+        setBusinessProductCode((event.target.value).toString());
       }
     }
     if (event.target.name == 'descToSearch') {
       if (event.target.value == '') {
-        listPayload.request.payload.description = null;
+        setDescriptionProduct(null);
+        //listPayload.request.payload.description = null;
       } else {
-        listPayload.request.payload.description = event.target.value;
+        setDescriptionProduct(event.target.value);
+        //listPayload.request.payload.description = event.target.value;
       }
     }
   };
 
   //BUTTONS BAR FUNCTIONS
   const searchProducts = () => {
-    getProducts(listPayload);
+    
+    let listPayload = {
+      request: {
+        payload: {
+          businessProductCode: businessProductCode,
+          description: descriptionProduct,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+        },
+      },
+    };
+    toGetAllProducts(listPayload);
   };
   // const goApiGofast = () => {
 
@@ -340,7 +438,7 @@ const ProductTable = (arrayObjs, props) => {
 
   const cleanList = () => {
     let listResult = [];
-    listProducts.map((obj) => {
+    allProductsRes.map((obj) => {
       obj.typeProduct1 = showTypeText(obj.typeProduct);
       obj.businessProductCode1 = '' || obj.businessProductCode;
 
@@ -416,7 +514,7 @@ const ProductTable = (arrayObjs, props) => {
     console.log('index del map', codClient);
     setAnchorEl(event.currentTarget);
     codProdSelected = codClient;
-    selectedProduct = listProducts[codClient];
+    selectedProduct = allProductsRes[codClient];
     console.log('selectedProduct', selectedProduct);
     setFast(selectedProduct);
   };
@@ -467,7 +565,17 @@ const ProductTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
-      getProducts(listPayload);
+      let listPayload = {
+        request: {
+          payload: {
+            businessProductCode: '',
+            description: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      getAllProducts(listPayload);
     }, 1000);
   };
 
@@ -654,6 +762,7 @@ const ProductTable = (arrayObjs, props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${allProductsRes.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -663,22 +772,102 @@ const ProductTable = (arrayObjs, props) => {
         >
           <TableHead>
             <TableRow>
-              <TableCell>Código</TableCell>
-              <TableCell>Descripción</TableCell>
-              <TableCell>Alias</TableCell>
-              <TableCell>Peso</TableCell>
-              <TableCell>Tipo</TableCell>
-              <TableCell>Precio costo sugerido</TableCell>
-              <TableCell>Precio venta sugerido</TableCell>
-              <TableCell>Stock inicial</TableCell>
-              <TableCell>Fecha registrada</TableCell>
-              <TableCell>Última actualización</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'businessProductCode'}
+                  direction={orderBy === 'businessProductCode' ? order : 'asc'}
+                  onClick={() => handleSort('businessProductCode')}
+                >
+                  Código
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'description'}
+                  direction={orderBy === 'description' ? order : 'asc'}
+                  onClick={() => handleSort('description')}
+                >
+                  Descripción
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'alias'}
+                  direction={orderBy === 'alias' ? order : 'asc'}
+                  onClick={() => handleSort('alias')}
+                >
+                  Alias
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'weight'}
+                  direction={orderBy === 'weight' ? order : 'asc'}
+                  onClick={() => handleSort('weight')}
+                >
+                  Peso
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'typeProduct'}
+                  direction={orderBy === 'typeProduct' ? order : 'asc'}
+                  onClick={() => handleSort('typeProduct')}
+                >
+                  Tipo
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'costPriceUnit'}
+                  direction={orderBy === 'costPriceUnit' ? order : 'asc'}
+                  onClick={() => handleSort('costPriceUnit')}
+                >
+                  Precio costo sugerido
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'sellPriceUnit'}
+                  direction={orderBy === 'sellPriceUnit' ? order : 'asc'}
+                  onClick={() => handleSort('sellPriceUnit')}
+                >
+                  Precio venta sugerido
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'initialStock'}
+                  direction={orderBy === 'initialStock' ? order : 'asc'}
+                  onClick={() => handleSort('initialStock')}
+                >
+                  Stock inicial
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'createdDate'}
+                  direction={orderBy === 'createdDate' ? order : 'asc'}
+                  onClick={() => handleSort('createdDate')}
+                >
+                  Fecha registrada
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'updatedDate'}
+                  direction={orderBy === 'updatedDate' ? order : 'asc'}
+                  onClick={() => handleSort('updatedDate')}
+                >
+                  Última actualización
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {listProducts && Array.isArray(listProducts) ? (
-              listProducts.map((obj, index) => {
+            {allProductsRes && Array.isArray(allProductsRes) ? (
+              allProductsRes.map((obj, index) => {
                 const style = obj.typeProduct != 'rawMaterial' ? 'flex' : null;
                 return (
                   <>
@@ -795,6 +984,13 @@ const ProductTable = (arrayObjs, props) => {
             )}
           </TableBody>
         </Table>
+        {productsLastEvaluatedKey_pageListProducts ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       <ButtonGroup
         variant='outlined'
@@ -953,7 +1149,7 @@ const ProductTable = (arrayObjs, props) => {
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <AddFinishedProduct
             product={fast}
-            listProducts={listProducts}
+            listProducts={allProductsRes}
             closeAddProd={closeAddProd}
           />
         </DialogContent>

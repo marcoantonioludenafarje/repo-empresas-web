@@ -117,6 +117,9 @@ const ClientTable = (arrayObjs, props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [typeDocumentClient, setTypeDocumentClient] = React.useState('');
+  const [numberDocumentClient, setNumberDocumentClient] = React.useState('');
+  const [denominationClient, setDenominationClient] = React.useState('');
 
   let popUp = false;
   let codProdSelected = '';
@@ -270,9 +273,11 @@ const ClientTable = (arrayObjs, props) => {
     if (event.target.name == 'nameToSearch') {
       if (event.target.value == '') {
         listPayload.request.payload.denominationClient = '';
+        setDenominationClient('');
       } else {
         listPayload.request.payload.denominationClient =
           event.target.value.toUpperCase();
+        setDenominationClient(event.target.value);
       }
     }
   };
@@ -282,15 +287,15 @@ const ClientTable = (arrayObjs, props) => {
     let listPayload = {
       request: {
         payload: {
-          typeDocumentClient: '',
-          numberDocumentClient: '',
-          denominationClient: '',
+          typeDocumentClient: typeDocumentClient,
+          numberDocumentClient: numberDocumentClient,
+          denominationClient: denominationClient,
           merchantId: userDataRes.merchantSelected.merchantId,
           LastEvaluatedKey: null,
         },
       },
     };
-    listPayload.request.payload.LastEvaluatedKey = null;
+    //listPayload.request.payload.LastEvaluatedKey = null;
     // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
     getClients(listPayload);
   };
@@ -486,6 +491,7 @@ const ClientTable = (arrayObjs, props) => {
             sx={{maxWidth: 140}}
             onChange={(event) => {
               console.log('Está pasando por aquí?', event.target.value);
+              setTypeDocumentClient(event.target.value);
               // listPayload.request.payload.typeDocumentClient =
               //   event.target.value;
             }}
@@ -511,6 +517,7 @@ const ClientTable = (arrayObjs, props) => {
           size='small'
           onChange={(event) => {
             console.log(event.target.value);
+            setNumberDocumentClient(event.target.value);
             // listPayload.request.payload.numberDocumentClient =
             //   event.target.value;
           }}
