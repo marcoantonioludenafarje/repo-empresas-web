@@ -18,7 +18,7 @@ export const onGetProducts = (payload) => {
     API.post('tunexo', '/inventory/products/list', {body: payload})
       .then((data) => {
         console.log('onGetProducts resultado', data);
-        dispatch({type: GET_PRODUCTS, payload: data.response.payload});
+        dispatch({type: GET_PRODUCTS, payload: data.response.payload.Items});
         dispatch({type: FETCH_SUCCESS});
       })
       .catch((error) => {
@@ -29,12 +29,17 @@ export const onGetProducts = (payload) => {
 };
 export const getAllProducts = (payload) => {
   return (dispatch, getState) => {
-    dispatch({type: FETCH_START});
+    dispatch({type: FETCH_START, payload: {process: 'ALL_PRODUCTS'}});
     API.post('tunexo', '/inventory/products/list', {body: payload})
       .then((data) => {
         console.log('getAllProducts resultado', data);
-        dispatch({type: ALL_PRODUCTS, payload: data.response.payload});
-        dispatch({type: FETCH_SUCCESS});
+        dispatch({type: ALL_PRODUCTS, payload: data.response.payload,
+          request: payload});
+        dispatch({type: FETCH_SUCCESS,
+          payload: {
+            process: 'ALL_PRODUCTS',
+            message: 'Listado de productos exitoso',
+          }});
       })
       .catch((error) => {
         console.log('getAllProducts error', error);

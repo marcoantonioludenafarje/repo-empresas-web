@@ -13,6 +13,8 @@ import {
 const INIT_STATE = {
   list: [],
   listProducts: [],
+  allProductsRes: [],
+  productsLastEvaluatedKey_pageListProducts: null,
 };
 
 const productsReducer = (state = INIT_STATE, action) => {
@@ -54,11 +56,40 @@ const productsReducer = (state = INIT_STATE, action) => {
         produceProductRes: action.payload,
       };
     case ALL_PRODUCTS:
-      console.log('data de reducer ALL_PRODUCTS', action.payload);
-      return {
-        ...state,
-        allProductsRes: action.payload,
-      };
+      console.log('actionProduct1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSort = action.handleSort;
+      if(handleSort){
+        return {
+          ...state,
+          allProductsRes: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.allProductsRes, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          allProductsRes: items,
+          productsLastEvaluatedKey_pageListProducts: lastEvaluatedKey,
+        };
+      }
     case FETCH_SUCCESS:
       console.log('data de reducer FETCH_SUCCESS', action.payload);
       return {

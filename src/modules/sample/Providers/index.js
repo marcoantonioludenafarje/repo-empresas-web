@@ -88,16 +88,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let listPayload = {
-  request: {
-    payload: {
-      typeDocumentProvider: '',
-      numberDocumentProvider: '',
-      denominationProvider: '',
-      merchantId: '',
-    },
-  },
-};
+
 let deletePayload = {
   request: {
     payload: {
@@ -119,6 +110,9 @@ const ProviderTable = (arrayObjs, props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [typeDocumentProvider, setTypeDocumentProvider] = React.useState('');
+  const [numberDocumentProvider, setNumberDocumentProvider] = React.useState('');
+  const [denominationProvider, setDenominationProvider] = React.useState('');
   let popUp = false;
   let codProdSelected = '';
   const [loading, setLoading] = React.useState(true);
@@ -143,8 +137,17 @@ const ProviderTable = (arrayObjs, props) => {
 
   const handleNextPage = (event) => {
     //console.log('Llamando al  handleNextPage', handleNextPage);
-    listPayload.request.payload.LastEvaluatedKey =
-      referralGuideLastEvalutedKey_pageListGuide;
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentProvider: '',
+          numberDocumentProvider: '',
+          denominationProvider: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: providersLastEvalutedKey_pageListProviders,
+        },
+      },
+    };
     console.log('listPayload111:handleNextPage:', listPayload);
     getProviders(listPayload);
     // setPage(page+1);
@@ -164,7 +167,7 @@ const ProviderTable = (arrayObjs, props) => {
   const {userDataRes} = useSelector(({user}) => user);
 
   useEffect(() => {
-    dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
+    //dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
 
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -186,17 +189,26 @@ const ProviderTable = (arrayObjs, props) => {
   }, []);
 
   useEffect(() => {
-    if (userDataRes) {
+    if (userDataRes &&
+      userDataRes.merchantSelected &&
+      userDataRes.merchantSelected.merchantId) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_PROVIDERS, payload: undefined});
-
-      listPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-      listPayload.request.payload.LastEvaluatedKey = null;
-      dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentProvider: '',
+            numberDocumentProvider: '',
+            denominationProvider: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      //dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
       getProviders(listPayload);
-      setFirstload(false);
+      //setFirstload(false);
     }
   }, [userDataRes]);
   //OPCIONES SPLIT BUTTON
@@ -230,25 +242,37 @@ const ProviderTable = (arrayObjs, props) => {
     console.log('Evento', event);
     if (event.target.name == 'docToSearch') {
       if (event.target.value == '') {
-        listPayload.request.payload.numberDocumentProvider = '';
+        //listPayload.request.payload.numberDocumentProvider = '';
       } else {
-        listPayload.request.payload.numberDocumentProvider = event.target.value;
+        //listPayload.request.payload.numberDocumentProvider = event.target.value;
       }
     }
     if (event.target.name == 'nameToSearch') {
       if (event.target.value == '') {
-        listPayload.request.payload.denominationProvider = '';
+        //listPayload.request.payload.denominationProvider = '';
+        setDenominationProvider('');
       } else {
-        listPayload.request.payload.denominationProvider =
-          event.target.value.toUpperCase();
+        //listPayload.request.payload.denominationProvider =
+        //  event.target.value.toUpperCase();
+        setDenominationProvider(event.target.value);
       }
     }
   };
 
   //BUTTONS BAR FUNCTIONS
   const searchProviders = () => {
-    listPayload.request.payload.LastEvaluatedKey = null;
-    dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentProvider: typeDocumentProvider,
+          numberDocumentProvider: numberDocumentProvider,
+          denominationProvider: denominationProvider,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+        },
+      },
+    };
+    //dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
     getProviders(listPayload);
   };
   const newProvider = () => {
@@ -284,13 +308,24 @@ const ProviderTable = (arrayObjs, props) => {
   };
 
   const exportToExcel = () => {
-    const excelPayload = listPayload;
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentProvider: '',
+          numberDocumentProvider: '',
+          denominationProvider: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+        },
+      },
+    };
+    //const excelPayload = listPayload;
 
     console.log('excelPayload', excelPayload);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS, payload: undefined});
-    toExportExcelTemplateToProviders(excelPayload);
+    toExportExcelTemplateToProviders(listPayload);
     setDownloadExcel(true);
   };
 
@@ -380,8 +415,19 @@ const ProviderTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
-      listPayload.request.payload.LastEvaluatedKey = null;
-      dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentProvider: '',
+            numberDocumentProvider: '',
+            denominationProvider: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      //listPayload.request.payload.LastEvaluatedKey = null;
+      //dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
       getProviders(listPayload);
     }, 2000);
   };
@@ -426,8 +472,9 @@ const ProviderTable = (arrayObjs, props) => {
             sx={{maxWidth: 140}}
             onChange={(event) => {
               console.log(event.target.value);
-              listPayload.request.payload.typeDocumentProvider =
-                event.target.value;
+              setTypeDocumentProvider(event.target.value);
+              // listPayload.request.payload.typeDocumentProvider =
+              //   event.target.value;
             }}
           >
             <MenuItem value='' style={{fontWeight: 200}}>
@@ -451,8 +498,9 @@ const ProviderTable = (arrayObjs, props) => {
           size='small'
           onChange={(event) => {
             console.log(event.target.value);
-            listPayload.request.payload.numberDocumentProvider =
-              event.target.value;
+            setNumberDocumentProvider(event.target.value);
+            // listPayload.request.payload.numberDocumentProvider =
+            //   event.target.value;
           }}
         />
         <TextField
