@@ -302,6 +302,9 @@ const AddProductForm = ({sendData, type}) => {
                         <MenuItem value='NIU' style={{fontWeight: 200}}>
                           Producto
                         </MenuItem>
+                        <MenuItem value='CAJ' style={{fontWeight: 200}}>
+                          Caja
+                        </MenuItem>
                         <MenuItem value='ZZ' style={{fontWeight: 200}}>
                           Servicio
                         </MenuItem>
