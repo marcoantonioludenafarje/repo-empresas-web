@@ -28,6 +28,9 @@ import SelectProvider from './SelectProvider';
 import PropTypes from 'prop-types';
 import {GET_PROVIDERS} from 'shared/constants/ActionTypes';
 
+import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
+import CachedIcon from '@mui/icons-material/Cached';
+
 const maxLength = 11111111111111111111; //20 caracteres
 const validationSchema = yup.object({
   providerId: yup.string().typeError(<IntlMessages id='validation.string' />),
@@ -83,9 +86,10 @@ const AddProductForm = ({sendData}) => {
   let changeValueField;
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const [basicUrl, setBasicUrl] = React.useState('');
   console.log('funcion recibida', sendData);
 
-  let listProvidersPayload = {
+  /*let listProvidersPayload = {
     request: {
       payload: {
         typeDocumentProvider: '',
@@ -95,7 +99,7 @@ const AddProductForm = ({sendData}) => {
         flagBusqDoc: true,
       },
     },
-  };
+  };*/
 
   //FUNCIONES DIALOG
   const [open, setOpen] = React.useState(false);
@@ -106,11 +110,22 @@ const AddProductForm = ({sendData}) => {
 
   const handleClickOpen = () => {
     setShowAlert(false);
+    let listProvidersPayload = {
+      request: {
+        payload: {
+          typeDocumentProvider: '',
+          numberDocumentProvider: '',
+          denominationProvider: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          flagBusqDoc: true,
+        },
+      },
+    };
+    listProvidersPayload.request.payload.LastEvaluatedKey = null;
     if (actualValues.providerSearch != '') {
       listProvidersPayload.request.payload.denominationProvider =
         actualValues.providerId;
-      listProvidersPayload.request.payload.LastEvaluatedKey = null;
-      dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
+      //dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
       getProviders(listProvidersPayload);
     } else {
       listProvidersPayload.request.payload.description = null;
@@ -131,9 +146,10 @@ const AddProductForm = ({sendData}) => {
     dispatch(onGetProviders(payload));
   };
 
-  /* useEffect(() => {
-    getProviders(listProvidersPayload);
-  }, []); */
+  useEffect(() => {
+    let domain = new URL(window.location.href);
+    setBasicUrl(domain.origin);
+  }, []); 
 
   const handleValues = (event) => {
     console.log('evento', event.target);
@@ -238,7 +254,25 @@ const AddProductForm = ({sendData}) => {
                   aria-describedby='alert-dialog-description'
                 >
                   <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                    {'Selecciona un proveedor'}
+                    <div>{'Listado de Proveedores'}</div>
+                    <Button
+                      sx={{mx: 'auto', mx: 1, my: 1, py: 3}}
+                      variant='outlined'
+                      startIcon={<CachedIcon sx={{m: 1, my: 'auto'}} />}
+                      onClick={() => handleClickOpen()}
+                    >
+                      {'Actualizar'}
+                    </Button>
+                    <Button
+                      sx={{mx: 'auto', py: 3, mx: 1, my: 1}}
+                      variant='outlined'
+                      startIcon={<ArrowCircleLeftOutlinedIcon />}
+                      onClick={() =>
+                        window.open(`${basicUrl}/sample/providers/new`)
+                      }
+                    >
+                      Agregar nuevo Proveedor
+                    </Button>
                   </DialogTitle>
                   <DialogContent
                     sx={{display: 'flex', justifyContent: 'center'}}

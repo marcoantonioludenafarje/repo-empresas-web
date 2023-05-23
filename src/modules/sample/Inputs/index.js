@@ -920,7 +920,7 @@ const InputsTable = (props) => {
                           {showSubtypeMovement(obj.movementSubType)}
                         </TableCell>
                         <TableCell>
-                          {(obj.provider
+                          {( obj.provider && obj.provider.id.split('-')[1]
                             ? obj.provider.id.split('-')[1] + ' - '
                             : '') +
                             (obj.provider

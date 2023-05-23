@@ -913,10 +913,12 @@ const GetReceipt = (props) => {
                       )}
                       required
                       value={value}
-                      disabled
+                      //disabled
                       label='Fecha de emisión'
                       inputFormat='dd/MM/yyyy'
                       name='issueDate'
+                      minDate={new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)} // establece la fecha mínima en dos días a partir de la actual
+                      maxDate={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)}
                       onChange={(newValue) => {
                         setValue(newValue);
                         console.log('date', newValue);

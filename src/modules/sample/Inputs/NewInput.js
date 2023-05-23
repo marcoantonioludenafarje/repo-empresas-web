@@ -192,6 +192,9 @@ const NewInput = (props) => {
   //VARIABLES DE PARAMETROS
   let weight_unit;
   let changeValueField;
+  let getValueField;
+  let isFormikSubmitting;
+  let setFormikSubmitting;
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [isIgvChecked, setIsIgvChecked] = React.useState(false);
   const [addIgv, setAddIgv] = React.useState(false);
@@ -212,6 +215,9 @@ const NewInput = (props) => {
   const [typeDocument, settypeDocument] = React.useState('buys');
   const [exchangeRate, setExchangeRate] = React.useState('');
   const [hasBill, setHasBill] = React.useState([]);
+  const [isProviderValidated, setIsProviderValidated] = React.useState(false);
+  const [openProviderComprobation, setOpenProviderComprobation] =
+  React.useState(false);
 
   const [minTutorial, setMinTutorial] = React.useState(false);
   const prevExchangeRateRef = useRef();
@@ -466,86 +472,107 @@ const NewInput = (props) => {
     }
   };
 
-  const handleData = (data, {setSubmitting}) => {
-    dispatch({type: FETCH_SUCCESS, payload: []});
-    dispatch({type: FETCH_ERROR, payload: []});
-    setSubmitting(true);
-    let finalPayload;
-    let cleanDocuments = [];
-    listDocuments.map((obj) => {
-      cleanDocuments.push({
-        typeDocument: obj.typeDocument,
-        serialDocument: obj.document,
-        issueDate: obj.dateDocument,
-        ...getCarrier(obj),
+  const handleData = (data, provider) => {
+    let localIsProviderValidated = isProviderValidated;
+    if (Object.keys(selectedProvider).length != 0) {
+      setIsProviderValidated(true);
+      localIsProviderValidated = true;
+    } else {
+      setOpenProviderComprobation(true);
+      setFormikSubmitting(false);
+    }
+
+    if (localIsProviderValidated || provider == 'enabled') {
+      dispatch({type: FETCH_SUCCESS, payload: []});
+      dispatch({type: FETCH_ERROR, payload: []});
+      dispatch({type: ADD_MOVEMENT, payload: []});
+      //setSubmitting(true);
+      setFormikSubmitting(true);
+      let finalPayload;
+      let cleanDocuments = [];
+      listDocuments.map((obj) => {
+        cleanDocuments.push({
+          typeDocument: obj.typeDocument,
+          serialDocument: obj.document,
+          issueDate: obj.dateDocument,
+          ...getCarrier(obj),
+        });
       });
-    });
-    if (selectedProducts.length > 0) {
-      if (selectedProvider.providerId) {
-        finalPayload = {
-          request: {
-            payload: {
-              header: {
-                movementType: 'INPUT',
-                documentIntern: buildNewDoc(
-                  selectedProvider.providerId.split('-')[1],
-                  cleanDocuments.length !== 0
-                    ? cleanDocuments[0].serialDocument
-                    : null,
-                ),
-                clientId: null,
-                providerId: selectedProvider.providerId,
-                merchantId: userDataRes.merchantSelected.merchantId,
-                quoteId: null,
-                facturaId: null,
-                issueDate: toSimpleDate(dateRegister),
-                unitMeasureMoney: moneyToConvert,
-                igv: addIgv,
-                finalTotalPrice: Number(data.totalField),
-                isGeneratedByTunexo: generateBill,
-                status: status,
-                movementSubType: typeDocument,
-                documentsMovement: cleanDocuments,
-                editTotal: editTotal,
-                observation: data.inputObservation,
-                userCreated: userDataRes.userId,
-                userCreatedMetadata: {
-                  nombreCompleto: userDataRes.nombreCompleto,
-                  email: userDataRes.email,
+      if (selectedProducts.length > 0) {
+
+        let localDocumentIntern = '';
+        let localProviderId = '';
+        if (Object.keys(selectedProvider).length != 0) {
+          localDocumentIntern = buildNewDoc(
+            selectedProvider.providerId.split('-')[1],
+            cleanDocuments.length !== 0
+              ? cleanDocuments[0].serialDocument
+              : null,
+          );
+          localProviderId = selectedProvider.providerId;
+        } 
+
+        //if (selectedProvider.providerId*/) {
+          finalPayload = {
+            request: {
+              payload: {
+                header: {
+                  movementType: 'INPUT',
+                  documentIntern: localDocumentIntern,
+                  clientId: null,
+                  providerId: localProviderId,
+                  merchantId: userDataRes.merchantSelected.merchantId,
+                  quoteId: null,
+                  facturaId: null,
+                  issueDate: toSimpleDate(dateRegister),
+                  unitMeasureMoney: moneyToConvert,
+                  igv: addIgv,
+                  finalTotalPrice: Number(getValueField('totalField').value),//Number(data.totalField),
+                  isGeneratedByTunexo: generateBill,
+                  status: status,
+                  movementSubType: typeDocument,
+                  documentsMovement: cleanDocuments,
+                  editTotal: editTotal,
+                  observation: getValueField('inputObservation').value,//data.inputObservation,
+                  userCreated: userDataRes.userId,
+                  userCreatedMetadata: {
+                    nombreCompleto: userDataRes.nombreCompleto,
+                    email: userDataRes.email,
+                  },
                 },
+                products: selectedProducts.map((obj) => {
+                  return {
+                    businessProductCode: obj.businessProductCode,
+                    quantity: Number(obj.count),
+                    priceUnit: Number(obj.priceProduct),
+                  };
+                }),
               },
-              products: selectedProducts.map((obj) => {
-                return {
-                  businessProductCode: obj.businessProductCode,
-                  quantity: Number(obj.count),
-                  priceUnit: Number(obj.priceProduct),
-                };
-              }),
             },
-          },
-        };
-        console.log('finalPayload', finalPayload);
-        dispatch({type: FETCH_SUCCESS, payload: undefined});
-        dispatch({type: FETCH_ERROR, payload: undefined});
-        dispatch({type: ADD_MOVEMENT, payload: []});
-        getAddMovement(finalPayload);
-        console.log('cantidad de productos', selectedProducts.length);
-        console.log('Data formulario principal', finalPayload);
-        selectedProducts = [];
-        selectedProvider = {};
-        total = 0;
-        setTimeout(() => {
-          setOpenStatus(true);
-        }, 1000);
+          };
+          console.log('finalPayload', finalPayload);
+          /*dispatch({type: FETCH_SUCCESS, payload: undefined});
+          dispatch({type: FETCH_ERROR, payload: undefined});
+          dispatch({type: ADD_MOVEMENT, payload: []});*/
+          getAddMovement(finalPayload);
+          console.log('Data formulario principal', finalPayload);
+          /*selectedProducts = [];
+          selectedProvider = {};
+          total = 0;*/
+          setTimeout(() => {
+            setOpenStatus(true);
+          }, 1000);
+        /*} else {
+          typeAlert = 'provider';
+          setShowAlert(true);
+        }*/
       } else {
-        typeAlert = 'provider';
+        typeAlert = 'product';
         setShowAlert(true);
       }
-    } else {
-      typeAlert = 'product';
-      setShowAlert(true);
+      //setSubmitting(false);
+      setFormikSubmitting(false);
     }
-    setSubmitting(false);
   };
 
   const handleActualData = (event) => {
@@ -729,8 +756,11 @@ const NewInput = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
+            setFormikSubmitting = setSubmitting;
+            isFormikSubmitting = isSubmitting;
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -1306,6 +1336,48 @@ const NewInput = (props) => {
             Sí
           </Button>
           <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openProviderComprobation}
+        onClose={() => setOpenProviderComprobation(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Proveedor No Identificado'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea continuar con el registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            disabled={isFormikSubmitting}
+            variant='outlined'
+            onClick={() => {
+              setFormikSubmitting(true);
+              setIsProviderValidated(true);
+              handleData({data1: 'a'}, 'enabled');
+            }}
+          >
+            Sí
+          </Button>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              setOpenProviderComprobation(false);
+            }}
+          >
             No
           </Button>
         </DialogActions>
