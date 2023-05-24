@@ -112,6 +112,12 @@ let selectedProvider = {};
 let selectedInput = {};
 
 const NewExpense = (props) => {
+  //VARIABLES DE PARAMETROS
+  let changeValueField;
+  let getValueField;
+  let isFormikSubmitting;
+  let setFormikSubmitting;
+
   const router = useRouter();
   const {query} = router;
   const {messages} = useIntl();
@@ -122,7 +128,10 @@ const NewExpense = (props) => {
     React.useState(0);
   const [totalAmountOfConcepts, setTotalAmountOfConcepts] = React.useState(0);
   const [minTutorial, setMinTutorial] = React.useState(false);
-  let changeValueField;
+  const [isProviderValidated, setIsProviderValidated] = React.useState(false);
+  const [openProviderComprobation, setOpenProviderComprobation] =
+  React.useState(false);
+
   useEffect(() => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
@@ -137,7 +146,7 @@ const NewExpense = (props) => {
       : {
           providerId: query.providerId,
           denominationProvider:
-            query.providerName || selectedInput.providerName,
+            query.providerName || selectedInput.providerName || query.denominationProvider,
         };
     console.log('selectedProvider', selectedProvider);
     setTimeout(() => {
@@ -316,30 +325,48 @@ const NewExpense = (props) => {
     },
   };
 
-  const handleData = (data, {setSubmitting}) => {
-    setSubmitting(true);
-    if (selectedProvider.providerId) {
+  const handleData = (data, provider) => {
+    let localIsProviderValidated = isProviderValidated;
+    if (Object.keys(selectedProvider).length != 0 && selectedProvider.providerId.length != 0) {
+      setIsProviderValidated(true);
+      localIsProviderValidated = true;
+    } else {
+      setOpenProviderComprobation(true);
+      setFormikSubmitting(false);
+    }
+
+    console.log('selectedProvider:',selectedProvider)
+
+    if (localIsProviderValidated || provider == 'enabled') {
+      setFormikSubmitting(true);
+      
+      if (Object.keys(selectedProvider).length == 0)
+        selectedProvider.providerId = "";
+
+        console.log('selectedProvider1:',selectedProvider)
+
+    //if (selectedProvider.providerId) {
       // if (listPayments.length > 0) {
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
       newFinancePayload.request.payload.movements[0].numberDocumentProvider =
-        selectedProvider.providerId.split('-')[1];
+        selectedProvider.providerId.length != 0 ? selectedProvider.providerId.split('-')[1] : "";
       newFinancePayload.request.payload.movements[0].denominationProvider =
-        selectedProvider.denominationProvider;
+        selectedProvider.providerId.length != 0 ? selectedProvider.denominationProvider : "";
       newFinancePayload.request.payload.movements[0].providerId =
         selectedProvider.providerId;
       newFinancePayload.request.payload.movements[0].typeDocumentProvider =
-        selectedProvider.providerId.split('-')[0];
+        selectedProvider.providerId.length != 0 ? selectedProvider.providerId.split('-')[0] : "";
       newFinancePayload.request.payload.movements[0].billIssueDate =
         convertToDateWithoutTime(value2);
       newFinancePayload.request.payload.movements[0].serialNumberBill =
-        data.nroBill;
+        getValueField('nroBill').value;//data.nroBill;
       newFinancePayload.request.payload.movements[0].description =
-        data.saleDetail;
+        getValueField('saleDetail').value;//data.saleDetail;
       newFinancePayload.request.payload.movements[0].observation =
-        data.buyObservation;
+        getValueField('buyObservation').value;//data.buyObservation;
       newFinancePayload.request.payload.movements[0].totalAmount = Number(
-        data.totalAmounth,
+        getValueField('totalAmounth').value//data.totalAmounth,
       );
       newFinancePayload.request.payload.movements[0].status = statusExpense;
       newFinancePayload.request.payload.movements[0].movementHeaderId =
@@ -382,20 +409,22 @@ const NewExpense = (props) => {
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: ADD_FINANCE, payload: undefined});
       toAddFinance(newFinancePayload);
-      setOpenStatus(true);
+      setTimeout(() => {
+        setOpenStatus(true);
+      }, 1000);
       // } else {
       //   typeAlert = 'faltaPayment';
       //   setShowAlert(true);
       // }
-    } else {
+      setFormikSubmitting(false);
+    } /*else {
       typeAlert = 'provider';
       setShowAlert(true);
-    }
+    }*/
     /* } else {
       typeAlert = 'faltaPayment';
       setShowAlert(true);
     } */
-    setSubmitting(false);
   };
 
   const handleClose = () => {
@@ -446,7 +475,9 @@ const NewExpense = (props) => {
   };
   const registerError = () => {
     return (
-      (successMessage != undefined && addFinanceRes) ||
+      (successMessage != undefined && 
+        addFinanceRes && 
+        'error' in addFinanceRes) ||
       errorMessage != undefined
     );
   };
@@ -494,7 +525,7 @@ const NewExpense = (props) => {
         </>
       );
     } else {
-      return <CircularProgress disableShrink />;
+      return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
     }
   };
 
@@ -574,8 +605,11 @@ const NewExpense = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
+            setFormikSubmitting = setSubmitting;
+            isFormikSubmitting = isSubmitting;
             return (
               <Form
                 style={{textAlign: 'center', marginTop: 4}}
@@ -1109,6 +1143,49 @@ const NewExpense = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={openProviderComprobation}
+        onClose={() => setOpenProviderComprobation(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Proveedor No Identificado'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea continuar con el registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            disabled={isFormikSubmitting}
+            variant='outlined'
+            onClick={() => {
+              setFormikSubmitting(true);
+              setIsProviderValidated(true);
+              handleData({data1: 'a'}, 'enabled');
+            }}
+          >
+            Sí
+          </Button>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              setOpenProviderComprobation(false);
+            }}
+          >
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Card>
   );
 };

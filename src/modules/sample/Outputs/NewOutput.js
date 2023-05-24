@@ -1088,7 +1088,7 @@ const NewOutput = (props) => {
                     <></>
                   )}
                   {typeDocument == 'sales' ? (
-                    <Grid item xs={4} sx={{textAlign: 'center'}}>
+                    <Grid item xs={12} sx={{textAlign: 'center'}}>
                       <Typography sx={{mx: 'auto', my: '10px'}}>
                         {selectedClient.denominationClient}
                       </Typography>
