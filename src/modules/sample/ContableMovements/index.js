@@ -42,6 +42,7 @@ import {
   Collapse,
   useTheme,
   useMediaQuery,
+  TableSortLabel,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -71,12 +72,14 @@ import {
   GET_USER_DATA,
   EXPORT_EXCEL_MOVEMENTS_DETAILS,
   EXPORT_EXCEL_MOVEMENTS_SUMMARY,
+  ALL_FINANCES,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {format, addHours, addMinutes} from 'date-fns'; // Importamos la librería date-fns para manipulación de fechas
 import {DesktopDatePicker, DateTimePicker, DateRangePicker} from '@mui/lab';
 import {
   getFinances,
+  getAllFinances,
   deleteFinance,
   exportExcelMovementsDetails,
   exportExcelMovementsSummary,
@@ -122,10 +125,15 @@ const months = {
   November: 'Noviembre',
   December: 'Diciembre',
 };
-
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const ContableMovements = (props) => {
   const classes = useStyles(props);
   const theme = useTheme();
+  const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [value, setValue] = React.useState(Date.now());
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -154,6 +162,8 @@ const ContableMovements = (props) => {
   const endOfDay = addMinutes(addHours(new Date(startOfDay), 23), 59); // Agregamos 23 horas a la fecha de inicio para obtener las 23:59 del día actual
   const [dateRange, setDateRange] = React.useState([startOfDay, endOfDay]); // Estado para el rango de fechas
 
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -161,22 +171,7 @@ const ContableMovements = (props) => {
   console.log('query', query);
   const {userDataRes} = useSelector(({user}) => user);
 
-  let listFinancesPayload = {
-    request: {
-      payload: {
-        initialTime: null,
-        finalTime: null,
-        movementType: null,
-        merchantId: '',
-        createdAt: null,
-        methodToPay: '',
-        searchByBill: '',
-        searchByContableMovement: '',
-        typeList: '',
-        listReduced: true,
-      },
-    },
-  };
+
   let deletePayload = {
     request: {
       payload: {
@@ -208,7 +203,7 @@ const ContableMovements = (props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
-  const {getFinancesRes} = useSelector(({finances}) => finances);
+  const {getFinancesRes, allFinancesRes, financesLastEvaluatedKey_pageListFinances} = useSelector(({finances}) => finances);
   const {deleteFinanceRes} = useSelector(({finances}) => finances);
   const {businessParameter} = useSelector(({general}) => general);
   const {moneyUnitBusiness} = useSelector(({general}) => general);
@@ -237,10 +232,10 @@ const ContableMovements = (props) => {
 
   //APIS
   const toGetFinances = (payload) => {
-    dispatch(getFinances(payload, jwtToken));
+    dispatch(getAllFinances(payload, jwtToken));
   };
   const toGetFinancesInDebt = (payload) => {
-    dispatch(getFinances(payload, jwtToken));
+    dispatch(getAllFinances(payload, jwtToken));
   };
   const toDeleteFinance = (payload) => {
     dispatch(deleteFinance(payload));
@@ -302,18 +297,32 @@ const ContableMovements = (props) => {
     setMonthYearStatus(true);
   }, [month || year]);
   useEffect(() => {
-    if (getFinancesRes && Array.isArray(getFinancesRes)) {
+    if (allFinancesRes && Array.isArray(allFinancesRes)) {
       let total = 0;
-      getFinancesRes.forEach((obj) => {
+      allFinancesRes.forEach((obj) => {
         total += obj.totalAmount;
       });
       setTotalAmount(Number(total).toFixed(3));
     }
-  }, [getFinancesRes]);
+  }, [allFinancesRes]);
   useEffect(() => {
     if (userDataRes) {
-      listFinancesPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
+      let listFinancesPayload = {
+        request: {
+          payload: {
+            initialTime: null,
+            finalTime: null,
+            movementType: null,
+            merchantId: userDataRes.merchantSelected.merchantId,
+            createdAt: null,
+            methodToPay: '',
+            searchByBill: '',
+            searchByContableMovement: '',
+            typeList: '',
+            listReduced: true,
+          },
+        },
+      };
 
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
@@ -340,11 +349,86 @@ const ContableMovements = (props) => {
       }
     }
   }, [userDataRes]);
-
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: toEpoch(dateRange[0]),
+          finalTime: toEpoch(dateRange[1]),
+          movementType: proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          methodToPay: '',
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+          listReduced: true,
+        },
+      },
+    };
+    listFinancesPayload.request.payload.LastEvaluatedKey =
+      financesLastEvaluatedKey_pageListFinances;
+    console.log('listFinancesPayload:handleNextPage:', listFinancesPayload);
+    toGetFinances(listFinancesPayload);
+    // setPage(page+1);
+  };
+    // Función para manejar el clic en el encabezado de la tabla
+    const handleSort = (field) => {
+      if (orderBy === field) {
+        // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+        setOrder(order === 'asc' ? 'desc' : 'asc');
+        const sortedProducts = [...allFinancesRes].sort((a, b) => {
+          const descriptionA = a[`${field}`] ?? '';
+          const descriptionB = b[`${field}`] ?? '';
+          if (order === 'asc') {
+            return descriptionA.localeCompare(descriptionB);
+          } else {
+            return descriptionB.localeCompare(descriptionA);
+          }
+        });
+        dispatch({
+          type: ALL_FINANCES,
+          payload: sortedProducts,
+          handleSort: true,
+        });
+        forceUpdate();
+      } else {
+        // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
+        setOrderBy(field);
+        setOrder('asc');
+        // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
+        const sortedProducts = [...allFinancesRes].sort((a, b) => {
+          const descriptionA = a[`${field}`] ?? '';
+          const descriptionB = b[`${field}`] ?? '';
+          return descriptionB.localeCompare(descriptionA);
+        });
+        dispatch({
+          type: ALL_FINANCES,
+          payload: sortedProducts,
+          handleSort: true,
+        });
+        forceUpdate();
+      }
+    };
   const searchFinances = () => {
     dispatch({type: GET_FINANCES, payload: []});
-    listFinancesPayload.request.payload.merchantId =
-      userDataRes.merchantSelected.merchantId;
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          movementType: null,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          methodToPay: '',
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+          listReduced: true,
+        },
+      },
+    };
     listFinancesPayload.request.payload.movementType =
       proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType;
     listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
@@ -358,6 +442,22 @@ const ContableMovements = (props) => {
   };
 
   const searchFinancesInDebt = () => {
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: toEpoch(dateRange[0]),
+          finalTime: toEpoch(dateRange[1]),
+          movementType: proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          methodToPay: '',
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+          listReduced: true,
+        },
+      },
+    };
     let listFinancesInDebt = listFinancesPayload;
 
     listFinancesInDebt.request.payload.typeList = 'debt';
@@ -373,6 +473,22 @@ const ContableMovements = (props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     dispatch({type: GET_FINANCES, payload: []});
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: toEpoch(dateRange[0]),
+          finalTime: toEpoch(dateRange[1]),
+          movementType: proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          methodToPay: '',
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+          listReduced: true,
+        },
+      },
+    };
     setTimeout(() => {
       setLastPayload(listFinancesPayload);
       toGetFinances(listFinancesPayload);
@@ -386,7 +502,7 @@ const ContableMovements = (props) => {
   const handleClick = (codFinance, event) => {
     setAnchorEl(event.currentTarget);
     codFinanceSelected = codFinance;
-    selectedFinance = getFinancesRes[codFinance];
+    selectedFinance = allFinancesRes[codFinance];
     console.log('selectedFinance', selectedFinance);
   };
   const handleClose = () => {
@@ -630,6 +746,22 @@ const ContableMovements = (props) => {
 
   //BUSQUEDA
   const handleSearchValues = (event) => {
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: toEpoch(dateRange[0]),
+          finalTime: toEpoch(dateRange[1]),
+          movementType: proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          methodToPay: '',
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+          listReduced: true,
+        },
+      },
+    };
     console.log('Evento', event);
     if (event.target.name == 'searchByBill') {
       if (event.target.value == '') {
@@ -700,6 +832,22 @@ const ContableMovements = (props) => {
     setDownloadExcelDetails(true);
   };
   const filterData = (dataFilters) => {
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: toEpoch(dateRange[0]),
+          finalTime: toEpoch(dateRange[1]),
+          movementType: proofOfPaymentType == 'TODOS' ? '' : proofOfPaymentType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          methodToPay: '',
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+          listReduced: true,
+        },
+      },
+    };
     (listFinancesPayload.request.payload.searchByBill = ''),
       (listFinancesPayload.request.payload.typeDocumentProvider = '');
     listFinancesPayload.request.payload.numberDocumentProvider = '';
@@ -791,12 +939,12 @@ const ContableMovements = (props) => {
             onChange={(event) => {
               console.log(event.target.value);
               setProofOfPaymentType(event.target.value);
-              if (event.target.value == 'TODOS') {
-                listFinancesPayload.request.payload.movementType = null;
-              } else {
-                listFinancesPayload.request.payload.movementType =
-                  event.target.value;
-              }
+              // if (event.target.value == 'TODOS') {
+              //   listFinancesPayload.request.payload.movementType = null;
+              // } else {
+              //   listFinancesPayload.request.payload.movementType =
+              //     event.target.value;
+              // }
             }}
             defaultValue={proofOfPaymentType}
           >
@@ -823,13 +971,13 @@ const ContableMovements = (props) => {
             ];
             setDateRange(valueToEndOfTheDay);
             console.log('date', valueToEndOfTheDay);
-            listFinancesPayload.request.payload.initialTime = toEpoch(
-              valueToEndOfTheDay[0],
-            );
-            listFinancesPayload.request.payload.finalTime = toEpoch(
-              valueToEndOfTheDay[1],
-            );
-            console.log('payload de busqueda', listFinancesPayload);
+            // listFinancesPayload.request.payload.initialTime = toEpoch(
+            //   valueToEndOfTheDay[0],
+            // );
+            // listFinancesPayload.request.payload.finalTime = toEpoch(
+            //   valueToEndOfTheDay[1],
+            // );
+            // console.log('payload de busqueda', listFinancesPayload);
           }}
           renderInput={(startProps, endProps) => (
             <React.Fragment>
@@ -878,6 +1026,7 @@ const ContableMovements = (props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${allFinancesRes.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table stickyHeader size='small' aria-label='simple table'>
           <TableHead>
@@ -901,7 +1050,13 @@ const ContableMovements = (props) => {
                 Fecha vencimiento Comprobante
               </TableCell>
               <TableCell sx={{width: isMobile ? '9px' : '12px'}}>
-                Estado
+                <TableSortLabel
+                  active={orderBy === 'status'}
+                  direction={orderBy === 'status' ? order : 'asc'}
+                  onClick={() => handleSort('status')}
+                >
+                  Estado
+                </TableSortLabel>
               </TableCell>
               <TableCell sx={{width: isMobile ? '12px' : '15px'}}>
                 Medio de Pago
@@ -913,8 +1068,8 @@ const ContableMovements = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getFinancesRes && Array.isArray(getFinancesRes) ? (
-              getFinancesRes.sort(compare).map((obj, index) => {
+            {allFinancesRes && Array.isArray(allFinancesRes) ? (
+              allFinancesRes.sort(compare).map((obj, index) => {
                 // const paids = obj.payments.filter(
                 //   (obj) => obj.statusPayment == 'paid',
                 // );
@@ -1200,6 +1355,13 @@ const ContableMovements = (props) => {
             </TableRow>
           </TableBody>
         </Table>
+        {financesLastEvaluatedKey_pageListFinances ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
 
       <ButtonGroup

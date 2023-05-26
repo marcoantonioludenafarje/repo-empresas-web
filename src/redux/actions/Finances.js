@@ -6,6 +6,7 @@ import {
   ADD_FINANCE,
   DELETE_FINANCE,
   UPDATE_FINANCE,
+  ALL_FINANCES,
   GET_FINANCES_FOR_RESULT_STATE,
   EXPORT_EXCEL_MOVEMENTS_DETAILS,
   EXPORT_EXCEL_MOVEMENTS_SUMMARY,
@@ -21,11 +22,32 @@ export const getFinances = (payload) => {
       // API.post('tunexo', '/facturacion/accounting/movement/list', {body: payload})
       .then((data) => {
         console.log('getFinances resultado', data);
-        dispatch({type: GET_FINANCES, payload: data.data.response.payload});
+        dispatch({type: GET_FINANCES, payload: data.data.response.payload.Items});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
         console.log('getFinances error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const getAllFinances = (payload) => {
+  console.log('payload getFinances', payload);
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START, payload: {process: 'ALL_FINANCES'}});
+    request('post', '/facturacion/accounting/movement/list', payload)
+      .then((data) => {
+        console.log('getAllFinances resultado', data);
+        dispatch({type: ALL_FINANCES, payload: data.response.payload,
+          request: payload});
+        dispatch({type: FETCH_SUCCESS,
+          payload: {
+            process: 'ALL_FINANCES',
+            message: 'Listado de finanzas exitoso',
+          }});
+      })
+      .catch((error) => {
+        console.log('getAllFinances error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

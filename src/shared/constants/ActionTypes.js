@@ -200,6 +200,8 @@ export const GET_BILL_PAGE_LISTGUIDE = 'get_bill_page_listguide';
 export const GET_RECEIPT_PAGE_LISTGUIDE = 'get_receipt_page_listguide';
 export const GET_NOTE_PAGE_LISTGUIDE = 'get_note_page_listguide';
 export const GET_INVENTORY_PRODUCTS = 'get_inventory_products';
+export const GET_OUTPUT_PAGE_LISTGUIDE = 'get_output_page_listguide';
+export const GET_INPUT_PAGE_LISTGUIDE = 'get_input_page_listguide';
 export const ADD_MOVEMENT = 'add_movement';
 export const RES_ADD_MOVEMENT = 'res_add_movement';
 export const UPDATE_MOVEMENT = 'update_movement';
@@ -285,6 +287,7 @@ export const DOWNLOAD_ZIP = 'download_zip';
 
 //FINANCES
 export const GET_FINANCES = 'get_finances';
+export const ALL_FINANCES = 'all_finances';
 export const GET_FINANCES_FOR_RESULT_STATE = 'get_finances_for_result_state';
 export const ADD_FINANCE = 'add_finance';
 export const DELETE_FINANCE = 'delete_finance';

@@ -34,6 +34,8 @@ import {
   REFERRAL_GUIDES_BATCH_CONSULT,
   CANCEL_REFERRAL_GUIDE,
   UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST,
+  GET_INPUT_PAGE_LISTGUIDE,
+  GET_OUTPUT_PAGE_LISTGUIDE,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -53,6 +55,10 @@ const INIT_STATE = {
   receiptLastEvalutedKey_pageListReceipt: null,
   noteItems_pageListNote: [],
   noteLastEvalutedKey_pageListNote: null,
+  inputItems_pageListInput: [],
+  inputLastEvaluatedKey_pageListInput: null,
+  outputItems_pageListOutput: [],
+  outputLastEvaluatedKey_pageListOutput: null,
 };
 
 const movementsReducer = (state = INIT_STATE, action) => {
@@ -62,72 +68,278 @@ const movementsReducer = (state = INIT_STATE, action) => {
         ...state,
         getMovementsRes: action.payload,
       };
-    case GET_REFERRALGUIDE_PAGE_LISTGUIDE:
-      let itemsGR = [];
-      let lastEvaluatedKeyGR = '';
-      if (action.payload.callType !== 'firstTime') {
-        itemsGR = [
-          ...state.referralGuideItems_pageListGuide,
-          ...action.payload.Items,
-        ];
-        lastEvaluatedKeyGR = action.payload.LastEvaluatedKey
-          ? action.payload.LastEvaluatedKey
-          : null;
+    case GET_INPUT_PAGE_LISTGUIDE:
+      console.log('actionProduct1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSortI = action.handleSort;
+      if(handleSortI){
+        return {
+          ...state,
+          inputItems_pageListInput: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.inputItems_pageListInput, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          inputItems_pageListInput: items,
+          inputLastEvaluatedKey_pageListInput: lastEvaluatedKey,
+        };
       }
-      return {
-        ...state,
-        referralGuideItems_pageListGuide: itemsGR,
-        referralGuideLastEvalutedKey_pageListGuide: lastEvaluatedKeyGR,
-      };
+    case GET_OUTPUT_PAGE_LISTGUIDE:
+      console.log('actionProduct1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSortO = action.handleSort;
+      if(handleSortO){
+        return {
+          ...state,
+          outputItems_pageListOutput: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.outputItems_pageListOutput, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          outputItems_pageListOutput: items,
+          outputLastEvaluatedKey_pageListOutput: lastEvaluatedKey,
+        };
+      }
+    case GET_REFERRALGUIDE_PAGE_LISTGUIDE:
+      // let itemsGR = [];
+      // let lastEvaluatedKeyGR = '';
+      // if (action.payload.callType !== 'firstTime') {
+      //   itemsGR = [
+      //     ...state.referralGuideItems_pageListGuide,
+      //     ...action.payload.Items,
+      //   ];
+      //   lastEvaluatedKeyGR = action.payload.LastEvaluatedKey
+      //     ? action.payload.LastEvaluatedKey
+      //     : null;
+      // }
+      // return {
+      //   ...state,
+      //   referralGuideItems_pageListGuide: itemsGR,
+      //   referralGuideLastEvalutedKey_pageListGuide: lastEvaluatedKeyGR,
+      // };
+      console.log('actionProduct1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSortRG = action.handleSort;
+      if(handleSortRG){
+        return {
+          ...state,
+          referralGuideItems_pageListGuide: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.referralGuideItems_pageListGuide, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          referralGuideItems_pageListGuide: items,
+          referralGuideLastEvalutedKey_pageListGuide: lastEvaluatedKey,
+        };
+      }
     case UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST:
       return {
         referralGuideItems_pageListGuide: action.payload,
       };
     case GET_BILL_PAGE_LISTGUIDE:
-      let itemsBL = [];
-      let lastEvaluatedKeyBL = '';
-      if (action.payload.callType !== 'firstTime') {
-        itemsBL = [...state.billItems_pageListBill, ...action.payload.Items];
-        lastEvaluatedKeyBL = action.payload.LastEvaluatedKey
-          ? action.payload.LastEvaluatedKey
-          : null;
+      // let itemsBL = [];
+      // let lastEvaluatedKeyBL = '';
+      // if (action.payload.callType !== 'firstTime') {
+      //   itemsBL = [...state.billItems_pageListBill, ...action.payload.Items];
+      //   lastEvaluatedKeyBL = action.payload.LastEvaluatedKey
+      //     ? action.payload.LastEvaluatedKey
+      //     : null;
+      // }
+      // return {
+      //   ...state,
+      //   billItems_pageListBill: itemsBL,
+      //   billLastEvalutedKey_pageListBill: lastEvaluatedKeyBL,
+      // };
+      console.log('actionProduct1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSortBL = action.handleSort;
+      if(handleSortBL){
+        return {
+          ...state,
+          billItems_pageListBill: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.billItems_pageListBill, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          billItems_pageListBill: items,
+          billLastEvalutedKey_pageListBill: lastEvaluatedKey,
+        };
       }
-      return {
-        ...state,
-        billItems_pageListBill: itemsBL,
-        billLastEvalutedKey_pageListBill: lastEvaluatedKeyBL,
-      };
     case GET_RECEIPT_PAGE_LISTGUIDE:
-      let itemsRC = [];
-      let lastEvaluatedKeyRC = '';
-      if (action.payload.callType !== 'firstTime') {
-        itemsRC = [
-          ...state.receiptItems_pageListReceipt,
-          ...action.payload.Items,
-        ];
-        lastEvaluatedKeyRC = action.payload.LastEvaluatedKey
-          ? action.payload.LastEvaluatedKey
-          : null;
+      // let itemsRC = [];
+      // let lastEvaluatedKeyRC = '';
+      // if (action.payload.callType !== 'firstTime') {
+      //   itemsRC = [
+      //     ...state.receiptItems_pageListReceipt,
+      //     ...action.payload.Items,
+      //   ];
+      //   lastEvaluatedKeyRC = action.payload.LastEvaluatedKey
+      //     ? action.payload.LastEvaluatedKey
+      //     : null;
+      // }
+      // return {
+      //   ...state,
+      //   receiptItems_pageListReceipt: itemsRC,
+      //   receiptLastEvalutedKey_pageListReceipt: lastEvaluatedKeyRC,
+      // };
+      console.log('actionProduct1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSortRL = action.handleSort;
+      if(handleSortRL){
+        return {
+          ...state,
+          receiptItems_pageListReceipt: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.receiptItems_pageListReceipt, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          receiptItems_pageListReceipt: items,
+          receiptLastEvalutedKey_pageListReceipt: lastEvaluatedKey,
+        };
       }
-      return {
-        ...state,
-        receiptItems_pageListReceipt: itemsRC,
-        receiptLastEvalutedKey_pageListReceipt: lastEvaluatedKeyRC,
-      };
     case GET_NOTE_PAGE_LISTGUIDE:
-      let itemsNO = [];
-      let lastEvaluatedKeyNO = '';
-      if (action.payload.callType !== 'firstTime') {
-        itemsNO = [...state.noteItems_pageListNote, ...action.payload.Items];
-        lastEvaluatedKeyNO = action.payload.LastEvaluatedKey
-          ? action.payload.LastEvaluatedKey
-          : null;
+      // let itemsNO = [];
+      // let lastEvaluatedKeyNO = '';
+      // if (action.payload.callType !== 'firstTime') {
+      //   itemsNO = [...state.noteItems_pageListNote, ...action.payload.Items];
+      //   lastEvaluatedKeyNO = action.payload.LastEvaluatedKey
+      //     ? action.payload.LastEvaluatedKey
+      //     : null;
+      // }
+      // return {
+      //   ...state,
+      //   noteItems_pageListNote: itemsNO,
+      //   noteLastEvalutedKey_pageListNote: lastEvaluatedKeyNO,
+      // };
+      console.log('actionProduct1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSortNL = action.handleSort;
+      if(handleSortNL){
+        return {
+          ...state,
+          noteItems_pageListNote: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.noteItems_pageListNote, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          noteItems_pageListNote: items,
+          noteLastEvalutedKey_pageListNote: lastEvaluatedKey,
+        };
       }
-      return {
-        ...state,
-        noteItems_pageListNote: itemsNO,
-        noteLastEvalutedKey_pageListNote: lastEvaluatedKeyNO,
-      };
     case GET_INVENTORY_PRODUCTS:
       console.log('data de reducer GET_INVENTORY_PRODUCTS', action.payload);
       return {

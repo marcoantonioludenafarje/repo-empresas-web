@@ -42,6 +42,7 @@ import {
   FormControlLabel,
   InputLabel,
   Checkbox,
+  TableSortLabel,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import Backdrop from '@mui/material/Backdrop';
@@ -82,6 +83,7 @@ import {getUserData} from '../../../redux/actions/User';
 
 import {
   getMovements,
+  getOutputItems_pageListOutput,
   deleteMovement,
   generateInvoice,
   generateSellTicket,
@@ -93,7 +95,6 @@ import {
 import {Form, Formik} from 'formik';
 import Router, {useRouter} from 'next/router';
 import {
-  toEpoch,
   convertToDateWithoutTime,
   translateValue,
   showSubtypeMovement,
@@ -110,6 +111,7 @@ import {
   GET_USER_DATA,
   GET_ROL_USER,
   GENERATE_SELL_TICKET,
+  GET_OUTPUT_PAGE_LISTGUIDE
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
 
@@ -159,22 +161,7 @@ let deletePayload = {
     },
   },
 };
-let listPayload = {
-  request: {
-    payload: {
-      initialTime: toEpoch(Date.now() - 2678400000),
-      finalTime: toEpoch(Date.now()),
-      businessProductCode: null,
-      movementType: 'OUTPUT',
-      merchantId: '',
-      createdAt: null,
-      searchByDocument: null,
-      movementHeaderId: null,
-      outputId: null,
-      userCreated: null,
-    },
-  },
-};
+
 let businessParameterPayload = {
   request: {
     payload: {
@@ -221,6 +208,11 @@ const validationSchema = yup.object({
 let codProdSelected = '';
 let selectedOutput = {};
 let redirect = false;
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 
 const OutputsTable = (props) => {
   //Dependencias
@@ -231,7 +223,14 @@ const OutputsTable = (props) => {
   const {query} = router;
   console.log('query', query);
   const theme = useTheme();
+  const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  //MANEJO DE FECHAS
+  const toEpoch = (strDate) => {
+    let someDate = new Date(strDate);
+    someDate = someDate.getTime();
+    return someDate;
+  };
 
   let changeValueField;
   //UseStates
@@ -260,6 +259,11 @@ const OutputsTable = (props) => {
   const [value2, setValue2] = React.useState(Date.now());
   const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [initialTime, setInitialTime] = React.useState(toEpoch(Date.now() - 2678400000));
+  const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
+
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   // setOpen3(query.operationBack)
   //API FUNCTIONS
   const getBusinessParameter = (payload) => {
@@ -269,7 +273,7 @@ const OutputsTable = (props) => {
     dispatch(onGetGlobalParameter(payload));
   };
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getOutputItems_pageListOutput(payload));
   };
   const toDeleteMovement = (payload) => {
     dispatch(deleteMovement(payload));
@@ -294,8 +298,10 @@ const OutputsTable = (props) => {
   console.log('dataBusinessRes', dataBusinessRes);
   const {globalParameter} = useSelector(({general}) => general);
   console.log('globalParameter123', globalParameter);
-  const {getMovementsRes} = useSelector(({movements}) => movements);
+  const {getMovementsRes, outputItems_pageListOutput, outputLastEvaluatedKey_pageListOutput} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
+  console.log('outputItems_pageListOutput', outputItems_pageListOutput);
+  console.log('outputLastEvaluatedKey_pageListOutput', outputLastEvaluatedKey_pageListOutput);
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
@@ -340,7 +346,22 @@ const OutputsTable = (props) => {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: GET_MOVEMENTS, payload: undefined});
-
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: initialTime,
+            finalTime: finalTime,
+            businessProductCode: null,
+            movementType: 'OUTPUT',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            createdAt: null,
+            searchByDocument: null,
+            movementHeaderId: null,
+            outputId: null,
+            userCreated: null,
+          },
+        },
+      };
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
       businessParameterPayload.request.payload.merchantId =
@@ -376,9 +397,25 @@ const OutputsTable = (props) => {
   }, [userDataRes]);
   useEffect(() => {
     setValue2(Date.now());
-    listPayload.request.payload.finalTime = toEpoch(Date.now());
+
     console.log('Se ejecuta esto?');
-    if (userDataRes) {
+    if (userDataRes) {    
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: initialTime,
+            finalTime: finalTime,
+            businessProductCode: null,
+            movementType: 'OUTPUT',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            createdAt: null,
+            searchByDocument: null,
+            movementHeaderId: null,
+            outputId: null,
+            userCreated: null,
+          },
+        },
+      };
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       listPayload.request.payload.finalTime = toEpoch(Date.now());
@@ -401,6 +438,22 @@ const OutputsTable = (props) => {
 
   useEffect(() => {
     if (generateSellTicketRes) {
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: toEpoch(Date.now() - 2678400000),
+            finalTime: toEpoch(Date.now()),
+            businessProductCode: null,
+            movementType: 'OUTPUT',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            createdAt: null,
+            searchByDocument: null,
+            movementHeaderId: null,
+            outputId: null,
+            userCreated: null,
+          },
+        },
+      };
       console.log('Se manda al ticket de venta', generateSellTicketRes);
       // const link = document.createElement('a');
       // link.href = generateSellTicketRes.enlace_del_pdf;
@@ -429,8 +482,92 @@ const OutputsTable = (props) => {
   }
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'OUTPUT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByDocument: null,
+          movementHeaderId: null,
+          outputId: null,
+          userCreated: null,
+        },
+      },
+    };
+    listPayload.request.payload.LastEvaluatedKey =
+    outputLastEvaluatedKey_pageListOutput;
+    console.log('listPayload111:handleNextPage:', listPayload);
+    toGetMovements(listPayload);
+    // setPage(page+1);
+  };
+
+  // Función para manejar el clic en el encabezado de la tabla
+  const handleSort = (field) => {
+    if (orderBy === field) {
+      // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+      if(field !== "totalPriceWithIgv"){
+        const sortedProducts = [...outputItems_pageListOutput].sort((a, b) => {
+          const descriptionA = a[`${field}`] ?? '';
+          const descriptionB = b[`${field}`] ?? '';
+          if (order === 'asc') {
+            return descriptionA.localeCompare(descriptionB);
+          } else {
+            return descriptionB.localeCompare(descriptionA);
+          }
+        });
+        dispatch({
+          type: GET_OUTPUT_PAGE_LISTGUIDE,
+          payload: sortedProducts,
+          handleSort: true,
+        });
+        forceUpdate();
+      }
+    } else {
+      // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
+      setOrderBy(field);
+      setOrder('asc');
+      // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
+      if(field !== "totalPriceWithIgv"){
+        const sortedProducts = [...outputItems_pageListOutput].sort((a, b) => {
+          const descriptionA = a[`${field}`] ?? '';
+          const descriptionB = b[`${field}`] ?? '';
+          return descriptionB.localeCompare(descriptionA);
+        });
+        dispatch({
+          type: GET_OUTPUT_PAGE_LISTGUIDE,
+          payload: sortedProducts,
+          handleSort: true,
+        });
+        forceUpdate();
+      }
+    }
+  };
+
   //BUTTONS BAR FUNCTIONS
   const searchOutputs = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'OUTPUT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByDocument: null,
+          movementHeaderId: null,
+          outputId: null,
+          userCreated: null,
+        },
+      },
+    };
     listPayload.request.payload.denominationClient = '';
     listPayload.request.payload.searchByDocument = '';
     listPayload.request.payload.typeDocumentClient = '';
@@ -519,14 +656,25 @@ const OutputsTable = (props) => {
     console.log('Llendo a movimientos');
   };
 
-  //MANEJO DE FECHAS
-  const toEpoch = (strDate) => {
-    let someDate = new Date(strDate);
-    someDate = someDate.getTime();
-    return someDate;
-  };
+
 
   const sendStatus = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: toEpoch(Date.now() - 2678400000),
+          finalTime: toEpoch(Date.now()),
+          businessProductCode: null,
+          movementType: 'OUTPUT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByDocument: null,
+          movementHeaderId: null,
+          outputId: null,
+          userCreated: null,
+        },
+      },
+    };
     setOpenStatus(false);
     setTimeout(() => {
       searchPrivilege('outputsTable')
@@ -560,7 +708,7 @@ const OutputsTable = (props) => {
   };
   const cleanList = () => {
     let listResult = [];
-    getMovementsRes.map((obj) => {
+    outputItems_pageListOutput.map((obj) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       obj.codigo1 =
         showMinType(obj.movementType) +
@@ -932,7 +1080,7 @@ const OutputsTable = (props) => {
   };
 
   const findOutput = (outputId) => {
-    return getMovementsRes.find((obj) => obj.movementHeaderId == outputId);
+    return outputItems_pageListOutput.find((obj) => obj.movementHeaderId == outputId);
   };
   const showObject = (codOutput, type) => {
     codProdSelected = codOutput;
@@ -1269,6 +1417,22 @@ const OutputsTable = (props) => {
   };
   const filterData = (dataFilters) => {
     console.log('dataFilters', dataFilters);
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'OUTPUT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByDocument: null,
+          movementHeaderId: null,
+          outputId: null,
+          userCreated: null,
+        },
+      },
+    };
     listPayload.request.payload.searchByDocument = buildFilter(
       dataFilters.typeDocument,
       dataFilters.nroDoc,
@@ -1368,8 +1532,10 @@ const OutputsTable = (props) => {
           onChange={(newValue) => {
             setValue(newValue);
             console.log('date', newValue);
-            listPayload.request.payload.initialTime = toEpoch(newValue);
-            console.log('payload de busqueda', listPayload);
+            const epochValue = toEpoch(newValue);
+            setInitialTime(epochValue)
+            // listPayload.request.payload.initialTime = toEpoch(newValue);
+            // console.log('payload de busqueda', listPayload);
           }}
         />
         <DateTimePicker
@@ -1379,8 +1545,10 @@ const OutputsTable = (props) => {
           value={value2}
           onChange={(newValue2) => {
             setValue2(newValue2);
-            listPayload.request.payload.finalTime = toEpoch(newValue2);
-            console.log('payload de busqueda', listPayload);
+            const epochValue = toEpoch(newValue2);
+            setFinalTime(epochValue)
+            // listPayload.request.payload.finalTime = toEpoch(newValue2);
+            // console.log('payload de busqueda', listPayload);
           }}
         />
         <Button
@@ -1399,6 +1567,7 @@ const OutputsTable = (props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${outputItems_pageListOutput.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -1412,7 +1581,15 @@ const OutputsTable = (props) => {
               <TableCell>Fecha registrada</TableCell>
               <TableCell>Última actualización</TableCell>
               <TableCell>Tipo de movimiento</TableCell>
-              <TableCell>Cliente</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'denominationClient'}
+                  direction={orderBy === 'denominationClient' ? order : 'asc'}
+                  onClick={() => handleSort('denominationClient')}
+                >
+                  Cliente
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Detalle productos</TableCell>
               <TableCell>Detalle documentos</TableCell>
               <TableCell>Boleta Venta relacionada</TableCell>
@@ -1432,8 +1609,8 @@ const OutputsTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes && Array.isArray(getMovementsRes) ? (
-              getMovementsRes.sort(compare).map((obj, index) => {
+            {outputItems_pageListOutput && Array.isArray(outputItems_pageListOutput) ? (
+              outputItems_pageListOutput.sort(compare).map((obj, index) => {
                 const style =
                   obj.descriptionProductsInfo &&
                   obj.descriptionProductsInfo.length != 0
@@ -1756,6 +1933,13 @@ const OutputsTable = (props) => {
             )}
           </TableBody>
         </Table>
+        {outputLastEvaluatedKey_pageListOutput ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       {isLoading ? (
         <Backdrop

@@ -25,6 +25,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  TableSortLabel,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -64,7 +65,6 @@ import {
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
 import {
-  toEpoch,
   convertToDateWithoutTime,
   translateValue,
 } from '../../../Utils/utils';
@@ -98,17 +98,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 let merchantIdLocal = '';
-let listPayload = {
-  request: {
-    payload: {
-      initialTime: toEpoch(Date.now() - 89280000),
-      finalTime: toEpoch(Date.now()),
-      businessProductCode: null,
-      movementType: 'CREDIT_NOTE',
-      merchantId: '',
-    },
-  },
-};
 let businessParameterPayload = {
   request: {
     payload: {
@@ -139,12 +128,23 @@ let cancelInvoicePayload = {
 };
 let codProdSelected = '';
 let selectedCreditNote = {};
-
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const CreditNotesTable = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const forceUpdate = useForceUpdate();
+  //MANEJO DE FECHAS
+  const toEpoch = (strDate) => {
+    let someDate = new Date(strDate);
+    someDate = someDate.getTime();
+    return someDate;
+  };
   const [reload, setReload] = React.useState(0);
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [moneyUnit, setMoneyUnit] = React.useState('');
@@ -152,6 +152,11 @@ const CreditNotesTable = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
+  const [initialTime, setInitialTime] = React.useState(toEpoch(Date.now() - 89280000));
+  const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
+
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   const router = useRouter();
   const {query} = router;
   const {excelTemplateGeneratedToNotesRes} = useSelector(
@@ -178,12 +183,20 @@ const CreditNotesTable = (props) => {
     dispatch(exportExcelTemplateToNotes(payload));
   };
 
-  const useForceUpdate = () => {
-    return () => setReload((value) => value + 1); // update the state to force render
-  };
 
   const handleNextPage = (event) => {
     //console.log('Llamando al  handleNextPage', handleNextPage);
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'CREDIT_NOTE',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
     listPayload.request.payload.LastEvaluatedKey =
       noteLastEvalutedKey_pageListNote;
     console.log('listPayload111:handleNextPage:', listPayload);
@@ -214,7 +227,7 @@ const CreditNotesTable = (props) => {
   let exchangeRate;
 
   useEffect(() => {
-    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
+    //dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 
@@ -237,10 +250,19 @@ const CreditNotesTable = (props) => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_MOVEMENTS, payload: undefined});
+      //dispatch({type: GET_MOVEMENTS, payload: undefined});
 
-      listPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: initialTime,
+            finalTime: finalTime,
+            businessProductCode: null,
+            movementType: 'CREDIT_NOTE',
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
       cancelInvoicePayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
       businessParameterPayload.request.payload.merchantId =
@@ -280,6 +302,44 @@ const CreditNotesTable = (props) => {
 
   console.log('Valores default peso', weight_unit, 'moneda', moneyUnit);
 
+  // Función para manejar el clic en el encabezado de la tabla
+  const handleSort = (field) => {
+    if (orderBy === field) {
+      // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+      const sortedProducts = [...noteItems_pageListNote].sort((a, b) => {
+        const descriptionA = a[`${field}`] ?? '';
+        const descriptionB = b[`${field}`] ?? '';
+        if (order === 'asc') {
+          return descriptionA.localeCompare(descriptionB);
+        } else {
+          return descriptionB.localeCompare(descriptionA);
+        }
+      });
+      dispatch({
+        type: GET_NOTE_PAGE_LISTGUIDE,
+        payload: sortedProducts,
+        handleSort: true,
+      });
+      forceUpdate();
+    } else {
+      // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
+      setOrderBy(field);
+      setOrder('asc');
+      // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
+      const sortedProducts = [...noteItems_pageListNote].sort((a, b) => {
+        const descriptionA = a[`${field}`] ?? '';
+        const descriptionB = b[`${field}`] ?? '';
+        return descriptionB.localeCompare(descriptionA);
+      });
+      dispatch({
+        type: GET_NOTE_PAGE_LISTGUIDE,
+        payload: sortedProducts,
+        handleSort: true,
+      });
+      forceUpdate();
+    }
+  };
   const buildFilter = (typeDoc, numberDoc) => {
     let nroDoc = numberDoc.length !== 0 ? numberDoc : null;
     if (typeDoc !== 'anyone' && numberDoc.length !== 0) {
@@ -292,6 +352,17 @@ const CreditNotesTable = (props) => {
   };
   const filterData = (dataFilters) => {
     console.log('dataFilters', dataFilters);
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'CREDIT_NOTE',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
     listPayload.request.payload.searchByDocument = buildFilter(
       dataFilters.typeDocument,
       dataFilters.nroDoc,
@@ -305,7 +376,7 @@ const CreditNotesTable = (props) => {
     listPayload.request.payload.denominationClient =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toUpperCase();
     console.log('listPayload', listPayload);
-    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
+    //dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     toGetMovements(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
@@ -316,9 +387,20 @@ const CreditNotesTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'CREDIT_NOTE',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
-    dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
+    //dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     toGetMovements(listPayload);
   };
 
@@ -338,12 +420,6 @@ const CreditNotesTable = (props) => {
   //SELECCIÓN CALENDARIO
   const [value, setValue] = React.useState(Date.now() - 89280000);
   const [value2, setValue2] = React.useState(Date.now());
-  //MANEJO DE FECHAS
-  const toEpoch = (strDate) => {
-    let someDate = new Date(strDate);
-    someDate = someDate.getTime();
-    return someDate;
-  };
 
   const goToUpdate = () => {
     console.log(' factura', selectedCreditNote);
@@ -354,6 +430,18 @@ const CreditNotesTable = (props) => {
   };
 
   const exportToExcel = () => {
+    
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: toEpoch(Date.now() - 89280000),
+          finalTime: toEpoch(Date.now()),
+          businessProductCode: null,
+          movementType: 'CREDIT_NOTE',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
     const excelPayload = listPayload;
 
     console.log('excelPayload', excelPayload);
@@ -517,8 +605,10 @@ const CreditNotesTable = (props) => {
           onChange={(newValue) => {
             setValue(newValue);
             console.log('date', newValue);
-            listPayload.request.payload.initialTime = toEpoch(newValue);
-            console.log('payload de busqueda', listPayload);
+            const epochValue = toEpoch(newValue);
+            setInitialTime(epochValue)
+            // listPayload.request.payload.initialTime = toEpoch(newValue);
+            // console.log('payload de busqueda', listPayload);
           }}
         />
         <DateTimePicker
@@ -529,8 +619,10 @@ const CreditNotesTable = (props) => {
           onChange={(newValue2) => {
             setValue2(newValue2);
             console.log('date 2', newValue2);
-            listPayload.request.payload.finalTime = toEpoch(newValue2);
-            console.log('payload de busqueda', listPayload);
+            const epochValue = toEpoch(newValue2);
+            setFinalTime(epochValue)
+            // listPayload.request.payload.finalTime = toEpoch(newValue2);
+            // console.log('payload de busqueda', listPayload);
           }}
         />
         <Button
@@ -564,7 +656,15 @@ const CreditNotesTable = (props) => {
               <TableCell>Número factura</TableCell>
               <TableCell>Identificador Receptor</TableCell>
               <TableCell>Nombre Receptor</TableCell>
-              <TableCell>Observación</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'observation'}
+                  direction={orderBy === 'observation' ? order : 'asc'}
+                  onClick={() => handleSort('observation')}
+                >
+                  Observación
+                </TableSortLabel>
+              </TableCell>
               {/* <TableCell>Subtotal</TableCell> */}
               {/* <TableCell>Inafecta</TableCell>
               <TableCell>Exonerada</TableCell>
@@ -789,10 +889,30 @@ const CreditNotesTable = (props) => {
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Reenviar
         </MenuItem>
-        <MenuItem onClick={() => window.open(selectedCreditNote.linkPdf)}>
-          <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
-          Ver PDF
-        </MenuItem>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/creditDebitNote/seePDF') === true ? (
+          <MenuItem onClick={() => window.open(selectedCreditNote.linkPdf)}>
+            <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
+            Ver PDF
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/creditDebitNote/seeXML') === true ? (
+          <MenuItem onClick={() => window.open(selectedCreditNote.linkXml)}>
+            <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
+            Ver XML
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/creditDebitNote/seeCDR') === true ? (
+          <MenuItem onClick={() => window.open(selectedCreditNote.linkCdr)}>
+            <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
+            Ver CDR
+          </MenuItem>
+        ) : null}
         {localStorage
           .getItem('pathsBack')
           .includes('/facturacion/creditDebitNote/consult') &&

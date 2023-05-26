@@ -29,6 +29,7 @@ import {
   Collapse,
   useMediaQuery,
   useTheme,
+  TableSortLabel,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -60,11 +61,11 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {getMovements, deleteMovement} from '../../../redux/actions/Movements';
+import {getMovements, 
+  getInputItems_pageListInput, deleteMovement} from '../../../redux/actions/Movements';
 import {getUserData} from '../../../redux/actions/User';
 
 import {
-  toEpoch,
   convertToDateWithoutTime,
   translateValue,
   showSubtypeMovement,
@@ -76,6 +77,7 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  GET_INPUT_PAGE_LISTGUIDE,
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
 
@@ -125,20 +127,6 @@ let deletePayload = {
     },
   },
 };
-let listPayload = {
-  request: {
-    payload: {
-      initialTime: toEpoch(Date.now() - 2678400000),
-      finalTime: toEpoch(Date.now()),
-      businessProductCode: null,
-      movementType: 'INPUT',
-      merchantId: '',
-      createdAt: null,
-      searchByDocument: null,
-      movementHeaderId: null,
-    },
-  },
-};
 let businessParameterPayload = {
   request: {
     payload: {
@@ -160,12 +148,24 @@ let globalParameterPayload = {
 let codProdSelected = '';
 let selectedInput = {};
 let redirect = false;
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 
 const InputsTable = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
   const theme = useTheme();
+  const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  //MANEJO DE FECHAS
+  const toEpoch = (strDate) => {
+    let someDate = new Date(strDate);
+    someDate = someDate.getTime();
+    return someDate;
+  };
   let popUp = false;
   const [reload, setReload] = React.useState(0);
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -179,12 +179,12 @@ const InputsTable = (props) => {
   //SELECCIÓN CALENDARIO
   const [value, setValue] = React.useState(Date.now() - 2678400000);
   const [value2, setValue2] = React.useState(Date.now());
-  //MANEJO DE FECHAS
-  const toEpoch = (strDate) => {
-    let someDate = new Date(strDate);
-    someDate = someDate.getTime();
-    return someDate;
-  };
+  const [initialTime, setInitialTime] = React.useState(toEpoch(Date.now() - 2678400000));
+  const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
+
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
+
 
   const router = useRouter();
   const {query} = router;
@@ -192,7 +192,7 @@ const InputsTable = (props) => {
 
   //API FUNCTIONS
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getInputItems_pageListInput(payload));
   };
   const toDeleteMovement = (payload) => {
     dispatch(deleteMovement(payload));
@@ -204,17 +204,16 @@ const InputsTable = (props) => {
     dispatch(onGetGlobalParameter(payload));
   };
 
-  const useForceUpdate = () => {
-    return () => setReload((value) => value + 1); // update the state to force render
-  };
 
   let money_unit;
   let weight_unit;
   let exchangeRate;
 
   //GET APIS RES
-  const {getMovementsRes} = useSelector(({movements}) => movements);
+  const {getMovementsRes, inputItems_pageListInput, inputLastEvaluatedKey_pageListInput} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
+  console.log('inputItems_pageListInput', inputItems_pageListInput);
+  console.log('inputLastEvaluatedKey_pageListInput', inputLastEvaluatedKey_pageListInput);
   let listToUse = getMovementsRes;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
@@ -255,6 +254,20 @@ const InputsTable = (props) => {
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: GET_MOVEMENTS, payload: undefined});
 
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: initialTime,
+            finalTime: finalTime,
+            businessProductCode: null,
+            movementType: 'INPUT',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            createdAt: null,
+            searchByDocument: null,
+            movementHeaderId: null,
+          },
+        },
+      };
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
       businessParameterPayload.request.payload.merchantId =
@@ -276,9 +289,22 @@ const InputsTable = (props) => {
   }, [userDataRes]);
   useEffect(() => {
     setValue2(Date.now());
-    listPayload.request.payload.finalTime = toEpoch(Date.now());
     console.log('Se ejecuta esto?');
     if (userDataRes) {
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: initialTime,
+            finalTime: finalTime,
+            businessProductCode: null,
+            movementType: 'INPUT',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            createdAt: null,
+            searchByDocument: null,
+            movementHeaderId: null,
+          },
+        },
+      };
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       listPayload.request.payload.finalTime = toEpoch(Date.now());
@@ -311,8 +337,66 @@ const InputsTable = (props) => {
   }
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
+  
+  // Función para manejar el clic en el encabezado de la tabla
+  const handleSort = (field) => {
+    if (orderBy === field) {
+      // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+      if(field !== "totalPriceWithIgv"){
+        const sortedProducts = [...inputItems_pageListInput].sort((a, b) => {
+          const descriptionA = a[`${field}`] ?? '';
+          const descriptionB = b[`${field}`] ?? '';
+          if (order === 'asc') {
+            return descriptionA.localeCompare(descriptionB);
+          } else {
+            return descriptionB.localeCompare(descriptionA);
+          }
+        });
+        dispatch({
+          type: GET_INPUT_PAGE_LISTGUIDE,
+          payload: sortedProducts,
+          handleSort: true,
+        });
+        forceUpdate();
+      }
+    } else {
+      // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
+      setOrderBy(field);
+      setOrder('asc');
+      // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
+      if(field !== "totalPriceWithIgv"){
+        const sortedProducts = [...inputItems_pageListInput].sort((a, b) => {
+          const descriptionA = a[`${field}`] ?? '';
+          const descriptionB = b[`${field}`] ?? '';
+          return descriptionB.localeCompare(descriptionA);
+        });
+        dispatch({
+          type: GET_INPUT_PAGE_LISTGUIDE,
+          payload: sortedProducts,
+          handleSort: true,
+        });
+        forceUpdate();
+      }
+    }
+  };
+
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'INPUT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByDocument: null,
+          movementHeaderId: null,
+        },
+      },
+    };
     listPayload.request.payload.denominationProvider = '';
     listPayload.request.payload.searchByDocument = '';
     listPayload.request.payload.typeDocumentProvider = '';
@@ -326,7 +410,7 @@ const InputsTable = (props) => {
 
   const cleanList = () => {
     let listResult = [];
-    getMovementsRes.map((obj) => {
+    inputItems_pageListInput.map((obj) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       obj.codigo1 =
         showMinType(obj.movementType) +
@@ -478,6 +562,20 @@ const InputsTable = (props) => {
   };
 
   const sendStatus = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: toEpoch(Date.now() - 2678400000),
+          finalTime: toEpoch(Date.now()),
+          businessProductCode: null,
+          movementType: 'INPUT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByDocument: null,
+          movementHeaderId: null,
+        },
+      },
+    };
     setOpenStatus(false);
     setTimeout(() => {
       toGetMovements(listPayload);
@@ -571,7 +669,7 @@ const InputsTable = (props) => {
   };
 
   const findOutput = (outputId) => {
-    return getMovementsRes.find((obj) => obj.movementHeaderId == outputId);
+    return inputItems_pageListInput.find((obj) => obj.movementHeaderId == outputId);
   };
   const showExpense = (codInput) => {
     codProdSelected = codInput;
@@ -766,6 +864,20 @@ const InputsTable = (props) => {
   };
   const filterData = (dataFilters) => {
     console.log('dataFilters', dataFilters);
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'INPUT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByDocument: null,
+          movementHeaderId: null,
+        },
+      },
+    };
     listPayload.request.payload.searchByDocument = buildFilter(
       dataFilters.typeDocument,
       dataFilters.nroDoc,
@@ -831,8 +943,10 @@ const InputsTable = (props) => {
           onChange={(newValue) => {
             setValue(newValue);
             console.log('date', newValue);
-            listPayload.request.payload.initialTime = toEpoch(newValue);
-            console.log('payload de busqueda', listPayload);
+            const epochValue = toEpoch(newValue);
+            setInitialTime(epochValue)
+            // listPayload.request.payload.initialTime = toEpoch(newValue);
+            // console.log('payload de busqueda', listPayload);
           }}
         />
         <DateTimePicker
@@ -843,8 +957,10 @@ const InputsTable = (props) => {
           onChange={(newValue2) => {
             setValue2(newValue2);
             console.log('date 2', newValue2);
-            listPayload.request.payload.finalTime = toEpoch(newValue2);
-            console.log('payload de busqueda', listPayload);
+            const epochValue = toEpoch(newValue2);
+            setFinalTime(epochValue)
+            // listPayload.request.payload.finalTime = toEpoch(newValue2);
+            // console.log('payload de busqueda', listPayload);
           }}
         />
         <Button
@@ -863,6 +979,7 @@ const InputsTable = (props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${inputItems_pageListInput.length}`}</span>
 
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
@@ -877,7 +994,15 @@ const InputsTable = (props) => {
               <TableCell>Fecha registrada</TableCell>
               <TableCell>Última actualización</TableCell>
               <TableCell>Tipo de movimiento</TableCell>
-              <TableCell>Proveedor</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'denominationProvider'}
+                  direction={orderBy === 'denominationProvider' ? order : 'asc'}
+                  onClick={() => handleSort('denominationProvider')}
+                >
+                  Proveedor
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Detalle productos</TableCell>
               <TableCell>Detalle documentos</TableCell>
               <TableCell>Egreso relacionado</TableCell>
@@ -891,8 +1016,8 @@ const InputsTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getMovementsRes && Array.isArray(getMovementsRes) ? (
-              getMovementsRes
+            {inputItems_pageListInput && Array.isArray(inputItems_pageListInput) ? (
+              inputItems_pageListInput
                 .sort(compare)
                 /* .filter(filterData) */
                 .map((obj, index) => {
@@ -1137,6 +1262,13 @@ const InputsTable = (props) => {
             )}
           </TableBody>
         </Table>
+        {inputLastEvaluatedKey_pageListInput ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
 
       <ButtonGroup

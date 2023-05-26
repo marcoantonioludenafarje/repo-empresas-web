@@ -25,6 +25,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  TableSortLabel,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -67,7 +68,6 @@ import {
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
 import {
-  toEpoch,
   convertToDateWithoutTime,
   translateValue,
 } from '../../../Utils/utils';
@@ -101,20 +101,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 let merchantIdLocal = '';
-let listPayload = {
-  request: {
-    payload: {
-      initialTime: toEpoch(Date.now() - 89280000),
-      finalTime: toEpoch(Date.now()),
-      businessProductCode: null,
-      movementType: 'RECEIPT',
-      merchantId: '',
-      createdAt: null,
-      searchByReceipt: '',
-      movementHeaderId: '',
-    },
-  },
-};
+
 let businessParameterPayload = {
   request: {
     payload: {
@@ -148,11 +135,23 @@ let cancelReceiptPayload = {
 let codProdSelected = '';
 let selectedReceipt = {};
 
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const ReceiptsTable = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const forceUpdate = useForceUpdate();
+  //MANEJO DE FECHAS
+  const toEpoch = (strDate) => {
+    let someDate = new Date(strDate);
+    someDate = someDate.getTime();
+    return someDate;
+  };
   const [reload, setReload] = React.useState(0);
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
@@ -166,6 +165,11 @@ const ReceiptsTable = (props) => {
     ({general}) => general,
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
+  const [initialTime, setInitialTime] = React.useState(toEpoch(Date.now() - 89280000));
+  const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
+
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   const documentSunat = 'receipt';
   const {moneySymbol} = useSelector(({general}) => general);
 
@@ -186,12 +190,23 @@ const ReceiptsTable = (props) => {
     dispatch(exportExcelTemplateToReceipts(payload));
   };
 
-  const useForceUpdate = () => {
-    return () => setReload((value) => value + 1); // update the state to force render
-  };
 
   const handleNextPage = (event) => {
     //console.log('Llamando al  handleNextPage', handleNextPage);
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'RECEIPT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByReceipt: '',
+          movementHeaderId: '',
+        },
+      },
+    };
     listPayload.request.payload.LastEvaluatedKey =
       receiptLastEvalutedKey_pageListReceipt;
     console.log('listPayload111:handleNextPage:', listPayload);
@@ -248,6 +263,44 @@ const ReceiptsTable = (props) => {
 
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
+  // Función para manejar el clic en el encabezado de la tabla
+  const handleSort = (field) => {
+    if (orderBy === field) {
+      // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+      const sortedProducts = [...receiptItems_pageListReceipt].sort((a, b) => {
+        const descriptionA = a[`${field}`] ?? '';
+        const descriptionB = b[`${field}`] ?? '';
+        if (order === 'asc') {
+          return descriptionA.localeCompare(descriptionB);
+        } else {
+          return descriptionB.localeCompare(descriptionA);
+        }
+      });
+      dispatch({
+        type: GET_RECEIPT_PAGE_LISTGUIDE,
+        payload: sortedProducts,
+        handleSort: true,
+      });
+      forceUpdate();
+    } else {
+      // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
+      setOrderBy(field);
+      setOrder('asc');
+      // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
+      const sortedProducts = [...receiptItems_pageListReceipt].sort((a, b) => {
+        const descriptionA = a[`${field}`] ?? '';
+        const descriptionB = b[`${field}`] ?? '';
+        return descriptionB.localeCompare(descriptionA);
+      });
+      dispatch({
+        type: GET_RECEIPT_PAGE_LISTGUIDE,
+        payload: sortedProducts,
+        handleSort: true,
+      });
+      forceUpdate();
+    }
+  };
   const buildFilter = (typeDoc, numberDoc) => {
     let nroDoc = numberDoc.length !== 0 ? numberDoc : null;
     if (typeDoc !== 'anyone' && numberDoc.length !== 0) {
@@ -260,6 +313,20 @@ const ReceiptsTable = (props) => {
   };
   const filterData = (dataFilters) => {
     console.log('dataFilters', dataFilters);
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'RECEIPT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByReceipt: '',
+          movementHeaderId: '',
+        },
+      },
+    };
     listPayload.request.payload.searchByDocument = buildFilter(
       dataFilters.typeDocument,
       dataFilters.nroDoc,
@@ -273,10 +340,10 @@ const ReceiptsTable = (props) => {
     listPayload.request.payload.denominationClient =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toUpperCase();
     console.log('listPayload', listPayload);
-    dispatch({
-      type: GET_RECEIPT_PAGE_LISTGUIDE,
-      payload: {callType: 'firstTime'},
-    });
+    // dispatch({
+    //   type: GET_RECEIPT_PAGE_LISTGUIDE,
+    //   payload: {callType: 'firstTime'},
+    // });
     toGetMovements(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
@@ -287,19 +354,33 @@ const ReceiptsTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          businessProductCode: null,
+          movementType: 'RECEIPT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByReceipt: '',
+          movementHeaderId: '',
+        },
+      },
+    };
     listPayload.request.payload.LastEvaluatedKey = null;
     listPayload.request.payload.outputId = null;
-    dispatch({
-      type: GET_RECEIPT_PAGE_LISTGUIDE,
-      payload: {callType: 'firstTime'},
-    });
+    // dispatch({
+    //   type: GET_RECEIPT_PAGE_LISTGUIDE,
+    //   payload: {callType: 'firstTime'},
+    // });
     toGetMovements(listPayload);
   };
   useEffect(() => {
-    dispatch({
-      type: GET_RECEIPT_PAGE_LISTGUIDE,
-      payload: {callType: 'firstTime'},
-    });
+    // dispatch({
+    //   type: GET_RECEIPT_PAGE_LISTGUIDE,
+    //   payload: {callType: 'firstTime'},
+    // });
 
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -324,8 +405,21 @@ const ReceiptsTable = (props) => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_MOVEMENTS, payload: undefined});
-
+      //dispatch({type: GET_MOVEMENTS, payload: undefined});
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: initialTime,
+            finalTime: finalTime,
+            businessProductCode: null,
+            movementType: 'RECEIPT',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            createdAt: null,
+            searchByReceipt: '',
+            movementHeaderId: '',
+          },
+        },
+      };
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
       cancelReceiptPayload.request.payload.merchantId =
@@ -363,19 +457,27 @@ const ReceiptsTable = (props) => {
   //SELECCIÓN CALENDARIO
   const [value, setValue] = React.useState(Date.now() - 89280000);
   const [value2, setValue2] = React.useState(Date.now());
-  //MANEJO DE FECHAS
-  const toEpoch = (strDate) => {
-    let someDate = new Date(strDate);
-    someDate = someDate.getTime();
-    return someDate;
-  };
-
   const goToUpdate = () => {
     console.log(' boleta', selectedReceipt);
     Router.push({pathname: '/sample/receipts/get', query: selectedReceipt});
   };
 
   const exportToExcel = () => {
+    
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: toEpoch(Date.now() - 89280000),
+          finalTime: toEpoch(Date.now()),
+          businessProductCode: null,
+          movementType: 'RECEIPT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          searchByReceipt: '',
+          movementHeaderId: '',
+        },
+      },
+    };
     const excelPayload = listPayload;
 
     console.log('excelPayload', excelPayload);
@@ -576,8 +678,10 @@ const ReceiptsTable = (props) => {
           onChange={(newValue) => {
             setValue(newValue);
             console.log('date', newValue);
-            listPayload.request.payload.initialTime = toEpoch(newValue);
-            console.log('payload de busqueda', listPayload);
+            const epochValue = toEpoch(newValue);
+            setInitialTime(epochValue)
+            // listPayload.request.payload.initialTime = toEpoch(newValue);
+            // console.log('payload de busqueda', listPayload);
           }}
         />
         <DateTimePicker
@@ -588,8 +692,10 @@ const ReceiptsTable = (props) => {
           onChange={(newValue2) => {
             setValue2(newValue2);
             console.log('date 2', newValue2);
-            listPayload.request.payload.finalTime = toEpoch(newValue2);
-            console.log('payload de busqueda', listPayload);
+            const epochValue = toEpoch(newValue2);
+            setFinalTime(epochValue)
+            //listPayload.request.payload.finalTime = toEpoch(newValue2);
+            //console.log('payload de busqueda', listPayload);
           }}
         />
         <Button
@@ -623,7 +729,15 @@ const ReceiptsTable = (props) => {
               <TableCell>Número boleta</TableCell>
               <TableCell>Identificador Receptor</TableCell>
               <TableCell>Nombre Receptor</TableCell>
-              <TableCell>Observación</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'observation'}
+                  direction={orderBy === 'observation' ? order : 'asc'}
+                  onClick={() => handleSort('observation')}
+                >
+                  Observación
+                </TableSortLabel>
+              </TableCell>
               {/* <TableCell>Subtotal</TableCell> */}
               {/* <TableCell>Inafecta</TableCell>
               <TableCell>Exonerada</TableCell>
@@ -835,10 +949,30 @@ const ReceiptsTable = (props) => {
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Reenviar
         </MenuItem> */}
-        <MenuItem onClick={() => window.open(selectedReceipt.linkPdf)}>
-          <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
-          Ver PDF
-        </MenuItem>
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/receipt/seePDF') === true ? (
+          <MenuItem onClick={() => window.open(selectedReceipt.linkPdf)}>
+            <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
+            Ver PDF
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/receipt/seeXML') === true ? (
+          <MenuItem onClick={() => window.open(selectedReceipt.linkXml)}>
+            <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
+            Ver XML
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/receipt/seeCDR') === true ? (
+          <MenuItem onClick={() => window.open(selectedReceipt.linkCdr)}>
+            <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
+            Ver CDR
+          </MenuItem>
+        ) : null}
         {localStorage
           .getItem('pathsBack')
           .includes('/facturacion/creditNote/register') === true ? (

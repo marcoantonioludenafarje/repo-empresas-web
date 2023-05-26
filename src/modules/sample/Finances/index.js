@@ -42,6 +42,7 @@ import {
   Collapse,
   useTheme,
   useMediaQuery,
+  TableSortLabel,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -69,11 +70,13 @@ import {
   FETCH_ERROR,
   GET_MOVEMENTS,
   GET_USER_DATA,
+  ALL_FINANCES,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import {
   getFinances,
+  getAllFinances,
   deleteFinance,
   getFinancesForResultState,
 } from '../../../redux/actions/Finances';
@@ -89,22 +92,7 @@ import {
 } from '../../../Utils/utils';
 import OtherPayConceptsTable from './OtherPayConceptsTable';
 import MoreFiltersFinances from '../Filters/MoreFiltersFinances';
-let listFinancesPayload = {
-  request: {
-    payload: {
-      initialTime: null,
-      finalTime: null,
-      movementType: null,
-      merchantId: '',
-      createdAt: null,
-      monthMovement: null,
-      yearMovement: null,
-      searchByBill: '',
-      searchByContableMovement: '',
-      typeList: '',
-    },
-  },
-};
+
 let listFinancesForResultStatePayload = {
   request: {
     payload: {
@@ -161,10 +149,15 @@ const months = {
   November: 'Noviembre',
   December: 'Diciembre',
 };
-
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const FinancesTable = (props) => {
   const classes = useStyles(props);
   const theme = useTheme();
+  const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [value, setValue] = React.useState(Date.now());
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -182,6 +175,8 @@ const FinancesTable = (props) => {
   const [moreFilters, setMoreFilters] = React.useState(false);
   const [financeType, setFinanceType] = React.useState('INCOME');
 
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -208,7 +203,7 @@ const FinancesTable = (props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
-  const {getFinancesRes} = useSelector(({finances}) => finances);
+  const {getFinancesRes, allFinancesRes, financesLastEvaluatedKey_pageListFinances} = useSelector(({finances}) => finances);
   const {getFinancesForResultStateRes} = useSelector(({finances}) => finances);
   const {deleteFinanceRes} = useSelector(({finances}) => finances);
   const {businessParameter} = useSelector(({general}) => general);
@@ -233,10 +228,10 @@ const FinancesTable = (props) => {
 
   //APIS
   const toGetFinances = (payload) => {
-    dispatch(getFinances(payload, jwtToken));
+    dispatch(getAllFinances(payload, jwtToken));
   };
   const toGetFinancesInDebt = (payload) => {
-    dispatch(getFinances(payload, jwtToken));
+    dispatch(getAllFinances(payload, jwtToken));
   };
   const toGetFinancesForResultState = (payload) => {
     dispatch(getFinancesForResultState(payload, jwtToken));
@@ -250,8 +245,22 @@ const FinancesTable = (props) => {
   }, [month || year]);
   useEffect(() => {
     if (userDataRes) {
-      listFinancesPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
+      let listFinancesPayload = {
+        request: {
+          payload: {
+            initialTime: null,
+            finalTime: null,
+            movementType: financeType == 'TODOS' ? null : financeType,
+            merchantId: userDataRes.merchantSelected.merchantId,
+            createdAt: null,
+            monthMovement: null,
+            yearMovement: null,
+            searchByBill: '',
+            searchByContableMovement: '',
+            typeList: '',
+          },
+        },
+      };
       listFinancesForResultStatePayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
 
@@ -285,13 +294,26 @@ const FinancesTable = (props) => {
   }, [userDataRes]);
 
   const searchFinances = () => {
-    if (
-      listFinancesPayload.request.payload.yearMovement == null ||
-      listFinancesForResultStatePayload.request.payload.yearMovement == null
-    ) {
-      listFinancesPayload.request.payload.yearMovement = getYear();
-      listFinancesForResultStatePayload.request.payload.yearMovement =
-        getYear();
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          movementType: financeType == 'TODOS' ? null : financeType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          monthMovement: null,
+          yearMovement: year,
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+        },
+      },
+    };
+    if (month == 'ALL') {
+      listFinancesPayload.request.payload.monthMovement = null;
+    } else {
+      listFinancesPayload.request.payload.monthMovement = month;
     }
     dispatch({type: GET_FINANCES, payload: []});
     toGetFinances(listFinancesPayload);
@@ -303,6 +325,27 @@ const FinancesTable = (props) => {
   };
 
   const searchFinancesInDebt = () => {
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          movementType: financeType == 'TODOS' ? null : financeType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          monthMovement: null,
+          yearMovement: year,
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+        },
+      },
+    };
+    if (month == 'ALL') {
+      listFinancesPayload.request.payload.monthMovement = null;
+    } else {
+      listFinancesPayload.request.payload.monthMovement = month;
+    }
     let listFinancesInDebt = listFinancesPayload;
 
     listFinancesInDebt.request.payload.typeList = 'debt';
@@ -343,6 +386,35 @@ const FinancesTable = (props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     dispatch({type: GET_FINANCES, payload: []});
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          movementType: financeType == 'TODOS' ? null : financeType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          monthMovement: null,
+          yearMovement: null,
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+        },
+      },
+    };
+    if (month == 'ALL') {
+      listFinancesPayload.request.payload.monthMovement = null;
+    } else {
+      listFinancesPayload.request.payload.monthMovement = month;
+    }
+    if (
+      listFinancesPayload.request.payload.yearMovement == null ||
+      listFinancesForResultStatePayload.request.payload.yearMovement == null
+    ) {
+      listFinancesPayload.request.payload.yearMovement = getYear();
+      listFinancesForResultStatePayload.request.payload.yearMovement =
+        getYear();
+    }
     setTimeout(() => {
       toGetFinances(listFinancesPayload);
       if (monthYearStatus) {
@@ -356,7 +428,7 @@ const FinancesTable = (props) => {
   const handleClick = (codFinance, event) => {
     setAnchorEl(event.currentTarget);
     codFinanceSelected = codFinance;
-    selectedFinance = getFinancesRes[codFinance];
+    selectedFinance = allFinancesRes[codFinance];
     console.log('selectedFinance', selectedFinance);
   };
   const handleClose = () => {
@@ -600,6 +672,35 @@ const FinancesTable = (props) => {
 
   //BUSQUEDA
   const handleSearchValues = (event) => {
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          movementType: financeType == 'TODOS' ? null : financeType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          monthMovement: null,
+          yearMovement: null,
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+        },
+      },
+    };
+    if (month == 'ALL') {
+      listFinancesPayload.request.payload.monthMovement = null;
+    } else {
+      listFinancesPayload.request.payload.monthMovement = month;
+    }
+    if (
+      listFinancesPayload.request.payload.yearMovement == null ||
+      listFinancesForResultStatePayload.request.payload.yearMovement == null
+    ) {
+      listFinancesPayload.request.payload.yearMovement = getYear();
+      listFinancesForResultStatePayload.request.payload.yearMovement =
+        getYear();
+    }
     console.log('Evento', event);
     if (event.target.name == 'searchByBill') {
       if (event.target.value == '') {
@@ -668,6 +769,27 @@ const FinancesTable = (props) => {
     //   dataFilters.typeDocumentProvider,
     //   dataFilters.nroIdentifier,
     // );
+    let listFinancesPayload = {
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          movementType: financeType == 'TODOS' ? null : financeType,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          createdAt: null,
+          monthMovement: null,
+          yearMovement: year,
+          searchByBill: '',
+          searchByContableMovement: '',
+          typeList: '',
+        },
+      },
+    };
+    if (month == 'ALL') {
+      listFinancesPayload.request.payload.monthMovement = null;
+    } else {
+      listFinancesPayload.request.payload.monthMovement = month;
+    }
     listFinancesPayload.request.payload.searchByBill = dataFilters.nroDoc;
     if (dataFilters.typeIdentifier == 'TODOS') {
       dataFilters.typeIdentifier = '';
@@ -707,11 +829,11 @@ const FinancesTable = (props) => {
           onChange={(event) => {
             console.log(event.target.value);
             if (event.target.value == 'TODOS') {
-              listFinancesPayload.request.payload.movementType = null;
+              //listFinancesPayload.request.payload.movementType = null;
               setFinanceType('TODOS');
             } else {
-              listFinancesPayload.request.payload.movementType =
-                event.target.value;
+              // listFinancesPayload.request.payload.movementType =
+              //   event.target.value;
               setFinanceType(event.target.value);
             }
           }}
@@ -749,10 +871,10 @@ const FinancesTable = (props) => {
               console.log(event.target.value);
               setMonth(event.target.value);
               if (event.target.value == 'ALL') {
-                listFinancesPayload.request.payload.monthMovement = null;
+                //listFinancesPayload.request.payload.monthMovement = null;
               } else {
-                listFinancesPayload.request.payload.monthMovement =
-                  event.target.value;
+                // listFinancesPayload.request.payload.monthMovement =
+                //   event.target.value;
                 listFinancesForResultStatePayload.request.payload.monthMovement =
                   event.target.value;
               }
@@ -779,8 +901,8 @@ const FinancesTable = (props) => {
           defaultValue={getYear()}
           onChange={() => {
             setYear(event.target.value);
-            listFinancesPayload.request.payload.yearMovement =
-              event.target.value;
+            // listFinancesPayload.request.payload.yearMovement =
+            //   event.target.value;
             listFinancesForResultStatePayload.request.payload.yearMovement =
               event.target.value;
           }}
@@ -895,7 +1017,15 @@ const FinancesTable = (props) => {
               ) : null}
               <TableCell>Detalle de compra</TableCell>
               <TableCell>Observaciones</TableCell>
-              <TableCell>Estado</TableCell>
+              <TableCell sx={{width: isMobile ? '9px' : '12px'}}>
+                <TableSortLabel
+                  active={orderBy === 'status'}
+                  direction={orderBy === 'status' ? order : 'asc'}
+                  onClick={() => handleSort('status')}
+                >
+                  Estado
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Tipo de compra</TableCell>
               <TableCell>Pagos de Comprobantes</TableCell>
               <TableCell>Otros Pagos</TableCell>
@@ -909,8 +1039,8 @@ const FinancesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {getFinancesRes && Array.isArray(getFinancesRes) ? (
-              getFinancesRes.sort(compare).map((obj, index) => {
+            {allFinancesRes && Array.isArray(allFinancesRes) ? (
+              allFinancesRes.sort(compare).map((obj, index) => {
                 // const paids = obj.payments.filter(
                 //   (obj) => obj.statusPayment == 'paid',
                 // );
@@ -1260,6 +1390,13 @@ const FinancesTable = (props) => {
             )}
           </TableBody>
         </Table>
+        {financesLastEvaluatedKey_pageListFinances ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
 
       <ButtonGroup
@@ -1296,7 +1433,7 @@ const FinancesTable = (props) => {
         ) : null}
 
         <Button
-          disabled={!(getFinancesRes && Array.isArray(getFinancesRes))}
+          disabled={!(allFinancesRes && Array.isArray(allFinancesRes))}
           onClick={() => {
             searchFinancesForResultState();
           }}
@@ -1440,8 +1577,8 @@ const FinancesTable = (props) => {
               //   merchantId: listFinancesPayload.request.payload.merchantId
               // }}
               data={getFinancesForResultStateRes}
-              principalYear={listFinancesPayload.request.payload.yearMovement}
-              principalMonth={listFinancesPayload.request.payload.monthMovement}
+              principalYear={year}
+              principalMonth={month}
             />
           </DialogContentText>
         </DialogContent>

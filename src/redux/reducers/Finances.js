@@ -1,5 +1,6 @@
 import {
   GET_FINANCES,
+  ALL_FINANCES,
   ADD_FINANCE,
   DELETE_FINANCE,
   UPDATE_FINANCE,
@@ -12,6 +13,8 @@ import {
 
 const INIT_STATE = {
   list: [],
+  allFinancesRes: [],
+  financesLastEvaluatedKey_pageListFinances: null,
 };
 
 const financesReducer = (state = INIT_STATE, action) => {
@@ -24,6 +27,41 @@ const financesReducer = (state = INIT_STATE, action) => {
         ...state,
         getFinancesRes: action.payload,
       };
+    case ALL_FINANCES:
+      console.log('actionProduct1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSortFinances = action.handleSort;
+      if(handleSortFinances){
+        return {
+          ...state,
+          allFinancesRes: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.allFinancesRes, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          allFinancesRes: items,
+          financesLastEvaluatedKey_pageListFinances: lastEvaluatedKey,
+        };
+      }
     case GET_FINANCES_FOR_RESULT_STATE:
       console.log(
         'data de reducer GET_FINANCES_FOR_RESULT_STATE',
