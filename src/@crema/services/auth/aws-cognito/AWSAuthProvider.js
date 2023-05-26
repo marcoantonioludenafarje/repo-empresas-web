@@ -472,7 +472,8 @@ const AwsAuthProvider = ({children}) => {
     dispatch({type: FETCH_START});
     try {
       await Auth.completeNewPassword(user, newPassword);
-      history.replace('/signin');
+      setAwsCognitoData({...awsCognitoData, isLoading: false});
+      history.replace('/sample/home');
       dispatch({
         type: SHOW_MESSAGE,
         payload: 'Congratulations, new password made',

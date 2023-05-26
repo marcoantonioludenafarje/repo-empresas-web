@@ -356,7 +356,7 @@ const OutputsTable = (props) => {
     }
   }, []);
   useEffect(() => {
-    if (userDataRes && userDataRes.merchantSelected) {
+    if (userDataRes && userDataRes.merchantSelected && getRolUserRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: GET_MOVEMENTS, payload: undefined});
@@ -408,7 +408,7 @@ const OutputsTable = (props) => {
           : 'PJ',
       );
     }
-  }, [userDataRes]);
+  }, [userDataRes, getRolUserRes]);
   useEffect(() => {
     setValue2(Date.now());
 
