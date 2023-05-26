@@ -254,8 +254,8 @@ const UpdateOutput = (props) => {
   const prevMoneyToConvert = prevMoneyToConvertRef.current;
 
   //RESULTADOS DE LLAMADAS A APIS
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  console.log('getMovementsRes', getMovementsRes);
+  const {outputItems_pageListOutput} = useSelector(({movements}) => movements);
+  console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
   const {globalParameter} = useSelector(({general}) => general);
@@ -269,8 +269,8 @@ const UpdateOutput = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-  if (getMovementsRes != undefined) {
-    selectedOutput = getMovementsRes.find(
+  if (outputItems_pageListOutput != undefined) {
+    selectedOutput = outputItems_pageListOutput.find(
       (input) => input.movementHeaderId == query.movementHeaderId,
     );
     console.log('selectedOutput', selectedOutput);

@@ -196,8 +196,8 @@ const GetReceipt = (props) => {
   const prevMoneyToConvert = prevMoneyToConvertRef.current;
 
   //RESULTADOS DE LLAMADAS A APIS
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  console.log('getMovementsRes', getMovementsRes);
+  const {outputItems_pageListOutput} = useSelector(({movements}) => movements);
+  console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -293,8 +293,8 @@ const GetReceipt = (props) => {
       setPaymentWay('debit');
     }
     getBusinessParameter(businessParameterPayload);
-    if (getMovementsRes !== undefined) {
-      selectedOutput = getMovementsRes.find(
+    if (outputItems_pageListOutput !== undefined) {
+      selectedOutput = outputItems_pageListOutput.find(
         (input) => input.movementHeaderId == query.movementHeaderId,
       );
       console.log('selectedOutput', selectedOutput);
@@ -1603,7 +1603,7 @@ const GetReceipt = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            {getMovementsRes.length !== 0 ? (
+            {outputItems_pageListOutput.length !== 0 ? (
               <>
                 <Button
                   color='primary'
@@ -1612,7 +1612,7 @@ const GetReceipt = (props) => {
                   onClick={() => {
                     Router.push({
                       pathname: '/sample/finances/new-earning',
-                      query: getMovementsRes.find(
+                      query: outputItems_pageListOutput.find(
                         (obj) =>
                           obj.movementHeaderId ==
                           selectedOutput.movementHeaderId,

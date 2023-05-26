@@ -244,8 +244,8 @@ const NewOutput = (props) => {
   const prevMoneyToConvert = prevMoneyToConvertRef.current;
 
   //RESULTADOS DE LLAMADAS A APIS
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  console.log('getMovementsRes', getMovementsRes);
+  const {outputItems_pageListOutput} = useSelector(({movements}) => movements);
+  console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -1456,7 +1456,7 @@ const NewOutput = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            {getMovementsRes.length !== 0 ? (
+            {outputItems_pageListOutput.length !== 0 ? (
               <>
                 {validationClientType('referralGuide') &&
                 !hasBill.includes('referralGuide') &&
@@ -1472,7 +1472,7 @@ const NewOutput = (props) => {
                     onClick={() => {
                       Router.push({
                         pathname: '/sample/referral-guide/get',
-                        query: getMovementsRes.find(
+                        query: outputItems_pageListOutput.find(
                           (obj) =>
                             obj.movementHeaderId ==
                             addMovementRes.movementHeaderId,
@@ -1497,7 +1497,7 @@ const NewOutput = (props) => {
                     onClick={() => {
                       Router.push({
                         pathname: '/sample/receipts/get',
-                        query: getMovementsRes.find(
+                        query: outputItems_pageListOutput.find(
                           (obj) =>
                             obj.movementHeaderId ==
                             addMovementRes.movementHeaderId,
@@ -1522,7 +1522,7 @@ const NewOutput = (props) => {
                     onClick={() => {
                       Router.push({
                         pathname: '/sample/bills/get',
-                        query: getMovementsRes.find(
+                        query: outputItems_pageListOutput.find(
                           (obj) =>
                             obj.movementHeaderId ==
                             addMovementRes.movementHeaderId,
@@ -1546,7 +1546,7 @@ const NewOutput = (props) => {
                     onClick={() => {
                       Router.push({
                         pathname: '/sample/finances/new-earning',
-                        query: getMovementsRes.find(
+                        query: outputItems_pageListOutput.find(
                           (obj) =>
                             obj.movementHeaderId ==
                             addMovementRes.movementHeaderId,
