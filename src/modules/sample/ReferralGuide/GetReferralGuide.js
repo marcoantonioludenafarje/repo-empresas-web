@@ -196,8 +196,8 @@ const GetReferralGuide = () => {
   const {userDataRes} = useSelector(({user}) => user);
   const {addReferralGuideRes} = useSelector(({movements}) => movements);
   console.log('addReferralGuideRes', addReferralGuideRes);
-  const {getMovementsRes} = useSelector(({movements}) => movements);
-  console.log('getMovementsRes', getMovementsRes);
+  const {outputItems_pageListOutput} = useSelector(({movements}) => movements);
+  console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
   const {successMessage} = useSelector(({movements}) => movements);
@@ -322,15 +322,15 @@ const GetReferralGuide = () => {
 
   useEffect(() => {
     if (
-      getMovementsRes === undefined ||
-      !Array.isArray(getMovementsRes) ||
-      getMovementsRes.length < 1
+      outputItems_pageListOutput === undefined ||
+      !Array.isArray(outputItems_pageListOutput) ||
+      outputItems_pageListOutput.length < 1
     ) {
       toGetMovements(listMovements);
     }
-    if (getMovementsRes && getMovementsRes.length !== 0) {
+    if (outputItems_pageListOutput && outputItems_pageListOutput.length !== 0) {
       let weight = 0;
-      let output = getMovementsRes.find(
+      let output = outputItems_pageListOutput.find(
         (obj) => obj.movementHeaderId == query.movementHeaderId,
       );
       console.log('output', output);
@@ -433,7 +433,7 @@ const GetReferralGuide = () => {
         payload: null,
       }); */
     }
-  }, [getMovementsRes, routeToReferralGuide]);
+  }, [outputItems_pageListOutput, routeToReferralGuide]);
 
   useEffect(() => {
     if (successMessage && addReferralGuideRes && changeGenerateRG) {
@@ -1634,7 +1634,7 @@ const GetReferralGuide = () => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            {getMovementsRes && Array.isArray(getMovementsRes) ? (
+            {outputItems_pageListOutput && Array.isArray(outputItems_pageListOutput) ? (
               <>
                 {!selectedOutput.existBill ? (
                   <Button
@@ -1644,7 +1644,7 @@ const GetReferralGuide = () => {
                     onClick={() => {
                       Router.push({
                         pathname: '/sample/bills/get',
-                        query: getMovementsRes.find(
+                        query: outputItems_pageListOutput.find(
                           (obj) =>
                             obj.movementHeaderId ==
                             selectedOutput.movementHeaderId,
@@ -1663,7 +1663,7 @@ const GetReferralGuide = () => {
                     onClick={() => {
                       Router.push({
                         pathname: '/sample/finances/new-earning',
-                        query: getMovementsRes.find(
+                        query: outputItems_pageListOutput.find(
                           (obj) =>
                             obj.movementHeaderId ==
                             selectedOutput.movementHeaderId,
