@@ -108,6 +108,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_MOVEMENTS,
+  DELETE_MOVEMENT,
   GET_USER_DATA,
   GET_ROL_USER,
   GENERATE_SELL_TICKET,
@@ -302,6 +303,8 @@ const OutputsTable = (props) => {
   console.log('getMovementsRes', getMovementsRes);
   console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   console.log('outputLastEvaluatedKey_pageListOutput', outputLastEvaluatedKey_pageListOutput);
+  const {deleteMovementRes} = useSelector(({movements}) => movements);
+  console.log('deleteMovementRes', deleteMovementRes);
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
@@ -972,7 +975,9 @@ const OutputsTable = (props) => {
   };
 
   const showMessage = () => {
-    if (successMessage != undefined) {
+    if (successMessage &&
+        deleteMovementRes &&
+        !('error' in deleteMovementRes)) {
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -987,7 +992,9 @@ const OutputsTable = (props) => {
           </DialogContentText>
         </>
       );
-    } else if (errorMessage != undefined) {
+    } else if ((successMessage && deleteMovementRes &&
+          'error' in deleteMovementRes ) ||
+        ((typeof errorMessage === 'object' && errorMessage !== null && !Array.isArray(errorMessage)) && errorMessage.error)) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -995,7 +1002,11 @@ const OutputsTable = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error al tratar de eliminar.
+            <IntlMessages id='message.register.data.error' />
+            <br />
+            {deleteMovementRes && 'error' in deleteMovementRes 
+              ? deleteMovementRes .error
+              : null}
           </DialogContentText>
         </>
       );

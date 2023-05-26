@@ -578,20 +578,20 @@ const GetReceipt = (props) => {
             createdAt: Number(query.createdAt),
             clientId: query.clientId || '',
             totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)),
-            issueDate: specialFormatToSunat(Date.now()),
+            issueDate: specialFormatToSunat(value),
             serial: serial,
             documentIntern: query.documentIntern,
             clientEmail: data.clientEmail,
             transactionNumber: data.transactionNumber || '',
             /* numberBill: 3, */
-            automaticSendSunat: true,
+            automaticSendSunat: true, 
             automaticSendClient: true,
             referralGuide: data.guide ? true : false,
             creditSale: paymentWay == 'credit',
             methodToPay: paymentMethod,
             earningGeneration: earningGeneration,
             referralGuideSerial: data.guide ? data.guide : '',
-            dueDate: specialFormatToSunat(Date.now()),
+            dueDate: specialFormatToSunat(value),
             observation: data.observation ? data.observation : '',
             igv: Number(query.igv),
             productsInfo: selectedProducts.map((obj) => {
@@ -921,7 +921,7 @@ const GetReceipt = (props) => {
                       maxDate={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)}
                       onChange={(newValue) => {
                         setValue(newValue);
-                        console.log('date', newValue);
+                        console.log('date1', newValue);
                       }}
                     />
                   </Grid>

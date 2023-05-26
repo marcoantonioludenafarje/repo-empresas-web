@@ -11,6 +11,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   UPDATE_MOVEMENT,
+  DELETE_MOVEMENT,
   GENERATE_INVOICE,
   CANCEL_INVOICE,
   ADD_REFERRAL_GUIDE,
@@ -363,6 +364,12 @@ const movementsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         updateMovementRes: action.payload,
+      };
+    case DELETE_MOVEMENT:
+      console.log('data de reducer DELETE_MOVEMENT', action.payload);
+      return {
+        ...state,
+        deleteMovementRes: action.payload,
       };
     case GENERATE_INVOICE:
       console.log('data de reducer GENERATE_INVOICE', action.payload);

@@ -97,9 +97,12 @@ export const toDateAndHOurs = (date) => {
   return `${resDate} ${resTime}`;
 };
 
-export const specialFormatToSunat = () => {
-  const date = new Date();
-  let result =
+export const specialFormatToSunat = (miliseconds) => {
+  let date = new Date();
+  if (miliseconds)
+    date = new Date(miliseconds);
+  
+    let result =
     ('0' + date.getDate()).slice(-2) +
     '-' +
     ('0' + (date.getMonth() + 1)).slice(-2) +
@@ -149,7 +152,7 @@ function comparar(a, b) {
 export const getInformationGrouped = (arrayMovements) => {
   let transformData = arrayMovements
     .map((item) => {
-      let auxiliarDateData = new Date(item.timestampMovement);
+      let auxiliarDateData = new Date(item.createdAt);
       return {
         ...item,
         month: `${auxiliarDateData.getMonth()}/${auxiliarDateData.getFullYear()}`,
@@ -158,7 +161,7 @@ export const getInformationGrouped = (arrayMovements) => {
       };
     })
     .sort((a, b) => {
-      return b.timestampMovement - a.timestampMovement;
+      return b.createdAt - a.createdAt;
     });
 
   let masterData = {
@@ -221,7 +224,7 @@ export const getInformationGrouped = (arrayMovements) => {
       ? (stockRelativo += item.quantity)
       : (stockRelativo -= item.quantity);
     masterData.stockResult.push({
-      name: convertToDatePretty(item.timestampMovement),
+      name: convertToDatePretty(item.createdAt),
       value: stockRelativo,
     });
     if (item.movementType == 'OUTPUT') {

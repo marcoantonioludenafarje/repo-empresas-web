@@ -1061,9 +1061,13 @@ const FinancesTable = (props) => {
                           : obj.folderMovement.split('/').slice(-1)
                       }`}</TableCell>
                       <TableCell>{showType(obj.movementType)}</TableCell>
-                      <TableCell>{`${obj.typeDocumentProvider} ${obj.numberDocumentProvider}`}</TableCell>
+                      <TableCell>{obj.typeDocumentProvider 
+                                  ?`${obj.typeDocumentProvider} ${obj.numberDocumentProvider}`
+                                  : 'Sin documento'}</TableCell>
                       <TableCell>{obj.billIssueDate}</TableCell>
-                      <TableCell>{obj.denominationProvider}</TableCell>
+                      <TableCell>{obj.denominationProvider
+                                  ? obj.denominationProvider
+                                  : 'No definido'}</TableCell>
                       <TableCell>{obj.serialNumberBill}</TableCell>
                       <TableCell align='center'>
                         {obj.documentsMovement &&

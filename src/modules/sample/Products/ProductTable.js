@@ -219,42 +219,53 @@ const ProductTable = (arrayObjs, props) => {
   };
 
   // Función para manejar el clic en el encabezado de la tabla
-  const handleSort = (field) => {
+  const handleSort = (field, type) => {
+    let sortedProducts;
+
     if (orderBy === field) {
       // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
       setOrder(order === 'asc' ? 'desc' : 'asc');
-      const sortedProducts = [...allProductsRes].sort((a, b) => {
-        const descriptionA = a[`${field}`].toString() ?? '';
-        const descriptionB = b[`${field}`].toString() ?? '';
-        if (order === 'asc') {
-          return descriptionA.localeCompare(descriptionB);
-        } else {
-          return descriptionB.localeCompare(descriptionA);
-        }
-      });
-      dispatch({
-        type: ALL_PRODUCTS,
-        payload: sortedProducts,
-        handleSort: true,
-      });
-      forceUpdate();
+
     } else {
-      // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
       setOrderBy(field);
       setOrder('asc');
-      // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
-      const sortedProducts = [...allProductsRes].sort((a, b) => {
-        const descriptionA = a[`${field}`].toString() ?? '';
-        const descriptionB = b[`${field}`].toString() ?? '';
-        return descriptionB.localeCompare(descriptionA);
-      });
-      dispatch({
-        type: ALL_PRODUCTS,
-        payload: sortedProducts,
-        handleSort: true,
-      });
-      forceUpdate();
     }
+
+    sortedProducts = [...allProductsRes].sort((a, b) => {          
+      let descriptionA = null;
+      if (type == 'number' || type == 'date')
+        descriptionA = (a[`${field}`] ? Number(a[`${field}`].toString()) : 0) ?? 0;
+      else
+        descriptionA = (a[`${field}`] ? a[`${field}`].toString() : '') ?? '';
+      
+      let descriptionB = null;
+      if (type == 'number' || type == 'date')  
+        descriptionB = (b[`${field}`] ? Number(b[`${field}`].toString()) : 0) ?? 0;
+      else
+        descriptionB = (b[`${field}`] ? b[`${field}`].toString() : '') ?? '';
+
+      console.log('descriptionA',descriptionA);
+      console.log('descriptionB',descriptionB);
+
+      if (order === 'asc') {
+        if (type == 'number' || type == 'date')
+          return descriptionA - descriptionB;
+        else
+          return descriptionA.localeCompare(descriptionB);
+      } else {
+        if (type == 'number' || type == 'date')
+          return descriptionB - descriptionA;
+        else
+          return descriptionB.localeCompare(descriptionA);
+      }
+    });
+
+    dispatch({
+      type: ALL_PRODUCTS,
+      payload: sortedProducts,
+      handleSort: true,
+    });
+    forceUpdate();
   };
   useEffect(() => {
     if (allProductsRes) {
@@ -803,7 +814,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'weight'}
                   direction={orderBy === 'weight' ? order : 'asc'}
-                  onClick={() => handleSort('weight')}
+                  onClick={() => handleSort('weight','number')}
                 >
                   Peso
                 </TableSortLabel>
@@ -821,7 +832,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'costPriceUnit'}
                   direction={orderBy === 'costPriceUnit' ? order : 'asc'}
-                  onClick={() => handleSort('costPriceUnit')}
+                  onClick={() => handleSort('costPriceUnit','number')}
                 >
                   Precio costo sugerido
                 </TableSortLabel>
@@ -830,7 +841,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'sellPriceUnit'}
                   direction={orderBy === 'sellPriceUnit' ? order : 'asc'}
-                  onClick={() => handleSort('sellPriceUnit')}
+                  onClick={() => handleSort('sellPriceUnit','number')}
                 >
                   Precio venta sugerido
                 </TableSortLabel>
@@ -839,7 +850,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'initialStock'}
                   direction={orderBy === 'initialStock' ? order : 'asc'}
-                  onClick={() => handleSort('initialStock')}
+                  onClick={() => handleSort('initialStock','number')}
                 >
                   Stock inicial
                 </TableSortLabel>
@@ -848,7 +859,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'createdDate'}
                   direction={orderBy === 'createdDate' ? order : 'asc'}
-                  onClick={() => handleSort('createdDate')}
+                  onClick={() => handleSort('createdDate','date')}
                 >
                   Fecha registrada
                 </TableSortLabel>
@@ -857,7 +868,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'updatedDate'}
                   direction={orderBy === 'updatedDate' ? order : 'asc'}
-                  onClick={() => handleSort('updatedDate')}
+                  onClick={() => handleSort('updatedDate','date')}
                 >
                   Última actualización
                 </TableSortLabel>

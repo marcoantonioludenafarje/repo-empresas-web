@@ -49,7 +49,7 @@ import {getInformationGrouped, translateValue} from '../../../Utils/utils';
 import {Fonts} from '../../../shared/constants/AppEnums';
 import TotalBalance from './TotalBalance';
 import Coins from './Coins';
-import {justDate, justTime} from '../../../Utils/utils';
+import {justDate, justTime, convertToDateWithoutTime} from '../../../Utils/utils';
 //ESTILOS
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -608,7 +608,7 @@ const ProductMovementTable = (props) => {
                       key={obj.product}
                     >
                       <TableCell>
-                        {convertToDate(obj.timestampMovement)}
+                        {convertToDate(obj.createdAt)}
                       </TableCell>
                       {/* tipo */}
                       <TableCell>
@@ -681,10 +681,10 @@ const ProductMovementTable = (props) => {
                           key={index}
                         >
                           <TableCell sx={{py: 0}}>
-                            {justDate(obj.dateHistory)}
+                            {convertToDateWithoutTime(obj.dateHistory)}
                           </TableCell>
                           <TableCell sx={{py: 0}}>
-                            {justTime(obj.dateHistory)}
+                            {convertToDateWithoutTime(obj.dateHistory)}
                           </TableCell>
                           <TableCell
                             hover
@@ -767,7 +767,7 @@ const ProductMovementTable = (props) => {
         </Grid>
       ) : null}
 
-      <Grid item xs={width > 780 ? 8 : 12} sx={{width: '50%'}}>
+      <Grid item xs={width > 780 ? 12 : 12} sx={{width: '50%'}}>
         <Card sx={{p: 4}}>
           <ProductVsStock data={stockHistory} linex={'Stock'} />
         </Card>

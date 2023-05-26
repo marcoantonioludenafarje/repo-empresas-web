@@ -111,6 +111,12 @@ let typeAlert = '';
 let selectedOutput = {};
 
 const NewEarning = (props) => {
+  //VARIABLES DE PARAMETROS
+  let changeValueField;
+  let getValueField;
+  let isFormikSubmitting;
+  let setFormikSubmitting;
+
   const router = useRouter();
   const {query} = router;
   const {messages} = useIntl();
@@ -138,20 +144,24 @@ const NewEarning = (props) => {
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [typeIcon, setTypeIcon] = React.useState('2');
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState('bill');
-  let changeValueField;
   const dispatch = useDispatch();
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
+  const [openClientComprobation, setOpenClientComprobation] =
+    React.useState(false);
+  const [isClientValidated, setIsClientValidated] = React.useState(false);
 
   useEffect(() => {
     getBusinessParameter(businessParameterPayload);
     listPayments = [];
+    console.log('query', query);
+    console.log('query1', isObjEmpty(query));
     setSelectedClient(
       isObjEmpty(query)
         ? {}
         : {
             clientId: query.clientId,
-            denominationClient: query.clientName || selectedOutput.clientName,
+            denominationClient: query.clientName || selectedOutput.clientName || query.denominationClient,
           },
     );
     listOtherPayConcepts = [];
@@ -335,11 +345,24 @@ const NewEarning = (props) => {
     },
   };
 
-  const handleData = (data, {setSubmitting}) => {
-    setSubmitting(true);
+  const handleData = (data, client) => {
+    let localIsClientValidated = isClientValidated;
+    if (Object.keys(selectedClient).length != 0 && selectedClient.clientId.length != 0) {
+      setIsClientValidated(true);
+      localIsClientValidated = true;
+    } else {
+      setOpenClientComprobation(true);
+      setFormikSubmitting(false);
+    }
 
-    if (selectedClient.clientId) {
+    console.log('selectedClient:',selectedClient)
+
+    if (localIsClientValidated || client == 'enabled') {
       // if (listPayments.length > 0) {
+      setFormikSubmitting(true);
+
+      if (Object.keys(selectedClient).length == 0)
+        selectedClient.clientId = "";
 
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
@@ -353,27 +376,27 @@ const NewEarning = (props) => {
         selectedOutput.proofOfPaymentUserCreatedMetadata || '';
       (newFinancePayload.request.payload.movements[0].contableMovements =
         selectedOutput.contableMovements || []),
-        (newFinancePayload.request.payload.movements[0].numberDocumentProvider =
-          selectedClient.clientId.split('-')[1]);
+      (newFinancePayload.request.payload.movements[0].numberDocumentProvider =
+        selectedClient.clientId.length != 0 ? selectedClient.clientId.split('-')[1] : "");
       newFinancePayload.request.payload.movements[0].denominationProvider =
-        selectedClient.denominationClient;
+        selectedClient.clientId.length != 0 ? selectedClient.denominationClient : "";
       newFinancePayload.request.payload.movements[0].providerId =
         selectedClient.clientId;
       newFinancePayload.request.payload.movements[0].typeDocumentProvider =
-        selectedClient.clientId.split('-')[0];
+        selectedClient.clientId.length != 0 ? selectedClient.clientId.split('-')[0] : "";
       newFinancePayload.request.payload.movements[0].billIssueDate =
         convertToDateWithoutTime(value2);
       newFinancePayload.request.payload.movements[0].serialNumberBill =
-        data.nroBill;
+        getValueField('nroBill').value;//data.nroBill;
       newFinancePayload.request.payload.movements[0].description =
-        data.saleDetail;
+        getValueField('saleDetail').value;//data.saleDetail;
       newFinancePayload.request.payload.movements[0].observation =
-        data.saleObservation;
+        getValueField('saleObservation').value;//data.saleObservation;
       newFinancePayload.request.payload.movements[0].totalAmount = Number(
-        data.totalAmounth,
+        getValueField('totalAmounth').value//data.totalAmounth,
       );
       newFinancePayload.request.payload.movements[0].documentsMovement =
-        data.documentsMovement || null;
+        getValueField('documentsMovement').value;//data.documentsMovement || null;
       newFinancePayload.request.payload.movements[0].status = statusEarning;
       newFinancePayload.request.payload.movements[0].movementHeaderId =
         !isObjEmpty(query) && query.movementHeaderId
@@ -430,20 +453,22 @@ const NewEarning = (props) => {
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: ADD_FINANCE, payload: undefined});
       toAddFinance(newFinancePayload);
-      setOpenStatus(true);
+      setTimeout(() => {
+        setOpenStatus(true);
+      }, 1000);
       // } else {
       //   typeAlert = 'faltaPayment';
       //   setShowAlert(true);
       // }
-    } else {
+      setFormikSubmitting(false);
+    } /*else {
       typeAlert = 'client';
       setShowAlert(true);
-    }
+    }*/
     /* } else {
       typeAlert = 'faltaPayment';
       setShowAlert(true);
     } */
-    setSubmitting(false);
   };
 
   const handleClose = () => {
@@ -492,7 +517,9 @@ const NewEarning = (props) => {
   };
   const registerError = () => {
     return (
-      (successMessage != undefined && addFinanceRes) ||
+      (successMessage != undefined &&
+        addFinanceRes && 
+        'error' in addFinanceRes) ||
       errorMessage != undefined
     );
   };
@@ -539,7 +566,7 @@ const NewEarning = (props) => {
         </>
       );
     } else {
-      return <CircularProgress disableShrink />;
+      return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
     }
   };
 
@@ -619,8 +646,11 @@ const NewEarning = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
+            setFormikSubmitting = setSubmitting;
+            isFormikSubmitting = isSubmitting;
             return (
               <Form
                 style={{textAlign: 'center', marginTop: 4}}
@@ -641,6 +671,15 @@ const NewEarning = (props) => {
                     >
                       Selecciona un cliente
                     </Button>
+                  </Grid>
+                  <Grid item xs={12} sx={{textAlign: 'center'}}>
+                    <Typography
+                      sx={{
+                        mx: 'auto',
+                      }}
+                    >
+                      {selectedClient.denominationClient}
+                    </Typography>
                   </Grid>
                   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
@@ -676,16 +715,6 @@ const NewEarning = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12} sx={{textAlign: 'center'}}>
-                    <Typography
-                      sx={{
-                        mx: 'auto',
-                      }}
-                    >
-                      {selectedClient.denominationClient}
-                    </Typography>
-                  </Grid>
-
                   <Grid item xs={12}>
                     <AppUpperCaseTextField
                       label={
@@ -1232,6 +1261,49 @@ const NewEarning = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={openClientComprobation}
+        onClose={() => setOpenClientComprobation(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Cliente No Identificado'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea continuar con el registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            disabled={isFormikSubmitting}
+            variant='outlined'
+            onClick={() => {
+              setFormikSubmitting(true);
+              setIsClientValidated(true);
+              handleData({data1: 'a'}, 'enabled');
+            }}
+          >
+            Sí
+          </Button>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              setOpenClientComprobation(false);
+            }}
+          >
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Card>
   );
 };
