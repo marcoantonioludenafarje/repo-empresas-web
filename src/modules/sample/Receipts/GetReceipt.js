@@ -334,14 +334,14 @@ const GetReceipt = (props) => {
     selectedProducts = isObjEmpty(query)
       ? []
       : selectedOutput.descriptionProductsInfo;
-    total = (selectedOutput 
-      ? (selectedOutput.totalPriceWithoutIgv
+    total = selectedOutput
+      ? selectedOutput.totalPriceWithoutIgv
         ? selectedOutput.totalPriceWithoutIgv
-        : selectedOutput.totalPriceWithIgv) 
-      : 0 );
+        : selectedOutput.totalPriceWithIgv
+      : 0;
     selectedClient = isObjEmpty(query)
       ? []
-      :{clientId: query.clientId, clientName: query.clientName};
+      : {clientId: query.clientId, clientName: query.clientName};
   }, [selectedOutput]);
 
   useEffect(() => {
@@ -584,7 +584,7 @@ const GetReceipt = (props) => {
             clientEmail: data.clientEmail,
             transactionNumber: data.transactionNumber || '',
             /* numberBill: 3, */
-            automaticSendSunat: true, 
+            automaticSendSunat: true,
             automaticSendClient: true,
             referralGuide: data.guide ? true : false,
             creditSale: paymentWay == 'credit',

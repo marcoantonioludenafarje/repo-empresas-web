@@ -73,7 +73,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
       console.log('actionProduct1234', action);
       console.log('action.payload1234', action.payload);
       let handleSortI = action.handleSort;
-      if(handleSortI){
+      if (handleSortI) {
         return {
           ...state,
           inputItems_pageListInput: action.payload,
@@ -108,7 +108,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
       console.log('actionProduct1234', action);
       console.log('action.payload1234', action.payload);
       let handleSortO = action.handleSort;
-      if(handleSortO){
+      if (handleSortO) {
         return {
           ...state,
           outputItems_pageListOutput: action.payload,
@@ -121,7 +121,10 @@ const movementsReducer = (state = INIT_STATE, action) => {
 
         if (request && request.LastEvaluatedKey) {
           // En estos casos hay que agregar al listado actual de items
-          items = [...state.outputItems_pageListOutput, ...action.payload.Items];
+          items = [
+            ...state.outputItems_pageListOutput,
+            ...action.payload.Items,
+          ];
           lastEvaluatedKey = action.payload.LastEvaluatedKey
             ? action.payload.LastEvaluatedKey
             : null;
@@ -159,7 +162,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
       console.log('actionProduct1234', action);
       console.log('action.payload1234', action.payload);
       let handleSortRG = action.handleSort;
-      if(handleSortRG){
+      if (handleSortRG) {
         return {
           ...state,
           referralGuideItems_pageListGuide: action.payload,
@@ -172,7 +175,10 @@ const movementsReducer = (state = INIT_STATE, action) => {
 
         if (request && request.LastEvaluatedKey) {
           // En estos casos hay que agregar al listado actual de items
-          items = [...state.referralGuideItems_pageListGuide, ...action.payload.Items];
+          items = [
+            ...state.referralGuideItems_pageListGuide,
+            ...action.payload.Items,
+          ];
           lastEvaluatedKey = action.payload.LastEvaluatedKey
             ? action.payload.LastEvaluatedKey
             : null;
@@ -211,7 +217,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
       console.log('actionProduct1234', action);
       console.log('action.payload1234', action.payload);
       let handleSortBL = action.handleSort;
-      if(handleSortBL){
+      if (handleSortBL) {
         return {
           ...state,
           billItems_pageListBill: action.payload,
@@ -262,7 +268,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
       console.log('actionProduct1234', action);
       console.log('action.payload1234', action.payload);
       let handleSortRL = action.handleSort;
-      if(handleSortRL){
+      if (handleSortRL) {
         return {
           ...state,
           receiptItems_pageListReceipt: action.payload,
@@ -275,7 +281,10 @@ const movementsReducer = (state = INIT_STATE, action) => {
 
         if (request && request.LastEvaluatedKey) {
           // En estos casos hay que agregar al listado actual de items
-          items = [...state.receiptItems_pageListReceipt, ...action.payload.Items];
+          items = [
+            ...state.receiptItems_pageListReceipt,
+            ...action.payload.Items,
+          ];
           lastEvaluatedKey = action.payload.LastEvaluatedKey
             ? action.payload.LastEvaluatedKey
             : null;
@@ -310,7 +319,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
       console.log('actionProduct1234', action);
       console.log('action.payload1234', action.payload);
       let handleSortNL = action.handleSort;
-      if(handleSortNL){
+      if (handleSortNL) {
         return {
           ...state,
           noteItems_pageListNote: action.payload,

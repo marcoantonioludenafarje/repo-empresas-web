@@ -161,7 +161,10 @@ const NewEarning = (props) => {
         ? {}
         : {
             clientId: query.clientId,
-            denominationClient: query.clientName || selectedOutput.clientName || query.denominationClient,
+            denominationClient:
+              query.clientName ||
+              selectedOutput.clientName ||
+              query.denominationClient,
           },
     );
     listOtherPayConcepts = [];
@@ -347,7 +350,10 @@ const NewEarning = (props) => {
 
   const handleData = (data, client) => {
     let localIsClientValidated = isClientValidated;
-    if (Object.keys(selectedClient).length != 0 && selectedClient.clientId.length != 0) {
+    if (
+      Object.keys(selectedClient).length != 0 &&
+      selectedClient.clientId.length != 0
+    ) {
       setIsClientValidated(true);
       localIsClientValidated = true;
     } else {
@@ -355,14 +361,13 @@ const NewEarning = (props) => {
       setFormikSubmitting(false);
     }
 
-    console.log('selectedClient:',selectedClient)
+    console.log('selectedClient:', selectedClient);
 
     if (localIsClientValidated || client == 'enabled') {
       // if (listPayments.length > 0) {
       setFormikSubmitting(true);
 
-      if (Object.keys(selectedClient).length == 0)
-        selectedClient.clientId = "";
+      if (Object.keys(selectedClient).length == 0) selectedClient.clientId = '';
 
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
@@ -376,27 +381,33 @@ const NewEarning = (props) => {
         selectedOutput.proofOfPaymentUserCreatedMetadata || '';
       (newFinancePayload.request.payload.movements[0].contableMovements =
         selectedOutput.contableMovements || []),
-      (newFinancePayload.request.payload.movements[0].numberDocumentProvider =
-        selectedClient.clientId.length != 0 ? selectedClient.clientId.split('-')[1] : "");
+        (newFinancePayload.request.payload.movements[0].numberDocumentProvider =
+          selectedClient.clientId.length != 0
+            ? selectedClient.clientId.split('-')[1]
+            : '');
       newFinancePayload.request.payload.movements[0].denominationProvider =
-        selectedClient.clientId.length != 0 ? selectedClient.denominationClient : "";
+        selectedClient.clientId.length != 0
+          ? selectedClient.denominationClient
+          : '';
       newFinancePayload.request.payload.movements[0].providerId =
         selectedClient.clientId;
       newFinancePayload.request.payload.movements[0].typeDocumentProvider =
-        selectedClient.clientId.length != 0 ? selectedClient.clientId.split('-')[0] : "";
+        selectedClient.clientId.length != 0
+          ? selectedClient.clientId.split('-')[0]
+          : '';
       newFinancePayload.request.payload.movements[0].billIssueDate =
         convertToDateWithoutTime(value2);
       newFinancePayload.request.payload.movements[0].serialNumberBill =
-        getValueField('nroBill').value;//data.nroBill;
+        getValueField('nroBill').value; //data.nroBill;
       newFinancePayload.request.payload.movements[0].description =
-        getValueField('saleDetail').value;//data.saleDetail;
+        getValueField('saleDetail').value; //data.saleDetail;
       newFinancePayload.request.payload.movements[0].observation =
-        getValueField('saleObservation').value;//data.saleObservation;
+        getValueField('saleObservation').value; //data.saleObservation;
       newFinancePayload.request.payload.movements[0].totalAmount = Number(
-        getValueField('totalAmounth').value//data.totalAmounth,
+        getValueField('totalAmounth').value, //data.totalAmounth,
       );
       newFinancePayload.request.payload.movements[0].documentsMovement =
-        getValueField('documentsMovement').value;//data.documentsMovement || null;
+        getValueField('documentsMovement').value; //data.documentsMovement || null;
       newFinancePayload.request.payload.movements[0].status = statusEarning;
       newFinancePayload.request.payload.movements[0].movementHeaderId =
         !isObjEmpty(query) && query.movementHeaderId
@@ -518,7 +529,7 @@ const NewEarning = (props) => {
   const registerError = () => {
     return (
       (successMessage != undefined &&
-        addFinanceRes && 
+        addFinanceRes &&
         'error' in addFinanceRes) ||
       errorMessage != undefined
     );
@@ -1303,7 +1314,6 @@ const NewEarning = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-
     </Card>
   );
 };

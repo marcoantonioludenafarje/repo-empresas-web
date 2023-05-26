@@ -35,14 +35,17 @@ import {
   REFERRAL_GUIDES_BATCH_CONSULT,
   CANCEL_REFERRAL_GUIDE,
   GET_OUTPUT_PAGE_LISTGUIDE,
-  GET_INPUT_PAGE_LISTGUIDE
+  GET_INPUT_PAGE_LISTGUIDE,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
 
 export const getOutputItems_pageListOutput = (payload) => {
   return (dispatch, getState) => {
-    dispatch({type: FETCH_START, payload: {process: 'GET_OUTPUT_PAGE_LISTGUIDE'}});
+    dispatch({
+      type: FETCH_START,
+      payload: {process: 'GET_OUTPUT_PAGE_LISTGUIDE'},
+    });
     console.log('/inventory/outputs/v1/list', {body: payload});
     API.post('tunexo', '/inventory/outputs/v1/list', {body: payload})
       .then((data) => {
@@ -52,11 +55,13 @@ export const getOutputItems_pageListOutput = (payload) => {
           payload: data.response.payload,
           request: payload,
         });
-        dispatch({type: FETCH_SUCCESS,
+        dispatch({
+          type: FETCH_SUCCESS,
           payload: {
             process: 'GET_OUTPUT_PAGE_LISTGUIDE',
             message: 'Listado de salidas exitoso',
-          }});
+          },
+        });
       })
       .catch((error) => {
         console.log('getOutputItems_pageListOutput error', error);
@@ -66,7 +71,10 @@ export const getOutputItems_pageListOutput = (payload) => {
 };
 export const getInputItems_pageListInput = (payload) => {
   return (dispatch, getState) => {
-    dispatch({type: FETCH_START, payload: {process: 'GET_INPUT_PAGE_LISTGUIDE'}});
+    dispatch({
+      type: FETCH_START,
+      payload: {process: 'GET_INPUT_PAGE_LISTGUIDE'},
+    });
     console.log('/inventory/inputs/v1/list', {body: payload});
     API.post('tunexo', '/inventory/inputs/v1/list', {body: payload})
       .then((data) => {
@@ -76,11 +84,13 @@ export const getInputItems_pageListInput = (payload) => {
           payload: data.response.payload,
           request: payload,
         });
-        dispatch({type: FETCH_SUCCESS,
+        dispatch({
+          type: FETCH_SUCCESS,
           payload: {
             process: 'GET_INPUT_PAGE_LISTGUIDE',
             message: 'Listado de entradas exitoso',
-          }});
+          },
+        });
       })
       .catch((error) => {
         console.log('getInputItems_pageListInput error', error);
@@ -613,7 +623,10 @@ export const getPredefinedRoute_____PageListPredefinedRoutes = (payload) => {
 };
 export const getReferralGuides_PageListGuide = (payload) => {
   return (dispatch, getState) => {
-    dispatch({type: FETCH_START, payload: {process: 'GET_REFERRALGUIDE_PAGE_LISTGUIDE'}});
+    dispatch({
+      type: FETCH_START,
+      payload: {process: 'GET_REFERRALGUIDE_PAGE_LISTGUIDE'},
+    });
     console.log('/inventory/referralGuides/v1/list', {body: payload});
     API.post('tunexo', '/inventory/referralGuides/v1/list', {body: payload})
       .then((data) => {
@@ -623,11 +636,13 @@ export const getReferralGuides_PageListGuide = (payload) => {
           payload: data.response.payload,
           request: payload,
         });
-        dispatch({type: FETCH_SUCCESS,
+        dispatch({
+          type: FETCH_SUCCESS,
           payload: {
             process: 'GET_REFERRALGUIDE_PAGE_LISTGUIDE',
             message: 'Listado de guías de remisión exitoso',
-          }});
+          },
+        });
       })
       .catch((error) => {
         console.log('getReferralGuides_PageListGuide error', error);

@@ -33,13 +33,18 @@ export const getAllProducts = (payload) => {
     API.post('tunexo', '/inventory/products/list', {body: payload})
       .then((data) => {
         console.log('getAllProducts resultado', data);
-        dispatch({type: ALL_PRODUCTS, payload: data.response.payload,
-          request: payload});
-        dispatch({type: FETCH_SUCCESS,
+        dispatch({
+          type: ALL_PRODUCTS,
+          payload: data.response.payload,
+          request: payload,
+        });
+        dispatch({
+          type: FETCH_SUCCESS,
           payload: {
             process: 'ALL_PRODUCTS',
             message: 'Listado de productos exitoso',
-          }});
+          },
+        });
       })
       .catch((error) => {
         console.log('getAllProducts error', error);

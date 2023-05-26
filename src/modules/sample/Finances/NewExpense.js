@@ -130,7 +130,7 @@ const NewExpense = (props) => {
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [isProviderValidated, setIsProviderValidated] = React.useState(false);
   const [openProviderComprobation, setOpenProviderComprobation] =
-  React.useState(false);
+    React.useState(false);
 
   useEffect(() => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -146,7 +146,9 @@ const NewExpense = (props) => {
       : {
           providerId: query.providerId,
           denominationProvider:
-            query.providerName || selectedInput.providerName || query.denominationProvider,
+            query.providerName ||
+            selectedInput.providerName ||
+            query.denominationProvider,
         };
     console.log('selectedProvider', selectedProvider);
     setTimeout(() => {
@@ -327,7 +329,10 @@ const NewExpense = (props) => {
 
   const handleData = (data, provider) => {
     let localIsProviderValidated = isProviderValidated;
-    if (Object.keys(selectedProvider).length != 0 && selectedProvider.providerId.length != 0) {
+    if (
+      Object.keys(selectedProvider).length != 0 &&
+      selectedProvider.providerId.length != 0
+    ) {
       setIsProviderValidated(true);
       localIsProviderValidated = true;
     } else {
@@ -335,38 +340,44 @@ const NewExpense = (props) => {
       setFormikSubmitting(false);
     }
 
-    console.log('selectedProvider:',selectedProvider)
+    console.log('selectedProvider:', selectedProvider);
 
     if (localIsProviderValidated || provider == 'enabled') {
       setFormikSubmitting(true);
-      
+
       if (Object.keys(selectedProvider).length == 0)
-        selectedProvider.providerId = "";
+        selectedProvider.providerId = '';
 
-        console.log('selectedProvider1:',selectedProvider)
+      console.log('selectedProvider1:', selectedProvider);
 
-    //if (selectedProvider.providerId) {
+      //if (selectedProvider.providerId) {
       // if (listPayments.length > 0) {
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
       newFinancePayload.request.payload.movements[0].numberDocumentProvider =
-        selectedProvider.providerId.length != 0 ? selectedProvider.providerId.split('-')[1] : "";
+        selectedProvider.providerId.length != 0
+          ? selectedProvider.providerId.split('-')[1]
+          : '';
       newFinancePayload.request.payload.movements[0].denominationProvider =
-        selectedProvider.providerId.length != 0 ? selectedProvider.denominationProvider : "";
+        selectedProvider.providerId.length != 0
+          ? selectedProvider.denominationProvider
+          : '';
       newFinancePayload.request.payload.movements[0].providerId =
         selectedProvider.providerId;
       newFinancePayload.request.payload.movements[0].typeDocumentProvider =
-        selectedProvider.providerId.length != 0 ? selectedProvider.providerId.split('-')[0] : "";
+        selectedProvider.providerId.length != 0
+          ? selectedProvider.providerId.split('-')[0]
+          : '';
       newFinancePayload.request.payload.movements[0].billIssueDate =
         convertToDateWithoutTime(value2);
       newFinancePayload.request.payload.movements[0].serialNumberBill =
-        getValueField('nroBill').value;//data.nroBill;
+        getValueField('nroBill').value; //data.nroBill;
       newFinancePayload.request.payload.movements[0].description =
-        getValueField('saleDetail').value;//data.saleDetail;
+        getValueField('saleDetail').value; //data.saleDetail;
       newFinancePayload.request.payload.movements[0].observation =
-        getValueField('buyObservation').value;//data.buyObservation;
+        getValueField('buyObservation').value; //data.buyObservation;
       newFinancePayload.request.payload.movements[0].totalAmount = Number(
-        getValueField('totalAmounth').value//data.totalAmounth,
+        getValueField('totalAmounth').value, //data.totalAmounth,
       );
       newFinancePayload.request.payload.movements[0].status = statusExpense;
       newFinancePayload.request.payload.movements[0].movementHeaderId =
@@ -475,8 +486,8 @@ const NewExpense = (props) => {
   };
   const registerError = () => {
     return (
-      (successMessage != undefined && 
-        addFinanceRes && 
+      (successMessage != undefined &&
+        addFinanceRes &&
         'error' in addFinanceRes) ||
       errorMessage != undefined
     );
@@ -1185,7 +1196,6 @@ const NewExpense = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-
     </Card>
   );
 };

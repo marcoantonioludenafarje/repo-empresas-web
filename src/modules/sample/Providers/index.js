@@ -88,7 +88,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 let deletePayload = {
   request: {
     payload: {
@@ -111,7 +110,8 @@ const ProviderTable = (arrayObjs, props) => {
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [typeDocumentProvider, setTypeDocumentProvider] = React.useState('');
-  const [numberDocumentProvider, setNumberDocumentProvider] = React.useState('');
+  const [numberDocumentProvider, setNumberDocumentProvider] =
+    React.useState('');
   const [denominationProvider, setDenominationProvider] = React.useState('');
   let popUp = false;
   let codProdSelected = '';
@@ -189,9 +189,11 @@ const ProviderTable = (arrayObjs, props) => {
   }, []);
 
   useEffect(() => {
-    if (userDataRes &&
+    if (
+      userDataRes &&
       userDataRes.merchantSelected &&
-      userDataRes.merchantSelected.merchantId) {
+      userDataRes.merchantSelected.merchantId
+    ) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_PROVIDERS, payload: undefined});

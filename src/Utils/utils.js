@@ -99,10 +99,9 @@ export const toDateAndHOurs = (date) => {
 
 export const specialFormatToSunat = (miliseconds) => {
   let date = new Date();
-  if (miliseconds)
-    date = new Date(miliseconds);
-  
-    let result =
+  if (miliseconds) date = new Date(miliseconds);
+
+  let result =
     ('0' + date.getDate()).slice(-2) +
     '-' +
     ('0' + (date.getMonth() + 1)).slice(-2) +

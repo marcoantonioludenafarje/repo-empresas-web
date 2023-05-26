@@ -59,7 +59,7 @@ const productsReducer = (state = INIT_STATE, action) => {
       console.log('actionProduct1234', action);
       console.log('action.payload1234', action.payload);
       let handleSort = action.handleSort;
-      if(handleSort){
+      if (handleSort) {
         return {
           ...state,
           allProductsRes: action.payload,

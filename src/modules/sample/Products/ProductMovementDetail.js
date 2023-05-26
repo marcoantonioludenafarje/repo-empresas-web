@@ -49,7 +49,11 @@ import {getInformationGrouped, translateValue} from '../../../Utils/utils';
 import {Fonts} from '../../../shared/constants/AppEnums';
 import TotalBalance from './TotalBalance';
 import Coins from './Coins';
-import {justDate, justTime, convertToDateWithoutTime} from '../../../Utils/utils';
+import {
+  justDate,
+  justTime,
+  convertToDateWithoutTime,
+} from '../../../Utils/utils';
 //ESTILOS
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -607,9 +611,7 @@ const ProductMovementTable = (props) => {
                       sx={{'&:last-child td, &:last-child th': {border: 0}}}
                       key={obj.product}
                     >
-                      <TableCell>
-                        {convertToDate(obj.createdAt)}
-                      </TableCell>
+                      <TableCell>{convertToDate(obj.createdAt)}</TableCell>
                       {/* tipo */}
                       <TableCell>
                         {/* {translateValue('CONTABLE_MOVEMENTS', obj.movementType)} */}

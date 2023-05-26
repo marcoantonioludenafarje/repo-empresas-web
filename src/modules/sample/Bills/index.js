@@ -165,7 +165,9 @@ const BillsTable = (props) => {
     ({general}) => general,
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
-  const [initialTime, setInitialTime] = React.useState(toEpoch(Date.now() - 89280000));
+  const [initialTime, setInitialTime] = React.useState(
+    toEpoch(Date.now() - 89280000),
+  );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
@@ -189,7 +191,6 @@ const BillsTable = (props) => {
   const toExportExcelTemplateToBills = (payload) => {
     dispatch(exportExcelTemplateToBills(payload));
   };
-
 
   const handleNextPage = (event) => {
     //console.log('Llamando al  handleNextPage', handleNextPage);
@@ -452,7 +453,6 @@ const BillsTable = (props) => {
   //SELECCIÓN CALENDARIO
   const [value, setValue] = React.useState(Date.now() - 89280000);
   const [value2, setValue2] = React.useState(Date.now());
-
 
   const registerSuccess = () => {
     return (
@@ -740,7 +740,7 @@ const BillsTable = (props) => {
             setValue(newValue);
             console.log('date', newValue);
             const epochValue = toEpoch(newValue);
-            setInitialTime(epochValue)
+            setInitialTime(epochValue);
             // listPayload.request.payload.initialTime = toEpoch(newValue);
             // console.log('payload de busqueda', listPayload);
           }}
@@ -754,7 +754,7 @@ const BillsTable = (props) => {
             setValue2(newValue2);
             console.log('date 2', newValue2);
             const epochValue = toEpoch(newValue2);
-            setFinalTime(epochValue)
+            setFinalTime(epochValue);
             // listPayload.request.payload.finalTime = toEpoch(newValue2);
             // console.log('payload de busqueda', listPayload);
           }}

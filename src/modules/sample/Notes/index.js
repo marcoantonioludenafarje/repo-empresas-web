@@ -64,10 +64,7 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {
-  convertToDateWithoutTime,
-  translateValue,
-} from '../../../Utils/utils';
+import {convertToDateWithoutTime, translateValue} from '../../../Utils/utils';
 import AddReasonForm from './AddReasonForm';
 import {
   getNoteItems_pageListNote,
@@ -152,7 +149,9 @@ const CreditNotesTable = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
-  const [initialTime, setInitialTime] = React.useState(toEpoch(Date.now() - 89280000));
+  const [initialTime, setInitialTime] = React.useState(
+    toEpoch(Date.now() - 89280000),
+  );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
@@ -182,7 +181,6 @@ const CreditNotesTable = (props) => {
   const toExportExcelTemplateToNotes = (payload) => {
     dispatch(exportExcelTemplateToNotes(payload));
   };
-
 
   const handleNextPage = (event) => {
     //console.log('Llamando al  handleNextPage', handleNextPage);
@@ -430,7 +428,6 @@ const CreditNotesTable = (props) => {
   };
 
   const exportToExcel = () => {
-    
     let listPayload = {
       request: {
         payload: {
@@ -606,7 +603,7 @@ const CreditNotesTable = (props) => {
             setValue(newValue);
             console.log('date', newValue);
             const epochValue = toEpoch(newValue);
-            setInitialTime(epochValue)
+            setInitialTime(epochValue);
             // listPayload.request.payload.initialTime = toEpoch(newValue);
             // console.log('payload de busqueda', listPayload);
           }}
@@ -620,7 +617,7 @@ const CreditNotesTable = (props) => {
             setValue2(newValue2);
             console.log('date 2', newValue2);
             const epochValue = toEpoch(newValue2);
-            setFinalTime(epochValue)
+            setFinalTime(epochValue);
             // listPayload.request.payload.finalTime = toEpoch(newValue2);
             // console.log('payload de busqueda', listPayload);
           }}

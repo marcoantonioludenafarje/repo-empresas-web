@@ -30,8 +30,9 @@ const financesReducer = (state = INIT_STATE, action) => {
     case ALL_FINANCES:
       console.log('actionProduct1234', action);
       console.log('action.payload1234', action.payload);
+      console.log('Se está ejecutando ALL_FINANCES reducer');
       let handleSortFinances = action.handleSort;
-      if(handleSortFinances){
+      if (handleSortFinances) {
         return {
           ...state,
           allFinancesRes: action.payload,

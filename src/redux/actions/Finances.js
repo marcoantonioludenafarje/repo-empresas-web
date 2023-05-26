@@ -22,7 +22,10 @@ export const getFinances = (payload) => {
       // API.post('tunexo', '/facturacion/accounting/movement/list', {body: payload})
       .then((data) => {
         console.log('getFinances resultado', data);
-        dispatch({type: GET_FINANCES, payload: data.data.response.payload.Items});
+        dispatch({
+          type: GET_FINANCES,
+          payload: data.data.response.payload.Items,
+        });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -38,13 +41,18 @@ export const getAllFinances = (payload) => {
     request('post', '/facturacion/accounting/movement/list', payload)
       .then((data) => {
         console.log('getAllFinances resultado', data);
-        dispatch({type: ALL_FINANCES, payload: data.response.payload,
-          request: payload});
-        dispatch({type: FETCH_SUCCESS,
+        dispatch({
+          type: ALL_FINANCES,
+          payload: data.data.response.payload,
+          request: payload,
+        });
+        dispatch({
+          type: FETCH_SUCCESS,
           payload: {
             process: 'ALL_FINANCES',
             message: 'Listado de finanzas exitoso',
-          }});
+          },
+        });
       })
       .catch((error) => {
         console.log('getAllFinances error', error);
@@ -62,7 +70,7 @@ export const getFinancesForResultState = (payload) => {
         console.log('getFinancesForResultState resultado', data);
         dispatch({
           type: GET_FINANCES_FOR_RESULT_STATE,
-          payload: data.data.response.payload,
+          payload: data.data.response.payload.Items,
         });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })

@@ -180,7 +180,9 @@ const ReferralGuidesTable = (props) => {
   const [totalItems, setTotalItems] = React.useState([]);
   const [lastKey, setLastKey] = React.useState(null);
   const [errorDetail, setErrorDetail] = React.useState('');
-  const [initialTime, setInitialTime] = React.useState(toEpoch(Date.now() - 89280000));
+  const [initialTime, setInitialTime] = React.useState(
+    toEpoch(Date.now() - 89280000),
+  );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
@@ -291,22 +293,23 @@ const ReferralGuidesTable = (props) => {
   }
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
-
   // Función para manejar el clic en el encabezado de la tabla
   const handleSort = (field) => {
     if (orderBy === field) {
       // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
       setOrder(order === 'asc' ? 'desc' : 'asc');
-      if(field !== "totalPriceWithIgv"){
-        const sortedProducts = [...referralGuideItems_pageListGuide].sort((a, b) => {
-          const descriptionA = a[`${field}`] ?? '';
-          const descriptionB = b[`${field}`] ?? '';
-          if (order === 'asc') {
-            return descriptionA.localeCompare(descriptionB);
-          } else {
-            return descriptionB.localeCompare(descriptionA);
-          }
-        });
+      if (field !== 'totalPriceWithIgv') {
+        const sortedProducts = [...referralGuideItems_pageListGuide].sort(
+          (a, b) => {
+            const descriptionA = a[`${field}`] ?? '';
+            const descriptionB = b[`${field}`] ?? '';
+            if (order === 'asc') {
+              return descriptionA.localeCompare(descriptionB);
+            } else {
+              return descriptionB.localeCompare(descriptionA);
+            }
+          },
+        );
         dispatch({
           type: GET_REFERRALGUIDE_PAGE_LISTGUIDE,
           payload: sortedProducts,
@@ -319,12 +322,14 @@ const ReferralGuidesTable = (props) => {
       setOrderBy(field);
       setOrder('asc');
       // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
-      if(field !== "totalPriceWithIgv"){
-        const sortedProducts = [...referralGuideItems_pageListGuide].sort((a, b) => {
-          const descriptionA = a[`${field}`] ?? '';
-          const descriptionB = b[`${field}`] ?? '';
-          return descriptionB.localeCompare(descriptionA);
-        });
+      if (field !== 'totalPriceWithIgv') {
+        const sortedProducts = [...referralGuideItems_pageListGuide].sort(
+          (a, b) => {
+            const descriptionA = a[`${field}`] ?? '';
+            const descriptionB = b[`${field}`] ?? '';
+            return descriptionB.localeCompare(descriptionA);
+          },
+        );
         dispatch({
           type: GET_REFERRALGUIDE_PAGE_LISTGUIDE,
           payload: sortedProducts,
@@ -516,7 +521,6 @@ const ReferralGuidesTable = (props) => {
   //SELECCIÓN CALENDARIO
   const [value, setValue] = React.useState(Date.now() - 89280000);
   const [value2, setValue2] = React.useState(Date.now());
-
 
   const goToUpdate = () => {
     console.log(' factura', selectedReferralGuide);
@@ -811,7 +815,7 @@ const ReferralGuidesTable = (props) => {
             setValue(newValue);
             console.log('date', newValue);
             const epochValue = toEpoch(newValue);
-            setInitialTime(epochValue)
+            setInitialTime(epochValue);
             //listPayload.request.payload.initialTime = toEpoch(newValue);
             //console.log('payload de busqueda', listPayload);
           }}
@@ -825,7 +829,7 @@ const ReferralGuidesTable = (props) => {
             setValue2(newValue2);
             console.log('date 2', newValue2);
             const epochValue = toEpoch(newValue2);
-            setFinalTime(epochValue)
+            setFinalTime(epochValue);
             //listPayload.request.payload.finalTime = toEpoch(newValue2);
             //console.log('payload de busqueda', listPayload);
           }}

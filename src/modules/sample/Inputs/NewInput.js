@@ -217,7 +217,7 @@ const NewInput = (props) => {
   const [hasBill, setHasBill] = React.useState([]);
   const [isProviderValidated, setIsProviderValidated] = React.useState(false);
   const [openProviderComprobation, setOpenProviderComprobation] =
-  React.useState(false);
+    React.useState(false);
 
   const [minTutorial, setMinTutorial] = React.useState(false);
   const prevExchangeRateRef = useRef();
@@ -499,7 +499,6 @@ const NewInput = (props) => {
         });
       });
       if (selectedProducts.length > 0) {
-
         let localDocumentIntern = '';
         let localProviderId = '';
         if (Object.keys(selectedProvider).length != 0) {
@@ -510,58 +509,58 @@ const NewInput = (props) => {
               : null,
           );
           localProviderId = selectedProvider.providerId;
-        } 
+        }
 
         //if (selectedProvider.providerId*/) {
-          finalPayload = {
-            request: {
-              payload: {
-                header: {
-                  movementType: 'INPUT',
-                  documentIntern: localDocumentIntern,
-                  clientId: null,
-                  providerId: localProviderId,
-                  merchantId: userDataRes.merchantSelected.merchantId,
-                  quoteId: null,
-                  facturaId: null,
-                  issueDate: toSimpleDate(dateRegister),
-                  unitMeasureMoney: moneyToConvert,
-                  igv: addIgv,
-                  finalTotalPrice: Number(getValueField('totalField').value),//Number(data.totalField),
-                  isGeneratedByTunexo: generateBill,
-                  status: status,
-                  movementSubType: typeDocument,
-                  documentsMovement: cleanDocuments,
-                  editTotal: editTotal,
-                  observation: getValueField('inputObservation').value,//data.inputObservation,
-                  userCreated: userDataRes.userId,
-                  userCreatedMetadata: {
-                    nombreCompleto: userDataRes.nombreCompleto,
-                    email: userDataRes.email,
-                  },
+        finalPayload = {
+          request: {
+            payload: {
+              header: {
+                movementType: 'INPUT',
+                documentIntern: localDocumentIntern,
+                clientId: null,
+                providerId: localProviderId,
+                merchantId: userDataRes.merchantSelected.merchantId,
+                quoteId: null,
+                facturaId: null,
+                issueDate: toSimpleDate(dateRegister),
+                unitMeasureMoney: moneyToConvert,
+                igv: addIgv,
+                finalTotalPrice: Number(getValueField('totalField').value), //Number(data.totalField),
+                isGeneratedByTunexo: generateBill,
+                status: status,
+                movementSubType: typeDocument,
+                documentsMovement: cleanDocuments,
+                editTotal: editTotal,
+                observation: getValueField('inputObservation').value, //data.inputObservation,
+                userCreated: userDataRes.userId,
+                userCreatedMetadata: {
+                  nombreCompleto: userDataRes.nombreCompleto,
+                  email: userDataRes.email,
                 },
-                products: selectedProducts.map((obj) => {
-                  return {
-                    businessProductCode: obj.businessProductCode,
-                    quantity: Number(obj.count),
-                    priceUnit: Number(obj.priceProduct),
-                  };
-                }),
               },
+              products: selectedProducts.map((obj) => {
+                return {
+                  businessProductCode: obj.businessProductCode,
+                  quantity: Number(obj.count),
+                  priceUnit: Number(obj.priceProduct),
+                };
+              }),
             },
-          };
-          console.log('finalPayload', finalPayload);
-          /*dispatch({type: FETCH_SUCCESS, payload: undefined});
+          },
+        };
+        console.log('finalPayload', finalPayload);
+        /*dispatch({type: FETCH_SUCCESS, payload: undefined});
           dispatch({type: FETCH_ERROR, payload: undefined});
           dispatch({type: ADD_MOVEMENT, payload: []});*/
-          getAddMovement(finalPayload);
-          console.log('Data formulario principal', finalPayload);
-          /*selectedProducts = [];
+        getAddMovement(finalPayload);
+        console.log('Data formulario principal', finalPayload);
+        /*selectedProducts = [];
           selectedProvider = {};
           total = 0;*/
-          setTimeout(() => {
-            setOpenStatus(true);
-          }, 1000);
+        setTimeout(() => {
+          setOpenStatus(true);
+        }, 1000);
         /*} else {
           typeAlert = 'provider';
           setShowAlert(true);

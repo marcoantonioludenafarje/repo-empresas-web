@@ -33,6 +33,7 @@ import {
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -61,8 +62,11 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {getMovements, 
-  getInputItems_pageListInput, deleteMovement} from '../../../redux/actions/Movements';
+import {
+  getMovements,
+  getInputItems_pageListInput,
+  deleteMovement,
+} from '../../../redux/actions/Movements';
 import {getUserData} from '../../../redux/actions/User';
 
 import {
@@ -179,12 +183,13 @@ const InputsTable = (props) => {
   //SELECCIÓN CALENDARIO
   const [value, setValue] = React.useState(Date.now() - 2678400000);
   const [value2, setValue2] = React.useState(Date.now());
-  const [initialTime, setInitialTime] = React.useState(toEpoch(Date.now() - 2678400000));
+  const [initialTime, setInitialTime] = React.useState(
+    toEpoch(Date.now() - 2678400000),
+  );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
-
 
   const router = useRouter();
   const {query} = router;
@@ -204,16 +209,22 @@ const InputsTable = (props) => {
     dispatch(onGetGlobalParameter(payload));
   };
 
-
   let money_unit;
   let weight_unit;
   let exchangeRate;
 
   //GET APIS RES
-  const {getMovementsRes, inputItems_pageListInput, inputLastEvaluatedKey_pageListInput} = useSelector(({movements}) => movements);
+  const {
+    getMovementsRes,
+    inputItems_pageListInput,
+    inputLastEvaluatedKey_pageListInput,
+  } = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
   console.log('inputItems_pageListInput', inputItems_pageListInput);
-  console.log('inputLastEvaluatedKey_pageListInput', inputLastEvaluatedKey_pageListInput);
+  console.log(
+    'inputLastEvaluatedKey_pageListInput',
+    inputLastEvaluatedKey_pageListInput,
+  );
   let listToUse = getMovementsRes;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
@@ -337,13 +348,12 @@ const InputsTable = (props) => {
   }
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
-  
   // Función para manejar el clic en el encabezado de la tabla
   const handleSort = (field) => {
     if (orderBy === field) {
       // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
       setOrder(order === 'asc' ? 'desc' : 'asc');
-      if(field !== "totalPriceWithIgv"){
+      if (field !== 'totalPriceWithIgv') {
         const sortedProducts = [...inputItems_pageListInput].sort((a, b) => {
           const descriptionA = a[`${field}`] ?? '';
           const descriptionB = b[`${field}`] ?? '';
@@ -365,7 +375,7 @@ const InputsTable = (props) => {
       setOrderBy(field);
       setOrder('asc');
       // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
-      if(field !== "totalPriceWithIgv"){
+      if (field !== 'totalPriceWithIgv') {
         const sortedProducts = [...inputItems_pageListInput].sort((a, b) => {
           const descriptionA = a[`${field}`] ?? '';
           const descriptionB = b[`${field}`] ?? '';
@@ -551,10 +561,14 @@ const InputsTable = (props) => {
   };
   const setDeleteState = () => {
     console.log('setDeleteState', selectedInput);
-    if (!selectedInput.existBill && !selectedInput.existIncome && !selectedInput.existReceipt && !selectedInput.existReferralGuide)
+    if (
+      !selectedInput.existBill &&
+      !selectedInput.existIncome &&
+      !selectedInput.existReceipt &&
+      !selectedInput.existReferralGuide
+    )
       setOpen2(true);
-    else
-      setOpen2valida(true);
+    else setOpen2valida(true);
     handleClose();
   };
   const goToMoves = () => {
@@ -669,7 +683,9 @@ const InputsTable = (props) => {
   };
 
   const findOutput = (outputId) => {
-    return inputItems_pageListInput.find((obj) => obj.movementHeaderId == outputId);
+    return inputItems_pageListInput.find(
+      (obj) => obj.movementHeaderId == outputId,
+    );
   };
   const showExpense = (codInput) => {
     codProdSelected = codInput;
@@ -944,7 +960,7 @@ const InputsTable = (props) => {
             setValue(newValue);
             console.log('date', newValue);
             const epochValue = toEpoch(newValue);
-            setInitialTime(epochValue)
+            setInitialTime(epochValue);
             // listPayload.request.payload.initialTime = toEpoch(newValue);
             // console.log('payload de busqueda', listPayload);
           }}
@@ -958,7 +974,7 @@ const InputsTable = (props) => {
             setValue2(newValue2);
             console.log('date 2', newValue2);
             const epochValue = toEpoch(newValue2);
-            setFinalTime(epochValue)
+            setFinalTime(epochValue);
             // listPayload.request.payload.finalTime = toEpoch(newValue2);
             // console.log('payload de busqueda', listPayload);
           }}
@@ -1016,7 +1032,8 @@ const InputsTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {inputItems_pageListInput && Array.isArray(inputItems_pageListInput) ? (
+            {inputItems_pageListInput &&
+            Array.isArray(inputItems_pageListInput) ? (
               inputItems_pageListInput
                 .sort(compare)
                 /* .filter(filterData) */
@@ -1045,7 +1062,7 @@ const InputsTable = (props) => {
                           {showSubtypeMovement(obj.movementSubType)}
                         </TableCell>
                         <TableCell>
-                          {( obj.provider && obj.provider.id.split('-')[1]
+                          {(obj.provider && obj.provider.id.split('-')[1]
                             ? obj.provider.id.split('-')[1] + ' - '
                             : '') +
                             (obj.provider
@@ -1369,7 +1386,8 @@ const InputsTable = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            No es posible eliminar la entrada dado que tiene documentos y/o egresos activos relacionados
+            No es posible eliminar la entrada dado que tiene documentos y/o
+            egresos activos relacionados
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>

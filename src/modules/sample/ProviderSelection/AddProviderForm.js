@@ -149,7 +149,7 @@ const AddProductForm = ({sendData}) => {
   useEffect(() => {
     let domain = new URL(window.location.href);
     setBasicUrl(domain.origin);
-  }, []); 
+  }, []);
 
   const handleValues = (event) => {
     console.log('evento', event.target);

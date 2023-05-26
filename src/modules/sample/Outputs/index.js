@@ -45,6 +45,8 @@ import {
   TableSortLabel,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
+
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Backdrop from '@mui/material/Backdrop';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -112,7 +114,7 @@ import {
   GET_USER_DATA,
   GET_ROL_USER,
   GENERATE_SELL_TICKET,
-  GET_OUTPUT_PAGE_LISTGUIDE
+  GET_OUTPUT_PAGE_LISTGUIDE,
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
 
@@ -260,7 +262,9 @@ const OutputsTable = (props) => {
   const [value2, setValue2] = React.useState(Date.now());
   const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [initialTime, setInitialTime] = React.useState(toEpoch(Date.now() - 2678400000));
+  const [initialTime, setInitialTime] = React.useState(
+    toEpoch(Date.now() - 2678400000),
+  );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
@@ -299,10 +303,17 @@ const OutputsTable = (props) => {
   console.log('dataBusinessRes', dataBusinessRes);
   const {globalParameter} = useSelector(({general}) => general);
   console.log('globalParameter123', globalParameter);
-  const {getMovementsRes, outputItems_pageListOutput, outputLastEvaluatedKey_pageListOutput} = useSelector(({movements}) => movements);
+  const {
+    getMovementsRes,
+    outputItems_pageListOutput,
+    outputLastEvaluatedKey_pageListOutput,
+  } = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
   console.log('outputItems_pageListOutput', outputItems_pageListOutput);
-  console.log('outputLastEvaluatedKey_pageListOutput', outputLastEvaluatedKey_pageListOutput);
+  console.log(
+    'outputLastEvaluatedKey_pageListOutput',
+    outputLastEvaluatedKey_pageListOutput,
+  );
   const {deleteMovementRes} = useSelector(({movements}) => movements);
   console.log('deleteMovementRes', deleteMovementRes);
   const {successMessage} = useSelector(({movements}) => movements);
@@ -402,7 +413,7 @@ const OutputsTable = (props) => {
     setValue2(Date.now());
 
     console.log('Se ejecuta esto?');
-    if (userDataRes) {    
+    if (userDataRes) {
       let listPayload = {
         request: {
           payload: {
@@ -504,7 +515,7 @@ const OutputsTable = (props) => {
       },
     };
     listPayload.request.payload.LastEvaluatedKey =
-    outputLastEvaluatedKey_pageListOutput;
+      outputLastEvaluatedKey_pageListOutput;
     console.log('listPayload111:handleNextPage:', listPayload);
     toGetMovements(listPayload);
     // setPage(page+1);
@@ -515,7 +526,7 @@ const OutputsTable = (props) => {
     if (orderBy === field) {
       // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
       setOrder(order === 'asc' ? 'desc' : 'asc');
-      if(field !== "totalPriceWithIgv"){
+      if (field !== 'totalPriceWithIgv') {
         const sortedProducts = [...outputItems_pageListOutput].sort((a, b) => {
           const descriptionA = a[`${field}`] ?? '';
           const descriptionB = b[`${field}`] ?? '';
@@ -537,7 +548,7 @@ const OutputsTable = (props) => {
       setOrderBy(field);
       setOrder('asc');
       // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
-      if(field !== "totalPriceWithIgv"){
+      if (field !== 'totalPriceWithIgv') {
         const sortedProducts = [...outputItems_pageListOutput].sort((a, b) => {
           const descriptionA = a[`${field}`] ?? '';
           const descriptionB = b[`${field}`] ?? '';
@@ -649,17 +660,19 @@ const OutputsTable = (props) => {
   };
   const setDeleteState = () => {
     console.log('setDeleteState', selectedOutput);
-    if (!selectedOutput.existBill && !selectedOutput.existIncome && !selectedOutput.existReceipt && !selectedOutput.existReferralGuide)
+    if (
+      !selectedOutput.existBill &&
+      !selectedOutput.existIncome &&
+      !selectedOutput.existReceipt &&
+      !selectedOutput.existReferralGuide
+    )
       setOpen2(true);
-    else
-      setOpen2valida(true);
+    else setOpen2valida(true);
     handleClose();
   };
   const goToMoves = () => {
     console.log('Llendo a movimientos');
   };
-
-
 
   const sendStatus = () => {
     let listPayload = {
@@ -975,9 +988,11 @@ const OutputsTable = (props) => {
   };
 
   const showMessage = () => {
-    if (successMessage &&
-        deleteMovementRes &&
-        !('error' in deleteMovementRes)) {
+    if (
+      successMessage &&
+      deleteMovementRes &&
+      !('error' in deleteMovementRes)
+    ) {
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -992,9 +1007,13 @@ const OutputsTable = (props) => {
           </DialogContentText>
         </>
       );
-    } else if ((successMessage && deleteMovementRes &&
-          'error' in deleteMovementRes ) ||
-        ((typeof errorMessage === 'object' && errorMessage !== null && !Array.isArray(errorMessage)) && errorMessage.error)) {
+    } else if (
+      (successMessage && deleteMovementRes && 'error' in deleteMovementRes) ||
+      (typeof errorMessage === 'object' &&
+        errorMessage !== null &&
+        !Array.isArray(errorMessage) &&
+        errorMessage.error)
+    ) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -1004,8 +1023,8 @@ const OutputsTable = (props) => {
           >
             <IntlMessages id='message.register.data.error' />
             <br />
-            {deleteMovementRes && 'error' in deleteMovementRes 
-              ? deleteMovementRes .error
+            {deleteMovementRes && 'error' in deleteMovementRes
+              ? deleteMovementRes.error
               : null}
           </DialogContentText>
         </>
@@ -1091,7 +1110,9 @@ const OutputsTable = (props) => {
   };
 
   const findOutput = (outputId) => {
-    return outputItems_pageListOutput.find((obj) => obj.movementHeaderId == outputId);
+    return outputItems_pageListOutput.find(
+      (obj) => obj.movementHeaderId == outputId,
+    );
   };
   const showObject = (codOutput, type) => {
     codProdSelected = codOutput;
@@ -1544,7 +1565,7 @@ const OutputsTable = (props) => {
             setValue(newValue);
             console.log('date', newValue);
             const epochValue = toEpoch(newValue);
-            setInitialTime(epochValue)
+            setInitialTime(epochValue);
             // listPayload.request.payload.initialTime = toEpoch(newValue);
             // console.log('payload de busqueda', listPayload);
           }}
@@ -1557,7 +1578,7 @@ const OutputsTable = (props) => {
           onChange={(newValue2) => {
             setValue2(newValue2);
             const epochValue = toEpoch(newValue2);
-            setFinalTime(epochValue)
+            setFinalTime(epochValue);
             // listPayload.request.payload.finalTime = toEpoch(newValue2);
             // console.log('payload de busqueda', listPayload);
           }}
@@ -1620,7 +1641,8 @@ const OutputsTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {outputItems_pageListOutput && Array.isArray(outputItems_pageListOutput) ? (
+            {outputItems_pageListOutput &&
+            Array.isArray(outputItems_pageListOutput) ? (
               outputItems_pageListOutput.sort(compare).map((obj, index) => {
                 const style =
                   obj.descriptionProductsInfo &&
@@ -2060,7 +2082,8 @@ const OutputsTable = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            No es posible eliminar la salida dado que tiene documentos y/o ingresos activos relacionados
+            No es posible eliminar la salida dado que tiene documentos y/o
+            ingresos activos relacionados
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>

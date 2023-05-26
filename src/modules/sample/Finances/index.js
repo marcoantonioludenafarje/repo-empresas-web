@@ -46,6 +46,7 @@ import {
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -203,7 +204,11 @@ const FinancesTable = (props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
-  const {getFinancesRes, allFinancesRes, financesLastEvaluatedKey_pageListFinances} = useSelector(({finances}) => finances);
+  const {
+    getFinancesRes,
+    allFinancesRes,
+    financesLastEvaluatedKey_pageListFinances,
+  } = useSelector(({finances}) => finances);
   const {getFinancesForResultStateRes} = useSelector(({finances}) => finances);
   const {deleteFinanceRes} = useSelector(({finances}) => finances);
   const {businessParameter} = useSelector(({general}) => general);
@@ -216,6 +221,7 @@ const FinancesTable = (props) => {
 
   const {jwtToken} = useSelector(({general}) => general);
   console.log('getFinancesRes', getFinancesRes);
+  console.log('allFinancesRes', allFinancesRes);
   console.log('getFinancesForResultStateRes', getFinancesForResultStateRes);
   console.log('deleteFinanceRes', deleteFinanceRes);
   console.log('businessParameter', businessParameter);
@@ -266,7 +272,7 @@ const FinancesTable = (props) => {
 
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_FINANCES, payload: undefined});
+      //dispatch({type: GET_FINANCES, payload: undefined});
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: undefined});
       dispatch({type: GET_MOVEMENTS, payload: undefined});
       if (Object.keys(query).length !== 0) {
@@ -315,7 +321,7 @@ const FinancesTable = (props) => {
     } else {
       listFinancesPayload.request.payload.monthMovement = month;
     }
-    dispatch({type: GET_FINANCES, payload: []});
+    //dispatch({type: GET_FINANCES, payload: []});
     toGetFinances(listFinancesPayload);
     if (monthYearStatus) {
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
@@ -349,7 +355,7 @@ const FinancesTable = (props) => {
     let listFinancesInDebt = listFinancesPayload;
 
     listFinancesInDebt.request.payload.typeList = 'debt';
-    dispatch({type: GET_FINANCES, payload: []});
+    //dispatch({type: GET_FINANCES, payload: []});
     toGetFinancesInDebt(listFinancesInDebt);
     if (monthYearStatus) {
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
@@ -385,7 +391,7 @@ const FinancesTable = (props) => {
 
   const sendStatus = () => {
     setOpenStatus(false);
-    dispatch({type: GET_FINANCES, payload: []});
+    //dispatch({type: GET_FINANCES, payload: []});
     let listFinancesPayload = {
       request: {
         payload: {
@@ -801,7 +807,7 @@ const FinancesTable = (props) => {
     listFinancesPayload.request.payload.denominationProvider =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toLowerCase();
     console.log('listFinancesPayload', listFinancesPayload);
-    dispatch({type: GET_FINANCES, payload: []});
+    //dispatch({type: GET_FINANCES, payload: []});
     toGetFinances(listFinancesPayload);
     if (monthYearStatus) {
       dispatch({type: GET_FINANCES_FOR_RESULT_STATE, payload: []});
@@ -1061,13 +1067,17 @@ const FinancesTable = (props) => {
                           : obj.folderMovement.split('/').slice(-1)
                       }`}</TableCell>
                       <TableCell>{showType(obj.movementType)}</TableCell>
-                      <TableCell>{obj.typeDocumentProvider 
-                                  ?`${obj.typeDocumentProvider} ${obj.numberDocumentProvider}`
-                                  : 'Sin documento'}</TableCell>
+                      <TableCell>
+                        {obj.typeDocumentProvider
+                          ? `${obj.typeDocumentProvider} ${obj.numberDocumentProvider}`
+                          : 'Sin documento'}
+                      </TableCell>
                       <TableCell>{obj.billIssueDate}</TableCell>
-                      <TableCell>{obj.denominationProvider
-                                  ? obj.denominationProvider
-                                  : 'No definido'}</TableCell>
+                      <TableCell>
+                        {obj.denominationProvider
+                          ? obj.denominationProvider
+                          : 'No definido'}
+                      </TableCell>
                       <TableCell>{obj.serialNumberBill}</TableCell>
                       <TableCell align='center'>
                         {obj.documentsMovement &&

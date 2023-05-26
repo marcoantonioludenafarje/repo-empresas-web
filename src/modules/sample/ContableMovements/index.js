@@ -46,6 +46,7 @@ import {
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -171,7 +172,6 @@ const ContableMovements = (props) => {
   console.log('query', query);
   const {userDataRes} = useSelector(({user}) => user);
 
-
   let deletePayload = {
     request: {
       payload: {
@@ -203,7 +203,11 @@ const ContableMovements = (props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
-  const {getFinancesRes, allFinancesRes, financesLastEvaluatedKey_pageListFinances} = useSelector(({finances}) => finances);
+  const {
+    getFinancesRes,
+    allFinancesRes,
+    financesLastEvaluatedKey_pageListFinances,
+  } = useSelector(({finances}) => finances);
   const {deleteFinanceRes} = useSelector(({finances}) => finances);
   const {businessParameter} = useSelector(({general}) => general);
   const {moneyUnitBusiness} = useSelector(({general}) => general);
@@ -373,44 +377,44 @@ const ContableMovements = (props) => {
     toGetFinances(listFinancesPayload);
     // setPage(page+1);
   };
-    // Función para manejar el clic en el encabezado de la tabla
-    const handleSort = (field) => {
-      if (orderBy === field) {
-        // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
-        setOrder(order === 'asc' ? 'desc' : 'asc');
-        const sortedProducts = [...allFinancesRes].sort((a, b) => {
-          const descriptionA = a[`${field}`] ?? '';
-          const descriptionB = b[`${field}`] ?? '';
-          if (order === 'asc') {
-            return descriptionA.localeCompare(descriptionB);
-          } else {
-            return descriptionB.localeCompare(descriptionA);
-          }
-        });
-        dispatch({
-          type: ALL_FINANCES,
-          payload: sortedProducts,
-          handleSort: true,
-        });
-        forceUpdate();
-      } else {
-        // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
-        setOrderBy(field);
-        setOrder('asc');
-        // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
-        const sortedProducts = [...allFinancesRes].sort((a, b) => {
-          const descriptionA = a[`${field}`] ?? '';
-          const descriptionB = b[`${field}`] ?? '';
+  // Función para manejar el clic en el encabezado de la tabla
+  const handleSort = (field) => {
+    if (orderBy === field) {
+      // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+      const sortedProducts = [...allFinancesRes].sort((a, b) => {
+        const descriptionA = a[`${field}`] ?? '';
+        const descriptionB = b[`${field}`] ?? '';
+        if (order === 'asc') {
+          return descriptionA.localeCompare(descriptionB);
+        } else {
           return descriptionB.localeCompare(descriptionA);
-        });
-        dispatch({
-          type: ALL_FINANCES,
-          payload: sortedProducts,
-          handleSort: true,
-        });
-        forceUpdate();
-      }
-    };
+        }
+      });
+      dispatch({
+        type: ALL_FINANCES,
+        payload: sortedProducts,
+        handleSort: true,
+      });
+      forceUpdate();
+    } else {
+      // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
+      setOrderBy(field);
+      setOrder('asc');
+      // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
+      const sortedProducts = [...allFinancesRes].sort((a, b) => {
+        const descriptionA = a[`${field}`] ?? '';
+        const descriptionB = b[`${field}`] ?? '';
+        return descriptionB.localeCompare(descriptionA);
+      });
+      dispatch({
+        type: ALL_FINANCES,
+        payload: sortedProducts,
+        handleSort: true,
+      });
+      forceUpdate();
+    }
+  };
   const searchFinances = () => {
     dispatch({type: GET_FINANCES, payload: []});
     let listFinancesPayload = {

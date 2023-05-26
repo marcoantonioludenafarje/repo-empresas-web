@@ -15,17 +15,24 @@ export const onGetProviders = (payload) => {
     API.post('tunexo', '/inventory/providers/list', {body: payload})
       .then((data) => {
         console.log('onGetProviders resultado', data);
-        dispatch({type: GET_PROVIDERS, payload: data.response.payload,
-          request: payload});
-        dispatch({type: FETCH_SUCCESS, 
+        dispatch({
+          type: GET_PROVIDERS,
+          payload: data.response.payload,
+          request: payload,
+        });
+        dispatch({
+          type: FETCH_SUCCESS,
           process: 'GET_PROVIDERS',
-          message: 'Listado de proveedores exitoso',});
+          message: 'Listado de proveedores exitoso',
+        });
       })
       .catch((error) => {
         console.log('onGetProviders error', error);
-        dispatch({type: FETCH_ERROR, 
+        dispatch({
+          type: FETCH_ERROR,
           process: 'GET_PROVIDERS',
-          message: 'Hubo un error durante el listado de proveedores',});
+          message: 'Hubo un error durante el listado de proveedores',
+        });
       });
   };
 };

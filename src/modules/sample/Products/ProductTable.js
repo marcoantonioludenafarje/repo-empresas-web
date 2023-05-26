@@ -25,7 +25,7 @@ import {
   Collapse,
   useTheme,
   useMediaQuery,
-  TableSortLabel
+  TableSortLabel,
 } from '@mui/material';
 import {
   getYear,
@@ -34,6 +34,8 @@ import {
   fixDecimals,
   convertToDateWithoutTime,
 } from '../../../Utils/utils';
+
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -60,7 +62,11 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {onGetProducts, deleteProduct, getAllProducts} from '../../../redux/actions/Products';
+import {
+  onGetProducts,
+  deleteProduct,
+  getAllProducts,
+} from '../../../redux/actions/Products';
 import AddFinishedProduct from './AddFinishedProduct';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -171,8 +177,6 @@ const ProductTable = (arrayObjs, props) => {
     dispatch(onGetProducts(payload));
   };
 
-
-
   let money_unit;
   let weight_unit;
   let exchangeRate;
@@ -194,7 +198,8 @@ const ProductTable = (arrayObjs, props) => {
   console.log('userAttributes', userAttributes);
   const {userDataRes} = useSelector(({user}) => user);
   console.log('userDataRes', userDataRes);
-  const {allProductsRes, productsLastEvaluatedKey_pageListProducts} = useSelector(({products}) => products);
+  const {allProductsRes, productsLastEvaluatedKey_pageListProducts} =
+    useSelector(({products}) => products);
   console.log('allProductsRes', allProductsRes);
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
@@ -225,38 +230,35 @@ const ProductTable = (arrayObjs, props) => {
     if (orderBy === field) {
       // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
       setOrder(order === 'asc' ? 'desc' : 'asc');
-
     } else {
       setOrderBy(field);
       setOrder('asc');
     }
 
-    sortedProducts = [...allProductsRes].sort((a, b) => {          
+    sortedProducts = [...allProductsRes].sort((a, b) => {
       let descriptionA = null;
       if (type == 'number' || type == 'date')
-        descriptionA = (a[`${field}`] ? Number(a[`${field}`].toString()) : 0) ?? 0;
-      else
-        descriptionA = (a[`${field}`] ? a[`${field}`].toString() : '') ?? '';
-      
-      let descriptionB = null;
-      if (type == 'number' || type == 'date')  
-        descriptionB = (b[`${field}`] ? Number(b[`${field}`].toString()) : 0) ?? 0;
-      else
-        descriptionB = (b[`${field}`] ? b[`${field}`].toString() : '') ?? '';
+        descriptionA =
+          (a[`${field}`] ? Number(a[`${field}`].toString()) : 0) ?? 0;
+      else descriptionA = (a[`${field}`] ? a[`${field}`].toString() : '') ?? '';
 
-      console.log('descriptionA',descriptionA);
-      console.log('descriptionB',descriptionB);
+      let descriptionB = null;
+      if (type == 'number' || type == 'date')
+        descriptionB =
+          (b[`${field}`] ? Number(b[`${field}`].toString()) : 0) ?? 0;
+      else descriptionB = (b[`${field}`] ? b[`${field}`].toString() : '') ?? '';
+
+      console.log('descriptionA', descriptionA);
+      console.log('descriptionB', descriptionB);
 
       if (order === 'asc') {
         if (type == 'number' || type == 'date')
           return descriptionA - descriptionB;
-        else
-          return descriptionA.localeCompare(descriptionB);
+        else return descriptionA.localeCompare(descriptionB);
       } else {
         if (type == 'number' || type == 'date')
           return descriptionB - descriptionA;
-        else
-          return descriptionB.localeCompare(descriptionA);
+        else return descriptionB.localeCompare(descriptionA);
       }
     });
 
@@ -378,7 +380,7 @@ const ProductTable = (arrayObjs, props) => {
         setBusinessProductCode(null);
       } else {
         //listPayload.request.payload.businessProductCode = event.target.value;
-        setBusinessProductCode((event.target.value).toString());
+        setBusinessProductCode(event.target.value.toString());
       }
     }
     if (event.target.name == 'descToSearch') {
@@ -394,7 +396,6 @@ const ProductTable = (arrayObjs, props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchProducts = () => {
-    
     let listPayload = {
       request: {
         payload: {
@@ -814,7 +815,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'weight'}
                   direction={orderBy === 'weight' ? order : 'asc'}
-                  onClick={() => handleSort('weight','number')}
+                  onClick={() => handleSort('weight', 'number')}
                 >
                   Peso
                 </TableSortLabel>
@@ -832,7 +833,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'costPriceUnit'}
                   direction={orderBy === 'costPriceUnit' ? order : 'asc'}
-                  onClick={() => handleSort('costPriceUnit','number')}
+                  onClick={() => handleSort('costPriceUnit', 'number')}
                 >
                   Precio costo sugerido
                 </TableSortLabel>
@@ -841,7 +842,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'sellPriceUnit'}
                   direction={orderBy === 'sellPriceUnit' ? order : 'asc'}
-                  onClick={() => handleSort('sellPriceUnit','number')}
+                  onClick={() => handleSort('sellPriceUnit', 'number')}
                 >
                   Precio venta sugerido
                 </TableSortLabel>
@@ -850,7 +851,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'initialStock'}
                   direction={orderBy === 'initialStock' ? order : 'asc'}
-                  onClick={() => handleSort('initialStock','number')}
+                  onClick={() => handleSort('initialStock', 'number')}
                 >
                   Stock inicial
                 </TableSortLabel>
@@ -859,7 +860,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'createdDate'}
                   direction={orderBy === 'createdDate' ? order : 'asc'}
-                  onClick={() => handleSort('createdDate','date')}
+                  onClick={() => handleSort('createdDate', 'date')}
                 >
                   Fecha registrada
                 </TableSortLabel>
@@ -868,7 +869,7 @@ const ProductTable = (arrayObjs, props) => {
                 <TableSortLabel
                   active={orderBy === 'updatedDate'}
                   direction={orderBy === 'updatedDate' ? order : 'asc'}
-                  onClick={() => handleSort('updatedDate','date')}
+                  onClick={() => handleSort('updatedDate', 'date')}
                 >
                   Última actualización
                 </TableSortLabel>
