@@ -128,7 +128,7 @@ let selectedDistribution = '';
 
 const Distribution = (props) => {
   const {
-    getMovementsRes,
+    outputItems_pageListOutput,
     predefinedRoutes_PageNewDistribution,
     successMessage,
     generateDistributionRes,
@@ -319,7 +319,7 @@ const Distribution = (props) => {
       };
 
       toGetCarriers(listCarriersPayload, jwtToken);
-      let foundOutput = getMovementsRes.find(
+      let foundOutput = outputItems_pageListOutput.find(
         (output) => output.movementHeaderId === query.movementHeaderId,
       );
       console.log('selectedOutput', selectedOutput);
@@ -678,7 +678,7 @@ const Distribution = (props) => {
       setSelectedRoute(initialRoute);
     } else if (
       predefinedRoutes_PageNewDistribution &&
-      predefinedRoutes_PageNewDistribution.length > 0 &&
+      predefinedRoutes_PageNewDistribution.length > 0 && selectedRoute_PageNewDistribution && 
       selectedRoute_PageNewDistribution.routePredefinedId
     ) {
       console.log('Entro por aca selectedRoute_PageNewDistribution');

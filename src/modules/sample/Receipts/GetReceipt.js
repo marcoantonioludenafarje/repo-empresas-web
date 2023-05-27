@@ -46,7 +46,7 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {addReceipt, getMovements} from '../../../redux/actions/Movements';
+import {addReceipt, getMovements, getOutputItems_pageListOutput} from '../../../redux/actions/Movements';
 import Router, {useRouter} from 'next/router';
 import OutputProducts from '../Bills/OutputProducts';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
@@ -147,7 +147,7 @@ const GetReceipt = (props) => {
     dispatch(addReceipt(payload));
   };
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getOutputItems_pageListOutput(payload));
   };
 
   //VARIABLES DE PARAMETROS

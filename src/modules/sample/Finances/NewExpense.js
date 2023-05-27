@@ -124,6 +124,8 @@ const NewExpense = (props) => {
   console.log('query', query);
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
+  const {inputItems_pageListInput} = useSelector(({movements}) => movements);
+  console.log('inputItems_pageListInput', inputItems_pageListInput);
   const [totalAmountWithConcepts, setTotalAmountWithConcepts] =
     React.useState(0);
   const [totalAmountOfConcepts, setTotalAmountOfConcepts] = React.useState(0);
@@ -156,8 +158,8 @@ const NewExpense = (props) => {
     }, 2000);
   }, []);
 
-  if (!isObjEmpty(query) && getMovementsRes != undefined) {
-    selectedInput = getMovementsRes.find(
+  if (!isObjEmpty(query) && inputItems_pageListInput != undefined) {
+    selectedInput = inputItems_pageListInput.find(
       (input) => input.movementHeaderId == query.movementHeaderId,
     );
     console.log('selectedInput', selectedInput);

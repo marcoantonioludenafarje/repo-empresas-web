@@ -147,6 +147,8 @@ const NewEarning = (props) => {
   const dispatch = useDispatch();
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
+  const {outputItems_pageListOutput} = useSelector(({movements}) => movements);
+  console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   const [openClientComprobation, setOpenClientComprobation] =
     React.useState(false);
   const [isClientValidated, setIsClientValidated] = React.useState(false);
@@ -174,8 +176,8 @@ const NewEarning = (props) => {
       setTypeIcon('1');
     }, 4000);
   }, []);
-  if (!isObjEmpty(query) && getMovementsRes != undefined) {
-    selectedOutput = getMovementsRes.find(
+  if (!isObjEmpty(query) && outputItems_pageListOutput != undefined) {
+    selectedOutput = outputItems_pageListOutput.find(
       (output) => output.movementHeaderId == query.movementHeaderId,
     );
     console.log('selectedOutput', selectedOutput);

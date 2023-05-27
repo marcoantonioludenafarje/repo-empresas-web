@@ -109,6 +109,8 @@ const Distribution = () => {
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
   const {getMovementsRes} = useSelector(({movements}) => movements);
+  const {outputItems_pageListOutput} = useSelector(({movements}) => movements);
+  console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   const {successMessage} = useSelector(({movements}) => movements);
   const {generateDistributionRes} = useSelector(({movements}) => movements);
   console.log('generateDistributionRes', generateDistributionRes);
@@ -160,7 +162,7 @@ const Distribution = () => {
     toListRoutes(listRoutesPayload);
     getProducts(listPayload);
     toGetCarriers(listCarriersPayload, jwtToken);
-    let foundOutput = getMovementsRes.find(
+    let foundOutput = outputItems_pageListOutput.find(
       (output) => output.movementHeaderId === query.movementHeaderId,
     );
     console.log('selectedOutput', selectedOutput);

@@ -51,7 +51,7 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {addMovement, getMovements} from '../../../redux/actions/Movements';
+import {addMovement, getMovements, getOutputItems_pageListOutput} from '../../../redux/actions/Movements';
 import Router, {useRouter} from 'next/router';
 
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
@@ -176,7 +176,7 @@ const NewOutput = (props) => {
     dispatch(addMovement(payload));
   };
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getOutputItems_pageListOutput(payload));
   };
 
   useEffect(() => {

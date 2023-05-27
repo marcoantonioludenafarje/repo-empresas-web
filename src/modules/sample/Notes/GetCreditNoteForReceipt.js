@@ -45,7 +45,7 @@ import {DateTimePicker} from '@mui/lab';
 import {dateWithHyphen, translateValue} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import Router, {useRouter} from 'next/router';
-import {getMovements, addCreditNote} from '../../../redux/actions/Movements';
+import {getMovements,getOutputItems_pageListOutput, addCreditNote} from '../../../redux/actions/Movements';
 import {red} from '@mui/material/colors';
 import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -156,6 +156,8 @@ const GetCreditNote = () => {
 
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
+  const {outputItems_pageListOutput} = useSelector(({movements}) => movements);
+  console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   const {receiptItems_pageListReceipt, receiptLastEvalutedKey_pageListReceipt} =
     useSelector(({movements}) => movements);
   console.log('receiptItems_pageListReceipt', receiptItems_pageListReceipt);
@@ -177,7 +179,7 @@ const GetCreditNote = () => {
     userDataRes.merchantSelected.merchantId;
 
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getOutputItems_pageListOutput(payload));
   };
   const toAddCreditNote = (payload) => {
     dispatch(addCreditNote(payload));
@@ -312,10 +314,10 @@ const GetCreditNote = () => {
       toGetMovements(listOutputsPayload);
       forceUpdate();
     }
-    if (getMovementsRes && getMovementsRes[0].movementType == 'OUTPUT') {
-      console.log('getMovementsRes de salidas', getMovementsRes);
+    if (outputItems_pageListOutput && outputItems_pageListOutput[0].movementType == 'OUTPUT') {
+      console.log('outputItems_pageListOutput de salidas', outputItems_pageListOutput);
       console.log('query.movementId', query.movementId);
-      let output = getMovementsRes.find(
+      let output = outputItems_pageListOutput.find(
         (obj) => obj.movementHeaderId == query.movementId,
       );
       console.log('output desde nota de credito', output);
@@ -324,16 +326,16 @@ const GetCreditNote = () => {
   }, [receiptItems_pageListReceipt]);
 
   useEffect(() => {
-    if (getMovementsRes && getMovementsRes[0].movementType == 'OUTPUT') {
-      console.log('getMovementsRes de salidas', getMovementsRes);
+    if (outputItems_pageListOutput && outputItems_pageListOutput[0].movementType == 'OUTPUT') {
+      console.log('outputItems_pageListOutput de salidas', outputItems_pageListOutput);
       console.log('query.movementId', query.movementId);
-      let output = getMovementsRes.find(
+      let output = outputItems_pageListOutput.find(
         (obj) => obj.movementHeaderId == query.movementId,
       );
       console.log('output desde nota de credito', output);
       setSelectedOutput(output);
     }
-  }, [getMovementsRes]);
+  }, [outputItems_pageListOutput]);
 
   /* useEffect(() => {
     if (Object.keys(selectedReceipt).length !== 0 && getMovementsRes) {

@@ -58,6 +58,7 @@ import {getCarriers} from '../../../redux/actions/Carriers';
 import {getUbigeos} from '../../../redux/actions/General';
 import {
   getMovements,
+  getOutputItems_pageListOutput,
   updateReferralGuideValue,
   addReferrealGuide,
 } from '../../../redux/actions/Movements';
@@ -222,7 +223,7 @@ const GetReferralGuide = () => {
     dispatch(addReferrealGuide(payload));
   };
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getOutputItems_pageListOutput(payload));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));

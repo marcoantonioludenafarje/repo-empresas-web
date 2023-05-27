@@ -44,7 +44,7 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {updateMovement, getMovements} from '../../../redux/actions/Movements';
+import {updateMovement, getInputItems_pageListInput, getMovements} from '../../../redux/actions/Movements';
 import Router, {useRouter} from 'next/router';
 
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
@@ -157,7 +157,7 @@ const UpdateInput = (props) => {
   console.log('query', query);
   //APIS FUNCTIONS
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getInputItems_pageListInput(payload));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -242,6 +242,8 @@ const UpdateInput = (props) => {
   //RESULTADOS DE LLAMADAS A APIS
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
+  const {inputItems_pageListInput} = useSelector(({movements}) => movements);
+  console.log('inputItems_pageListInput', inputItems_pageListInput);
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
   const {globalParameter} = useSelector(({general}) => general);
@@ -253,8 +255,8 @@ const UpdateInput = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-  if (getMovementsRes != undefined) {
-    selectedInput = getMovementsRes.find(
+  if (inputItems_pageListInput != undefined) {
+    selectedInput = inputItems_pageListInput.find(
       (input) => input.movementHeaderId == query.movementHeaderId,
     );
     console.log('selectedInput', selectedInput);

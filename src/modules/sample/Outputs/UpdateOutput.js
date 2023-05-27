@@ -46,7 +46,7 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {updateMovement, getMovements} from '../../../redux/actions/Movements';
+import {updateMovement, getMovements, getOutputItems_pageListOutput} from '../../../redux/actions/Movements';
 import Router, {useRouter} from 'next/router';
 
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
@@ -164,7 +164,7 @@ const UpdateOutput = (props) => {
   console.log('query de Update', query);
   //APIS FUNCTIONS
   const toGetMovements = (payload) => {
-    dispatch(getMovements(payload));
+    dispatch(getOutputItems_pageListOutput(payload));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
