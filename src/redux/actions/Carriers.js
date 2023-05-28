@@ -11,7 +11,7 @@ import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
 export const getCarriers = (payload, jwtToken) => {
   return (dispatch, getState) => {
-    dispatch({type: FETCH_START});
+    dispatch({type: FETCH_START, payload: {process: 'GET_CARRIERS'}});
     console.log('Llega a carrier el jwtToken? 122', jwtToken);
     request('post', '/facturacion/carriers/list', payload)
       // API.post('tunexo', '/facturacion/carriers/list', {
@@ -22,8 +22,18 @@ export const getCarriers = (payload, jwtToken) => {
       // })
       .then((data) => {
         console.log('getCarriers resultado', data);
-        dispatch({type: GET_CARRIERS, payload: data.data.response.payload});
-        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+        dispatch({
+          type: GET_CARRIERS,
+          payload: data.data.response.payload,
+          request: payload,
+        });
+        dispatch({
+          type: FETCH_SUCCESS,
+          payload: {
+            process: 'GET_CARRIERS',
+            message: 'Listado de empresas transportistas exitoso',
+          },
+        });
       })
       .catch((error) => {
         console.log('getCarriers error', error);

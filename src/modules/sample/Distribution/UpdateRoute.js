@@ -107,16 +107,6 @@ const Distribution = () => {
 
   listPayload.request.payload.merchantId =
     userDataRes.merchantSelected.merchantId;
-  let listCarriersPayload = {
-    request: {
-      payload: {
-        typeDocumentCarrier: '',
-        numberDocumentCarrier: '',
-        denominationCarrier: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
 
   const toGetCarriers = (payload, token) => {
     dispatch(getCarriers(payload, token));
@@ -134,6 +124,18 @@ const Distribution = () => {
     dispatch({type: GET_PRODUCTS, payload: undefined});
     dispatch({type: GET_CARRIERS, payload: undefined});
     getProducts(listPayload);
+    let listCarriersPayload = {
+      request: {
+        payload: {
+          typeDocumentCarrier: '',
+          numberDocumentCarrier: '',
+          denominationCarrier: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
     toGetCarriers(listCarriersPayload, jwtToken);
   }, []);
 

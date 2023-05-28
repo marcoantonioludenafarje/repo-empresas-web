@@ -46,7 +46,11 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {addReceipt, getMovements, getOutputItems_pageListOutput} from '../../../redux/actions/Movements';
+import {
+  addReceipt,
+  getMovements,
+  getOutputItems_pageListOutput,
+} from '../../../redux/actions/Movements';
 import Router, {useRouter} from 'next/router';
 import OutputProducts from '../Bills/OutputProducts';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';

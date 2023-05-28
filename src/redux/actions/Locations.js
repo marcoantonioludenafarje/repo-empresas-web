@@ -11,7 +11,7 @@ import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
 export const getLocations = (payload, jwtToken) => {
   return (dispatch, getState) => {
-    dispatch({type: FETCH_START});
+    dispatch({type: FETCH_START, payload: {process: 'GET_LOCATIONS'}});
     console.log('Llega a location el jwtToken? 122', jwtToken);
     request('post', '/facturacion/locations/list', payload)
       // API.post('tunexo', '/facturacion/carriers/list', {
@@ -22,8 +22,18 @@ export const getLocations = (payload, jwtToken) => {
       // })
       .then((data) => {
         console.log('getLocations resultado', data);
-        dispatch({type: GET_LOCATIONS, payload: data.data.response.payload});
-        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+        dispatch({
+          type: GET_LOCATIONS,
+          payload: data.data.response.payload,
+          request: payload,
+        });
+        dispatch({
+          type: FETCH_SUCCESS,
+          payload: {
+            process: 'GET_LOCATIONS',
+            message: 'Listado de locaciones exitoso',
+          },
+        });
       })
       .catch((error) => {
         console.log('getLocations error', error);

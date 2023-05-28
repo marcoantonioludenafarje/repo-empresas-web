@@ -232,16 +232,6 @@ const GetReferralGuide = () => {
     dispatch(updateReferralGuideValue(payload));
   };
 
-  let listCarriersPayload = {
-    request: {
-      payload: {
-        typeDocumentCarrier: '',
-        numberDocumentCarrier: '',
-        denominationCarrier: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
   let businessParameterPayload = {
     request: {
       payload: {
@@ -283,6 +273,18 @@ const GetReferralGuide = () => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
     getBusinessParameter(businessParameterPayload);
+    let listCarriersPayload = {
+      request: {
+        payload: {
+          typeDocumentCarrier: '',
+          numberDocumentCarrier: '',
+          denominationCarrier: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
     toGetCarriers(listCarriersPayload, jwtToken);
     originalUbigeos.map((obj, index) => {
       parsedUbigeos[index] = {
@@ -1635,7 +1637,8 @@ const GetReferralGuide = () => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            {outputItems_pageListOutput && Array.isArray(outputItems_pageListOutput) ? (
+            {outputItems_pageListOutput &&
+            Array.isArray(outputItems_pageListOutput) ? (
               <>
                 {!selectedOutput.existBill ? (
                   <Button

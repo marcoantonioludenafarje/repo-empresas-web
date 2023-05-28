@@ -144,16 +144,6 @@ const Distribution = () => {
       },
     },
   };
-  let listCarriersPayload = {
-    request: {
-      payload: {
-        typeDocumentCarrier: '',
-        numberDocumentCarrier: '',
-        denominationCarrier: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
 
   useEffect(() => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -161,6 +151,18 @@ const Distribution = () => {
     dispatch({type: GET_PRODUCTS, payload: undefined});
     toListRoutes(listRoutesPayload);
     getProducts(listPayload);
+    let listCarriersPayload = {
+      request: {
+        payload: {
+          typeDocumentCarrier: '',
+          numberDocumentCarrier: '',
+          denominationCarrier: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
     toGetCarriers(listCarriersPayload, jwtToken);
     let foundOutput = outputItems_pageListOutput.find(
       (output) => output.movementHeaderId === query.movementHeaderId,

@@ -26,10 +26,13 @@ import {
   useTheme,
   useMediaQuery,
   CircularProgress,
+  TableSortLabel,
+  IconButton,
 } from '@mui/material';
 
 import {SET_JWT_TOKEN} from '../../../shared/constants/ActionTypes';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -85,16 +88,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let listPayload = {
-  request: {
-    payload: {
-      typeDocumentDriver: '',
-      numberDocumentDriver: '',
-      fullName: '',
-      merchantId: '',
-    },
-  },
-};
 let deletePayload = {
   request: {
     payload: {
@@ -103,18 +96,30 @@ let deletePayload = {
   },
 };
 
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const DriverTable = (arrayObjs, props) => {
   const classes = useStyles(props);
   const history = useHistory();
   const dispatch = useDispatch();
   const [firstload, setFirstload] = React.useState(true);
   const theme = useTheme();
+  const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [numberDocumentDriver, setNumberDocumentDriver] = React.useState('');
+  const [nameToSearch, setNameToSearch] = React.useState('');
+  const [typeDocumentDriver, setTypeDocumentDriver] = React.useState('');
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
+
   let popUp = false;
   let codProdSelected = '';
 
@@ -126,12 +131,10 @@ const DriverTable = (arrayObjs, props) => {
     dispatch(deleteDriver(payload));
   };
 
-  const useForceUpdate = () => {
-    return () => setReload((value) => value + 1); // update the state to force render
-  };
-
   //GET APIS RES
-  const {getDriversRes} = useSelector(({drivers}) => drivers);
+  const {getDriversRes, driversLastEvaluatedKey_pageListDrivers} = useSelector(
+    ({drivers}) => drivers,
+  );
   console.log('Drivers123', getDriversRes);
   const {deleteDriverRes} = useSelector(({drivers}) => drivers);
   console.log('deleteDriverRes', deleteDriverRes);
@@ -149,10 +152,19 @@ const DriverTable = (arrayObjs, props) => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_DRIVERS, payload: undefined});
       console.log('Esto por que no funciona');
-      listPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentDriver: '',
+            numberDocumentDriver: '',
+            fullName: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: driversLastEvaluatedKey_pageListDrivers,
+            needItems: true,
+          },
+        },
+      };
 
       toGetDrivers(listPayload, jwtToken);
       setFirstload(false);
@@ -204,27 +216,115 @@ const DriverTable = (arrayObjs, props) => {
     )}`;
   };
 
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentDriver: typeDocumentDriver,
+          numberDocumentDriver: numberDocumentDriver,
+          fullName: nameToSearch,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: driversLastEvaluatedKey_pageListDrivers,
+          needItems: true,
+        },
+      },
+    };
+    // listPayload.request.payload.LastEvaluatedKey = productsLastEvaluatedKey_pageListProducts;
+    console.log('listPayload111:handleNextPage:', listPayload);
+    toGetDrivers(listPayload);
+    // setPage(page+1);
+  };
+
+  // Función para manejar el clic en el encabezado de la tabla
+  const handleSort = (field, type) => {
+    let sortedProducts;
+
+    if (orderBy === field) {
+      // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+    } else {
+      setOrderBy(field);
+      setOrder('asc');
+    }
+
+    sortedProducts = [...getDriversRes].sort((a, b) => {
+      let descriptionA = null;
+      if (type == 'number' || type == 'date')
+        descriptionA =
+          (a[`${field}`] ? Number(a[`${field}`].toString()) : 0) ?? 0;
+      else descriptionA = (a[`${field}`] ? a[`${field}`].toString() : '') ?? '';
+
+      let descriptionB = null;
+      if (type == 'number' || type == 'date')
+        descriptionB =
+          (b[`${field}`] ? Number(b[`${field}`].toString()) : 0) ?? 0;
+      else descriptionB = (b[`${field}`] ? b[`${field}`].toString() : '') ?? '';
+
+      console.log('descriptionA', descriptionA);
+      console.log('descriptionB', descriptionB);
+
+      if (order === 'asc') {
+        if (type == 'number' || type == 'date')
+          return descriptionA - descriptionB;
+        else return descriptionA.localeCompare(descriptionB);
+      } else {
+        if (type == 'number' || type == 'date')
+          return descriptionB - descriptionA;
+        else return descriptionB.localeCompare(descriptionA);
+      }
+    });
+
+    dispatch({
+      type: GET_DRIVERS,
+      payload: sortedProducts,
+      handleSort: true,
+    });
+    forceUpdate();
+  };
+
   //BUSQUEDA
   const handleSearchValues = (event) => {
     console.log('Evento', event);
-    if (event.target.name == 'docToSearch') {
-      if (event.target.value == '') {
-        listPayload.request.payload.numberDocumentDriver = '';
+    if (event.target.name == 'typeDocumentDriver') {
+      if (event.target.value == 'TODOS') {
+        setTypeDocumentDriver('');
       } else {
-        listPayload.request.payload.numberDocumentDriver = event.target.value;
+        setTypeDocumentDriver(event.target.value);
       }
     }
+    if (event.target.name == 'numberDocumentDriver') {
+      // if (event.target.value == '') {
+      //   listPayload.request.payload.numberDocumentDriver = '';
+      // } else {
+      //   listPayload.request.payload.numberDocumentDriver = event.target.value;
+      // }
+      setNumberDocumentDriver(event.target.value);
+    }
     if (event.target.name == 'nameToSearch') {
-      if (event.target.value == '') {
-        listPayload.request.payload.fullName = '';
-      } else {
-        listPayload.request.payload.fullName = event.target.value;
-      }
+      // if (event.target.value == '') {
+      //   listPayload.request.payload.fullName = '';
+      // } else {
+      //   listPayload.request.payload.fullName = event.target.value;
+      // }
+      setNameToSearch(event.target.value);
     }
   };
 
   //BUTTONS BAR FUNCTIONS
   const searchDrivers = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentDriver: typeDocumentDriver,
+          numberDocumentDriver: numberDocumentDriver,
+          fullName: nameToSearch,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
     toGetDrivers(listPayload, jwtToken);
   };
   const newDriver = () => {
@@ -379,13 +479,9 @@ const DriverTable = (arrayObjs, props) => {
             labelId='documentType-label'
             label='Identificador'
             sx={{maxWidth: 140}}
-            onChange={(event) => {
-              console.log(event.target.value);
-              listPayload.request.payload.typeDocumentDriver =
-                event.target.value;
-            }}
+            onChange={handleSearchValues}
           >
-            <MenuItem value='' style={{fontWeight: 200}}>
+            <MenuItem value='TODOS' style={{fontWeight: 200}}>
               Todos
             </MenuItem>
             <MenuItem value='DNI' style={{fontWeight: 200}}>
@@ -401,11 +497,7 @@ const DriverTable = (arrayObjs, props) => {
           variant='outlined'
           name='numberDocumentDriver'
           size='small'
-          onChange={(event) => {
-            console.log(event.target.value);
-            listPayload.request.payload.numberDocumentDriver =
-              event.target.value;
-          }}
+          onChange={handleSearchValues}
         />
         <TextField
           label='Nombre Completo'
@@ -426,6 +518,7 @@ const DriverTable = (arrayObjs, props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${getDriversRes.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -437,7 +530,15 @@ const DriverTable = (arrayObjs, props) => {
             <TableRow>
               <TableCell>Identificador</TableCell>
               <TableCell>Número Identificador</TableCell>
-              <TableCell>Nombre Conductor</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'fullName'}
+                  direction={orderBy === 'fullName' ? order : 'asc'}
+                  onClick={() => handleSort('fullName')}
+                >
+                  Nombre Conductor
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Licencia</TableCell>
               <TableCell>Última actualización</TableCell>
               <TableCell></TableCell>
@@ -481,6 +582,13 @@ const DriverTable = (arrayObjs, props) => {
             )}
           </TableBody>
         </Table>
+        {driversLastEvaluatedKey_pageListDrivers ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       <ButtonGroup
         variant='outlined'

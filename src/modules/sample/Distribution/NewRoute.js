@@ -202,16 +202,6 @@ const Distribution = (props) => {
 
   listPayload.request.payload.merchantId =
     userDataRes.merchantSelected.merchantId;
-  let listCarriersPayload = {
-    request: {
-      payload: {
-        typeDocumentCarrier: '',
-        numberDocumentCarrier: '',
-        denominationCarrier: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
 
   const toGetCarriers = (payload, token) => {
     dispatch(getCarriers(payload, token));
@@ -231,6 +221,18 @@ const Distribution = (props) => {
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GET_PRODUCTS, payload: undefined});
     getProducts(listPayload);
+    let listCarriersPayload = {
+      request: {
+        payload: {
+          typeDocumentCarrier: '',
+          numberDocumentCarrier: '',
+          denominationCarrier: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
     toGetCarriers(listCarriersPayload, jwtToken);
     setTimeout(() => {
       setMinTutorial(true);

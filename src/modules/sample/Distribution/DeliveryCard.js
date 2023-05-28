@@ -98,17 +98,6 @@ const DeliveryCard = ({
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-  let listCarriersPayload = {
-    request: {
-      payload: {
-        typeDocumentCarrier: '',
-        numberDocumentCarrier: '',
-        denominationCarrier: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-
   let defaultValues = {
     startingAddress: '',
     arrivalAddress: '',
@@ -139,6 +128,18 @@ const DeliveryCard = ({
 
   useEffect(() => {
     if (!getCarriersRes) {
+      let listCarriersPayload = {
+        request: {
+          payload: {
+            typeDocumentCarrier: '',
+            numberDocumentCarrier: '',
+            denominationCarrier: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+            needItems: true,
+          },
+        },
+      };
       toGetCarriers(listCarriersPayload, jwtToken);
     }
     setProductsList([]);

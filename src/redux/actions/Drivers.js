@@ -11,7 +11,7 @@ import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
 export const getDrivers = (payload, jwtToken) => {
   return (dispatch, getState) => {
-    dispatch({type: FETCH_START});
+    dispatch({type: FETCH_START, payload: {process: 'GET_DRIVERS'}});
     console.log('Llega a driver el jwtToken? 122', jwtToken);
     request('post', '/facturacion/drivers/list', payload)
       // API.post('tunexo', '/facturacion/carriers/list', {
@@ -22,8 +22,18 @@ export const getDrivers = (payload, jwtToken) => {
       // })
       .then((data) => {
         console.log('getDrivers resultado', data);
-        dispatch({type: GET_DRIVERS, payload: data.data.response.payload});
-        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+        dispatch({
+          type: GET_DRIVERS,
+          payload: data.data.response.payload,
+          request: payload,
+        });
+        dispatch({
+          type: FETCH_SUCCESS,
+          payload: {
+            process: 'GET_DRIVERS',
+            message: 'Listado de conductores exitoso',
+          },
+        });
       })
       .catch((error) => {
         console.log('getDrivers error', error);

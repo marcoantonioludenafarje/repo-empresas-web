@@ -219,7 +219,7 @@ const ProductTable = (arrayObjs, props) => {
     };
     // listPayload.request.payload.LastEvaluatedKey = productsLastEvaluatedKey_pageListProducts;
     console.log('listPayload111:handleNextPage:', listPayload);
-    getClients(listPayload);
+    toGetAllProducts(listPayload);
     // setPage(page+1);
   };
 

@@ -314,6 +314,8 @@ const Distribution = (props) => {
             numberDocumentCarrier: '',
             denominationCarrier: '',
             merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+            needItems: true,
           },
         },
       };
@@ -678,7 +680,8 @@ const Distribution = (props) => {
       setSelectedRoute(initialRoute);
     } else if (
       predefinedRoutes_PageNewDistribution &&
-      predefinedRoutes_PageNewDistribution.length > 0 && selectedRoute_PageNewDistribution && 
+      predefinedRoutes_PageNewDistribution.length > 0 &&
+      selectedRoute_PageNewDistribution &&
       selectedRoute_PageNewDistribution.routePredefinedId
     ) {
       console.log('Entro por aca selectedRoute_PageNewDistribution');

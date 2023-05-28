@@ -28,10 +28,13 @@ import {
   Grid,
   useTheme,
   useMediaQuery,
+  TableSortLabel,
+  IconButton,
 } from '@mui/material';
 
 import {SET_JWT_TOKEN} from '../../../shared/constants/ActionTypes';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -89,17 +92,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let listPayload = {
-  request: {
-    payload: {
-      locationName: '',
-      type: '',
-      ubigeo: '',
-      merchantId: '',
-      modularCode: '',
-    },
-  },
-};
 let deletePayload = {
   request: {
     payload: {
@@ -112,6 +104,11 @@ let objSelectsU = {
   ubigeo: '150101',
 };
 
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const LocationTable = (arrayObjs, props) => {
   const classes = useStyles(props);
   const history = useHistory();
@@ -119,12 +116,15 @@ const LocationTable = (arrayObjs, props) => {
   const [firstload, setFirstload] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const theme = useTheme();
+  const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
-  const [ubigeo, setUbigeo] = React.useState('150101');
+  const [ubigeo, setUbigeo] = React.useState('');
+  const [locationName, setLocationName] = React.useState('');
+  const [type, setType] = React.useState('');
   const [existUbigeo, setExistUbigeo] = React.useState(true);
   const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
   const [readyData, setReadyData] = React.useState(false);
@@ -133,6 +133,9 @@ const LocationTable = (arrayObjs, props) => {
     label: 'Todos',
     ubigeo: '',
   });
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
+
   let popUp = false;
   let codProdSelected = '';
 
@@ -144,12 +147,9 @@ const LocationTable = (arrayObjs, props) => {
     dispatch(deleteLocation(payload));
   };
 
-  const useForceUpdate = () => {
-    return () => setReload((value) => value + 1); // update the state to force render
-  };
-
   //GET APIS RES
-  const {getLocationsRes} = useSelector(({locations}) => locations);
+  const {getLocationsRes, locationsLastEvaluatedKey_pageListLocations} =
+    useSelector(({locations}) => locations);
   console.log('Locations123', getLocationsRes);
   const {deleteLocationRes} = useSelector(({locations}) => locations);
   console.log('deleteLocationRes', deleteLocationRes);
@@ -167,8 +167,20 @@ const LocationTable = (arrayObjs, props) => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_LOCATIONS, payload: undefined});
       console.log('Esto por que no funciona');
+      let listPayload = {
+        request: {
+          payload: {
+            locationName: '',
+            type: '',
+            ubigeo: '',
+            merchantId: '',
+            modularCode: '',
+            LastEvaluatedKey: null,
+            needItems: true,
+          },
+        },
+      };
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
 
@@ -222,9 +234,90 @@ const LocationTable = (arrayObjs, props) => {
     )}`;
   };
 
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    let listPayload = {
+      request: {
+        payload: {
+          locationName: locationName,
+          type: type == 'TODOS' ? '' : type,
+          ubigeo: ubigeo,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          modularCode: '',
+          LastEvaluatedKey: locationsLastEvaluatedKey_pageListLocations,
+          needItems: true,
+        },
+      },
+    };
+    // listPayload.request.payload.LastEvaluatedKey = productsLastEvaluatedKey_pageListProducts;
+    console.log('listPayload111:handleNextPage:', listPayload);
+    toGetLocations(listPayload);
+    // setPage(page+1);
+  };
+
+  // Función para manejar el clic en el encabezado de la tabla
+  const handleSort = (field, type) => {
+    let sortedProducts;
+
+    if (orderBy === field) {
+      // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+    } else {
+      setOrderBy(field);
+      setOrder('asc');
+    }
+
+    sortedProducts = [...allProductsRes].sort((a, b) => {
+      let descriptionA = null;
+      if (type == 'number' || type == 'date')
+        descriptionA =
+          (a[`${field}`] ? Number(a[`${field}`].toString()) : 0) ?? 0;
+      else descriptionA = (a[`${field}`] ? a[`${field}`].toString() : '') ?? '';
+
+      let descriptionB = null;
+      if (type == 'number' || type == 'date')
+        descriptionB =
+          (b[`${field}`] ? Number(b[`${field}`].toString()) : 0) ?? 0;
+      else descriptionB = (b[`${field}`] ? b[`${field}`].toString() : '') ?? '';
+
+      console.log('descriptionA', descriptionA);
+      console.log('descriptionB', descriptionB);
+
+      if (order === 'asc') {
+        if (type == 'number' || type == 'date')
+          return descriptionA - descriptionB;
+        else return descriptionA.localeCompare(descriptionB);
+      } else {
+        if (type == 'number' || type == 'date')
+          return descriptionB - descriptionA;
+        else return descriptionB.localeCompare(descriptionA);
+      }
+    });
+
+    dispatch({
+      type: GET_LOCATIONS,
+      payload: sortedProducts,
+      handleSort: true,
+    });
+    forceUpdate();
+  };
+
   //BUSQUEDA
   const handleSearchValues = (event) => {
     console.log('Evento', event);
+    let listPayload = {
+      request: {
+        payload: {
+          locationName: locationName,
+          type: type,
+          ubigeo: ubigeo,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          modularCode: '',
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
     if (event.target.name == 'nameToSearch') {
       console.log('nameToSearch:' + event.target.value);
       if (event.target.value == '') {
@@ -254,6 +347,19 @@ const LocationTable = (arrayObjs, props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchLocations = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          locationName: locationName,
+          type: type == 'TODOS' ? '' : type,
+          ubigeo: ubigeo,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          modularCode: '',
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
     toGetLocations(listPayload, jwtToken);
   };
   const newLocation = () => {
@@ -362,6 +468,19 @@ const LocationTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            locationName: '',
+            type: '',
+            ubigeo: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            modularCode: '',
+            LastEvaluatedKey: null,
+            needItems: true,
+          },
+        },
+      };
       toGetLocations(listPayload, jwtToken);
     }, 2000);
   };
@@ -424,7 +543,7 @@ const LocationTable = (arrayObjs, props) => {
     if (readyData) {
       setObjUbigeo(ubigeos[ubigeos.length - 1]);
       setUbigeo(ubigeos[ubigeos.length - 1].ubigeo.toString());
-      objSelectU.ubigeo = ubigeos[ubigeos.length - 1].ubigeo.toString();
+      objSelectsU.ubigeo = ubigeos[ubigeos.length - 1].ubigeo.toString();
       setExistUbigeo(true);
       setReadyData(true);
     }
@@ -445,7 +564,8 @@ const LocationTable = (arrayObjs, props) => {
           size='big'
           onChange={(event) => {
             console.log(event.target.value);
-            listPayload.request.payload.locationName = event.target.value;
+            //listPayload.request.payload.locationName = event.target.value;
+            setLocationName(event.target.value);
           }}
         />
         <FormControl sx={{my: 0, width: 140}}>
@@ -459,7 +579,8 @@ const LocationTable = (arrayObjs, props) => {
             label='Tipo'
             onChange={(event) => {
               console.log(event.target.value);
-              listPayload.request.payload.type = event.target.value;
+              //listPayload.request.payload.type = event.target.value;
+              setType(event.target.value);
             }}
           >
             <MenuItem value='TODOS' style={{fontWeight: 200}}>
@@ -488,7 +609,7 @@ const LocationTable = (arrayObjs, props) => {
                 setObjUbigeo(value);
                 setUbigeo(value.ubigeo.toString());
                 objSelectsU.ubigeo = value.ubigeo.toString();
-                listPayload.request.payload.ubigeo = objSelectsU.ubigeo;
+                //listPayload.request.payload.ubigeo = objSelectsU.ubigeo;
                 setExistUbigeo(true);
               } else {
                 setExistUbigeo(false);
@@ -523,6 +644,7 @@ const LocationTable = (arrayObjs, props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${getLocationsRes.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -579,6 +701,13 @@ const LocationTable = (arrayObjs, props) => {
             )}
           </TableBody>
         </Table>
+        {locationsLastEvaluatedKey_pageListLocations ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       <ButtonGroup
         variant='outlined'

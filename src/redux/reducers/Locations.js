@@ -9,16 +9,52 @@ import {
 
 const INIT_STATE = {
   list: [],
+  getLocationsRes: [],
+  locationsLastEvaluatedKey_pageListLocations: null,
 };
 
 const locationsReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case GET_LOCATIONS:
-      console.log('data de reducer GET_LOCATIONS', action.payload);
-      return {
-        ...state,
-        getLocationsRes: action.payload,
-      };
+      // console.log('data de reducer GET_LOCATIONS', action.payload);
+      // return {
+      //   ...state,
+      //   getLocationsRes: action.payload,
+      // };
+      console.log('actionLocation1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSortL = action.handleSort;
+      if (handleSortL) {
+        return {
+          ...state,
+          getLocationsRes: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.getLocationsRes, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          getLocationsRes: items,
+          locationsLastEvaluatedKey_pageListLocations: lastEvaluatedKey,
+        };
+      }
     case NEW_LOCATION:
       console.log('data de reducer NEW_LOCATION', action.payload);
       return {

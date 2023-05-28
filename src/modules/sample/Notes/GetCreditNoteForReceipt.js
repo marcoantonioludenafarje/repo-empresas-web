@@ -45,7 +45,11 @@ import {DateTimePicker} from '@mui/lab';
 import {dateWithHyphen, translateValue} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import Router, {useRouter} from 'next/router';
-import {getMovements,getOutputItems_pageListOutput, addCreditNote} from '../../../redux/actions/Movements';
+import {
+  getMovements,
+  getOutputItems_pageListOutput,
+  addCreditNote,
+} from '../../../redux/actions/Movements';
 import {red} from '@mui/material/colors';
 import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -314,8 +318,14 @@ const GetCreditNote = () => {
       toGetMovements(listOutputsPayload);
       forceUpdate();
     }
-    if (outputItems_pageListOutput && outputItems_pageListOutput[0].movementType == 'OUTPUT') {
-      console.log('outputItems_pageListOutput de salidas', outputItems_pageListOutput);
+    if (
+      outputItems_pageListOutput &&
+      outputItems_pageListOutput[0].movementType == 'OUTPUT'
+    ) {
+      console.log(
+        'outputItems_pageListOutput de salidas',
+        outputItems_pageListOutput,
+      );
       console.log('query.movementId', query.movementId);
       let output = outputItems_pageListOutput.find(
         (obj) => obj.movementHeaderId == query.movementId,
@@ -326,8 +336,14 @@ const GetCreditNote = () => {
   }, [receiptItems_pageListReceipt]);
 
   useEffect(() => {
-    if (outputItems_pageListOutput && outputItems_pageListOutput[0].movementType == 'OUTPUT') {
-      console.log('outputItems_pageListOutput de salidas', outputItems_pageListOutput);
+    if (
+      outputItems_pageListOutput &&
+      outputItems_pageListOutput[0].movementType == 'OUTPUT'
+    ) {
+      console.log(
+        'outputItems_pageListOutput de salidas',
+        outputItems_pageListOutput,
+      );
       console.log('query.movementId', query.movementId);
       let output = outputItems_pageListOutput.find(
         (obj) => obj.movementHeaderId == query.movementId,

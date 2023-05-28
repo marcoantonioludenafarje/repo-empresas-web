@@ -26,10 +26,13 @@ import {
   CircularProgress,
   useTheme,
   useMediaQuery,
+  TableSortLabel,
+  IconButton,
 } from '@mui/material';
 
 import {SET_JWT_TOKEN} from '../../../shared/constants/ActionTypes';
 
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -85,16 +88,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let listPayload = {
-  request: {
-    payload: {
-      typeDocumentCarrier: '',
-      numberDocumentCarrier: '',
-      denominationCarrier: '',
-      merchantId: '',
-    },
-  },
-};
 let deletePayload = {
   request: {
     payload: {
@@ -103,11 +96,17 @@ let deletePayload = {
   },
 };
 
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const CarrierTable = (arrayObjs, props) => {
   const classes = useStyles(props);
   const history = useHistory();
   const dispatch = useDispatch();
   const theme = useTheme();
+  const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [firstload, setFirstload] = React.useState(true);
   const [open, setOpen] = React.useState(false);
@@ -115,6 +114,12 @@ const CarrierTable = (arrayObjs, props) => {
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [numberDocumentCarrier, setNumberDocumentCarrier] = React.useState('');
+  const [nameToSearch, setNameToSearch] = React.useState('');
+  const [typeDocumentCarrier, setTypeDocumentCarrier] = React.useState('');
+  const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
+  const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
+
   let popUp = false;
   let codProdSelected = '';
 
@@ -126,12 +131,9 @@ const CarrierTable = (arrayObjs, props) => {
     dispatch(deleteCarrier(payload));
   };
 
-  const useForceUpdate = () => {
-    return () => setReload((value) => value + 1); // update the state to force render
-  };
-
   //GET APIS RES
-  const {getCarriersRes} = useSelector(({carriers}) => carriers);
+  const {getCarriersRes, carriersLastEvaluatedKey_pageListCarriers} =
+    useSelector(({carriers}) => carriers);
   console.log('Carriers123', getCarriersRes);
   const {deleteCarrierRes} = useSelector(({carriers}) => carriers);
   console.log('deleteCarrierRes', deleteCarrierRes);
@@ -149,10 +151,20 @@ const CarrierTable = (arrayObjs, props) => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_CARRIERS, payload: undefined});
+      //dispatch({type: GET_CARRIERS, payload: undefined});
       console.log('Esto por que no funciona');
-      listPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentCarrier: '',
+            numberDocumentCarrier: '',
+            denominationCarrier: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+            needItems: true,
+          },
+        },
+      };
 
       toGetCarriers(listPayload, jwtToken);
       setFirstload(false);
@@ -204,27 +216,115 @@ const CarrierTable = (arrayObjs, props) => {
     )}`;
   };
 
+  const handleNextPage = (event) => {
+    //console.log('Llamando al  handleNextPage', handleNextPage);
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentCarrier: typeDocumentCarrier,
+          numberDocumentCarrier: numberDocumentCarrier,
+          denominationCarrier: nameToSearch,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: carriersLastEvaluatedKey_pageListCarriers,
+          needItems: true,
+        },
+      },
+    };
+    // listPayload.request.payload.LastEvaluatedKey = productsLastEvaluatedKey_pageListProducts;
+    console.log('listPayload111:handleNextPage:', listPayload);
+    toGetCarriers(listPayload);
+    // setPage(page+1);
+  };
+
+  // Función para manejar el clic en el encabezado de la tabla
+  const handleSort = (field, type) => {
+    let sortedProducts;
+
+    if (orderBy === field) {
+      // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+    } else {
+      setOrderBy(field);
+      setOrder('asc');
+    }
+
+    sortedProducts = [...getCarriersRes].sort((a, b) => {
+      let descriptionA = null;
+      if (type == 'number' || type == 'date')
+        descriptionA =
+          (a[`${field}`] ? Number(a[`${field}`].toString()) : 0) ?? 0;
+      else descriptionA = (a[`${field}`] ? a[`${field}`].toString() : '') ?? '';
+
+      let descriptionB = null;
+      if (type == 'number' || type == 'date')
+        descriptionB =
+          (b[`${field}`] ? Number(b[`${field}`].toString()) : 0) ?? 0;
+      else descriptionB = (b[`${field}`] ? b[`${field}`].toString() : '') ?? '';
+
+      console.log('descriptionA', descriptionA);
+      console.log('descriptionB', descriptionB);
+
+      if (order === 'asc') {
+        if (type == 'number' || type == 'date')
+          return descriptionA - descriptionB;
+        else return descriptionA.localeCompare(descriptionB);
+      } else {
+        if (type == 'number' || type == 'date')
+          return descriptionB - descriptionA;
+        else return descriptionB.localeCompare(descriptionA);
+      }
+    });
+
+    dispatch({
+      type: GET_CARRIERS,
+      payload: sortedProducts,
+      handleSort: true,
+    });
+    forceUpdate();
+  };
+
   //BUSQUEDA
   const handleSearchValues = (event) => {
     console.log('Evento', event);
-    if (event.target.name == 'docToSearch') {
-      if (event.target.value == '') {
-        listPayload.request.payload.numberDocumentCarrier = '';
+    if (event.target.name == 'typeDocumentCarrier') {
+      if (event.target.value == 'TODOS') {
+        setTypeDocumentCarrier('');
       } else {
-        listPayload.request.payload.numberDocumentCarrier = event.target.value;
+        setTypeDocumentCarrier(event.target.value);
       }
     }
+    if (event.target.name == 'numberDocumentCarrier') {
+      // if (event.target.value == '') {
+      //   listPayload.request.payload.numberDocumentDriver = '';
+      // } else {
+      //   listPayload.request.payload.numberDocumentDriver = event.target.value;
+      // }
+      setNumberDocumentCarrier(event.target.value);
+    }
     if (event.target.name == 'nameToSearch') {
-      if (event.target.value == '') {
-        listPayload.request.payload.denominationCarrier = '';
-      } else {
-        listPayload.request.payload.denominationCarrier = event.target.value;
-      }
+      // if (event.target.value == '') {
+      //   listPayload.request.payload.fullName = '';
+      // } else {
+      //   listPayload.request.payload.fullName = event.target.value;
+      // }
+      setNameToSearch(event.target.value);
     }
   };
 
   //BUTTONS BAR FUNCTIONS
   const searchCarriers = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          typeDocumentCarrier: typeDocumentCarrier,
+          numberDocumentCarrier: numberDocumentCarrier,
+          denominationCarrier: nameToSearch,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
     toGetCarriers(listPayload, jwtToken);
   };
   const newCarrier = () => {
@@ -333,6 +433,18 @@ const CarrierTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentCarrier: '',
+            numberDocumentCarrier: '',
+            denominationCarrier: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+            needItems: true,
+          },
+        },
+      };
       toGetCarriers(listPayload, jwtToken);
     }, 2000);
   };
@@ -385,13 +497,9 @@ const CarrierTable = (arrayObjs, props) => {
             labelId='documentType-label'
             label='Identificador'
             sx={{maxWidth: 140}}
-            onChange={(event) => {
-              console.log(event.target.value);
-              listPayload.request.payload.typeDocumentCarrier =
-                event.target.value;
-            }}
+            onChange={handleSearchValues}
           >
-            <MenuItem value='' style={{fontWeight: 200}}>
+            <MenuItem value='TODOS' style={{fontWeight: 200}}>
               Todos
             </MenuItem>
             <MenuItem value='RUC' style={{fontWeight: 200}}>
@@ -410,11 +518,7 @@ const CarrierTable = (arrayObjs, props) => {
           variant='outlined'
           name='numberDocumentCarrier'
           size='small'
-          onChange={(event) => {
-            console.log(event.target.value);
-            listPayload.request.payload.numberDocumentCarrier =
-              event.target.value;
-          }}
+          onChange={handleSearchValues}
         />
         <TextField
           label='Nombre / Razón social'
@@ -435,6 +539,7 @@ const CarrierTable = (arrayObjs, props) => {
           Buscar
         </Button>
       </Stack>
+      <span>{`Items: ${getCarriersRes.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -446,7 +551,15 @@ const CarrierTable = (arrayObjs, props) => {
             <TableRow>
               <TableCell>Identificador</TableCell>
               <TableCell>Número Identificador</TableCell>
-              <TableCell>Nombre / Razón social</TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'denominationCarrier'}
+                  direction={orderBy === 'denominationCarrier' ? order : 'asc'}
+                  onClick={() => handleSort('denominationCarrier')}
+                >
+                  Nombre / Razón social
+                </TableSortLabel>
+              </TableCell>
               <TableCell>Nombre Contacto</TableCell>
               <TableCell>Última actualización</TableCell>
               <TableCell></TableCell>
@@ -490,6 +603,13 @@ const CarrierTable = (arrayObjs, props) => {
             )}
           </TableBody>
         </Table>
+        {carriersLastEvaluatedKey_pageListCarriers ? (
+          <Stack spacing={2}>
+            <IconButton onClick={() => handleNextPage()} size='small'>
+              Siguiente <ArrowForwardIosIcon fontSize='inherit' />
+            </IconButton>
+          </Stack>
+        ) : null}
       </TableContainer>
       <ButtonGroup
         variant='outlined'
