@@ -464,8 +464,8 @@ const ReceiptsTable = (props) => {
     let listPayload = {
       request: {
         payload: {
-          initialTime: toEpoch(Date.now() - 89280000),
-          finalTime: toEpoch(Date.now()),
+          initialTime: initialTime,
+          finalTime: finalTime,
           businessProductCode: null,
           movementType: 'RECEIPT',
           merchantId: userDataRes.merchantSelected.merchantId,

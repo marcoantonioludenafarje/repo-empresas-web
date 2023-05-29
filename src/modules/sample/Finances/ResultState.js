@@ -510,6 +510,7 @@ const ResultState = ({data, principalYear, principalMonth}) => {
                 <TableCell>Detalle de Compra</TableCell>
                 <TableCell>Observaciones</TableCell>
                 <TableCell>Estado</TableCell>
+                <TableCell>Método de Pago</TableCell>
                 <TableCell>Tipo de compra</TableCell>
                 <TableCell>Pagos de Factura</TableCell>
                 <TableCell>Otros Pagos</TableCell>
@@ -559,6 +560,14 @@ const ResultState = ({data, principalYear, principalMonth}) => {
                         {obj.purchaseType
                           ? translateValue(
                               'PAYMENTMETHOD',
+                              obj.methodToPay.toUpperCase(),
+                            )
+                          : null}
+                      </TableCell>
+                      <TableCell>
+                        {obj.purchaseType
+                          ? translateValue(
+                              'PURCHASETYPE',
                               obj.purchaseType.toUpperCase(),
                             )
                           : null}
@@ -863,6 +872,7 @@ const ResultState = ({data, principalYear, principalMonth}) => {
                 <TableCell>Detalle de Compra</TableCell>
                 <TableCell>Observaciones</TableCell>
                 <TableCell>Estado</TableCell>
+                <TableCell>Método de Pago</TableCell>
                 <TableCell>Tipo de compra</TableCell>
                 <TableCell>Pagos de Factura</TableCell>
                 <TableCell>Otros Pagos</TableCell>
@@ -913,6 +923,14 @@ const ResultState = ({data, principalYear, principalMonth}) => {
                         {obj.purchaseType
                           ? translateValue(
                               'PAYMENTMETHOD',
+                              obj.methodToPay.toUpperCase(),
+                            )
+                          : null}
+                      </TableCell>
+                      <TableCell>
+                        {obj.purchaseType
+                          ? translateValue(
+                              'PURCHASETYPE',
                               obj.purchaseType.toUpperCase(),
                             )
                           : null}

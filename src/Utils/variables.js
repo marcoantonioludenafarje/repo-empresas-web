@@ -40,6 +40,10 @@ export const dictionary = {
     PAID: <IntlMessages id='finance.status.expense.paid' />,
     ADVANCE: <IntlMessages id='finance.status.expense.advance' />,
   },
+  PURCHASETYPE: {
+    CREDIT: <IntlMessages id='finance.purchase.type.credit' />,
+    CASH: <IntlMessages id='finance.purchase.type.cash' />,
+  },
   PAYMENTMETHOD: {
     CASH: <IntlMessages id='payment.method.cash' />,
     DEBIT: <IntlMessages id='payment.method.debit' />,
