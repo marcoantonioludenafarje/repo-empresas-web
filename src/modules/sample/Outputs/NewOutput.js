@@ -696,8 +696,8 @@ const NewOutput = (props) => {
       let listPayload = {
         request: {
           payload: {
-            initialTime: null,
-            finalTime: null,
+            initialTime: Date.now() - 2678400000,
+            finalTime: Date.now(),
             businessProductCode: null,
             movementType: 'OUTPUT',
             merchantId: userDataRes.merchantSelected.merchantId,
