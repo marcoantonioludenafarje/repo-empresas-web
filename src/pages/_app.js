@@ -16,13 +16,42 @@ import {useStore} from '../redux/store'; // Client-side cache, shared for the wh
 
 import '../@crema/services/index';
 import '../shared/vendors/index.css';
-
+import  {useEffect } from 'react';
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
 export default function MyApp(props) {
   const {Component, emotionCache = clientSideEmotionCache, pageProps} = props;
   const store = useStore(pageProps.initialReduxState);
+  var swLocation = '/service-worker.js'; 
+  var swReg;
+  useEffect(() => {
+
+    if ( 'serviceWorker' in navigator) {
+
+
+      // if ( url.includes('localhost') ) {
+      //     swLocation = '/service-worker.js';
+      // }
+
+
+      window.addEventListener('load', function() {
+
+          navigator.serviceWorker.register( swLocation ).then( function(reg){
+              console.log("Se registro correctamente")
+              swReg = reg;
+              swReg.pushManager.getSubscription().then( ele =>{
+                console.log("Alguna suscripcion", ele)
+              } );
+
+          });
+
+      });
+
+    }
+
+
+  }, []);
 
   return (
     <CacheProvider value={emotionCache}>
