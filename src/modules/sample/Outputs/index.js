@@ -1655,7 +1655,8 @@ const OutputsTable = (props) => {
                       sx={{'&:last-child td, &:last-child th': {border: 0}}}
                       key={index}
                     >
-                      <TableCell>{`${showMinType(obj.movementType)} - ${
+                      <TableCell sx={{color: (obj.existIncome && ( Array.isArray(obj.documentsMovement) && obj.documentsMovement.length > 0 )) ? 'inherit' : 'rgba(198, 50, 91, 1)',
+                      fontWeight: 'bold'}}>{`${showMinType(obj.movementType)} - ${
                         obj.codMovement ? obj.codMovement.split('-')[1] : ''
                       }`}</TableCell>
                       <TableCell>
