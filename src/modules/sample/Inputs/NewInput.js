@@ -1401,19 +1401,17 @@ const NewInput = (props) => {
           >
             {inputItems_pageListInput.length !== 0 ? (
               <>
-                {hasBill ? (
+                {hasBill  &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/outcomeOfInput/*',
+                  ) ? (
                   <Button
                     color='primary'
                     sx={{width: 1, px: 7, my: 2}}
                     variant='contained'
                     onClick={() => {
-                      console.log ('inputItems_pageListInput',inputItems_pageListInput);
-                      console.log('inputItems_pageListInput1',addMovementRes.movementHeaderId);
-                      console.log('inputItems_pageListInput2',inputItems_pageListInput.find(
-                        (obj) =>
-                          obj.movementHeaderId ==
-                          addMovementRes.movementHeaderId,
-                      ));
                       Router.push({
                         pathname: '/sample/finances/new-expense',
                         query: inputItems_pageListInput.find(

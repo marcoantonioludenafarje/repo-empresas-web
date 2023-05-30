@@ -1476,11 +1476,11 @@ const InputsTable = (props) => {
             '/facturacion/accounting/movement/register?path=/outcomeOfInput/*',
           ) &&
         !selectedInput.existExpense &&
-        selectedInput.existBill &&
+        //selectedInput.existBill &&
         selectedInput.movementSubType == 'buys' ? (
           <MenuItem onClick={doFinance}>
             <LogoutIcon sx={{mr: 1, my: 'auto'}} />
-            Generar egreso
+            Generar egreso 
           </MenuItem>
         ) : (
           <></>
