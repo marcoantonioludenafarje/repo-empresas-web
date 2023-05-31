@@ -1401,7 +1401,7 @@ const NewInput = (props) => {
           >
             {inputItems_pageListInput.length !== 0 ? (
               <>
-                {hasBill  &&
+                {hasBill &&
                 localStorage
                   .getItem('pathsBack')
                   .includes(

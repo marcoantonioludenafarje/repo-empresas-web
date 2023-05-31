@@ -45,12 +45,10 @@ import NewRequest from '../../../../../modules/sample/Request/NewRequest';
 import RequestIcon from '../../../../../assets/icon/requestIcon.svg';
 import NotificationEmpty from '../../../../../assets/icon/notificationEmpty.svg';
 import NotificationNonEmpty from '../../../../../assets/icon/notificationNonEmpty.svg';
-import {
-  SUBSCRIPTION_STATE,
-} from '../../../../../shared/constants/ActionTypes';
+import {SUBSCRIPTION_STATE} from '../../../../../shared/constants/ActionTypes';
 import {useDispatch, useSelector} from 'react-redux';
 
-import  {useEffect } from 'react';
+import {useEffect} from 'react';
 const AppHeader = () => {
   const {messages} = useIntl();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -68,7 +66,9 @@ const AppHeader = () => {
   };
   const dispatch = useDispatch();
   const {userDataRes} = useSelector(({user}) => user);
-  const {subscriptionStateRes} = useSelector(({notifications}) => notifications);
+  const {subscriptionStateRes} = useSelector(
+    ({notifications}) => notifications,
+  );
   const requestAxios = (method, path, payload) => {
     console.log('Ahora axios');
     switch (method) {
@@ -101,11 +101,11 @@ const AppHeader = () => {
       default:
       // code block
     }
-  }
+  };
   const handleSubscribe = () => {
-    console.log("Hola handleSubscribe")
-    
-    if (('serviceWorker' in navigator) && !allowedNotifications) {
+    console.log('Hola handleSubscribe');
+
+    if ('serviceWorker' in navigator && !allowedNotifications) {
       // navigator.serviceWorker.controller.postMessage({
       //   action: 'subscribe',
       //   subscription: 'Aquí puedes pasar la información de la suscripción'
@@ -113,121 +113,138 @@ const AppHeader = () => {
       let swReg;
       var swLocation = '/service-worker.js';
       const cancelarSuscripcion = () => {
-        swReg.pushManager.getSubscription().then( subs => {
-          subs.unsubscribe().then( () =>  verificaSuscripcion(false) );
+        swReg.pushManager.getSubscription().then((subs) => {
+          subs.unsubscribe().then(() => verificaSuscripcion(false));
         });
-        
+
         dispatch({type: SUBSCRIPTION_STATE, payload: false});
-      }
+      };
       const verificaSuscripcion = () => {
         dispatch({type: SUBSCRIPTION_STATE, payload: true});
-      }
-      navigator.serviceWorker.getRegistration().then(registration => {
-        if (registration) {
-          // Si hay un registro existente
-          swReg = registration;
-          console.log("Registro existente:", swReg);
-          // Realiza las operaciones adicionales aquí
-            // Realiza las operaciones adicionales aquí
-            requestAxios('post', '/utility/webpushnotifications/getKey', {
-              request:{
-                payload:{
-                  message: "Obteniendo Key"
-                }
-              }
-            }).then( res => res.data.response.payload.data).then( key => new Uint8Array(key))
-            .then((dataKey) => {
-              console.log('getKey resultado', dataKey);
-              swReg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: dataKey
-              })
-              .then( res => res.toJSON() )
-              .then( suscripcion => {
-      
-                console.log(suscripcion);
-                requestAxios('post', '/utility/webpushnotifications/saveSuscription', {
-                  request:{
-                    payload:{
-                      userId: userDataRes.userId,
-                      merchantId: userDataRes.merchantSelected.merchantId,
-                      subscription: suscripcion,
-                    }
-                  }
-                }).then( verificaSuscripcion )
-                .catch( cancelarSuscripcion );
-              });
-              
-            })
-            .catch((error) => {
-              console.log('getKey error', error);
-            });
-        } else {
-          // Si no hay un registro existente, regístralo
-          navigator.serviceWorker.register(swLocation).then(registration => {
+      };
+      navigator.serviceWorker
+        .getRegistration()
+        .then((registration) => {
+          if (registration) {
+            // Si hay un registro existente
             swReg = registration;
-            console.log("Nuevo registro:", swReg);
+            console.log('Registro existente:', swReg);
+            // Realiza las operaciones adicionales aquí
             // Realiza las operaciones adicionales aquí
             requestAxios('post', '/utility/webpushnotifications/getKey', {
-              request:{
-                payload:{
-                  message: "Obteniendo Key"
-                }
-              }
-            }).then( res => res.data.response.payload.data).then( key => new Uint8Array(key))
-            .then((dataKey) => {
-              console.log('getKey resultado', dataKey);
-              swReg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: dataKey
-              })
-              .then( res => res.toJSON() )
-              .then( suscripcion => {
-      
-                  console.log(suscripcion);
-                  requestAxios('post', '/utility/webpushnotifications/saveSuscription', {
-                    request:{
-                      payload:{
-                        userId: userDataRes.userId,
-                        merchantId: userDataRes.merchantSelected.merchantId,
-                        subscription: suscripcion,
-                      }
-                    }
-                  }).then( verificaSuscripcion )
-                  .catch( cancelarSuscripcion );
-              });
+              request: {
+                payload: {
+                  message: 'Obteniendo Key',
+                },
+              },
             })
-            .catch((error) => {
-              console.log('getKey error', error);
-            });
-        
-          }).catch(error => {
-            console.log("Error al registrar el Service Worker:", error);
-          });
-        }
-      }).catch(error => {
-        console.log("Error al obtener el registro de Service Worker:", error);
-      });
-
-    } else if((('serviceWorker' in navigator) && allowedNotifications) ){
-      
+              .then((res) => res.data.response.payload.data)
+              .then((key) => new Uint8Array(key))
+              .then((dataKey) => {
+                console.log('getKey resultado', dataKey);
+                swReg.pushManager
+                  .subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: dataKey,
+                  })
+                  .then((res) => res.toJSON())
+                  .then((suscripcion) => {
+                    console.log(suscripcion);
+                    requestAxios(
+                      'post',
+                      '/utility/webpushnotifications/saveSuscription',
+                      {
+                        request: {
+                          payload: {
+                            userId: userDataRes.userId,
+                            merchantId: userDataRes.merchantSelected.merchantId,
+                            subscription: suscripcion,
+                          },
+                        },
+                      },
+                    )
+                      .then(verificaSuscripcion)
+                      .catch(cancelarSuscripcion);
+                  });
+              })
+              .catch((error) => {
+                console.log('getKey error', error);
+              });
+          } else {
+            // Si no hay un registro existente, regístralo
+            navigator.serviceWorker
+              .register(swLocation)
+              .then((registration) => {
+                swReg = registration;
+                console.log('Nuevo registro:', swReg);
+                // Realiza las operaciones adicionales aquí
+                requestAxios('post', '/utility/webpushnotifications/getKey', {
+                  request: {
+                    payload: {
+                      message: 'Obteniendo Key',
+                    },
+                  },
+                })
+                  .then((res) => res.data.response.payload.data)
+                  .then((key) => new Uint8Array(key))
+                  .then((dataKey) => {
+                    console.log('getKey resultado', dataKey);
+                    swReg.pushManager
+                      .subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: dataKey,
+                      })
+                      .then((res) => res.toJSON())
+                      .then((suscripcion) => {
+                        console.log(suscripcion);
+                        requestAxios(
+                          'post',
+                          '/utility/webpushnotifications/saveSuscription',
+                          {
+                            request: {
+                              payload: {
+                                userId: userDataRes.userId,
+                                merchantId:
+                                  userDataRes.merchantSelected.merchantId,
+                                subscription: suscripcion,
+                              },
+                            },
+                          },
+                        )
+                          .then(verificaSuscripcion)
+                          .catch(cancelarSuscripcion);
+                      });
+                  })
+                  .catch((error) => {
+                    console.log('getKey error', error);
+                  });
+              })
+              .catch((error) => {
+                console.log('Error al registrar el Service Worker:', error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log('Error al obtener el registro de Service Worker:', error);
+        });
+    } else if ('serviceWorker' in navigator && allowedNotifications) {
       let swReg;
       var swLocation = '/service-worker.js';
       const cancelarSuscripcion = () => {
-        swReg.pushManager.getSubscription().then( subs => {
-          subs.unsubscribe().then( () =>  verificaSuscripcion(false) );
+        swReg.pushManager.getSubscription().then((subs) => {
+          subs.unsubscribe().then(() => verificaSuscripcion(false));
         });
-        
+
         dispatch({type: SUBSCRIPTION_STATE, payload: false});
-      }
-      navigator.serviceWorker.getRegistration().then(registration => {
+      };
+      navigator.serviceWorker.getRegistration().then((registration) => {
         if (registration) {
           // Si hay un registro existente
           swReg = registration;
-          console.log("Registro existente:", swReg);
-          cancelarSuscripcion()
+          console.log('Registro existente:', swReg);
+          cancelarSuscripcion();
         }
-      })
+      });
     }
   };
   const sendNewRequest = () => {
@@ -235,16 +252,15 @@ const AppHeader = () => {
   };
   function enviarNotificacion() {
     const notificationOpts = {
-        body: 'Este es el cuerpo de la notificación',
-        icon: 'img/icons/icon-72x72.png'
+      body: 'Este es el cuerpo de la notificación',
+      icon: 'img/icons/icon-72x72.png',
     };
 
     const n = new Notification('Hola Mundo', notificationOpts);
 
     n.onclick = () => {
-        console.log('Click');
+      console.log('Click');
     };
-
   }
   // const sendNotification = () => {
   //   requestAxios('post', '/utility/webpushnotifications/sendPushMessages', {
@@ -266,50 +282,50 @@ const AppHeader = () => {
   // };
 
   useEffect(() => {
-    console.log("UseEffect de AppHeader")
-    
+    console.log('UseEffect de AppHeader');
+
     let swReg;
     var swLocation = '/service-worker.js';
-    if ( 'serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistration().then(registration => {
-        if (registration) {
-          // Si hay un registro existente
-          swReg = registration;
-          console.log("Registro existente:", swReg);
-          // Realiza las operaciones adicionales aquí
-          swReg.pushManager.getSubscription().then( ele =>{
-            console.log("Alguna suscripcion AppHeader", ele)
-            dispatch({type: SUBSCRIPTION_STATE, payload: true});
-          } );
-            
-        } else {
-          console.log("No hay registro existente:", swReg);
-          // Si no hay un registro existente, regístralo
-          navigator.serviceWorker.register(swLocation).then(registration => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .getRegistration()
+        .then((registration) => {
+          if (registration) {
+            // Si hay un registro existente
             swReg = registration;
-            console.log("Nuevo registro:", swReg);
+            console.log('Registro existente:', swReg);
             // Realiza las operaciones adicionales aquí
-            swReg.pushManager.getSubscription().then( ele =>{
-              console.log("Alguna suscripcion AppHeader", ele)
+            swReg.pushManager.getSubscription().then((ele) => {
+              console.log('Alguna suscripcion AppHeader', ele);
               dispatch({type: SUBSCRIPTION_STATE, payload: true});
-            } );
-        
-          }).catch(error => {
-            console.log("Error al registrar el Service Worker:", error);
-          });
-        }
-      }).catch(error => {
-        console.log("Error al obtener el registro de Service Worker:", error);
-      });
-
+            });
+          } else {
+            console.log('No hay registro existente:', swReg);
+            // Si no hay un registro existente, regístralo
+            navigator.serviceWorker
+              .register(swLocation)
+              .then((registration) => {
+                swReg = registration;
+                console.log('Nuevo registro:', swReg);
+                // Realiza las operaciones adicionales aquí
+                swReg.pushManager.getSubscription().then((ele) => {
+                  console.log('Alguna suscripcion AppHeader', ele);
+                  dispatch({type: SUBSCRIPTION_STATE, payload: true});
+                });
+              })
+              .catch((error) => {
+                console.log('Error al registrar el Service Worker:', error);
+              });
+          }
+        })
+        .catch((error) => {
+          console.log('Error al obtener el registro de Service Worker:', error);
+        });
     }
-
-
   }, []);
 
-  
   useEffect(() => {
-    setAllowedNotifications(subscriptionStateRes)
+    setAllowedNotifications(subscriptionStateRes);
   }, [subscriptionStateRes]);
   return (
     <AppBar
@@ -461,46 +477,46 @@ const AppHeader = () => {
         </Hidden> */}
         <Hidden smDown>
           <Box sx={{ml: 4}}>
-              <Box
+            <Box
+              sx={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                marginLeft: -2,
+                marginRight: -2,
+              }}
+            >
+              <IconButton
                 sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginLeft: -2,
-                  marginRight: -2,
+                  mt: 1,
+                  '& svg': {
+                    height: 35,
+                    width: 35,
+                  },
+                  color: 'text.secondary',
+                }}
+                edge='end'
+                color='inherit'
+                aria-label='open drawer'
+                onClick={() => {
+                  handleSubscribe();
                 }}
               >
-                <IconButton
+                <Button
                   sx={{
-                    mt: 1,
-                    '& svg': {
-                      height: 35,
-                      width: 35,
-                    },
-                    color: 'text.secondary',
+                    borderRadius: 0,
+                    width: '100%',
+                    textTransform: 'capitalize',
+                    marginTop: 'auto',
+                    height: 40,
                   }}
-                  edge='end'
-                  color='inherit'
-                  aria-label='open drawer'
-                  onClick={() => {
-                    handleSubscribe();
-                  }}
+                  variant='contained'
+                  color='primary'
                 >
-                  <Button
-                    sx={{
-                      borderRadius: 0,
-                      width: '100%',
-                      textTransform: 'capitalize',
-                      marginTop: 'auto',
-                      height: 40,
-                    }}
-                    variant='contained'
-                    color='primary'
-                  >
-                    Notificaciones {allowedNotifications ? 'ON' : 'OFF'}
-                  </Button>
-                </IconButton>
-              </Box>
+                  Notificaciones {allowedNotifications ? 'ON' : 'OFF'}
+                </Button>
+              </IconButton>
+            </Box>
           </Box>
         </Hidden>
         <Box sx={{ml: 4}}>

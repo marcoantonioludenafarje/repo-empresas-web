@@ -79,7 +79,9 @@ const NotificationItem = (props) => {
             {renderSwitch(item)}
             {`${convertToDate(item.createdAt)}`}
           </ListItemAvatar>
-          {item.userCreatedMetadata ? `Por: ${item.userCreatedMetadata.nombreCompleto}` : null}
+          {item.userCreatedMetadata
+            ? `Por: ${item.userCreatedMetadata.nombreCompleto}`
+            : null}
         </Typography>
       </Box>
     </ListItem>

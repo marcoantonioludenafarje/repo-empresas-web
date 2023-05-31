@@ -73,8 +73,7 @@ const AppNotifications = ({
       // }
       listNotificationsPayload.request.payload.merchantId =
         userDataRes.merchantMasterId;
-      listNotificationsPayload.request.payload.userId =
-        userDataRes.userId;
+      listNotificationsPayload.request.payload.userId = userDataRes.userId;
       toGetNotifications(listNotificationsPayload);
       getActiveNotifications = getNotificationsRes;
     }

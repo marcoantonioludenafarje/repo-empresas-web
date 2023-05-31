@@ -2,13 +2,13 @@ import {
   GET_NOTIFICATIONS,
   FETCH_SUCCESS,
   FETCH_ERROR,
-  SUBSCRIPTION_STATE
+  SUBSCRIPTION_STATE,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
   list: [],
   listNotifications: [],
-  subscriptionStateRes: false
+  subscriptionStateRes: false,
 };
 
 const notificationsReducer = (state = INIT_STATE, action) => {

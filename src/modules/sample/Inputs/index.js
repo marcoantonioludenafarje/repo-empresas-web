@@ -1480,7 +1480,7 @@ const InputsTable = (props) => {
         selectedInput.movementSubType == 'buys' ? (
           <MenuItem onClick={doFinance}>
             <LogoutIcon sx={{mr: 1, my: 'auto'}} />
-            Generar egreso 
+            Generar egreso
           </MenuItem>
         ) : (
           <></>
