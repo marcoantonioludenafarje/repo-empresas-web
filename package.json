@@ -124,6 +124,7 @@
     "babel-plugin-inline-react-svg": "^2.0.1",
     "commitlint-config-jira": "^1.4.1",
     "commitlint-plugin-jira-rules": "^1.4.0",
+    "copy-webpack-plugin": "^11.0.0",
     "eslint": "^8.7.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^7.1.0",
@@ -131,7 +132,8 @@
     "eslint-plugin-react": "^7.28.0",
     "husky": "^4.3.7",
     "lint-staged": "^10.5.3",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "workbox-webpack-plugin": "^6.6.1"
   },
   "husky": {
     "hooks": {

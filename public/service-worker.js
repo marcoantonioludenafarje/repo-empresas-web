@@ -77,6 +77,24 @@ self.addEventListener('activate', e => {
 });
 
 
+self.addEventListener('message', event => {
+    if (event.data && event.data.action === 'subscribe') {
+      const subscription = {"request": {
+                                "payload": event.data.subscription
+                            }};
+      
+    //   request('post', '/utility/webpushnotifications/getKey', subscription)
+    //   .then((data) => {
+    //     console.log('getKey resultado', data);
+        
+    //   })
+    //   .catch((error) => {
+    //     console.log('getKey error', error);
+    //   });
+  
+      console.log('Suscripción guardada:', subscription);
+    }
+  });
 
 
 
@@ -117,36 +135,37 @@ self.addEventListener('activate', e => {
 // });
 
 
-// tareas asíncronas
-self.addEventListener('sync', e => {
+// // tareas asíncronas
+// self.addEventListener('sync', e => {
 
-    console.log('SW: Sync');
+//     console.log('SW: Sync');
 
-    // if ( e.tag === 'nuevo-post' ) {
+//     // if ( e.tag === 'nuevo-post' ) {
 
-    //     // postear a BD cuando hay conexión
-    //     const respuesta = postearMensajes();
+//     //     // postear a BD cuando hay conexión
+//     //     const respuesta = postearMensajes();
         
-    //     e.waitUntil( respuesta );
-    // }
+//     //     e.waitUntil( respuesta );
+//     // }
 
-});
+// });
 
 // Escuchar PUSH
 self.addEventListener('push', e => {
 
     // console.log(e);
 
+    console.log("El push ha llegado", e);
     const data = JSON.parse( e.data.text() );
 
-    console.log("El push ha llegado", data);
+    console.log("El push se ha parseado", data);
 
 
-    const title = data.titulo;
+    const title = data.title;
     const options = {
-        body: data.cuerpo,
+        body: data.message,
         // icon: 'img/icons/icon-72x72.png',
-        icon: `img/avatars/${ data.usuario }.jpg`,
+        icon: `img/avatars/${ data.userCreatedAt }.jpg`,
         badge: 'img/favicon.ico',
         image: 'https://vignette.wikia.nocookie.net/marvelcinematicuniverse/images/5/5b/Torre_de_los_Avengers.png/revision/latest?cb=20150626220613&path-prefix=es',
         vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600],
@@ -154,7 +173,7 @@ self.addEventListener('push', e => {
         data: {
             // url: 'https://google.com',
             url: '/',
-            id: data.usuario
+            id: data.userCreatedAt
         },
         actions: [
             {
@@ -170,50 +189,52 @@ self.addEventListener('push', e => {
         ]
     };
 
-
+    console.log("options push notification", options)
     e.waitUntil( self.registration.showNotification( title, options) );
 
 
 });
 
 
-// Cierra la notificacion
-self.addEventListener('notificationclose', e => {
-    console.log('Notificación cerrada', e);
-});
+// // Cierra la notificacion
+// self.addEventListener('notificationclose', e => {
+//     console.log('Notificación cerrada', e);
+// });
 
 
-self.addEventListener('notificationclick', e => {
+// self.addEventListener('notificationclick', e => {
 
 
-    const notificacion = e.notification;
-    const accion = e.action;
+//     const notificacion = e.notification;
+//     const accion = e.action;
 
 
-    console.log({ notificacion, accion });
-    // console.log(notificacion);
-    // console.log(accion);
+//     console.log({ notificacion, accion });
+//     // console.log(notificacion);
+//     // console.log(accion);
     
 
-    const respuesta = clients.matchAll()
-    .then( clientes => {
+//     const respuesta = clients.matchAll()
+//     .then( clientes => {
 
-        let cliente = clientes.find( c => {
-            return c.visibilityState === 'visible';
-        });
+//         let cliente = clientes.find( c => {
+//             return c.visibilityState === 'visible';
+//         });
 
-        if ( cliente !== undefined ) {
-            cliente.navigate( notificacion.data.url );
-            cliente.focus();
-        } else {
-            clients.openWindow( notificacion.data.url );
-        }
+//         if ( cliente !== undefined ) {
+//             cliente.navigate( notificacion.data.url );
+//             cliente.focus();
+//         } else {
+//             clients.openWindow( notificacion.data.url );
+//         }
 
-        return notificacion.close();
+//         return notificacion.close();
 
-    });
+//     });
 
-    e.waitUntil( respuesta );
+//     e.waitUntil( respuesta );
 
 
-});
+// });
+
+//precacheAndRoute(self.__WB_MANIFEST);

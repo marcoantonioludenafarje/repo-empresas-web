@@ -7,6 +7,7 @@ import {Fonts} from '../../../shared/constants/AppEnums';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import {justDate, justTime} from '../../../Utils/utils';
 
 import red from '@mui/material/colors/red';
@@ -18,6 +19,8 @@ const NotificationItem = (props) => {
   console.log('Qué item es?', item);
   const renderSwitch = (item) => {
     switch (item.typeIcon.toLowerCase()) {
+      case 'pointofsaleicon':
+        return <PointOfSaleIcon style={{color: green[500]}} />;
       case 'success':
         return <CheckCircleRoundedIcon style={{color: green[500]}} />;
       case 'info':
@@ -62,7 +65,7 @@ const NotificationItem = (props) => {
               display: 'inline-block',
             }}
           >
-            {item.title}:
+            {item.title}({item.numberOfProducts || 0}):
           </Box>
           {item.message}
           <ListItemAvatar
@@ -76,6 +79,7 @@ const NotificationItem = (props) => {
             {renderSwitch(item)}
             {`${convertToDate(item.createdAt)}`}
           </ListItemAvatar>
+          {item.userCreatedMetadata ? `Por: ${item.userCreatedMetadata.nombreCompleto}` : null}
         </Typography>
       </Box>
     </ListItem>

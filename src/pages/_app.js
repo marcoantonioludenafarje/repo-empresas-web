@@ -30,15 +30,12 @@ export default function MyApp(props) {
     if ( 'serviceWorker' in navigator) {
 
 
-      // if ( url.includes('localhost') ) {
-      //     swLocation = '/service-worker.js';
-      // }
 
-
+      console.log("Esto se carga?")
       window.addEventListener('load', function() {
 
           navigator.serviceWorker.register( swLocation ).then( function(reg){
-              console.log("Se registro correctamente")
+              console.log("Se registro correctamente sw")
               swReg = reg;
               swReg.pushManager.getSubscription().then( ele =>{
                 console.log("Alguna suscripcion", ele)

@@ -7,6 +7,8 @@ import AppSearchBar from '@crema/core/AppSearchBar';
 import Hidden from '@mui/material/Hidden';
 import IconButton from '@mui/material/IconButton';
 
+import axios from 'axios';
+
 import IntlMessages from '../../../../../@crema/utility/IntlMessages';
 import CloseIcon from '@mui/icons-material/Close';
 import NotificationsIcon from '@mui/icons-material/Notifications';
@@ -43,14 +45,19 @@ import NewRequest from '../../../../../modules/sample/Request/NewRequest';
 import RequestIcon from '../../../../../assets/icon/requestIcon.svg';
 import NotificationEmpty from '../../../../../assets/icon/notificationEmpty.svg';
 import NotificationNonEmpty from '../../../../../assets/icon/notificationNonEmpty.svg';
-
+import {
+  SUBSCRIPTION_STATE,
+} from '../../../../../shared/constants/ActionTypes';
 import {useDispatch, useSelector} from 'react-redux';
+
+import  {useEffect } from 'react';
 const AppHeader = () => {
   const {messages} = useIntl();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [newRequestState, setNewRequestState] = React.useState(false);
   const [requestType, setRequestType] = React.useState('');
+  const [allowedNotifications, setAllowedNotifications] = React.useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -61,10 +68,249 @@ const AppHeader = () => {
   };
   const dispatch = useDispatch();
   const {userDataRes} = useSelector(({user}) => user);
+  const {subscriptionStateRes} = useSelector(({notifications}) => notifications);
+  const requestAxios = (method, path, payload) => {
+    console.log('Ahora axios');
+    switch (method) {
+      case 'post':
+        // code block
+        return axios[method](
+          `${process.env.REACT_APP_ENDPOINT_GATEWAY_URL}${path}`,
+          payload,
+          {
+            headers: {
+              Authorization: localStorage.getItem('jwt'),
+              'Content-type': 'application/json',
+            },
+          },
+        );
+        break;
+      case 'get':
+        return axios[method](
+          `${process.env.REACT_APP_ENDPOINT_GATEWAY_URL}${path}`,
+          {
+            headers: {
+              Authorization: localStorage.getItem('jwt'),
+              'Content-type': 'application/json',
+              merchantid: payload.body.merchantId,
+            },
+          },
+        );
+        // code block
+        break;
+      default:
+      // code block
+    }
+  }
+  const handleSubscribe = () => {
+    console.log("Hola handleSubscribe")
+    
+    if (('serviceWorker' in navigator) && !allowedNotifications) {
+      // navigator.serviceWorker.controller.postMessage({
+      //   action: 'subscribe',
+      //   subscription: 'Aquí puedes pasar la información de la suscripción'
+      // });
+      let swReg;
+      var swLocation = '/service-worker.js';
+      const cancelarSuscripcion = () => {
+        swReg.pushManager.getSubscription().then( subs => {
+          subs.unsubscribe().then( () =>  verificaSuscripcion(false) );
+        });
+        
+        dispatch({type: SUBSCRIPTION_STATE, payload: false});
+      }
+      const verificaSuscripcion = () => {
+        dispatch({type: SUBSCRIPTION_STATE, payload: true});
+      }
+      navigator.serviceWorker.getRegistration().then(registration => {
+        if (registration) {
+          // Si hay un registro existente
+          swReg = registration;
+          console.log("Registro existente:", swReg);
+          // Realiza las operaciones adicionales aquí
+            // Realiza las operaciones adicionales aquí
+            requestAxios('post', '/utility/webpushnotifications/getKey', {
+              request:{
+                payload:{
+                  message: "Obteniendo Key"
+                }
+              }
+            }).then( res => res.data.response.payload.data).then( key => new Uint8Array(key))
+            .then((dataKey) => {
+              console.log('getKey resultado', dataKey);
+              swReg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: dataKey
+              })
+              .then( res => res.toJSON() )
+              .then( suscripcion => {
+      
+                console.log(suscripcion);
+                requestAxios('post', '/utility/webpushnotifications/saveSuscription', {
+                  request:{
+                    payload:{
+                      userId: userDataRes.userId,
+                      merchantId: userDataRes.merchantSelected.merchantId,
+                      subscription: suscripcion,
+                    }
+                  }
+                }).then( verificaSuscripcion )
+                .catch( cancelarSuscripcion );
+              });
+              
+            })
+            .catch((error) => {
+              console.log('getKey error', error);
+            });
+        } else {
+          // Si no hay un registro existente, regístralo
+          navigator.serviceWorker.register(swLocation).then(registration => {
+            swReg = registration;
+            console.log("Nuevo registro:", swReg);
+            // Realiza las operaciones adicionales aquí
+            requestAxios('post', '/utility/webpushnotifications/getKey', {
+              request:{
+                payload:{
+                  message: "Obteniendo Key"
+                }
+              }
+            }).then( res => res.data.response.payload.data).then( key => new Uint8Array(key))
+            .then((dataKey) => {
+              console.log('getKey resultado', dataKey);
+              swReg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: dataKey
+              })
+              .then( res => res.toJSON() )
+              .then( suscripcion => {
+      
+                  console.log(suscripcion);
+                  requestAxios('post', '/utility/webpushnotifications/saveSuscription', {
+                    request:{
+                      payload:{
+                        userId: userDataRes.userId,
+                        merchantId: userDataRes.merchantSelected.merchantId,
+                        subscription: suscripcion,
+                      }
+                    }
+                  }).then( verificaSuscripcion )
+                  .catch( cancelarSuscripcion );
+              });
+            })
+            .catch((error) => {
+              console.log('getKey error', error);
+            });
+        
+          }).catch(error => {
+            console.log("Error al registrar el Service Worker:", error);
+          });
+        }
+      }).catch(error => {
+        console.log("Error al obtener el registro de Service Worker:", error);
+      });
 
+    } else if((('serviceWorker' in navigator) && allowedNotifications) ){
+      
+      let swReg;
+      var swLocation = '/service-worker.js';
+      const cancelarSuscripcion = () => {
+        swReg.pushManager.getSubscription().then( subs => {
+          subs.unsubscribe().then( () =>  verificaSuscripcion(false) );
+        });
+        
+        dispatch({type: SUBSCRIPTION_STATE, payload: false});
+      }
+      navigator.serviceWorker.getRegistration().then(registration => {
+        if (registration) {
+          // Si hay un registro existente
+          swReg = registration;
+          console.log("Registro existente:", swReg);
+          cancelarSuscripcion()
+        }
+      })
+    }
+  };
   const sendNewRequest = () => {
     setNewRequestState(true);
   };
+  function enviarNotificacion() {
+    const notificationOpts = {
+        body: 'Este es el cuerpo de la notificación',
+        icon: 'img/icons/icon-72x72.png'
+    };
+
+    const n = new Notification('Hola Mundo', notificationOpts);
+
+    n.onclick = () => {
+        console.log('Click');
+    };
+
+  }
+  // const sendNotification = () => {
+  //   requestAxios('post', '/utility/webpushnotifications/sendPushMessages', {
+  //     request:{
+  //       payload:{
+  //         userId: userDataRes.userId,
+  //         merchantId: userDataRes.merchantSelected.merchantId,
+  //         titulo: "HOLA TITULO",
+  //         cuerpo: "HOLA CUERPO",
+  //         usuario: userDataRes.userId,
+  //       }
+  //     }
+  //   }).then( notificacion => {
+  //     console.log(notificacion)
+  //   })
+  //   .catch(error => {
+  //     console.log("Error al enviar notificacion:", error);
+  //   });
+  // };
+
+  useEffect(() => {
+    console.log("UseEffect de AppHeader")
+    
+    let swReg;
+    var swLocation = '/service-worker.js';
+    if ( 'serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration().then(registration => {
+        if (registration) {
+          // Si hay un registro existente
+          swReg = registration;
+          console.log("Registro existente:", swReg);
+          // Realiza las operaciones adicionales aquí
+          swReg.pushManager.getSubscription().then( ele =>{
+            console.log("Alguna suscripcion AppHeader", ele)
+            dispatch({type: SUBSCRIPTION_STATE, payload: true});
+          } );
+            
+        } else {
+          console.log("No hay registro existente:", swReg);
+          // Si no hay un registro existente, regístralo
+          navigator.serviceWorker.register(swLocation).then(registration => {
+            swReg = registration;
+            console.log("Nuevo registro:", swReg);
+            // Realiza las operaciones adicionales aquí
+            swReg.pushManager.getSubscription().then( ele =>{
+              console.log("Alguna suscripcion AppHeader", ele)
+              dispatch({type: SUBSCRIPTION_STATE, payload: true});
+            } );
+        
+          }).catch(error => {
+            console.log("Error al registrar el Service Worker:", error);
+          });
+        }
+      }).catch(error => {
+        console.log("Error al obtener el registro de Service Worker:", error);
+      });
+
+    }
+
+
+  }, []);
+
+  
+  useEffect(() => {
+    setAllowedNotifications(subscriptionStateRes)
+  }, [subscriptionStateRes]);
   return (
     <AppBar
       position='relative'
@@ -169,6 +415,94 @@ const AppHeader = () => {
         >
           <RequestIcon />
         </IconButton>
+        {/* <Hidden smDown>
+          <Box sx={{ml: 4}}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginLeft: -2,
+                  marginRight: -2,
+                }}
+              >
+                <IconButton
+                  sx={{
+                    mt: 1,
+                    '& svg': {
+                      height: 35,
+                      width: 35,
+                    },
+                    color: 'text.secondary',
+                  }}
+                  edge='end'
+                  color='inherit'
+                  aria-label='open drawer'
+                  onClick={() => {
+                    sendNotification();
+                  }}
+                >
+                  <Button
+                    sx={{
+                      borderRadius: 0,
+                      width: '100%',
+                      textTransform: 'capitalize',
+                      marginTop: 'auto',
+                      height: 40,
+                    }}
+                    variant='contained'
+                    color='primary'
+                  >
+                    Enviar Notificacion
+                  </Button>
+                </IconButton>
+              </Box>
+          </Box>
+        </Hidden> */}
+        <Hidden smDown>
+          <Box sx={{ml: 4}}>
+              <Box
+                sx={{
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginLeft: -2,
+                  marginRight: -2,
+                }}
+              >
+                <IconButton
+                  sx={{
+                    mt: 1,
+                    '& svg': {
+                      height: 35,
+                      width: 35,
+                    },
+                    color: 'text.secondary',
+                  }}
+                  edge='end'
+                  color='inherit'
+                  aria-label='open drawer'
+                  onClick={() => {
+                    handleSubscribe();
+                  }}
+                >
+                  <Button
+                    sx={{
+                      borderRadius: 0,
+                      width: '100%',
+                      textTransform: 'capitalize',
+                      marginTop: 'auto',
+                      height: 40,
+                    }}
+                    variant='contained'
+                    color='primary'
+                  >
+                    Notificaciones {allowedNotifications ? 'ON' : 'OFF'}
+                  </Button>
+                </IconButton>
+              </Box>
+          </Box>
+        </Hidden>
         <Box sx={{ml: 4}}>
           <Hidden smDown>
             <Box
@@ -197,7 +531,7 @@ const AppHeader = () => {
             </Box>
           </Hidden>
 
-          <Hidden smUp>
+          {/* <Hidden smUp>
             <Box
               sx={{
                 position: 'relative',
@@ -239,7 +573,7 @@ const AppHeader = () => {
                 </AppTooltip>
               </Box>
             </Box>
-          </Hidden>
+          </Hidden> */}
           <Menu
             id='simple-menu'
             anchorEl={anchorEl}

@@ -3,7 +3,9 @@ const withTM = require('next-transpile-modules')([
   '@mui/system',
   '@mui/icons-material',
 ]); // pass the modules you would like to see transpiled
-
+const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
+const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 let env = {
   REACT_APP_REGION: process.env.REACT_APP_REGION,
   REACT_APP_USERPOOL_ID: process.env.REACT_APP_USERPOOL_ID,
@@ -20,10 +22,27 @@ let env = {
 module.exports = withTM({
   reactStrictMode: true,
   swcMinify: true,
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-    };
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      config.plugins.push(
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: path.join(__dirname, 'public/service-worker.js'),
+              to: path.join(__dirname, '.next', 'service-worker.js')
+            }
+          ]
+        })
+      );
+      config.plugins.push(
+        new WorkboxWebpackPlugin.InjectManifest({
+          swSrc: path.join(__dirname, 'public/service-worker.js'),
+          swDest: path.join(__dirname, '.next', 'service-worker.js'),
+          exclude: [/\.map$/, /_app/, /_document/, /_error/],
+          maximumFileSizeToCacheInBytes: 10000000 // Ajusta este valor según tus necesidades
+        })
+      );
+    }
     return config;
   },
   env: env

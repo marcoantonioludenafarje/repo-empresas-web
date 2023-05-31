@@ -314,6 +314,7 @@ export const NEW_REQUEST = 'new_request';
 
 //NOTIFICATIONS
 export const GET_NOTIFICATIONS = 'get_notifications';
+export const SUBSCRIPTION_STATE = 'subscription_state';
 
 // ROUTES
 
