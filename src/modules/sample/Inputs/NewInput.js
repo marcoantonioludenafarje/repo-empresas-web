@@ -662,8 +662,8 @@ const NewInput = (props) => {
       let listPayload = {
         request: {
           payload: {
-            initialTime: null,
-            finalTime: null,
+            initialTime: Date.now() - 2678400000,
+            finalTime: Date.now(),
             businessProductCode: null,
             movementType: 'INPUT',
             merchantId: userDataRes.merchantSelected.merchantId,
@@ -1401,7 +1401,12 @@ const NewInput = (props) => {
           >
             {inputItems_pageListInput.length !== 0 ? (
               <>
-                {hasBill ? (
+                {hasBill  &&
+                localStorage
+                  .getItem('pathsBack')
+                  .includes(
+                    '/facturacion/accounting/movement/register?path=/outcomeOfInput/*',
+                  ) ? (
                   <Button
                     color='primary'
                     sx={{width: 1, px: 7, my: 2}}
