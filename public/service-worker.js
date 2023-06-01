@@ -165,6 +165,7 @@ self.addEventListener('push', e => {
     const options = {
         body: data.message,
         // icon: 'img/icons/icon-72x72.png',
+        tag: 'notification-tag',
         icon: `img/avatars/${ data.userCreatedAt }.jpg`,
         badge: 'img/favicon.ico',
         image: 'https://vignette.wikia.nocookie.net/marvelcinematicuniverse/images/5/5b/Torre_de_los_Avengers.png/revision/latest?cb=20150626220613&path-prefix=es',
@@ -172,7 +173,8 @@ self.addEventListener('push', e => {
         openUrl: '/',
         data: {
             // url: 'https://google.com',
-            url: '/',
+            //url: `/sample/outputs/table?movementHeaderId=${data.saleId}`,
+            url: "https://www.google.com/",
             id: data.userCreatedAt
         },
         actions: [
@@ -196,10 +198,10 @@ self.addEventListener('push', e => {
 });
 
 
-// // Cierra la notificacion
-// self.addEventListener('notificationclose', e => {
-//     console.log('Notificación cerrada', e);
-// });
+// Cierra la notificacion
+self.addEventListener('notificationclose', e => {
+    console.log('Notificación cerrada', e);
+});
 
 
 // self.addEventListener('notificationclick', e => {
@@ -209,7 +211,7 @@ self.addEventListener('push', e => {
 //     const accion = e.action;
 
 
-//     console.log({ notificacion, accion });
+//     console.log('notificationclick', { notificacion, accion });
 //     // console.log(notificacion);
 //     // console.log(accion);
     
@@ -236,5 +238,31 @@ self.addEventListener('push', e => {
 
 
 // });
+
+self.addEventListener('notificationclick', function(event) {
+    console.log("notificationclick", event)
+    event.notification.close();
+
+    const action = event.action;
+    // Aquí también puedes redireccionar a una URL específica si es necesario
+    let url = event.notification.data.url;
+    if (action === 'thor-action') {
+        // Acción específica para Thor seleccionada
+        // Agrega la lógica que deseas ejecutar para esa acción
+        event.waitUntil(
+            clients.openWindow(url)
+            );
+    } else if (action === 'ironman-action') {
+        // Acción específica para Ironman seleccionada
+        // Agrega la lógica que deseas ejecutar para esa acción
+    }
+
+    if (url) {
+        event.waitUntil(
+        clients.openWindow(url)
+        );
+    }
+});
+  
 
 //precacheAndRoute(self.__WB_MANIFEST);

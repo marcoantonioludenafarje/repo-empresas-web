@@ -262,24 +262,26 @@ const AppHeader = () => {
       console.log('Click');
     };
   }
-  // const sendNotification = () => {
-  //   requestAxios('post', '/utility/webpushnotifications/sendPushMessages', {
-  //     request:{
-  //       payload:{
-  //         userId: userDataRes.userId,
-  //         merchantId: userDataRes.merchantSelected.merchantId,
-  //         titulo: "HOLA TITULO",
-  //         cuerpo: "HOLA CUERPO",
-  //         usuario: userDataRes.userId,
-  //       }
-  //     }
-  //   }).then( notificacion => {
-  //     console.log(notificacion)
-  //   })
-  //   .catch(error => {
-  //     console.log("Error al enviar notificacion:", error);
-  //   });
-  // };
+  const sendNotification = () => {
+    requestAxios('post', '/utility/webpushnotifications/sendPushMessages', {
+      request: {
+        payload: {
+          userId: userDataRes.userId,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          title: 'HOLA TITULO',
+          message: 'HOLA CUERPO',
+          usuario: userDataRes.userId,
+          saleId: '64e9bc0c-03e4-4a73-bda0-ebb2f0e67a28',
+        },
+      },
+    })
+      .then((notificacion) => {
+        console.log(notificacion);
+      })
+      .catch((error) => {
+        console.log('Error al enviar notificacion:', error);
+      });
+  };
 
   useEffect(() => {
     console.log('UseEffect de AppHeader');
@@ -431,50 +433,50 @@ const AppHeader = () => {
         >
           <RequestIcon />
         </IconButton>
-        {/* <Hidden smDown>
+        <Hidden smDown>
           <Box sx={{ml: 4}}>
-              <Box
+            <Box
+              sx={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                marginLeft: -2,
+                marginRight: -2,
+              }}
+            >
+              <IconButton
                 sx={{
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginLeft: -2,
-                  marginRight: -2,
+                  mt: 1,
+                  '& svg': {
+                    height: 35,
+                    width: 35,
+                  },
+                  color: 'text.secondary',
+                }}
+                edge='end'
+                color='inherit'
+                aria-label='open drawer'
+                onClick={() => {
+                  sendNotification();
                 }}
               >
-                <IconButton
+                <Button
                   sx={{
-                    mt: 1,
-                    '& svg': {
-                      height: 35,
-                      width: 35,
-                    },
-                    color: 'text.secondary',
+                    borderRadius: 0,
+                    width: '100%',
+                    textTransform: 'capitalize',
+                    marginTop: 'auto',
+                    height: 40,
                   }}
-                  edge='end'
-                  color='inherit'
-                  aria-label='open drawer'
-                  onClick={() => {
-                    sendNotification();
-                  }}
+                  variant='contained'
+                  color='primary'
                 >
-                  <Button
-                    sx={{
-                      borderRadius: 0,
-                      width: '100%',
-                      textTransform: 'capitalize',
-                      marginTop: 'auto',
-                      height: 40,
-                    }}
-                    variant='contained'
-                    color='primary'
-                  >
-                    Enviar Notificacion
-                  </Button>
-                </IconButton>
-              </Box>
+                  Enviar Notificacion
+                </Button>
+              </IconButton>
+            </Box>
           </Box>
-        </Hidden> */}
+        </Hidden>
         <Hidden smDown>
           <Box sx={{ml: 4}}>
             <Box
