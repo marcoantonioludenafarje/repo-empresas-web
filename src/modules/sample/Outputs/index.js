@@ -408,7 +408,7 @@ const OutputsTable = (props) => {
           : 'PJ',
       );
     }
-  }, [userDataRes, getRolUserRes]);
+  }, [userDataRes, getRolUserRes, query]);
   useEffect(() => {
     setValue2(Date.now());
 
