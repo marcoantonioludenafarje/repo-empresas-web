@@ -90,8 +90,7 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
         }}
       >
         {data && data.length !== 0 ? (
-          <List sx={{py: 0, 
-            mt: '2px',}}>
+          <List sx={{py: 0, mt: '2px'}}>
             {data
               .sort((a, b) => b.createdAt - a.createdAt)
               .map((item, index) => (

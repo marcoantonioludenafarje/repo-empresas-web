@@ -87,7 +87,6 @@ const AppNotifications = ({
         <></>
       ) : (
         <AppTooltip title='Notification' placement={tooltipPosition}>
-          
           <IconButton
             className='icon-btn'
             sx={{
@@ -125,8 +124,7 @@ const AppNotifications = ({
                   border: 1,
                   borderColor: 'transparent',
                 }}
-              >
-              </Badge>
+              ></Badge>
             ) : (
               <></>
             )}

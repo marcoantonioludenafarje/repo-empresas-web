@@ -27,7 +27,7 @@ export default function MyApp(props) {
   var swLocation = '/service-worker.js';
   var swReg;
   useEffect(() => {
-    if ('serviceWorker' in navigator  && typeof window !== 'undefined') {
+    if ('serviceWorker' in navigator && typeof window !== 'undefined') {
       console.log('Esto se carga?');
       window.addEventListener('load', function () {
         navigator.serviceWorker.register(swLocation).then(function (reg) {

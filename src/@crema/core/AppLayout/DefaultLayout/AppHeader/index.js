@@ -30,7 +30,7 @@ import AppMessages from '../../../AppMessages';
 import AppNotifications from '../../../AppNotifications';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import ServiceWorkerListener from '../../../../../pages/serviceWorkerListener';
+//import ServiceWorkerListener from '../../../../../pages/serviceWorkerListener';
 
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import NotificationAddOutlinedIcon from '@mui/icons-material/NotificationAddOutlined';
@@ -425,7 +425,7 @@ const AppHeader = () => {
   //   //     // swivel.off(messageHandler);
   //   //   };
   //   // }
-    
+
   //   localforage.config({
   //     driver: localforage.LOCALSTORAGE,
   //   });
@@ -456,7 +456,7 @@ const AppHeader = () => {
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, []); 
+  }, []);
   return (
     <AppBar
       position='relative'
@@ -471,7 +471,7 @@ const AppHeader = () => {
       }}
       className='app-bar'
     >
-      <ServiceWorkerListener />
+      {/* <ServiceWorkerListener /> */}
       <Toolbar
         sx={{
           boxSizing: 'border-box',

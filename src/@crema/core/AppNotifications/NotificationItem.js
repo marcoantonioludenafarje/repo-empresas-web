@@ -67,21 +67,21 @@ const NotificationItem = (props) => {
           color: (theme) => theme.palette.text.secondary,
         }}
       >
-      {!item.seenAt && (
-        <Badge
-          color='primary' // Color azul para el Badge
-          variant='dot' // Mostrar un punto en lugar de un número en el Badge
-          sx={{
-            position: 'absolute',
-            top: '15%',
-            right: '10px',
-            transform: 'translateY(-50%)',
-            width: '10px', // Ajustar el ancho del punto
-            height: '10px', // Ajustar la altura del punto
-            borderRadius: '50%', // Dar forma circular al punto
-          }}
-        />
-      )}
+        {!item.seenAt && (
+          <Badge
+            color='primary' // Color azul para el Badge
+            variant='dot' // Mostrar un punto en lugar de un número en el Badge
+            sx={{
+              position: 'absolute',
+              top: '15%',
+              right: '10px',
+              transform: 'translateY(-50%)',
+              width: '10px', // Ajustar el ancho del punto
+              height: '10px', // Ajustar la altura del punto
+              borderRadius: '50%', // Dar forma circular al punto
+            }}
+          />
+        )}
         <Typography>
           <Box
             component='span'
