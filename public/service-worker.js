@@ -166,18 +166,21 @@ self.addEventListener('push', e => {
 
 
     const title = data.title;
+    const url = data.url;
+    const urlObject = new URL(url);
+    const relativeURL = urlObject.pathname + urlObject.search;
     const options = {
         body: data.message,
         // icon: 'img/icons/icon-72x72.png',
         tag: 'notification-tag',
         icon: `favicon.ico`,
         badge: 'favicon.ico',
-        image: 'https://vignette.wikia.nocookie.net/marvelcinematicuniverse/images/5/5b/Torre_de_los_Avengers.png/revision/latest?cb=20150626220613&path-prefix=es',
+        image: relativeURL || 'https://d2moc5ro519bc0.cloudfront.net/merchant/ae1a9ea0036542d889ebd0d062474400/logo/logo_png.png',
         vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600],
         openUrl: data.url,
         data: {
             //url: data.url,
-            url: `/sample/outputs/table?movementHeaderId=${data.saleId}`,
+            url: `${relativeURL}` || `/sample/outputs/table?movementHeaderId=${data.saleId}`,
             //url: "https://www.google.com/",
             id: data.userCreatedAt
         },
@@ -185,7 +188,7 @@ self.addEventListener('push', e => {
             {
                 action: 'output-action',
                 title: 'Ir a Salida',
-                icon: 'img/avatar/bannerTuNexoFactElect.png'
+                //icon: 'favicon.ico',
             }
         ]
     };
