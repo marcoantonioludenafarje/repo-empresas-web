@@ -18,7 +18,10 @@ const NotificationItem = (props) => {
   const {item} = props;
   const router = useRouter();
   const goToOutput = (url) => {
-    router.push(url);
+    const urlToSimplify = url;
+    const urlObject = new URL(urlToSimplify);
+    const relativeURL = urlObject.pathname + urlObject.search;
+    router.push(relativeURL);
   };
   console.log('Qué item es?', item);
   const renderSwitch = (item) => {
