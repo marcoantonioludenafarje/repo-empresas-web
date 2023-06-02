@@ -3,12 +3,14 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   SUBSCRIPTION_STATE,
+  UPDATE_NOTIFICATION_LIST,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
   list: [],
   listNotifications: [],
   subscriptionStateRes: false,
+  updateNotificationListRes: false,
 };
 
 const notificationsReducer = (state = INIT_STATE, action) => {
@@ -24,6 +26,12 @@ const notificationsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         subscriptionStateRes: action.payload,
+      };
+    case UPDATE_NOTIFICATION_LIST:
+      console.log('data de reducer UPDATE_NOTIFICATION_LIST', action.payload);
+      return {
+        ...state,
+        updateNotificationListRes: action.payload,
       };
     case FETCH_SUCCESS:
       console.log('data de reducer FETCH_SUCCESS', action.payload);

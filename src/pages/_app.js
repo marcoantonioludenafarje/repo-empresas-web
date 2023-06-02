@@ -17,6 +17,7 @@ import {useStore} from '../redux/store'; // Client-side cache, shared for the wh
 import '../@crema/services/index';
 import '../shared/vendors/index.css';
 import {useEffect} from 'react';
+import {AppProvider} from '../Utils/AppContext';
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -26,7 +27,7 @@ export default function MyApp(props) {
   var swLocation = '/service-worker.js';
   var swReg;
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator  && typeof window !== 'undefined') {
       console.log('Esto se carga?');
       window.addEventListener('load', function () {
         navigator.serviceWorker.register(swLocation).then(function (reg) {
@@ -50,7 +51,9 @@ export default function MyApp(props) {
                 <FirebaseAuthProvider>
                   <AuthRoutes>
                     <CssBaseline />
-                    <Component {...pageProps} />
+                    <AppProvider>
+                      <Component {...pageProps} />
+                    </AppProvider>
                   </AuthRoutes>
                 </FirebaseAuthProvider>
               </AppLocaleProvider>

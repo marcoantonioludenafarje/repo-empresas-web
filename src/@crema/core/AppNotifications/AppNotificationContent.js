@@ -90,10 +90,13 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
         }}
       >
         {data && data.length !== 0 ? (
-          <List sx={{py: 0}}>
-            {data.map((item) => (
-              <NotificationItem key={item.id} item={item} />
-            ))}
+          <List sx={{py: 0, 
+            mt: '2px',}}>
+            {data
+              .sort((a, b) => b.createdAt - a.createdAt)
+              .map((item, index) => (
+                <NotificationItem key={index} item={item} />
+              ))}
           </List>
         ) : null}
       </AppScrollbar>

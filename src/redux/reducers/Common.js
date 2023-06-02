@@ -17,7 +17,6 @@ const INIT_STATE = {
 };
 
 const commonReducer = (state = INIT_STATE, action) => {
-  console.log('State', state);
   switch (action.type) {
     case FETCH_START: {
       return {...state, error: '', message: '', loading: true};

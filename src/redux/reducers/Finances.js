@@ -18,8 +18,6 @@ const INIT_STATE = {
 };
 
 const financesReducer = (state = INIT_STATE, action) => {
-  console.log('El action', action);
-
   switch (action.type) {
     case GET_FINANCES:
       console.log('data de reducer GET_FINANCES', action.payload);

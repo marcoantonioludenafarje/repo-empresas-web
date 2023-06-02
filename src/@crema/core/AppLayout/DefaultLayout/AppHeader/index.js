@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import AppLngSwitcher from '@crema/core/AppLngSwitcher';
@@ -30,6 +30,7 @@ import AppMessages from '../../../AppMessages';
 import AppNotifications from '../../../AppNotifications';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import ServiceWorkerListener from '../../../../../pages/serviceWorkerListener';
 
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import NotificationAddOutlinedIcon from '@mui/icons-material/NotificationAddOutlined';
@@ -45,9 +46,20 @@ import NewRequest from '../../../../../modules/sample/Request/NewRequest';
 import RequestIcon from '../../../../../assets/icon/requestIcon.svg';
 import NotificationEmpty from '../../../../../assets/icon/notificationEmpty.svg';
 import NotificationNonEmpty from '../../../../../assets/icon/notificationNonEmpty.svg';
-import {SUBSCRIPTION_STATE} from '../../../../../shared/constants/ActionTypes';
+import {
+  SUBSCRIPTION_STATE,
+  UPDATE_NOTIFICATION_LIST,
+} from '../../../../../shared/constants/ActionTypes';
 import {useDispatch, useSelector} from 'react-redux';
+import localforage from 'localforage';
 
+//import SwivelClient from 'swivel';
+
+// let SwivelClient = null;
+// if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
+//   SwivelClient = require('swivel');
+// }
+import {AppContext} from '../../../../../Utils/AppContext';
 import {useEffect} from 'react';
 const AppHeader = () => {
   const {messages} = useIntl();
@@ -56,7 +68,7 @@ const AppHeader = () => {
   const [newRequestState, setNewRequestState] = React.useState(false);
   const [requestType, setRequestType] = React.useState('');
   const [allowedNotifications, setAllowedNotifications] = React.useState(false);
-
+  const [notificationUpdate, setNotificationUpdate] = React.useState(0);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -69,6 +81,9 @@ const AppHeader = () => {
   const {subscriptionStateRes} = useSelector(
     ({notifications}) => notifications,
   );
+  const {updateNotificationListRes} = useContext(AppContext); // Ejemplo de uso del useContext con el contexto de la aplicación
+
+  console.log('subscriptionStateRes inicial', subscriptionStateRes);
   const requestAxios = (method, path, payload) => {
     console.log('Ahora axios');
     switch (method) {
@@ -105,6 +120,9 @@ const AppHeader = () => {
   const handleSubscribe = () => {
     console.log('Hola handleSubscribe');
 
+    const verificaSuscripcion = () => {
+      dispatch({type: SUBSCRIPTION_STATE, payload: true});
+    };
     if ('serviceWorker' in navigator && !allowedNotifications) {
       // navigator.serviceWorker.controller.postMessage({
       //   action: 'subscribe',
@@ -114,13 +132,12 @@ const AppHeader = () => {
       var swLocation = '/service-worker.js';
       const cancelarSuscripcion = () => {
         swReg.pushManager.getSubscription().then((subs) => {
-          subs.unsubscribe().then(() => verificaSuscripcion(false));
+          if (subs) {
+            subs
+              .unsubscribe()
+              .then(() => dispatch({type: SUBSCRIPTION_STATE, payload: false}));
+          }
         });
-
-        dispatch({type: SUBSCRIPTION_STATE, payload: false});
-      };
-      const verificaSuscripcion = () => {
-        dispatch({type: SUBSCRIPTION_STATE, payload: true});
       };
       navigator.serviceWorker
         .getRegistration()
@@ -232,10 +249,12 @@ const AppHeader = () => {
       var swLocation = '/service-worker.js';
       const cancelarSuscripcion = () => {
         swReg.pushManager.getSubscription().then((subs) => {
-          subs.unsubscribe().then(() => verificaSuscripcion(false));
+          if (subs) {
+            subs
+              .unsubscribe()
+              .then(() => dispatch({type: SUBSCRIPTION_STATE, payload: false}));
+          }
         });
-
-        dispatch({type: SUBSCRIPTION_STATE, payload: false});
       };
       navigator.serviceWorker.getRegistration().then((registration) => {
         if (registration) {
@@ -262,26 +281,27 @@ const AppHeader = () => {
       console.log('Click');
     };
   }
-  const sendNotification = () => {
-    requestAxios('post', '/utility/webpushnotifications/sendPushMessages', {
-      request: {
-        payload: {
-          userId: userDataRes.userId,
-          merchantId: userDataRes.merchantSelected.merchantId,
-          title: 'HOLA TITULO',
-          message: 'HOLA CUERPO',
-          usuario: userDataRes.userId,
-          saleId: '64e9bc0c-03e4-4a73-bda0-ebb2f0e67a28',
-        },
-      },
-    })
-      .then((notificacion) => {
-        console.log(notificacion);
-      })
-      .catch((error) => {
-        console.log('Error al enviar notificacion:', error);
-      });
-  };
+  // const sendNotification = () => {
+  //   requestAxios('post', '/utility/webpushnotifications/sendPushMessages', {
+  //     request: {
+  //       payload: {
+  //         userId: userDataRes.userId,
+  //         merchantId: userDataRes.merchantSelected.merchantId,
+  //         title: 'HOLA TITULO',
+  //         message: 'HOLA CUERPO',
+  //         usuario: userDataRes.userId,
+  //         saleId: '64e9bc0c-03e4-4a73-bda0-ebb2f0e67a28',
+  //         url: 'https//www.google.com',
+  //       },
+  //     },
+  //   })
+  //     .then((notificacion) => {
+  //       console.log(notificacion);
+  //     })
+  //     .catch((error) => {
+  //       console.log('Error al enviar notificacion:', error);
+  //     });
+  // };
 
   useEffect(() => {
     console.log('UseEffect de AppHeader');
@@ -299,7 +319,9 @@ const AppHeader = () => {
             // Realiza las operaciones adicionales aquí
             swReg.pushManager.getSubscription().then((ele) => {
               console.log('Alguna suscripcion AppHeader', ele);
-              dispatch({type: SUBSCRIPTION_STATE, payload: true});
+              if (ele) {
+                dispatch({type: SUBSCRIPTION_STATE, payload: true});
+              }
             });
           } else {
             console.log('No hay registro existente:', swReg);
@@ -312,7 +334,9 @@ const AppHeader = () => {
                 // Realiza las operaciones adicionales aquí
                 swReg.pushManager.getSubscription().then((ele) => {
                   console.log('Alguna suscripcion AppHeader', ele);
-                  dispatch({type: SUBSCRIPTION_STATE, payload: true});
+                  if (ele) {
+                    dispatch({type: SUBSCRIPTION_STATE, payload: true});
+                  }
                 });
               })
               .catch((error) => {
@@ -329,6 +353,110 @@ const AppHeader = () => {
   useEffect(() => {
     setAllowedNotifications(subscriptionStateRes);
   }, [subscriptionStateRes]);
+
+  // const detectLocalStorageChanges = (callback) => {
+  //   // Copia el estado actual del localStorage
+  //   const oldState = { ...localStorage };
+
+  //   // Función que compara el estado anterior y el nuevo estado del localStorage
+  //   const checkChanges = () => {
+  //     for (const key in localStorage) {
+  //       if (localStorage.hasOwnProperty(key) && oldState[key] !== localStorage[key]) {
+  //         callback(key, localStorage[key]);
+  //       }
+  //     }
+  //   };
+
+  //   // Evento para detectar cambios en el localStorage
+  //   window.addEventListener('storage', checkChanges);
+
+  //   return () => {
+  //     // Remover el evento al finalizar
+  //     window.removeEventListener('storage', checkChanges);
+  //   };
+  // };
+
+  // // Ejemplo de uso
+  // const handleLocalStorageChange = (key, value) => {
+  //   console.log(`El valor de ${key} ha cambiado a ${value}`);
+  // };
+
+  // // Iniciar la detección de cambios en el localStorage
+  // const unsubscribe = detectLocalStorageChanges(handleLocalStorageChange);
+
+  // useEffect(() => {
+  //   function checkUserData() {
+  //     const item = localStorage.getItem('notificationUpdate')
+
+  //     if (item) {
+  //       setNotificationUpdate(item)
+  //     }
+  //   }
+
+  //   window.addEventListener('storage', checkUserData)
+
+  //   return () => {
+  //     window.removeEventListener('storage', checkUserData)
+  //   }
+  // }, [])
+
+  useEffect(() => {
+    if (notificationUpdate) {
+      console.log('notificationUpdate de AppHeader', notificationUpdate);
+    }
+  }, [notificationUpdate]);
+
+  // useEffect(() => {
+  //   // if ('serviceWorker' in navigator && !allowedNotifications) {
+  //   //   const swivel = new SwivelClient();
+  //   //   const messageHandler = (message) => {
+  //   //     if (message.type === 'updateNotification') {
+  //   //       // Manejar la notificación recibida desde el Service Worker
+  //   //       const { title, options } = message.data;
+  //   //       console.log('Notificación recibida:', title, options);
+  //   //       const randomNumber =  Math.floor(Math.random() * (10000 - 1)) + 1;
+  //   //       setNotificationUpdate(randomNumber)
+  //   //     }
+  //   //   };
+  //   //   swivel.on(messageHandler);
+  //   //   // Cleanup function
+  //   //   return () => {
+  //   //     // Deregister the message listener if needed
+  //   //     // swivel.off(messageHandler);
+  //   //   };
+  //   // }
+    
+  //   localforage.config({
+  //     driver: localforage.LOCALSTORAGE,
+  //   });
+
+  //   const handleLocalStorageChange = (changes) => {
+  //     console.log('Cambios en el localStorage:', changes);
+  //     // Realizar las acciones necesarias en función de los cambios en el localStorage
+  //   };
+
+  //   localforage.on('change', handleLocalStorageChange);
+
+  //   // Limpiar la escucha cuando el componente se desmonta
+  //   return () => {
+  //     localforage.off('change', handleLocalStorageChange);
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === 'clave') {
+        const nuevoValor = event.newValue;
+        console.log('Nuevo valor:', nuevoValor);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []); 
   return (
     <AppBar
       position='relative'
@@ -343,6 +471,7 @@ const AppHeader = () => {
       }}
       className='app-bar'
     >
+      <ServiceWorkerListener />
       <Toolbar
         sx={{
           boxSizing: 'border-box',
@@ -433,7 +562,7 @@ const AppHeader = () => {
         >
           <RequestIcon />
         </IconButton>
-        <Hidden smDown>
+        {/* <Hidden smDown>
           <Box sx={{ml: 4}}>
             <Box
               sx={{
@@ -476,7 +605,7 @@ const AppHeader = () => {
               </IconButton>
             </Box>
           </Box>
-        </Hidden>
+        </Hidden> */}
         <Hidden smDown>
           <Box sx={{ml: 4}}>
             <Box

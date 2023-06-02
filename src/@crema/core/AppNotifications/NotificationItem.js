@@ -2,20 +2,24 @@ import React from 'react';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import PropTypes from 'prop-types';
-import {Box, ListItem, Typography} from '@mui/material';
+import {Box, ListItem, Typography, Badge} from '@mui/material';
 import {Fonts} from '../../../shared/constants/AppEnums';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import {justDate, justTime} from '../../../Utils/utils';
-
+import {useRouter} from 'next/router';
 import red from '@mui/material/colors/red';
 import green from '@mui/material/colors/green';
 import cyan from '@mui/material/colors/cyan';
 import {render} from 'react-dom';
 const NotificationItem = (props) => {
   const {item} = props;
+  const router = useRouter();
+  const goToOutput = (url) => {
+    router.push(url);
+  };
   console.log('Qué item es?', item);
   const renderSwitch = (item) => {
     switch (item.typeIcon.toLowerCase()) {
@@ -44,8 +48,18 @@ const NotificationItem = (props) => {
     <ListItem
       sx={{
         padding: '8px 20px',
+        mt: '2px',
+        cursor: item.url ? 'pointer' : 'default',
+        transition: 'box-shadow 0.3s',
+        boxShadow: 'none',
+        ':hover': {
+          boxShadow: item.url ? '0 0 5px rgba(0, 0, 0, 0.7)' : 'none',
+        },
+        position: 'relative',
+        //backgroundColor: item.seenAt ? 'transparent' : 'lightgray',
       }}
       className='item-hover'
+      onClick={() => item.url && goToOutput(item.url)}
     >
       <Box
         sx={{
@@ -53,6 +67,21 @@ const NotificationItem = (props) => {
           color: (theme) => theme.palette.text.secondary,
         }}
       >
+      {!item.seenAt && (
+        <Badge
+          color='primary' // Color azul para el Badge
+          variant='dot' // Mostrar un punto en lugar de un número en el Badge
+          sx={{
+            position: 'absolute',
+            top: '15%',
+            right: '10px',
+            transform: 'translateY(-50%)',
+            width: '10px', // Ajustar el ancho del punto
+            height: '10px', // Ajustar la altura del punto
+            borderRadius: '50%', // Dar forma circular al punto
+          }}
+        />
+      )}
         <Typography>
           <Box
             component='span'

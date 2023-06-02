@@ -35,6 +35,16 @@ module.exports = withTM({
         })
       );
       config.plugins.push(
+        new CopyWebpackPlugin({
+          patterns: [
+            {
+              from: path.join(__dirname, 'public/swivel'),
+              to: path.join(__dirname, '.next')
+            }
+          ]
+        })
+      );
+      config.plugins.push(
         new WorkboxWebpackPlugin.InjectManifest({
           swSrc: path.join(__dirname, 'public/service-worker.js'),
           swDest: path.join(__dirname, '.next', 'service-worker.js'),

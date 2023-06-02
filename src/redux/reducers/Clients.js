@@ -19,8 +19,6 @@ const INIT_STATE = {
   clientsLastEvalutedKey_pageListClients: null,
 };
 const clientsReducer = (state = INIT_STATE, action) => {
-  console.log('El action', action);
-
   switch (action.type) {
     case GET_CLIENTS:
       console.log('actionClient1234', action);

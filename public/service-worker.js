@@ -8,7 +8,11 @@
 const STATIC_CACHE    = 'static-v2';
 const DYNAMIC_CACHE   = 'dynamic-v1';
 const INMUTABLE_CACHE = 'inmutable-v1';
+// importScripts('/swivel/swivel.js');
+// const swivel = new Swivel();
 
+
+//import swivel from 'swivel'
 
 const APP_SHELL = [
     '/',
@@ -166,35 +170,76 @@ self.addEventListener('push', e => {
         body: data.message,
         // icon: 'img/icons/icon-72x72.png',
         tag: 'notification-tag',
-        icon: `img/avatars/${ data.userCreatedAt }.jpg`,
-        badge: 'img/favicon.ico',
+        icon: `favicon.ico`,
+        badge: 'favicon.ico',
         image: 'https://vignette.wikia.nocookie.net/marvelcinematicuniverse/images/5/5b/Torre_de_los_Avengers.png/revision/latest?cb=20150626220613&path-prefix=es',
         vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600],
-        openUrl: '/',
+        openUrl: data.url,
         data: {
-            // url: 'https://google.com',
-            //url: `/sample/outputs/table?movementHeaderId=${data.saleId}`,
-            url: "https://www.google.com/",
+            //url: data.url,
+            url: `/sample/outputs/table?movementHeaderId=${data.saleId}`,
+            //url: "https://www.google.com/",
             id: data.userCreatedAt
         },
         actions: [
             {
-                action: 'thor-action',
-                title: 'Thor',
-                icon: 'img/avatar/thor.jpg'
-            },
-            {
-                action: 'ironman-action',
-                title: 'Ironman',
-                icon: 'img/avatar/ironman.jpg'
+                action: 'output-action',
+                title: 'Ir a Salida',
+                icon: 'img/avatar/bannerTuNexoFactElect.png'
             }
         ]
     };
 
     console.log("options push notification", options)
-    e.waitUntil( self.registration.showNotification( title, options) );
 
 
+
+    //const notificationPromise = self.registration.showNotification( title, options);
+    // Enviar un mensaje al cliente para indicar que se ha recibido una notificación
+    // const clientsPromise = self.clients.matchAll().then(clients => {
+    //     console.log("clients sw", clients ? clients : "no hay clients")
+    //     clients.forEach(client => {
+    //     //client.postMessage({ type: 'notificationUpdate' });
+    //     client.navigate('http://localhost:3000/sample/outputs/table')
+    //     client.focus();
+    //     });
+    // });
+
+
+    // const clientsPromise = self.clients.matchAll().then(clients => {
+    //     console.log("encuentra clientes")
+    //     return Promise.all(
+    //       clients.map(client => {
+    //         console.log("va a enviar mensaje")
+    //         return client.postMessage({ type: 'notificationUpdate' });
+    //       })
+    //     );
+    //   });
+    // e.waitUntil(Promise.all([clientsPromise]));
+    // e.waitUntil(self.registration.showNotification( title, options));
+    
+
+    e.waitUntil(self.registration.showNotification(title, options));
+
+    // const clientsPromise = self.clients.matchAll().then(clients => {
+    //     console.log("Encuentra clientes");
+    //     const messagePromises = clients.map(client => {
+    //     console.log("Va a enviar mensaje");
+    //     const randomNumber =  Math.floor(Math.random() * (10000 - 1)) + 1;
+    //     //localStorage.setItem('updateNotification', randomNumber)
+    //     return client.postMessage({ type: 'notificationUpdate' });
+    //     });
+    //     return Promise.all(messagePromises);
+    // });
+
+    // e.waitUntil(clientsPromise);
+
+    // Envía el mensaje a todas las instancias abiertas de la aplicación
+    // swivel.broadcast({ type: 'updateNotification', data: { title, options } });
+
+    // e.waitUntil(
+    //     self.registration.showNotification(title, options)
+    // );
 });
 
 
@@ -241,27 +286,20 @@ self.addEventListener('notificationclose', e => {
 
 self.addEventListener('notificationclick', function(event) {
     console.log("notificationclick", event)
-    event.notification.close();
 
     const action = event.action;
     // Aquí también puedes redireccionar a una URL específica si es necesario
     let url = event.notification.data.url;
-    if (action === 'thor-action') {
+    if (action === 'output-action') {
         // Acción específica para Thor seleccionada
         // Agrega la lógica que deseas ejecutar para esa acción
         event.waitUntil(
-            clients.openWindow(url)
+            self.clients.openWindow(url)
             );
-    } else if (action === 'ironman-action') {
-        // Acción específica para Ironman seleccionada
-        // Agrega la lógica que deseas ejecutar para esa acción
+        event.notification.close();
     }
 
-    if (url) {
-        event.waitUntil(
-        clients.openWindow(url)
-        );
-    }
+
 });
   
 
