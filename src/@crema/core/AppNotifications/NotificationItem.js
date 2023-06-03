@@ -89,9 +89,12 @@ const NotificationItem = (props) => {
             }
           }
         }
-        //toUpdateOneOfTheListNotification(payloadToUpdate)
         closeNotifications();
-        toUpdateNotificationToSeen(payloadToUpdate)
+        
+        if(!item.seenBy || !item.seenBy.some(item => item == userDataRes.userId)){
+          toUpdateNotificationToSeen(payloadToUpdate)
+          toUpdateOneOfTheListNotification(payloadToUpdate)
+        }
         if(item.url){
           goToOutput(item.url)
         }
