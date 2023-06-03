@@ -14,9 +14,15 @@ import red from '@mui/material/colors/red';
 import green from '@mui/material/colors/green';
 import cyan from '@mui/material/colors/cyan';
 import {render} from 'react-dom';
+import {
+  GET_NOTIFICATIONS,
+} from '../../../shared/constants/ActionTypes';
+import {updateNotificationToSeen, updateOneOfTheListNotification} from '../../../redux/actions/Notifications';
+import {useDispatch, useSelector} from 'react-redux';
 const NotificationItem = (props) => {
-  const {item} = props;
+  const {item, closeNotifications} = props;
   const router = useRouter();
+  const dispatch = useDispatch();
   const goToOutput = (url) => {
     const urlToSimplify = url;
     const urlObject = new URL(urlToSimplify);
@@ -38,6 +44,15 @@ const NotificationItem = (props) => {
         return <InfoRoundedIcon />;
     }
   };
+  //API FUNCTIONS
+  const toUpdateNotificationToSeen = (payload, list) => {
+    dispatch(updateNotificationToSeen(payload, list));
+  };
+  const toUpdateOneOfTheListNotification = (payload) => {
+    dispatch(updateOneOfTheListNotification(payload));
+  };
+  const {userDataRes} = useSelector(({user}) => user);
+  const {getNotificationsRes} = useSelector(({notifications}) => notifications);
   const convertToDate = (miliseconds) => {
     const fecha = new Date(miliseconds);
     const fecha_actual = `${fecha.getDate()}/${
@@ -62,7 +77,22 @@ const NotificationItem = (props) => {
         //backgroundColor: item.seenAt ? 'transparent' : 'lightgray',
       }}
       className='item-hover'
-      onClick={() => item.url && goToOutput(item.url)}
+      onClick={() => {
+        const payloadToUpdate = {
+          request: {
+            payload: {
+              notificationId: item.notificationId,
+              userId: userDataRes.userId
+            }
+          }
+        }
+        //toUpdateOneOfTheListNotification(payloadToUpdate)
+        closeNotifications();
+        toUpdateNotificationToSeen(payloadToUpdate)
+        if(item.url){
+          goToOutput(item.url)
+        }
+      }}
     >
       <Box
         sx={{
@@ -70,7 +100,7 @@ const NotificationItem = (props) => {
           color: (theme) => theme.palette.text.secondary,
         }}
       >
-        {!item.seenAt && (
+        {(!item.seenBy || !item.seenBy.some( item => item == userDataRes.userId)) && (
           <Badge
             color='primary' // Color azul para el Badge
             variant='dot' // Mostrar un punto en lugar de un número en el Badge

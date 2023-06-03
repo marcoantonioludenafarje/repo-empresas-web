@@ -429,7 +429,7 @@ const GetReferralGuide = () => {
         );
         changeValueField('observation', routeToReferralGuide.observation);
       }
-      setTotalWeight(weight);
+      setTotalWeight(Number(weight.toFixed(3)));
       changeValueField('totalWeight', weight);
       /* dispatch({
         type: ROUTE_TO_REFERRAL_GUIDE,
@@ -833,7 +833,7 @@ const GetReferralGuide = () => {
       });
     }
     console.log('weight', weight);
-    setTotalWeight(weight);
+    setTotalWeight(Number(weight.toFixed(3)));
     changeValueField('totalWeight', weight);
   };
 
