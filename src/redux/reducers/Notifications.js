@@ -51,7 +51,6 @@ const notificationsReducer = (state = INIT_STATE, action) => {
         action.payload,
       );
       const newNotifications = state.getNotificationsRes.map((obj) => {
-        console.log('obj list', obj);
         if (
           obj.notificationId == action.payload.request.payload.notificationId
         ) {
@@ -60,7 +59,6 @@ const notificationsReducer = (state = INIT_STATE, action) => {
           } else {
             obj.seenBy = [action.payload.request.payload.userId];
           }
-          console.log('obj new');
         }
         return obj;
       });
