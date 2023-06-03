@@ -27,6 +27,11 @@ let listNotificationsPayload = {
     },
   },
 };
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const AppNotifications = ({
   drawerPosition,
   tooltipPosition,
@@ -40,6 +45,7 @@ const AppNotifications = ({
   const toGetNotifications = (payload) => {
     dispatch(getNotifications(payload));
   };
+  const forceUpdate = useForceUpdate();
   //GET APIS RES
   const {getNotificationsRes} = useSelector(({notifications}) => notifications);
   console.log('getNotificationsRes', getNotificationsRes);
@@ -78,6 +84,10 @@ const AppNotifications = ({
       getActiveNotifications = getNotificationsRes;
     }
   }, [userDataRes]);
+
+  useEffect(()=>{
+    forceUpdate()
+  },[getNotificationsRes])
   // A modificar
   //Esto se debe de mejorar añadiendo un index para merchantMasterId, por mientras es así
 
