@@ -26,6 +26,8 @@ import {
   FormControlLabel,
   CircularProgress,
 } from '@mui/material';
+
+import AppLoader from '../../../@crema/core/AppLoader';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 
@@ -181,6 +183,8 @@ const GetCreditNote = () => {
 
   listOutputsPayload.request.payload.merchantId =
     userDataRes.merchantSelected.merchantId;
+  listOutputsPayload.request.payload.initialTime = 919242684000;
+  listOutputsPayload.request.payload.finalTime = 11112109884000;
 
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
@@ -320,6 +324,7 @@ const GetCreditNote = () => {
     }
     if (
       outputItems_pageListOutput &&
+      outputItems_pageListOutput.length > 0 &&
       outputItems_pageListOutput[0].movementType == 'OUTPUT'
     ) {
       console.log(
@@ -338,6 +343,7 @@ const GetCreditNote = () => {
   useEffect(() => {
     if (
       outputItems_pageListOutput &&
+      outputItems_pageListOutput.length > 0 &&
       outputItems_pageListOutput[0].movementType == 'OUTPUT'
     ) {
       console.log(
@@ -769,124 +775,138 @@ const GetCreditNote = () => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={6}>
-                    <AppTextField
-                      label={
-                        typeDocumentRelated == 'bill'
-                          ? 'Número Factura a modificar'
-                          : 'Número Boleta a modificar'
-                      }
-                      name='nroReceipt'
-                      disabled
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel id='moneda-label' style={{fontWeight: 200}}>
-                        Moneda
-                      </InputLabel>
-                      <Select
-                        defaultValue={moneyToConvert}
-                        name='money_unit'
-                        labelId='moneda-label'
-                        label='Moneda'
-                        value={moneyToConvert}
-                        onChange={(event) => {
-                          console.log('moneda a elegir', event.target.value);
-                          setMoneyToConvert(event.target.value);
-                        }}
-                      >
-                        <MenuItem value='USD' style={{fontWeight: 200}}>
-                          Dólares
-                        </MenuItem>
-                        <MenuItem value='PEN' style={{fontWeight: 200}}>
-                          Soles
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <DateTimePicker
-                      renderInput={(params) => (
-                        <TextField
-                          sx={{position: 'relative', bottom: '-8px'}}
-                          {...params}
+                {outputItems_pageListOutput &&
+                Array.isArray(outputItems_pageListOutput) &&
+                outputItems_pageListOutput.length > 0 ? (
+                  <>
+                    <Grid
+                      container
+                      spacing={2}
+                      sx={{width: 500, margin: 'auto'}}
+                    >
+                      <Grid item xs={6}>
+                        <AppTextField
+                          label={
+                            typeDocumentRelated == 'bill'
+                              ? 'Número Factura a modificar'
+                              : 'Número Boleta a modificar'
+                          }
+                          name='nroReceipt'
+                          disabled
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
                         />
-                      )}
-                      required
-                      value={issueDate}
-                      label='Fecha de emisión'
-                      disabled
-                      inputFormat='dd/MM/yyyy hh:mm a'
-                      name='issueDate'
-                      onChange={(newValue) => {
-                        setIssueDate(newValue);
-                        console.log('date', newValue);
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={6} sx={{mb: 2}}>
-                    <DateTimePicker
-                      renderInput={(params) => (
-                        <TextField
-                          sx={{position: 'relative', bottom: '-8px'}}
-                          {...params}
+                      </Grid>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth sx={{my: 2}}>
+                          <InputLabel
+                            id='moneda-label'
+                            style={{fontWeight: 200}}
+                          >
+                            Moneda
+                          </InputLabel>
+                          <Select
+                            defaultValue={moneyToConvert}
+                            name='money_unit'
+                            labelId='moneda-label'
+                            label='Moneda'
+                            value={moneyToConvert}
+                            onChange={(event) => {
+                              console.log(
+                                'moneda a elegir',
+                                event.target.value,
+                              );
+                              setMoneyToConvert(event.target.value);
+                            }}
+                          >
+                            <MenuItem value='USD' style={{fontWeight: 200}}>
+                              Dólares
+                            </MenuItem>
+                            <MenuItem value='PEN' style={{fontWeight: 200}}>
+                              Soles
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <DateTimePicker
+                          renderInput={(params) => (
+                            <TextField
+                              sx={{position: 'relative', bottom: '-8px'}}
+                              {...params}
+                            />
+                          )}
+                          required
+                          value={issueDate}
+                          label='Fecha de emisión'
+                          disabled
+                          inputFormat='dd/MM/yyyy hh:mm a'
+                          name='issueDate'
+                          onChange={(newValue) => {
+                            setIssueDate(newValue);
+                            console.log('date', newValue);
+                          }}
                         />
-                      )}
-                      required
-                      value={expirationDate}
-                      label='Fecha de vencimiento'
-                      inputFormat='dd/MM/yyyy hh:mm a'
-                      name='issueDate'
-                      onChange={(newValue) => {
-                        setExpirationDate(newValue);
-                        console.log('date', newValue);
-                      }}
-                    />
-                  </Grid>
+                      </Grid>
 
-                  <Grid item xs={6}>
-                    <AppTextField
-                      label={`Total ${moneyUnit} sin IGV`}
-                      name='totalField'
-                      disabled
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <AppTextField
-                      label={`Total ${moneyUnit} con IGV`}
-                      name='totalFieldIgv'
-                      disabled
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
-                  {/* <Grid
+                      <Grid item xs={6} sx={{mb: 2}}>
+                        <DateTimePicker
+                          renderInput={(params) => (
+                            <TextField
+                              sx={{position: 'relative', bottom: '-8px'}}
+                              {...params}
+                            />
+                          )}
+                          required
+                          value={expirationDate}
+                          label='Fecha de vencimiento'
+                          inputFormat='dd/MM/yyyy hh:mm a'
+                          name='issueDate'
+                          onChange={(newValue) => {
+                            setExpirationDate(newValue);
+                            console.log('date', newValue);
+                          }}
+                        />
+                      </Grid>
+
+                      <Grid item xs={6}>
+                        <AppTextField
+                          label={`Total ${moneyUnit} sin IGV`}
+                          name='totalField'
+                          disabled
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={6}>
+                        <AppTextField
+                          label={`Total ${moneyUnit} con IGV`}
+                          name='totalFieldIgv'
+                          disabled
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                      {/* <Grid
                     item
                     xs={4}
                     sx={{display: 'flex', alignItems: 'center'}}
@@ -897,47 +917,51 @@ const GetCreditNote = () => {
                     />
                   </Grid> */}
 
-                  <Grid item xs={8}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={() => {
-                        setShowDialog(true);
-                        setTypeDialog('client');
-                      }}
-                    >
-                      Selecciona un cliente
-                    </Button>
-                  </Grid>
-                  <Grid item xs={4} sx={{textAlign: 'center'}}>
-                    <Typography sx={{mx: 'auto', my: '10px'}}>
-                      {selectedClient.denominationClient}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={() => {
-                        setShowDialog(true);
-                        setTypeDialog('product');
-                      }}
-                    >
-                      Añade productos
-                    </Button>
-                  </Grid>
-                </Grid>
+                      <Grid item xs={8}>
+                        <Button
+                          sx={{width: 1}}
+                          variant='outlined'
+                          onClick={() => {
+                            setShowDialog(true);
+                            setTypeDialog('client');
+                          }}
+                        >
+                          Selecciona un cliente
+                        </Button>
+                      </Grid>
+                      <Grid item xs={4} sx={{textAlign: 'center'}}>
+                        <Typography sx={{mx: 'auto', my: '10px'}}>
+                          {selectedClient.denominationClient}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Button
+                          sx={{width: 1}}
+                          variant='outlined'
+                          onClick={() => {
+                            setShowDialog(true);
+                            setTypeDialog('product');
+                          }}
+                        >
+                          Añade productos
+                        </Button>
+                      </Grid>
+                    </Grid>
 
-                <OutputProducts
-                  data={selectedProducts}
-                  toDelete={removeProduct}
-                  valueWithIGV={valueWithIGV}
-                  igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
-                ></OutputProducts>
-                <Divider sx={{my: 3}} />
+                    <OutputProducts
+                      data={selectedProducts}
+                      toDelete={removeProduct}
+                      valueWithIGV={valueWithIGV}
+                      igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
+                    ></OutputProducts>
+                    <Divider sx={{my: 3}} />
 
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  {/*   <Grid item xs={12}>
+                    <Grid
+                      container
+                      spacing={2}
+                      sx={{width: 500, margin: 'auto'}}
+                    >
+                      {/*   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='typeNote-label' style={{fontWeight: 200}}>
                         {`Tipo de nota de ${creditNote ? 'crédito' : 'débito'}`}
@@ -971,274 +995,284 @@ const GetCreditNote = () => {
                       </Select>
                     </FormControl>
                   </Grid> */}
-                  {creditNote ? (
-                    <Grid item xs={12}>
-                      <FormControl fullWidth sx={{my: 2}}>
-                        <InputLabel
-                          id='typeNote-label'
-                          style={{fontWeight: 200}}
+                      {creditNote ? (
+                        <Grid item xs={12}>
+                          <FormControl fullWidth sx={{my: 2}}>
+                            <InputLabel
+                              id='typeNote-label'
+                              style={{fontWeight: 200}}
+                            >
+                              Tipo de nota de crédito
+                            </InputLabel>
+                            <Select
+                              name='typeNote'
+                              labelId='typeNote-label'
+                              label='Tipo de nota de crébito'
+                              value={subTypeNote}
+                              onChange={setSubType}
+                              displayEmpty
+                            >
+                              {creditNoteTypes.map((obj, index) => {
+                                if (obj.typeNote == 'credit') {
+                                  return (
+                                    <MenuItem
+                                      value={obj.name}
+                                      key={index}
+                                      style={{fontWeight: 200}}
+                                    >
+                                      {translateValue('SUBTYPENOTE', obj.name)}
+                                    </MenuItem>
+                                  );
+                                }
+                              })}
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                      ) : null}
+                      {!creditNote ? (
+                        <Grid item xs={12}>
+                          <FormControl fullWidth sx={{my: 2}}>
+                            <InputLabel
+                              id='typeNote-label'
+                              style={{fontWeight: 200}}
+                            >
+                              Tipo de nota de débito
+                            </InputLabel>
+                            <Select
+                              name='typeNote'
+                              labelId='typeNote-label'
+                              label='Tipo de nota de débito'
+                              value={subTypeNote}
+                              onChange={setSubType}
+                              displayEmpty
+                            >
+                              {creditNoteTypes.map((obj, index) => {
+                                if (obj.typeNote == 'debit') {
+                                  return (
+                                    <MenuItem
+                                      value={obj.name}
+                                      key={index}
+                                      style={{fontWeight: 200}}
+                                    >
+                                      {translateValue('SUBTYPENOTE', obj.name)}
+                                    </MenuItem>
+                                  );
+                                }
+                              })}
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                      ) : null}
+                      <Grid item xs={12}>
+                        <Button
+                          sx={{width: 1}}
+                          variant='outlined'
+                          onClick={() => {
+                            setShowDialog(true);
+                            setTypeDialog('document');
+                          }}
                         >
-                          Tipo de nota de crédito
-                        </InputLabel>
-                        <Select
-                          name='typeNote'
-                          labelId='typeNote-label'
-                          label='Tipo de nota de crébito'
-                          value={subTypeNote}
-                          onChange={setSubType}
-                          displayEmpty
-                        >
-                          {creditNoteTypes.map((obj, index) => {
-                            if (obj.typeNote == 'credit') {
-                              return (
-                                <MenuItem
-                                  value={obj.name}
-                                  key={index}
-                                  style={{fontWeight: 200}}
-                                >
-                                  {translateValue('SUBTYPENOTE', obj.name)}
-                                </MenuItem>
-                              );
-                            }
-                          })}
-                        </Select>
-                      </FormControl>
+                          Añadir guía de remisión
+                        </Button>
+                      </Grid>
                     </Grid>
-                  ) : null}
-                  {!creditNote ? (
-                    <Grid item xs={12}>
-                      <FormControl fullWidth sx={{my: 2}}>
-                        <InputLabel
-                          id='typeNote-label'
-                          style={{fontWeight: 200}}
-                        >
-                          Tipo de nota de débito
-                        </InputLabel>
-                        <Select
-                          name='typeNote'
-                          labelId='typeNote-label'
-                          label='Tipo de nota de débito'
-                          value={subTypeNote}
-                          onChange={setSubType}
-                          displayEmpty
-                        >
-                          {creditNoteTypes.map((obj, index) => {
-                            if (obj.typeNote == 'debit') {
-                              return (
-                                <MenuItem
-                                  value={obj.name}
-                                  key={index}
-                                  style={{fontWeight: 200}}
-                                >
-                                  {translateValue('SUBTYPENOTE', obj.name)}
-                                </MenuItem>
-                              );
-                            }
-                          })}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                  ) : null}
-                  <Grid item xs={12}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={() => {
-                        setShowDialog(true);
-                        setTypeDialog('document');
-                      }}
+
+                    <Box sx={{my: 5}}>
+                      <DocumentsTable
+                        arrayObjs={listDocuments}
+                        toDelete={removeDocument}
+                      />
+                    </Box>
+
+                    <Grid
+                      container
+                      spacing={2}
+                      sx={{width: 500, margin: 'auto'}}
                     >
-                      Añadir guía de remisión
-                    </Button>
-                  </Grid>
-                </Grid>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Observación'
+                          name='observation'
+                          variant='outlined'
+                          multiline
+                          rows={4}
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography sx={{mx: 'auto', my: '10px'}}>
+                          {`Se generara una nota de ${
+                            creditNote ? 'crédito' : 'débito'
+                          }`}
+                        </Typography>
+                      </Grid>
+                    </Grid>
 
-                <Box sx={{my: 5}}>
-                  <DocumentsTable
-                    arrayObjs={listDocuments}
-                    toDelete={removeDocument}
-                  />
-                </Box>
+                    <Divider sx={{my: 3}} />
 
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Observación'
-                      name='observation'
-                      variant='outlined'
-                      multiline
-                      rows={4}
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography sx={{mx: 'auto', my: '10px'}}>
-                      {`Se generara una nota de ${
-                        creditNote ? 'crédito' : 'débito'
-                      }`}
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <Divider sx={{my: 3}} />
-
-                <Collapse in={showAlert}>
-                  <Alert
-                    severity='error'
-                    action={
-                      <IconButton
-                        aria-label='close'
-                        color='inherit'
-                        size='small'
-                        onClick={() => {
-                          setShowAlert(false);
-                        }}
+                    <Collapse in={showAlert}>
+                      <Alert
+                        severity='error'
+                        action={
+                          <IconButton
+                            aria-label='close'
+                            color='inherit'
+                            size='small'
+                            onClick={() => {
+                              setShowAlert(false);
+                            }}
+                          >
+                            <CloseIcon fontSize='inherit' />
+                          </IconButton>
+                        }
+                        sx={{mb: 2}}
                       >
-                        <CloseIcon fontSize='inherit' />
-                      </IconButton>
-                    }
-                    sx={{mb: 2}}
-                  >
-                    {typeAlert == 'client'
-                      ? 'Por favor selecciona un cliente.'
-                      : null}
-                    {typeAlert == 'typeNote'
-                      ? 'Por favor selecciona un tipo de nota.'
-                      : null}
-                  </Alert>
-                </Collapse>
+                        {typeAlert == 'client'
+                          ? 'Por favor selecciona un cliente.'
+                          : null}
+                        {typeAlert == 'typeNote'
+                          ? 'Por favor selecciona un tipo de nota.'
+                          : null}
+                      </Alert>
+                    </Collapse>
 
-                <ButtonGroup
-                  orientation='vertical'
-                  variant='outlined'
-                  sx={{width: 1}}
-                  aria-label='outlined button group'
-                >
-                  <Button
-                    color='primary'
-                    sx={{mx: 'auto', width: '50%', py: 3}}
-                    type='submit'
-                    variant='contained'
-                    disabled={isSubmitting}
-                    startIcon={<SaveAltOutlinedIcon />}
-                  >
-                    Finalizar
-                  </Button>
-                  {/* <Button
+                    <ButtonGroup
+                      orientation='vertical'
+                      variant='outlined'
+                      sx={{width: 1}}
+                      aria-label='outlined button group'
+                    >
+                      <Button
+                        color='primary'
+                        sx={{mx: 'auto', width: '50%', py: 3}}
+                        type='submit'
+                        variant='contained'
+                        disabled={isSubmitting}
+                        startIcon={<SaveAltOutlinedIcon />}
+                      >
+                        Finalizar
+                      </Button>
+                      {/* <Button
                     sx={{mx: 'auto', width: '50%', py: 3}}
                     variant='outlined'
                     startIcon={<SaveAltOutlinedIcon />}
                   >
                     Guardar y registrar nuevo
                   </Button> */}
-                  <Button
-                    sx={{mx: 'auto', width: '50%', py: 3}}
-                    variant='outlined'
-                    startIcon={<ArrowCircleLeftOutlinedIcon />}
-                    onClick={cancel}
-                  >
-                    Cancelar
-                  </Button>
-                </ButtonGroup>
-                {minTutorial ? (
-                  <Box
-                    sx={{
-                      position: 'fixed',
-                      right: 0,
-                      top: {xs: 325, xl: 305},
-                      zIndex: 1110,
-                    }}
-                    className='customizerOption'
-                  >
-                    <Box
-                      sx={{
-                        borderRadius: '30px 0 0 30px',
-                        mb: 1,
-                        backgroundColor: orange[500],
-                        '&:hover': {
-                          backgroundColor: orange[700],
-                        },
-                        '& button': {
-                          borderRadius: '30px 0 0 30px',
-
-                          '&:focus': {
-                            borderRadius: '30px 0 0 30px',
-                          },
-                        },
-                      }}
-                    >
-                      <IconButton
-                        sx={{
-                          mt: 1,
-                          '& svg': {
-                            height: 35,
-                            width: 35,
-                          },
-                          color: 'white',
-                          pr: 5,
-                        }}
-                        edge='end'
-                        color='inherit'
-                        aria-label='open drawer'
-                        onClick={() =>
-                          window.open('https://youtu.be/amxeIBPB48Q')
-                        }
+                      <Button
+                        sx={{mx: 'auto', width: '50%', py: 3}}
+                        variant='outlined'
+                        startIcon={<ArrowCircleLeftOutlinedIcon />}
+                        onClick={cancel}
                       >
-                        <YouTubeIcon fontSize='inherit' />
-                      </IconButton>
-                    </Box>
-                  </Box>
+                        Cancelar
+                      </Button>
+                    </ButtonGroup>
+                    {minTutorial ? (
+                      <Box
+                        sx={{
+                          position: 'fixed',
+                          right: 0,
+                          top: {xs: 325, xl: 305},
+                          zIndex: 1110,
+                        }}
+                        className='customizerOption'
+                      >
+                        <Box
+                          sx={{
+                            borderRadius: '30px 0 0 30px',
+                            mb: 1,
+                            backgroundColor: orange[500],
+                            '&:hover': {
+                              backgroundColor: orange[700],
+                            },
+                            '& button': {
+                              borderRadius: '30px 0 0 30px',
+
+                              '&:focus': {
+                                borderRadius: '30px 0 0 30px',
+                              },
+                            },
+                          }}
+                        >
+                          <IconButton
+                            sx={{
+                              mt: 1,
+                              '& svg': {
+                                height: 35,
+                                width: 35,
+                              },
+                              color: 'white',
+                              pr: 5,
+                            }}
+                            edge='end'
+                            color='inherit'
+                            aria-label='open drawer'
+                            onClick={() =>
+                              window.open('https://youtu.be/amxeIBPB48Q')
+                            }
+                          >
+                            <YouTubeIcon fontSize='inherit' />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                    ) : (
+                      <Box
+                        sx={{
+                          position: 'fixed',
+                          right: 0,
+                          top: {xs: 325, xl: 305},
+                          zIndex: 1110,
+                        }}
+                        className='customizerOption'
+                      >
+                        <Box
+                          sx={{
+                            borderRadius: '30px 0 0 30px',
+                            mb: 1,
+                            backgroundColor: orange[500],
+                            '&:hover': {
+                              backgroundColor: orange[700],
+                            },
+                            '& button': {
+                              borderRadius: '30px 0 0 30px',
+
+                              '&:focus': {
+                                borderRadius: '30px 0 0 30px',
+                              },
+                            },
+                          }}
+                        >
+                          <IconButton
+                            sx={{
+                              mt: 1,
+                              '& svg': {
+                                height: 35,
+                                width: 35,
+                              },
+                              color: 'white',
+                            }}
+                            edge='end'
+                            color='inherit'
+                            aria-label='open drawer'
+                            onClick={() =>
+                              window.open('https://www.youtube.com/')
+                            }
+                          >
+                            VER TUTORIAL
+                          </IconButton>
+                        </Box>
+                      </Box>
+                    )}
+                  </>
                 ) : (
-                  <Box
-                    sx={{
-                      position: 'fixed',
-                      right: 0,
-                      top: {xs: 325, xl: 305},
-                      zIndex: 1110,
-                    }}
-                    className='customizerOption'
-                  >
-                    <Box
-                      sx={{
-                        borderRadius: '30px 0 0 30px',
-                        mb: 1,
-                        backgroundColor: orange[500],
-                        '&:hover': {
-                          backgroundColor: orange[700],
-                        },
-                        '& button': {
-                          borderRadius: '30px 0 0 30px',
-
-                          '&:focus': {
-                            borderRadius: '30px 0 0 30px',
-                          },
-                        },
-                      }}
-                    >
-                      <IconButton
-                        sx={{
-                          mt: 1,
-                          '& svg': {
-                            height: 35,
-                            width: 35,
-                          },
-                          color: 'white',
-                        }}
-                        edge='end'
-                        color='inherit'
-                        aria-label='open drawer'
-                        onClick={() => window.open('https://www.youtube.com/')}
-                      >
-                        VER TUTORIAL
-                      </IconButton>
-                    </Box>
-                  </Box>
+                  <AppLoader />
                 )}
               </Form>
             );

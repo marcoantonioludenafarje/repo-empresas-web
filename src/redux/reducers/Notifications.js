@@ -13,7 +13,7 @@ const INIT_STATE = {
   getNotificationsRes: [],
   subscriptionStateRes: false,
   updateNotificationListRes: false,
-  updateNotificationToSeenRes: "",
+  updateNotificationToSeenRes: '',
 };
 
 const notificationsReducer = (state = INIT_STATE, action) => {
@@ -37,27 +37,38 @@ const notificationsReducer = (state = INIT_STATE, action) => {
         updateNotificationListRes: action.payload,
       };
     case UPDATE_NOTIFICATION_TO_SEEN:
-      console.log('data de reducer UPDATE_NOTIFICATION_TO_SEEN', action.payload);
+      console.log(
+        'data de reducer UPDATE_NOTIFICATION_TO_SEEN',
+        action.payload,
+      );
       return {
         ...state,
         updateNotificationToSeenRes: action.payload,
       };
     case UPDATE_ONE_OF_THE_LIST_NOTIFICATION:
-      console.log('data de reducer UPDATE_ONE_OF_THE_LIST_NOTIFICATION', action.payload);
-      const newNotifications = state.getNotificationsRes.map(obj => {
-        if(obj.notificationId == action.payload.notificationId){
-          if(obj.seenBy){
-            obj.seenBy.push(action.payload.payload.userId)
+      console.log(
+        'data de reducer UPDATE_ONE_OF_THE_LIST_NOTIFICATION',
+        action.payload,
+      );
+      const newNotifications = state.getNotificationsRes.map((obj) => {
+        console.log('obj list', obj);
+        if (
+          obj.notificationId == action.payload.request.payload.notificationId
+        ) {
+          if (obj.seenBy) {
+            obj.seenBy.push(action.payload.request.payload.userId);
           } else {
-            obj.seenBy = [action.payload.payload.userId]
+            obj.seenBy = [action.payload.request.payload.userId];
           }
-          return obj
+          console.log('obj new');
         }
-      })
+        return obj;
+      });
+      console.log('newNotifications', newNotifications);
       return {
         ...state,
         getNotificationsRes: newNotifications,
-      }
+      };
     case FETCH_SUCCESS:
       console.log('data de reducer FETCH_SUCCESS', action.payload);
       return {

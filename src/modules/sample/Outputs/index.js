@@ -262,6 +262,7 @@ const OutputsTable = (props) => {
   const [value2, setValue2] = React.useState(Date.now());
   const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isListLoading, setListIsLoading] = React.useState(false);
   const [initialTime, setInitialTime] = React.useState(
     toEpoch(Date.now() - 2678400000),
   );
@@ -356,7 +357,13 @@ const OutputsTable = (props) => {
     }
   }, []);
   useEffect(() => {
+    if (outputItems_pageListOutput) {
+      setListIsLoading(false);
+    }
+  }, [outputItems_pageListOutput]);
+  useEffect(() => {
     if (userDataRes && userDataRes.merchantSelected && getRolUserRes) {
+      setListIsLoading(true);
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: GET_MOVEMENTS, payload: undefined});
@@ -1642,7 +1649,9 @@ const OutputsTable = (props) => {
           </TableHead>
           <TableBody>
             {outputItems_pageListOutput &&
-            Array.isArray(outputItems_pageListOutput) ? (
+            Array.isArray(outputItems_pageListOutput) &&
+            outputItems_pageListOutput.length > 0 &&
+            !isListLoading ? (
               outputItems_pageListOutput.sort(compare).map((obj, index) => {
                 const style =
                   obj.descriptionProductsInfo &&

@@ -14,14 +14,13 @@ import red from '@mui/material/colors/red';
 import green from '@mui/material/colors/green';
 import cyan from '@mui/material/colors/cyan';
 import {render} from 'react-dom';
+import {GET_NOTIFICATIONS} from '../../../shared/constants/ActionTypes';
 import {
-  GET_NOTIFICATIONS,
-} from '../../../shared/constants/ActionTypes';
-import {updateNotificationToSeen, updateOneOfTheListNotification} from '../../../redux/actions/Notifications';
+  updateNotificationToSeen,
+  updateOneOfTheListNotification,
+} from '../../../redux/actions/Notifications';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  convertToDate,
-} from '../../../Utils/utils';
+import {convertToDate} from '../../../Utils/utils';
 const NotificationItem = (props) => {
   const {item, closeNotifications} = props;
   const router = useRouter();
@@ -77,7 +76,8 @@ const NotificationItem = (props) => {
           boxShadow: item.url ? '0px 0 0 5px rgba(0, 0, 0, 0.7)' : 'none',
         },
         position: 'relative',
-        backgroundColor: item.seenBy ? 'transparent' : 'lightblue',
+        backgroundColor:
+          item.seenBy && item.seenBy.length > 0 ? 'transparent' : 'lightblue',
       }}
       className='item-hover'
       onClick={() => {
@@ -85,18 +85,21 @@ const NotificationItem = (props) => {
           request: {
             payload: {
               notificationId: item.notificationId,
-              userId: userDataRes.userId
-            }
-          }
+              userId: userDataRes.userId,
+            },
+          },
+        };
+
+        if (
+          !item.seenBy ||
+          !item.seenBy.some((item) => item == userDataRes.userId)
+        ) {
+          toUpdateOneOfTheListNotification(payloadToUpdate);
+          toUpdateNotificationToSeen(payloadToUpdate);
         }
-        closeNotifications();
-        
-        if(!item.seenBy || !item.seenBy.some(item => item == userDataRes.userId)){
-          toUpdateNotificationToSeen(payloadToUpdate)
-          //toUpdateOneOfTheListNotification(payloadToUpdate)
-        }
-        if(item.url){
-          goToOutput(item.url)
+        if (item.url) {
+          closeNotifications();
+          goToOutput(item.url);
         }
       }}
     >
@@ -107,7 +110,8 @@ const NotificationItem = (props) => {
           //backgroundColor: cyan[500],
         }}
       >
-        {(!item.seenBy || !item.seenBy.some( item => item == userDataRes.userId)) && (
+        {(!item.seenBy ||
+          !item.seenBy.some((item) => item == userDataRes.userId)) && (
           <Badge
             color='primary' // Color azul para el Badge
             variant='dot' // Mostrar un punto en lugar de un número en el Badge
@@ -160,4 +164,5 @@ export default NotificationItem;
 
 NotificationItem.propTypes = {
   item: PropTypes.object.isRequired,
+  closeNotifications: PropTypes.func,
 };

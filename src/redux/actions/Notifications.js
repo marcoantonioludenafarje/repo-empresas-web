@@ -30,7 +30,10 @@ export const updateNotificationToSeen = (payload, list) => {
     API.post('tunexo', '/business/notification/update', {body: payload})
       .then((data) => {
         console.log('updateNotificationToSeen resultado', data);
-        dispatch({type: UPDATE_NOTIFICATION_TO_SEEN, payload: data.response.payload});
+        dispatch({
+          type: UPDATE_NOTIFICATION_TO_SEEN,
+          payload: data.response.payload,
+        });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import notification from '@crema/services/db/notifications';
 import {IconButton} from '@mui/material';
 import List from '@mui/material/List';
@@ -47,6 +47,8 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
   //   // }
   //   toGetNotifications(listNotificationsPayload);
   // }, []);
+  const [selectedOption, setSelectedOption] = useState('todos');
+
   return (
     <Box
       sx={{
@@ -60,16 +62,24 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
       <Box
         sx={{
           padding: '5px 20px',
+          paddingRight: '0px',
           display: 'flex',
           alignItems: 'center',
+          paddingTop: '0px',
+          paddingBottom: '0px',
           borderBottom: 1,
           borderBottomColor: (theme) => theme.palette.divider,
-          minHeight: {xs: 56, sm: 70},
+          minHeight: {xs: 40, sm: 40},
         }}
       >
         <Typography component='h3' variant='h3'>
           <IntlMessages id='common.notifications' />:{' '}
-          {data ? data.filter(notification => !notification.seenBy).length : null}
+          {data
+            ? data.filter(
+                (notification) =>
+                  !(notification.seenBy && notification.seenBy.length),
+              ).length
+            : null}
         </Typography>
         <IconButton
           sx={{
@@ -84,6 +94,34 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
           <CancelOutlinedIcon />
         </IconButton>
       </Box>
+      <Box
+        sx={{
+          padding: '5px 20px',
+          paddingTop: '0px',
+          paddingBottom: '0px',
+          display: 'flex',
+          alignItems: 'center',
+          borderBottom: 1,
+          borderBottomColor: (theme) => theme.palette.divider,
+          minHeight: {xs: 45, sm: 45},
+        }}
+      >
+        <Button
+          variant={selectedOption === 'todos' ? 'contained' : 'text'}
+          color='primary'
+          onClick={() => setSelectedOption('todos')}
+          sx={{marginRight: '10px'}}
+        >
+          Todos
+        </Button>
+        <Button
+          variant={selectedOption === 'sin-leer' ? 'contained' : 'text'}
+          color='primary'
+          onClick={() => setSelectedOption('sin-leer')}
+        >
+          Sin leer
+        </Button>
+      </Box>
       <AppScrollbar
         sx={{
           height: {xs: 'calc(100% - 96px)', sm: 'calc(100% - 110px)'},
@@ -92,9 +130,21 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
         {data && data.length !== 0 ? (
           <List sx={{py: 0, mt: '2px'}}>
             {data
+              .filter((item) => {
+                if (selectedOption === 'todos') {
+                  return true;
+                } else if (selectedOption === 'sin-leer') {
+                  return !(item.seenBy && item.seenBy.length > 0);
+                }
+                return false;
+              })
               .sort((a, b) => b.createdAt - a.createdAt)
               .map((item, index) => (
-                <NotificationItem key={index} item={item} closeNotifications={onClose}/>
+                <NotificationItem
+                  key={index}
+                  item={item}
+                  closeNotifications={onClose}
+                />
               ))}
           </List>
         ) : null}

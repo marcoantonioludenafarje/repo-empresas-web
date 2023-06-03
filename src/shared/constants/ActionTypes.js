@@ -317,7 +317,8 @@ export const GET_NOTIFICATIONS = 'get_notifications';
 export const SUBSCRIPTION_STATE = 'subscription_state';
 export const UPDATE_NOTIFICATION_LIST = 'update_notification_list';
 export const UPDATE_NOTIFICATION_TO_SEEN = 'update_notification_to_seen';
-export const UPDATE_ONE_OF_THE_LIST_NOTIFICATION = 'update_one_of_the_list_notification';
+export const UPDATE_ONE_OF_THE_LIST_NOTIFICATION =
+  'update_one_of_the_list_notification';
 
 // ROUTES
 

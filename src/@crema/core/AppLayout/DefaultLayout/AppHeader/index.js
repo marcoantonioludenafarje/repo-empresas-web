@@ -620,8 +620,7 @@ const AppHeader = () => {
                 marginRight: -2,
               }}
             >
-
-            <IconButton
+              <IconButton
                 className='icon-btn'
                 sx={{
                   mt: 3,
@@ -638,11 +637,11 @@ const AppHeader = () => {
                 }}
                 size='large'
               >
-                {allowedNotifications ? 
+                {allowedNotifications ? (
                   <NotificationON />
-                :
+                ) : (
                   <NotificationOFF />
-                }                  
+                )}
               </IconButton>
 
               {/*<IconButton

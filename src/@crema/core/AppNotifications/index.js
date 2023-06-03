@@ -81,12 +81,6 @@ const AppNotifications = ({
   // A modificar
   //Esto se debe de mejorar añadiendo un index para merchantMasterId, por mientras es así
 
-  if (getNotificationsRes) {
-    console.log('getNotificationsRes',getNotificationsRes)
-    console.log('getNotificationsRes1',getNotificationsRes.filter(notification => !notification.seenBy).length);
-  }
-    
-
   return (
     <>
       {isMenu ? (
@@ -110,7 +104,12 @@ const AppNotifications = ({
           >
             {getNotificationsRes && getNotificationsRes.length > 0 ? (
               <Badge
-                badgeContent={getNotificationsRes.filter(notification => !notification.seenBy).length}
+                badgeContent={
+                  getNotificationsRes.filter((item) => {
+                    console.log('notification in AppNotifications', item);
+                    return !(item.seenBy && item.seenBy.length);
+                  }).length
+                }
                 color='primary'
                 overlap='circular'
                 anchorOrigin={{
