@@ -429,8 +429,8 @@ const GetReferralGuide = () => {
         );
         changeValueField('observation', routeToReferralGuide.observation);
       }
-      setTotalWeight(weight);
-      changeValueField('totalWeight', weight);
+      setTotalWeight(Number(weight.toFixed(3)));
+      changeValueField('totalWeight', Number(weight.toFixed(3)));
       /* dispatch({
         type: ROUTE_TO_REFERRAL_GUIDE,
         payload: null,
@@ -833,8 +833,8 @@ const GetReferralGuide = () => {
       });
     }
     console.log('weight', weight);
-    setTotalWeight(weight);
-    changeValueField('totalWeight', weight);
+    setTotalWeight(Number(weight.toFixed(3)));
+    changeValueField('totalWeight', Number(weight.toFixed(3)));
   };
 
   const removeProduct = (index) => {

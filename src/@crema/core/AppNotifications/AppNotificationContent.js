@@ -94,7 +94,7 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
             {data
               .sort((a, b) => b.createdAt - a.createdAt)
               .map((item, index) => (
-                <NotificationItem key={index} item={item} />
+                <NotificationItem key={index} item={item} closeNotifications={onClose}/>
               ))}
           </List>
         ) : null}

@@ -4,13 +4,16 @@ import {
   FETCH_ERROR,
   SUBSCRIPTION_STATE,
   UPDATE_NOTIFICATION_LIST,
+  UPDATE_NOTIFICATION_TO_SEEN,
+  UPDATE_ONE_OF_THE_LIST_NOTIFICATION,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
   list: [],
-  listNotifications: [],
+  getNotificationsRes: [],
   subscriptionStateRes: false,
   updateNotificationListRes: false,
+  updateNotificationToSeenRes: "",
 };
 
 const notificationsReducer = (state = INIT_STATE, action) => {
@@ -33,6 +36,28 @@ const notificationsReducer = (state = INIT_STATE, action) => {
         ...state,
         updateNotificationListRes: action.payload,
       };
+    case UPDATE_NOTIFICATION_TO_SEEN:
+      console.log('data de reducer UPDATE_NOTIFICATION_TO_SEEN', action.payload);
+      return {
+        ...state,
+        updateNotificationToSeenRes: action.payload,
+      };
+    case UPDATE_ONE_OF_THE_LIST_NOTIFICATION:
+      console.log('data de reducer UPDATE_ONE_OF_THE_LIST_NOTIFICATION', action.payload);
+      const newNotifications = state.getNotificationsRes.map(obj => {
+        if(obj.notificationId == action.payload.notificationId){
+          if(obj.seenBy){
+            obj.seenBy.push(action.payload.payload.userId)
+          } else {
+            obj.seenBy = [action.payload.payload.userId]
+          }
+          return obj
+        }
+      })
+      return {
+        ...state,
+        getNotificationsRes: newNotifications,
+      }
     case FETCH_SUCCESS:
       console.log('data de reducer FETCH_SUCCESS', action.payload);
       return {
