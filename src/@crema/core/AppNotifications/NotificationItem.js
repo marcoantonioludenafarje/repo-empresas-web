@@ -93,7 +93,7 @@ const NotificationItem = (props) => {
         
         if(!item.seenBy || !item.seenBy.some(item => item == userDataRes.userId)){
           toUpdateNotificationToSeen(payloadToUpdate)
-          toUpdateOneOfTheListNotification(payloadToUpdate)
+          //toUpdateOneOfTheListNotification(payloadToUpdate)
         }
         if(item.url){
           goToOutput(item.url)
