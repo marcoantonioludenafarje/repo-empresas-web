@@ -44,14 +44,14 @@ module.exports = withTM({
           ]
         })
       );
-      config.plugins.push(
-        new WorkboxWebpackPlugin.InjectManifest({
-          swSrc: path.join(__dirname, 'public/service-worker.js'),
-          swDest: path.join(__dirname, '.next', 'service-worker.js'),
-          exclude: [/\.map$/, /_app/, /_document/, /_error/],
-          maximumFileSizeToCacheInBytes: 10000000 // Ajusta este valor según tus necesidades
-        })
-      );
+      // config.plugins.push(
+      //   new WorkboxWebpackPlugin.InjectManifest({
+      //     swSrc: path.join(__dirname, 'public/service-worker.js'),
+      //     swDest: path.join(__dirname, '.next', 'service-worker.js'),
+      //     exclude: [/\.map$/, /_app/, /_document/, /_error/],
+      //     maximumFileSizeToCacheInBytes: 1000000000000 // Ajusta este valor según tus necesidades
+      //   })
+      // );
     }
     return config;
   },

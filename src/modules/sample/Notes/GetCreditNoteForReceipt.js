@@ -30,7 +30,7 @@ import {
 import AppLoader from '../../../@crema/core/AppLoader';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-
+import SchoolIcon from '@mui/icons-material/School';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CloseIcon from '@mui/icons-material/Close';
@@ -1218,7 +1218,7 @@ const GetCreditNote = () => {
                               window.open('https://youtu.be/amxeIBPB48Q')
                             }
                           >
-                            <YouTubeIcon fontSize='inherit' />
+                            <SchoolIcon fontSize='inherit' />
                           </IconButton>
                         </Box>
                       </Box>

@@ -5,7 +5,7 @@ import {Form, Formik, isEmptyArray} from 'formik';
 import AppPage from '../../../@crema/hoc/AppPage';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-
+import SchoolIcon from '@mui/icons-material/School';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
@@ -967,7 +967,7 @@ const NewExpense = (props) => {
                           window.open('https://youtu.be/U1Bnwa1G_ts/')
                         }
                       >
-                        <YouTubeIcon fontSize='inherit' />
+                        <SchoolIcon fontSize='inherit' />
                       </IconButton>
                     </Box>
                   </Box>

@@ -3,18 +3,22 @@ import {useThemeContext} from '../../../../utility/AppContextProvider/ThemeConte
 import PropTypes from 'prop-types';
 import {alpha, Box} from '@mui/material';
 import Logo from '../../../../../assets/icon/bannerTuNexoInventarios.svg';
+import Logo2 from '../../../../../assets/icon/tunexoLogo.svg';
 import LogoText from '../../../../../assets/icon/logo_text.svg';
 import {useRouter} from 'next/router';
 
-const AppLogo = () => {
-  const {theme} = useThemeContext();
+import { useMediaQuery } from '@mui/material';
 
+const AppLogo = () => {
+  const { theme } = useThemeContext();
   const history = useRouter();
+
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down('sm'));
+
   return (
     <Box
-      sx={
-        {
-          /* height: {xs: 56, sm: 70},
+      sx={{
+        /* height: {xs: 56, sm: 70},
         padding: 2.5,
         display: 'flex',
         flexDirection: 'row',
@@ -24,22 +28,35 @@ const AppLogo = () => {
         '& svg': {
           height: {xs: 30, sm: 40},
         }, */
-        }
-      }
+      }}
       className='app-logo'
     >
+      {isMobile ?
       <Box
         sx={{
           mt: 1,
           '& svg': {
-            height: 70,
-            width: 150,
+            height: 50,
+            width: 55,
           },
         }}
         onClick={() => history.replace('/sample/home')}
       >
-        <Logo />
+         <Logo2 />
       </Box>
+
+      : <Box
+      sx={{
+        mt: 1,
+        '& svg': {
+          height: 70,
+          width: 150,
+        },
+      }}
+      onClick={() => history.replace('/sample/home')}
+    >
+       <Logo />
+    </Box>}
       {/* <Box
         sx={{
           mt: 1,
@@ -53,6 +70,7 @@ const AppLogo = () => {
     </Box>
   );
 };
+
 
 export default AppLogo;
 AppLogo.propTypes = {

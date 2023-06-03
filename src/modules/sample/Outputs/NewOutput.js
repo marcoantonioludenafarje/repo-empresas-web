@@ -33,7 +33,7 @@ import {
 import InputAdornment from '@mui/material/InputAdornment';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-
+import SchoolIcon from '@mui/icons-material/School';
 import {orange} from '@mui/material/colors';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
@@ -1241,7 +1241,7 @@ const NewOutput = (props) => {
                           window.open('https://youtu.be/XTUGcMq_Iaw/')
                         }
                       >
-                        <YouTubeIcon fontSize='inherit' />
+                        <SchoolIcon fontSize='inherit' />
                       </IconButton>
                     </Box>
                   </Box>

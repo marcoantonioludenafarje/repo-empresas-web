@@ -91,7 +91,7 @@ import {red} from '@mui/material/colors';
 import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import {maxHeight} from '@mui/system';
-
+import SchoolIcon from '@mui/icons-material/School';
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
@@ -1235,7 +1235,7 @@ const Distribution = (props) => {
               aria-label='open drawer'
               onClick={() => window.open('https://www.youtube.com/')}
             >
-              <YouTubeIcon fontSize='inherit' />
+              <SchoolIcon fontSize='inherit' />
             </IconButton>
           </Box>
         </Box>

@@ -5,7 +5,7 @@ import {Form, Formik} from 'formik';
 import AppPage from '../../../@crema/hoc/AppPage';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-
+import SchoolIcon from '@mui/icons-material/School';
 import {Fonts} from '../../../shared/constants/AppEnums';
 
 import {orange} from '@mui/material/colors';
@@ -858,7 +858,7 @@ const UpdateProduct = (props) => {
     if (typeIcon == '1') {
       return (
         <>
-          <YouTubeIcon fontSize='inherit' />
+          <SchoolIcon fontSize='inherit' />
         </>
       );
     } else if (typeIcon == '2') {

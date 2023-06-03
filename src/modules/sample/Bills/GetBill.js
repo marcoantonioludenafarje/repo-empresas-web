@@ -72,7 +72,7 @@ import {
   GET_MOVEMENTS,
   GET_USER_DATA,
 } from '../../../shared/constants/ActionTypes';
-
+import SchoolIcon from '@mui/icons-material/School';
 const useStyles = makeStyles((theme) => ({
   container: {
     textAlign: 'center',
@@ -1340,7 +1340,7 @@ const NewOutput = (props) => {
                           window.open('https://youtu.be/iYy11yw1Zr4')
                         }
                       >
-                        <YouTubeIcon fontSize='inherit' />
+                        <SchoolIcon fontSize='inherit' />
                       </IconButton>
                     </Box>
                   </Box>

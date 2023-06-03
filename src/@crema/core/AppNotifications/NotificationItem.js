@@ -68,7 +68,7 @@ const NotificationItem = (props) => {
     <ListItem
       sx={{
         padding: '8px 20px',
-        mt: '2px',
+        mt: '4px',
         cursor: item.url ? 'pointer' : 'default',
         transition: 'box-shadow 0.3s',
         boxShadow: 'none',

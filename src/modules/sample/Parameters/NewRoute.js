@@ -78,7 +78,7 @@ import {
   UPDATE_ALL_BUSINESS_PARAMETER,
   UPDATE_CATALOGS,
 } from '../../../shared/constants/ActionTypes';
-
+import SchoolIcon from '@mui/icons-material/School';
 const XLSX = require('xlsx');
 
 const Distribution = () => {
@@ -636,7 +636,7 @@ const Distribution = () => {
     if (typeIcon == '1') {
       return (
         <>
-          <YouTubeIcon fontSize='inherit' />
+          <SchoolIcon fontSize='inherit' />
         </>
       );
     } else if (typeIcon == '2') {

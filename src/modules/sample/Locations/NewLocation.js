@@ -41,7 +41,7 @@ import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
-
+import SchoolIcon from '@mui/icons-material/School';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newLocation} from '../../../redux/actions/Locations';
@@ -498,7 +498,7 @@ const NewLocation = () => {
                           window.open('https://youtu.be/e-MjZrUNQzY/')
                         }
                       >
-                        <YouTubeIcon fontSize='inherit' />
+                        <SchoolIcon fontSize='inherit' />
                       </IconButton>
                     </Box>
                   </Box>

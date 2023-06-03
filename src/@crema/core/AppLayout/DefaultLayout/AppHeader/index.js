@@ -7,6 +7,8 @@ import AppSearchBar from '@crema/core/AppSearchBar';
 import Hidden from '@mui/material/Hidden';
 import IconButton from '@mui/material/IconButton';
 
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
+import { blue, grey } from '@mui/material/colors';
 import axios from 'axios';
 
 import IntlMessages from '../../../../../@crema/utility/IntlMessages';
@@ -32,6 +34,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 //import ServiceWorkerListener from '../../../../../pages/serviceWorkerListener';
 
+import YouTubeIcon from '@mui/icons-material/YouTube';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import NotificationAddOutlinedIcon from '@mui/icons-material/NotificationAddOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -505,22 +508,6 @@ const AppHeader = () => {
               />
             </IconButton>
           </Hidden>
-
-          <Link
-            sx={{
-              ml: 5,
-              position: 'relative',
-              bottom: -15,
-              '& svg': {
-                height: 35,
-                width: 35,
-              },
-            }}
-            onClick={() => window.open('https://www.youtube.com/')}
-          >
-            Ver Tutorial
-            {/* <RequestIcon /> */}
-          </Link>
         </Box>
         {/* whatever is on the right side */}
         <Hidden smDown>
@@ -609,7 +596,6 @@ const AppHeader = () => {
             </Box>
           </Box>
         </Hidden> */}
-        <Hidden smDown>
           <Box sx={{ml: 4}}>
             <Box
               sx={{
@@ -676,9 +662,7 @@ const AppHeader = () => {
                 </IconButton>*/}
             </Box>
           </Box>
-        </Hidden>
         <Box sx={{ml: 4}}>
-          <Hidden smDown>
             <Box
               sx={{
                 position: 'relative',
@@ -690,80 +674,43 @@ const AppHeader = () => {
             >
               <Box
                 sx={{
-                  px: 1.85,
                 }}
               >
                 <AppNotifications />
               </Box>
-              {/* <Box
-                sx={{
-                  px: 1.85,
-                }}
-              >
-                <AppMessages />
-              </Box> */}
             </Box>
-          </Hidden>
-
-          {/* <Hidden smUp>
-            <Box
-              sx={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                marginLeft: -2,
-                marginRight: -2,
-              }}
+          
+            <Menu
+              id='simple-menu'
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
             >
-              <Box
-                sx={{
-                  px: 1.85,
-                }}
-              >
-                <AppTooltip title='More'>
-                  <IconButton
-                    sx={{
-                      borderRadius: '50%',
-                      width: 40,
-                      height: 40,
-                      color: (theme) => theme.palette.text.secondary,
-                      backgroundColor: (theme) =>
-                        theme.palette.background.default,
-                      border: 1,
-                      borderColor: 'transparent',
-                      '&:hover, &:focus': {
-                        color: (theme) => theme.palette.text.primary,
-                        backgroundColor: (theme) =>
-                          alpha(theme.palette.background.default, 0.9),
-                        borderColor: (theme) =>
-                          alpha(theme.palette.text.secondary, 0.25),
-                      },
-                    }}
-                    onClick={handleClick}
-                    size='large'
-                  >
-                    <MoreVertIcon />
-                  </IconButton>
-                </AppTooltip>
-              </Box>
-            </Box>
-          </Hidden> */}
-          <Menu
-            id='simple-menu'
-            anchorEl={anchorEl}
-            keepMounted
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem>
-              <AppNotifications isMenu />
-            </MenuItem>
-            {/* <MenuItem>
-              <AppMessages isMenu />
-            </MenuItem> */}
-            <MenuItem>Setting</MenuItem>
-          </Menu>
+              <MenuItem>
+                <AppNotifications isMenu />
+              </MenuItem>
+              <MenuItem>
+                <AppMessages isMenu />
+              </MenuItem>
+              <MenuItem>Setting</MenuItem>
+            </Menu>
+            
         </Box>
+        
+{/*         
+        <IconButton
+          color="secondary"
+          onClick={() => window.open('https://www.youtube.com/@tunexo-facturacionelectronica')}
+          aria-label="Ver Tutorial en YouTube"
+          sx={{mt:2, 
+            width: 54.33,
+            height: 54.33,}} 
+        >
+          <YouTubeIcon sx={{
+            width: 40.33,
+            height: 40.33,}} />
+        </IconButton> */}
         {/* <IconButton
           sx={{
             mt: 3,
@@ -818,7 +765,12 @@ const AppHeader = () => {
             flexGrow: 0.1,
           }}
         />
-        <AppLngSwitcher iconOnly={true} tooltipPosition='bottom' />
+
+        {/* Para cambiar de idioma */}
+        {/* <AppLngSwitcher iconOnly={true} tooltipPosition='bottom' /> */}
+
+        
+
       </Toolbar>
 
       <Dialog

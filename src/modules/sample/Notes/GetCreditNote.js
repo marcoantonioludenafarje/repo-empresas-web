@@ -34,7 +34,7 @@ import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
-
+import SchoolIcon from '@mui/icons-material/School';
 import AddProductForm from '../Bills/AddProductForm';
 import OutputProducts from '../Bills/OutputProducts';
 import DocumentsTable from '../DocumentSelector/DocumentsTable';
@@ -1216,7 +1216,7 @@ const GetCreditNote = () => {
                               window.open('https://youtu.be/amxeIBPB48Q')
                             }
                           >
-                            <YouTubeIcon fontSize='inherit' />
+                            <SchoolIcon fontSize='inherit' />
                           </IconButton>
                         </Box>
                       </Box>

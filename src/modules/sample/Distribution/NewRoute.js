@@ -74,7 +74,7 @@ import {getCarriers} from '../../../redux/actions/Carriers';
 import {exportExcelTemplateToGenerateRoute} from '../../../redux/actions/General';
 import {red} from '@mui/material/colors';
 import {completeWithZeros} from '../../../Utils/utils';
-
+import SchoolIcon from '@mui/icons-material/School';
 const Excel = require('exceljs');
 const XLSX = require('xlsx');
 import {
@@ -1344,7 +1344,7 @@ const Distribution = (props) => {
               aria-label='open drawer'
               onClick={() => window.open('https://www.youtube.com/')}
             >
-              <YouTubeIcon fontSize='inherit' />
+              <SchoolIcon fontSize='inherit' />
             </IconButton>
           </Box>
         </Box>

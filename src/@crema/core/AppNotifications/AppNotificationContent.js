@@ -10,6 +10,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import {useDispatch, useSelector} from 'react-redux';
 // import Router, {useRouter} from 'next/router';
 // import {
 //   FETCH_SUCCESS,
@@ -49,13 +50,12 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
   // }, []);
   const [selectedOption, setSelectedOption] = useState('todos');
 
+  const {userDataRes} = useSelector(({user}) => user);
   return (
     <Box
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        width: 280,
-        height: '100%',
         ...sxStyle,
       }}
     >
@@ -77,7 +77,7 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
           {data
             ? data.filter(
                 (notification) =>
-                  !(notification.seenBy && notification.seenBy.length),
+                  !(notification.seenBy && notification.seenBy.length && notification.seenBy.some(item => item == userDataRes.userId)),
               ).length
             : null}
         </Typography>
@@ -128,13 +128,13 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
         }}
       >
         {data && data.length !== 0 ? (
-          <List sx={{py: 0, mt: '2px'}}>
+          <List sx={{py: 0,}}>
             {data
               .filter((item) => {
                 if (selectedOption === 'todos') {
                   return true;
                 } else if (selectedOption === 'sin-leer') {
-                  return !(item.seenBy && item.seenBy.length > 0);
+                  return !(item.seenBy && item.seenBy.length > 0 && item.seenBy.some(item => item == userDataRes.userId));
                 }
                 return false;
               })

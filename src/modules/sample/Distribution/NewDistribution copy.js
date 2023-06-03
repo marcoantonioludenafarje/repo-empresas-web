@@ -30,7 +30,7 @@ import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-
+import SchoolIcon from '@mui/icons-material/School';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import DeliveryCard from './DeliveryCard';
@@ -775,7 +775,7 @@ const Distribution = () => {
               aria-label='open drawer'
               onClick={() => window.open('https://www.youtube.com/')}
             >
-              <YouTubeIcon fontSize='inherit' />
+              <SchoolIcon fontSize='inherit' />
             </IconButton>
           </Box>
         </Box>

@@ -30,6 +30,7 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import {red} from '@mui/material/colors';
 import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
+import SchoolIcon from '@mui/icons-material/School';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -508,7 +509,7 @@ const NewProvider = () => {
                           window.open('https://youtu.be/rh8-Gy7UmTs/')
                         }
                       >
-                        <YouTubeIcon fontSize='inherit' />
+                        <SchoolIcon fontSize='inherit' />
                       </IconButton>
                     </Box>
                   </Box>

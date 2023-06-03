@@ -42,7 +42,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-
+import SchoolIcon from '@mui/icons-material/School';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import {
   parseToGoodDate,
@@ -1500,7 +1500,7 @@ const GetReferralGuide = () => {
                           window.open('https://youtu.be/eGpwPJ6USVM/')
                         }
                       >
-                        <YouTubeIcon fontSize='inherit' />
+                        <SchoolIcon fontSize='inherit' />
                       </IconButton>
                     </Box>
                   </Box>

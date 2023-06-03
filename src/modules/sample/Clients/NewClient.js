@@ -30,6 +30,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import {red} from '@mui/material/colors';
 import {orange} from '@mui/material/colors';
+import SchoolIcon from '@mui/icons-material/School';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
@@ -841,7 +842,7 @@ const NewClient = (props) => {
                         aria-label='open drawer'
                         onClick={() => window.open('https://www.youtube.com/')}
                       >
-                        <YouTubeIcon fontSize='inherit' />
+                        <SchoolIcon fontSize='inherit' />
                       </IconButton>
                     </Box>
                   </Box>

@@ -5,11 +5,12 @@ import Box from '@mui/material/Box';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 
+import YouTubeIcon from '@mui/icons-material/YouTube';
 import IntlMessages from '../../utility/IntlMessages';
 import {LayoutType} from '../../../shared/constants/AppEnums';
 import {useLayoutContext} from '../../utility/AppContextProvider/LayoutContextProvider';
 import AppScrollbar from '../AppScrollbar';
-import {orange} from '@mui/material/colors';
+import {orange, red} from '@mui/material/colors';
 import ThemeColors from './ThemeColors';
 import ThemeFooter from './ThemeFooter';
 import ThemeModes from './ThemeModes';
@@ -33,7 +34,7 @@ const AppThemeSetting = () => {
       }}
       className='customizerOption'
     >
-      <Box
+      {/* <Box
         sx={{
           borderRadius: '30px 0 0 30px',
           mb: 1,
@@ -58,7 +59,7 @@ const AppThemeSetting = () => {
             }}
           />
         </IconButton>
-      </Box>
+      </Box> */}
 
       <Box
         sx={{
@@ -79,6 +80,33 @@ const AppThemeSetting = () => {
         <IconButton onClick={() => setColorSettingOpen(!isSettingOpen)}>
           <ColorLensIcon
             sx={{
+              color: 'white',
+            }}
+          />
+        </IconButton>
+      </Box>
+
+      <Box
+        sx={{
+          borderRadius: '30px 0 0 30px',
+          mt: 1,
+          backgroundColor: red[500],
+          '&:hover': {
+            backgroundColor: red[700],
+          },
+          '& button': {
+            borderRadius: '30px 0 0 30px',
+
+            '&:focus': {
+              borderRadius: '30px 0 0 30px',
+            },
+          },
+        }}
+      >
+        <IconButton onClick={() => window.open('https://www.youtube.com/@tunexo-facturacionelectronica')}>
+          <YouTubeIcon
+            sx={{
+              animation: 'rotation 2s infinite linear',
               color: 'white',
             }}
           />

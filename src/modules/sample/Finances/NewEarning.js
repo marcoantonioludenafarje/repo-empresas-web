@@ -9,7 +9,7 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
-
+import SchoolIcon from '@mui/icons-material/School';
 import {translateValue} from '../../../Utils/utils';
 import {
   Button,
@@ -220,7 +220,7 @@ const NewEarning = (props) => {
     if (typeIcon == '1') {
       return (
         <>
-          <YouTubeIcon fontSize='inherit' />
+          <SchoolIcon fontSize='inherit' />
         </>
       );
     } else if (typeIcon == '2') {

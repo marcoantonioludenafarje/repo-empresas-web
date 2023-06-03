@@ -116,8 +116,7 @@ const AppNotifications = ({
               <Badge
                 badgeContent={
                   getNotificationsRes.filter((item) => {
-                    console.log('notification in AppNotifications', item);
-                    return !(item.seenBy && item.seenBy.length);
+                    return !(item.seenBy && item.seenBy.length  && item.seenBy.some(item => item == userDataRes.userId));
                   }).length
                 }
                 color='primary'
