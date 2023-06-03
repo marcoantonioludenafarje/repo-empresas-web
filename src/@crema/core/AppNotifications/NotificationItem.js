@@ -19,6 +19,9 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import {updateNotificationToSeen, updateOneOfTheListNotification} from '../../../redux/actions/Notifications';
 import {useDispatch, useSelector} from 'react-redux';
+import {
+  convertToDate,
+} from '../../../Utils/utils';
 const NotificationItem = (props) => {
   const {item, closeNotifications} = props;
   const router = useRouter();
@@ -53,7 +56,7 @@ const NotificationItem = (props) => {
   };
   const {userDataRes} = useSelector(({user}) => user);
   const {getNotificationsRes} = useSelector(({notifications}) => notifications);
-  const convertToDate = (miliseconds) => {
+  /*const convertToDate = (miliseconds) => {
     const fecha = new Date(miliseconds);
     const fecha_actual = `${fecha.getDate()}/${
       fecha.getMonth() < 10 ? `0${fecha.getMonth()}` : fecha.getMonth()
@@ -61,7 +64,7 @@ const NotificationItem = (props) => {
       fecha.getSeconds() < 10 ? `0${fecha.getSeconds()}` : fecha.getSeconds()
     }`;
     return fecha_actual;
-  };
+  };*/
   return (
     <ListItem
       sx={{
@@ -71,10 +74,10 @@ const NotificationItem = (props) => {
         transition: 'box-shadow 0.3s',
         boxShadow: 'none',
         ':hover': {
-          boxShadow: item.url ? '0 0 5px rgba(0, 0, 0, 0.7)' : 'none',
+          boxShadow: item.url ? '0px 0 0 5px rgba(0, 0, 0, 0.7)' : 'none',
         },
         position: 'relative',
-        //backgroundColor: item.seenAt ? 'transparent' : 'lightgray',
+        backgroundColor: item.seenBy ? 'transparent' : 'lightblue',
       }}
       className='item-hover'
       onClick={() => {
@@ -98,6 +101,7 @@ const NotificationItem = (props) => {
         sx={{
           fontSize: 14,
           color: (theme) => theme.palette.text.secondary,
+          //backgroundColor: cyan[500],
         }}
       >
         {(!item.seenBy || !item.seenBy.some( item => item == userDataRes.userId)) && (

@@ -69,7 +69,7 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
       >
         <Typography component='h3' variant='h3'>
           <IntlMessages id='common.notifications' />:{' '}
-          {data ? data.length : null}
+          {data ? data.filter(notification => !notification.seenBy).length : null}
         </Typography>
         <IconButton
           sx={{

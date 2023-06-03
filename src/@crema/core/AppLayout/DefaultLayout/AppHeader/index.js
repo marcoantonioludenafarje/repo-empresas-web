@@ -46,6 +46,9 @@ import NewRequest from '../../../../../modules/sample/Request/NewRequest';
 import RequestIcon from '../../../../../assets/icon/requestIcon.svg';
 import NotificationEmpty from '../../../../../assets/icon/notificationEmpty.svg';
 import NotificationNonEmpty from '../../../../../assets/icon/notificationNonEmpty.svg';
+import NotificationOFF from '../../../../../assets/icon/notificationOFF.svg';
+import NotificationON from '../../../../../assets/icon/notificationON.svg';
+
 import {
   SUBSCRIPTION_STATE,
   UPDATE_NOTIFICATION_LIST,
@@ -617,7 +620,32 @@ const AppHeader = () => {
                 marginRight: -2,
               }}
             >
-              <IconButton
+
+            <IconButton
+                className='icon-btn'
+                sx={{
+                  mt: 3,
+                  '& svg': {
+                    height: 35,
+                    width: 35,
+                  },
+                  color: (theme) => theme.palette.text.secondary,
+                  border: 1,
+                  borderColor: 'transparent',
+                }}
+                onClick={() => {
+                  handleSubscribe();
+                }}
+                size='large'
+              >
+                {allowedNotifications ? 
+                  <NotificationON />
+                :
+                  <NotificationOFF />
+                }                  
+              </IconButton>
+
+              {/*<IconButton
                 sx={{
                   mt: 1,
                   '& svg': {
@@ -646,7 +674,7 @@ const AppHeader = () => {
                 >
                   Notificaciones {allowedNotifications ? 'ON' : 'OFF'}
                 </Button>
-              </IconButton>
+                </IconButton>*/}
             </Box>
           </Box>
         </Hidden>
