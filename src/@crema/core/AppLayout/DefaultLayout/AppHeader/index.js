@@ -265,7 +265,12 @@ const AppHeader = () => {
           if (subs) {
             subs
               .unsubscribe()
-              .then(() => dispatch({type: SUBSCRIPTION_STATE, payload: false}));
+              .then(() => {
+                swReg.unregister().then(() => {
+                  dispatch({ type: SUBSCRIPTION_STATE, payload: false });
+                });
+              }
+              );
           }
         });
       };
@@ -304,7 +309,7 @@ const AppHeader = () => {
   //         message: 'HOLA CUERPO',
   //         usuario: userDataRes.userId,
   //         saleId: '64e9bc0c-03e4-4a73-bda0-ebb2f0e67a28',
-  //         url: 'https//www.google.com',
+  //         url: 'http://localhost:3000/sample/home',
   //       },
   //     },
   //   })

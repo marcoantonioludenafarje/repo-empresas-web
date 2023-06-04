@@ -194,6 +194,7 @@ self.addEventListener('push', e => {
     };
 
     console.log("options push notification", options)
+    console.log("Nuevo ServiceWorker 2", options)
 
 
 
