@@ -77,7 +77,11 @@ const NotificationItem = (props) => {
         },
         position: 'relative',
         backgroundColor:
-          item.seenBy && item.seenBy.length > 0 && item.seenBy.some((item) => item == userDataRes.userId) ? 'transparent' : 'lightblue',
+          item.seenBy &&
+          item.seenBy.length > 0 &&
+          item.seenBy.some((item) => item == userDataRes.userId)
+            ? 'transparent'
+            : 'lightblue',
       }}
       className='item-hover'
       onClick={() => {

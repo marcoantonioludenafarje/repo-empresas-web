@@ -28,8 +28,8 @@ module.exports = withTM({
         new CopyWebpackPlugin({
           patterns: [
             {
-              from: path.join(__dirname, 'public/service-worker.js'),
-              to: path.join(__dirname, '.next', 'service-worker.js')
+              from: path.join(__dirname, 'public/service-worker2.js'),
+              to: path.join(__dirname, '.next', 'service-worker2.js')
             }
           ]
         })
@@ -46,8 +46,8 @@ module.exports = withTM({
       );
       // config.plugins.push(
       //   new WorkboxWebpackPlugin.InjectManifest({
-      //     swSrc: path.join(__dirname, 'public/service-worker.js'),
-      //     swDest: path.join(__dirname, '.next', 'service-worker.js'),
+      //     swSrc: path.join(__dirname, 'public/service-worker2.js'),
+      //     swDest: path.join(__dirname, '.next', 'service-worker2.js'),
       //     exclude: [/\.map$/, /_app/, /_document/, /_error/],
       //     maximumFileSizeToCacheInBytes: 1000000000000 // Ajusta este valor según tus necesidades
       //   })

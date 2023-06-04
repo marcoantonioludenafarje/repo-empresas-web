@@ -8,7 +8,7 @@ import Hidden from '@mui/material/Hidden';
 import IconButton from '@mui/material/IconButton';
 
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
-import { blue, grey } from '@mui/material/colors';
+import {blue, grey} from '@mui/material/colors';
 import axios from 'axios';
 
 import IntlMessages from '../../../../../@crema/utility/IntlMessages';
@@ -142,7 +142,7 @@ const AppHeader = () => {
       //   subscription: 'Aquí puedes pasar la información de la suscripción'
       // });
       let swReg;
-      var swLocation = '/service-worker.js';
+      var swLocation = '/service-worker2.js';
       const cancelarSuscripcion = () => {
         swReg.pushManager.getSubscription().then((subs) => {
           if (subs) {
@@ -259,18 +259,15 @@ const AppHeader = () => {
         });
     } else if ('serviceWorker' in navigator && allowedNotifications) {
       let swReg;
-      var swLocation = '/service-worker.js';
+      var swLocation = '/service-worker2.js';
       const cancelarSuscripcion = () => {
         swReg.pushManager.getSubscription().then((subs) => {
           if (subs) {
-            subs
-              .unsubscribe()
-              .then(() => {
-                swReg.unregister().then(() => {
-                  dispatch({ type: SUBSCRIPTION_STATE, payload: false });
-                });
-              }
-              );
+            subs.unsubscribe().then(() => {
+              swReg.unregister().then(() => {
+                dispatch({type: SUBSCRIPTION_STATE, payload: false});
+              });
+            });
           }
         });
       };
@@ -325,7 +322,7 @@ const AppHeader = () => {
     console.log('UseEffect de AppHeader');
 
     let swReg;
-    var swLocation = '/service-worker.js';
+    var swLocation = '/service-worker2.js';
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .getRegistration()
@@ -420,8 +417,11 @@ const AppHeader = () => {
 
   useEffect(() => {
     if (updateNotificationListRes) {
-      console.log('updateNotificationListRes de AppHeader', updateNotificationListRes);
-      forceUpdate()
+      console.log(
+        'updateNotificationListRes de AppHeader',
+        updateNotificationListRes,
+      );
+      forceUpdate();
     }
   }, [updateNotificationListRes]);
 
@@ -609,41 +609,37 @@ const AppHeader = () => {
             </Box>
           </Box>
         </Hidden> */}
-          <Box sx={{ml: 4}}>
-            <Box
+        <Box sx={{ml: 4}}>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              marginLeft: -2,
+              marginRight: -2,
+            }}
+          >
+            <IconButton
+              className='icon-btn'
               sx={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                marginLeft: -2,
-                marginRight: -2,
+                mt: 3,
+                '& svg': {
+                  height: 35,
+                  width: 35,
+                },
+                color: (theme) => theme.palette.text.secondary,
+                border: 1,
+                borderColor: 'transparent',
               }}
+              onClick={() => {
+                handleSubscribe();
+              }}
+              size='large'
             >
-              <IconButton
-                className='icon-btn'
-                sx={{
-                  mt: 3,
-                  '& svg': {
-                    height: 35,
-                    width: 35,
-                  },
-                  color: (theme) => theme.palette.text.secondary,
-                  border: 1,
-                  borderColor: 'transparent',
-                }}
-                onClick={() => {
-                  handleSubscribe();
-                }}
-                size='large'
-              >
-                {allowedNotifications ? (
-                  <NotificationON />
-                ) : (
-                  <NotificationOFF />
-                )}
-              </IconButton>
+              {allowedNotifications ? <NotificationON /> : <NotificationOFF />}
+            </IconButton>
 
-              {/*<IconButton
+            {/*<IconButton
                 sx={{
                   mt: 1,
                   '& svg': {
@@ -673,45 +669,41 @@ const AppHeader = () => {
                   Notificaciones {allowedNotifications ? 'ON' : 'OFF'}
                 </Button>
                 </IconButton>*/}
+          </Box>
+        </Box>
+        <Box sx={{ml: 4}}>
+          <Box
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              marginLeft: -2,
+              marginRight: -2,
+            }}
+          >
+            <Box sx={{}}>
+              <AppNotifications />
             </Box>
           </Box>
-        <Box sx={{ml: 4}}>
-            <Box
-              sx={{
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center',
-                marginLeft: -2,
-                marginRight: -2,
-              }}
-            >
-              <Box
-                sx={{
-                }}
-              >
-                <AppNotifications />
-              </Box>
-            </Box>
-          
-            <Menu
-              id='simple-menu'
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem>
-                <AppNotifications isMenu />
-              </MenuItem>
-              <MenuItem>
-                <AppMessages isMenu />
-              </MenuItem>
-              <MenuItem>Setting</MenuItem>
-            </Menu>
-            
+
+          <Menu
+            id='simple-menu'
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem>
+              <AppNotifications isMenu />
+            </MenuItem>
+            <MenuItem>
+              <AppMessages isMenu />
+            </MenuItem>
+            <MenuItem>Setting</MenuItem>
+          </Menu>
         </Box>
-        
-{/*         
+
+        {/*         
         <IconButton
           color="secondary"
           onClick={() => window.open('https://www.youtube.com/@tunexo-facturacionelectronica')}
@@ -781,9 +773,6 @@ const AppHeader = () => {
 
         {/* Para cambiar de idioma */}
         {/* <AppLngSwitcher iconOnly={true} tooltipPosition='bottom' /> */}
-
-        
-
       </Toolbar>
 
       <Dialog

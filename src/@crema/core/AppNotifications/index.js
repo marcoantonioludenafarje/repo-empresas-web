@@ -85,9 +85,9 @@ const AppNotifications = ({
     }
   }, [userDataRes]);
 
-  useEffect(()=>{
-    forceUpdate()
-  },[getNotificationsRes])
+  useEffect(() => {
+    forceUpdate();
+  }, [getNotificationsRes]);
   // A modificar
   //Esto se debe de mejorar añadiendo un index para merchantMasterId, por mientras es así
 
@@ -116,7 +116,11 @@ const AppNotifications = ({
               <Badge
                 badgeContent={
                   getNotificationsRes.filter((item) => {
-                    return !(item.seenBy && item.seenBy.length  && item.seenBy.some(item => item == userDataRes.userId));
+                    return !(
+                      item.seenBy &&
+                      item.seenBy.length &&
+                      item.seenBy.some((item) => item == userDataRes.userId)
+                    );
                   }).length
                 }
                 color='primary'

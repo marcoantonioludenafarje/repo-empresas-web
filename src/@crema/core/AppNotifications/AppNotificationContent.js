@@ -77,7 +77,13 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
           {data
             ? data.filter(
                 (notification) =>
-                  !(notification.seenBy && notification.seenBy.length && notification.seenBy.some(item => item == userDataRes.userId)),
+                  !(
+                    notification.seenBy &&
+                    notification.seenBy.length &&
+                    notification.seenBy.some(
+                      (item) => item == userDataRes.userId,
+                    )
+                  ),
               ).length
             : null}
         </Typography>
@@ -128,13 +134,17 @@ const AppNotificationContent = ({onClose, sxStyle, data}) => {
         }}
       >
         {data && data.length !== 0 ? (
-          <List sx={{py: 0,}}>
+          <List sx={{py: 0}}>
             {data
               .filter((item) => {
                 if (selectedOption === 'todos') {
                   return true;
                 } else if (selectedOption === 'sin-leer') {
-                  return !(item.seenBy && item.seenBy.length > 0 && item.seenBy.some(item => item == userDataRes.userId));
+                  return !(
+                    item.seenBy &&
+                    item.seenBy.length > 0 &&
+                    item.seenBy.some((item) => item == userDataRes.userId)
+                  );
                 }
                 return false;
               })

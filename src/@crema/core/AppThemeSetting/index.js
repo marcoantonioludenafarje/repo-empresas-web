@@ -103,7 +103,13 @@ const AppThemeSetting = () => {
           },
         }}
       >
-        <IconButton onClick={() => window.open('https://www.youtube.com/@tunexo-facturacionelectronica')}>
+        <IconButton
+          onClick={() =>
+            window.open(
+              'https://www.youtube.com/@tunexo-facturacionelectronica',
+            )
+          }
+        >
           <YouTubeIcon
             sx={{
               animation: 'rotation 2s infinite linear',

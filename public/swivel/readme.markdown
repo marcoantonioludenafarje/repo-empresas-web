@@ -27,7 +27,7 @@ if (!('serviceWorker' in navigator)) {
   return;
 }
 navigator.serviceWorker
-  .register('/service-worker.js')
+  .register('/service-worker2.js')
   .then(navigator.serviceWorker.ready)
   .then(function () {
     swivel.on('data', function handler (context, ...data) {
