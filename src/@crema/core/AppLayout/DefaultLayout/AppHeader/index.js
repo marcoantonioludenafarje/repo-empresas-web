@@ -32,7 +32,7 @@ import AppMessages from '../../../AppMessages';
 import AppNotifications from '../../../AppNotifications';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-//import ServiceWorkerListener from '../../../../../pages/serviceWorkerListener';
+import ServiceWorkerListener from '../../../../../pages/serviceWorkerListener';
 
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
@@ -67,6 +67,12 @@ import localforage from 'localforage';
 // }
 import {AppContext} from '../../../../../Utils/AppContext';
 import {useEffect} from 'react';
+
+//FORCE UPDATE
+const useForceUpdate = () => {
+  const [reload, setReload] = React.useState(0); // integer state
+  return () => setReload((value) => value + 1); // update the state to force render
+};
 const AppHeader = () => {
   const {messages} = useIntl();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -83,11 +89,12 @@ const AppHeader = () => {
     setAnchorEl(null);
   };
   const dispatch = useDispatch();
+  const forceUpdate = useForceUpdate();
   const {userDataRes} = useSelector(({user}) => user);
-  const {subscriptionStateRes} = useSelector(
+  const {subscriptionStateRes, updateNotificationListRes} = useSelector(
     ({notifications}) => notifications,
   );
-  const {updateNotificationListRes} = useContext(AppContext); // Ejemplo de uso del useContext con el contexto de la aplicación
+  //const {updateNotificationListRes} = useContext(AppContext); // Ejemplo de uso del useContext con el contexto de la aplicación
 
   console.log('subscriptionStateRes inicial', subscriptionStateRes);
   const requestAxios = (method, path, payload) => {
@@ -407,10 +414,11 @@ const AppHeader = () => {
   // }, [])
 
   useEffect(() => {
-    if (notificationUpdate) {
-      console.log('notificationUpdate de AppHeader', notificationUpdate);
+    if (updateNotificationListRes) {
+      console.log('updateNotificationListRes de AppHeader', updateNotificationListRes);
+      forceUpdate()
     }
-  }, [notificationUpdate]);
+  }, [updateNotificationListRes]);
 
   // useEffect(() => {
   //   // if ('serviceWorker' in navigator && !allowedNotifications) {
@@ -477,7 +485,7 @@ const AppHeader = () => {
       }}
       className='app-bar'
     >
-      {/* <ServiceWorkerListener /> */}
+      <ServiceWorkerListener />
       <Toolbar
         sx={{
           boxSizing: 'border-box',

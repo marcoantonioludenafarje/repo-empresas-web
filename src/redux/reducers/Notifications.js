@@ -34,7 +34,7 @@ const notificationsReducer = (state = INIT_STATE, action) => {
       console.log('data de reducer UPDATE_NOTIFICATION_LIST', action.payload);
       return {
         ...state,
-        updateNotificationListRes: action.payload,
+        getNotificationsRes: state.getNotificationsRes.concat(action.payload),
       };
     case UPDATE_NOTIFICATION_TO_SEEN:
       console.log(

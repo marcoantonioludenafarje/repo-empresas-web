@@ -209,28 +209,34 @@ self.addEventListener('push', e => {
     // });
 
 
-    // const clientsPromise = self.clients.matchAll().then(clients => {
-    //     console.log("encuentra clientes")
-    //     return Promise.all(
-    //       clients.map(client => {
-    //         console.log("va a enviar mensaje")
-    //         return client.postMessage({ type: 'notificationUpdate' });
-    //       })
-    //     );
-    //   });
-    // e.waitUntil(Promise.all([clientsPromise]));
+    const sendMessageToClient = () => {
+        return self.clients.matchAll().then(clients => {
+          console.log("Entrando a clientes")
+          const messagePromises = clients.map(client => {
+            console.log("Enviando mensaje a cliente")
+            return client.postMessage({ type: 'notificationUpdate', data: data });
+          });
+          return Promise.all(messagePromises);
+        });
+      };
+    
+      e.waitUntil(
+        sendMessageToClient().then(() => {
+          return self.registration.showNotification(title, options);
+        })
+      );
     // e.waitUntil(self.registration.showNotification( title, options));
     
 
-    e.waitUntil(self.registration.showNotification(title, options));
+    //e.waitUntil(self.registration.showNotification(title, options));
 
     // const clientsPromise = self.clients.matchAll().then(clients => {
     //     console.log("Encuentra clientes");
     //     const messagePromises = clients.map(client => {
-    //     console.log("Va a enviar mensaje");
-    //     const randomNumber =  Math.floor(Math.random() * (10000 - 1)) + 1;
-    //     //localStorage.setItem('updateNotification', randomNumber)
-    //     return client.postMessage({ type: 'notificationUpdate' });
+    //         console.log("Va a enviar mensaje");
+    //         //const randomNumber =  Math.floor(Math.random() * (10000 - 1)) + 1;
+    //         //localStorage.setItem('updateNotification', randomNumber)
+    //         return client.postMessage({ type: 'notificationUpdate' });
     //     });
     //     return Promise.all(messagePromises);
     // });
