@@ -62,7 +62,7 @@ const AppNotifications = ({
       let getUserDataPayload = {
         request: {
           payload: {
-            userId: JSON.parse(localStorage.getItem('payload')).sub,
+            userId: localStorage.getItem('payload') ? JSON.parse(localStorage.getItem('payload')).sub : '',
           },
         },
       };

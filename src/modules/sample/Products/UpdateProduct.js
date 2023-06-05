@@ -292,7 +292,7 @@ const UpdateProduct = (props) => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({products}) => products);
   console.log('errorMessage', errorMessage);
-  const {listProducts} = useSelector(({products}) => products);
+  const {listProducts, allProductsRes} = useSelector(({products}) => products);
   console.log('products123', listProducts);
   const {generalSuccess} = useSelector(({general}) => general);
   console.log('generalSuccess', generalSuccess);
@@ -478,13 +478,13 @@ const UpdateProduct = (props) => {
   }, [categories]);
 
   useEffect(() => {
-    if (listProducts != undefined) {
-      originalProduct = listProducts.find(
+    if (allProductsRes != undefined) {
+      originalProduct = allProductsRes.find(
         (obj) => obj.productId == query.productId,
       );
       console.log('originalProduct', originalProduct);
       originalProduct.inputsProduct.map((obj) => {
-        let subProduct = listProducts.find(
+        let subProduct = allProductsRes.find(
           (prod) => obj.productId == prod.productId,
         );
         selectedProducts.push({
@@ -499,7 +499,7 @@ const UpdateProduct = (props) => {
 
       console.log('selectedProducts', selectedProducts);
     }
-  }, [listProducts != undefined]);
+  }, [allProductsRes != undefined]);
   useEffect(() => {
     console.log('CUAL ES EL originalProduct', originalProduct);
     if (originalProduct && originalProduct.active) {
@@ -837,7 +837,7 @@ const UpdateProduct = (props) => {
   const allCountsRigth = (countProducts) => {
     let status = true;
     selectedProducts.map((obj) => {
-      let checkProduct = listProducts.find(
+      let checkProduct = allProductsRes.find(
         (prod) => obj.productId == prod.productId,
       );
       if (Number(obj.count) * Number(countProducts) > checkProduct.stock) {

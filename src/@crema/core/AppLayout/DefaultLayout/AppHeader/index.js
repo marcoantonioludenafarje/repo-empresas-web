@@ -524,7 +524,7 @@ const AppHeader = () => {
         </Box>
         {/* whatever is on the right side */}
         <Hidden smDown>
-          {JSON.parse(localStorage.getItem('payload')).profile ==
+          {localStorage.getItem('payload') && JSON.parse(localStorage.getItem('payload')).profile ==
             'INVENTORY_BUSINESS_ADMIN' &&
           userDataRes &&
           userDataRes.merchantSelected.isEcommerceEnabled == true ? (
@@ -734,7 +734,7 @@ const AppHeader = () => {
           )}
         </IconButton> */}
         <Hidden smDown>
-          {JSON.parse(localStorage.getItem('payload')).profile ==
+          {localStorage.getItem('payload') && JSON.parse(localStorage.getItem('payload')).profile ==
             'INVENTORY_BUSINESS_ADMIN' &&
           userDataRes &&
           userDataRes.merchantSelected.firstPlanDefault == true ? (
