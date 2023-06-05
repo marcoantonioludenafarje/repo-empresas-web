@@ -300,7 +300,7 @@ self.addEventListener('notificationclick', function(event) {
 
     const action = event.action;
     // Aquí también puedes redireccionar a una URL específica si es necesario
-    let url = event.notification.data.notification.url;
+    let url = event.notification.data.url;
     // if (action === 'output-action') {
         // Acción específica para Thor seleccionada
         // Agrega la lógica que deseas ejecutar para esa acción
