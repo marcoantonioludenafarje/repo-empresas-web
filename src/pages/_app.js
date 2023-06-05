@@ -24,7 +24,7 @@ const clientSideEmotionCache = createEmotionCache();
 export default function MyApp(props) {
   const {Component, emotionCache = clientSideEmotionCache, pageProps} = props;
   const store = useStore(pageProps.initialReduxState);
-  var swLocation = '/service-worker2.js';
+  var swLocation = '/service-worker3.js';
   var swReg;
   useEffect(() => {
     if ('serviceWorker' in navigator && typeof window !== 'undefined') {

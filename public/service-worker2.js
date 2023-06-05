@@ -165,33 +165,34 @@ self.addEventListener('push', e => {
     console.log("El push se ha parseado", data);
 
 
-    const title = data.title;
-    const url = data.url;
-    const urlObject = new URL(url);
-    const relativeURL = urlObject.pathname + urlObject.search;
-    const options = {
-        body: data.message,
-        // icon: 'img/icons/icon-72x72.png',
-        tag: 'notification-tag',
-        icon: `favicon.ico`,
-        badge: 'favicon.ico',
-        image: relativeURL || 'https://d2moc5ro519bc0.cloudfront.net/merchant/ae1a9ea0036542d889ebd0d062474400/logo/logo_png.png',
-        vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600],
-        openUrl: data.url,
-        data: {
-            //url: data.url,
-            url: `${relativeURL}` || `/sample/outputs/table?movementHeaderId=${data.saleId}`,
-            //url: "https://www.google.com/",
-            id: data.userCreatedAt
-        },
-        actions: [
-            {
-                action: 'output-action',
-                title: 'Ir a Salida',
-                //icon: 'favicon.ico',
-            }
-        ]
-    };
+    const title = data.notification.title;
+    // const url = data.url;
+    // const urlObject = new URL(url);
+    // const relativeURL = urlObject.pathname + urlObject.search;
+    // const options = {
+    //     body: data.message,
+    //     // icon: 'img/icons/icon-72x72.png',
+    //     tag: 'notification-tag',
+    //     icon: `favicon.ico`,
+    //     badge: 'favicon.ico',
+    //     image: relativeURL || 'https://d2moc5ro519bc0.cloudfront.net/merchant/ae1a9ea0036542d889ebd0d062474400/logo/logo_png.png',
+    //     vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600],
+    //     openUrl: data.url,
+    //     data: {
+    //         //url: data.url,
+    //         url: `${relativeURL}` || `/sample/outputs/table?movementHeaderId=${data.saleId}`,
+    //         //url: "https://www.google.com/",
+    //         id: data.userCreatedAt
+    //     },
+    //     actions: [
+    //         {
+    //             action: 'output-action',
+    //             title: 'Ir a Salida',
+    //             //icon: 'favicon.ico',
+    //         }
+    //     ]
+    // };
+    const options = data.options
 
     console.log("options push notification", options)
     console.log("Nuevo ServiceWorker 2", options)
@@ -215,7 +216,7 @@ self.addEventListener('push', e => {
           console.log("Entrando a clientes")
           const messagePromises = clients.map(client => {
             console.log("Enviando mensaje a cliente")
-            return client.postMessage({ type: 'notificationUpdate', data: data });
+            return client.postMessage({ type: 'notificationUpdate', data: data.notification });
           });
           return Promise.all(messagePromises);
         });
@@ -299,7 +300,7 @@ self.addEventListener('notificationclick', function(event) {
 
     const action = event.action;
     // Aquí también puedes redireccionar a una URL específica si es necesario
-    let url = event.notification.data.url;
+    let url = event.notification.data.notification.url;
     if (action === 'output-action') {
         // Acción específica para Thor seleccionada
         // Agrega la lógica que deseas ejecutar para esa acción

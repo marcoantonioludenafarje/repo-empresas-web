@@ -142,7 +142,7 @@ const AppHeader = () => {
       //   subscription: 'Aquí puedes pasar la información de la suscripción'
       // });
       let swReg;
-      var swLocation = '/service-worker2.js';
+      var swLocation = '/service-worker3.js';
       const cancelarSuscripcion = () => {
         swReg.pushManager.getSubscription().then((subs) => {
           if (subs) {
@@ -259,7 +259,7 @@ const AppHeader = () => {
         });
     } else if ('serviceWorker' in navigator && allowedNotifications) {
       let swReg;
-      var swLocation = '/service-worker2.js';
+      var swLocation = '/service-worker3.js';
       const cancelarSuscripcion = () => {
         swReg.pushManager.getSubscription().then((subs) => {
           if (subs) {
@@ -322,7 +322,7 @@ const AppHeader = () => {
     console.log('UseEffect de AppHeader');
 
     let swReg;
-    var swLocation = '/service-worker2.js';
+    var swLocation = '/service-worker3.js';
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .getRegistration()
