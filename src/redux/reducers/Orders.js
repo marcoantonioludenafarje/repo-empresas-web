@@ -6,6 +6,7 @@ import {
   FETCH_ERROR,
   UPDATE_ORDER,
   CHANGE_STATUS_ORDER,
+  RESET_ORDERS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -55,6 +56,11 @@ const ordersReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_ORDERS:
+      return {
+        list: [],
+        listOrders: [],
       };
     default:
       return state;

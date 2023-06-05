@@ -37,6 +37,7 @@ import {
   UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST,
   GET_INPUT_PAGE_LISTGUIDE,
   GET_OUTPUT_PAGE_LISTGUIDE,
+  RESET_MOVEMENTS
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -629,7 +630,29 @@ const movementsReducer = (state = INIT_STATE, action) => {
     //     predefinedRoutes_PageListPredefinedRoutes,
     //     lastEvaluatedKeys_PageListPredefinedRoutes
     //   };
-
+    case RESET_MOVEMENTS:
+      return {
+        list: [],
+        getMovementsRes: [],
+        predefinedRoutes_PageListPredefinedRoutes: [],
+        lastEvaluatedKeys_PageListPredefinedRoutes: null,
+        predefinedRoutes_PageNewDistribution: [],
+        lastEvaluatedKeys_PageNewDistribution: null,
+        selectedRoute_PageNewDistribution: null,
+        selectedRoute_PageListPredefinedRoutes: null,
+        referralGuideItems_pageListGuide: [],
+        referralGuideLastEvalutedKey_pageListGuide: null,
+        billItems_pageListBill: [],
+        billLastEvalutedKey_pageListBill: null,
+        receiptItems_pageListReceipt: [],
+        receiptLastEvalutedKey_pageListReceipt: null,
+        noteItems_pageListNote: [],
+        noteLastEvalutedKey_pageListNote: null,
+        inputItems_pageListInput: [],
+        inputLastEvaluatedKey_pageListInput: null,
+        outputItems_pageListOutput: [],
+        outputLastEvaluatedKey_pageListOutput: null,
+      };
     default:
       return state;
   }

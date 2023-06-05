@@ -10,6 +10,7 @@ import {
   LIST_USER,
   UPDATE_USER,
   GET_SHOP_PRODUCTS,
+  RESET_USER,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -84,6 +85,11 @@ const userReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         updateUserRes: action.payload,
+      };
+    case RESET_USER:
+      return {
+        list: [],
+        listProducts: [],
       };
     default:
       return state;

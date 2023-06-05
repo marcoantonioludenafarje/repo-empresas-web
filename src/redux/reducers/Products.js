@@ -8,6 +8,7 @@ import {
   ALL_PRODUCTS,
   FETCH_SUCCESS,
   FETCH_ERROR,
+  RESET_PRODUCTS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -101,6 +102,13 @@ const productsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_PRODUCTS:
+      return {
+        list: [],
+        listProducts: [],
+        allProductsRes: [],
+        productsLastEvaluatedKey_pageListProducts: null,
       };
     default:
       return state;

@@ -15,7 +15,7 @@ const withData = (ComposedComponent) => (props) => {
   const {userDataRes} = useSelector(({user}) => user);
   // //Si no está que llame
   useEffect(() => {
-    if (!userDataRes) {
+    if (!userDataRes && localStorage.getItem('payload')) {
       console.log('Esto se ejecuta with data?');
 
       const toGetUserData = (payload) => {

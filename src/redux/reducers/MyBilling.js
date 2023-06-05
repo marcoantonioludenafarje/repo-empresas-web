@@ -2,6 +2,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_CURRENT_MOVEMENTS_DOCUMENTS,
+  RESET_MYBILLING
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -30,6 +31,10 @@ const dataReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_MYBILLING:
+      return {
+        list: [],
       };
     default:
       return state;

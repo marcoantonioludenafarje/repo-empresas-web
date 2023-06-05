@@ -29,6 +29,7 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
   GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
   UPDATE_CATALOGS,
+  RESET_GENERAL,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -244,6 +245,10 @@ const generalReducer = (state = INIT_STATE, action) => {
         ...state,
         updateCatalogsRes: action.payload,
       };
+    case RESET_GENERAL:
+      return {
+        list: [],
+      };      
     default:
       return state;
   }

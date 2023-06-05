@@ -7,6 +7,7 @@ import {
   CHANGE_NAME_OBJECT,
   DOWNLOAD_ZIP,
   UPLOAD_FILE,
+  RESET_FILEEXPLORER,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -62,6 +63,10 @@ const dataReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_FILEEXPLORER:
+      return {
+        list: [],
       };
     default:
       return state;

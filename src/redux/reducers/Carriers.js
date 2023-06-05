@@ -5,10 +5,10 @@ import {
   NEW_CARRIER,
   DELETE_CARRIER,
   UPDATE_CARRIER,
+  RESET_CARRIERS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
-  list: [],
   getCarriersRes: [],
   carriersLastEvaluatedKey_pageListCarriers: null,
 };
@@ -85,6 +85,12 @@ const carriersReducer = (state = INIT_STATE, action) => {
         ...state,
         errorMessage: action.payload,
       };
+    case RESET_CARRIERS:
+      console.log('reseteando Reducer de Carriers');
+      return {
+        getCarriersRes: [],
+        carriersLastEvaluatedKey_pageListCarriers: null,
+      }
     default:
       return state;
   }

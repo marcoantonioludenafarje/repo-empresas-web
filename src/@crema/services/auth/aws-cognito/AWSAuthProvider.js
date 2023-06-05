@@ -25,6 +25,22 @@ import {
   GET_DATA_BUSINESS,
   SET_JWT_TOKEN,
   GET_ROL_USER,
+  RESET_CARRIERS,
+  RESET_CLIENTS,
+  RESET_COMMON,
+  RESET_DRIVERS,
+  RESET_FILEEXPLORER,
+  RESET_FINANCES,
+  RESET_GENERAL,
+  RESET_LOCATIONS,
+  RESET_MOVEMENTS,
+  RESET_MYBILLING,
+  RESET_NOTIFICATIONS,
+  RESET_ORDERS,
+  RESET_PRODUCTS,
+  RESET_PROVIDERS,
+  RESET_REQUESTS,
+  RESET_USER,
 } from '../../../../shared/constants/ActionTypes';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAllProducts} from '../../../../redux/actions/Products';
@@ -493,21 +509,38 @@ const AwsAuthProvider = ({children}) => {
     console.log('Cerrando sesión');
     try {
       await auth.signOut();
-      localStorage.setItem('routesAndPrivileges', false);
-      localStorage.setItem('routesRolGeneral2', false);
-      getRolUserRes = false;
-      dispatch({type: USER_ATTRIBUTES, payload: undefined});
-      dispatch({type: GET_USER_DATA, payload: undefined});
-      dispatch({type: GET_DATA_BUSINESS, payload: undefined});
-      dispatch({type: GET_ROL_USER, payload: undefined});
-      dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
-      dispatch({type: GET_USER, payload: undefined});
+      localStorage.removeItem('routesAndPrivileges');
+      localStorage.removeItem('routesRolGeneral2');
+      localStorage.removeItem('jwt');
+      localStorage.removeItem('payload');
+      localStorage.removeItem('updateNotificationList');
+      localStorage.removeItem('updateNotification');
+      localStorage.removeItem('pathsBack');
+      localStorage.removeItem('updateNotification');
+      
+      dispatch({type: RESET_CARRIERS});
+      dispatch({type: RESET_CLIENTS});
+      dispatch({type: RESET_COMMON});
+      dispatch({type: RESET_DRIVERS});
+      dispatch({type: RESET_FILEEXPLORER});
+      dispatch({type: RESET_FINANCES});
+      dispatch({type: RESET_GENERAL});
+      dispatch({type: RESET_LOCATIONS});
+      dispatch({type: RESET_MOVEMENTS});
+      dispatch({type: RESET_MYBILLING});
+      dispatch({type: RESET_NOTIFICATIONS});
+      dispatch({type: RESET_ORDERS});
+      dispatch({type: RESET_PRODUCTS});
+      dispatch({type: RESET_PROVIDERS});
+      dispatch({type: RESET_REQUESTS});
+      dispatch({type: RESET_USER});
       setAwsCognitoData({
         user: null,
         isLoading: false,
         isAuthenticated: false,
       });
       console.log('Cerrando sesión');
+      //history.reload(); 
     } catch (error) {
       setAwsCognitoData({
         user: null,

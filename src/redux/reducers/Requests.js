@@ -2,6 +2,7 @@ import {
   NEW_REQUEST,
   FETCH_SUCCESS,
   FETCH_ERROR,
+  RESET_REQUESTS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -28,6 +29,11 @@ const requestsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_REQUESTS:
+      return {
+        list: [],
+        listRequests: [],
       };
     default:
       return state;

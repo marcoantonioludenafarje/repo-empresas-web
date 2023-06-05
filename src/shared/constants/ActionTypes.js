@@ -334,3 +334,22 @@ export const SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION =
   'set_list_route_predefined_____page_new_distribution';
 export const SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION =
   'set_deliveries_in_route_predefined_____page_new_distribution';
+
+//RESETS
+export const RESET_CLIENTS = 'reset_clients';
+export const RESET_CARRIERS = 'reset_carriers';
+export const RESET_COMMON = 'reset_common';
+export const RESET_DRIVERS = 'reset_drivers';
+export const RESET_FILEEXPLORER = 'reset_fileexplorer';
+export const RESET_FINANCES = 'reset_finances';
+export const RESET_GENERAL = 'reset_general';
+export const RESET_LOCATIONS = 'reset_locations';
+export const RESET_MOVEMENTS = 'reset_movements';
+export const RESET_MYBILLING = 'reset_mybilling';
+export const RESET_NOTIFICATIONS = 'reset_notifications';
+export const RESET_ORDERS = 'reset_orders';
+export const RESET_PRODUCTS = 'reset_products';
+export const RESET_PROVIDERS = 'reset_providers';
+export const RESET_REQUESTS = 'reset_requests';
+export const RESET_USER = 'reset_user';
+export const ROUTES_ROL_REDUCER = 'routes_rol_reducer';

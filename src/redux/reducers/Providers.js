@@ -5,6 +5,7 @@ import {
   FETCH_ERROR,
   DELETE_PROVIDER,
   UPDATE_PROVIDER,
+  RESET_PROVIDERS
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -85,6 +86,12 @@ const providersReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_PROVIDERS:
+      return {
+        list: [],
+        listProviders: [],
+        providersLastEvalutedKey_pageListProviders: null,
       };
     default:
       return state;

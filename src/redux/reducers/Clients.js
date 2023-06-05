@@ -6,6 +6,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   UPDATE_CLIENT,
+  RESET_CLIENTS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -101,6 +102,16 @@ const clientsReducer = (state = INIT_STATE, action) => {
         process: action.payload.process,
         errorMessage: action.payload.message,
       };
+    case RESET_CLIENTS:
+      return {
+        loading: false,
+        process: '',
+        successMessage: '',
+        errorMessage: '',
+        list: [],
+        listClients: [],
+        clientsLastEvalutedKey_pageListClients: null,
+      }
     default:
       return state;
   }

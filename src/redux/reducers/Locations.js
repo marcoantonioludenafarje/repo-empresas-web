@@ -5,6 +5,7 @@ import {
   NEW_LOCATION,
   DELETE_LOCATION,
   UPDATE_LOCATION,
+  RESET_LOCATIONS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -84,6 +85,12 @@ const locationsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_LOCATIONS:
+      return {
+        list: [],
+        getLocationsRes: [],
+        locationsLastEvaluatedKey_pageListLocations: null,
       };
     default:
       return state;

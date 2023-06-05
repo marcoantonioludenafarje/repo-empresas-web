@@ -6,6 +6,7 @@ import {
   UPDATE_NOTIFICATION_LIST,
   UPDATE_NOTIFICATION_TO_SEEN,
   UPDATE_ONE_OF_THE_LIST_NOTIFICATION,
+  RESET_NOTIFICATIONS
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -78,6 +79,14 @@ const notificationsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_NOTIFICATIONS:
+      return {
+        list: [],
+        getNotificationsRes: [],
+        subscriptionStateRes: false,
+        updateNotificationListRes: false,
+        updateNotificationToSeenRes: '',
       };
     default:
       return state;

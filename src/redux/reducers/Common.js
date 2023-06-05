@@ -6,6 +6,7 @@ import {
   SHOW_MESSAGE,
   TOGGLE_APP_DRAWER,
   UPDATING_CONTENT,
+  RESET_COMMON,
 } from 'shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -65,6 +66,15 @@ const commonReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         isAppDrawerOpen: !state.isAppDrawerOpen,
+      };
+    }
+    case RESET_COMMON: {
+      return {
+        error: '',
+        loading: false,
+        isAppDrawerOpen: false,
+        updatingContent: false,
+        message: '',
       };
     }
     default:

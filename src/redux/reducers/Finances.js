@@ -9,6 +9,7 @@ import {
   GET_FINANCES_FOR_RESULT_STATE,
   EXPORT_EXCEL_MOVEMENTS_DETAILS,
   EXPORT_EXCEL_MOVEMENTS_SUMMARY,
+  RESET_FINANCES,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -117,6 +118,12 @@ const financesReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_FINANCES:
+      return {
+        list: [],
+        allFinancesRes: [],
+        financesLastEvaluatedKey_pageListFinances: null,
       };
     default:
       return state;

@@ -418,7 +418,7 @@ const NewClient = (props) => {
                     ['givenName', 'lastName', 'secondLastName'].includes(
                       value.target.name,
                     ) &&
-                    ['DNI', 'CE'].includes(values.documentType)
+                    ['DNI', 'CE', 'PAS'].includes(values.documentType)
                   ) {
                     console.log('Aca es value', value);
                     console.log('Esto es el nuevo name', value.target.name);
@@ -478,6 +478,9 @@ const NewClient = (props) => {
                         </MenuItem>
                         <MenuItem value='CE' style={{fontWeight: 200}}>
                           CE
+                        </MenuItem>
+                        <MenuItem value='PAS' style={{fontWeight: 200}}>
+                          PAS
                         </MenuItem>
                       </Select>
                     </FormControl>

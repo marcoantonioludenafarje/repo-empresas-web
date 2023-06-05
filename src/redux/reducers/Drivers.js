@@ -5,6 +5,7 @@ import {
   NEW_DRIVER,
   DELETE_DRIVER,
   UPDATE_DRIVER,
+  RESET_DRIVERS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -84,6 +85,12 @@ const driversReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case RESET_DRIVERS:
+      return {
+        list: [],
+        getDriversRes: [],
+        driversLastEvaluatedKey_pageListDrivers: null,
       };
     default:
       return state;

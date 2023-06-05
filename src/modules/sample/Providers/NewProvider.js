@@ -306,6 +306,9 @@ const NewProvider = () => {
                         <MenuItem value='CE' style={{fontWeight: 200}}>
                           CE
                         </MenuItem>
+                        <MenuItem value='PAS' style={{fontWeight: 200}}>
+                          PAS
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
