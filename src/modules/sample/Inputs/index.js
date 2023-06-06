@@ -288,7 +288,13 @@ const InputsTable = (props) => {
 
       if (Object.keys(query).length !== 0) {
         console.log('Query con datos', query);
-        listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+        if (query.movementHeaderId)
+          listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+        if (query.movementDetailId){
+          listPayload.request.payload.movementDetailId = query.movementDetailId;
+          listPayload.request.payload.movementTypeMerchantId = query.movementTypeMerchantId;
+          listPayload.request.payload.initialTime = Number(query.createdAt);
+        }
       }
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
@@ -323,11 +329,20 @@ const InputsTable = (props) => {
         userDataRes.merchantSelected.merchantId;
       if (Object.keys(query).length !== 0) {
         console.log('Query con datos', query);
-        listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+        if (query.movementHeaderId)
+          listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+        if (query.movementDetailId){
+          listPayload.request.payload.movementDetailId = query.movementDetailId;
+          listPayload.request.payload.movementTypeMerchantId = query.movementTypeMerchantId;
+          listPayload.request.payload.initialTime = Number(query.createdAt);
+        }
       }
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
+        listPayload.request.payload.movementDetailId = null;
+        listPayload.request.payload.movementTypeMerchantId = null;
+        listPayload.request.payload.initialTime = null;
       }
     }
   }, [actualDateRes]);

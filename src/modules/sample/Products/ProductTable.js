@@ -305,6 +305,7 @@ const ProductTable = (arrayObjs, props) => {
         request: {
           payload: {
             businessProductCode: '',
+            productSearch: '',
             description: '',
             merchantId: userDataRes.merchantSelected.merchantId,
             LastEvaluatedKey: null,
@@ -373,13 +374,13 @@ const ProductTable = (arrayObjs, props) => {
 
   //BUSQUEDA
   const handleSearchValues = (event) => {
-    console.log('Evento', event);
     if (event.target.name == 'codeToSearch') {
       if (event.target.value == '') {
         //listPayload.request.payload.businessProductCode = null;
         setBusinessProductCode(null);
       } else {
         //listPayload.request.payload.businessProductCode = event.target.value;
+        event.target.value = event.target.value.toUpperCase();
         setBusinessProductCode(event.target.value.toString());
       }
     }
@@ -399,7 +400,8 @@ const ProductTable = (arrayObjs, props) => {
     let listPayload = {
       request: {
         payload: {
-          businessProductCode: businessProductCode,
+          businessProductCode: '',
+          productSearch: businessProductCode,
           description: descriptionProduct,
           merchantId: userDataRes.merchantSelected.merchantId,
           LastEvaluatedKey: null,
@@ -581,6 +583,7 @@ const ProductTable = (arrayObjs, props) => {
         request: {
           payload: {
             businessProductCode: '',
+            productSearch: '',
             description: '',
             merchantId: userDataRes.merchantSelected.merchantId,
             LastEvaluatedKey: null,

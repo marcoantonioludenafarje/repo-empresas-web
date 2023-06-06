@@ -184,6 +184,23 @@ const ProductMovementTable = (props) => {
     return fecha_actual;
   };
 
+  const showObject = (obj, type) => {
+    if (type == 'OUTPUT') {
+      console.log('cod',obj);
+      Router.push({
+        pathname: '/sample/outputs/table',
+        query: {movementDetailId:obj.movementDetailId, movementTypeMerchantId:obj.movementTypeMerchantId, createdAt:obj.createdAt},
+      });
+    } 
+    if (type == 'INPUT') {
+      console.log('cod',obj);
+      Router.push({
+        pathname: '/sample/inputs/table',
+        query: {movementDetailId:obj.movementDetailId, movementTypeMerchantId:obj.movementTypeMerchantId, createdAt:obj.createdAt},
+      });
+    }
+  };
+
   const statusObject = (obj, exist, type, mintype, cod) => {
     if (obj.movementSubType == 'sales') {
       if (exist) {
@@ -193,7 +210,7 @@ const ProductMovementTable = (props) => {
               variant='secondary'
               sx={{fontSize: '1em'}}
               /* disabled={type == 'referralGuide'} */
-              onClick={() => showObject(obj.movementHeaderId, type)}
+              onClick={() => showObject(obj/*.movementHeaderId*/, type)}
             >
               {`${mintype} - ${cod}`}
             </Button>
@@ -229,7 +246,7 @@ const ProductMovementTable = (props) => {
                 variant='secondary'
                 sx={{fontSize: '1em'}}
                 /* disabled={type == 'referralGuide'} */
-                onClick={() => showObject(obj.movementHeaderId, type)}
+                onClick={() => showObject(obj/*.movementHeaderId*/, type)}
               >
                 {serialDocument}
               </Button>
@@ -247,17 +264,19 @@ const ProductMovementTable = (props) => {
                 NRO. {obj.codMovement.split('-')[1]}
               </Button>
             );
-          } else {
+          } else if (type == 'OUTPUT') {
             return (
               <Button
                 variant='secondary'
                 sx={{fontSize: '1em'}}
                 /* disabled={type == 'referralGuide'} */
-                onClick={() => showObject(obj.movementHeaderId, type)}
+                onClick={() => showObject(obj/*.movementDetailId*/, type)}
               >
                 Generado
               </Button>
             );
+          } else {
+            return 'No aplica';
           }
         }
       } else {
@@ -265,12 +284,23 @@ const ProductMovementTable = (props) => {
           <Button
             variant='secondary'
             sx={{fontSize: '1em'}}
-            onClick={() => generateObject(obj.movementHeaderId, type)}
+            onClick={() => generateObject(obj/*.movementHeaderId*/, type)}
           >
             No Generado
           </Button>
         );
       }
+    } else if (type == 'INPUT') {
+      return (
+        <Button
+          variant='secondary'
+          sx={{fontSize: '1em'}}
+          /* disabled={type == 'referralGuide'} */
+          onClick={() => showObject(obj/*.movementDetailId*/, type)}
+        >
+          Generado
+        </Button>
+      );
     } else {
       return 'No aplica';
     }
@@ -615,7 +645,7 @@ const ProductMovementTable = (props) => {
                       {/* tipo */}
                       <TableCell>
                         {/* {translateValue('CONTABLE_MOVEMENTS', obj.movementType)} */}
-                        {statusObject(obj, obj.movementType, 'input')}
+                        {statusObject(obj, true, obj.movementType)}
                       </TableCell>
                       <TableCell>
                         {translateValue('MOVEMENT_TYPES', obj.movementSubType)}

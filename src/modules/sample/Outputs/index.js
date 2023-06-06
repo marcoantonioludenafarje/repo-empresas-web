@@ -390,7 +390,13 @@ const OutputsTable = (props) => {
 
       if (Object.keys(query).length !== 0) {
         console.log('Query con datos', query);
-        listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+        if (query.movementHeaderId)
+          listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+        if (query.movementDetailId){
+          listPayload.request.payload.movementDetailId = query.movementDetailId;
+          listPayload.request.payload.movementTypeMerchantId = query.movementTypeMerchantId;
+          listPayload.request.payload.initialTime = Number(query.createdAt);
+        }          
       }
 
       searchPrivilege('outputsTable')
@@ -400,6 +406,9 @@ const OutputsTable = (props) => {
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
+        listPayload.request.payload.movementDetailId = null;
+        listPayload.request.payload.movementTypeMerchantId = null;
+        listPayload.request.payload.initialTime = null;
       }
       getBusinessParameter(businessParameterPayload);
       getGlobalParameter(globalParameterPayload);
@@ -416,6 +425,7 @@ const OutputsTable = (props) => {
       );
     }
   }, [userDataRes, getRolUserRes, query]);
+
   useEffect(() => {
     setValue2(Date.now());
 
@@ -444,7 +454,13 @@ const OutputsTable = (props) => {
         userDataRes.merchantSelected.merchantId;
       if (Object.keys(query).length !== 0) {
         console.log('Query con datos', query);
-        listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+        if (query.movementHeaderId)
+          listPayload.request.payload.movementHeaderId = query.movementHeaderId;
+        if (query.movementDetailId){
+          listPayload.request.payload.movementDetailId = query.movementDetailId;
+          listPayload.request.payload.movementTypeMerchantId = query.movementTypeMerchantId;
+          listPayload.request.payload.initialTime = Number(query.createdAt);
+        }  
       }
       searchPrivilege('outputsTable')
         ? (listPayload.request.payload.userCreated = null)
