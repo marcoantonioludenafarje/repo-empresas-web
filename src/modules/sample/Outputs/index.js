@@ -789,6 +789,25 @@ const OutputsTable = (props) => {
       );
       obj.bill1 = statusTextObject(obj, obj.existBill, 'bill');
       obj.income1 = statusTextObject(obj, obj.existIncome, 'income');
+
+      // Crear la cadena de texto para productos
+      let productsText = "";
+
+      obj.descriptionProductsInfo.forEach((producto, index) => {
+        const igv = producto.productIgv || 0.18;
+        const subtotal = Number((producto.quantityMovement * producto.priceBusinessMoneyWithIgv * (1 + igv)).toFixed(2));
+        
+        const productText = `Descripción: ${producto.description}| Cantidad: ${producto.quantityMovement}| Subtotal: ${subtotal}| Categoría: ${producto.category}`;
+        
+        if (index > 0) {
+          productsText += "~";
+        }
+        
+        productsText += productText;
+      });
+
+      obj.descriptionProducts = productsText;
+
       console.log('statusObject1', obj);
 
       listResult.push(
