@@ -459,6 +459,31 @@ export const listDistributions = (payload) => {
   };
 };
 
+export const getOneDistribution = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    request(
+      'get',
+      `/distribution/deliveryDistribution/${payload.deliveryDistributionId}`,
+      {
+      body: payload,
+      }
+    )
+      .then((data) => {
+        console.log('getOneDistribution resultado', data);
+        dispatch({
+          type: LIST_DISTRIBUTION,
+          payload: [data.data],
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('getOneDistribution error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
 export const getDistribution = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});

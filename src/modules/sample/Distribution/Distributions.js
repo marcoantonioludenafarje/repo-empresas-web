@@ -20,6 +20,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Typography,
 } from '@mui/material';
 
 import EditLocationOutlinedIcon from '@mui/icons-material/EditLocationOutlined';
@@ -28,6 +29,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import DataSaverOffOutlinedIcon from '@mui/icons-material/DataSaverOffOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import PendingIcon from '@mui/icons-material/Pending';
@@ -46,6 +48,7 @@ import Router, {useRouter} from 'next/router';
 import {
   listDistributions,
   getDistribution,
+  getOneDistribution,
 } from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -120,13 +123,20 @@ const FinancesTable = (props) => {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: LIST_ROUTE, payload: undefined});
-
-      listDistributionsPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-
-      toListDistributions(listDistributionsPayload);
+      if(query.id){
+        toGetOneDistribution({
+          deliveryDistributionId: query.id,
+          //indexDistributionSelected: indexDistributionSelected,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        });
+      } else {
+        listDistributionsPayload.request.payload.merchantId =
+          userDataRes.merchantSelected.merchantId;
+  
+        toListDistributions(listDistributionsPayload);
+      }
     }
-  }, [userDataRes]);
+  }, [userDataRes,query]);
 
   const compare = (a, b) => {
     if (a.createdAt < b.createdAt) {
@@ -207,6 +217,9 @@ const FinancesTable = (props) => {
     dispatch(getDistribution(payload));
   };
 
+  const toGetOneDistribution = (payload) => {
+    dispatch(getOneDistribution(payload))
+  }
   const handleClickFather = (deliveryDistributionId, index, event) => {
     setAnchorEl(event.currentTarget);
     setDistributionSelected(deliveryDistributionId);
@@ -410,12 +423,12 @@ const FinancesTable = (props) => {
       >
         {typeDialog == 'viewDetail' ? (
           <>
-            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-              {'Puntos de entrega'}
-              {/* <CancelOutlinedIcon
-                    onClick={setOpen.bind(this, false)}
-                    // className={classes.closeButton}
-                  /> */}
+            <DialogTitle sx={{fontSize: '1.5em', display: 'flex', alignItems: 'center' }} id='alert-dialog-title'>
+              <Button variant="contained" color="primary" >
+                <ArrowForwardIcon />
+                <div style={{ marginLeft: '5px' }}>GUÍAS</div>
+              </Button>
+              <div style={{ margin: '0 auto' }}>Puntos de entrega</div>
             </DialogTitle>
             <DialogContent>
               <TableContainer component={Paper} sx={{maxHeight: 440}}>

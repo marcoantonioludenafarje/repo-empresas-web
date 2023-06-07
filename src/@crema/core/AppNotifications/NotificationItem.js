@@ -8,6 +8,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import {justDate, justTime} from '../../../Utils/utils';
 import {useRouter} from 'next/router';
 import red from '@mui/material/colors/red';
@@ -34,6 +35,8 @@ const NotificationItem = (props) => {
   console.log('Qué item es?', item);
   const renderSwitch = (item) => {
     switch (item.typeIcon.toLowerCase()) {
+      case 'LocalShippingIcon':
+        return <LocalShippingIcon style={{color:cyan[500]}} />;
       case 'pointofsaleicon':
         return <PointOfSaleIcon style={{color: green[500]}} />;
       case 'success':
