@@ -605,6 +605,7 @@ const GetReceipt = (props) => {
                 priceBusinessMoneyWithIgv: Number(
                   obj.priceBusinessMoneyWithIgv,
                 ),
+                category: obj.category || "",
                 customCodeProduct: obj.customCodeProduct,
                 description: obj.description,
                 unitMeasure: obj.unitMeasure,

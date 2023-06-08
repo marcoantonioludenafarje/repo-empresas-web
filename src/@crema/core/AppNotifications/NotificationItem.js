@@ -35,7 +35,7 @@ const NotificationItem = (props) => {
   console.log('Qué item es?', item);
   const renderSwitch = (item) => {
     switch (item.typeIcon.toLowerCase()) {
-      case 'LocalShippingIcon':
+      case 'localshippingicon':
         return <LocalShippingIcon style={{color:cyan[500]}} />;
       case 'pointofsaleicon':
         return <PointOfSaleIcon style={{color: green[500]}} />;
@@ -145,7 +145,7 @@ const NotificationItem = (props) => {
               display: 'inline-block',
             }}
           >
-            {item.title}({item.numberOfProducts || 0}):
+            {item.title}{item.numberOfProducts ? `(${item.numberOfProducts})` : ''}:
           </Box>
           {item.message}
           <ListItemAvatar
@@ -159,7 +159,7 @@ const NotificationItem = (props) => {
             {renderSwitch(item)}
             {`${convertToDate(item.createdAt)}`}
           </ListItemAvatar>
-          {item.userCreatedMetadata
+          {item.userCreatedMetadata && item.userCreatedMetadata.nombreCompleto
             ? `Por: ${item.userCreatedMetadata.nombreCompleto}`
             : null}
         </Typography>

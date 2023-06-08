@@ -460,6 +460,7 @@ export const listDistributions = (payload) => {
 };
 
 export const getOneDistribution = (payload) => {
+  console.log("payload getOneDistribution", payload);
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request(
