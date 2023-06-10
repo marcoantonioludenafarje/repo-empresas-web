@@ -170,8 +170,8 @@ const UpdateExpense = (props) => {
 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  const {getFinancesRes} = useSelector(({finances}) => finances);
-  console.log('getFinancesRes', getFinancesRes);
+  const {allFinancesRes} = useSelector(({finances}) => finances);
+  console.log('allFinancesRes', allFinancesRes);
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
   const {updateFinanceRes} = useSelector(({finances}) => finances);
@@ -194,13 +194,13 @@ const UpdateExpense = (props) => {
   }, [query]);
 
   useEffect(() => {
-    if (getFinancesRes) {
-      selectedExpense = getFinancesRes.find(
+    if (allFinancesRes) {
+      selectedExpense = allFinancesRes.find(
         (input) => input.contableMovementId == query.contableMovementId,
       );
       console.log('selectedExpense', selectedExpense);
     }
-  }, [getFinancesRes]);
+  }, [allFinancesRes]);
 
   /* if (getFinancesRes != undefined) {
     selectedExpense = getFinancesRes.find(
@@ -209,23 +209,23 @@ const UpdateExpense = (props) => {
     console.log('selectedExpense', selectedExpense);
   } */
 
-  let listProvidersPayload = {
-    request: {
-      payload: {
-        typeDocumentProvider: '',
-        numberDocumentProvider: '',
-        denominationProvider: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
+
 
   useEffect(() => {
     setSelectedProvider({});
     getBusinessParameter(businessParameterPayload);
     //dispatch({type: GET_PROVIDERS, payload: undefined});
+    let listProvidersPayload = {
+      request: {
+        payload: {
+          typeDocumentProvider: '',
+          numberDocumentProvider: '',
+          denominationProvider: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
     listProvidersPayload.request.payload.LastEvaluatedKey = null;
-    dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
     getProviders(listProvidersPayload);
     listPayments = [];
     selectedExpense.payments.map((obj) => {
@@ -283,7 +283,7 @@ const UpdateExpense = (props) => {
   }, []);
 
   useEffect(() => {
-    if (listProviders) {
+    if (listProviders && listProviders.length>0) {
       console.log('query.providerId', query.providerId);
       console.log('listProviders', listProviders);
       let provider = listProviders.find(

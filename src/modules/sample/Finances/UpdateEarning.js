@@ -166,8 +166,8 @@ const UpdateEarning = (props) => {
 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  const {getFinancesRes} = useSelector(({finances}) => finances);
-  console.log('getFinancesRes', getFinancesRes);
+  const {allFinancesRes} = useSelector(({finances}) => finances);
+  console.log('allFinancesRes', allFinancesRes);
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
   const {updateFinanceRes} = useSelector(({finances}) => finances);
@@ -190,13 +190,13 @@ const UpdateEarning = (props) => {
   }, [query]);
 
   useEffect(() => {
-    if (getFinancesRes) {
-      selectedEarning = getFinancesRes.find(
+    if (allFinancesRes) {
+      selectedEarning = allFinancesRes.find(
         (input) => input.contableMovementId == query.contableMovementId,
       );
       console.log('selectedEarning', selectedEarning);
     }
-  }, [getFinancesRes]);
+  }, [allFinancesRes]);
 
   let listClientsPayload = {
     request: {
@@ -274,7 +274,7 @@ const UpdateEarning = (props) => {
   }, []);
 
   useEffect(() => {
-    if (listClients !== undefined && listClients.length !== 0) {
+    if (listClients && listClients.length > 0) {
       console.log('query.providerId', query.providerId);
       console.log('listClients', listClients);
       let client = listClients.find(
