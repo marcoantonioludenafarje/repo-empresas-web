@@ -1730,6 +1730,8 @@ const OutputsTable = (props) => {
                     (result, document) => {
                       const deliveryDistributionId =
                         document.deliveryDistributionId;
+                      const routeName =
+                        document.routeName;
                       const existingGroup = result.find(
                         (group) =>
                           group.distribution === deliveryDistributionId,
@@ -1746,6 +1748,7 @@ const OutputsTable = (props) => {
                         } else {
                           result.push({
                             distribution: deliveryDistributionId || '',
+                            routeName: routeName || '',
                             items: [document],
                           });
                         }
@@ -2065,7 +2068,7 @@ const OutputsTable = (props) => {
                                             )}
                                           </IconButton>
                                           {delivery.distribution
-                                            ? `Distribución: ${delivery.distribution}`
+                                            ? `Distribución: ${delivery.routeName || delivery.distribution}`
                                             : 'Más comprobantes'}
                                         </TableCell>
                                         {delivery.distribution ? (
