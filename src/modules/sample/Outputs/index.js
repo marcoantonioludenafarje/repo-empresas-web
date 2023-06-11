@@ -1743,7 +1743,7 @@ const OutputsTable = (props) => {
                         const emptyGroup = result.find(
                           (group) => group.distribution === '',
                         );
-                        if (emptyGroup) {
+                        if (emptyGroup && !deliveryDistributionId) {
                           emptyGroup.items.push(document);
                         } else {
                           result.push({
