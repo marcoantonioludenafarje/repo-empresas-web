@@ -491,7 +491,7 @@ const NewExpense = (props) => {
       (successMessage != undefined &&
         addFinanceRes &&
         'error' in addFinanceRes) ||
-      errorMessage != undefined
+        errorMessage
     );
   };
   const sendStatus = () => {

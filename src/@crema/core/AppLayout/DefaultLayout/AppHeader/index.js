@@ -824,6 +824,7 @@ const AppHeader = () => {
                 subType: 'planActivation',
               }}
               subType={requestType}
+              closeNewRequest={()=>setNewRequestState(false)}
             />
           </DialogContentText>
         </DialogContent>

@@ -170,6 +170,8 @@ const NewDriver = () => {
     newDriverPayload.request.payload.drivers[0].fullName =
       data.firstName + ' ' + data.lastName;
     newDriverPayload.request.payload.drivers[0].license = data.license;
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     toNewDriver(newDriverPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -188,7 +190,7 @@ const NewDriver = () => {
       (successMessage != undefined &&
         newDriverRes &&
         'error' in newDriverRes) ||
-      errorMessage != undefined
+        errorMessage
     );
   };
 

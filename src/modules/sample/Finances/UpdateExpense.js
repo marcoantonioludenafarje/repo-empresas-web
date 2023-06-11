@@ -286,12 +286,14 @@ const UpdateExpense = (props) => {
     if (listProviders && listProviders.length>0) {
       console.log('query.providerId', query.providerId);
       console.log('listProviders', listProviders);
-      let provider = listProviders.find(
-        (input) => input.providerId === query.providerId,
-      );
-      setSelectedProvider(provider);
-      console.log('provider', provider);
-      changeValueField('providerName', provider.denominationProvider);
+      if(query.providerId){
+        let provider = listProviders.find(
+          (input) => input.providerId === query.providerId,
+        );
+        setSelectedProvider(provider);
+        console.log('provider', provider);
+        changeValueField('providerName', provider.denominationProvider);
+      }
     }
   }, [listProviders]);
 
@@ -351,19 +353,19 @@ const UpdateExpense = (props) => {
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
-    if (selectedProvider.providerId) {
+    // if (selectedProvider.providerId) {
       // if (listPayments.length > 0) {
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
       newFinancePayload.request.payload.createdAt = anotherValues.regsiterDate;
       newFinancePayload.request.payload.numberDocumentProvider =
-        selectedProvider.providerId.split('-')[1];
+      selectedProvider.providerId ? selectedProvider.providerId.split('-')[1] : '';
       newFinancePayload.request.payload.denominationProvider =
-        selectedProvider.denominationProvider;
+      selectedProvider.denominationProvider ? selectedProvider.denominationProvider : '';
       newFinancePayload.request.payload.providerId =
-        selectedProvider.providerId;
+      selectedProvider.providerId ? selectedProvider.providerId : '';
       newFinancePayload.request.payload.typeDocumentProvider =
-        selectedProvider.providerId.split('-')[0];
+      selectedProvider.providerId ? selectedProvider.providerId.split('-')[0] : '';
       newFinancePayload.request.payload.billIssueDate =
         convertToDateWithoutTime(value2);
       newFinancePayload.request.payload.serialNumberBill = data.nroBill;
@@ -416,10 +418,10 @@ const UpdateExpense = (props) => {
       //   typeAlert = 'faltaPayment';
       //   setShowAlert(true);
       // }
-    } else {
-      typeAlert = 'provider';
-      setShowAlert(true);
-    }
+    // } else {
+    //   typeAlert = 'provider';
+    //   setShowAlert(true);
+    // }
     /* } else {
       typeAlert = 'faltaPayment';
       setShowAlert(true);
@@ -477,7 +479,7 @@ const UpdateExpense = (props) => {
   const registerError = () => {
     return (
       (successMessage != undefined && updateFinanceRes) ||
-      errorMessage != undefined
+      errorMessage
     );
   };
   const sendStatus = () => {

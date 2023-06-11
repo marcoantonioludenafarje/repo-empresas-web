@@ -64,7 +64,7 @@ import {
 } from '../../../Utils/utils';
 
 import {updateLocation, getLocations} from '../../../redux/actions/Locations';
-import {FETCH_SUCCESS} from '../../../shared/constants/ActionTypes';
+import {FETCH_SUCCESS, FETCH_ERROR} from '../../../shared/constants/ActionTypes';
 import originalUbigeos from '../../../Utils/ubigeo.json';
 
 const useStyles = makeStyles((theme) => ({
@@ -207,6 +207,8 @@ const UpdateLocation = (props) => {
       long: {S: ''},
     };
 
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     toUpdateLocation(newLocationPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -246,7 +248,7 @@ const UpdateLocation = (props) => {
           </DialogContentText>
         </>
       );
-    } else if (errorMessage != undefined) {
+    } else if (errorMessage) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />

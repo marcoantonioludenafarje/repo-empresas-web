@@ -655,7 +655,7 @@ const NewOutput = (props) => {
         addInvoiceRes &&
         'error' in addInvoiceRes &&
         !objectsAreEqual(addInvoiceRes.error, {})) ||
-      errorMessage != undefined
+        errorMessage
     );
   };
 

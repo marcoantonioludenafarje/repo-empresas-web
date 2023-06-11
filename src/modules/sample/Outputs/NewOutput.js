@@ -643,7 +643,7 @@ const NewOutput = (props) => {
       (successMessage != undefined &&
         addMovementRes &&
         'error' in addMovementRes) ||
-      errorMessage != undefined
+        errorMessage
     ) {
       return (
         <>

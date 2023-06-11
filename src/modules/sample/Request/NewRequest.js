@@ -115,8 +115,8 @@ let fileToUpload;
 let urlToUpload;
 let loadThis = '';
 let toUpload = false;
-const NewRequest = ({data, subType}) => {
-  const classes = useStyles({data, subType});
+const NewRequest = ({data, subType, closeNewRequest}) => {
+  const classes = useStyles({data, subType, closeNewRequest});
   const [rowNumber, setRowNumber] = React.useState(0);
   const [rowNumber2, setRowNumber2] = React.useState(0);
   const [openDetails, setOpenDetails] = React.useState(false);
@@ -199,12 +199,13 @@ const NewRequest = ({data, subType}) => {
     console.log('A punto de ser fallido?');
     return (
       (newRequestRes && successMessage != undefined) ||
-      errorMessage != undefined
+      errorMessage
     );
   };
   const sendStatus = () => {
     if (registerSuccess()) {
       setOpenStatus(false);
+      closeNewRequest()
     } else if (registerError()) {
       setOpenStatus(false);
     } else {
@@ -625,6 +626,7 @@ const NewRequest = ({data, subType}) => {
 NewRequest.propTypes = {
   data: PropTypes.array.isRequired,
   subType: PropTypes.string,
+  closeNewRequest: PropTypes.func,
 };
 
 export default NewRequest;

@@ -198,6 +198,8 @@ const NewCarrier = () => {
       data.emailContact;
     newCarrierPayload.request.payload.carriers[0].extraInformationCarrier =
       data.extraInformationCarrier;
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     toNewCarrier(newCarrierPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -216,7 +218,7 @@ const NewCarrier = () => {
       (successMessage != undefined &&
         newCarrierRes &&
         'error' in newCarrierRes) ||
-      errorMessage != undefined
+        errorMessage
     );
   };
 

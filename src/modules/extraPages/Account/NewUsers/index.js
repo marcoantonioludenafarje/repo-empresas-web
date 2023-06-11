@@ -92,7 +92,7 @@ const NewUsers = () => {
   const registerError = () => {
     return (
       (registerUserRes && successMessage != undefined) ||
-      errorMessage != undefined
+      errorMessage
     );
   };
 

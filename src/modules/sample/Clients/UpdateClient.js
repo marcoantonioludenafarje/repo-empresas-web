@@ -64,7 +64,7 @@ import {
 } from '../../../Utils/utils';
 
 import {updateClient, onGetClients} from '../../../redux/actions/Clients';
-import {FETCH_SUCCESS} from '../../../shared/constants/ActionTypes';
+import {FETCH_SUCCESS, FETCH_ERROR} from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -303,7 +303,7 @@ const UpdateClient = (props) => {
         secondLastName: data.secondLastName,
         birthDay: data.birthDay,
         emailContact: data.emailClient,
-        nameContact: data.name,
+        nameContact: data.givenName + ' ' + data.lastName + ' ' + data.secondLastName,
       };
     }
 
@@ -325,6 +325,8 @@ const UpdateClient = (props) => {
       },
     };
 
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     toUpdateClient(newClientPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -348,7 +350,7 @@ const UpdateClient = (props) => {
   };
 
   const showMessage = () => {
-    if (successMessage != undefined) {
+    if (successMessage) {
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -364,7 +366,7 @@ const UpdateClient = (props) => {
           </DialogContentText>
         </>
       );
-    } else if (errorMessage != undefined) {
+    } else if (errorMessage) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -507,6 +509,9 @@ const UpdateClient = (props) => {
                         </MenuItem>
                         <MenuItem value='CE' style={{fontWeight: 200}}>
                           CE
+                        </MenuItem>
+                        <MenuItem value='PAS' style={{fontWeight: 200}}>
+                          PAS
                         </MenuItem>
                       </Select>
                     </FormControl>

@@ -478,7 +478,7 @@ const FinancesTable = (props) => {
           </DialogContentText>
         </>
       );
-    } else if (errorMessage != undefined) {
+    } else if (errorMessage) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -523,7 +523,14 @@ const FinancesTable = (props) => {
       if (doc.referralGuideId) {
         Router.push({
           pathname: '/sample/referral-guide/table',
-          query: {movementHeaderId: doc.referralGuideId},
+          query: {referralGuideId: doc.referralGuideId},
+        });
+      }
+    } else if (doc.typeDocument == 'receipt') {
+      if (doc.receiptId) {
+        Router.push({
+          pathname: '/sample/receipts/table',
+          query: {receiptId: doc.receiptId},
         });
       }
     } else {

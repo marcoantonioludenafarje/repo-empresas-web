@@ -464,7 +464,7 @@ const BillsTable = (props) => {
   const registerError = () => {
     return (
       (successMessage != undefined && cancelInvoiceRes) ||
-      errorMessage != undefined
+      errorMessage
     );
   };
   const sendStatus = () => {

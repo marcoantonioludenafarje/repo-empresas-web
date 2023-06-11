@@ -83,7 +83,7 @@ const BusinessCancellation = () => {
   const registerError = () => {
     return (
       (successMessage != undefined && cancelCompleteBusinessRes) ||
-      errorMessage != undefined
+      errorMessage
     );
   };
   const sendStatus = () => {

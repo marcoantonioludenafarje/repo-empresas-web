@@ -64,7 +64,7 @@ import {
 } from '../../../Utils/utils';
 
 import {updateCarrier, getCarriers} from '../../../redux/actions/Carriers';
-import {FETCH_SUCCESS} from '../../../shared/constants/ActionTypes';
+import {FETCH_SUCCESS, FETCH_ERROR} from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -197,7 +197,7 @@ const UpdateCarrier = (props) => {
   };
 
   let objSelects = {
-    documentType: 'RUC',
+    documentType: query.typeDocumentCarrier,
   };
 
   const handleData = (data, {setSubmitting}) => {
@@ -208,12 +208,16 @@ const UpdateCarrier = (props) => {
     newCarrierPayload.request.payload.denominationCarrier =
       data.denominationCarrier;
     newCarrierPayload.request.payload.addressCarrier = data.addressCarrier;
+    newCarrierPayload.request.payload.typeDocumentCarrier = query.typeDocumentCarrier;
+    newCarrierPayload.request.payload.numberDocumentCarrier = query.numberDocumentCarrier;
     newCarrierPayload.request.payload.nameContact = data.nameContact;
     newCarrierPayload.request.payload.numberContact = data.numberContact;
     newCarrierPayload.request.payload.emailContact = data.emailContact;
     newCarrierPayload.request.payload.emailCarrier = data.emailCarrier;
     newCarrierPayload.request.payload.extraInformationCarrier =
       data.extraInformationCarrier;
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     toUpdateCarrier(newCarrierPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -253,7 +257,7 @@ const UpdateCarrier = (props) => {
           </DialogContentText>
         </>
       );
-    } else if (errorMessage != undefined) {
+    } else if (errorMessage) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />

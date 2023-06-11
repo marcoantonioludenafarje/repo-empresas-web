@@ -63,7 +63,7 @@ import {
 } from '../../../Utils/utils';
 
 import {updateDriver, getDrivers} from '../../../redux/actions/Drivers';
-import {FETCH_SUCCESS} from '../../../shared/constants/ActionTypes';
+import {FETCH_SUCCESS, FETCH_ERROR} from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -186,6 +186,8 @@ const UpdateDriver = (props) => {
     newDriverPayload.request.payload.fullName =
       data.firstName + ' ' + data.lastName;
     newDriverPayload.request.payload.license = data.license;
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     toUpdateDriver(newDriverPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -225,7 +227,7 @@ const UpdateDriver = (props) => {
           </DialogContentText>
         </>
       );
-    } else if (errorMessage != undefined) {
+    } else if (errorMessage) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />

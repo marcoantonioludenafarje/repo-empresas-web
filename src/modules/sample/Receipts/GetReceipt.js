@@ -677,7 +677,7 @@ const GetReceipt = (props) => {
       (successMessage != undefined &&
         addReceiptRes !== undefined &&
         'error' in addReceiptRes) ||
-      errorMessage != undefined
+        errorMessage
     );
   };
 

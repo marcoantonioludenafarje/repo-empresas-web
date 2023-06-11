@@ -78,29 +78,29 @@ const clientsReducer = (state = INIT_STATE, action) => {
       };
 
     case FETCH_SUCCESS:
-      if (!action.payload || !action.payload.process) {
-        action.payload = {process: 'LIST_CLIENTS', message: 'Exito'};
-      }
+      // if (!action.payload || !action.payload.process) {
+      //   action.payload = {process: 'LIST_CLIENTS', message: 'Exito'};
+      // }
       console.log('data de reducer FETCH_SUCCESS', action.payload);
       return {
         ...state,
         loading: false,
-        // successMessage: action.payload,
-        process: action.payload.process,
-        successMessage: action.payload.message,
+        successMessage: action.payload,
+        // process: action.payload.process,
+        // successMessage: action.payload.message,
       };
     case FETCH_ERROR:
       console.log('data de reducer FETCH_ERROR', action.payload);
-      if (!action.payload || !action.payload.process) {
-        action.payload = {process: 'LIST_CLIENTS', message: 'Error'};
-      }
+      // if (!action.payload || !action.payload.process) {
+      //   action.payload = {process: 'LIST_CLIENTS', message: 'Error'};
+      // }
 
       return {
         ...state,
-        // errorMessage: action.payload,
-        loading: false,
-        process: action.payload.process,
-        errorMessage: action.payload.message,
+        errorMessage: action.payload,
+        // loading: false,
+        // process: action.payload.process,
+        // errorMessage: action.payload.message,
       };
     case RESET_CLIENTS:
       return {

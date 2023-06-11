@@ -492,7 +492,7 @@ const Distribution = (props) => {
   const registerError = () => {
     return (
       (successMessage != undefined && generateDistributionRes) ||
-      errorMessage != undefined
+      errorMessage
     );
   };
   const sendStatus = () => {

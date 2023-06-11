@@ -277,12 +277,14 @@ const UpdateEarning = (props) => {
     if (listClients && listClients.length > 0) {
       console.log('query.providerId', query.providerId);
       console.log('listClients', listClients);
-      let client = listClients.find(
-        (input) => input.clientId === query.providerId,
-      );
-      setSelectedClient(client);
-      console.log('client', client);
-      changeValueField('clientName', client.denominationClient);
+      if(query.providerId){
+        let client = listClients.find(
+          (input) => input.clientId === query.providerId,
+        );
+        setSelectedClient(client);
+        console.log('client', client);
+        changeValueField('clientName', client.denominationClient);
+      }
     }
   }, [listClients]);
 
@@ -342,18 +344,18 @@ const UpdateEarning = (props) => {
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
-    if (selectedClient.clientId) {
+    // if (selectedClient.clientId) {
       // if (listPayments.length > 0) {
       console.log('Data', data);
       console.log('anotherValues', anotherValues);
       newFinancePayload.request.payload.createdAt = anotherValues.registerDate;
       newFinancePayload.request.payload.numberDocumentProvider =
-        selectedClient.clientId.split('-')[1];
+        selectedClient.clientId ? selectedClient.clientId.split('-')[1] : '';
       newFinancePayload.request.payload.denominationProvider =
-        selectedClient.denominationClient;
-      newFinancePayload.request.payload.providerId = selectedClient.clientId;
+        selectedClient.denominationClient ? selectedClient.denominationClient : '';
+      newFinancePayload.request.payload.providerId = selectedClient.clientId ? selectedClient.clientId : '';
       newFinancePayload.request.payload.typeDocumentProvider =
-        selectedClient.clientId.split('-')[0];
+        selectedClient.clientId ? selectedClient.clientId.split('-')[0] : '';
       newFinancePayload.request.payload.billIssueDate =
         convertToDateWithoutTime(value2);
       newFinancePayload.request.payload.serialNumberBill = data.nroBill;
@@ -403,10 +405,10 @@ const UpdateEarning = (props) => {
       dispatch({type: UPDATE_FINANCE, payload: undefined});
       toUpdateFinance(newFinancePayload);
       setOpenStatus(true);
-    } else {
-      typeAlert = 'faltaPayment';
-      setShowAlert(true);
-    }
+    // } else {
+    //   typeAlert = 'faltaPayment';
+    //   setShowAlert(true);
+    // }
 
     // } else {
     //   typeAlert = 'client';
@@ -469,7 +471,7 @@ const UpdateEarning = (props) => {
   const registerError = () => {
     return (
       (successMessage != undefined && updateFinanceRes) ||
-      errorMessage != undefined
+      errorMessage
     );
   };
   const sendStatus = () => {

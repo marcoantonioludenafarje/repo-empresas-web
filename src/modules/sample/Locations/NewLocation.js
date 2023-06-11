@@ -181,6 +181,8 @@ const NewLocation = () => {
       lat: {S: ''},
       long: {S: ''},
     };
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     toNewLocation(newLocationPayload);
     setSubmitting(false);
     setOpenStatus(true);
@@ -199,7 +201,7 @@ const NewLocation = () => {
       (successMessage != undefined &&
         newLocationRes &&
         'error' in newLocationRes) ||
-      errorMessage != undefined
+        errorMessage
     );
   };
 

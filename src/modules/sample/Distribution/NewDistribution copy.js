@@ -336,7 +336,7 @@ const Distribution = () => {
   const registerError = () => {
     return (
       (successMessage != undefined && generateDistributionRes) ||
-      errorMessage != undefined
+      errorMessage
     );
   };
   const sendStatus = () => {

@@ -711,7 +711,7 @@ const GetCreditNote = () => {
         addCreditNoteRes &&
         'error' in addCreditNoteRes &&
         !objectsAreEqual(addCreditNoteRes.error, {})) ||
-      errorMessage != undefined
+        errorMessage
     ) {
       return (
         <>

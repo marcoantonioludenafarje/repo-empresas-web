@@ -925,7 +925,7 @@ const OutputsTable = (props) => {
   const registerError = () => {
     return (
       (successMessage != undefined && generateSellTicketRes) ||
-      errorMessage != undefined
+      errorMessage
     );
   };
   const showMessageTicketRegistration = () => {
@@ -1069,7 +1069,7 @@ const OutputsTable = (props) => {
     } else if (
       (successMessage && deleteMovementRes && 'error' in deleteMovementRes) ||
       (typeof errorMessage === 'object' &&
-        errorMessage !== null &&
+        errorMessage &&
         !Array.isArray(errorMessage) &&
         errorMessage.error)
     ) {
@@ -1468,7 +1468,7 @@ const OutputsTable = (props) => {
       if (doc.referralGuideId) {
         Router.push({
           pathname: '/sample/referral-guide/table',
-          query: {movementHeaderId: doc.referralGuideId},
+          query: {referralGuideId: doc.referralGuideId},
         });
       }
     } else if (doc.typeDocument == 'receipt') {
