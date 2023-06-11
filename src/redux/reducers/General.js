@@ -248,7 +248,7 @@ const generalReducer = (state = INIT_STATE, action) => {
     case RESET_GENERAL:
       return {
         list: [],
-      };      
+      };
     default:
       return state;
   }

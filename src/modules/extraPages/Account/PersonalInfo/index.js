@@ -122,10 +122,7 @@ const PersonalInfo = () => {
     );
   };
   const registerError = () => {
-    return (
-      (successMessage != undefined && updateUserRes) ||
-      errorMessage
-    );
+    return (successMessage != undefined && updateUserRes) || errorMessage;
   };
   const sendStatus = () => {
     if (registerSuccess()) {

@@ -346,10 +346,7 @@ const Distribution = (props) => {
     );
   };
   const registerError = () => {
-    return (
-      (successMessage != undefined && generateRouteRes) ||
-      errorMessage
-    );
+    return (successMessage != undefined && generateRouteRes) || errorMessage;
   };
   const sendStatus = () => {
     if (registerSuccess()) {

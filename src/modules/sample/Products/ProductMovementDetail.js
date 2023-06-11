@@ -186,17 +186,25 @@ const ProductMovementTable = (props) => {
 
   const showObject = (obj, type) => {
     if (type == 'OUTPUT') {
-      console.log('cod',obj);
+      console.log('cod', obj);
       Router.push({
         pathname: '/sample/outputs/table',
-        query: {movementDetailId:obj.movementDetailId, movementTypeMerchantId:obj.movementTypeMerchantId, createdAt:obj.createdAt},
+        query: {
+          movementDetailId: obj.movementDetailId,
+          movementTypeMerchantId: obj.movementTypeMerchantId,
+          createdAt: obj.createdAt,
+        },
       });
-    } 
+    }
     if (type == 'INPUT') {
-      console.log('cod',obj);
+      console.log('cod', obj);
       Router.push({
         pathname: '/sample/inputs/table',
-        query: {movementDetailId:obj.movementDetailId, movementTypeMerchantId:obj.movementTypeMerchantId, createdAt:obj.createdAt},
+        query: {
+          movementDetailId: obj.movementDetailId,
+          movementTypeMerchantId: obj.movementTypeMerchantId,
+          createdAt: obj.createdAt,
+        },
       });
     }
   };
@@ -210,7 +218,7 @@ const ProductMovementTable = (props) => {
               variant='secondary'
               sx={{fontSize: '1em'}}
               /* disabled={type == 'referralGuide'} */
-              onClick={() => showObject(obj/*.movementHeaderId*/, type)}
+              onClick={() => showObject(obj /*.movementHeaderId*/, type)}
             >
               {`${mintype} - ${cod}`}
             </Button>
@@ -246,7 +254,7 @@ const ProductMovementTable = (props) => {
                 variant='secondary'
                 sx={{fontSize: '1em'}}
                 /* disabled={type == 'referralGuide'} */
-                onClick={() => showObject(obj/*.movementHeaderId*/, type)}
+                onClick={() => showObject(obj /*.movementHeaderId*/, type)}
               >
                 {serialDocument}
               </Button>
@@ -270,7 +278,7 @@ const ProductMovementTable = (props) => {
                 variant='secondary'
                 sx={{fontSize: '1em'}}
                 /* disabled={type == 'referralGuide'} */
-                onClick={() => showObject(obj/*.movementDetailId*/, type)}
+                onClick={() => showObject(obj /*.movementDetailId*/, type)}
               >
                 Generado
               </Button>
@@ -284,7 +292,7 @@ const ProductMovementTable = (props) => {
           <Button
             variant='secondary'
             sx={{fontSize: '1em'}}
-            onClick={() => generateObject(obj/*.movementHeaderId*/, type)}
+            onClick={() => generateObject(obj /*.movementHeaderId*/, type)}
           >
             No Generado
           </Button>
@@ -296,7 +304,7 @@ const ProductMovementTable = (props) => {
           variant='secondary'
           sx={{fontSize: '1em'}}
           /* disabled={type == 'referralGuide'} */
-          onClick={() => showObject(obj/*.movementDetailId*/, type)}
+          onClick={() => showObject(obj /*.movementDetailId*/, type)}
         >
           Generado
         </Button>

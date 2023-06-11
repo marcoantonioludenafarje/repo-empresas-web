@@ -290,9 +290,10 @@ const InputsTable = (props) => {
         console.log('Query con datos', query);
         if (query.movementHeaderId)
           listPayload.request.payload.movementHeaderId = query.movementHeaderId;
-        if (query.movementDetailId){
+        if (query.movementDetailId) {
           listPayload.request.payload.movementDetailId = query.movementDetailId;
-          listPayload.request.payload.movementTypeMerchantId = query.movementTypeMerchantId;
+          listPayload.request.payload.movementTypeMerchantId =
+            query.movementTypeMerchantId;
           listPayload.request.payload.initialTime = Number(query.createdAt);
         }
       }
@@ -331,9 +332,10 @@ const InputsTable = (props) => {
         console.log('Query con datos', query);
         if (query.movementHeaderId)
           listPayload.request.payload.movementHeaderId = query.movementHeaderId;
-        if (query.movementDetailId){
+        if (query.movementDetailId) {
           listPayload.request.payload.movementDetailId = query.movementDetailId;
-          listPayload.request.payload.movementTypeMerchantId = query.movementTypeMerchantId;
+          listPayload.request.payload.movementTypeMerchantId =
+            query.movementTypeMerchantId;
           listPayload.request.payload.initialTime = Number(query.createdAt);
         }
       }

@@ -5,7 +5,7 @@ import {
   FETCH_ERROR,
   DELETE_PROVIDER,
   UPDATE_PROVIDER,
-  RESET_PROVIDERS
+  RESET_PROVIDERS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {

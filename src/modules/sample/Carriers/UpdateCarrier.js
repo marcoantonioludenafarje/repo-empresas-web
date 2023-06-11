@@ -64,7 +64,10 @@ import {
 } from '../../../Utils/utils';
 
 import {updateCarrier, getCarriers} from '../../../redux/actions/Carriers';
-import {FETCH_SUCCESS, FETCH_ERROR} from '../../../shared/constants/ActionTypes';
+import {
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+} from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -208,8 +211,10 @@ const UpdateCarrier = (props) => {
     newCarrierPayload.request.payload.denominationCarrier =
       data.denominationCarrier;
     newCarrierPayload.request.payload.addressCarrier = data.addressCarrier;
-    newCarrierPayload.request.payload.typeDocumentCarrier = query.typeDocumentCarrier;
-    newCarrierPayload.request.payload.numberDocumentCarrier = query.numberDocumentCarrier;
+    newCarrierPayload.request.payload.typeDocumentCarrier =
+      query.typeDocumentCarrier;
+    newCarrierPayload.request.payload.numberDocumentCarrier =
+      query.numberDocumentCarrier;
     newCarrierPayload.request.payload.nameContact = data.nameContact;
     newCarrierPayload.request.payload.numberContact = data.numberContact;
     newCarrierPayload.request.payload.emailContact = data.emailContact;

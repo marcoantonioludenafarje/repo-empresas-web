@@ -190,7 +190,7 @@ const NewDriver = () => {
       (successMessage != undefined &&
         newDriverRes &&
         'error' in newDriverRes) ||
-        errorMessage
+      errorMessage
     );
   };
 

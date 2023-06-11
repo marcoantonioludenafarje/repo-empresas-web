@@ -462,10 +462,7 @@ const BillsTable = (props) => {
     );
   };
   const registerError = () => {
-    return (
-      (successMessage != undefined && cancelInvoiceRes) ||
-      errorMessage
-    );
+    return (successMessage != undefined && cancelInvoiceRes) || errorMessage;
   };
   const sendStatus = () => {
     if (registerSuccess()) {

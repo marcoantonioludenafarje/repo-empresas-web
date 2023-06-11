@@ -111,7 +111,7 @@ const clientsReducer = (state = INIT_STATE, action) => {
         list: [],
         listClients: [],
         clientsLastEvalutedKey_pageListClients: null,
-      }
+      };
     default:
       return state;
   }

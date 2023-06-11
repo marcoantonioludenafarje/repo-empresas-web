@@ -684,7 +684,7 @@ const UpdateOutput = (props) => {
       (errorMessage &&
         cancelInvoiceRes !== undefined &&
         'error' in cancelInvoiceRes) ||
-        errorMessage
+      errorMessage
     ) {
       return (
         <>

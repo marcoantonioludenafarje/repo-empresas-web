@@ -232,8 +232,9 @@ const ReferralGuidesTable = (props) => {
           merchantId: userDataRes.merchantSelected.merchantId,
           createdAt: null,
           searchByBill: null,
-          movementHeaderId: null,
-          outputId: null,
+          movementHeaderId: query.referralGuideId || '',
+          outputId: query.movementHeaderId || '',
+          deliveryDistributionId: query.deliveryDistributionId || '',
         },
       },
     };
@@ -492,6 +493,9 @@ const ReferralGuidesTable = (props) => {
           listPayload.request.payload.outputId = query.movementHeaderId;
         } else if (query.referralGuideId) {
           listPayload.request.payload.movementHeaderId = query.referralGuideId;
+        } else if (query.deliveryDistributionId) {
+          listPayload.request.payload.deliveryDistributionId =
+            query.deliveryDistributionId;
         }
       }
       listPayload.request.payload.LastEvaluatedKey = null;
@@ -503,7 +507,7 @@ const ReferralGuidesTable = (props) => {
       getBusinessParameter(businessParameterPayload);
       getGlobalParameter(globalParameterPayload);
     }
-  }, [userDataRes]);
+  }, [userDataRes, query]);
 
   //FUNCIONES MENU
   const [anchorEl, setAnchorEl] = React.useState(null);

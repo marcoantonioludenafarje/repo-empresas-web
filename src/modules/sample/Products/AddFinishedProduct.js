@@ -219,7 +219,7 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
         produceProductRes &&
         'error' in produceProductRes &&
         !objectsAreEqual(produceProductRes.error, {})) ||
-        errorMessage
+      errorMessage
     ) {
       return (
         <>

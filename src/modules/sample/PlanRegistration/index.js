@@ -135,10 +135,7 @@ const UpgradeBusiness = () => {
   };
 
   const registerError = () => {
-    return (
-      (upgradeToNewPlanRes && successMessage != undefined) ||
-      errorMessage
-    );
+    return (upgradeToNewPlanRes && successMessage != undefined) || errorMessage;
   };
 
   const sendStatus = () => {

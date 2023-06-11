@@ -201,7 +201,7 @@ const NewLocation = () => {
       (successMessage != undefined &&
         newLocationRes &&
         'error' in newLocationRes) ||
-        errorMessage
+      errorMessage
     );
   };
 

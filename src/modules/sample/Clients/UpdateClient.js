@@ -64,7 +64,10 @@ import {
 } from '../../../Utils/utils';
 
 import {updateClient, onGetClients} from '../../../redux/actions/Clients';
-import {FETCH_SUCCESS, FETCH_ERROR} from '../../../shared/constants/ActionTypes';
+import {
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+} from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -303,7 +306,8 @@ const UpdateClient = (props) => {
         secondLastName: data.secondLastName,
         birthDay: data.birthDay,
         emailContact: data.emailClient,
-        nameContact: data.givenName + ' ' + data.lastName + ' ' + data.secondLastName,
+        nameContact:
+          data.givenName + ' ' + data.lastName + ' ' + data.secondLastName,
       };
     }
 

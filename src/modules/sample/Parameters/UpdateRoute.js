@@ -244,10 +244,7 @@ const Distribution = () => {
     );
   };
   const registerError = () => {
-    return (
-      (successMessage != undefined && updateRouteRes) ||
-      errorMessage
-    );
+    return (successMessage != undefined && updateRouteRes) || errorMessage;
   };
   const sendStatus = () => {
     if (registerSuccess()) {

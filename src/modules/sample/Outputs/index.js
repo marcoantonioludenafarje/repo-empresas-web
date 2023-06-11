@@ -258,7 +258,7 @@ const OutputsTable = (props) => {
   const {moneySymbol} = useSelector(({general}) => general);
   //MENU ANCHOR
   const [anchorEl, setAnchorEl] = React.useState(null);
-  
+
   const [openDelivery, setOpenDelivery] = React.useState(false);
   const [deliverySelected, setDeliverySelected] = React.useState(false);
   //FECHAS
@@ -397,11 +397,12 @@ const OutputsTable = (props) => {
         console.log('Query con datos', query);
         if (query.movementHeaderId)
           listPayload.request.payload.movementHeaderId = query.movementHeaderId;
-        if (query.movementDetailId){
+        if (query.movementDetailId) {
           listPayload.request.payload.movementDetailId = query.movementDetailId;
-          listPayload.request.payload.movementTypeMerchantId = query.movementTypeMerchantId;
+          listPayload.request.payload.movementTypeMerchantId =
+            query.movementTypeMerchantId;
           listPayload.request.payload.initialTime = Number(query.createdAt);
-        }          
+        }
       }
 
       searchPrivilege('outputsTable')
@@ -461,11 +462,12 @@ const OutputsTable = (props) => {
         console.log('Query con datos', query);
         if (query.movementHeaderId)
           listPayload.request.payload.movementHeaderId = query.movementHeaderId;
-        if (query.movementDetailId){
+        if (query.movementDetailId) {
           listPayload.request.payload.movementDetailId = query.movementDetailId;
-          listPayload.request.payload.movementTypeMerchantId = query.movementTypeMerchantId;
+          listPayload.request.payload.movementTypeMerchantId =
+            query.movementTypeMerchantId;
           listPayload.request.payload.initialTime = Number(query.createdAt);
-        }  
+        }
       }
       searchPrivilege('outputsTable')
         ? (listPayload.request.payload.userCreated = null)
@@ -552,10 +554,10 @@ const OutputsTable = (props) => {
   //Cerrar, abrir distribucion
   const handleToggle = (id) => {
     setOpenDelivery(true);
-    if(openDelivery && deliverySelected == id){
+    if (openDelivery && deliverySelected == id) {
       setOpenDelivery(false);
     }
-    setDeliverySelected(id)
+    setDeliverySelected(id);
   };
 
   // Función para manejar el clic en el encabezado de la tabla
@@ -805,18 +807,24 @@ const OutputsTable = (props) => {
       obj.income1 = statusTextObject(obj, obj.existIncome, 'income');
 
       // Crear la cadena de texto para productos
-      let productsText = "";
+      let productsText = '';
 
       obj.descriptionProductsInfo.forEach((producto, index) => {
         const igv = producto.productIgv || 0.18;
-        const subtotal = Number((producto.quantityMovement * producto.priceBusinessMoneyWithIgv * (1 + igv)).toFixed(2));
-        
+        const subtotal = Number(
+          (
+            producto.quantityMovement *
+            producto.priceBusinessMoneyWithIgv *
+            (1 + igv)
+          ).toFixed(2),
+        );
+
         const productText = `Descripción: ${producto.description}| Cantidad: ${producto.quantityMovement}| Subtotal: ${subtotal}| Categoría: ${producto.category}`;
-        
+
         if (index > 0) {
-          productsText += "~";
+          productsText += '~';
         }
-        
+
         productsText += productText;
       });
 
@@ -924,8 +932,7 @@ const OutputsTable = (props) => {
   };
   const registerError = () => {
     return (
-      (successMessage != undefined && generateSellTicketRes) ||
-      errorMessage
+      (successMessage != undefined && generateSellTicketRes) || errorMessage
     );
   };
   const showMessageTicketRegistration = () => {
@@ -1007,13 +1014,13 @@ const OutputsTable = (props) => {
               product: obj.product,
               quantityMovement: Number(obj.quantityMovement),
               priceBusinessMoneyWithIgv: Number(obj.priceBusinessMoneyWithIgv),
-              category: obj.category || "",
+              category: obj.category || '',
               customCodeProduct: obj.customCodeProduct,
               description: obj.description,
               unitMeasure: obj.unitMeasure,
               businessProductCode: obj.businessProductCode,
-              taxCode: obj.taxCode || "",
-              igvCode: obj.igvCode || "",
+              taxCode: obj.taxCode || '',
+              igvCode: obj.igvCode || '',
             };
           }),
           documentsMovement: selectedOutput.documentsMovement,
@@ -1717,41 +1724,49 @@ const OutputsTable = (props) => {
                   obj.descriptionProductsInfo.length != 0
                     ? 'flex'
                     : null;
-                  let groupedDocuments = []
-                  if(obj.documentsMovement && obj.documentsMovement.length > 0){
-                    groupedDocuments = obj.documentsMovement.reduce((result, document) => {
-                      const deliveryDistributionId = document.deliveryDistributionId;
-                      const existingGroup = result.find((group) => group.distribution === deliveryDistributionId);
-                    
+                let groupedDocuments = [];
+                if (obj.documentsMovement && obj.documentsMovement.length > 0) {
+                  groupedDocuments = obj.documentsMovement.reduce(
+                    (result, document) => {
+                      const deliveryDistributionId =
+                        document.deliveryDistributionId;
+                      const existingGroup = result.find(
+                        (group) =>
+                          group.distribution === deliveryDistributionId,
+                      );
+
                       if (existingGroup) {
                         existingGroup.items.push(document);
                       } else {
-                        const emptyGroup = result.find((group) => group.distribution === "");
+                        const emptyGroup = result.find(
+                          (group) => group.distribution === '',
+                        );
                         if (emptyGroup) {
                           emptyGroup.items.push(document);
                         } else {
                           result.push({
-                            distribution: deliveryDistributionId || "",
-                            items: [document]
+                            distribution: deliveryDistributionId || '',
+                            items: [document],
                           });
                         }
                       }
-                    
+
                       return result;
-                    }, []);
-                    
-                    // Ordenar los elementos por distribución (los que no tienen distribución estarán primero)
-                    groupedDocuments.sort((a, b) => {
-                      if (!a.distribution && b.distribution) {
-                        return -1; // a viene antes que b
-                      } else if (a.distribution && !b.distribution) {
-                        return 1; // b viene antes que a
-                      } else {
-                        return 0; // no hay diferencia de orden
-                      }
-                    });
-                    
-                  }
+                    },
+                    [],
+                  );
+
+                  // Ordenar los elementos por distribución (los que no tienen distribución estarán primero)
+                  groupedDocuments.sort((a, b) => {
+                    if (!a.distribution && b.distribution) {
+                      return -1; // a viene antes que b
+                    } else if (a.distribution && !b.distribution) {
+                      return 1; // b viene antes que a
+                    } else {
+                      return 0; // no hay diferencia de orden
+                    }
+                  });
+                }
                 return (
                   <>
                     <TableRow
@@ -2032,36 +2047,81 @@ const OutputsTable = (props) => {
                                   groupedDocuments.map((delivery, index) => (
                                     <React.Fragment key={index}>
                                       <TableRow>
-                                        <TableCell colSpan={4} sx={{ cursor: 'pointer' }} hover onClick={() => handleToggle(delivery.distribution)}>
-                                          <IconButton size="small">
-                                            {openDelivery && (deliverySelected == delivery.distribution) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                                        <TableCell
+                                          colSpan={4}
+                                          sx={{cursor: 'pointer'}}
+                                          hover
+                                          onClick={() =>
+                                            handleToggle(delivery.distribution)
+                                          }
+                                        >
+                                          <IconButton size='small'>
+                                            {openDelivery &&
+                                            deliverySelected ==
+                                              delivery.distribution ? (
+                                              <KeyboardArrowUpIcon />
+                                            ) : (
+                                              <KeyboardArrowDownIcon />
+                                            )}
                                           </IconButton>
-                                          {delivery.distribution ? `Distribución: ${delivery.distribution}` : 'Más comprobantes'}
+                                          {delivery.distribution
+                                            ? `Distribución: ${delivery.distribution}`
+                                            : 'Más comprobantes'}
                                         </TableCell>
                                         {delivery.distribution ? (
-                                          <TableCell colSpan={4} sx={{ cursor: 'pointer' }} hover onClick={() => goToDistribution(delivery.distribution)}>
-                                            <IconButton size="small" color="secondary">
+                                          <TableCell
+                                            colSpan={4}
+                                            sx={{cursor: 'pointer'}}
+                                            hover
+                                            onClick={() =>
+                                              goToDistribution(
+                                                delivery.distribution,
+                                              )
+                                            }
+                                          >
+                                            <IconButton
+                                              size='small'
+                                              color='secondary'
+                                            >
                                               <ArrowForwardIcon />
                                             </IconButton>
                                           </TableCell>
                                         ) : null}
                                       </TableRow>
-                                      {delivery.items.length > 0 && openDelivery && deliverySelected == delivery.distribution ? (
-                                        delivery.items.map((subDocument, subIndex) => (
-                                          <TableRow
-                                            key={subIndex}
-                                            sx={{ cursor: 'pointer' }}
-                                            hover
-                                            onClick={() => goToDocument(subDocument)}
-                                          >
-                                            <TableCell>{subDocument.issueDate}</TableCell>
-                                            <TableCell>{subDocument.serialDocument}</TableCell>
-                                            <TableCell>
-                                              {translateValue('DOCUMENTTYPE', subDocument.typeDocument.toUpperCase())}
-                                            </TableCell>
-                                            <TableCell>{showCanceled(subDocument.cancelStatus)}</TableCell>
-                                          </TableRow>
-                                        ))
+                                      {delivery.items.length > 0 &&
+                                      openDelivery &&
+                                      deliverySelected ==
+                                        delivery.distribution ? (
+                                        delivery.items.map(
+                                          (subDocument, subIndex) => (
+                                            <TableRow
+                                              key={subIndex}
+                                              sx={{cursor: 'pointer'}}
+                                              hover
+                                              onClick={() =>
+                                                goToDocument(subDocument)
+                                              }
+                                            >
+                                              <TableCell>
+                                                {subDocument.issueDate}
+                                              </TableCell>
+                                              <TableCell>
+                                                {subDocument.serialDocument}
+                                              </TableCell>
+                                              <TableCell>
+                                                {translateValue(
+                                                  'DOCUMENTTYPE',
+                                                  subDocument.typeDocument.toUpperCase(),
+                                                )}
+                                              </TableCell>
+                                              <TableCell>
+                                                {showCanceled(
+                                                  subDocument.cancelStatus,
+                                                )}
+                                              </TableCell>
+                                            </TableRow>
+                                          ),
+                                        )
                                       ) : (
                                         <></>
                                       )}

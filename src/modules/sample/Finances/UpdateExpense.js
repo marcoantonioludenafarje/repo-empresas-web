@@ -209,8 +209,6 @@ const UpdateExpense = (props) => {
     console.log('selectedExpense', selectedExpense);
   } */
 
-
-
   useEffect(() => {
     setSelectedProvider({});
     getBusinessParameter(businessParameterPayload);
@@ -283,10 +281,10 @@ const UpdateExpense = (props) => {
   }, []);
 
   useEffect(() => {
-    if (listProviders && listProviders.length>0) {
+    if (listProviders && listProviders.length > 0) {
       console.log('query.providerId', query.providerId);
       console.log('listProviders', listProviders);
-      if(query.providerId){
+      if (query.providerId) {
         let provider = listProviders.find(
           (input) => input.providerId === query.providerId,
         );
@@ -354,70 +352,77 @@ const UpdateExpense = (props) => {
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
     // if (selectedProvider.providerId) {
-      // if (listPayments.length > 0) {
-      console.log('Data', data);
-      console.log('anotherValues', anotherValues);
-      newFinancePayload.request.payload.createdAt = anotherValues.regsiterDate;
-      newFinancePayload.request.payload.numberDocumentProvider =
-      selectedProvider.providerId ? selectedProvider.providerId.split('-')[1] : '';
-      newFinancePayload.request.payload.denominationProvider =
-      selectedProvider.denominationProvider ? selectedProvider.denominationProvider : '';
-      newFinancePayload.request.payload.providerId =
-      selectedProvider.providerId ? selectedProvider.providerId : '';
-      newFinancePayload.request.payload.typeDocumentProvider =
-      selectedProvider.providerId ? selectedProvider.providerId.split('-')[0] : '';
-      newFinancePayload.request.payload.billIssueDate =
-        convertToDateWithoutTime(value2);
-      newFinancePayload.request.payload.serialNumberBill = data.nroBill;
-      newFinancePayload.request.payload.description = data.saleDetail;
-      newFinancePayload.request.payload.observation = data.buyObservation;
-      newFinancePayload.request.payload.totalAmount = Number(data.totalAmounth);
-      newFinancePayload.request.payload.status = statusExpense;
-      newFinancePayload.request.payload.folderMovement = query.folderMovement;
-      newFinancePayload.request.payload.movementHeaderId =
-        !isObjEmpty(query) && query.movementHeaderId
-          ? query.movementHeaderId
-          : null;
-      newFinancePayload.request.payload.payments = [];
-      newFinancePayload.request.payload.otherPayConcepts = [];
-      newFinancePayload.request.payload.purchaseType = purchaseType;
-      newFinancePayload.request.payload.otherPayConcepts = [];
-      listPayments.map((obj, index) => {
-        newFinancePayload.request.payload.payments.push({
-          descriptionPayment: obj.description,
-          transactionNumber: obj.transactionNumber,
-          paymentMethod: obj.paymentMethod,
-          payDate: convertToDateWithoutTime(obj.payDate),
-          expirationDate: convertToDateWithoutTime(obj.expirationDate),
-          amount: obj.amount,
-          statusPayment: obj.statePayment,
-        });
+    // if (listPayments.length > 0) {
+    console.log('Data', data);
+    console.log('anotherValues', anotherValues);
+    newFinancePayload.request.payload.createdAt = anotherValues.regsiterDate;
+    newFinancePayload.request.payload.numberDocumentProvider =
+      selectedProvider.providerId
+        ? selectedProvider.providerId.split('-')[1]
+        : '';
+    newFinancePayload.request.payload.denominationProvider =
+      selectedProvider.denominationProvider
+        ? selectedProvider.denominationProvider
+        : '';
+    newFinancePayload.request.payload.providerId = selectedProvider.providerId
+      ? selectedProvider.providerId
+      : '';
+    newFinancePayload.request.payload.typeDocumentProvider =
+      selectedProvider.providerId
+        ? selectedProvider.providerId.split('-')[0]
+        : '';
+    newFinancePayload.request.payload.billIssueDate =
+      convertToDateWithoutTime(value2);
+    newFinancePayload.request.payload.serialNumberBill = data.nroBill;
+    newFinancePayload.request.payload.description = data.saleDetail;
+    newFinancePayload.request.payload.observation = data.buyObservation;
+    newFinancePayload.request.payload.totalAmount = Number(data.totalAmounth);
+    newFinancePayload.request.payload.status = statusExpense;
+    newFinancePayload.request.payload.folderMovement = query.folderMovement;
+    newFinancePayload.request.payload.movementHeaderId =
+      !isObjEmpty(query) && query.movementHeaderId
+        ? query.movementHeaderId
+        : null;
+    newFinancePayload.request.payload.payments = [];
+    newFinancePayload.request.payload.otherPayConcepts = [];
+    newFinancePayload.request.payload.purchaseType = purchaseType;
+    newFinancePayload.request.payload.otherPayConcepts = [];
+    listPayments.map((obj, index) => {
+      newFinancePayload.request.payload.payments.push({
+        descriptionPayment: obj.description,
+        transactionNumber: obj.transactionNumber,
+        paymentMethod: obj.paymentMethod,
+        payDate: convertToDateWithoutTime(obj.payDate),
+        expirationDate: convertToDateWithoutTime(obj.expirationDate),
+        amount: obj.amount,
+        statusPayment: obj.statePayment,
       });
-      listOtherPayConcepts.map((obj, index) => {
-        newFinancePayload.request.payload.otherPayConcepts.push({
-          descriptionPayment: obj.description,
-          transactionNumber: obj.transactionNumber,
-          paymentMethod: obj.paymentMethod,
-          conceptAction: obj.conceptAction,
-          commentPayment: obj.commentPayment,
-          payDate: convertToDateWithoutTime(obj.payDate),
-          expirationDate: convertToDateWithoutTime(obj.expirationDate),
-          numInstallment: index + 1,
-          amount: obj.amount,
-          statusPayment: obj.statePayment,
-        });
+    });
+    listOtherPayConcepts.map((obj, index) => {
+      newFinancePayload.request.payload.otherPayConcepts.push({
+        descriptionPayment: obj.description,
+        transactionNumber: obj.transactionNumber,
+        paymentMethod: obj.paymentMethod,
+        conceptAction: obj.conceptAction,
+        commentPayment: obj.commentPayment,
+        payDate: convertToDateWithoutTime(obj.payDate),
+        expirationDate: convertToDateWithoutTime(obj.expirationDate),
+        numInstallment: index + 1,
+        amount: obj.amount,
+        statusPayment: obj.statePayment,
       });
-      /* } */
-      console.log('newFinancePayload', newFinancePayload);
-      dispatch({type: FETCH_SUCCESS, payload: undefined});
-      dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: UPDATE_FINANCE, payload: undefined});
-      toUpdateFinance(newFinancePayload);
-      setOpenStatus(true);
-      // } else {
-      //   typeAlert = 'faltaPayment';
-      //   setShowAlert(true);
-      // }
+    });
+    /* } */
+    console.log('newFinancePayload', newFinancePayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: UPDATE_FINANCE, payload: undefined});
+    toUpdateFinance(newFinancePayload);
+    setOpenStatus(true);
+    // } else {
+    //   typeAlert = 'faltaPayment';
+    //   setShowAlert(true);
+    // }
     // } else {
     //   typeAlert = 'provider';
     //   setShowAlert(true);
@@ -477,10 +482,7 @@ const UpdateExpense = (props) => {
     );
   };
   const registerError = () => {
-    return (
-      (successMessage != undefined && updateFinanceRes) ||
-      errorMessage
-    );
+    return (successMessage != undefined && updateFinanceRes) || errorMessage;
   };
   const sendStatus = () => {
     if (registerSuccess()) {

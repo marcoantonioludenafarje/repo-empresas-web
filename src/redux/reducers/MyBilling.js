@@ -2,7 +2,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_CURRENT_MOVEMENTS_DOCUMENTS,
-  RESET_MYBILLING
+  RESET_MYBILLING,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {

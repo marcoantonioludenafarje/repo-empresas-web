@@ -622,7 +622,7 @@ const NewInput = (props) => {
       (successMessage != undefined &&
         addMovementRes &&
         'error' in addMovementRes) ||
-        errorMessage
+      errorMessage
     ) {
       return (
         <>

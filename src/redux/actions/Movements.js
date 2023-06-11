@@ -460,15 +460,15 @@ export const listDistributions = (payload) => {
 };
 
 export const getOneDistribution = (payload) => {
-  console.log("payload getOneDistribution", payload);
+  console.log('payload getOneDistribution', payload);
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request(
       'get',
       `/distribution/deliveryDistribution/${payload.deliveryDistributionId}`,
       {
-      body: payload,
-      }
+        body: payload,
+      },
     )
       .then((data) => {
         console.log('getOneDistribution resultado', data);

@@ -676,7 +676,7 @@ const GetReferralGuide = () => {
           updateGenerateReferralGuideRes &&
           'error' in updateGenerateReferralGuideRes &&
           !objectsAreEqual(updateGenerateReferralGuideRes.error, {})) ||
-          errorMessage
+        errorMessage
       );
     } else {
       return (
@@ -684,7 +684,7 @@ const GetReferralGuide = () => {
           addReferralGuideRes &&
           'error' in addReferralGuideRes &&
           !objectsAreEqual(addReferralGuideRes.error, {})) ||
-          errorMessage
+        errorMessage
       );
     }
   };

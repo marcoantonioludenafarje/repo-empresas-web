@@ -123,7 +123,7 @@ const FinancesTable = (props) => {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: LIST_ROUTE, payload: undefined});
-      if(query.id){
+      if (query.id) {
         toGetOneDistribution({
           deliveryDistributionId: query.id,
           //indexDistributionSelected: indexDistributionSelected,
@@ -132,11 +132,11 @@ const FinancesTable = (props) => {
       } else {
         listDistributionsPayload.request.payload.merchantId =
           userDataRes.merchantSelected.merchantId;
-  
+
         toListDistributions(listDistributionsPayload);
       }
     }
-  }, [userDataRes,query]);
+  }, [userDataRes, query]);
 
   const compare = (a, b) => {
     if (a.createdAt < b.createdAt) {
@@ -218,8 +218,8 @@ const FinancesTable = (props) => {
   };
 
   const toGetOneDistribution = (payload) => {
-    dispatch(getOneDistribution(payload))
-  }
+    dispatch(getOneDistribution(payload));
+  };
   const handleClickFather = (deliveryDistributionId, index, event) => {
     setAnchorEl(event.currentTarget);
     setDistributionSelected(deliveryDistributionId);
@@ -269,6 +269,12 @@ const FinancesTable = (props) => {
       Router.push({
         pathname: '/sample/referral-guide/table',
         query: {referralGuideId: codOutput},
+      });
+    } else if (type == 'distribution') {
+      console.log('Esta es la id de la guia', codOutput);
+      Router.push({
+        pathname: '/sample/referral-guide/table',
+        query: {deliveryDistributionId: codOutput},
       });
     } else {
       return null;
@@ -423,12 +429,32 @@ const FinancesTable = (props) => {
       >
         {typeDialog == 'viewDetail' ? (
           <>
-            <DialogTitle sx={{fontSize: '1.5em', display: 'flex', alignItems: 'center' }} id='alert-dialog-title'>
-              <Button variant="contained" color="primary" >
+            <DialogTitle
+              sx={{fontSize: '1.5em', display: 'flex', alignItems: 'center'}}
+              id='alert-dialog-title'
+            >
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={() =>
+                  showObject(
+                    listDistribution[indexDistributionSelected]
+                      .deliveryDistributionId,
+                    'distribution',
+                  )
+                }
+                disabled={
+                  !(
+                    listDistribution[indexDistributionSelected] &&
+                    listDistribution[indexDistributionSelected].deliveries
+                      .length > 0
+                  )
+                }
+              >
                 <ArrowForwardIcon />
-                <div style={{ marginLeft: '5px' }}>GUÍAS</div>
+                <div style={{marginLeft: '5px'}}>GUÍAS</div>
               </Button>
-              <div style={{ margin: '0 auto' }}>Puntos de entrega</div>
+              <div style={{margin: '0 auto'}}>Puntos de entrega</div>
             </DialogTitle>
             <DialogContent>
               <TableContainer component={Paper} sx={{maxHeight: 440}}>
@@ -452,6 +478,7 @@ const FinancesTable = (props) => {
                       <TableCell>Observaciones</TableCell>
                       <TableCell>Peso total</TableCell>
                       <TableCell>Número de paquetes</TableCell>
+                      <TableCell>Fecha de Entrega</TableCell>
 
                       {/* <TableCell></TableCell> */}
                     </TableRow>
@@ -541,6 +568,9 @@ const FinancesTable = (props) => {
                               </TableCell>
                               <TableCell>
                                 {deliveryItem.numberOfPackages}
+                              </TableCell>
+                              <TableCell>
+                                {deliveryItem.transferStartDate}
                               </TableCell>
                             </TableRow>
 

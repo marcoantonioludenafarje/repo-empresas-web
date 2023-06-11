@@ -63,7 +63,10 @@ import {
 } from '../../../Utils/utils';
 
 import {updateDriver, getDrivers} from '../../../redux/actions/Drivers';
-import {FETCH_SUCCESS, FETCH_ERROR} from '../../../shared/constants/ActionTypes';
+import {
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+} from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {

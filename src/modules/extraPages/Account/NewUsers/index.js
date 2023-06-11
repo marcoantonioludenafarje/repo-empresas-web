@@ -90,10 +90,7 @@ const NewUsers = () => {
   };
 
   const registerError = () => {
-    return (
-      (registerUserRes && successMessage != undefined) ||
-      errorMessage
-    );
+    return (registerUserRes && successMessage != undefined) || errorMessage;
   };
 
   /*const sendStatus = () => {

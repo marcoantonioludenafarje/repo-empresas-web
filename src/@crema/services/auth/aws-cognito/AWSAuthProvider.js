@@ -517,7 +517,7 @@ const AwsAuthProvider = ({children}) => {
       localStorage.removeItem('updateNotification');
       localStorage.removeItem('pathsBack');
       localStorage.removeItem('updateNotification');
-      
+
       dispatch({type: RESET_CARRIERS});
       dispatch({type: RESET_CLIENTS});
       dispatch({type: RESET_COMMON});
@@ -540,7 +540,7 @@ const AwsAuthProvider = ({children}) => {
         isAuthenticated: false,
       });
       console.log('Cerrando sesión');
-      //history.reload(); 
+      //history.reload();
     } catch (error) {
       setAwsCognitoData({
         user: null,

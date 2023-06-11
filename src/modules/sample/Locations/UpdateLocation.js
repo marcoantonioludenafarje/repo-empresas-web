@@ -64,7 +64,10 @@ import {
 } from '../../../Utils/utils';
 
 import {updateLocation, getLocations} from '../../../redux/actions/Locations';
-import {FETCH_SUCCESS, FETCH_ERROR} from '../../../shared/constants/ActionTypes';
+import {
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+} from '../../../shared/constants/ActionTypes';
 import originalUbigeos from '../../../Utils/ubigeo.json';
 
 const useStyles = makeStyles((theme) => ({

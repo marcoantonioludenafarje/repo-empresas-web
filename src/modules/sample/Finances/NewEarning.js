@@ -533,7 +533,7 @@ const NewEarning = (props) => {
       (successMessage != undefined &&
         addFinanceRes &&
         'error' in addFinanceRes) ||
-        errorMessage
+      errorMessage
     );
   };
   const sendStatus = () => {

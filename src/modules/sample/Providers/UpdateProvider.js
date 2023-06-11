@@ -64,7 +64,10 @@ import {
 } from '../../../Utils/utils';
 
 import {updateProvider, onGetProviders} from '../../../redux/actions/Providers';
-import {FETCH_SUCCESS, FETCH_ERROR} from '../../../shared/constants/ActionTypes';
+import {
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+} from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {

@@ -218,7 +218,7 @@ const NewCarrier = () => {
       (successMessage != undefined &&
         newCarrierRes &&
         'error' in newCarrierRes) ||
-        errorMessage
+      errorMessage
     );
   };
 

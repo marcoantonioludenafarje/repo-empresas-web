@@ -589,7 +589,7 @@ const NewOutput = (props) => {
                 priceBusinessMoneyWithIgv: Number(
                   obj.priceBusinessMoneyWithIgv,
                 ),
-                category: obj.category || "",
+                category: obj.category || '',
                 customCodeProduct: obj.customCodeProduct,
                 description: obj.description,
                 unitMeasure: obj.unitMeasure,
@@ -655,7 +655,7 @@ const NewOutput = (props) => {
         addInvoiceRes &&
         'error' in addInvoiceRes &&
         !objectsAreEqual(addInvoiceRes.error, {})) ||
-        errorMessage
+      errorMessage
     );
   };
 

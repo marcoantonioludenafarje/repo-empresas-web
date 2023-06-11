@@ -36,7 +36,7 @@ const NotificationItem = (props) => {
   const renderSwitch = (item) => {
     switch (item.typeIcon.toLowerCase()) {
       case 'localshippingicon':
-        return <LocalShippingIcon style={{color:cyan[500]}} />;
+        return <LocalShippingIcon style={{color: cyan[500]}} />;
       case 'pointofsaleicon':
         return <PointOfSaleIcon style={{color: green[500]}} />;
       case 'success':
@@ -145,7 +145,8 @@ const NotificationItem = (props) => {
               display: 'inline-block',
             }}
           >
-            {item.title}{item.numberOfProducts ? `(${item.numberOfProducts})` : ''}:
+            {item.title}
+            {item.numberOfProducts ? `(${item.numberOfProducts})` : ''}:
           </Box>
           {item.message}
           <ListItemAvatar

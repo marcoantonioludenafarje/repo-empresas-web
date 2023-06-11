@@ -90,7 +90,7 @@ const carriersReducer = (state = INIT_STATE, action) => {
       return {
         getCarriersRes: [],
         carriersLastEvaluatedKey_pageListCarriers: null,
-      }
+      };
     default:
       return state;
   }

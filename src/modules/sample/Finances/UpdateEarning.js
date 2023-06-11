@@ -277,7 +277,7 @@ const UpdateEarning = (props) => {
     if (listClients && listClients.length > 0) {
       console.log('query.providerId', query.providerId);
       console.log('listClients', listClients);
-      if(query.providerId){
+      if (query.providerId) {
         let client = listClients.find(
           (input) => input.clientId === query.providerId,
         );
@@ -345,66 +345,70 @@ const UpdateEarning = (props) => {
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
     // if (selectedClient.clientId) {
-      // if (listPayments.length > 0) {
-      console.log('Data', data);
-      console.log('anotherValues', anotherValues);
-      newFinancePayload.request.payload.createdAt = anotherValues.registerDate;
-      newFinancePayload.request.payload.numberDocumentProvider =
-        selectedClient.clientId ? selectedClient.clientId.split('-')[1] : '';
-      newFinancePayload.request.payload.denominationProvider =
-        selectedClient.denominationClient ? selectedClient.denominationClient : '';
-      newFinancePayload.request.payload.providerId = selectedClient.clientId ? selectedClient.clientId : '';
-      newFinancePayload.request.payload.typeDocumentProvider =
-        selectedClient.clientId ? selectedClient.clientId.split('-')[0] : '';
-      newFinancePayload.request.payload.billIssueDate =
-        convertToDateWithoutTime(value2);
-      newFinancePayload.request.payload.serialNumberBill = data.nroBill;
-      newFinancePayload.request.payload.description = data.saleDetail;
-      newFinancePayload.request.payload.observation = data.saleObservation;
-      newFinancePayload.request.payload.totalAmount = Number(data.totalAmounth);
-      newFinancePayload.request.payload.status = statusEarning;
-      //newFinancePayload.request.payload.proofOfPaymentType = query.proofOfPaymentType || "";
-      newFinancePayload.request.payload.folderMovement = query.folderMovement;
-      newFinancePayload.request.payload.movementHeaderId =
-        !isObjEmpty(query) && query.movementHeaderId
-          ? query.movementHeaderId
-          : null;
-      newFinancePayload.request.payload.payments = [];
-      newFinancePayload.request.payload.otherPayConcepts = [];
-      newFinancePayload.request.payload.purchaseType = purchaseType;
-      listPayments.map((obj, index) => {
-        newFinancePayload.request.payload.payments.push({
-          descriptionPayment: obj.description,
-          transactionNumber: obj.transactionNumber,
-          paymentMethod: obj.paymentMethod,
-          payDate: convertToDateWithoutTime(obj.payDate),
-          expirationDate: convertToDateWithoutTime(obj.expirationDate),
-          numInstallment: index + 1,
-          amount: obj.amount,
-          statusPayment: obj.statePayment,
-        });
+    // if (listPayments.length > 0) {
+    console.log('Data', data);
+    console.log('anotherValues', anotherValues);
+    newFinancePayload.request.payload.createdAt = anotherValues.registerDate;
+    newFinancePayload.request.payload.numberDocumentProvider =
+      selectedClient.clientId ? selectedClient.clientId.split('-')[1] : '';
+    newFinancePayload.request.payload.denominationProvider =
+      selectedClient.denominationClient
+        ? selectedClient.denominationClient
+        : '';
+    newFinancePayload.request.payload.providerId = selectedClient.clientId
+      ? selectedClient.clientId
+      : '';
+    newFinancePayload.request.payload.typeDocumentProvider =
+      selectedClient.clientId ? selectedClient.clientId.split('-')[0] : '';
+    newFinancePayload.request.payload.billIssueDate =
+      convertToDateWithoutTime(value2);
+    newFinancePayload.request.payload.serialNumberBill = data.nroBill;
+    newFinancePayload.request.payload.description = data.saleDetail;
+    newFinancePayload.request.payload.observation = data.saleObservation;
+    newFinancePayload.request.payload.totalAmount = Number(data.totalAmounth);
+    newFinancePayload.request.payload.status = statusEarning;
+    //newFinancePayload.request.payload.proofOfPaymentType = query.proofOfPaymentType || "";
+    newFinancePayload.request.payload.folderMovement = query.folderMovement;
+    newFinancePayload.request.payload.movementHeaderId =
+      !isObjEmpty(query) && query.movementHeaderId
+        ? query.movementHeaderId
+        : null;
+    newFinancePayload.request.payload.payments = [];
+    newFinancePayload.request.payload.otherPayConcepts = [];
+    newFinancePayload.request.payload.purchaseType = purchaseType;
+    listPayments.map((obj, index) => {
+      newFinancePayload.request.payload.payments.push({
+        descriptionPayment: obj.description,
+        transactionNumber: obj.transactionNumber,
+        paymentMethod: obj.paymentMethod,
+        payDate: convertToDateWithoutTime(obj.payDate),
+        expirationDate: convertToDateWithoutTime(obj.expirationDate),
+        numInstallment: index + 1,
+        amount: obj.amount,
+        statusPayment: obj.statePayment,
       });
-      listOtherPayConcepts.map((obj, index) => {
-        newFinancePayload.request.payload.otherPayConcepts.push({
-          descriptionPayment: obj.description,
-          transactionNumber: obj.transactionNumber,
-          paymentMethod: obj.paymentMethod,
-          conceptAction: obj.conceptAction,
-          commentPayment: obj.commentPayment,
-          payDate: convertToDateWithoutTime(obj.payDate),
-          expirationDate: convertToDateWithoutTime(obj.expirationDate),
-          numInstallment: index + 1,
-          amount: obj.amount,
-          statusPayment: obj.statePayment,
-        });
+    });
+    listOtherPayConcepts.map((obj, index) => {
+      newFinancePayload.request.payload.otherPayConcepts.push({
+        descriptionPayment: obj.description,
+        transactionNumber: obj.transactionNumber,
+        paymentMethod: obj.paymentMethod,
+        conceptAction: obj.conceptAction,
+        commentPayment: obj.commentPayment,
+        payDate: convertToDateWithoutTime(obj.payDate),
+        expirationDate: convertToDateWithoutTime(obj.expirationDate),
+        numInstallment: index + 1,
+        amount: obj.amount,
+        statusPayment: obj.statePayment,
       });
-      /* } */
-      console.log('newFinancePayload', newFinancePayload);
-      dispatch({type: FETCH_SUCCESS, payload: undefined});
-      dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: UPDATE_FINANCE, payload: undefined});
-      toUpdateFinance(newFinancePayload);
-      setOpenStatus(true);
+    });
+    /* } */
+    console.log('newFinancePayload', newFinancePayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: UPDATE_FINANCE, payload: undefined});
+    toUpdateFinance(newFinancePayload);
+    setOpenStatus(true);
     // } else {
     //   typeAlert = 'faltaPayment';
     //   setShowAlert(true);
@@ -469,10 +473,7 @@ const UpdateEarning = (props) => {
     );
   };
   const registerError = () => {
-    return (
-      (successMessage != undefined && updateFinanceRes) ||
-      errorMessage
-    );
+    return (successMessage != undefined && updateFinanceRes) || errorMessage;
   };
   const sendStatus = () => {
     if (registerSuccess()) {

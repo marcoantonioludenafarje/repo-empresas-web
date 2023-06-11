@@ -197,15 +197,12 @@ const NewRequest = ({data, subType, closeNewRequest}) => {
   };
   const registerError = () => {
     console.log('A punto de ser fallido?');
-    return (
-      (newRequestRes && successMessage != undefined) ||
-      errorMessage
-    );
+    return (newRequestRes && successMessage != undefined) || errorMessage;
   };
   const sendStatus = () => {
     if (registerSuccess()) {
       setOpenStatus(false);
-      closeNewRequest()
+      closeNewRequest();
     } else if (registerError()) {
       setOpenStatus(false);
     } else {
