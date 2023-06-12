@@ -364,12 +364,13 @@ const GetReceipt = (props) => {
       );
       changeValueField('clientEmail', selectedOutput.client.email);
       selectedProducts = selectedOutput.descriptionProductsInfo;
-      selectedProducts.map((obj) => {
+      selectedProducts = selectedProducts.map((obj) => {
         obj['subtotal'] = Number(
           (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(2),
         );
         obj['taxCode'] =
           Number(query.igv) > 0 || query.igv == 'true' ? 1000 : 9998;
+        return obj
       });
       console.log('selectedProducts', selectedProducts);
     }
@@ -1301,13 +1302,15 @@ const GetReceipt = (props) => {
                 </Grid>
 
                 <Divider sx={{my: 3}} />
-                <OutputProducts
+                {selectedProducts && selectedProducts.length > 0 ? (
+                  <OutputProducts
                   data={selectedProducts}
                   valueWithIGV={valueWithIGV}
                   toDelete={removeProduct}
                   toChangeTaxCode={changeTaxCode}
                   igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
-                ></OutputProducts>
+                  ></OutputProducts>
+                ) : null}
                 <Divider sx={{my: 3}} />
 
                 <ButtonGroup

@@ -157,6 +157,7 @@ const GetCreditNote = () => {
   const {query} = router;
   const forceUpdate = useForceUpdate();
   let changeValueField;
+  let getValueField;
 
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
@@ -441,8 +442,13 @@ const GetCreditNote = () => {
           serialDocument: obj.document,
         });
       });
+      const listTypeIgvCode = {
+        1000: 10,
+        9997: 20,
+        9998: 30,
+      };
       let cleanProducts = [];
-      selectedProducts.map((obj) => {
+      selectedProducts.forEach((obj) => {
         cleanProducts.push({
           product: obj.product,
           quantityMovement: obj.quantityMovement,
@@ -451,7 +457,7 @@ const GetCreditNote = () => {
           description: obj.description,
           unitMeasure: obj.unitMeasure,
           taxCode: obj.taxCode || '',
-          igvCode: obj.igvCode || '',
+          igvCode: listTypeIgvCode[`${obj.taxCode}`] || '',
         });
       });
       console.log('cleanProducts', cleanProducts);
@@ -504,7 +510,7 @@ const GetCreditNote = () => {
       dispatch({type: ADD_CREDIT_NOTE, payload: undefined});
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      toAddCreditNote(finalPayload);
+      //toAddCreditNote(finalPayload);
       setTypeResult('statusResult');
       setOpenDialog(true);
     } else {
@@ -577,9 +583,14 @@ const GetCreditNote = () => {
     product.priceProduct = product.priceBusinessMoneyWithIgv;
     product.count = product.quantityMovement;
     selectedProducts.push(product);
+    let totalWithIgv = 0;
     let calculatedtotal = 0;
-    selectedProducts.map((obj) => {
+    selectedProducts.forEach((obj) => {
       calculatedtotal += obj.subtotal;
+      totalWithIgv +=
+        obj.taxCode == 1000 && query.igv && Number(query.igv) > 0
+          ? Number((Number(obj.subtotal) * (1 + igvDefault)).toFixed(2))
+          : Number(obj.subtotal);
     });
     if (selectedBill.totalPriceWithIgv < calculatedtotal) {
       setCreditNote(false);
@@ -595,25 +606,27 @@ const GetCreditNote = () => {
     console.log('total de las salidas', total);
     console.log('Productos seleccionados', selectedProducts);
     changeValueField('totalField', Number(total.toFixed(2)));
-    changeValueField(
-      'totalFieldIgv',
-      query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(2))
-        : Number(total.toFixed(2)),
-    );
+
+    changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
+
     console.log('total de los productos', total);
     forceUpdate();
   };
   const removeProduct = (index) => {
     selectedProducts.splice(index, 1);
+    let totalWithIgv = 0;
     if (selectedProducts.length == 0) {
       total = 0;
       setCreditNote(true);
       setSubTypeNote(creditNoteTypes[0].name);
     } else {
       let calculatedtotal = 0;
-      selectedProducts.map((obj) => {
+      selectedProducts.forEach((obj) => {
         calculatedtotal += obj.subtotal;
+        totalWithIgv +=
+        obj.taxCode == 1000 && query.igv && Number(query.igv) > 0
+          ? Number((obj.subtotal * (1 + igvDefault)).toFixed(2))
+          : obj.subtotal;
       });
       total = calculatedtotal;
       if (selectedBill.totalPriceWithIgv < calculatedtotal) {
@@ -628,12 +641,50 @@ const GetCreditNote = () => {
       }
     }
     changeValueField('totalField', Number(total.toFixed(2)));
-    changeValueField(
-      'totalFieldIgv',
-      query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(2))
-        : total,
-    );
+
+    changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
+    forceUpdate();
+  };
+  const changeTaxCode = (index, taxCode) => {
+    console.log('selectedProducts wtf', selectedProducts);
+    console.log('selectedProducts index', index);
+
+    console.log('selectedProducts product', selectedProducts[index]);
+    console.log('selectedProducts taxCode', taxCode);
+    const subTotalWithPreviousTaxCode =
+      selectedProducts[index].taxCode == 1000 &&
+      query.igv &&
+      Number(query.igv) > 0
+        ? Number(
+            (selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2),
+          )
+        : Number(selectedProducts[index].subtotal);
+    const subTotalWithNextTaxCode =
+      taxCode == 1000 && query.igv && Number(query.igv) > 0
+        ? Number(
+            (selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2),
+          )
+        : Number(selectedProducts[index].subtotal);
+    let calculatedtotalIgv =
+      getValueField('totalFieldIgv').value -
+      subTotalWithPreviousTaxCode +
+      subTotalWithNextTaxCode;
+
+    let actualProduct = {
+      ...selectedProducts[index],
+      taxCode: taxCode,
+    };
+    // selectedProducts[index].taxCode = product.taxCode;
+    console.log('selectedProducts product 2', actualProduct);
+    selectedProducts = selectedProducts.map((obj, i) => {
+      if (i == index) {
+        return actualProduct;
+      } else {
+        return obj;
+      }
+    });
+    total = calculatedtotalIgv;
+    changeValueField('totalFieldIgv', Number(calculatedtotalIgv.toFixed(2)));
     forceUpdate();
   };
 
@@ -764,8 +815,9 @@ const GetCreditNote = () => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -950,6 +1002,7 @@ const GetCreditNote = () => {
                       data={selectedProducts}
                       toDelete={removeProduct}
                       valueWithIGV={valueWithIGV}
+                      toChangeTaxCode={changeTaxCode}
                       igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
                     ></OutputProducts>
                     <Divider sx={{my: 3}} />

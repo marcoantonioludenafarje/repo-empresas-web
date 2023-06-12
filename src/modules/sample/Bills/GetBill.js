@@ -30,7 +30,7 @@ import {
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-
+import SchoolIcon from '@mui/icons-material/School';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
@@ -40,7 +40,6 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import {red} from '@mui/material/colors';
 import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
-import {getUserData} from '../../../redux/actions/User';
 import {useHistory} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -70,9 +69,8 @@ import {
   ADD_INVOICE,
   GET_BUSINESS_PARAMETER,
   GET_MOVEMENTS,
-  GET_USER_DATA,
 } from '../../../shared/constants/ActionTypes';
-import SchoolIcon from '@mui/icons-material/School';
+
 const useStyles = makeStyles((theme) => ({
   container: {
     textAlign: 'center',
@@ -115,7 +113,6 @@ const useStyles = makeStyles((theme) => ({
     width: '20px',
   },
 }));
-
 const maxLength = 11111111111111111111; //20 caracteres
 const validationSchema = yup.object({
   guide: yup.string().typeError(<IntlMessages id='validation.string' />),
@@ -184,12 +181,13 @@ const NewOutput = (props) => {
   let money_unit;
   let weight_unit;
   let changeValueField;
+  let getValueField;
   let objSelects = {};
 
   /* const [exchangeRate, setExchangeRate] = React.useState(); */
   const [igvDefault, setIgvDefault] = React.useState(0);
-  const [addIgv, setAddIgv] = React.useState(false);
   const [sendEmail, setSendEmail] = React.useState(true);
+  const [addIgv, setAddIgv] = React.useState(false);
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showDelete, setShowDelete] = React.useState(false);
@@ -199,14 +197,14 @@ const NewOutput = (props) => {
   const prevExchangeRateRef = useRef();
   const [showForms, setShowForms] = React.useState(false);
   const [serial, setSerial] = React.useState('');
+  const [minTutorial, setMinTutorial] = React.useState(false);
+  const [earningGeneration, setEarningGeneration] = React.useState(
+    query.contableMovementId ? false : true,
+  );
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   const [expirationDate, setExpirationDate] = React.useState(
     Date.now() + 1 * 24 * 60 * 60 * 1000,
-  );
-  const [minTutorial, setMinTutorial] = React.useState(false);
-  const [earningGeneration, setEarningGeneration] = React.useState(
-    query.contableMovementId ? false : true,
   );
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
@@ -239,164 +237,6 @@ const NewOutput = (props) => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
-  useEffect(() => {
-    selectedOutput = {loaded: false};
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    if (userDataRes.merchantSelected.typeClient == 'PN') {
-      setPaymentWay('debit');
-    }
-    dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
-    getBusinessParameter(businessParameterPayload);
-    if (outputItems_pageListOutput !== undefined) {
-      selectedOutput = outputItems_pageListOutput.find(
-        (input) => input.movementHeaderId == query.movementHeaderId,
-      );
-      console.log('selectedOutput', selectedOutput);
-      console.log(
-        'selectedOutput.documentsMovement',
-        selectedOutput.documentsMovement,
-      );
-      let filteredDocuments = selectedOutput.documentsMovement.filter(
-        (obj) => obj.typeDocument === 'referralGuide',
-      );
-      listDocuments = filteredDocuments.map((obj) => {
-        return {
-          dateDocument: obj.issueDate,
-          document: obj.serialDocument,
-          typeDocument: obj.typeDocument,
-          isSelected: true,
-        };
-      });
-      console.log('listDocuments', listDocuments);
-    }
-    setTimeout(() => {
-      setMinTutorial(true);
-    }, 2000);
-  }, []);
-
-  //----------------------
-
-  useEffect(() => {
-    if (businessParameter) {
-      let serieParameter = businessParameter.find(
-        (obj) => obj.abreParametro == 'SERIES_BILL',
-      );
-
-      let igvDefault = businessParameter.find(
-        (obj) => obj.abreParametro == 'IGV',
-      ).value;
-      setIgvDefault(igvDefault);
-      console.log('serieParameter', serieParameter);
-      console.log('serieParameter.metadata', serieParameter.metadata);
-      setSerial(serieParameter.metadata ? serieParameter.metadata : '');
-    }
-  }, [businessParameter]);
-
-  //------------------------
-
-  useEffect(() => {
-    /* setAddIgv(Number(query.igv) > 0 || query.igv == 'true'); */
-    if (selectedOutput) {
-      selectedProducts = isObjEmpty(query)
-        ? []
-        : selectedOutput.descriptionProductsInfo;
-      total = selectedOutput.totalPriceWithoutIgv
-        ? selectedOutput.totalPriceWithoutIgv
-        : selectedOutput.totalPriceWithIgv;
-      selectedClient = {clientId: query.clientId, clientName: query.clientName};
-      selectedOutput.loaded = true;
-    }
-  }, [selectedOutput]);
-
-  useEffect(() => {
-    if (
-      selectedOutput &&
-      typeof selectedOutput === 'object' &&
-      selectedOutput.loaded == true
-    ) {
-      changeValueField(
-        'receiver',
-        `${query.clientId.split('-')[1]} - ${
-          selectedOutput.client.denomination
-        }`,
-      );
-      changeValueField('clientEmail', selectedOutput.client.email);
-      selectedProducts = selectedOutput.descriptionProductsInfo;
-      selectedProducts.map((obj) => {
-        obj['subtotal'] = Number(
-          (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(2),
-        );
-      });
-      console.log('selectedProducts', selectedProducts);
-    }
-  }, [selectedOutput]);
-
-  //SETEANDO PARAMETROS
-  useEffect(() => {
-    if (businessParameter) {
-      weight_unit = businessParameter.find(
-        (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
-      ).value;
-    }
-  }, [businessParameter]);
-
-  /* if (businessParameter != undefined) {
-    weight_unit = businessParameter.find(
-      (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
-    ).value;
-  } */
-
-  useEffect(() => {
-    if (prevExchangeRate !== exchangeRate && Object.keys(query).length !== 0) {
-      console.log('exchangerate cambiaso', exchangeRate);
-      changeValueField('totalField', Number(total));
-      console.log('Cambiando los totales');
-      changeValueField(
-        'totalFieldIgv',
-        query.igv && fixDecimals(query.igv) > 0
-          ? fixDecimals(total + fixDecimals(total * fixDecimals(query.igv)))
-          : fixDecimals(total),
-      );
-    }
-  }, [exchangeRate]);
-
-  useEffect(() => {
-    if (businessParameter != undefined) {
-      let obtainedMoneyUnit = businessParameter.find(
-        (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
-      ).value;
-      setMoneyUnit(obtainedMoneyUnit);
-      setMoneyToConvert(obtainedMoneyUnit);
-      console.log('moneyUnit', moneyUnit);
-    }
-  }, [businessParameter != undefined]);
-
-  useEffect(() => {
-    if (globalParameter != undefined && moneyUnit) {
-      let obtainedExchangeRate = globalParameter.find(
-        (obj) =>
-          obj.abreParametro == `ExchangeRate_${moneyToConvert}_${moneyUnit}`,
-      ).value;
-      setExchangeRate(obtainedExchangeRate);
-      console.log('exchangeRate', exchangeRate);
-    }
-  }, [globalParameter != undefined && moneyUnit]);
-  useEffect(() => {
-    if (
-      globalParameter != undefined &&
-      moneyUnit &&
-      prevMoneyToConvert !== moneyToConvert
-    ) {
-      let obtainedExchangeRate = globalParameter.find(
-        (obj) =>
-          obj.abreParametro == `ExchangeRate_${moneyToConvert}_${moneyUnit}`,
-      ).value;
-      setExchangeRate(obtainedExchangeRate);
-      console.log('exchangeRate', exchangeRate);
-    }
-  }, [globalParameter != undefined && moneyUnit, moneyToConvert]);
 
   const defaultValues = {
     nroBill: 'Autogenerado' /* query.documentIntern */,
@@ -456,6 +296,161 @@ const NewOutput = (props) => {
   };
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
+  useEffect(() => {
+    selectedOutput = {loaded: false};
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    if (userDataRes.merchantSelected.typeClient == 'PN') {
+      setPaymentWay('debit');
+    }
+    dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
+    getBusinessParameter(businessParameterPayload);
+    if (outputItems_pageListOutput !== undefined) {
+      selectedOutput = outputItems_pageListOutput.find(
+        (input) => input.movementHeaderId == query.movementHeaderId,
+      );
+      console.log('selectedOutput', selectedOutput);
+      console.log(
+        'selectedOutput.documentsMovement',
+        selectedOutput.documentsMovement,
+      );
+      let filteredDocuments = selectedOutput.documentsMovement.filter(
+        (obj) => obj.typeDocument === 'referralGuide',
+      );
+      listDocuments = filteredDocuments.map((obj) => {
+        return {
+          dateDocument: obj.issueDate,
+          document: obj.serialDocument,
+          typeDocument: obj.typeDocument,
+          isSelected: true,
+        };
+      });
+      console.log('listDocuments', listDocuments);
+    }
+    setTimeout(() => {
+      setMinTutorial(true);
+    }, 2000);
+  }, []);
+
+  //----------------------
+
+  useEffect(() => {
+    if (businessParameter) {
+      let serieParameter = businessParameter.find(
+        (obj) => obj.abreParametro == 'SERIES_BILL',
+      );
+      console.log('serieParameter', serieParameter);
+      console.log('serieParameter.metadata', serieParameter.metadata);
+      setSerial(serieParameter.metadata ? serieParameter.metadata : '');
+
+      let igvDefault = businessParameter.find(
+        (obj) => obj.abreParametro == 'IGV',
+      ).value;
+      setIgvDefault(igvDefault);
+
+      let obtainedMoneyUnit = businessParameter.find(
+        (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
+      ).value;
+      setMoneyUnit(obtainedMoneyUnit);
+      setMoneyToConvert(obtainedMoneyUnit);
+      console.log('moneyUnit', moneyUnit);
+
+      weight_unit = businessParameter.find(
+        (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
+      ).value;
+    }
+  }, [businessParameter]);
+
+  //------------------------
+
+  useEffect(() => {
+    /* setAddIgv(Number(query.igv) > 0 || query.igv == 'true'); */
+    if (selectedOutput) {
+      selectedProducts = isObjEmpty(query)
+        ? []
+        : selectedOutput.descriptionProductsInfo;
+      total = selectedOutput.totalPriceWithoutIgv
+        ? selectedOutput.totalPriceWithoutIgv
+        : selectedOutput.totalPriceWithIgv;
+      selectedClient = {clientId: query.clientId, clientName: query.clientName};
+      selectedOutput.loaded = true;
+    }
+  }, [selectedOutput]);
+
+  useEffect(() => {
+    if (
+      selectedOutput &&
+      typeof selectedOutput === 'object' &&
+      selectedOutput.loaded == true
+    ) {
+      changeValueField(
+        'receiver',
+        `${query.clientId.split('-')[1]} - ${
+          selectedOutput.client.denomination
+        }`,
+      );
+      changeValueField('clientEmail', selectedOutput.client.email);
+      selectedProducts = selectedOutput.descriptionProductsInfo;
+      selectedProducts = selectedProducts.map((obj) => {
+        obj['subtotal'] = Number(
+          (obj.quantityMovement * obj.priceBusinessMoneyWithIgv).toFixed(2),
+        );
+        obj['taxCode'] =
+          Number(query.igv) > 0 || query.igv == 'true' ? 1000 : 9998;
+        return obj
+      });
+      console.log('selectedProducts', selectedProducts);
+    }
+  }, [selectedOutput]);
+
+
+  /* if (businessParameter != undefined) {
+    weight_unit = businessParameter.find(
+      (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
+    ).value;
+  } */
+
+  useEffect(() => {
+    if (prevExchangeRate !== exchangeRate && Object.keys(query).length !== 0) {
+      console.log('exchangerate cambiaso', exchangeRate);
+      changeValueField('totalField', Number(total));
+      console.log('Cambiando los totales');
+      changeValueField(
+        'totalFieldIgv',
+        query.igv && fixDecimals(query.igv) > 0
+          ? fixDecimals(total + fixDecimals(total * fixDecimals(query.igv)))
+          : fixDecimals(total),
+      );
+    }
+  }, [exchangeRate]);
+
+
+  useEffect(() => {
+    if (globalParameter != undefined && moneyUnit) {
+      let obtainedExchangeRate = globalParameter.find(
+        (obj) =>
+          obj.abreParametro == `ExchangeRate_${moneyToConvert}_${moneyUnit}`,
+      ).value;
+      setExchangeRate(obtainedExchangeRate);
+      console.log('exchangeRate', exchangeRate);
+    }
+  }, [globalParameter != undefined && moneyUnit]);
+  useEffect(() => {
+    if (
+      globalParameter != undefined &&
+      moneyUnit &&
+      prevMoneyToConvert !== moneyToConvert
+    ) {
+      let obtainedExchangeRate = globalParameter.find(
+        (obj) =>
+          obj.abreParametro == `ExchangeRate_${moneyToConvert}_${moneyUnit}`,
+      ).value;
+      setExchangeRate(obtainedExchangeRate);
+      console.log('exchangeRate', exchangeRate);
+    }
+  }, [globalParameter != undefined && moneyUnit, moneyToConvert]);
+
+  
   const cancel = () => {
     Router.push('/sample/bills/table');
   };
@@ -512,25 +507,66 @@ const NewOutput = (props) => {
   const removeProduct = (index) => {
     /* total -= Number(selectedProducts[index].subtotal); */
     selectedProducts.splice(index, 1);
+    let totalWithIgv = 0;
     if (selectedProducts.length == 0) {
       total = 0;
     } else {
       let calculatedtotal = 0;
-      selectedProducts.map((obj) => {
+      selectedProducts.forEach((obj) => {
         calculatedtotal += obj.subtotal;
+        totalWithIgv +=
+          obj.taxCode == 1000 && query.igv && Number(query.igv) > 0
+            ? Number((obj.subtotal * (1 + igvDefault)).toFixed(2))
+            : obj.subtotal;
       });
       total = calculatedtotal;
     }
     changeValueField('totalField', Number(total.toFixed(2)));
-    changeValueField(
-      'totalFieldIgv',
-      query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(2))
-        : total,
-    );
+    changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
     forceUpdate();
   };
+  const changeTaxCode = (index, taxCode) => {
+    console.log('selectedProducts wtf', selectedProducts);
+    console.log('selectedProducts index', index);
 
+    console.log('selectedProducts product', selectedProducts[index]);
+    console.log('selectedProducts taxCode', taxCode);
+    const subTotalWithPreviousTaxCode =
+      selectedProducts[index].taxCode == 1000 &&
+      query.igv &&
+      Number(query.igv) > 0
+        ? Number(
+            (selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2),
+          )
+        : Number(selectedProducts[index].subtotal);
+    const subTotalWithNextTaxCode =
+      taxCode == 1000 && query.igv && Number(query.igv) > 0
+        ? Number(
+            (selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2),
+          )
+        : Number(selectedProducts[index].subtotal);
+    let calculatedtotalIgv =
+      getValueField('totalFieldIgv').value -
+      subTotalWithPreviousTaxCode +
+      subTotalWithNextTaxCode;
+
+    let actualProduct = {
+      ...selectedProducts[index],
+      taxCode: taxCode,
+    };
+    // selectedProducts[index].taxCode = product.taxCode;
+    console.log('selectedProducts product 2', actualProduct);
+    selectedProducts = selectedProducts.map((obj, i) => {
+      if (i == index) {
+        return actualProduct;
+      } else {
+        return obj;
+      }
+    });
+    total = calculatedtotalIgv;
+    changeValueField('totalFieldIgv', Number(calculatedtotalIgv.toFixed(2)));
+    forceUpdate();
+  };
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -545,6 +581,11 @@ const NewOutput = (props) => {
       }));
     console.log('parsedDocuments', parsedDocuments);
     let finalPayload;
+    const listTypeIgvCode = {
+      1000: 10,
+      9997: 20,
+      9998: 30,
+    };
     try {
       finalPayload = {
         request: {
@@ -595,7 +636,7 @@ const NewOutput = (props) => {
                 unitMeasure: obj.unitMeasure,
                 businessProductCode: obj.businessProductCode,
                 taxCode: obj.taxCode,
-                igvCode: obj.igvCode,
+                igvCode: listTypeIgvCode[`${obj.taxCode}`],
               };
             }),
             documentsMovement: selectedOutput.documentsMovement,
@@ -764,20 +805,20 @@ const NewOutput = (props) => {
       });
     }
     selectedProducts.push(product);
+    let totalWithIgv = 0;
     let calculatedtotal = 0;
-    selectedProducts.map((obj) => {
-      calculatedtotal += obj.subtotal;
+    selectedProducts.forEach((obj) => {
+      calculatedtotal += Number(obj.subtotal);
+      totalWithIgv +=
+        obj.taxCode == 1000 && query.igv && Number(query.igv) > 0
+          ? Number((Number(obj.subtotal) * (1 + igvDefault)).toFixed(2))
+          : Number(obj.subtotal);
     });
     total = calculatedtotal;
     console.log('total de las salidas', total);
     changeValueField('totalField', Number(total.toFixed(2)));
     console.log('query', query);
-    changeValueField(
-      'totalFieldIgv',
-      query.igv && Number(query.igv) > 0
-        ? Number((total + total * Number(query.igv)).toFixed(2))
-        : Number(total.toFixed(2)),
-    );
+    changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
     console.log('total de los productos', total);
     forceUpdate();
   };
@@ -841,8 +882,9 @@ const NewOutput = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
             return (
               <Form
                 style={{textAlign: 'left'}}
@@ -1261,6 +1303,7 @@ const NewOutput = (props) => {
                   data={selectedProducts}
                   valueWithIGV={valueWithIGV}
                   toDelete={removeProduct}
+                  toChangeTaxCode={changeTaxCode}
                   igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
