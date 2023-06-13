@@ -21,25 +21,29 @@ export const onGetClients = (payload) => {
           payload: data.response.payload,
           request: payload,
         });
+        // dispatch({
+        //   type: FETCH_SUCCESS,
+        //   payload: {
+        //     process: 'LIST_CLIENTS',
+        //     message: 'Listado de clientes exitoso',
+        //   },
+        // });
         dispatch({
           type: FETCH_SUCCESS,
-          payload: {
-            process: 'LIST_CLIENTS',
-            message: 'Listado de clientes exitoso',
-          },
+          payload: 'Listado de clientes exitoso',
         });
       })
       .catch((error) => {
         console.log('onGetClients error', error);
-        dispatch({
-          type: FETCH_ERROR,
-          payload: {
-            process: 'LIST_CLIENTS',
-            message: 'Hubo un error durante el listado del cliente',
-          },
-        });
+        // dispatch({
+        //   type: FETCH_ERROR,
+        //   payload: {
+        //     process: 'LIST_CLIENTS',
+        //     message: 'Hubo un error durante el listado del cliente',
+        //   },
+        // });
 
-        // dispatch({type: FETCH_ERROR, payload: 'error'});
+        dispatch({type: FETCH_ERROR, payload: 'error'});
       });
   };
 };
@@ -50,24 +54,25 @@ export const newClient = (payload) => {
       .then((data) => {
         console.log('newCLient resultado', data);
         dispatch({type: NEW_CLIENT, payload: data.response.payload});
-        dispatch({
-          type: FETCH_SUCCESS,
-          payload: {
-            process: 'CREATE_NEW_CLIENT',
-            message: 'Se ha registrado la información correctamente',
-          },
-        });
+        dispatch({type: FETCH_SUCCESS, payload: 'Se ha registrado la información correctamente'});
+        // dispatch({
+        //   type: FETCH_SUCCESS,
+        //   payload: {
+        //     process: 'CREATE_NEW_CLIENT',
+        //     message: 'Se ha registrado la información correctamente',
+        //   },
+        // });
       })
       .catch((error) => {
         console.log('newCLient error', error);
         dispatch({type: FETCH_ERROR, payload: 'error'});
-        dispatch({
-          type: FETCH_ERROR,
-          payload: {
-            process: 'CREATE_NEW_CLIENT',
-            message: 'Se ha producido un error al registrar.',
-          },
-        });
+        // dispatch({
+        //   type: FETCH_ERROR,
+        //   payload: {
+        //     process: 'CREATE_NEW_CLIENT',
+        //     message: 'Se ha producido un error al registrar.',
+        //   },
+        // });
       });
   };
 };
@@ -80,24 +85,28 @@ export const deleteClient = (payload) => {
         console.log('deleteClient resultado', data);
         dispatch({type: DELETE_CLIENT, payload: data.response.payload});
         // dispatch({type: FETCH_SUCCESS, payload: {process: "CREATE_NEW_USER", message: 'Cliente creado exitosamente'}});
+        // dispatch({
+        //   type: FETCH_SUCCESS,
+        //   payload: {
+        //     process: 'DELETE_CLIENT',
+        //     message: 'Cliente eliminado exitosamente',
+        //   },
+        // });
         dispatch({
           type: FETCH_SUCCESS,
-          payload: {
-            process: 'DELETE_CLIENT',
-            message: 'Cliente eliminado exitosamente',
-          },
+          payload: 'Cliente eliminado exitosamente',
         });
       })
       .catch((error) => {
         console.log('deleteClient error', error);
-        // dispatch({type: FETCH_ERROR, payload: 'error'});
-        dispatch({
-          type: FETCH_ERROR,
-          payload: {
-            process: 'DELETE_CLIENT',
-            message: 'Hubo un error durante la eliminación del cliente',
-          },
-        });
+        dispatch({type: FETCH_ERROR, payload: 'error'});
+        // dispatch({
+        //   type: FETCH_ERROR,
+        //   payload: {
+        //     process: 'DELETE_CLIENT',
+        //     message: 'Hubo un error durante la eliminación del cliente',
+        //   },
+        // });
       });
   };
 };
@@ -110,26 +119,26 @@ export const updateClient = (payload) => {
       .then((data) => {
         console.log('updateClient resultado', data);
         dispatch({type: UPDATE_CLIENT, payload: data.response.payload});
-        // dispatch({type: FETCH_SUCCESS, payload: 'success'});
-        dispatch({
-          type: FETCH_SUCCESS,
-          payload: {
-            process: 'UPDATE_CLIENT',
-            message: 'Cliente actualizado exitosamente',
-          },
-        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+        // dispatch({
+        //   type: FETCH_SUCCESS,
+        //   payload: {
+        //     process: 'UPDATE_CLIENT',
+        //     message: 'Cliente actualizado exitosamente',
+        //   },
+        // });
       })
       .catch((error) => {
         console.log('updateClient error', error);
-        // dispatch({type: FETCH_ERROR, payload: 'error'});
+        dispatch({type: FETCH_ERROR, payload: 'error'});
 
-        dispatch({
-          type: FETCH_ERROR,
-          payload: {
-            process: 'UPDATE_CLIENT',
-            message: 'Hubo un error durante la actualización del cliente',
-          },
-        });
+        // dispatch({
+        //   type: FETCH_ERROR,
+        //   payload: {
+        //     process: 'UPDATE_CLIENT',
+        //     message: 'Hubo un error durante la actualización del cliente',
+        //   },
+        // });
       });
   };
 };
