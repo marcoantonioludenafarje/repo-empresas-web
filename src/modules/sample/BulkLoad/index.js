@@ -314,28 +314,27 @@ const BulkLoad = (props) => {
                 msjError +
                 "Validación de PRODUCTO: Con código: '" +
                 product['CODIGO'] +
-                "' debe de tener una descripción.  ";
+                "' debe de tener un alias.  ";
+            } if (
+              product['ALIAS'].includes('-') ||
+              product['ALIAS'].includes('|')
+            ) {
+              msjError =
+              msjError +
+              "Validación de PRODUCTO: '" +
+              product['ALIAS'] +
+              "' tiene el símbolo | o el - en su ALIAS, debe de retirarlos.  ";
             } else {
               product['ALIAS'] = product['ALIAS'].toString().toUpperCase();
             }
 
-            if (!product['ALIAS']) {
+            if (!product['DESCRIPCION']) {
               msjError =
                 msjError +
                 "Validación de PRODUCTO: Con código: '" +
                 product['CODIGO'] +
                 "' debe de tener una descripción.  ";
             } else {
-              if (
-                product['ALIAS'].includes('-') ||
-                product['ALIAS'].includes('|')
-              ) {
-                msjError =
-                  msjError +
-                  "Validación de PRODUCTO: '" +
-                  product['ALIAS'] +
-                  "' tiene el símbolo | o el - en su ALIAS, debe de retirarlos.  ";
-              }
               product['ALIAS'] = product['ALIAS'].toString().toUpperCase();
             }
 
@@ -425,7 +424,7 @@ const BulkLoad = (props) => {
                   msjError +
                   "Validación de PRODUCTO: El TIPO PRODUCTO '" +
                   product['TIPO PRODUCTO'] +
-                  "' no existe, debe de uno válido como 'Insumo' o 'Producto intermedio' o 'Producto final'.  ";
+                  "' no existe, debe de ser 'Insumo' o 'Producto intermedio' o 'Producto final'.  ";
               }
             }
 
