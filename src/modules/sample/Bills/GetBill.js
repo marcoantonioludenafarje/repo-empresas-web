@@ -397,12 +397,11 @@ const NewOutput = (props) => {
         );
         obj['taxCode'] =
           Number(query.igv) > 0 || query.igv == 'true' ? 1000 : 9998;
-        return obj
+        return obj;
       });
       console.log('selectedProducts', selectedProducts);
     }
   }, [selectedOutput]);
-
 
   /* if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
@@ -423,7 +422,6 @@ const NewOutput = (props) => {
       );
     }
   }, [exchangeRate]);
-
 
   useEffect(() => {
     if (globalParameter != undefined && moneyUnit) {
@@ -450,7 +448,6 @@ const NewOutput = (props) => {
     }
   }, [globalParameter != undefined && moneyUnit, moneyToConvert]);
 
-  
   const cancel = () => {
     Router.push('/sample/bills/table');
   };

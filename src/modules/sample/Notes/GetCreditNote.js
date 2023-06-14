@@ -624,9 +624,9 @@ const GetCreditNote = () => {
       selectedProducts.forEach((obj) => {
         calculatedtotal += obj.subtotal;
         totalWithIgv +=
-        obj.taxCode == 1000 && query.igv && Number(query.igv) > 0
-          ? Number((obj.subtotal * (1 + igvDefault)).toFixed(2))
-          : obj.subtotal;
+          obj.taxCode == 1000 && query.igv && Number(query.igv) > 0
+            ? Number((obj.subtotal * (1 + igvDefault)).toFixed(2))
+            : obj.subtotal;
       });
       total = calculatedtotal;
       if (selectedBill.totalPriceWithIgv < calculatedtotal) {

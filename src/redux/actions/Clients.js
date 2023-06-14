@@ -54,7 +54,10 @@ export const newClient = (payload) => {
       .then((data) => {
         console.log('newCLient resultado', data);
         dispatch({type: NEW_CLIENT, payload: data.response.payload});
-        dispatch({type: FETCH_SUCCESS, payload: 'Se ha registrado la información correctamente'});
+        dispatch({
+          type: FETCH_SUCCESS,
+          payload: 'Se ha registrado la información correctamente',
+        });
         // dispatch({
         //   type: FETCH_SUCCESS,
         //   payload: {
