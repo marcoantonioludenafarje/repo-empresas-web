@@ -434,6 +434,7 @@ const Distribution = (props) => {
       const {'PUNTO LLEGADA': arrivalPoint} = item;
       const {CHOFER: driver} = item;
       const {'EMPRESA TRANSPORTISTA': carrier} = item;
+      const {'ORDEN ENTREGA': fila} = item;
 
       const matchOriginal = originalPoints.find(
         (d) => d.COD_INTERNO == originalPoint,
@@ -441,7 +442,7 @@ const Distribution = (props) => {
       if (!matchOriginal) {
         msjError =
           msjError +
-          "Validación de PUNTO DE PARTIDA: El código del punto '" +
+          "PUNTO DE PARTIDA(fila "+fila+"): El código del punto '" +
           originalPoint +
           "' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE PARTIDA.  ";
       }
@@ -452,7 +453,7 @@ const Distribution = (props) => {
       if (!matchArrival) {
         msjError =
           msjError +
-          "Validación de PUNTO DE LLEGADA: El código del punto '" +
+          "PUNTO DE LLEGADA(fila "+fila+"): El código del punto '" +
           arrivalPoint +
           "' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE LLEGADA.  ";
       }
@@ -463,7 +464,7 @@ const Distribution = (props) => {
       if (!matchDriver) {
         msjError =
           msjError +
-          "Validación de CHOFER: El chofer '" +
+          "CHOFER(fila "+fila+"): El chofer '" +
           driver +
           "' no existe, debe de coincidir con algún chofer listado en la pestaña CHOFERES.  ";
       }
@@ -474,7 +475,7 @@ const Distribution = (props) => {
       if (!matchCarrier) {
         msjError =
           msjError +
-          "Validación de EMPRESA TRANSPORTISTA: La empresa '" +
+          "EMPRESA TRANSPORTISTA(fila "+fila+"): La empresa '" +
           carrier +
           "' no existe, debe de coincidir con alguna empresa listado en la pestaña EMPRESA TRANSPORTISTA.  ";
       }
@@ -485,16 +486,27 @@ const Distribution = (props) => {
         if (tempprod.length != 2) {
           msjError =
             msjError +
-            "Validación de PRODUCTOS: Error con el producto: '" +
+            "PRODUCTOS(fila "+fila+"): Error con el producto: '" +
             tempprod +
             "' Debe de tener la estructura: PRODUCTO - CANTIDAD.  ";
           existeError = true;
           return;
         } else {
-          return {
-            alias: product.split('-')[0].trim(),
-            quantity: parseInt(product.split('-')[1].trim()),
-          };
+          if ( parseInt(product.split('-')[1].trim()) <= 0 ) {
+            msjError =
+              msjError +
+              "PRODUCTOS(fila "+fila+"): Error con el producto: '" +
+              tempprod +
+              "' La cantidad debe de ser mayor a CERO.  ";
+            existeError = true;
+            return;
+          } else {
+            return {
+              alias: product.split('-')[0].trim(),
+              quantity: parseInt(product.split('-')[1].trim()),
+            };
+
+          }          
         }
       });
 
@@ -508,7 +520,7 @@ const Distribution = (props) => {
             //   item2['DESCRIPCION'].includes('-') ||
             //   item2['DESCRIPCION'].includes('|')
             // ) {
-            //   msjError = msjError + "Validación de PRODUCTO: Error con el producto: '"+item2['DESCRIPCION']+"' tiene el símbolo | o el - en su descripción, debe de retirarlos.  ";
+            //   msjError = msjError + "PRODUCTO: Error con el producto: '"+item2['DESCRIPCION']+"' tiene el símbolo | o el - en su descripción, debe de retirarlos.  ";
             //   return;
             // }
             if (
@@ -606,14 +618,14 @@ const Distribution = (props) => {
           } else {
             msjError =
               msjError +
-              "Validación de PRODUCTO: El producto: '" +
+              "PRODUCTO(fila "+fila+"): El producto: '" +
               product.product +
               "' no existe, debe de coincidir con algun producto listado en la pestaña PRODUCTOS.  ";
             return;
           }
         });
       } else {
-        //msjError = msjError + "Validación de PRODUCTOS: No existe producto ingreso, debe de contener por lo menos uno";
+        //msjError = msjError + "PRODUCTOS: No existe producto ingreso, debe de contener por lo menos uno";
         return;
       }
 
