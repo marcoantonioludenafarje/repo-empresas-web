@@ -6,6 +6,7 @@ import AppPage from '../../../@crema/hoc/AppPage';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import SchoolIcon from '@mui/icons-material/School';
+import {translateValue} from '../../../Utils/utils';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
@@ -130,6 +131,8 @@ const NewExpense = (props) => {
     React.useState(0);
   const [totalAmountOfConcepts, setTotalAmountOfConcepts] = React.useState(0);
   const [minTutorial, setMinTutorial] = React.useState(false);
+  const [typeIcon, setTypeIcon] = React.useState('2');
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState('bill');
   const [isProviderValidated, setIsProviderValidated] = React.useState(false);
   const [openProviderComprobation, setOpenProviderComprobation] =
     React.useState(false);
@@ -154,7 +157,8 @@ const NewExpense = (props) => {
         };
     console.log('selectedProvider', selectedProvider);
     setTimeout(() => {
-      setMinTutorial(true);
+      //setMinTutorial(true);
+      setTypeIcon('1');
     }, 2000);
   }, []);
 
@@ -186,6 +190,23 @@ const NewExpense = (props) => {
       ? Date.now()
       : parseToGoodDate(bill.issueDate),
   );
+  const changeIcon = () => {
+    setTypeIcon('2');
+  };
+  const changeIcon2 = () => {
+    setTypeIcon('1');
+  };
+  const iconSelected = () => {
+    if (typeIcon == '1') {
+      return (
+        <>
+          <SchoolIcon fontSize='inherit' />
+        </>
+      );
+    } else if (typeIcon == '2') {
+      return <>VER TUTORIAL</>;
+    }
+  };
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -388,8 +409,21 @@ const NewExpense = (props) => {
           : null;
       newFinancePayload.request.payload.movements[0].payments = [];
       newFinancePayload.request.payload.movements[0].otherPayConcepts = [];
+      newFinancePayload.request.payload.movements[0].methodToPay =
+        paymentMethod;
+      newFinancePayload.request.payload.movements[0].transactionNumber = 
+        getValueField('transactionNumber').value //data.transactionNumber,
+      ;
       newFinancePayload.request.payload.movements[0].purchaseType =
         purchaseType;
+      (newFinancePayload.request.payload.movements[0].userCreated =
+        userDataRes.userId),
+        (newFinancePayload.request.payload.movements[0].userCreatedMetadata = {
+          nombreCompleto: userDataRes.nombreCompleto,
+          email: userDataRes.email,
+        });
+      newFinancePayload.request.payload.movements[0].proofOfPaymentType =
+        proofOfPaymentType;
       listPayments.map((obj, index) => {
         newFinancePayload.request.payload.movements[0].payments.push({
           descriptionPayment: obj.description,
@@ -655,8 +689,49 @@ const NewExpense = (props) => {
                   </Grid>
 
                   <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='proofOfPaymentType-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Tipo de Comprobante
+                      </InputLabel>
+                      <Select
+                        sx={{textAlign: 'left'}}
+                        value={proofOfPaymentType}
+                        onChange={(event) => {
+                          console.log(
+                            'Tipo de comprobante de pago',
+                            event.target.value,
+                          );
+                          setProofOfPaymentType(event.target.value);
+                        }}
+                        name='proofOfPaymentType'
+                        labelId='proofOfPaymentType-label'
+                        label='Tipo de Comprobante'
+                      >
+                        <MenuItem value='bill' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.bill']}
+                        </MenuItem>
+                        <MenuItem value='receipt' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.receipt']}
+                        </MenuItem>
+                        <MenuItem value='ticket' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.ticket']}
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
                     <AppUpperCaseTextField
-                      label='Número de factura'
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTNUMBER',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
                       name='nroBill'
                       variant='outlined'
                       sx={{
@@ -684,7 +759,14 @@ const NewExpense = (props) => {
                       required
                       sx={{my: 2}}
                       value={value2}
-                      label='Fecha de factura'
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTDATE',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
                       /* maxDate={new Date()} */
                       inputFormat='dd/MM/yyyy'
                       name='initialDate'
@@ -754,9 +836,74 @@ const NewExpense = (props) => {
                     </FormControl>
                   </Grid>
 
+                  <Grid item xs={6}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='methodToPay-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Medio de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentMethod}
+                        name='methodToPay'
+                        labelId='methodToPay-label'
+                        label='Medio de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentMethod(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='cash' style={{fontWeight: 200}}>
+                          Efectivo
+                        </MenuItem>
+                        <MenuItem value='yape' style={{fontWeight: 200}}>
+                          Yape
+                        </MenuItem>
+                        <MenuItem value='plin' style={{fontWeight: 200}}>
+                          Plin
+                        </MenuItem>
+                        <MenuItem
+                          value='bankTransfer'
+                          style={{fontWeight: 200}}
+                        >
+                          Transferencia Bancaria
+                        </MenuItem>
+                        <MenuItem value='card' style={{fontWeight: 200}}>
+                          Tarjeta de crédito/débito
+                        </MenuItem>
+                        <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
+                          <IntlMessages id='common.bankDeposit' />
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <AppTextField
+                      label='Número de transacción'
+                      disabled={paymentMethod == 'cash'}
+                      name='transactionNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label='Monto Factura(con igv)'
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTTOTALAMOUNT',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
                       name='totalAmounth'
                       variant='outlined'
                       sx={{
@@ -775,7 +922,12 @@ const NewExpense = (props) => {
                         id='categoria-label'
                         style={{fontWeight: 200}}
                       >
-                        Estado de Cobro de Factura
+                        {proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTPAYSTATUS',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null}
                       </InputLabel>
                       <Select
                         sx={{textAlign: 'left'}}
@@ -923,102 +1075,53 @@ const NewExpense = (props) => {
                     Cancelar
                   </Button>
                 </ButtonGroup>
-                {minTutorial ? (
+                <Box
+                  sx={{
+                    position: 'fixed',
+                    right: 0,
+                    top: {xs: 325, xl: 305},
+                    zIndex: 1110,
+                  }}
+                  className='customizerOption'
+                >
                   <Box
                     sx={{
-                      position: 'fixed',
-                      right: 0,
-                      top: {xs: 325, xl: 305},
-                      zIndex: 1110,
-                    }}
-                    className='customizerOption'
-                  >
-                    <Box
-                      sx={{
+                      borderRadius: '30px 0 0 30px',
+                      mb: 1,
+                      backgroundColor: orange[500],
+                      '&:hover': {
+                        backgroundColor: orange[700],
+                      },
+                      '& button': {
                         borderRadius: '30px 0 0 30px',
-                        mb: 1,
-                        backgroundColor: orange[500],
-                        '&:hover': {
-                          backgroundColor: orange[700],
-                        },
-                        '& button': {
-                          borderRadius: '30px 0 0 30px',
 
-                          '&:focus': {
-                            borderRadius: '30px 0 0 30px',
-                          },
+                        '&:focus': {
+                          borderRadius: '30px 0 0 30px',
                         },
-                      }}
-                    >
-                      <IconButton
-                        sx={{
-                          mt: 1,
-                          '& svg': {
-                            height: 35,
-                            width: 35,
-                          },
-                          color: 'white',
-                          pr: 5,
-                        }}
-                        edge='end'
-                        color='inherit'
-                        aria-label='open drawer'
-                        onClick={() =>
-                          window.open('https://youtu.be/U1Bnwa1G_ts/')
-                        }
-                      >
-                        <SchoolIcon fontSize='inherit' />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                ) : (
-                  <Box
-                    sx={{
-                      position: 'fixed',
-                      right: 0,
-                      top: {xs: 325, xl: 305},
-                      zIndex: 1110,
+                      },
                     }}
-                    className='customizerOption'
                   >
-                    <Box
+                    <IconButton
                       sx={{
-                        borderRadius: '30px 0 0 30px',
-                        mb: 1,
-                        backgroundColor: orange[500],
-                        '&:hover': {
-                          backgroundColor: orange[700],
+                        mt: 1,
+                        '& svg': {
+                          height: 35,
+                          width: 35,
                         },
-                        '& button': {
-                          borderRadius: '30px 0 0 30px',
-
-                          '&:focus': {
-                            borderRadius: '30px 0 0 30px',
-                          },
-                        },
+                        color: 'white',
+                        pr: 5,
                       }}
+                      edge='end'
+                      color='inherit'
+                      aria-label='open drawer'
+                      onClick={() =>
+                        window.open('https://youtu.be/U1Bnwa1G_ts/')
+                      }
                     >
-                      <IconButton
-                        sx={{
-                          mt: 1,
-                          '& svg': {
-                            height: 35,
-                            width: 35,
-                          },
-                          color: 'white',
-                        }}
-                        edge='end'
-                        color='inherit'
-                        aria-label='open drawer'
-                        onClick={() =>
-                          window.open('https://youtu.be/U1Bnwa1G_ts')
-                        }
-                      >
-                        VER TUTORIAL
-                      </IconButton>
-                    </Box>
+                      {iconSelected()}
+                    </IconButton>
                   </Box>
-                )}
+                </Box>
               </Form>
             );
           }}

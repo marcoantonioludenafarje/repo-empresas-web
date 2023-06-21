@@ -59,6 +59,7 @@ import {
   simpleDateToDateObj,
   convertToDateWithoutTime,
   isObjEmpty,
+  translateValue,
 } from '../../../Utils/utils';
 import AddProviderForm from '../ProviderSelection/AddProviderForm';
 import {onGetProviders} from '../../../redux/actions/Providers';
@@ -130,8 +131,11 @@ const UpdateExpense = (props) => {
   const [selectedProvider, setSelectedProvider] = React.useState({});
   const [moneyUnit, setMoneyUnit] = React.useState(query.exchangeRate);
   const [showAlert, setShowAlert] = React.useState(false);
-  const [paymentMethod, setPaymentMethod] = React.useState('cash');
+  const [paymentMethod, setPaymentMethod] = React.useState(query.methodToPay || 'cash');
   const [statusExpense, setStatusExpense] = React.useState(query.status);
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState(
+    query.proofOfPaymentType,
+  );
   const [purchaseType, setPurchaseType] = React.useState(
     query.purchaseType ? query.purchaseType : 'cash',
   );
@@ -300,6 +304,7 @@ const UpdateExpense = (props) => {
     nroDocument: '',
     name: '',
     nroBill: query.serialNumberBill,
+    transactionNumber: query.transactionNumber,
     saleDetail: query.description,
     buyObservation: query.observation,
     totalAmounth: Number(query.totalAmount),
@@ -385,8 +390,20 @@ const UpdateExpense = (props) => {
         : null;
     newFinancePayload.request.payload.payments = [];
     newFinancePayload.request.payload.otherPayConcepts = [];
+    newFinancePayload.request.payload.methodToPay =
+      paymentMethod;
+    newFinancePayload.request.payload.transactionNumber = 
+      data.transactionNumber //data.transactionNumber,
+    ;
     newFinancePayload.request.payload.purchaseType = purchaseType;
-    newFinancePayload.request.payload.otherPayConcepts = [];
+    (newFinancePayload.request.payload.userCreated =
+      userDataRes.userId),
+      (newFinancePayload.request.payload.userCreatedMetadata = {
+        nombreCompleto: userDataRes.nombreCompleto,
+        email: userDataRes.email,
+      });
+    newFinancePayload.request.payload.proofOfPaymentType =
+      proofOfPaymentType;
     listPayments.map((obj, index) => {
       newFinancePayload.request.payload.payments.push({
         descriptionPayment: obj.description,
@@ -633,8 +650,50 @@ const UpdateExpense = (props) => {
                   </Grid>
 
                   <Grid item xs={12}>
+                    <FormControl disabled fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='proofOfPaymentType-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Tipo de Comprobante
+                      </InputLabel>
+                      <Select
+                        sx={{textAlign: 'left'}}
+                        value={proofOfPaymentType}
+                        onChange={(event) => {
+                          console.log(
+                            'Tipo de comprobante de pago',
+                            event.target.value,
+                          );
+                          setProofOfPaymentType(event.target.value);
+                        }}
+                        name='proofOfPaymentType'
+                        labelId='proofOfPaymentType-label'
+                        label='Tipo de Comprobante'
+                      >
+                        <MenuItem value='bill' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.bill']}
+                        </MenuItem>
+                        <MenuItem value='receipt' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.receipt']}
+                        </MenuItem>
+                        <MenuItem value='ticket' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.ticket']}
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
                     <AppUpperCaseTextField
-                      label='Número de factura'
+                      label={
+                        query.proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTNUMBER',
+                              query.proofOfPaymentType.toUpperCase(),
+                            )
+                          : 'Número de comprobante'
+                      }
+                      disabled={query.serialNumberBill ? true : false}
                       name='nroBill'
                       variant='outlined'
                       sx={{
@@ -662,7 +721,14 @@ const UpdateExpense = (props) => {
                       required
                       sx={{my: 2}}
                       value={value2}
-                      label='Fecha de factura'
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTDATE',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : 'Fecha de Comprobante'
+                      }
                       /* maxDate={new Date()} */
                       inputFormat='dd/MM/yyyy'
                       name='initialDate'
@@ -731,9 +797,74 @@ const UpdateExpense = (props) => {
                     </FormControl>
                   </Grid>
 
+                  <Grid item xs={6}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='methodToPay-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Medio de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentMethod}
+                        name='methodToPay'
+                        labelId='methodToPay-label'
+                        label='Medio de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentMethod(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='cash' style={{fontWeight: 200}}>
+                          Efectivo
+                        </MenuItem>
+                        <MenuItem value='yape' style={{fontWeight: 200}}>
+                          Yape
+                        </MenuItem>
+                        <MenuItem value='plin' style={{fontWeight: 200}}>
+                          Plin
+                        </MenuItem>
+                        <MenuItem
+                          value='bankTransfer'
+                          style={{fontWeight: 200}}
+                        >
+                          Transferencia Bancaria
+                        </MenuItem>
+                        <MenuItem value='card' style={{fontWeight: 200}}>
+                          Tarjeta de crédito/débito
+                        </MenuItem>
+                        <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
+                          <IntlMessages id='common.bankDeposit' />
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <AppTextField
+                      label='Número de transacción'
+                      disabled={paymentMethod == 'cash'}
+                      name='transactionNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label='Monto Factura(con igv)'
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTTOTALAMOUNT',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : 'Monto comprobante (con igv)'
+                      }
                       name='totalAmounth'
                       variant='outlined'
                       sx={{

@@ -127,7 +127,7 @@ const UpdateEarning = (props) => {
     query.proofOfPaymentType,
   );
   const [showAlert, setShowAlert] = React.useState(false);
-  const [paymentMethod, setPaymentMethod] = React.useState('cash');
+  const [paymentMethod, setPaymentMethod] = React.useState(query.methodToPay || 'cash');
   const [statusEarning, setStatusEarning] = React.useState(query.status);
   const [purchaseType, setPurchaseType] = React.useState(
     query.purchaseType ? query.purchaseType : 'cash',
@@ -219,6 +219,7 @@ const UpdateEarning = (props) => {
     console.log('getClients:', listClientsPayload);
     getClients(listClientsPayload);
     listPayments = [];
+    setPaymentMethod(selectedEarning.paymentMethod || 'cash');
     selectedEarning.payments.map((obj) => {
       listPayments.push({
         transactionNumber: obj.transactionNumber ? obj.transactionNumber : '',
@@ -293,6 +294,7 @@ const UpdateEarning = (props) => {
     nroDocument: '',
     name: '',
     nroBill: query.serialNumberBill,
+    transactionNumber: query.transactionNumber,
     saleDetail: query.description,
     saleObservation: query.observation,
     totalAmounth: Number(query.totalAmount),
@@ -367,7 +369,6 @@ const UpdateEarning = (props) => {
     newFinancePayload.request.payload.observation = data.saleObservation;
     newFinancePayload.request.payload.totalAmount = Number(data.totalAmounth);
     newFinancePayload.request.payload.status = statusEarning;
-    //newFinancePayload.request.payload.proofOfPaymentType = query.proofOfPaymentType || "";
     newFinancePayload.request.payload.folderMovement = query.folderMovement;
     newFinancePayload.request.payload.movementHeaderId =
       !isObjEmpty(query) && query.movementHeaderId
@@ -375,7 +376,20 @@ const UpdateEarning = (props) => {
         : null;
     newFinancePayload.request.payload.payments = [];
     newFinancePayload.request.payload.otherPayConcepts = [];
+    newFinancePayload.request.payload.methodToPay =
+      paymentMethod;
+    newFinancePayload.request.payload.transactionNumber = 
+      data.transactionNumber //data.transactionNumber,
+    ;
     newFinancePayload.request.payload.purchaseType = purchaseType;
+    (newFinancePayload.request.payload.userCreated =
+      userDataRes.userId),
+      (newFinancePayload.request.payload.userCreatedMetadata = {
+        nombreCompleto: userDataRes.nombreCompleto,
+        email: userDataRes.email,
+      });
+    newFinancePayload.request.payload.proofOfPaymentType =
+      proofOfPaymentType;
     listPayments.map((obj, index) => {
       newFinancePayload.request.payload.payments.push({
         descriptionPayment: obj.description,
@@ -696,10 +710,10 @@ const UpdateEarning = (props) => {
                       sx={{my: 2}}
                       value={value2}
                       label={
-                        query.proofOfPaymentType
+                        proofOfPaymentType
                           ? translateValue(
                               'PROOFOFPAYMENTDATE',
-                              query.proofOfPaymentType.toUpperCase(),
+                              proofOfPaymentType.toUpperCase(),
                             )
                           : 'Fecha de Comprobante'
                       }
@@ -771,13 +785,71 @@ const UpdateEarning = (props) => {
                     </FormControl>
                   </Grid>
 
+                  <Grid item xs={6}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='methodToPay-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Medio de pago
+                      </InputLabel>
+                      <Select
+                        value={paymentMethod}
+                        name='methodToPay'
+                        labelId='methodToPay-label'
+                        label='Medio de pago'
+                        onChange={
+                          /* handleActualData */ (event) => {
+                            setPaymentMethod(event.target.value);
+                          }
+                        }
+                      >
+                        <MenuItem value='cash' style={{fontWeight: 200}}>
+                          Efectivo
+                        </MenuItem>
+                        <MenuItem value='yape' style={{fontWeight: 200}}>
+                          Yape
+                        </MenuItem>
+                        <MenuItem value='plin' style={{fontWeight: 200}}>
+                          Plin
+                        </MenuItem>
+                        <MenuItem
+                          value='bankTransfer'
+                          style={{fontWeight: 200}}
+                        >
+                          Transferencia Bancaria
+                        </MenuItem>
+                        <MenuItem value='card' style={{fontWeight: 200}}>
+                          Tarjeta de crédito/débito
+                        </MenuItem>
+                        <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
+                          <IntlMessages id='common.bankDeposit' />
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <AppTextField
+                      label='Número de transacción'
+                      disabled={paymentMethod == 'cash'}
+                      name='transactionNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
                   <Grid item xs={12}>
                     <AppTextField
                       label={
-                        query.proofOfPaymentType
+                        proofOfPaymentType
                           ? translateValue(
                               'PROOFOFPAYMENTTOTALAMOUNT',
-                              query.proofOfPaymentType.toUpperCase(),
+                              proofOfPaymentType.toUpperCase(),
                             )
                           : 'Monto comprobante (con igv)'
                       }
