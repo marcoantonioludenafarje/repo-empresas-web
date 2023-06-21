@@ -682,7 +682,7 @@ const CreditNotesTable = (props) => {
                   key={index}
                 >
                   <TableCell>
-                    {convertToDateWithoutTime(obj.createdAt)}
+                    {obj.issueDate || convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')
