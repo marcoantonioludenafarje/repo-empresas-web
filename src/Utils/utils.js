@@ -63,6 +63,19 @@ export const strDateToDateObject = (strDate) => {
   return newDate;
 };
 
+export const strDateToDateObject_ES = (strDate) => {
+  let date = strDate;
+  if (date.includes('-')) {
+    date = date.replaceAll('-', '/');
+  }
+  console.log('date', date);
+  let dateSplited = date.split('/');
+  console.log('dateSplited', dateSplited);
+  let newDate = dateSplited[0] + '/' + dateSplited[1] + '/' + dateSplited[2];
+  console.log('newDate', newDate);
+  return newDate;
+};
+
 export const parseTo3Decimals = (number) => {
   let newValue = number + Number.EPSILON;
   newValue = Math.round(newValue * 1000) / 1000;

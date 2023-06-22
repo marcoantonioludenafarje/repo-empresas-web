@@ -67,6 +67,7 @@ import {
 } from '../../../redux/actions/General';
 import {
   convertToDateWithoutTime,
+  strDateToDateObject_ES,
   translateValue,
   dateWithHyphen,
 } from '../../../Utils/utils';
@@ -813,7 +814,7 @@ const BillsTable = (props) => {
                   key={index}
                 >
                   <TableCell>
-                    {obj.issueDate || convertToDateWithoutTime(obj.createdAt)}
+                    {strDateToDateObject_ES(obj.issueDate) || convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
                     {obj.serialNumberBill && obj.serialNumberBill.includes('-')
