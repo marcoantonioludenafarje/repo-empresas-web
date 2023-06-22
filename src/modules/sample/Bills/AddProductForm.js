@@ -345,6 +345,9 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
                         <MenuItem value='NIU' style={{fontWeight: 200}}>
                           Producto
                         </MenuItem>
+                        <MenuItem value='CAJ' style={{fontWeight: 200}}>
+                          Caja
+                        </MenuItem>
                         <MenuItem value='ZZ' style={{fontWeight: 200}}>
                           Servicio
                         </MenuItem>
