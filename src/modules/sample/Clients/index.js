@@ -458,6 +458,7 @@ const ClientTable = (arrayObjs, props) => {
 
   const confirmDelete = () => {
     deletePayload.request.payload.clientId = selectedClient.clientId;
+    console.log("deletePayload", deletePayload)
     toDeleteClient(deletePayload);
     setOpen2(false);
     setOpenStatus(true);

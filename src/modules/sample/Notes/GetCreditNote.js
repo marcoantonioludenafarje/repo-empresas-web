@@ -510,7 +510,7 @@ const GetCreditNote = () => {
       dispatch({type: ADD_CREDIT_NOTE, payload: undefined});
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      //toAddCreditNote(finalPayload);
+      toAddCreditNote(finalPayload);
       setTypeResult('statusResult');
       setOpenDialog(true);
     } else {
@@ -1394,7 +1394,8 @@ const GetCreditNote = () => {
               />
             </DialogTitle>
             <DialogContent>
-              <AddProductForm type='input' sendData={getNewProduct} />
+              <AddProductForm type='input' sendData={getNewProduct} 
+                      igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}/>
             </DialogContent>
           </>
         ) : null}
