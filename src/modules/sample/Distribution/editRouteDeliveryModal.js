@@ -30,7 +30,7 @@ import {
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-import {unitMeasureOptions} from '../../../Utils/utilsFinances';
+import unitMeasureOptions from '../../../Utils/unitMeasureOptions.json';
 
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';

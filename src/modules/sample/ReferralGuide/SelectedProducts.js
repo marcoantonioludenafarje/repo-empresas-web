@@ -24,7 +24,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {makeStyles} from '@mui/styles';
 import PropTypes from 'prop-types';
 
-import {unitMeasureOptions} from '../../../Utils/utilsFinances';
+import unitMeasureOptions from '../../../Utils/unitMeasureOptions.json';
 let listPayload = {
   request: {
     payload: {

@@ -43,7 +43,7 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import SelectProduct from './SelectProduct';
 import PropTypes from 'prop-types';
 
-import {unitMeasureOptions} from '../../../Utils/utilsFinances';
+import unitMeasureOptions from '../../../Utils/unitMeasureOptions.json';
 const defaultValues = {
   productSearch: '',
   priceProduct: '',
