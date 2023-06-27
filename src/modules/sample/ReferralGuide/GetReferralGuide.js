@@ -845,6 +845,22 @@ const GetReferralGuide = () => {
     forceUpdate();
   };
 
+  const changeUnitMeasure = (index, unitMeasure) => {
+    console.log('selectedProducts product', selectedProducts[index]);
+    console.log('selectedProducts unitMeasure', unitMeasure);
+    let newProducts = selectedProducts;
+    newProducts[index].unitMeasure = unitMeasure;
+    setSelectedProducts(newProducts);
+    forceUpdate();
+  };
+  const changeQuantity = (index, quantity) => {
+    console.log('selectedProducts product', selectedProducts[index]);
+    console.log('selectedProducts quantity', quantity);
+    let newProducts = selectedProducts;
+    newProducts[index].quantityMovement = quantity;
+    calculateWeight(newProducts);
+    forceUpdate();
+  };
   const availableUbigeos = () => {
     return (
       parsedUbigeos && Array.isArray(parsedUbigeos) && parsedUbigeos.length >= 1
@@ -1429,6 +1445,8 @@ const GetReferralGuide = () => {
                   <SelectedProducts
                     arrayObjs={selectedProducts}
                     toDelete={removeProduct}
+                    toChangeQuantity={changeQuantity}
+                    toChangeUnitMeasure={changeUnitMeasure}
                   />
                 </Box>
                 <ButtonGroup

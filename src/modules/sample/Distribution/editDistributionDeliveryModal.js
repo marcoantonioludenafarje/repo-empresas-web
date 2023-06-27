@@ -32,6 +32,7 @@ import {
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import {unitMeasureOptions} from '../../../Utils/utilsFinances';
 
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -250,6 +251,15 @@ const EditDistributionDeliveryModal = ({
     console.log('lista despues', newProds);
     setProductsList(newProds);
     setTotalWeight(newProds);
+    reloadPage();
+  };
+  const changeUnitMeasure = (index, unitMeasure) => {
+    console.log('Index', index);
+    let newProds = productsList;
+    console.log('lista antes changeUnitMeasure', newProds);
+    newProds[index].unitMeasure = unitMeasure;
+    console.log('lista despues changeUnitMeasure', newProds);
+    setProductsList(newProds);
     reloadPage();
   };
   const addRow = () => {
@@ -681,6 +691,7 @@ const EditDistributionDeliveryModal = ({
                   <TableCell align='center'>
                     <IntlMessages id='product.type.product' />
                   </TableCell>
+                  <TableCell align='center'>Unidad de Medida</TableCell>
                   <TableCell align='center'>
                     <IntlMessages id='common.amount' />
                   </TableCell>
@@ -732,6 +743,37 @@ const EditDistributionDeliveryModal = ({
                                   <IntlMessages id='sidebar.ecommerce.selectProduct' />
                                 )}
                               </Button>
+                            </TableCell>
+                            <TableCell>
+                              <FormControl
+                                variant='standard'
+                                sx={{m: 1, minWidth: 120}}
+                              >
+                                <Select
+                                  labelId='demo-simple-select-standard-label-unitMeasure'
+                                  id={`unitMeasure${index}`}
+                                  value={obj.unitMeasure}
+                                  defaultValue={obj.unitMeasure}
+                                  onChange={(event) => {
+                                    changeUnitMeasure(
+                                      index,
+                                      event.target.value,
+                                    );
+                                  }}
+                                >
+                                  {unitMeasureOptions.map(
+                                    (option, indexOption) => (
+                                      <MenuItem
+                                        key={`unitMeasureItem-${indexOption}`}
+                                        value={option.value}
+                                        style={{fontWeight: 200}}
+                                      >
+                                        {option.label}
+                                      </MenuItem>
+                                    ),
+                                  )}
+                                </Select>
+                              </FormControl>
                             </TableCell>
                             <TableCell>
                               <TextField

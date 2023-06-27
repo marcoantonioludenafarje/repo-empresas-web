@@ -411,9 +411,8 @@ const NewExpense = (props) => {
       newFinancePayload.request.payload.movements[0].otherPayConcepts = [];
       newFinancePayload.request.payload.movements[0].methodToPay =
         paymentMethod;
-      newFinancePayload.request.payload.movements[0].transactionNumber = 
-        getValueField('transactionNumber').value //data.transactionNumber,
-      ;
+      newFinancePayload.request.payload.movements[0].transactionNumber =
+        getValueField('transactionNumber').value; //data.transactionNumber,
       newFinancePayload.request.payload.movements[0].purchaseType =
         purchaseType;
       (newFinancePayload.request.payload.movements[0].userCreated =

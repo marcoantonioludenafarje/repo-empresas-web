@@ -131,7 +131,9 @@ const UpdateExpense = (props) => {
   const [selectedProvider, setSelectedProvider] = React.useState({});
   const [moneyUnit, setMoneyUnit] = React.useState(query.exchangeRate);
   const [showAlert, setShowAlert] = React.useState(false);
-  const [paymentMethod, setPaymentMethod] = React.useState(query.methodToPay || 'cash');
+  const [paymentMethod, setPaymentMethod] = React.useState(
+    query.methodToPay || 'cash',
+  );
   const [statusExpense, setStatusExpense] = React.useState(query.status);
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState(
     query.proofOfPaymentType,
@@ -390,20 +392,16 @@ const UpdateExpense = (props) => {
         : null;
     newFinancePayload.request.payload.payments = [];
     newFinancePayload.request.payload.otherPayConcepts = [];
-    newFinancePayload.request.payload.methodToPay =
-      paymentMethod;
-    newFinancePayload.request.payload.transactionNumber = 
-      data.transactionNumber //data.transactionNumber,
-    ;
+    newFinancePayload.request.payload.methodToPay = paymentMethod;
+    newFinancePayload.request.payload.transactionNumber =
+      data.transactionNumber; //data.transactionNumber,
     newFinancePayload.request.payload.purchaseType = purchaseType;
-    (newFinancePayload.request.payload.userCreated =
-      userDataRes.userId),
+    (newFinancePayload.request.payload.userCreated = userDataRes.userId),
       (newFinancePayload.request.payload.userCreatedMetadata = {
         nombreCompleto: userDataRes.nombreCompleto,
         email: userDataRes.email,
       });
-    newFinancePayload.request.payload.proofOfPaymentType =
-      proofOfPaymentType;
+    newFinancePayload.request.payload.proofOfPaymentType = proofOfPaymentType;
     listPayments.map((obj, index) => {
       newFinancePayload.request.payload.payments.push({
         descriptionPayment: obj.description,

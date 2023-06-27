@@ -442,7 +442,9 @@ const Distribution = (props) => {
       if (!matchOriginal) {
         msjError =
           msjError +
-          "PUNTO DE PARTIDA(fila "+fila+"): El código del punto '" +
+          'PUNTO DE PARTIDA(fila ' +
+          fila +
+          "): El código del punto '" +
           originalPoint +
           "' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE PARTIDA.  ";
       }
@@ -453,7 +455,9 @@ const Distribution = (props) => {
       if (!matchArrival) {
         msjError =
           msjError +
-          "PUNTO DE LLEGADA(fila "+fila+"): El código del punto '" +
+          'PUNTO DE LLEGADA(fila ' +
+          fila +
+          "): El código del punto '" +
           arrivalPoint +
           "' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE LLEGADA.  ";
       }
@@ -464,7 +468,9 @@ const Distribution = (props) => {
       if (!matchDriver) {
         msjError =
           msjError +
-          "CHOFER(fila "+fila+"): El chofer '" +
+          'CHOFER(fila ' +
+          fila +
+          "): El chofer '" +
           driver +
           "' no existe, debe de coincidir con algún chofer listado en la pestaña CHOFERES.  ";
       }
@@ -475,7 +481,9 @@ const Distribution = (props) => {
       if (!matchCarrier) {
         msjError =
           msjError +
-          "EMPRESA TRANSPORTISTA(fila "+fila+"): La empresa '" +
+          'EMPRESA TRANSPORTISTA(fila ' +
+          fila +
+          "): La empresa '" +
           carrier +
           "' no existe, debe de coincidir con alguna empresa listado en la pestaña EMPRESA TRANSPORTISTA.  ";
       }
@@ -486,16 +494,20 @@ const Distribution = (props) => {
         if (tempprod.length != 2) {
           msjError =
             msjError +
-            "PRODUCTOS(fila "+fila+"): Error con el producto: '" +
+            'PRODUCTOS(fila ' +
+            fila +
+            "): Error con el producto: '" +
             tempprod +
             "' Debe de tener la estructura: PRODUCTO - CANTIDAD.  ";
           existeError = true;
           return;
         } else {
-          if ( parseInt(product.split('-')[1].trim()) <= 0 ) {
+          if (parseInt(product.split('-')[1].trim()) <= 0) {
             msjError =
               msjError +
-              "PRODUCTOS(fila "+fila+"): Error con el producto: '" +
+              'PRODUCTOS(fila ' +
+              fila +
+              "): Error con el producto: '" +
               tempprod +
               "' La cantidad debe de ser mayor a CERO.  ";
             existeError = true;
@@ -505,8 +517,7 @@ const Distribution = (props) => {
               alias: product.split('-')[0].trim(),
               quantity: parseInt(product.split('-')[1].trim()),
             };
-
-          }          
+          }
         }
       });
 
@@ -618,7 +629,9 @@ const Distribution = (props) => {
           } else {
             msjError =
               msjError +
-              "PRODUCTO(fila "+fila+"): El producto: '" +
+              'PRODUCTO(fila ' +
+              fila +
+              "): El producto: '" +
               product.product +
               "' no existe, debe de coincidir con algun producto listado en la pestaña PRODUCTOS.  ";
             return;

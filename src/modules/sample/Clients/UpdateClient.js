@@ -328,7 +328,7 @@ const UpdateClient = (props) => {
         },
       },
     };
-    console.log("updateClientPayload", newClientPayload)
+    console.log('updateClientPayload', newClientPayload);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     toUpdateClient(newClientPayload);

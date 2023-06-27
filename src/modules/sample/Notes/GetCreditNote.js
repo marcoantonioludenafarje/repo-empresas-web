@@ -704,18 +704,26 @@ const GetCreditNote = () => {
           )
         : Number(selectedProducts[index].subtotal);
     const subTotalWithNextQuantity =
-      selectedProducts[index].taxCode == 1000 && query.igv && Number(query.igv) > 0
+      selectedProducts[index].taxCode == 1000 &&
+      query.igv &&
+      Number(query.igv) > 0
         ? Number(
-            (quantity* selectedProducts[index].priceBusinessMoneyWithIgv * (1 + igvDefault)).toFixed(2),
+            (
+              quantity *
+              selectedProducts[index].priceBusinessMoneyWithIgv *
+              (1 + igvDefault)
+            ).toFixed(2),
           )
         : Number(quantity * selectedProducts[index].priceBusinessMoneyWithIgv);
-        
+
     let calculatedTotal =
-    getValueField('totalField').value +
-    (quantity - selectedProducts[index].quantityMovement)* selectedProducts[index].priceBusinessMoneyWithIgv;
-    
+      getValueField('totalField').value +
+      (quantity - selectedProducts[index].quantityMovement) *
+        selectedProducts[index].priceBusinessMoneyWithIgv;
+
     selectedProducts[index].quantityMovement = quantity;
-    selectedProducts[index].subtotal = quantity * selectedProducts[index].priceBusinessMoneyWithIgv;
+    selectedProducts[index].subtotal =
+      quantity * selectedProducts[index].priceBusinessMoneyWithIgv;
     let calculatedtotalIgv =
       getValueField('totalFieldIgv').value -
       subTotalWithPreviousQuantity +
@@ -1433,8 +1441,11 @@ const GetCreditNote = () => {
               />
             </DialogTitle>
             <DialogContent>
-              <AddProductForm type='input' sendData={getNewProduct} 
-                      igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}/>
+              <AddProductForm
+                type='input'
+                sendData={getNewProduct}
+                igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
+              />
             </DialogContent>
           </>
         ) : null}

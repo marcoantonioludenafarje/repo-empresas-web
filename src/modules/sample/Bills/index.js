@@ -814,7 +814,8 @@ const BillsTable = (props) => {
                   key={index}
                 >
                   <TableCell>
-                    {strDateToDateObject_ES(obj.issueDate) || convertToDateWithoutTime(obj.createdAt)}
+                    {strDateToDateObject_ES(obj.issueDate) ||
+                      convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
                     {obj.serialNumberBill && obj.serialNumberBill.includes('-')

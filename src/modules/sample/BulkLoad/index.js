@@ -315,15 +315,16 @@ const BulkLoad = (props) => {
                 "Validación de PRODUCTO: Con código: '" +
                 product['CODIGO'] +
                 "' debe de tener un alias.  ";
-            } if (
+            }
+            if (
               product['ALIAS'].includes('-') ||
               product['ALIAS'].includes('|')
             ) {
               msjError =
-              msjError +
-              "Validación de PRODUCTO: '" +
-              product['ALIAS'] +
-              "' tiene el símbolo | o el - en su ALIAS, debe de retirarlos.  ";
+                msjError +
+                "Validación de PRODUCTO: '" +
+                product['ALIAS'] +
+                "' tiene el símbolo | o el - en su ALIAS, debe de retirarlos.  ";
             } else {
               product['ALIAS'] = product['ALIAS'].toString().toUpperCase();
             }

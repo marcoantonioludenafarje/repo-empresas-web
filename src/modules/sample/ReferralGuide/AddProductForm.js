@@ -43,7 +43,7 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import SelectProduct from './SelectProduct';
 import PropTypes from 'prop-types';
 
-import {unitMeasureOptions} from '../../../Utils/utilsFinances'
+import {unitMeasureOptions} from '../../../Utils/utilsFinances';
 const defaultValues = {
   productSearch: '',
   priceProduct: '',
@@ -311,8 +311,14 @@ const AddProductForm = ({sendData, type}) => {
                         value={typeElement}
                         MenuProps={MenuProps}
                       >
-                        {unitMeasureOptions.map((option) => (
-                          <MenuItem value={option.value} style={{ fontWeight: 200 }}>{option.label}</MenuItem>
+                        {unitMeasureOptions.map((option, indexOption) => (
+                          <MenuItem
+                            key={`unitMeasureItem-${indexOption}`}
+                            value={option.value}
+                            style={{fontWeight: 200}}
+                          >
+                            {option.label}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>

@@ -64,7 +64,11 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
-import {convertToDateWithoutTime, strDateToDateObject_ES, translateValue} from '../../../Utils/utils';
+import {
+  convertToDateWithoutTime,
+  strDateToDateObject_ES,
+  translateValue,
+} from '../../../Utils/utils';
 import AddReasonForm from './AddReasonForm';
 import {
   getNoteItems_pageListNote,
@@ -682,7 +686,8 @@ const CreditNotesTable = (props) => {
                   key={index}
                 >
                   <TableCell>
-                    {strDateToDateObject_ES(obj.issueDate) || convertToDateWithoutTime(obj.createdAt)}
+                    {strDateToDateObject_ES(obj.issueDate) ||
+                      convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')

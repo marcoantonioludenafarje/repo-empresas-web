@@ -569,18 +569,26 @@ const GetReceipt = (props) => {
           )
         : Number(selectedProducts[index].subtotal);
     const subTotalWithNextQuantity =
-      selectedProducts[index].taxCode == 1000 && query.igv && Number(query.igv) > 0
+      selectedProducts[index].taxCode == 1000 &&
+      query.igv &&
+      Number(query.igv) > 0
         ? Number(
-            (quantity* selectedProducts[index].priceBusinessMoneyWithIgv * (1 + igvDefault)).toFixed(2),
+            (
+              quantity *
+              selectedProducts[index].priceBusinessMoneyWithIgv *
+              (1 + igvDefault)
+            ).toFixed(2),
           )
         : Number(quantity * selectedProducts[index].priceBusinessMoneyWithIgv);
-        
+
     let calculatedTotal =
-    getValueField('totalField').value +
-    (quantity - selectedProducts[index].quantityMovement)* selectedProducts[index].priceBusinessMoneyWithIgv;
-    
+      getValueField('totalField').value +
+      (quantity - selectedProducts[index].quantityMovement) *
+        selectedProducts[index].priceBusinessMoneyWithIgv;
+
     selectedProducts[index].quantityMovement = quantity;
-    selectedProducts[index].subtotal = quantity * selectedProducts[index].priceBusinessMoneyWithIgv;
+    selectedProducts[index].subtotal =
+      quantity * selectedProducts[index].priceBusinessMoneyWithIgv;
     let calculatedtotalIgv =
       getValueField('totalFieldIgv').value -
       subTotalWithPreviousQuantity +

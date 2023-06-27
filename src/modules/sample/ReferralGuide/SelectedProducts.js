@@ -12,6 +12,9 @@ import {
   IconButton,
   MenuItem,
   Menu,
+  TextField,
+  FormControl,
+  Select,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
@@ -21,6 +24,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {makeStyles} from '@mui/styles';
 import PropTypes from 'prop-types';
 
+import {unitMeasureOptions} from '../../../Utils/utilsFinances';
 let listPayload = {
   request: {
     payload: {
@@ -31,7 +35,12 @@ let listPayload = {
   },
 };
 
-const SelectedProducts = ({arrayObjs, toDelete}) => {
+const SelectedProducts = ({
+  arrayObjs,
+  toDelete,
+  toChangeUnitMeasure,
+  toChangeQuantity,
+}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [moneyUnit, setMoneyUnit] = React.useState('');
 
@@ -41,6 +50,14 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
   listPayload.request.payload.merchantId =
     userDataRes.merchantSelected.merchantId;
 
+  const changeUnitMeasure = (index, unitMeasure) => {
+    console.log('Index', index);
+    toChangeUnitMeasure(index, unitMeasure);
+  };
+  const changeQuantity = (index, unitMeasure) => {
+    console.log('Index', index);
+    toChangeQuantity(index, unitMeasure);
+  };
   useEffect(() => {
     if (businessParameter != undefined) {
       let obtainedMoneyUnit = businessParameter.find(
@@ -90,8 +107,47 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
                       : obj.product}
                   </TableCell>
                   <TableCell>{obj.description}</TableCell>
-                  <TableCell>{obj.unitMeasure}</TableCell>
-                  <TableCell>{obj.quantityMovement}</TableCell>
+                  <TableCell>
+                    <FormControl variant='standard' sx={{m: 1, minWidth: 120}}>
+                      <Select
+                        labelId='demo-simple-select-standard-label-unitMeasure'
+                        id={`unitMeasure${index}`}
+                        value={obj.unitMeasure}
+                        defaultValue={obj.unitMeasure}
+                        onChange={(event) => {
+                          changeUnitMeasure(index, event.target.value);
+                        }}
+                      >
+                        {unitMeasureOptions.map((option, indexOption) => (
+                          <MenuItem
+                            key={`unitMeasureItem-${indexOption}`}
+                            value={option.value}
+                            style={{fontWeight: 200}}
+                          >
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      name='count'
+                      variant='standard'
+                      defaultValue={obj.quantityMovement}
+                      onChange={(event) => {
+                        console.log('Cambiando cantidad');
+                        changeQuantity(index, event.target.value);
+                      }}
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </TableCell>
                   <TableCell>{obj.weight}</TableCell>
                   <TableCell>
                     <IconButton onClick={deleteProduct.bind(this, index)}>
@@ -113,5 +169,7 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
 SelectedProducts.propTypes = {
   arrayObjs: PropTypes.array.isRequired,
   toDelete: PropTypes.func.isRequired,
+  toChangeUnitMeasure: PropTypes.func,
+  toChangeQuantity: PropTypes.func,
 };
 export default SelectedProducts;

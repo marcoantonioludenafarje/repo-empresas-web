@@ -14,7 +14,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  TextField
+  TextField,
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
@@ -120,15 +120,19 @@ const OutputProducts = ({
                         labelId='demo-simple-select-standard-label-unitMeasure'
                         id={`unitMeasure${index}`}
                         value={obj.unitMeasure}
-                        defaultValue={
-                          obj.unitMeasure
-                        }
+                        defaultValue={obj.unitMeasure}
                         onChange={(event) => {
                           changeUnitMeasure(index, event.target.value);
                         }}
                       >
-                        {unitMeasureOptions.map((option) => (
-                          <MenuItem value={option.value} style={{ fontWeight: 200 }}>{option.label}</MenuItem>
+                        {unitMeasureOptions.map((option, indexOption) => (
+                          <MenuItem
+                            key={`unitMeasureItem-${indexOption}`}
+                            value={option.value}
+                            style={{fontWeight: 200}}
+                          >
+                            {option.label}
+                          </MenuItem>
                         ))}
                       </Select>
                     </FormControl>
@@ -136,10 +140,10 @@ const OutputProducts = ({
                   <TableCell>
                     <TextField
                       name='count'
-                      variant="standard"
+                      variant='standard'
                       defaultValue={obj.quantityMovement}
                       onChange={(event) => {
-                        console.log("Cambiando cantidad")
+                        console.log('Cambiando cantidad');
                         changeQuantity(index, event.target.value);
                       }}
                       sx={{
