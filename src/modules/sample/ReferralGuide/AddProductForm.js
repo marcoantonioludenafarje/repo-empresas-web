@@ -43,6 +43,7 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import SelectProduct from './SelectProduct';
 import PropTypes from 'prop-types';
 
+import {unitMeasureOptions} from '../../../Utils/utilsFinances'
 const defaultValues = {
   productSearch: '',
   priceProduct: '',
@@ -58,6 +59,16 @@ const actualValues = {
   unitMeasure: '',
 };
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 const maxLength = 11111111111111111111; //20 caracteres
 
 let selectedProduct = {};
@@ -298,19 +309,11 @@ const AddProductForm = ({sendData, type}) => {
                         onChange={handleTypeElement}
                         defaultValue='NIU'
                         value={typeElement}
+                        MenuProps={MenuProps}
                       >
-                        <MenuItem value='NIU' style={{fontWeight: 200}}>
-                          Producto
-                        </MenuItem>
-                        <MenuItem value='CAJ' style={{fontWeight: 200}}>
-                          Caja
-                        </MenuItem>
-                        <MenuItem value='ZZ' style={{fontWeight: 200}}>
-                          Servicio
-                        </MenuItem>
-                        <MenuItem value='KGM' style={{fontWeight: 200}}>
-                          KGM
-                        </MenuItem>
+                        {unitMeasureOptions.map((option) => (
+                          <MenuItem value={option.value} style={{ fontWeight: 200 }}>{option.label}</MenuItem>
+                        ))}
                       </Select>
                     </FormControl>
                   </Grid>

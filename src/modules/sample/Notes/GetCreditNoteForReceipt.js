@@ -604,10 +604,10 @@ const GetCreditNote = () => {
       setCreditNote(true);
       setSubTypeNote(creditNoteTypes[0].name);
     }
-    total = Number(calculatedtotal.toFixed(3));
+    total = Number(calculatedtotal.toFixed(2));
     console.log('total de las salidas', total);
     console.log('Productos seleccionados', selectedProducts);
-    changeValueField('totalField', Number(total.toFixed(2)));
+    changeValueField('totalField', Number(calculatedtotal.toFixed(2)));
     changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
 
     console.log('total de los productos', total);
@@ -684,7 +684,45 @@ const GetCreditNote = () => {
         return obj;
       }
     });
-    total = calculatedtotalIgv;
+    changeValueField('totalFieldIgv', Number(calculatedtotalIgv.toFixed(2)));
+    forceUpdate();
+  };
+  const changeUnitMeasure = (index, unitMeasure) => {
+    console.log('selectedProducts product', selectedProducts[index]);
+    console.log('selectedProducts unitMeasure', unitMeasure);
+    selectedProducts[index].unitMeasure = unitMeasure;
+    forceUpdate();
+  };
+  const changeQuantity = (index, quantity) => {
+    console.log('selectedProducts product', selectedProducts[index]);
+    console.log('selectedProducts quantity', quantity);
+    const subTotalWithPreviousQuantity =
+      selectedProducts[index].taxCode == 1000 &&
+      query.igv &&
+      Number(query.igv) > 0
+        ? Number(
+            (selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2),
+          )
+        : Number(selectedProducts[index].subtotal);
+    const subTotalWithNextQuantity =
+      selectedProducts[index].taxCode == 1000 && query.igv && Number(query.igv) > 0
+        ? Number(
+            (quantity* selectedProducts[index].priceBusinessMoneyWithIgv * (1 + igvDefault)).toFixed(2),
+          )
+        : Number(quantity * selectedProducts[index].priceBusinessMoneyWithIgv);
+        
+    let calculatedTotal =
+    getValueField('totalField').value +
+    (quantity - selectedProducts[index].quantityMovement)* selectedProducts[index].priceBusinessMoneyWithIgv;
+    
+    selectedProducts[index].quantityMovement = quantity;
+    selectedProducts[index].subtotal = quantity * selectedProducts[index].priceBusinessMoneyWithIgv;
+    let calculatedtotalIgv =
+      getValueField('totalFieldIgv').value -
+      subTotalWithPreviousQuantity +
+      subTotalWithNextQuantity;
+    total = Number(calculatedTotal.toFixed(2));
+    changeValueField('totalField', Number(calculatedTotal.toFixed(2)));
     changeValueField('totalFieldIgv', Number(calculatedtotalIgv.toFixed(2)));
     forceUpdate();
   };
@@ -1003,6 +1041,8 @@ const GetCreditNote = () => {
                       toDelete={removeProduct}
                       valueWithIGV={valueWithIGV}
                       toChangeTaxCode={changeTaxCode}
+                      toChangeUnitMeasure={changeUnitMeasure}
+                      toChangeQuantity={changeQuantity}
                       igvEnabled={Number(query.igv) > 0 || query.igv == 'true'}
                     ></OutputProducts>
                     <Divider sx={{my: 3}} />

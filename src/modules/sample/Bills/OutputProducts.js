@@ -14,11 +14,13 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TextField
 } from '@mui/material';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
 
 import DeleteIcon from '@mui/icons-material/Delete';
+import {unitMeasureOptions} from '../../../Utils/utilsFinances';
 
 let listPayload = {
   request: {
@@ -36,6 +38,8 @@ const OutputProducts = ({
   valueWithIGV,
   igvEnabled,
   toChangeTaxCode,
+  toChangeUnitMeasure,
+  toChangeQuantity,
 }) => {
   //FUNCIONES MENU
   const {userAttributes} = useSelector(({user}) => user);
@@ -51,6 +55,14 @@ const OutputProducts = ({
   const changeTaxCode = (index, taxCode) => {
     console.log('Index', index);
     toChangeTaxCode(index, taxCode);
+  };
+  const changeUnitMeasure = (index, unitMeasure) => {
+    console.log('Index', index);
+    toChangeUnitMeasure(index, unitMeasure);
+  };
+  const changeQuantity = (index, unitMeasure) => {
+    console.log('Index', index);
+    toChangeQuantity(index, unitMeasure);
   };
   console.log('data', data);
   console.log('toDelete', toDelete);
@@ -102,8 +114,43 @@ const OutputProducts = ({
                 >
                   <TableCell>{obj.businessProductCode}</TableCell>
                   <TableCell>{obj.description}</TableCell>
-                  <TableCell>{obj.unitMeasure}</TableCell>
-                  <TableCell>{obj.quantityMovement}</TableCell>
+                  <TableCell>
+                    <FormControl variant='standard' sx={{m: 1, minWidth: 120}}>
+                      <Select
+                        labelId='demo-simple-select-standard-label-unitMeasure'
+                        id={`unitMeasure${index}`}
+                        value={obj.unitMeasure}
+                        defaultValue={
+                          obj.unitMeasure
+                        }
+                        onChange={(event) => {
+                          changeUnitMeasure(index, event.target.value);
+                        }}
+                      >
+                        {unitMeasureOptions.map((option) => (
+                          <MenuItem value={option.value} style={{ fontWeight: 200 }}>{option.label}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      name='count'
+                      variant="standard"
+                      defaultValue={obj.quantityMovement}
+                      onChange={(event) => {
+                        console.log("Cambiando cantidad")
+                        changeQuantity(index, event.target.value);
+                      }}
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </TableCell>
                   <TableCell>{obj.priceBusinessMoneyWithIgv}</TableCell>
                   {igvEnabled ? (
                     <TableCell>
@@ -163,5 +210,7 @@ OutputProducts.propTypes = {
   valueWithIGV: PropTypes.func.isRequired,
   igvEnabled: PropTypes.bool,
   toChangeTaxCode: PropTypes.func,
+  toChangeUnitMeasure: PropTypes.func,
+  toChangeQuantity: PropTypes.func,
 };
 export default OutputProducts;
