@@ -275,6 +275,31 @@ const rolesRoutesConfig = {
       icon: <FolderOutlinedIcon fontSize='small' />,
       url: '/sample/explorer',
     },
+    {
+      id: 'configurations',
+      title: 'CRM',
+      messageId: 'sidebar.sample.crm',
+      type: 'collapse',
+      icon: <Inventory2OutlinedIcon fontSize='small' />,
+      children: [
+        {
+          id: 'productsTable',
+          title: 'products table',
+          messageId: 'sidebar.sample.createCampaign',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/crm/create',
+        },
+        {
+          id: 'clientsTable',
+          title: 'Tabla de clientes',
+          messageId: 'sidebar.sample.viewCampaign',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/crm/views',
+        },
+      ],
+    },
     // {
     //   id: 'graphics',
     //   title: 'graphics',
