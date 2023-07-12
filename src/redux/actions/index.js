@@ -16,3 +16,4 @@ export * from './Products';
 export * from './Providers';
 export * from './Requests';
 export * from './User';
+export * from './Campaign';

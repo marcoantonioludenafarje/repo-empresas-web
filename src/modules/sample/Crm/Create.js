@@ -35,10 +35,12 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
+import {newCampaign} from '../../../redux/actions/Campaign';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
+  CREATE_CAMPAIGN,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
 import {DataGrid} from '@mui/x-data-grid';
@@ -93,6 +95,12 @@ const Create = (props) => {
     ({clients}) => clients,
   );
 
+  const createCampaign = (payload) => {
+    dispatch(newCampaign(payload));
+  };
+
+  const {newCampaignRes} = useSelector(({campaigns}) => campaigns);
+
   console.log('Confeti los clientes', listClients);
 
   useEffect(() => {
@@ -122,20 +130,100 @@ const Create = (props) => {
     }
   }, [userDataRes]);
 
+  // const handleData = (data, {setSubmitting}) => {
+  //   setSubmitting(true);
+  //   //delete data.documentType;
+  //   console.log('Data', data);
+  //   let newCampaignPayload = {
+  //     request: {
+  //       payload: {
+  //         campaigns: [
+  //           {
+  //             denominationClient: data.name,
+  //             numberContact: data.numberContact,
+
+  //           },
+  //         ],
+  //         merchantId: userDataRes.merchantSelected.merchantId,
+  //       },
+  //     },
+  //   };
+  //   if (data.campaignImages && data.campaignImages.length > 0) {
+  //     newCampaignPayload.request.payload.campaigns[0].campaignImages = data.campaignImages;
+  //   }
+
+  //   // Agregar clientes seleccionados
+  //     if (selectedClients.length > 0) {
+  //       const selectedClientsData = selectedClients.map((clientId) => {
+  //         const client = listClients.find((c) => c.clientId === clientId);
+  //         return {
+  //           denominationClient: client.denominationClient,
+  //           numberContact: client.numberContact,
+  //         };
+  //       });
+  //       newCampaignPayload.request.payload.campaigns = [
+  //         ...newCampaignPayload.request.payload.campaigns,
+  //         ...selectedClientsData,
+  //       ];
+  //     }
+
+  //   createCampaign(newCampaignPayload);
+  //   console.log('newCampaignPayload', newCampaignPayload);
+  //   setSubmitting(false);
+  // };
+
   const handleData = (data, {setSubmitting}) => {
+    console.log('Data', data);
     setSubmitting(true);
 
-    // Simulate API call
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    let newCampaignPayload = {
+      request: {
+        payload: {
+          campaing: [
+            {
+              campaingName: data.campaignName,
+              messages: [
+                {
+                  text: data.campaignContent,
+                  // Agregar imagen si existe
+                  ...(data.campaignImages &&
+                    data.campaignImages.length > 0 && {
+                      image: {
+                        keyMaster:
+                          'general-4d8a7386-945b-4f46-bfed-3fe4f02b5379',
+                        nameFile: data.campaignImages[0].name,
+                      },
+                    }),
+                  // Agregar campo "receipt"
+                  receipt:
+                    selectedClients.length === listClients.length
+                      ? 'ALL'
+                      : 'SOMES',
+                  // Agregar campo "detail" si se han seleccionado clientes
+                  ...(selectedClients.length > 0 && {
+                    detail: selectedClients.map((clientId) => {
+                      const client = listClients.find(
+                        (c) => c.clientId === clientId,
+                      );
+                      return {
+                        id: clientId,
+                        number: client.numberContact,
+                        name: client.denominationClient,
+                      };
+                    }),
+                  }),
+                },
+              ],
+            },
+          ],
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
 
-      // Show success message
-      setOpenStatus(true);
-
-      // Reset form
-      setSubmitting(false);
-    }, 2000);
+    console.log('newCampaignPayload', newCampaignPayload);
+    createCampaign(newCampaignPayload);
+    setSubmitting(false);
   };
 
   const showMessage = () => {
