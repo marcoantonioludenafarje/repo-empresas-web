@@ -223,7 +223,15 @@ const Create = (props) => {
 
     console.log('newCampaignPayload', newCampaignPayload);
     createCampaign(newCampaignPayload);
-    setSubmitting(false);
+    setTimeout(() => {
+      setLoading(false);
+
+      // Show success message
+      setOpenStatus(true);
+
+      // Reset form
+      setSubmitting(false);
+    }, 2000);
   };
 
   const showMessage = () => {
@@ -248,6 +256,7 @@ const Create = (props) => {
   };
 
   const sendStatus = () => {
+    console.log('Esto es el momento');
     setOpenStatus(false);
     Router.push('/sample/crm/views');
   };
