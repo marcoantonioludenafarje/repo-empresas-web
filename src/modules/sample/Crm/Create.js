@@ -29,24 +29,19 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import {red} from '@mui/material/colors';
-import {orange} from '@mui/material/colors';
-import SchoolIcon from '@mui/icons-material/School';
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
-import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import {makeStyles} from '@mui/styles';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {newClient} from '../../../redux/actions/Clients';
+import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
+import {DataGrid} from '@mui/x-data-grid';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -77,10 +72,55 @@ const Create = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const [openClientsDialog, setOpenClientsDialog] = useState(false);
+  const [selectedClients, setSelectedClients] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
 
   const classes = useStyles(props);
+
+  const handleClientSelection = (selectedClients) => {
+    setSelectedClients(selectedClients);
+  };
+
+  const getClients = (payload) => {
+    dispatch(onGetClients(payload));
+  };
+  const {userDataRes} = useSelector(({user}) => user);
+
+  const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
+    ({clients}) => clients,
+  );
+
+  console.log('Confeti los clientes', listClients);
+
+  useEffect(() => {
+    console.log('Estamos userDataRes', userDataRes);
+    if (
+      userDataRes &&
+      userDataRes.merchantSelected &&
+      userDataRes.merchantSelected.merchantId
+    ) {
+      console.log('Estamos entrando al getClients');
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      //dispatch({type: GET_CLIENTS, payload: undefined});
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      getClients(listPayload);
+      // setFirstload(true);
+    }
+  }, [userDataRes]);
 
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
@@ -121,7 +161,7 @@ const Create = (props) => {
 
   const sendStatus = () => {
     setOpenStatus(false);
-    Router.push('/sample/clients/table');
+    Router.push('/sample/crm/views');
   };
 
   const handleCancel = () => {
@@ -157,6 +197,31 @@ const Create = (props) => {
       .then((response) => response.blob())
       .then((blob) => new File([blob], 'image.jpg', {type: 'image/jpeg'}));
   };
+
+  const handleClientSelect = (selectedClientIds) => {
+    setSelectedClients(selectedClientIds);
+  };
+
+  const handleOpenClientsDialog = () => {
+    setOpenClientsDialog(true);
+  };
+
+  const handleCloseClientsDialog = () => {
+    setOpenClientsDialog(false);
+  };
+
+  const columns = [
+    {field: 'clientId', headerName: 'ID', width: 150},
+    {field: 'denominationClient', headerName: 'Cliente', width: 200},
+    {field: 'numberContact', headerName: 'Contacto', width: 150},
+  ];
+
+  const rows = listClients.map((client) => ({
+    id: client.clientId,
+    clientId: client.clientId,
+    denominationClient: client.denominationClient,
+    numberContact: client.numberContact,
+  }));
 
   return (
     <Card sx={{p: 4}}>
@@ -230,6 +295,18 @@ const Create = (props) => {
                       rows={4}
                       sx={{width: '100%', my: 2}}
                     />
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <Box
+                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                    >
+                      <Button
+                        variant='outlined'
+                        onClick={() => setOpenClientsDialog(true)}
+                      >
+                        Clientes
+                      </Button>
+                    </Box>
                   </Grid>
                   <Grid item xs={12} md={12}>
                     <Box
@@ -361,7 +438,7 @@ const Create = (props) => {
             variant='outlined'
             onClick={() => {
               setOpen(false);
-              Router.push('/sample/clients/table');
+              Router.push('/sample/crm/views');
             }}
           >
             Sí
@@ -389,6 +466,32 @@ const Create = (props) => {
           <Button variant='outlined' onClick={sendStatus}>
             Aceptar
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openClientsDialog}
+        onClose={() => setOpenClientsDialog(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>Seleccionar Clientes</DialogTitle>
+        <DialogContent dividers>
+          <div style={{height: 400, width: '560px'}}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              checkboxSelection
+              pageSize={5}
+              rowsPerPageOptions={[5, 10, 20]}
+              onSelectionModelChange={handleClientSelect}
+              selectionModel={selectedClients}
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseClientsDialog}>Cerrar</Button>
         </DialogActions>
       </Dialog>
     </Card>
