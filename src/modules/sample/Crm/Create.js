@@ -29,24 +29,21 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import {red} from '@mui/material/colors';
-import {orange} from '@mui/material/colors';
-import SchoolIcon from '@mui/icons-material/School';
-import YouTubeIcon from '@mui/icons-material/YouTube';
-import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
-import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import {makeStyles} from '@mui/styles';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {newClient} from '../../../redux/actions/Clients';
+import {newClient, onGetClients} from '../../../redux/actions/Clients';
+import {newCampaign} from '../../../redux/actions/Campaign';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
+  CREATE_CAMPAIGN,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
+import {DataGrid} from '@mui/x-data-grid';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -77,16 +74,155 @@ const Create = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const [openClientsDialog, setOpenClientsDialog] = useState(false);
+  const [selectedClients, setSelectedClients] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
 
   const classes = useStyles(props);
 
+  const handleClientSelection = (selectedClients) => {
+    setSelectedClients(selectedClients);
+  };
+
+  const getClients = (payload) => {
+    dispatch(onGetClients(payload));
+  };
+  const {userDataRes} = useSelector(({user}) => user);
+
+  const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
+    ({clients}) => clients,
+  );
+
+  const createCampaign = (payload) => {
+    dispatch(newCampaign(payload));
+  };
+
+  const {newCampaignRes} = useSelector(({campaigns}) => campaigns);
+
+  console.log('Confeti los clientes', listClients);
+
+  useEffect(() => {
+    console.log('Estamos userDataRes', userDataRes);
+    if (
+      userDataRes &&
+      userDataRes.merchantSelected &&
+      userDataRes.merchantSelected.merchantId
+    ) {
+      console.log('Estamos entrando al getClients');
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      //dispatch({type: GET_CLIENTS, payload: undefined});
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      getClients(listPayload);
+      // setFirstload(true);
+    }
+  }, [userDataRes]);
+
+  // const handleData = (data, {setSubmitting}) => {
+  //   setSubmitting(true);
+  //   //delete data.documentType;
+  //   console.log('Data', data);
+  //   let newCampaignPayload = {
+  //     request: {
+  //       payload: {
+  //         campaigns: [
+  //           {
+  //             denominationClient: data.name,
+  //             numberContact: data.numberContact,
+
+  //           },
+  //         ],
+  //         merchantId: userDataRes.merchantSelected.merchantId,
+  //       },
+  //     },
+  //   };
+  //   if (data.campaignImages && data.campaignImages.length > 0) {
+  //     newCampaignPayload.request.payload.campaigns[0].campaignImages = data.campaignImages;
+  //   }
+
+  //   // Agregar clientes seleccionados
+  //     if (selectedClients.length > 0) {
+  //       const selectedClientsData = selectedClients.map((clientId) => {
+  //         const client = listClients.find((c) => c.clientId === clientId);
+  //         return {
+  //           denominationClient: client.denominationClient,
+  //           numberContact: client.numberContact,
+  //         };
+  //       });
+  //       newCampaignPayload.request.payload.campaigns = [
+  //         ...newCampaignPayload.request.payload.campaigns,
+  //         ...selectedClientsData,
+  //       ];
+  //     }
+
+  //   createCampaign(newCampaignPayload);
+  //   console.log('newCampaignPayload', newCampaignPayload);
+  //   setSubmitting(false);
+  // };
+
   const handleData = (data, {setSubmitting}) => {
+    console.log('Data', data);
     setSubmitting(true);
 
-    // Simulate API call
-    setLoading(true);
+    let newCampaignPayload = {
+      request: {
+        payload: {
+          campaing: [
+            {
+              campaingName: data.campaignName,
+              messages: [
+                {
+                  text: data.campaignContent,
+                  // Agregar imagen si existe
+                  ...(data.campaignImages &&
+                    data.campaignImages.length > 0 && {
+                      image: {
+                        keyMaster:
+                          'general-4d8a7386-945b-4f46-bfed-3fe4f02b5379',
+                        nameFile: data.campaignImages[0].name,
+                      },
+                    }),
+                  // Agregar campo "receipt"
+                  receipt:
+                    selectedClients.length === listClients.length
+                      ? 'ALL'
+                      : 'SOMES',
+                  // Agregar campo "detail" si se han seleccionado clientes
+                  ...(selectedClients.length > 0 && {
+                    detail: selectedClients.map((clientId) => {
+                      const client = listClients.find(
+                        (c) => c.clientId === clientId,
+                      );
+                      return {
+                        id: clientId,
+                        number: client.numberContact,
+                        name: client.denominationClient,
+                      };
+                    }),
+                  }),
+                },
+              ],
+            },
+          ],
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+
+    console.log('newCampaignPayload', newCampaignPayload);
+    createCampaign(newCampaignPayload);
     setTimeout(() => {
       setLoading(false);
 
@@ -120,8 +256,9 @@ const Create = (props) => {
   };
 
   const sendStatus = () => {
+    console.log('Esto es el momento');
     setOpenStatus(false);
-    Router.push('/sample/clients/table');
+    Router.push('/sample/crm/views');
   };
 
   const handleCancel = () => {
@@ -157,6 +294,31 @@ const Create = (props) => {
       .then((response) => response.blob())
       .then((blob) => new File([blob], 'image.jpg', {type: 'image/jpeg'}));
   };
+
+  const handleClientSelect = (selectedClientIds) => {
+    setSelectedClients(selectedClientIds);
+  };
+
+  const handleOpenClientsDialog = () => {
+    setOpenClientsDialog(true);
+  };
+
+  const handleCloseClientsDialog = () => {
+    setOpenClientsDialog(false);
+  };
+
+  const columns = [
+    {field: 'clientId', headerName: 'ID', width: 150},
+    {field: 'denominationClient', headerName: 'Cliente', width: 200},
+    {field: 'numberContact', headerName: 'Contacto', width: 150},
+  ];
+
+  const rows = listClients.map((client) => ({
+    id: client.clientId,
+    clientId: client.clientId,
+    denominationClient: client.denominationClient,
+    numberContact: client.numberContact,
+  }));
 
   return (
     <Card sx={{p: 4}}>
@@ -230,6 +392,18 @@ const Create = (props) => {
                       rows={4}
                       sx={{width: '100%', my: 2}}
                     />
+                  </Grid>
+                  <Grid item xs={12} md={12}>
+                    <Box
+                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                    >
+                      <Button
+                        variant='outlined'
+                        onClick={() => setOpenClientsDialog(true)}
+                      >
+                        Clientes
+                      </Button>
+                    </Box>
                   </Grid>
                   <Grid item xs={12} md={12}>
                     <Box
@@ -361,7 +535,7 @@ const Create = (props) => {
             variant='outlined'
             onClick={() => {
               setOpen(false);
-              Router.push('/sample/clients/table');
+              Router.push('/sample/crm/views');
             }}
           >
             Sí
@@ -389,6 +563,32 @@ const Create = (props) => {
           <Button variant='outlined' onClick={sendStatus}>
             Aceptar
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openClientsDialog}
+        onClose={() => setOpenClientsDialog(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>Seleccionar Clientes</DialogTitle>
+        <DialogContent dividers>
+          <div style={{height: 400, width: '560px'}}>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              checkboxSelection
+              pageSize={5}
+              rowsPerPageOptions={[5, 10, 20]}
+              onSelectionModelChange={handleClientSelect}
+              selectionModel={selectedClients}
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseClientsDialog}>Cerrar</Button>
         </DialogActions>
       </Dialog>
     </Card>

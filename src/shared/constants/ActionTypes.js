@@ -354,3 +354,8 @@ export const RESET_PROVIDERS = 'reset_providers';
 export const RESET_REQUESTS = 'reset_requests';
 export const RESET_USER = 'reset_user';
 export const ROUTES_ROL_REDUCER = 'routes_rol_reducer';
+
+//CAMPAIGN
+
+export const CREATE_CAMPAIGN = 'create_campaign';
+export const LIST_CAMPAIGN = 'list_campaign';
