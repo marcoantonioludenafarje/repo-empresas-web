@@ -53,6 +53,7 @@ import {
   addInvoice,
   getMovements,
   getOutputItems_pageListOutput,
+  previsualizeBill,
 } from '../../../redux/actions/Movements';
 import Router, {useRouter} from 'next/router';
 import OutputProducts from './OutputProducts';
@@ -193,6 +194,9 @@ const NewOutput = (props) => {
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
   };
+  const toPrevisualizeBill = (payload) => {
+    dispatch(previsualizeBill(payload));
+  };
 
   //VARIABLES DE PARAMETROS
   let money_unit;
@@ -254,6 +258,7 @@ const NewOutput = (props) => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {previsualizeBillRes} = useSelector(({movements}) => movements);
 
   const defaultValues = {
     nroBill: 'Autogenerado' /* query.documentIntern */,
@@ -509,12 +514,92 @@ const NewOutput = (props) => {
   const handleClickOpenPrevisualizer = () => {
     //loadCanvas()
     setOpenPrevisualizer(true);
-    setTimeout(() => {
-      setUrlPdf('https://d2moc5ro519bc0.cloudfront.net/merchant/cb1b5aff10ca4a548afae5b1f959e286/salidas/RUC-10167637316/67/facturas/facturaNro13-29259.pdf')
-    }, 200);
+    let parsedDocuments = listDocuments
+      .filter((obj) => obj.isSelected)
+      .map((obj) => ({
+        issueDate: obj.dateDocument,
+        serialDocument: obj.document,
+      }));
+    console.log('parsedDocuments', parsedDocuments);
+    const listTypeIgvCode = {
+      1000: 10,
+      9997: 20,
+      9998: 30,
+    };
+    let previsualizePayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          denominationMerchant:
+            userDataRes.merchantSelected.denominationMerchant,
+          typePDF: userDataRes.merchantSelected.typeMerchant,
+          folderMovement: query.folderMovement,
+          movementTypeMerchantId: query.movementTypeMerchantId,
+          contableMovementId: query.contableMovementId || '',
+          contableMovements: selectedOutput.contableMovements || [],
+          movementHeaderId: query.movementHeaderId,
+          createdAt: Number(query.createdAt),
+          clientId: query.clientId,
+          totalPriceWithIgv: Number(getValueField("totalFieldIgv").value.toFixed(2)), //
+          //issueDate: specialFormatToSunat(),
+          issueDate: dateWithHyphen(value),
+          serial: serial,
+          documentIntern: query.documentIntern,
+          clientEmail: getValueField("clientEmail").value,
+          transactionNumber: getValueField("transactionNumber").value || '',
+          /* numberBill: 3, */
+          automaticSendSunat: /* sendSunat */ true,
+          automaticSendClient: /* sendClient */ true,
+          referralGuide: getValueField("guide").value ? true : false,
+          creditSale: paymentWay == 'credit',
+          methodToPay: paymentMethod,
+          earningGeneration: earningGeneration,
+          referralGuideSerial: getValueField("guide").value ? getValueField("guide").value : '',
+          dueDate: dateWithHyphen(expirationDate),
+          observation: getValueField("observation").value ? getValueField("observation").value : '',
+          igv: Number(query.igv),
+          productsInfo: selectedProducts.map((obj) => {
+            console.log(
+              'facturabusinessProductCode',
+              obj.businessProductCode,
+            );
+            return {
+              product: obj.product,
+              quantityMovement: Number(obj.quantityMovement),
+              priceBusinessMoneyWithIgv: Number(
+                obj.priceBusinessMoneyWithIgv,
+              ),
+              category: obj.category || '',
+              customCodeProduct: obj.customCodeProduct,
+              description: obj.description,
+              unitMeasure: obj.unitMeasure,
+              businessProductCode: obj.businessProductCode,
+              taxCode: obj.taxCode,
+              igvCode: listTypeIgvCode[`${obj.taxCode}`],
+            };
+          }),
+          documentsMovement: selectedOutput.documentsMovement,
+          referralGuides: parsedDocuments,
+          sendEmail: sendEmail,
+          userCreated: userDataRes.userId,
+          userCreatedMetadata: {
+            nombreCompleto: userDataRes.nombreCompleto,
+            email: userDataRes.email,
+          },
+          outputUserCreated: selectedOutput.userCreated,
+          outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
+        },
+      }
+    };
+    toPrevisualizeBill(previsualizePayload);
     setShowAlert(false);
   };
 
+  useEffect(() => {
+    if(previsualizeBillRes && previsualizeBillRes.url){
+      setUrlPdf(previsualizeBillRes.url)
+    }
+  }, [previsualizeBillRes]);
   useEffect(() => {
     console.log("openPrevisualizer", openPrevisualizer)
     console.log("urlPdf", urlPdf)

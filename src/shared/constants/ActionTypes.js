@@ -242,6 +242,7 @@ export const TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION =
   'to_update_item_in_list_distribution';
 
 export const GENERATE_DISTRIBUTION = 'generate_distribution';
+export const PREVISUALIZE_BILL = 'previsualize_bill';
 
 //PROVIDERS
 export const GET_PROVIDERS = 'get_providers';

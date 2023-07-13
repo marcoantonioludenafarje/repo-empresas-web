@@ -36,6 +36,7 @@ import {
   CANCEL_REFERRAL_GUIDE,
   GET_OUTPUT_PAGE_LISTGUIDE,
   GET_INPUT_PAGE_LISTGUIDE,
+  PREVISUALIZE_BILL,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -831,6 +832,27 @@ export const cancelReferralGuide = (payload) => {
       })
       .catch((error) => {
         console.log('cancelReferralGuide error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const previsualizeBill = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/bill/pdfPrevisualizer', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('previsualizeBill resultado', data);
+        dispatch({
+          type: PREVISUALIZE_BILL,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('previsualizeBill error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

@@ -30,6 +30,7 @@ import {
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
+import PendingIcon from '@mui/icons-material/Pending';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
@@ -76,6 +77,7 @@ import {
   getBillItems_pageListBill,
   cancelInvoice,
   addCreditNote,
+  billBatchConsult,
 } from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -85,6 +87,7 @@ import {
   GET_USER_DATA,
   GET_BILL_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_BILLS,
+  BILLS_BATCH_CONSULT,
   ADD_CREDIT_NOTE,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
@@ -154,6 +157,8 @@ const BillsTable = (props) => {
     return someDate;
   };
   const [reload, setReload] = React.useState(0);
+  
+  const [isLoading, setIsLoading] = React.useState(false);
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -191,6 +196,9 @@ const BillsTable = (props) => {
   };
   const toExportExcelTemplateToBills = (payload) => {
     dispatch(exportExcelTemplateToBills(payload));
+  };
+  const toBillBatchConsult = (payload) => {
+    dispatch(billBatchConsult(payload));
   };
 
   const handleNextPage = (event) => {
@@ -264,7 +272,40 @@ const BillsTable = (props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
-
+  const batchConsultBill = () => {
+    if (userDataRes) {
+      toBillBatchConsult({
+        request: {
+          payload: {
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      });
+      setIsLoading(true);
+    }
+  };
+  useEffect(() => {
+    if (billBatchConsultRes) {
+      setIsLoading(false);
+      let listPayload = {
+        request: {
+          payload: {
+            initialTime: toEpoch(Date.now() - 89280000),
+            finalTime: toEpoch(Date.now()),
+            businessProductCode: null,
+            movementType: 'BILL',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            createdAt: null,
+            searchByBill: null,
+            movementHeaderId: null,
+            outputId: null,
+          },
+        },
+      };
+      toGetMovements(listPayload);
+      dispatch({type: BILL_BATCH_CONSULT, payload: undefined});
+    }
+  }, [billBatchConsultRes]);
   useEffect(() => {
     if (businessParameter !== undefined) {
       weight_unit = businessParameter.find(
@@ -597,6 +638,9 @@ const BillsTable = (props) => {
       case 'denied':
         return <CancelIcon sx={{color: red[500]}} />;
         break;
+      case 'waiting':
+        return <PendingIcon sx={{color: red[500]}} />;
+        break;
       case false:
         return <CancelIcon sx={{color: red[500]}} />;
         break;
@@ -912,6 +956,16 @@ const BillsTable = (props) => {
             Exportar todo
           </Button>
         ) : null}
+        <Button
+          variant='outlined'
+          startIcon={<FindReplaceIcon />}
+          onClick={batchConsultReferralGuide}
+          disabled={isLoading}
+          color='success'
+        >
+          Consulta Masiva de Guías en SUNAT
+          {isLoading && <CircularProgress sx={{ml: 2}} size={24} />}
+        </Button>
       </ButtonGroup>
 
       <Dialog
