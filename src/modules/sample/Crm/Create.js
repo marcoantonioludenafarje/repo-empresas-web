@@ -54,13 +54,6 @@ const validationSchema = yup.object({
   campaignImages: yup.array().of(yup.mixed()).nullable(),
 });
 
-const defaultValues = {
-  campaignName: '',
-  date: new Date(),
-  campaignContent: '',
-  campaignImages: null,
-};
-
 const useStyles = makeStyles((theme) => ({
   fixPosition: {
     position: 'relative',
@@ -79,8 +72,16 @@ const Create = (props) => {
 
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const classes = useStyles(props);
+
+  const defaultValues = {
+    campaignName: '',
+    date: selectedDate,
+    campaignContent: '',
+    campaignImages: null,
+  };
 
   const handleClientSelection = (selectedClients) => {
     setSelectedClients(selectedClients);
@@ -129,48 +130,6 @@ const Create = (props) => {
       // setFirstload(true);
     }
   }, [userDataRes]);
-
-  // const handleData = (data, {setSubmitting}) => {
-  //   setSubmitting(true);
-  //   //delete data.documentType;
-  //   console.log('Data', data);
-  //   let newCampaignPayload = {
-  //     request: {
-  //       payload: {
-  //         campaigns: [
-  //           {
-  //             denominationClient: data.name,
-  //             numberContact: data.numberContact,
-
-  //           },
-  //         ],
-  //         merchantId: userDataRes.merchantSelected.merchantId,
-  //       },
-  //     },
-  //   };
-  //   if (data.campaignImages && data.campaignImages.length > 0) {
-  //     newCampaignPayload.request.payload.campaigns[0].campaignImages = data.campaignImages;
-  //   }
-
-  //   // Agregar clientes seleccionados
-  //     if (selectedClients.length > 0) {
-  //       const selectedClientsData = selectedClients.map((clientId) => {
-  //         const client = listClients.find((c) => c.clientId === clientId);
-  //         return {
-  //           denominationClient: client.denominationClient,
-  //           numberContact: client.numberContact,
-  //         };
-  //       });
-  //       newCampaignPayload.request.payload.campaigns = [
-  //         ...newCampaignPayload.request.payload.campaigns,
-  //         ...selectedClientsData,
-  //       ];
-  //     }
-
-  //   createCampaign(newCampaignPayload);
-  //   console.log('newCampaignPayload', newCampaignPayload);
-  //   setSubmitting(false);
-  // };
 
   const handleData = (data, {setSubmitting}) => {
     console.log('Data', data);
@@ -373,7 +332,9 @@ const Create = (props) => {
                     <DateTimePicker
                       label='Fecha *'
                       name='date'
+                      value={selectedDate}
                       inputFormat='dd/MM/yyyy HH:mm'
+                      onChange={(newValue) => setSelectedDate(newValue)}
                       renderInput={(params) => (
                         <TextField
                           {...params}
