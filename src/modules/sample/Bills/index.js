@@ -33,6 +33,7 @@ import IntlMessages from '../../../@crema/utility/IntlMessages';
 import PendingIcon from '@mui/icons-material/Pending';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -157,7 +158,7 @@ const BillsTable = (props) => {
     return someDate;
   };
   const [reload, setReload] = React.useState(0);
-  
+
   const [isLoading, setIsLoading] = React.useState(false);
   const [confirmCancel, setConfirmCancel] = React.useState(false);
   const [openForm, setOpenForm] = React.useState(false);

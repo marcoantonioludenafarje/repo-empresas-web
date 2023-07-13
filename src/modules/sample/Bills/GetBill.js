@@ -169,13 +169,13 @@ const NewOutput = (props) => {
 
   let canvasRef = useRef(null);
   const [scale, setScale] = React.useState(1.0);
-  const [urlPdf, setUrlPdf] = React.useState("");
+  const [urlPdf, setUrlPdf] = React.useState('');
   const handleZoomIn = () => {
-    setScale(prevScale => prevScale + 0.1);
+    setScale((prevScale) => prevScale + 0.1);
   };
 
   const handleZoomOut = () => {
-    setScale(prevScale => prevScale - 0.1);
+    setScale((prevScale) => prevScale - 0.1);
   };
 
   const handleResetZoom = () => {
@@ -540,35 +540,36 @@ const NewOutput = (props) => {
           movementHeaderId: query.movementHeaderId,
           createdAt: Number(query.createdAt),
           clientId: query.clientId,
-          totalPriceWithIgv: Number(getValueField("totalFieldIgv").value.toFixed(2)), //
+          totalPriceWithIgv: Number(
+            getValueField('totalFieldIgv').value.toFixed(2),
+          ), //
           //issueDate: specialFormatToSunat(),
           issueDate: dateWithHyphen(value),
           serial: serial,
           documentIntern: query.documentIntern,
-          clientEmail: getValueField("clientEmail").value,
-          transactionNumber: getValueField("transactionNumber").value || '',
+          clientEmail: getValueField('clientEmail').value,
+          transactionNumber: getValueField('transactionNumber').value || '',
           /* numberBill: 3, */
           automaticSendSunat: /* sendSunat */ true,
           automaticSendClient: /* sendClient */ true,
-          referralGuide: getValueField("guide").value ? true : false,
+          referralGuide: getValueField('guide').value ? true : false,
           creditSale: paymentWay == 'credit',
           methodToPay: paymentMethod,
           earningGeneration: earningGeneration,
-          referralGuideSerial: getValueField("guide").value ? getValueField("guide").value : '',
+          referralGuideSerial: getValueField('guide').value
+            ? getValueField('guide').value
+            : '',
           dueDate: dateWithHyphen(expirationDate),
-          observation: getValueField("observation").value ? getValueField("observation").value : '',
+          observation: getValueField('observation').value
+            ? getValueField('observation').value
+            : '',
           igv: Number(query.igv),
           productsInfo: selectedProducts.map((obj) => {
-            console.log(
-              'facturabusinessProductCode',
-              obj.businessProductCode,
-            );
+            console.log('facturabusinessProductCode', obj.businessProductCode);
             return {
               product: obj.product,
               quantityMovement: Number(obj.quantityMovement),
-              priceBusinessMoneyWithIgv: Number(
-                obj.priceBusinessMoneyWithIgv,
-              ),
+              priceBusinessMoneyWithIgv: Number(obj.priceBusinessMoneyWithIgv),
               category: obj.category || '',
               customCodeProduct: obj.customCodeProduct,
               description: obj.description,
@@ -589,48 +590,47 @@ const NewOutput = (props) => {
           outputUserCreated: selectedOutput.userCreated,
           outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
         },
-      }
+      },
     };
     toPrevisualizeBill(previsualizePayload);
     setShowAlert(false);
   };
 
   useEffect(() => {
-    if(previsualizeBillRes && previsualizeBillRes.url){
-      setUrlPdf(previsualizeBillRes.url)
+    if (previsualizeBillRes && previsualizeBillRes.url) {
+      setUrlPdf(previsualizeBillRes.url);
     }
   }, [previsualizeBillRes]);
   useEffect(() => {
-    console.log("openPrevisualizer", openPrevisualizer)
-    console.log("urlPdf", urlPdf)
-    console.log("canvasRef", canvasRef)
+    console.log('openPrevisualizer', openPrevisualizer);
+    console.log('urlPdf', urlPdf);
+    console.log('canvasRef', canvasRef);
     setTimeout(() => {
-      if(openPrevisualizer && urlPdf && canvasRef.current){
-        console.log("hola urlPdf")
+      if (openPrevisualizer && urlPdf && canvasRef.current) {
+        console.log('hola urlPdf');
         const canvas = canvasRef.current;
         const canvasContext = canvas.getContext('2d');
-  
+
         const renderCanvas = async () => {
           const pdfJS = await import('pdfjs-dist/build/pdf');
-          pdfJS.GlobalWorkerOptions.workerSrc = window.location.origin + '/pdf.worker.min.js';
+          pdfJS.GlobalWorkerOptions.workerSrc =
+            window.location.origin + '/pdf.worker.min.js';
           // const buffer = Uint8Array.from(atob(pdfBase64), (c) => c.charCodeAt(0));
           // const pdf = await pdfJS.getDocument(buffer).promise;
           const pdf = await pdfJS.getDocument(urlPdf).promise;
           const page = await pdf.getPage(1);
-          const viewport = page.getViewport({ scale });
-    
+          const viewport = page.getViewport({scale});
+
           canvas.height = viewport.height;
           canvas.width = viewport.width;
-    
-          const renderContext = { canvasContext, viewport };
+
+          const renderContext = {canvasContext, viewport};
           page.render(renderContext);
         };
-    
+
         renderCanvas();
-          
       }
     }, 500);
-    
   }, [urlPdf, canvasRef, openPrevisualizer]);
 
   const valueWithIGV = (value) => {
@@ -1506,15 +1506,17 @@ const NewOutput = (props) => {
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
 
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto', mb: 2}}>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{width: 500, margin: 'auto', mb: 2}}
+                >
                   <Grid item xs={8} sm={12} sx={{mt: 2}}>
                     <Button
                       sx={{width: 1}}
                       color='secondary'
                       variant='outlined'
-                      onClick={() =>
-                        handleClickOpenPrevisualizer()
-                      }
+                      onClick={() => handleClickOpenPrevisualizer()}
                     >
                       Previsualizar PDF
                     </Button>
@@ -1785,10 +1787,12 @@ const NewOutput = (props) => {
         </DialogTitle>
         <DialogContent>
           <Box sx={{width: 1, textAlign: 'center'}}>
-            <canvas ref={canvasRef} style={{ height: '100vh' }} />
+            <canvas ref={canvasRef} style={{height: '100vh'}} />
           </Box>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+          <Box
+            sx={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}
+          >
             <IconButton onClick={handleZoomIn}>
               <ZoomInIcon />
             </IconButton>

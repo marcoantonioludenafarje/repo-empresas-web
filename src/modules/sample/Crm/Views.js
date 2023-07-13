@@ -7,9 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {getCampaigns} from '../../../redux/actions/Campaign';
-import {
-  convertToDate,
-} from '../../../Utils/utils';
+import {convertToDate} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   FETCH_SUCCESS,
@@ -98,7 +96,9 @@ export default function Views() {
               <TableCell component='th' scope='row'>
                 {row.campaignName}
               </TableCell>
-              <TableCell align='right'>{convertToDate(row.createdAt)}</TableCell>
+              <TableCell align='right'>
+                {convertToDate(row.createdAt)}
+              </TableCell>
               <TableCell align='right'>{row.messages[0].text}</TableCell>
               <TableCell align='right'>{row.messages[0].receipt}</TableCell>
               <TableCell align='right'>

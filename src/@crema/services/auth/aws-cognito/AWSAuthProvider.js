@@ -348,8 +348,9 @@ const AwsAuthProvider = ({children}) => {
         isAuthenticated: false,
       });
       let messageError = error.message;
-      if(error.message == "User is disabled."){
-        messageError = "Usuario inhabilitado por falta de pago, comunicarse con la administración del aplicativo"
+      if (error.message == 'User is disabled.') {
+        messageError =
+          'Usuario inhabilitado por falta de pago, comunicarse con la administración del aplicativo';
       }
       dispatch({type: FETCH_ERROR, payload: messageError});
     }

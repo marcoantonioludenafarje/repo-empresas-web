@@ -81,7 +81,7 @@ const Create = (props) => {
   const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
-  const [nameLastFile, setNameLastFile] = React.useState("");
+  const [nameLastFile, setNameLastFile] = React.useState('');
   const classes = useStyles(props);
 
   const handleClientSelection = (selectedClients) => {
@@ -292,7 +292,6 @@ const Create = (props) => {
         type: file?.type || null,
       });
       return URL.createObjectURL(file);
-
     });
     setPreviewImages(imagePreviews);
     Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
