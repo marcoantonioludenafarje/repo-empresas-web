@@ -242,6 +242,7 @@ export const TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION =
   'to_update_item_in_list_distribution';
 
 export const GENERATE_DISTRIBUTION = 'generate_distribution';
+export const PREVISUALIZE_BILL = 'previsualize_bill';
 
 //PROVIDERS
 export const GET_PROVIDERS = 'get_providers';
@@ -338,6 +339,7 @@ export const SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION =
 //RESETS
 export const RESET_CLIENTS = 'reset_clients';
 export const RESET_CARRIERS = 'reset_carriers';
+export const RESET_CAMPAIGNS = 'reset_campaigns';
 export const RESET_COMMON = 'reset_common';
 export const RESET_DRIVERS = 'reset_drivers';
 export const RESET_FILEEXPLORER = 'reset_fileexplorer';

@@ -282,6 +282,7 @@ const NewClient = (props) => {
               addressClient: data.addressClient,
               emailClient: data.emailClient,
               numberContact: data.numberContact,
+              numberCountryCode: '51',
               extraInformationClient: data.extraInformationClient,
               ...extraTrama,
             },
@@ -579,8 +580,21 @@ const NewClient = (props) => {
                           }}
                         />
                       </Grid>
-
-                      <Grid item xs={12}>
+                      <Grid item xs={2} md={2}>
+                        <TextField
+                          disabled
+                          defaultValue={'+51'}
+                          label={<IntlMessages id='common.cellphoneCountryCod' />}
+                          variant='filled'
+                          sx={{
+                            my: 2,
+                            mx: 0,
+                          }}
+                          color='success'
+                          focused
+                        />
+                      </Grid>
+                      <Grid item xs={10}>
                         <AppTextField
                           label='Telefono fijo o celular de contacto'
                           name='numberContact'
@@ -736,7 +750,21 @@ const NewClient = (props) => {
                           }}
                         />
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item xs={2} md={2}>
+                        <TextField
+                          disabled
+                          defaultValue={'+51'}
+                          label={<IntlMessages id='common.cellphoneCountryCod' />}
+                          variant='filled'
+                          sx={{
+                            my: 2,
+                            mx: 0,
+                          }}
+                          color='success'
+                          focused
+                        />
+                      </Grid>
+                      <Grid item xs={10}>
                         <AppTextField
                           label='Telefono fijo o celular de cliente'
                           name='numberContact'

@@ -17,12 +17,12 @@ export const newCampaign = (payload) => {
         dispatch({type: CREATE_CAMPAIGN, payload: data.response.payload});
         dispatch({
           type: FETCH_SUCCESS,
-          payload: 'Se ha registrado la información correctamente',
+          payload: 'Se ha registrado la campaña correctamente',
         });
       })
       .catch((error) => {
         console.log('Nueva campaña error', error);
-        dispatch({type: FETCH_ERROR, payload: 'error'});
+        dispatch({type: FETCH_ERROR, payload: 'Error al crear la campaña'});
       });
   };
 };

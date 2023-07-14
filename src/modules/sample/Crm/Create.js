@@ -36,13 +36,12 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {newCampaign} from '../../../redux/actions/Campaign';
+import {createPresigned} from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
-  GET_USER_DATA,
-  CREATE_CAMPAIGN,
+  RESET_CAMPAIGNS,
 } from '../../../shared/constants/ActionTypes';
-import {getUserData} from '../../../redux/actions/User';
 import {DataGrid} from '@mui/x-data-grid';
 
 const validationSchema = yup.object({
@@ -51,15 +50,11 @@ const validationSchema = yup.object({
   campaignContent: yup
     .string()
     .required('El contenido de la campaña es obligatorio'),
-  campaignImages: yup.array().of(yup.mixed()).nullable(),
+  campaignImages: yup
+    .array()
+    .of(yup.mixed().required('Requiere una imagen'))
+    .nullable(),
 });
-
-const defaultValues = {
-  campaignName: '',
-  date: new Date(),
-  campaignContent: '',
-  campaignImages: null,
-};
 
 const useStyles = makeStyles((theme) => ({
   fixPosition: {
@@ -75,12 +70,22 @@ const Create = (props) => {
   const router = useRouter();
 
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
-  const [selectedClients, setSelectedClients] = useState([]);
+  const [selectedClients, setSelectedClients] = useState();
 
-  const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
+  const [nameLastFile, setNameLastFile] = React.useState('');
+  const [clientSelection, setClientSelection] = useState();
   const classes = useStyles(props);
+
+  const defaultValues = {
+    campaignName: '',
+    date: selectedDate,
+    campaignContent: '',
+    campaignImages: null,
+  };
 
   const handleClientSelection = (selectedClients) => {
     setSelectedClients(selectedClients);
@@ -95,16 +100,21 @@ const Create = (props) => {
     ({clients}) => clients,
   );
 
+  const {presigned} = useSelector(({general}) => general);
   const createCampaign = (payload) => {
     dispatch(newCampaign(payload));
   };
-
-  const {newCampaignRes} = useSelector(({campaigns}) => campaigns);
+  const toCreatePresigned = (payload, file) => {
+    dispatch(createPresigned(payload, file));
+  };
+  const {newCampaignRes, successMessage, errorMessage, process, loading} =
+    useSelector(({campaigns}) => campaigns);
+  console.log('Respuesta de campañas : ', errorMessage);
 
   console.log('Confeti los clientes', listClients);
 
   useEffect(() => {
-    console.log('Estamos userDataRes', userDataRes);
+    console.log('Estamos userDataResINCampaign', userDataRes);
     if (
       userDataRes &&
       userDataRes.merchantSelected &&
@@ -130,88 +140,64 @@ const Create = (props) => {
     }
   }, [userDataRes]);
 
-  // const handleData = (data, {setSubmitting}) => {
-  //   setSubmitting(true);
-  //   //delete data.documentType;
-  //   console.log('Data', data);
-  //   let newCampaignPayload = {
-  //     request: {
-  //       payload: {
-  //         campaigns: [
-  //           {
-  //             denominationClient: data.name,
-  //             numberContact: data.numberContact,
+  useEffect(() => {
+    switch (process) {
+      case 'CREATE_NEW_CAMPAIGN':
+        if (!loading && (successMessage || errorMessage)) {
+          setOpenStatus(true);
+        }
 
-  //           },
-  //         ],
-  //         merchantId: userDataRes.merchantSelected.merchantId,
-  //       },
-  //     },
-  //   };
-  //   if (data.campaignImages && data.campaignImages.length > 0) {
-  //     newCampaignPayload.request.payload.campaigns[0].campaignImages = data.campaignImages;
-  //   }
-
-  //   // Agregar clientes seleccionados
-  //     if (selectedClients.length > 0) {
-  //       const selectedClientsData = selectedClients.map((clientId) => {
-  //         const client = listClients.find((c) => c.clientId === clientId);
-  //         return {
-  //           denominationClient: client.denominationClient,
-  //           numberContact: client.numberContact,
-  //         };
-  //       });
-  //       newCampaignPayload.request.payload.campaigns = [
-  //         ...newCampaignPayload.request.payload.campaigns,
-  //         ...selectedClientsData,
-  //       ];
-  //     }
-
-  //   createCampaign(newCampaignPayload);
-  //   console.log('newCampaignPayload', newCampaignPayload);
-  //   setSubmitting(false);
-  // };
+        break;
+      default:
+        console.log('Se supone que pasa por aquí XD');
+    }
+  }, [loading]);
 
   const handleData = (data, {setSubmitting}) => {
     console.log('Data', data);
     setSubmitting(true);
+    dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
+    let receivers = [];
 
-    let newCampaignPayload = {
+    if (clientSelection === 'Todos') {
+      receivers = listClients.map((client) => ({
+        type: 'client',
+        id: client.clientId,
+        name: client.denominationClient,
+        number: '51' + client.numberContact,
+      }));
+      receivers.push({
+        type: 'tag',
+        tagId: 'ALL',
+      });
+    } else if (clientSelection === 'Algunos') {
+      receivers = selectedClients.map((clientId) => {
+        const client = listClients.find((c) => c.clientId === clientId);
+        return {
+          type: 'client',
+          id: clientId,
+          name: client.denominationClient,
+          number: '51' + client.numberContact,
+        };
+      });
+    }
+    console.log('RECEIVERS', receivers);
+    const payload = {
       request: {
         payload: {
           campaing: [
             {
               campaingName: data.campaignName,
+              scheduledAt: data.date,
+              receivers,
               messages: [
                 {
+                  type: 'image',
+                  image: {
+                    keyMaster: selectedJsonImages[0]?.keyMaster || '',
+                    nameFile: selectedJsonImages[0]?.nameFile || '',
+                  },
                   text: data.campaignContent,
-                  // Agregar imagen si existe
-                  ...(data.campaignImages &&
-                    data.campaignImages.length > 0 && {
-                      image: {
-                        keyMaster:
-                          'general-4d8a7386-945b-4f46-bfed-3fe4f02b5379',
-                        nameFile: data.campaignImages[0].name,
-                      },
-                    }),
-                  // Agregar campo "receipt"
-                  receipt:
-                    selectedClients.length === listClients.length
-                      ? 'ALL'
-                      : 'SOMES',
-                  // Agregar campo "detail" si se han seleccionado clientes
-                  ...(selectedClients.length > 0 && {
-                    detail: selectedClients.map((clientId) => {
-                      const client = listClients.find(
-                        (c) => c.clientId === clientId,
-                      );
-                      return {
-                        id: clientId,
-                        number: client.numberContact,
-                        name: client.denominationClient,
-                      };
-                    }),
-                  }),
                 },
               ],
             },
@@ -221,15 +207,21 @@ const Create = (props) => {
       },
     };
 
-    console.log('newCampaignPayload', newCampaignPayload);
-    createCampaign(newCampaignPayload);
-    setSubmitting(false);
+    console.log('newCampaignPayload', payload);
+    createCampaign(payload);
+
+    setTimeout(() => {
+      // Show success message
+      setOpenStatus(true);
+
+      // Reset form
+      setSubmitting(false);
+    }, 2000);
   };
 
   const showMessage = () => {
-    if (loading) {
-      return <CircularProgress disableShrink />;
-    } else {
+    if (successMessage !== undefined) {
+      console.log('MENSAJE DE VALIDEZ', successMessage);
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -240,14 +232,32 @@ const Create = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            La campaña ha sido creada exitosamente.
+            {/* Se ha registrado la información <br />
+            correctamente */}
+            {successMessage}
           </DialogContentText>
         </>
       );
+    } else if (errorMessage) {
+      console.log('MENSAJE DE ERROR', errorMessage);
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            {errorMessage}
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
     }
   };
 
   const sendStatus = () => {
+    console.log('Esto es el momento');
     setOpenStatus(false);
     Router.push('/sample/crm/views');
   };
@@ -264,15 +274,50 @@ const Create = (props) => {
     const files = Array.from(event.target.files);
     setFieldValue('campaignImages', files);
 
-    const imagePreviews = files.map((file) => URL.createObjectURL(file));
+    const imagePreviews = files.map((file) => {
+      let imagePayload = {
+        request: {
+          payload: {
+            key: 'general',
+            action: 'putObject',
+            contentType: '',
+          },
+        },
+      };
+      imagePayload.request.payload.contentType = file.type;
+      imagePayload.request.payload.name = file.name;
+      setNameLastFile(file.name);
+      toCreatePresigned(imagePayload, {
+        image: file,
+        type: file?.type || null,
+      });
+      return URL.createObjectURL(file);
+    });
     setPreviewImages(imagePreviews);
+    Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
   };
-
+  useEffect(() => {
+    if (presigned) {
+      console.log('useEffect presigned', presigned);
+      let actualSelectedJsonImages = selectedJsonImages;
+      const newJsonImages = {
+        keyMaster: presigned.keymaster,
+        nameFile: nameLastFile,
+      };
+      console.log('newJsonImages', newJsonImages);
+      actualSelectedJsonImages = [newJsonImages];
+      console.log('actualSelectedJsonImages', actualSelectedJsonImages);
+      setSelectedJsonImages(actualSelectedJsonImages);
+    }
+  }, [presigned]);
   const removeImagePreview = (index, setFieldValue) => {
     const updatedImages = [...previewImages];
     updatedImages.splice(index, 1);
     setPreviewImages(updatedImages);
 
+    let newImagesJson = selectedJsonImages;
+    delete newImagesJson[index];
+    setSelectedJsonImages(newImagesJson);
     const updatedFiles = previewImages.map((image) => {
       const file = imageToBlob(image);
       return file;
@@ -288,6 +333,12 @@ const Create = (props) => {
 
   const handleClientSelect = (selectedClientIds) => {
     setSelectedClients(selectedClientIds);
+
+    if (selectedClientIds.length === listClients.length) {
+      setClientSelection('Todos');
+    } else {
+      setClientSelection('Algunos');
+    }
   };
 
   const handleOpenClientsDialog = () => {
@@ -364,7 +415,9 @@ const Create = (props) => {
                     <DateTimePicker
                       label='Fecha *'
                       name='date'
+                      value={selectedDate}
                       inputFormat='dd/MM/yyyy HH:mm'
+                      onChange={(newValue) => setSelectedDate(newValue)}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -386,14 +439,42 @@ const Create = (props) => {
                   </Grid>
                   <Grid item xs={12} md={12}>
                     <Box
-                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        my: 2,
+                      }}
                     >
-                      <Button
-                        variant='outlined'
-                        onClick={() => setOpenClientsDialog(true)}
+                      <FormControl
+                        sx={{
+                          minWidth: 240,
+                          mx: 2,
+                          my: 2,
+                        }}
                       >
-                        Clientes
-                      </Button>
+                        <InputLabel id='client-selection-label'>
+                          Selección de Clientes
+                        </InputLabel>
+                        <Select
+                          labelId='client-selection-label'
+                          id='client-selection'
+                          value={clientSelection}
+                          onChange={(event) =>
+                            setClientSelection(event.target.value)
+                          }
+                        >
+                          <MenuItem value='Todos'>Todos</MenuItem>
+                          <MenuItem value='Algunos'>Algunos</MenuItem>
+                        </Select>
+                      </FormControl>
+                      {clientSelection === 'Algunos' && (
+                        <Button
+                          variant='outlined'
+                          onClick={() => setOpenClientsDialog(true)}
+                        >
+                          Clientes
+                        </Button>
+                      )}
                     </Box>
                   </Grid>
                   <Grid item xs={12} md={12}>

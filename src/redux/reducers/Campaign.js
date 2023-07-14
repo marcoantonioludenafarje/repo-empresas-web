@@ -4,6 +4,7 @@ import {
   FETCH_ERROR,
   LIST_CAMPAIGN,
   CREATE_CAMPAIGN,
+  RESET_CAMPAIGNS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -50,7 +51,16 @@ const campaignsReducer = (state = INIT_STATE, action) => {
         ...state,
         newCampaignRes: action.payload,
       };
-
+    case FETCH_START:
+      if (!action.payload || !action.payload.process) {
+        action.payload = {process: 'LIST_CAMPAIGNS'};
+      }
+      return {
+        ...state,
+        // error: '',
+        loading: true,
+        process: action.payload.process,
+      };
     case FETCH_SUCCESS:
       console.log('data de reducer FETCH_SUCCESS', action.payload);
       return {
@@ -65,7 +75,12 @@ const campaignsReducer = (state = INIT_STATE, action) => {
         ...state,
         errorMessage: action.payload,
       };
-
+    case RESET_CAMPAIGNS:
+      return {
+        successMessage: undefined,
+        errorMessage: undefined,
+        clientsLastEvalutedKey_pageListClients: null,
+      };
     default:
       return state;
   }

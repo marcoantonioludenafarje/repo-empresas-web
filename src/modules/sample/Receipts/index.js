@@ -42,6 +42,7 @@ import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import DataSaverOffOutlinedIcon from '@mui/icons-material/DataSaverOffOutlined';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import PendingIcon from '@mui/icons-material/Pending';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
@@ -84,6 +85,7 @@ import {
   GET_USER_DATA,
   GET_RECEIPT_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS,
+  RECEIPTS_BATCH_CONSULT,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -574,6 +576,9 @@ const ReceiptsTable = (props) => {
     switch (bool) {
       case 'accepted':
         return <CheckCircleIcon color='success' />;
+        break;
+      case 'waiting':
+        return <PendingIcon sx={{color: red[500]}} />;
         break;
       case true:
         return <CheckCircleIcon color='success' />;
