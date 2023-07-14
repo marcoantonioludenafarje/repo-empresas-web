@@ -339,6 +339,7 @@ export const SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION =
 //RESETS
 export const RESET_CLIENTS = 'reset_clients';
 export const RESET_CARRIERS = 'reset_carriers';
+export const RESET_CAMPAIGNS = 'reset_campaigns';
 export const RESET_COMMON = 'reset_common';
 export const RESET_DRIVERS = 'reset_drivers';
 export const RESET_FILEEXPLORER = 'reset_fileexplorer';

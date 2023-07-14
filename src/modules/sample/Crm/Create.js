@@ -40,10 +40,8 @@ import {createPresigned} from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
-  GET_USER_DATA,
-  CREATE_CAMPAIGN,
+  RESET_CAMPAIGNS,
 } from '../../../shared/constants/ActionTypes';
-import {getUserData} from '../../../redux/actions/User';
 import {DataGrid} from '@mui/x-data-grid';
 
 const validationSchema = yup.object({
@@ -52,7 +50,10 @@ const validationSchema = yup.object({
   campaignContent: yup
     .string()
     .required('El contenido de la campaña es obligatorio'),
-  campaignImages: yup.array().of(yup.mixed()).nullable(),
+  campaignImages: yup
+    .array()
+    .of(yup.mixed().required('Requiere una imagen'))
+    .nullable(),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -69,14 +70,14 @@ const Create = (props) => {
   const router = useRouter();
 
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
-  const [selectedClients, setSelectedClients] = useState([]);
+  const [selectedClients, setSelectedClients] = useState();
 
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
-  const [clientSelection, setClientSelection] = useState('Todos');
+  const [clientSelection, setClientSelection] = useState();
   const classes = useStyles(props);
 
   const defaultValues = {
@@ -113,7 +114,7 @@ const Create = (props) => {
   console.log('Confeti los clientes', listClients);
 
   useEffect(() => {
-    console.log('Estamos userDataRes', userDataRes);
+    console.log('Estamos userDataResINCampaign', userDataRes);
     if (
       userDataRes &&
       userDataRes.merchantSelected &&
@@ -155,36 +156,48 @@ const Create = (props) => {
   const handleData = (data, {setSubmitting}) => {
     console.log('Data', data);
     setSubmitting(true);
+    dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
+    let receivers = [];
 
-    let newCampaignPayload = {
+    if (clientSelection === 'Todos') {
+      receivers = listClients.map((client) => ({
+        type: 'client',
+        id: client.clientId,
+        name: client.denominationClient,
+        number: '51' + client.numberContact,
+      }));
+      receivers.push({
+        type: 'tag',
+        tagId: 'ALL',
+      });
+    } else if (clientSelection === 'Algunos') {
+      receivers = selectedClients.map((clientId) => {
+        const client = listClients.find((c) => c.clientId === clientId);
+        return {
+          type: 'client',
+          id: clientId,
+          name: client.denominationClient,
+          number: '51' + client.numberContact,
+        };
+      });
+    }
+    console.log('RECEIVERS', receivers);
+    const payload = {
       request: {
         payload: {
           campaing: [
             {
               campaingName: data.campaignName,
+              scheduledAt: data.date,
+              receivers,
               messages: [
                 {
+                  type: 'image',
+                  image: {
+                    keyMaster: selectedJsonImages[0]?.keyMaster || '',
+                    nameFile: selectedJsonImages[0]?.nameFile || '',
+                  },
                   text: data.campaignContent,
-                  // Agregar imagen si existe
-                  ...(data.campaignImages &&
-                    data.campaignImages.length > 0 && {
-                      image: selectedJsonImages[0],
-                    }),
-                  // Agregar campo "receipt"
-                  receipt: clientSelection === 'Todos' ? 'ALL' : 'SOMES',
-                  // Agregar campo "detail" si se han seleccionado clientes
-                  ...(clientSelection === 'Algunos' && {
-                    detail: selectedClients.map((clientId) => {
-                      const client = listClients.find(
-                        (c) => c.clientId === clientId,
-                      );
-                      return {
-                        id: clientId,
-                        number: client.numberContact,
-                        name: client.denominationClient,
-                      };
-                    }),
-                  }),
                 },
               ],
             },
@@ -194,8 +207,9 @@ const Create = (props) => {
       },
     };
 
-    console.log('newCampaignPayload', newCampaignPayload);
-    createCampaign(newCampaignPayload);
+    console.log('newCampaignPayload', payload);
+    createCampaign(payload);
+
     setTimeout(() => {
       // Show success message
       setOpenStatus(true);
@@ -205,42 +219,9 @@ const Create = (props) => {
     }, 2000);
   };
 
-  // const showMessage = () => {
-  //   if (loading) {
-  //     return <CircularProgress disableShrink />;
-  //   } else {
-  //     return (
-  //       <>
-  //         <CheckCircleOutlineOutlinedIcon
-  //           color='success'
-  //           sx={{fontSize: '6em', mx: 2}}
-  //         />
-  //         <DialogContentText
-  //           sx={{fontSize: '1.2em', m: 'auto'}}
-  //           id='alert-dialog-description'
-  //         >
-  //           {newCampaignRes}
-  //         </DialogContentText>
-  //       </>
-  //     );
-  //   }
-  // };
-
   const showMessage = () => {
-    if (errorMessage !== undefined) {
-      console.log(errorMessage);
-      return (
-        <>
-          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
-          <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
-            id='alert-dialog-description'
-          >
-            {errorMessage}
-          </DialogContentText>
-        </>
-      );
-    } else if (successMessage) {
+    if (successMessage !== undefined) {
+      console.log('MENSAJE DE VALIDEZ', successMessage);
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -254,6 +235,19 @@ const Create = (props) => {
             {/* Se ha registrado la información <br />
             correctamente */}
             {successMessage}
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      console.log('MENSAJE DE ERROR', errorMessage);
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            {errorMessage}
           </DialogContentText>
         </>
       );
@@ -453,7 +447,7 @@ const Create = (props) => {
                     >
                       <FormControl
                         sx={{
-                          minWidth: 120,
+                          minWidth: 240,
                           mx: 2,
                           my: 2,
                         }}

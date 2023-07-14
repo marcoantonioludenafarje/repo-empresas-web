@@ -90,7 +90,7 @@ export default function Views() {
         <TableBody>
           {listCampaigns?.map((row) => (
             <TableRow
-              key={row.campaignName}
+              key={row.campaignId}
               sx={{'&:last-child td, &:last-child th': {border: 0}}}
             >
               <TableCell component='th' scope='row'>
