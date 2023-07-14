@@ -117,13 +117,13 @@ const AppNotifications = ({
             {getNotificationsRes && getNotificationsRes.length > 0 ? (
               <Badge
                 badgeContent={
-                  getNotificationsRes.filter((item) => {
+                  userDataRes ? getNotificationsRes.filter((item) => {
                     return !(
                       item.seenBy &&
                       item.seenBy.length &&
                       item.seenBy.some((item) => item == userDataRes.userId)
                     );
-                  }).length
+                  }).length : 0
                 }
                 color='primary'
                 overlap='circular'
