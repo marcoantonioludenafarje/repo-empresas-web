@@ -71,7 +71,6 @@ const Create = (props) => {
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
   const [selectedClients, setSelectedClients] = useState([]);
 
-  const [loading, setLoading] = useState(false);
   const [previewImages, setPreviewImages] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -107,7 +106,9 @@ const Create = (props) => {
   const toCreatePresigned = (payload, file) => {
     dispatch(createPresigned(payload, file));
   };
-  const {newCampaignRes} = useSelector(({campaigns}) => campaigns);
+  const {newCampaignRes, successMessage, errorMessage, process, loading} =
+    useSelector(({campaigns}) => campaigns);
+  console.log('Respuesta de campañas : ', errorMessage);
 
   console.log('Confeti los clientes', listClients);
 
@@ -137,6 +138,19 @@ const Create = (props) => {
       // setFirstload(true);
     }
   }, [userDataRes]);
+
+  useEffect(() => {
+    switch (process) {
+      case 'CREATE_NEW_CAMPAIGN':
+        if (!loading && (successMessage || errorMessage)) {
+          setOpenStatus(true);
+        }
+
+        break;
+      default:
+        console.log('Se supone que pasa por aquí XD');
+    }
+  }, [loading]);
 
   const handleData = (data, {setSubmitting}) => {
     console.log('Data', data);
@@ -183,8 +197,6 @@ const Create = (props) => {
     console.log('newCampaignPayload', newCampaignPayload);
     createCampaign(newCampaignPayload);
     setTimeout(() => {
-      setLoading(false);
-
       // Show success message
       setOpenStatus(true);
 
@@ -193,10 +205,42 @@ const Create = (props) => {
     }, 2000);
   };
 
+  // const showMessage = () => {
+  //   if (loading) {
+  //     return <CircularProgress disableShrink />;
+  //   } else {
+  //     return (
+  //       <>
+  //         <CheckCircleOutlineOutlinedIcon
+  //           color='success'
+  //           sx={{fontSize: '6em', mx: 2}}
+  //         />
+  //         <DialogContentText
+  //           sx={{fontSize: '1.2em', m: 'auto'}}
+  //           id='alert-dialog-description'
+  //         >
+  //           {newCampaignRes}
+  //         </DialogContentText>
+  //       </>
+  //     );
+  //   }
+  // };
+
   const showMessage = () => {
-    if (loading) {
-      return <CircularProgress disableShrink />;
-    } else {
+    if (errorMessage !== undefined) {
+      console.log(errorMessage);
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            {errorMessage}
+          </DialogContentText>
+        </>
+      );
+    } else if (successMessage) {
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -207,10 +251,14 @@ const Create = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            La campaña ha sido creada exitosamente.
+            {/* Se ha registrado la información <br />
+            correctamente */}
+            {successMessage}
           </DialogContentText>
         </>
       );
+    } else {
+      return <CircularProgress disableShrink />;
     }
   };
 

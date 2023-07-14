@@ -22,7 +22,7 @@ export const newCampaign = (payload) => {
       })
       .catch((error) => {
         console.log('Nueva campaña error', error);
-        dispatch({type: FETCH_ERROR, payload: 'error'});
+        dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
 };
