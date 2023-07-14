@@ -47,7 +47,7 @@ export default function Views() {
   };
   const {userDataRes} = useSelector(({user}) => user);
 
-  const {listCampaigns, campaingsLastEvaluatedKey_pageListCampaigns} =
+  const {listCampaigns, campaignsLastEvaluatedKey_pageListCampaigns} =
     useSelector(({campaigns}) => campaigns);
 
   console.log('confeti las campañas', listCampaigns);

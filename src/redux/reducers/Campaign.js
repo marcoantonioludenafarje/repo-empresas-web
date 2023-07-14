@@ -14,12 +14,12 @@ const INIT_STATE = {
   errorMessage: '',
 
   listCampaigns: [],
-  campaingsLastEvaluatedKey_pageListCampaigns: null,
+  campaignsLastEvaluatedKey_pageListCampaigns: null,
 };
 const campaignsReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
     case LIST_CAMPAIGN:
-      console.log('actionCampaing1234', action);
+      console.log('actioncampaign1234', action);
       console.log('action.payload1234', action.payload);
       let request = action.request.request.payload;
       let lastEvaluatedKeyRequest = null;
@@ -43,7 +43,7 @@ const campaignsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         listCampaigns: items,
-        campaingsLastEvaluatedKey_pageListCampaigns: lastEvaluatedKey,
+        campaignsLastEvaluatedKey_pageListCampaigns: lastEvaluatedKey,
       };
     case CREATE_CAMPAIGN:
       console.log('data de reducer crear nueva campaña', action.payload);

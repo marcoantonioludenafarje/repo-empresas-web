@@ -31,7 +31,7 @@ export const getCampaigns = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START, payload: {process: 'LIST_CAMPAIGN'}});
 
-    API.post('tunexo', '/inventory/campaings/list', {body: payload})
+    API.post('tunexo', '/inventory/campaigns/list', {body: payload})
       .then((data) => {
         console.log('get CAMPAÑAAS resultado', data);
         dispatch({

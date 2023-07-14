@@ -160,24 +160,42 @@ const Create = (props) => {
     let receivers = [];
 
     if (clientSelection === 'Todos') {
-      receivers = listClients.map((client) => ({
+      receivers = listClients.map((client, index) => ({
         type: 'client',
-        id: client.clientId,
-        name: client.denominationClient,
-        number: '51' + client.numberContact,
+        id: index,
+        clientId: client.clientId,
+        nameContact: client.nameContact || "",
+        emailContact: client.emailContact || "",
+        numberCountryCode: client.numberCountryCode || "51",
+        addressClient: client.addressClient || "",
+        givenName: client.givenName || "",
+        lastName: client.lastName || "",
+        secondLastName: client.secondLastName || "",
+        extraInformationClient: client.extraInformationClient || "",
+        numberContact: client.numberContact || "",
+        birthDay: client.birthDay || "",
       }));
       receivers.push({
         type: 'tag',
         tagId: 'ALL',
       });
     } else if (clientSelection === 'Algunos') {
-      receivers = selectedClients.map((clientId) => {
+      receivers = selectedClients.map((clientId, index) => {
         const client = listClients.find((c) => c.clientId === clientId);
         return {
           type: 'client',
-          id: clientId,
-          name: client.denominationClient,
-          number: '51' + client.numberContact,
+          id: index,
+          clientId: client.clientId,
+          nameContact: client.nameContact || "",
+          emailContact: client.emailContact || "",
+          numberCountryCode: client.numberCountryCode || "51",
+          addressClient: client.addressClient || "",
+          givenName: client.givenName || "",
+          lastName: client.lastName || "",
+          secondLastName: client.secondLastName || "",
+          extraInformationClient: client.extraInformationClient || "",
+          numberContact: client.numberContact || "",
+          birthDay: client.birthDay || "",
         };
       });
     }
@@ -185,15 +203,16 @@ const Create = (props) => {
     const payload = {
       request: {
         payload: {
-          campaing: [
+          campaign: [
             {
-              campaingName: data.campaignName,
+              campaignName: data.campaignName,
               scheduledAt: data.date,
               receivers,
               messages: [
                 {
-                  type: 'image',
-                  image: {
+                  order: 1,
+                  type: 'image', //  FATA "image"|"audio"|"video"|"document"| "text"
+                  metadata: {
                     keyMaster: selectedJsonImages[0]?.keyMaster || '',
                     nameFile: selectedJsonImages[0]?.nameFile || '',
                   },
