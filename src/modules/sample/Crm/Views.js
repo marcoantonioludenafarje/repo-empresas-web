@@ -81,7 +81,9 @@ export default function Views() {
 
   return (
     <Card sx={{p: 4}}>
-      <span>{`Items: ${listCampaigns?.length}`}</span>
+      <span>{`Items: ${
+        listCampaigns ? listCampaigns.length : 'Cargando...'
+      }`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}

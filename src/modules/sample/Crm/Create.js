@@ -156,7 +156,6 @@ const Create = (props) => {
   const handleData = (data, {setSubmitting}) => {
     console.log('Data', data);
     setSubmitting(true);
-    dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
     let receivers = [];
 
     if (clientSelection === 'Todos') {
@@ -164,16 +163,16 @@ const Create = (props) => {
         type: 'client',
         id: index,
         clientId: client.clientId,
-        nameContact: client.nameContact || "",
-        emailContact: client.emailContact || "",
-        numberCountryCode: client.numberCountryCode || "51",
-        addressClient: client.addressClient || "",
-        givenName: client.givenName || "",
-        lastName: client.lastName || "",
-        secondLastName: client.secondLastName || "",
-        extraInformationClient: client.extraInformationClient || "",
-        numberContact: client.numberContact || "",
-        birthDay: client.birthDay || "",
+        nameContact: client.nameContact || '',
+        emailContact: client.emailContact || '',
+        numberCountryCode: client.numberCountryCode || '51',
+        addressClient: client.addressClient || '',
+        givenName: client.givenName || '',
+        lastName: client.lastName || '',
+        secondLastName: client.secondLastName || '',
+        extraInformationClient: client.extraInformationClient || '',
+        numberContact: client.numberContact || '',
+        birthDay: client.birthDay || '',
       }));
       receivers.push({
         type: 'tag',
@@ -186,16 +185,16 @@ const Create = (props) => {
           type: 'client',
           id: index,
           clientId: client.clientId,
-          nameContact: client.nameContact || "",
-          emailContact: client.emailContact || "",
-          numberCountryCode: client.numberCountryCode || "51",
-          addressClient: client.addressClient || "",
-          givenName: client.givenName || "",
-          lastName: client.lastName || "",
-          secondLastName: client.secondLastName || "",
-          extraInformationClient: client.extraInformationClient || "",
-          numberContact: client.numberContact || "",
-          birthDay: client.birthDay || "",
+          nameContact: client.nameContact || '',
+          emailContact: client.emailContact || '',
+          numberCountryCode: client.numberCountryCode || '51',
+          addressClient: client.addressClient || '',
+          givenName: client.givenName || '',
+          lastName: client.lastName || '',
+          secondLastName: client.secondLastName || '',
+          extraInformationClient: client.extraInformationClient || '',
+          numberContact: client.numberContact || '',
+          birthDay: client.birthDay || '',
         };
       });
     }
@@ -226,16 +225,18 @@ const Create = (props) => {
       },
     };
 
-    console.log('newCampaignPayload', payload);
-    createCampaign(payload);
-
     setTimeout(() => {
       // Show success message
+
+      dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
+      console.log('newCampaignPayload', payload);
+      createCampaign(payload);
+
       setOpenStatus(true);
 
       // Reset form
       setSubmitting(false);
-    }, 2000);
+    }, 1000);
   };
 
   const showMessage = () => {
