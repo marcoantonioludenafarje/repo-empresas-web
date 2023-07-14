@@ -41,7 +41,6 @@
     "next-seo": "^4.28.1",
     "next-transpile-modules": "^9.0.0",
     "notistack": "^2.0.3",
-    "pdfjs-dist": "^3.8.162",
     "prism-react-renderer": "^1.2.1",
     "prop-types": "^15.7.2",
     "raw-loader": "^4.0.2",
