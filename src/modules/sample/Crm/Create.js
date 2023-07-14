@@ -77,6 +77,7 @@ const Create = (props) => {
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
+  const [clientSelection, setClientSelection] = useState('Todos');
   const classes = useStyles(props);
 
   const defaultValues = {
@@ -156,12 +157,9 @@ const Create = (props) => {
                       image: selectedJsonImages[0],
                     }),
                   // Agregar campo "receipt"
-                  receipt:
-                    selectedClients.length === listClients.length
-                      ? 'ALL'
-                      : 'SOMES',
+                  receipt: clientSelection === 'Todos' ? 'ALL' : 'SOMES',
                   // Agregar campo "detail" si se han seleccionado clientes
-                  ...(selectedClients.length > 0 && {
+                  ...(clientSelection === 'Algunos' && {
                     detail: selectedClients.map((clientId) => {
                       const client = listClients.find(
                         (c) => c.clientId === clientId,
@@ -293,6 +291,12 @@ const Create = (props) => {
 
   const handleClientSelect = (selectedClientIds) => {
     setSelectedClients(selectedClientIds);
+
+    if (selectedClientIds.length === listClients.length) {
+      setClientSelection('Todos');
+    } else {
+      setClientSelection('Algunos');
+    }
   };
 
   const handleOpenClientsDialog = () => {
@@ -393,14 +397,42 @@ const Create = (props) => {
                   </Grid>
                   <Grid item xs={12} md={12}>
                     <Box
-                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        my: 2,
+                      }}
                     >
-                      <Button
-                        variant='outlined'
-                        onClick={() => setOpenClientsDialog(true)}
+                      <FormControl
+                        sx={{
+                          minWidth: 120,
+                          mx: 2,
+                          my: 2,
+                        }}
                       >
-                        Clientes
-                      </Button>
+                        <InputLabel id='client-selection-label'>
+                          Selección de Clientes
+                        </InputLabel>
+                        <Select
+                          labelId='client-selection-label'
+                          id='client-selection'
+                          value={clientSelection}
+                          onChange={(event) =>
+                            setClientSelection(event.target.value)
+                          }
+                        >
+                          <MenuItem value='Todos'>Todos</MenuItem>
+                          <MenuItem value='Algunos'>Algunos</MenuItem>
+                        </Select>
+                      </FormControl>
+                      {clientSelection === 'Algunos' && (
+                        <Button
+                          variant='outlined'
+                          onClick={() => setOpenClientsDialog(true)}
+                        >
+                          Clientes
+                        </Button>
+                      )}
                     </Box>
                   </Grid>
                   <Grid item xs={12} md={12}>
