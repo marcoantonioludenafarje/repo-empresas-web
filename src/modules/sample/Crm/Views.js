@@ -6,6 +6,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Card from '@mui/material/Card';
+import {Button} from '@mui/material';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 import {getCampaigns} from '../../../redux/actions/Campaign';
 import {convertToDate} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
@@ -76,38 +80,51 @@ export default function Views() {
   }, [userDataRes]);
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{minWidth: 650}} aria-label='simple table'>
-        <TableHead>
-          <TableRow>
-            <TableCell>Nombre de la campaña</TableCell>
-            <TableCell align='right'>Fecha</TableCell>
-            <TableCell align='right'>Contenido</TableCell>
-            <TableCell align='right'>Cantidad</TableCell>
-            <TableCell align='right'>Imagen</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {listCampaigns?.map((row) => (
-            <TableRow
-              key={row.campaignId}
-              sx={{'&:last-child td, &:last-child th': {border: 0}}}
-            >
-              <TableCell component='th' scope='row'>
-                {row.campaignName}
-              </TableCell>
-              <TableCell align='right'>
-                {convertToDate(row.createdAt)}
-              </TableCell>
-              <TableCell align='right'>{row.messages[0].text}</TableCell>
-              <TableCell align='right'>{row.messages[0].receipt}</TableCell>
-              <TableCell align='right'>
-                <img src={row.messages[0].img_url} alt='Imagen' width='100' />
-              </TableCell>
+    <Card sx={{p: 4}}>
+      <span>{`Items: ${listCampaigns?.length}`}</span>
+      <TableContainer component={Paper} sx={{maxHeight: 440}}>
+        <Table
+          sx={{minWidth: 650}}
+          stickyHeader
+          size='small'
+          aria-label='sticky table'
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell>Fecha de creación</TableCell>
+              <TableCell>Nombre de la campaña</TableCell>
+              <TableCell>Contenido</TableCell>
+              <TableCell>Fecha/Hora de envío</TableCell>
+              <TableCell>Imagen</TableCell>
+              <TableCell>Receptores</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {listCampaigns?.map((row) => (
+              <TableRow
+                key={row.campaignId}
+                sx={{'&:last-child td, &:last-child th': {border: 0}}}
+              >
+                <TableCell>{convertToDate(row.createdAt)}</TableCell>
+                <TableCell component='th' scope='row'>
+                  {row.campaignName}
+                </TableCell>
+                <TableCell>{row.messages[0].text}</TableCell>
+                <TableCell>{convertToDate(row.scheduledAt)}</TableCell>
+                <TableCell>
+                  <img src={row.messages[0].img_url} alt='Imagen' width='100' />
+                </TableCell>
+                <TableCell>{row.receivers.length}</TableCell>
+                <TableCell>
+                  <Button id='basic-button'>
+                    <KeyboardArrowDownIcon />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Card>
   );
 }
