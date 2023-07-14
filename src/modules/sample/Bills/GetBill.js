@@ -35,6 +35,9 @@ import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import CloseIcon from '@mui/icons-material/Close';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import {red} from '@mui/material/colors';
@@ -50,6 +53,7 @@ import {
   addInvoice,
   getMovements,
   getOutputItems_pageListOutput,
+  previsualizeBill,
 } from '../../../redux/actions/Movements';
 import Router, {useRouter} from 'next/router';
 import OutputProducts from './OutputProducts';
@@ -163,6 +167,20 @@ const NewOutput = (props) => {
   const {query} = router;
   console.log('query', query);
 
+  let canvasRef = useRef(null);
+  const [scale, setScale] = React.useState(1.0);
+  const [urlPdf, setUrlPdf] = React.useState('');
+  const handleZoomIn = () => {
+    setScale((prevScale) => prevScale + 0.1);
+  };
+
+  const handleZoomOut = () => {
+    setScale((prevScale) => prevScale - 0.1);
+  };
+
+  const handleResetZoom = () => {
+    setScale(1.0);
+  };
   //APIS FUNCTIONS
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -175,6 +193,9 @@ const NewOutput = (props) => {
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
+  };
+  const toPrevisualizeBill = (payload) => {
+    dispatch(previsualizeBill(payload));
   };
 
   //VARIABLES DE PARAMETROS
@@ -237,6 +258,7 @@ const NewOutput = (props) => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {previsualizeBillRes} = useSelector(({movements}) => movements);
 
   const defaultValues = {
     nroBill: 'Autogenerado' /* query.documentIntern */,
@@ -460,14 +482,23 @@ const NewOutput = (props) => {
     query.deletedAt ? query.deletedAt : Date.now(),
   );
 
+  const [pdfFile, setPdfFile] = React.useState(null);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setPdfFile(URL.createObjectURL(file));
+  };
   //FUNCIONES DIALOG
   const [open, setOpen] = React.useState(false);
   const [openReferralGuides, setOpenReferralGuides] = React.useState(false);
+  const [openPrevisualizer, setOpenPrevisualizer] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
   };
   const handleCloseReferralGuides = () => {
     setOpenReferralGuides(false);
+  };
+  const handleClosePrevisualizer = () => {
+    setOpenPrevisualizer(false);
   };
   const handleClickOpen = (type) => {
     setOpen(true);
@@ -479,6 +510,128 @@ const NewOutput = (props) => {
     setOpenReferralGuides(true);
     setShowAlert(false);
   };
+
+  // const handleClickOpenPrevisualizer = () => {
+  //   //loadCanvas()
+  //   setOpenPrevisualizer(true);
+  //   let parsedDocuments = listDocuments
+  //     .filter((obj) => obj.isSelected)
+  //     .map((obj) => ({
+  //       issueDate: obj.dateDocument,
+  //       serialDocument: obj.document,
+  //     }));
+  //   console.log('parsedDocuments', parsedDocuments);
+  //   const listTypeIgvCode = {
+  //     1000: 10,
+  //     9997: 20,
+  //     9998: 30,
+  //   };
+  //   let previsualizePayload = {
+  //     request: {
+  //       payload: {
+  //         merchantId: userDataRes.merchantSelected.merchantId,
+  //         denominationMerchant:
+  //           userDataRes.merchantSelected.denominationMerchant,
+  //         typePDF: userDataRes.merchantSelected.typeMerchant,
+  //         folderMovement: query.folderMovement,
+  //         movementTypeMerchantId: query.movementTypeMerchantId,
+  //         contableMovementId: query.contableMovementId || '',
+  //         contableMovements: selectedOutput.contableMovements || [],
+  //         movementHeaderId: query.movementHeaderId,
+  //         createdAt: Number(query.createdAt),
+  //         clientId: query.clientId,
+  //         totalPriceWithIgv: Number(
+  //           getValueField('totalFieldIgv').value.toFixed(2),
+  //         ), //
+  //         //issueDate: specialFormatToSunat(),
+  //         issueDate: dateWithHyphen(value),
+  //         serial: serial,
+  //         documentIntern: query.documentIntern,
+  //         clientEmail: getValueField('clientEmail').value,
+  //         transactionNumber: getValueField('transactionNumber').value || '',
+  //         /* numberBill: 3, */
+  //         automaticSendSunat: /* sendSunat */ true,
+  //         automaticSendClient: /* sendClient */ true,
+  //         referralGuide: getValueField('guide').value ? true : false,
+  //         creditSale: paymentWay == 'credit',
+  //         methodToPay: paymentMethod,
+  //         earningGeneration: earningGeneration,
+  //         referralGuideSerial: getValueField('guide').value
+  //           ? getValueField('guide').value
+  //           : '',
+  //         dueDate: dateWithHyphen(expirationDate),
+  //         observation: getValueField('observation').value
+  //           ? getValueField('observation').value
+  //           : '',
+  //         igv: Number(query.igv),
+  //         productsInfo: selectedProducts.map((obj) => {
+  //           console.log('facturabusinessProductCode', obj.businessProductCode);
+  //           return {
+  //             product: obj.product,
+  //             quantityMovement: Number(obj.quantityMovement),
+  //             priceBusinessMoneyWithIgv: Number(obj.priceBusinessMoneyWithIgv),
+  //             category: obj.category || '',
+  //             customCodeProduct: obj.customCodeProduct,
+  //             description: obj.description,
+  //             unitMeasure: obj.unitMeasure,
+  //             businessProductCode: obj.businessProductCode,
+  //             taxCode: obj.taxCode,
+  //             igvCode: listTypeIgvCode[`${obj.taxCode}`],
+  //           };
+  //         }),
+  //         documentsMovement: selectedOutput.documentsMovement,
+  //         referralGuides: parsedDocuments,
+  //         sendEmail: sendEmail,
+  //         userCreated: userDataRes.userId,
+  //         userCreatedMetadata: {
+  //           nombreCompleto: userDataRes.nombreCompleto,
+  //           email: userDataRes.email,
+  //         },
+  //         outputUserCreated: selectedOutput.userCreated,
+  //         outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
+  //       },
+  //     },
+  //   };
+  //   toPrevisualizeBill(previsualizePayload);
+  //   setShowAlert(false);
+  // };
+
+  // useEffect(() => {
+  //   if (previsualizeBillRes && previsualizeBillRes.url) {
+  //     setUrlPdf(previsualizeBillRes.url);
+  //   }
+  // }, [previsualizeBillRes]);
+  // useEffect(() => {
+  //   console.log('openPrevisualizer', openPrevisualizer);
+  //   console.log('urlPdf', urlPdf);
+  //   console.log('canvasRef', canvasRef);
+  //   setTimeout(() => {
+  //     if (openPrevisualizer && urlPdf && canvasRef.current) {
+  //       console.log('hola urlPdf');
+  //       const canvas = canvasRef.current;
+  //       const canvasContext = canvas.getContext('2d');
+
+  //       const renderCanvas = async () => {
+  //         const pdfJS = await import('pdfjs-dist/build/pdf');
+  //         pdfJS.GlobalWorkerOptions.workerSrc =
+  //           window.location.origin + '/pdf.worker.min.js';
+  //         // const buffer = Uint8Array.from(atob(pdfBase64), (c) => c.charCodeAt(0));
+  //         // const pdf = await pdfJS.getDocument(buffer).promise;
+  //         const pdf = await pdfJS.getDocument(urlPdf).promise;
+  //         const page = await pdf.getPage(1);
+  //         const viewport = page.getViewport({scale});
+
+  //         canvas.height = viewport.height;
+  //         canvas.width = viewport.width;
+
+  //         const renderContext = {canvasContext, viewport};
+  //         page.render(renderContext);
+  //       };
+
+  //       renderCanvas();
+  //     }
+  //   }, 500);
+  // }, [urlPdf, canvasRef, openPrevisualizer]);
 
   const valueWithIGV = (value) => {
     const IGV = igvDefault;
@@ -1353,6 +1506,23 @@ const NewOutput = (props) => {
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
 
+                {/* <Grid
+                  container
+                  spacing={2}
+                  sx={{width: 500, margin: 'auto', mb: 2}}
+                >
+                  <Grid item xs={8} sm={12} sx={{mt: 2}}>
+                    <Button
+                      sx={{width: 1}}
+                      color='secondary'
+                      variant='outlined'
+                      onClick={() => handleClickOpenPrevisualizer()}
+                    >
+                      Previsualizar PDF
+                    </Button>
+                  </Grid>
+                </Grid> */}
+
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -1601,6 +1771,40 @@ const NewOutput = (props) => {
           </Box>
         </DialogContent>
       </Dialog>
+      {/* <Dialog
+        open={openPrevisualizer}
+        onClose={handleClosePrevisualizer}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'FACTURA PDF'}
+          <CancelOutlinedIcon
+            onClick={setOpenPrevisualizer.bind(this, false)}
+            className={classes.closeButton}
+          />
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{width: 1, textAlign: 'center'}}>
+            <canvas ref={canvasRef} style={{height: '100vh'}} />
+          </Box>
+
+          <Box
+            sx={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}
+          >
+            <IconButton onClick={handleZoomIn}>
+              <ZoomInIcon />
+            </IconButton>
+            <IconButton onClick={handleZoomOut}>
+              <ZoomOutIcon />
+            </IconButton>
+            <IconButton onClick={handleResetZoom}>
+              <ZoomOutMapIcon />
+            </IconButton>
+          </Box>
+        </DialogContent>
+      </Dialog> */}
       <Dialog
         open={showDelete}
         onClose={closeDelete}

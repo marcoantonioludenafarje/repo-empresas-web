@@ -7,7 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {getCampaigns} from '../../../redux/actions/Campaign';
-
+import {convertToDate} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   FETCH_SUCCESS,
@@ -84,6 +84,7 @@ export default function Views() {
             <TableCell align='right'>Fecha</TableCell>
             <TableCell align='right'>Contenido</TableCell>
             <TableCell align='right'>Cantidad</TableCell>
+            <TableCell align='right'>Imagen</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -95,9 +96,14 @@ export default function Views() {
               <TableCell component='th' scope='row'>
                 {row.campaignName}
               </TableCell>
-              <TableCell align='right'>{row.createdAt}</TableCell>
+              <TableCell align='right'>
+                {convertToDate(row.createdAt)}
+              </TableCell>
               <TableCell align='right'>{row.messages[0].text}</TableCell>
               <TableCell align='right'>{row.messages[0].receipt}</TableCell>
+              <TableCell align='right'>
+                <img src={row.messages[0].img_url} alt='Imagen' width='100' />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
