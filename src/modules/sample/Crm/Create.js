@@ -211,11 +211,12 @@ const Create = (props) => {
               messages: [
                 {
                   order: 1,
-                  type: 'image', //  FATA "image"|"audio"|"video"|"document"| "text"
-                  metadata: {
+                  type: selectedJsonImages[0] ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
+                  metadata: selectedJsonImages[0]
+                  ? {
                     keyMaster: selectedJsonImages[0]?.keyMaster || '',
                     nameFile: selectedJsonImages[0]?.nameFile || '',
-                  },
+                  } : null,
                   text: data.campaignContent,
                 },
               ],
