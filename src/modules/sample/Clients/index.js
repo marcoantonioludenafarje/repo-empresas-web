@@ -63,6 +63,7 @@ import {
   convertToDate,
   parseTo3Decimals,
   toSimpleDate,
+  verTags,
 } from '../../../Utils/utils';
 import {
   FETCH_SUCCESS,
@@ -556,6 +557,7 @@ const ClientTable = (arrayObjs, props) => {
               <TableCell>Número Identificador</TableCell>
               <TableCell>Nombre / Razón social</TableCell>
               <TableCell>Nombre Contacto</TableCell>
+              <TableCell>Etiquetas</TableCell>
               <TableCell>Última actualización</TableCell>
               <TableCell></TableCell>
             </TableRow>
@@ -575,6 +577,7 @@ const ClientTable = (arrayObjs, props) => {
                     <TableCell>{parsedId[1]}</TableCell>
                     <TableCell>{obj.denominationClient}</TableCell>
                     <TableCell>{obj.nameContact}</TableCell>
+                    <TableCell>{verTags(obj.tags)}</TableCell>
                     <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
                     <TableCell>
                       <Button

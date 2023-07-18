@@ -159,21 +159,21 @@ const Create = (props) => {
     let receivers = [];
 
     if (clientSelection === 'Todos') {
-      receivers = listClients.map((client, index) => ({
-        type: 'client',
-        id: index,
-        clientId: client.clientId,
-        nameContact: client.nameContact || '',
-        emailContact: client.emailContact || '',
-        numberCountryCode: client.numberCountryCode || '51',
-        addressClient: client.addressClient || '',
-        givenName: client.givenName || '',
-        lastName: client.lastName || '',
-        secondLastName: client.secondLastName || '',
-        extraInformationClient: client.extraInformationClient || '',
-        numberContact: client.numberContact || '',
-        birthDay: client.birthDay || '',
-      }));
+      // receivers = listClients.map((client, index) => ({
+      //   type: 'client',
+      //   id: index,
+      //   clientId: client.clientId,
+      //   nameContact: client.nameContact || "",
+      //   emailContact: client.emailContact || "",
+      //   numberCountryCode: client.numberCountryCode || "51",
+      //   addressClient: client.addressClient || "",
+      //   givenName: client.givenName || "",
+      //   lastName: client.lastName || "",
+      //   secondLastName: client.secondLastName || "",
+      //   extraInformationClient: client.extraInformationClient || "",
+      //   numberContact: client.numberContact || "",
+      //   birthDay: client.birthDay || "",
+      // }));
       receivers.push({
         type: 'tag',
         tagId: 'ALL',
@@ -210,11 +210,13 @@ const Create = (props) => {
               messages: [
                 {
                   order: 1,
-                  type: 'image', //  FATA "image"|"audio"|"video"|"document"| "text"
-                  metadata: {
-                    keyMaster: selectedJsonImages[0]?.keyMaster || '',
-                    nameFile: selectedJsonImages[0]?.nameFile || '',
-                  },
+                  type: selectedJsonImages[0] ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
+                  metadata: selectedJsonImages[0]
+                    ? {
+                        keyMaster: selectedJsonImages[0]?.keyMaster || '',
+                        nameFile: selectedJsonImages[0]?.nameFile || '',
+                      }
+                    : null,
                   text: data.campaignContent,
                 },
               ],
