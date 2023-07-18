@@ -962,7 +962,7 @@ const BillsTable = (props) => {
         <Button
           variant='outlined'
           startIcon={<FindReplaceIcon />}
-          onClick={batchConsultReferralGuide}
+          onClick={batchConsultBill}
           disabled={isLoading}
           color='success'
         >
