@@ -478,3 +478,26 @@ export const completeWithZeros = (num, size) => {
   while (num.length < size) num = '0' + num;
   return num;
 };
+
+export const verTags = (listTags) => {
+  console.log(listTags);
+
+  let tags = '';
+  if (listTags)
+    listTags.forEach((item) => {
+      console.log('tags',item);
+
+      if (tags.length == 0) {
+        console.log('item0',item);
+        tags = item;
+        console.log('tag0',tags);
+      }        
+      else {
+        console.log('item1',item);
+        tags = tags + ' | ' + item;
+        console.log('tag1',tags);
+      }
+        
+    });
+  return tags;
+};
