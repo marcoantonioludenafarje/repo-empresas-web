@@ -1622,7 +1622,7 @@ const Distribution = (props) => {
                 return (
                 <>
                   <TableRow key={indexSummary}>
-                    <TableCell>{fila.driverName + fila.driverLastName}</TableCell>
+                    <TableCell>{fila.driverName + " " + fila.driverLastName}</TableCell>
                     <TableCell>{fila.plate}</TableCell>
                     <TableCell>
                       {fila.products && fila.products.length !== 0 ? (
