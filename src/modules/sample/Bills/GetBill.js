@@ -28,6 +28,7 @@ import {
   FormControlLabel,
   CircularProgress,
 } from '@mui/material';
+import { ClickAwayListener } from '@mui/base';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import SchoolIcon from '@mui/icons-material/School';
@@ -856,9 +857,15 @@ const NewOutput = (props) => {
       throw new Error('Algo pasa al crear el payload facturar');
     }
     console.log('finalPayload', finalPayload);
-    setSubmitting(false);
+    
+    setTimeout(() => {
+      setSubmitting(false);
+    }, 2000);
   };
-
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const handleActualData = (event) => {
     console.log('evento onchange', event);
     Object.keys(actualValues).map((key) => {
@@ -1655,18 +1662,21 @@ const NewOutput = (props) => {
             );
           }}
         </Formik>
-        <Dialog
-          open={openStatus}
-          onClose={sendStatus}
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Factura'}
-          </DialogTitle>
-          {showMessage()}
-        </Dialog>
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Dialog
+            open={openStatus}
+            onClose={sendStatus}
+            sx={{textAlign: 'center'}}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+            disableEscapeKeyDown
+          >
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Registro de Factura'}
+            </DialogTitle>
+            {showMessage()}
+          </Dialog>
+        </ClickAwayListener>
       </Box>
       <Collapse in={showAlert}>
         <Alert
