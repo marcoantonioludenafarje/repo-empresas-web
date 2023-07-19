@@ -4,6 +4,8 @@ import {
   FETCH_ERROR,
   LIST_CAMPAIGN,
   CREATE_CAMPAIGN,
+  DELETE_CAMPAIGN,
+  UPDATE_CAMPAIGN,
   RESET_CAMPAIGNS,
 } from '../../shared/constants/ActionTypes';
 
@@ -50,6 +52,12 @@ const campaignsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         newCampaignRes: action.payload,
+      };
+    case DELETE_CAMPAIGN:
+      console.log('data reduce DELETE CAMPAIGN', action.payload);
+      return {
+        ...state,
+        deleteClientRes: action.payload,
       };
     case FETCH_START:
       if (!action.payload || !action.payload.process) {

@@ -46,7 +46,10 @@ import {DataGrid} from '@mui/x-data-grid';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
-  date: yup.date().required('La fecha es obligatoria'),
+  date: yup
+    .date()
+    .typeError('Ingresa una fecha valida')
+    .required('La fecha es obligatoria'),
   campaignContent: yup
     .string()
     .required('El contenido de la campaña es obligatorio'),
@@ -73,7 +76,7 @@ const Create = (props) => {
   const [selectedClients, setSelectedClients] = useState();
 
   const [previewImages, setPreviewImages] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  let fecha = new Date();
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
@@ -82,7 +85,7 @@ const Create = (props) => {
 
   const defaultValues = {
     campaignName: '',
-    date: selectedDate,
+    date: fecha.setHours(fecha.getHours() + 1),
     campaignContent: '',
     campaignImages: null,
   };
@@ -154,7 +157,7 @@ const Create = (props) => {
   }, [loading]);
 
   const handleData = (data, {setSubmitting}) => {
-    console.log('Data', data);
+    console.log('Data crear', data);
     setSubmitting(true);
     let receivers = [];
 
@@ -435,11 +438,15 @@ const Create = (props) => {
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <DateTimePicker
+                      minDateTime={new Date()}
+                      value={values.date}
+                      onChange={(e) => {
+                        console.log('tipo', e);
+                        setFieldValue('date', e);
+                      }}
                       label='Fecha *'
                       name='date'
-                      value={selectedDate}
                       inputFormat='dd/MM/yyyy HH:mm'
-                      onChange={(newValue) => setSelectedDate(newValue)}
                       renderInput={(params) => (
                         <TextField
                           {...params}

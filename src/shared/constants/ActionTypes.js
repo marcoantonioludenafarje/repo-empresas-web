@@ -360,3 +360,5 @@ export const ROUTES_ROL_REDUCER = 'routes_rol_reducer';
 
 export const CREATE_CAMPAIGN = 'create_campaign';
 export const LIST_CAMPAIGN = 'list_campaign';
+export const DELETE_CAMPAIGN = 'delete_campaign';
+export const UPDATE_CAMPAIGN = 'update_capaign';

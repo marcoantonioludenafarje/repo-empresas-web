@@ -9,6 +9,11 @@ import Paper from '@mui/material/Paper';
 import Card from '@mui/material/Card';
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   InputLabel,
   MenuItem,
@@ -29,16 +34,17 @@ import CachedIcon from '@mui/icons-material/Cached';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import {getCampaigns} from '../../../redux/actions/Campaign';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import {getCampaigns, deleteCampaigns} from '../../../redux/actions/Campaign';
 import {convertToDate} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
-  CREATE_CAMPAIGN,
 } from '../../../shared/constants/ActionTypes';
 import Router from 'next/router';
+import {red} from '@mui/material/colors';
 
 function createData(name, fecha, containt, receipt) {
   return {name, fecha, containt, receipt};
@@ -58,15 +64,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+let selectedCampaign = {};
+let deletePayload = {
+  request: {
+    payload: {
+      campaignId: '',
+    },
+  },
+};
+
 export default function Views(props) {
   const classes = useStyles(props);
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const [open2, setOpen2] = useState(false);
+  const [openStatus, setOpenStatus] = useState(false);
+
+  let popUp = false;
+
   const getCampaign = (payload) => {
     dispatch(getCampaigns(payload));
   };
+
+  const deleteCampaign = (payload) => {
+    dispatch(deleteCampaigns(payload));
+  };
+
   const {userDataRes} = useSelector(({user}) => user);
 
   const {listCampaigns, campaignsLastEvaluatedKey_pageListCampaigns} =
@@ -101,7 +126,6 @@ export default function Views(props) {
     }
   }, [userDataRes]);
 
-  let selectedClient = {};
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
   /* let anchorEl = null; */
@@ -111,9 +135,9 @@ export default function Views(props) {
     console.log('index del map', codPro);
     setAnchorEl(event.currentTarget);
     codProdSelected = codPro;
-    selectedClient =
+    selectedCampaign =
       listCampaigns[codPro]; /* .find((obj) => obj.client == codPro); */
-    console.log('Select Campaña', selectedClient);
+    console.log('Select Campaña', selectedCampaign);
   };
 
   const handleClose = () => {
@@ -121,19 +145,29 @@ export default function Views(props) {
   };
 
   const goToUpdate = () => {
-    console.log('Actualizando', selectedClient);
+    console.log('Actualizando', selectedCampaign);
     Router.push({
-      pathname: '/sample/clients/update',
-      query: selectedClient,
+      pathname: '/sample/crm/update',
+      query: selectedCampaign,
     });
+  };
+  const handleClose2 = () => {
+    setOpen2(false);
   };
 
   const setDeleteState = () => {
     setOpen2(true);
     handleClose();
   };
-
-  let popUp = false;
+  const confirmDelete = () => {
+    console.log('selected camapaña', selectedCampaign);
+    console.log('id de selected', selectedCampaign.campaignId);
+    deletePayload.request.payload.campaignId = selectedCampaign.campaignId;
+    console.log('deletePayload', deletePayload);
+    deleteCampaign(deletePayload);
+    setOpen2(false);
+    setOpenStatus(true);
+  };
 
   const newClient = () => {
     console.log('Para redireccionar a nuevo cliente');
@@ -251,6 +285,35 @@ export default function Views(props) {
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
 
+      <Dialog
+        open={open2}
+        onClose={handleClose2}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar campaña'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea eliminar realmente la información seleccionada?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={confirmDelete}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Menu
         anchorEl={anchorEl}
         open={openMenu}
@@ -261,7 +324,7 @@ export default function Views(props) {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/clients/update') === true ? (
+          .includes('/inventory/campaigns/update') === true ? (
           <MenuItem onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Actualizar
@@ -269,7 +332,7 @@ export default function Views(props) {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/clients/delete') === true ? (
+          .includes('/inventory/campaigns/delete') === true ? (
           <MenuItem onClick={setDeleteState}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Eliminar

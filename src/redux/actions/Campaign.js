@@ -1,6 +1,8 @@
 import {
   CREATE_CAMPAIGN,
   LIST_CAMPAIGN,
+  UPDATE_CAMPAIGN,
+  DELETE_CAMPAIGN,
   FETCH_START,
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -49,5 +51,32 @@ export const getCampaigns = (payload) => {
 
         dispatch({type: FETCH_ERROR, payload: 'error'});
       });
+  };
+};
+
+export const deleteCampaigns = (payload) => {
+  return async (dispatch, getState) => {
+    dispatch({type: FETCH_START, payload: {process: 'DELETE_CAMPAIGN'}});
+    try {
+      const data = await API.post('tunexo', '/inventory/campaigns/delete', {
+        body: payload,
+      });
+      console.log('se borro la campaña', data);
+      dispatch({
+        type: DELETE_CAMPAIGN,
+        payload: data.response.payload,
+        request: payload,
+      });
+      dispatch({
+        type: FETCH_SUCCESS,
+        payload: 'Campaña eliminada exitosamente',
+      });
+    } catch (error) {
+      console.log('Error al borrar', error);
+      dispatch({
+        type: FETCH_ERROR,
+        payload: 'Error al borrar',
+      });
+    }
   };
 };
