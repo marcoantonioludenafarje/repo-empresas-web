@@ -2,10 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Card,
   Box,
   FormControl,
   InputLabel,
+  Autocomplete,
   Select,
   MenuItem,
   Grid,
@@ -17,10 +21,12 @@ import {
   DialogContentText,
   DialogTitle,
   CircularProgress,
+  FormControlLabel,
   Divider,
   Typography,
   IconButton,
   TextField,
+  Switch,
 } from '@mui/material';
 
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
@@ -28,6 +34,9 @@ import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutl
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import CheckIcon from '@mui/icons-material/Check';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import {red} from '@mui/material/colors';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import {makeStyles} from '@mui/styles';
@@ -73,7 +82,8 @@ const Create = (props) => {
   const router = useRouter();
 
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
-  const [selectedClients, setSelectedClients] = useState();
+  const [selectedClients, setSelectedClients] = useState('Todos');
+  const [selectedClientCount, setSelectedClientCount] = useState(0);
 
   const [previewImages, setPreviewImages] = useState([]);
   let fecha = new Date();
@@ -88,6 +98,28 @@ const Create = (props) => {
     date: fecha.setHours(fecha.getHours() + 1),
     campaignContent: '',
     campaignImages: null,
+  };
+
+  // Estado para controlar el acordeón abierto
+  const [expanded, setExpanded] = useState(1);
+  const [campaignContents, setCampaignContents] = useState([
+    {id: 1, content: ''}, // Primer acordeón desplegado
+  ]);
+
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  const handleAddAccordion = () => {
+    const newId = campaignContents.length + 1;
+    setCampaignContents([...campaignContents, {id: newId, content: ''}]);
+  };
+
+  const handleContentChange = (id, content) => {
+    const updatedContents = campaignContents.map((contentData) =>
+      contentData.id === id ? {...contentData, content} : contentData,
+    );
+    setCampaignContents(updatedContents);
   };
 
   const handleClientSelection = (selectedClients) => {
@@ -155,6 +187,8 @@ const Create = (props) => {
         console.log('Se supone que pasa por aquí XD');
     }
   }, [loading]);
+
+  const namesTags = ['Navidad', 'Infantil', 'Juvenil', 'Adultez', 'Verano'];
 
   const handleData = (data, {setSubmitting}) => {
     console.log('Data crear', data);
@@ -360,8 +394,10 @@ const Create = (props) => {
     setSelectedClients(selectedClientIds);
 
     if (selectedClientIds.length === listClients.length) {
+      setSelectedClientCount(listClients.length);
       setClientSelection('Todos');
     } else {
+      setSelectedClientCount(selectedClientIds.length);
       setClientSelection('Algunos');
     }
   };
@@ -386,6 +422,21 @@ const Create = (props) => {
     denominationClient: client.denominationClient,
     numberContact: client.numberContact,
   }));
+
+  const handleClientSelectionChange = (event) => {
+    const {name, checked} = event.target;
+
+    if (name === 'Todos' && checked) {
+      setClientSelection('Todos');
+      setSelectedClientCount(listClients.length);
+    } else if (name === 'Algunos' && checked) {
+      setClientSelection('Algunos');
+      setSelectedClientCount(0);
+    } else {
+      setSelectedClientCount(listClients.length);
+      setClientSelection('Todos');
+    }
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -456,7 +507,184 @@ const Create = (props) => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={12} md={12}>
+                  <Grid container spacing={2}>
+                    {/* Primer Grid - Contiene el Clientes Box */}
+                    <Grid item xs={12} md={4}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          my: 2,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            border: '1px solid #ccc',
+                            padding: '8px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                          }}
+                        >
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={clientSelection === 'Todos'}
+                                onChange={handleClientSelectionChange}
+                                name='Todos'
+                              />
+                            }
+                            label='Todos'
+                          />
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={clientSelection === 'Algunos'}
+                                onChange={handleClientSelectionChange}
+                                name='Algunos'
+                              />
+                            }
+                            label={`Algunos (${selectedClientCount})`}
+                          />
+                          {clientSelection === 'Algunos' && (
+                            <Button
+                              variant='outlined'
+                              onClick={() => setOpenClientsDialog(true)}
+                            >
+                              Clientes
+                            </Button>
+                          )}
+                        </Box>
+                      </Box>
+                    </Grid>
+
+                    {/* Segundo Grid - Contiene el componente Autocomplete */}
+                    <Grid item xs={12} md={4}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                          mt: 2,
+                        }}
+                      >
+                        <Autocomplete
+                          sx={{
+                            m: 1,
+                            width: '100%', // Establece el ancho al 100% por defecto
+                            [(theme) => theme.breakpoints.down('sm')]: {
+                              width: '80%', // Ancho del 80% en pantallas pequeñas
+                            },
+                            [(theme) => theme.breakpoints.up('md')]: {
+                              width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                            },
+                          }}
+                          multiple
+                          options={namesTags}
+                          getOptionLabel={(option) => option}
+                          disableCloseOnSelect
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Selecciona los tags'
+                              placeholder='tags...'
+                            />
+                          )}
+                          renderOption={(props, option, {selected}) => (
+                            <MenuItem
+                              {...props}
+                              key={option}
+                              value={option}
+                              sx={{justifyContent: 'space-between'}}
+                            >
+                              {option}
+                              {selected ? <CheckIcon color='info' /> : null}
+                            </MenuItem>
+                          )}
+                        />
+                      </Box>
+                    </Grid>
+
+                    {/* Tercer Grid - Contiene el box image */}
+                    <Grid item xs={12} md={4}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                          mt: 2,
+                        }}
+                      >
+                        <Button
+                          variant='contained'
+                          color='secondary'
+                          component='label'
+                          sx={{mb: 1}}
+                        >
+                          Subir Imagen
+                          <input
+                            type='file'
+                            hidden
+                            onChange={(event) =>
+                              handleImageChange(event, setFieldValue)
+                            }
+                            accept='.png, .jpeg, .jpg'
+                            multiple
+                          />
+                        </Button>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          {previewImages.map((image, index) => (
+                            <Box
+                              key={index}
+                              sx={{
+                                position: 'relative',
+                                mx: 1,
+                                my: 1,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <img
+                                src={image}
+                                alt='Preview'
+                                style={{
+                                  width: 100,
+                                  height: 100,
+                                  objectFit: 'cover',
+                                  borderRadius: '8px',
+                                }}
+                              />
+                              <IconButton
+                                sx={{
+                                  position: 'absolute',
+                                  top: 0,
+                                  right: 0,
+                                  p: '2px',
+                                }}
+                                onClick={() =>
+                                  removeImagePreview(index, setFieldValue)
+                                }
+                              >
+                                <CancelOutlinedIcon fontSize='small' />
+                              </IconButton>
+                            </Box>
+                          ))}
+                        </Box>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  {/*Mensaje de campaña */}
+                  {/* <Grid item xs={12} md={12}>
                     <AppTextField
                       label='Contenido de la Campaña *'
                       name='campaignContent'
@@ -465,120 +693,49 @@ const Create = (props) => {
                       rows={4}
                       sx={{width: '100%', my: 2}}
                     />
-                  </Grid>
-                  <Grid item xs={12} md={12}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        my: 2,
-                      }}
-                    >
-                      <FormControl
-                        sx={{
-                          minWidth: 240,
-                          mx: 2,
-                          my: 2,
-                        }}
+                  </Grid> */}
+                  {campaignContents.map((contentData) => (
+                    <Grid item xs={12} md={12} key={contentData.id}>
+                      <Accordion
+                        expanded={expanded === contentData.id}
+                        onChange={handleAccordionChange(contentData.id)}
                       >
-                        <InputLabel id='client-selection-label'>
-                          Selección de Clientes
-                        </InputLabel>
-                        <Select
-                          labelId='client-selection-label'
-                          id='client-selection'
-                          value={clientSelection}
-                          onChange={(event) =>
-                            setClientSelection(event.target.value)
-                          }
-                        >
-                          <MenuItem value='Todos'>Todos</MenuItem>
-                          <MenuItem value='Algunos'>Algunos</MenuItem>
-                        </Select>
-                      </FormControl>
-                      {clientSelection === 'Algunos' && (
-                        <Button
-                          variant='outlined'
-                          onClick={() => setOpenClientsDialog(true)}
-                        >
-                          Clientes
-                        </Button>
-                      )}
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12} md={12}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                        mt: 2,
-                      }}
-                    >
-                      <Button
-                        variant='contained'
-                        color='secondary'
-                        component='label'
-                        sx={{mb: 1}}
-                      >
-                        Subir Imagen
-                        <input
-                          type='file'
-                          hidden
-                          onChange={(event) =>
-                            handleImageChange(event, setFieldValue)
-                          }
-                          accept='.png, .jpeg, .jpg'
-                          multiple
-                        />
-                      </Button>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          flexWrap: 'wrap',
-                        }}
-                      >
-                        {previewImages.map((image, index) => (
-                          <Box
-                            key={index}
-                            sx={{
-                              position: 'relative',
-                              mx: 1,
-                              my: 1,
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <img
-                              src={image}
-                              alt='Preview'
-                              style={{
-                                width: 100,
-                                height: 100,
-                                objectFit: 'cover',
-                                borderRadius: '8px',
-                              }}
-                            />
-                            <IconButton
-                              sx={{
-                                position: 'absolute',
-                                top: 0,
-                                right: 0,
-                                p: '2px',
-                              }}
-                              onClick={() =>
-                                removeImagePreview(index, setFieldValue)
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          Mensaje N. {contentData.id}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Grid item xs={12} md={12}>
+                            <AppTextField
+                              label='Contenido de la Campaña *'
+                              name={`campaignContent${contentData.id}`}
+                              variant='outlined'
+                              multiline
+                              rows={4}
+                              value={contentData.content}
+                              onChange={(event) =>
+                                handleContentChange(
+                                  contentData.id,
+                                  event.target.value,
+                                )
                               }
-                            >
-                              <CancelOutlinedIcon fontSize='small' />
-                            </IconButton>
-                          </Box>
-                        ))}
-                      </Box>
-                    </Box>
+                              sx={{width: '100%', my: 2}}
+                            />
+                          </Grid>
+                        </AccordionDetails>
+                      </Accordion>
+                    </Grid>
+                  ))}
+
+                  {/* Botón "Más" para agregar un nuevo acordeón */}
+                  <Grid container item xs={12} justifyContent='center'>
+                    <Button
+                      variant='outlined'
+                      color='primary'
+                      onClick={handleAddAccordion}
+                      startIcon={<AddCircleOutlineOutlinedIcon />}
+                    >
+                      Más
+                    </Button>
                   </Grid>
                 </Grid>
                 <ButtonGroup
