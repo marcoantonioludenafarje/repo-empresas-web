@@ -128,6 +128,7 @@ const ClientTable = (arrayObjs, props) => {
   const {excelTemplateGeneratedToClientsRes} = useSelector(
     ({general}) => general,
   );
+  const {businessParameter} = useSelector(({general}) => general);
 
   //API FUNCTIONSupdateMovement
   const getClients = (payload) => {
@@ -577,7 +578,7 @@ const ClientTable = (arrayObjs, props) => {
                     <TableCell>{parsedId[1]}</TableCell>
                     <TableCell>{obj.denominationClient}</TableCell>
                     <TableCell>{obj.nameContact}</TableCell>
-                    <TableCell>{verTags(obj.tags)}</TableCell>
+                    <TableCell>{verTags(obj, businessParameter)}</TableCell>
                     <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
                     <TableCell>
                       <Button

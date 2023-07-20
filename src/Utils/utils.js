@@ -479,23 +479,30 @@ export const completeWithZeros = (num, size) => {
   return num;
 };
 
-export const verTags = (listTags) => {
-  console.log(listTags);
+export const verTags = (obj, listBussinesParameteres) => {
+  let descripcion='';
+  let listTagsClient= null;
 
-  let tags = '';
-  if (listTags)
-    listTags.forEach((item) => {
-      console.log('tags', item);
+  if (listBussinesParameteres)
+    listTagsClient = listBussinesParameteres.find(
+      (obj) => obj.abreParametro == 'CLIENT_TAGS',
+    ).value;
 
-      if (tags.length == 0) {
-        console.log('item0', item);
-        tags = item;
-        console.log('tag0', tags);
+  if (obj.tags)
+    obj.tags.forEach((item) => {
+      let descripciontemp='';
+
+      if (listTagsClient) 
+      descripciontemp = listTagsClient.find(
+        (obj) => obj.id == item,
+      ).tagName;
+
+      if (descripcion.length == 0) {
+        descripcion = descripciontemp;
       } else {
-        console.log('item1', item);
-        tags = tags + ' | ' + item;
-        console.log('tag1', tags);
+        descripcion = descripcion + ' | ' + descripciontemp;
       }
     });
-  return tags;
+
+  return descripcion;
 };
