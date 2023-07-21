@@ -27,6 +27,9 @@ import {
   useTheme,
   useMediaQuery,
   IconButton,
+  Grid,
+  Box,
+  Autocomplete,
 } from '@mui/material';
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -44,9 +47,10 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import CloseIcon from '@mui/icons-material/Close';
 import {red} from '@mui/material/colors';
 import {exportExcelTemplateToClients} from '../../../redux/actions/General';
-
+import CheckIcon from '@mui/icons-material/Check';
 import {makeStyles} from '@mui/styles';
 import {useHistory, BrowserRouter, Route, Switch, Link} from 'react-router-dom';
 import {getUserData} from '../../../redux/actions/User';
@@ -121,6 +125,8 @@ const ClientTable = (arrayObjs, props) => {
   const [typeDocumentClient, setTypeDocumentClient] = React.useState('');
   const [numberDocumentClient, setNumberDocumentClient] = React.useState('');
   const [denominationClient, setDenominationClient] = React.useState('');
+  const [listTags, setListTags] = React.useState([]);
+  const [tagSelected, setTagSelected] = React.useState([]);
 
   let popUp = false;
   let codProdSelected = '';
@@ -185,6 +191,16 @@ const ClientTable = (arrayObjs, props) => {
       userDataRes.merchantSelected &&
       userDataRes.merchantSelected.merchantId
     ) {
+      if (businessParameter && listTags.length == 0) {
+        let listTags1 = businessParameter.find(
+          (obj) => obj.abreParametro == 'CLIENT_TAGS',
+        ).value;
+
+        listTags1.forEach (item => {
+          listTags.push([item.tagName, item.id, true]);
+        }); 
+      }
+
       console.log('Estamos entrando al getClients');
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
@@ -299,6 +315,13 @@ const ClientTable = (arrayObjs, props) => {
     };
     //listPayload.request.payload.LastEvaluatedKey = null;
     // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+    if (tagSelected.length > 0) {
+      let listTagsSelected = [];
+      tagSelected.forEach (item => {
+        listTagsSelected.push(item[1]);
+      }); 
+      listPayload.request.payload.tags = listTagsSelected;
+    }
     getClients(listPayload);
   };
   const newClient = () => {
@@ -474,6 +497,19 @@ const ClientTable = (arrayObjs, props) => {
     Router.push('/sample/clients/bulk-load');
   };
 
+  const  handlerTags = (event, values)=>{
+    console.log("Cambiando tags")
+    console.log("evento tag", event)
+    console.log("values tag", values)
+    console.log("tag seleccionado", event.target.attributes.value)
+    setTagSelected(values);
+    reloadPage();
+  };
+
+  const reloadPage = () => {
+    setReload(!reload);
+  };
+
   return (
     <Card sx={{p: 4}}>
       <Stack
@@ -530,11 +566,58 @@ const ClientTable = (arrayObjs, props) => {
           variant='outlined'
           name='nameToSearch'
           size='small'
-          onChange={handleSearchValues}
+          onChange={handleSearchValues} 
         />
-        <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
-          Más filtros
-        </Button>
+        
+        <Grid item xs={12} md={3}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              mt: 2,
+            }}
+          >
+            <Autocomplete
+              sx={{
+                m: 1,
+                width: '100%', // Establece el ancho al 100% por defecto
+                [(theme) => theme.breakpoints.down('sm')]: {
+                  width: '80%', // Ancho del 80% en pantallas pequeñas
+                },
+                [(theme) => theme.breakpoints.up('md')]: {
+                  width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                },
+              }}
+              multiple
+              options={listTags.filter((option) => option[2] == true)}
+              getOptionLabel={(option) => option[0]}
+              onChange={handlerTags}
+              disableCloseOnSelect
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Etiqueta'
+                  placeholder='Etiqueta'
+                />
+              )}
+              renderOption={(props, option, {selected}) => (
+                <MenuItem
+                  {...props}
+                  key={option[1]}
+                  value={option}
+                  sx={{justifyContent: 'space-between'}}
+                >
+                  {option[0]}
+                  {selected ? <CheckIcon color='info' /> : null}
+                </MenuItem>
+              )}
+            />
+          </Box>
+        </Grid>
+
         <Button
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
@@ -711,6 +794,7 @@ const ClientTable = (arrayObjs, props) => {
           </MenuItem>
         ) : null}
       </Menu>
+
     </Card>
   );
 };
