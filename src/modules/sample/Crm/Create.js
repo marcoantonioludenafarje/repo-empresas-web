@@ -29,6 +29,7 @@ import {
   Switch,
 } from '@mui/material';
 
+import axios from 'axios';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
@@ -413,23 +414,34 @@ const Create = (props) => {
     if (selectedClientIds.length === listClients.length) {
       setSelectedClientCount(listClients.length);
       setClientSelection('Todos');
+      setSelectedTags(['ALL']); // Deshabilitamos la selección de tags
     } else {
       setSelectedClientCount(selectedClientIds.length);
       setClientSelection('Algunos');
     }
   };
 
-  const handleTagSelect = (selectedTags) => {
-    if (selectedClientCount !== listClients.length) {
-      setSelectedTags(selectedTags);
+  const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
 
-      if (selectedTags.length === namesTags.length) {
-        setSelectedTagsCount(namesTags.length);
-        setClientSelection('Todos');
-      } else {
-        setSelectedTagsCount(selectedTags.length);
-        setClientSelection('Algunos');
-      }
+  const handleTagSelect = (selectedTags) => {
+    setSelectedTags(selectedTags);
+
+    if (selectedTags.includes('ALL')) {
+      setSelectedTagsCount(namesTags.length);
+      setSelectedClientsByTag([]);
+      setSelectedClientCount(listClients.length);
+      setClientSelection('Todos');
+    } else {
+      setSelectedTagsCount(selectedTags.length);
+
+      // Filtrar clientes basados en los tags seleccionados
+      const filteredClients = listClients.filter((client) =>
+        client.tags?.some((tagId) => selectedTags.includes(tagId)),
+      );
+
+      setSelectedClientsByTag(filteredClients.map((client) => client.clientId));
+      setSelectedClientCount(filteredClients.length);
+      setClientSelection('Algunos');
     }
   };
 
@@ -620,7 +632,7 @@ const Create = (props) => {
                             },
                           }}
                           multiple
-                          options={namesTags}
+                          options={['ALL', ...namesTags]}
                           getOptionLabel={(option) => option}
                           disableCloseOnSelect
                           renderInput={(params) => (
@@ -777,6 +789,42 @@ const Create = (props) => {
                     </Button>
                   </Grid>
                 </Grid>
+                <Grid container item xs={12} justifyContent='center'>
+                  <Button
+                    variant='outlined'
+                    color='primary'
+                    onClick={''}
+                    startIcon={<AddCircleOutlineOutlinedIcon />}
+                  >
+                    Generar Variación
+                  </Button>
+                </Grid>
+                ;
+                {'showSecondAccordion' && (
+                  <Grid item xs={12} md={12}>
+                    <Accordion>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        Mensaje N. 2 (Variación)
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Grid item xs={12} md={12}>
+                          <AppTextField
+                            label='Contenido de la Campaña *'
+                            name='campaignContent2'
+                            variant='outlined'
+                            multiline
+                            rows={4}
+                            value={'generatedVariation'}
+                            onChange={
+                              '(event) => setGeneratedVariation(event.target.value)'
+                            }
+                            sx={{width: '100%', my: 2}}
+                          />
+                        </Grid>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Grid>
+                )}
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -879,8 +927,10 @@ const Create = (props) => {
               checkboxSelection
               pageSize={5}
               rowsPerPageOptions={[5, 10, 20]}
-              onSelectionModelChange={handleClientSelect}
-              selectionModel={selectedClients}
+              onSelectionModelChange={(newSelection) =>
+                setSelectedClientsByTag(newSelection)
+              }
+              selectionModel={selectedClientsByTag}
             />
           </div>
         </DialogContent>
