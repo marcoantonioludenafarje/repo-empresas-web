@@ -52,6 +52,7 @@ import {
   RESET_CAMPAIGNS,
 } from '../../../shared/constants/ActionTypes';
 import {DataGrid} from '@mui/x-data-grid';
+import {verTags} from '../../../Utils/utils';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -84,6 +85,10 @@ const Create = (props) => {
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
   const [selectedClients, setSelectedClients] = useState('Todos');
   const [selectedClientCount, setSelectedClientCount] = useState(0);
+
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedClientIds, setSelectedClientIds] = useState([]);
+  const [selectedTagsCount, setSelectedTagsCount] = useState(0);
 
   const [previewImages, setPreviewImages] = useState([]);
   let fecha = new Date();
@@ -130,6 +135,18 @@ const Create = (props) => {
     dispatch(onGetClients(payload));
   };
   const {userDataRes} = useSelector(({user}) => user);
+
+  const {businessParameter} = useSelector(({general}) => general);
+
+  console.log('Businees: ', businessParameter);
+  console.log(
+    'bisnees people',
+    businessParameter?.find((obj) => obj.abreParametro == 'CLIENT_TAGS').value,
+  );
+
+  const listadeTags = businessParameter?.find(
+    (obj) => obj.abreParametro == 'CLIENT_TAGS',
+  ).value;
 
   const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
     ({clients}) => clients,
@@ -188,7 +205,7 @@ const Create = (props) => {
     }
   }, [loading]);
 
-  const namesTags = ['Navidad', 'Infantil', 'Juvenil', 'Adultez', 'Verano'];
+  const namesTags = listadeTags?.map((tag) => tag.tagName);
 
   const handleData = (data, {setSubmitting}) => {
     console.log('Data crear', data);
@@ -402,6 +419,20 @@ const Create = (props) => {
     }
   };
 
+  const handleTagSelect = (selectedTags) => {
+    if (selectedClientCount !== listClients.length) {
+      setSelectedTags(selectedTags);
+
+      if (selectedTags.length === namesTags.length) {
+        setSelectedTagsCount(namesTags.length);
+        setClientSelection('Todos');
+      } else {
+        setSelectedTagsCount(selectedTags.length);
+        setClientSelection('Algunos');
+      }
+    }
+  };
+
   const handleOpenClientsDialog = () => {
     setOpenClientsDialog(true);
   };
@@ -429,12 +460,15 @@ const Create = (props) => {
     if (name === 'Todos' && checked) {
       setClientSelection('Todos');
       setSelectedClientCount(listClients.length);
+      setSelectedClientIds([]); // <-- Añade esta línea
     } else if (name === 'Algunos' && checked) {
       setClientSelection('Algunos');
       setSelectedClientCount(0);
+      setSelectedClientIds([]); // <-- Añade esta línea
     } else {
       setSelectedClientCount(listClients.length);
       setClientSelection('Todos');
+      setSelectedClientIds(listClients.map((client) => client.clientId)); // <-- Añade esta línea
     }
   };
 
@@ -570,6 +604,11 @@ const Create = (props) => {
                         }}
                       >
                         <Autocomplete
+                          value={selectedTags}
+                          onChange={(event, newValue) =>
+                            handleTagSelect(newValue)
+                          }
+                          disabled={selectedClientCount === listClients.length}
                           sx={{
                             m: 1,
                             width: '100%', // Establece el ancho al 100% por defecto
