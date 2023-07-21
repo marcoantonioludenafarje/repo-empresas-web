@@ -21,6 +21,7 @@ import {
   Typography,
   IconButton,
   TextField,
+  Autocomplete,
 } from '@mui/material';
 
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
@@ -48,6 +49,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
 import {useState} from 'react';
+import CheckIcon from '@mui/icons-material/Check';
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
   documentType: yup.string(),
@@ -171,10 +173,16 @@ const NewClient = (props) => {
 
   const [birthDay, setBirthDay] = React.useState(new Date());
 
+  const [listTags, setListTags] = React.useState([]);
+  const [tagSelected, setTagSelected] = React.useState([]);
+  const [reload, setReload] = React.useState(0); // integer state
+
   const classes = useStyles(props);
   let objSelects = {
     documentType: '',
   };
+
+  const {businessParameter} = useSelector(({general}) => general);
 
   //APIS
   const toNewClient = (payload) => {
@@ -236,6 +244,16 @@ const NewClient = (props) => {
         userDataRes.merchantSelected.typeClient == 'PN' ? 'DNI' : 'RUC',
       );
 
+      if (businessParameter && listTags.length == 0) {
+        let listTags1 = businessParameter.find(
+          (obj) => obj.abreParametro == 'CLIENT_TAGS',
+        ).value;
+
+        listTags1.forEach (item => {
+          listTags.push([item.tagName, item.id, true]);
+        }); 
+      }
+
       //  setIdentidad('DNI' )
     }
   }, [userDataRes]);
@@ -292,27 +310,13 @@ const NewClient = (props) => {
       },
     };
 
-    // newClientPayload.request.payload.clients[0].typeDocumentClient = identidad;
-    // newClientPayload.request.payload.clients[0].numberDocumentClient =
-    //   data.nroDocument;
-    // newClientPayload.request.payload.clients[0].denominationClient = data.name;
-    // newClientPayload.request.payload.clients[0].addressClient =
-    //   data.addressClient;
-    // newClientPayload.request.payload.clients[0].emailClient = data.emailClient;
-    // newClientPayload.request.payload.clients[0].numberContact =
-    //   data.numberContact;
-    // if (identidad == 'RUC') {
-    //   newClientPayload.request.payload.clients[0].emailContact =
-    //     data.emailContact;
-    //   newClientPayload.request.payload.clients[0].nameContact =
-    //     data.nameContact;
-    // } else {
-    //   newClientPayload.request.payload.clients[0].emailContact =
-    //     data.emailClient;
-    //   newClientPayload.request.payload.clients[0].nameContact = data.name;
-    // }
-    // newClientPayload.request.payload.clients[0].extraInformationClient =
-    //   data.extraInformationClient;
+    if (tagSelected.length > 0) {
+      let listTagsSelected = [];
+      tagSelected.forEach (item => {
+        listTagsSelected.push(item[1]);
+      }); 
+      newClientPayload.request.payload.clients[0].tags = listTagsSelected;
+    }
 
     toNewClient(newClientPayload);
     console.log('newClientPayload', newClientPayload);
@@ -372,13 +376,18 @@ const NewClient = (props) => {
     setIdentidad(objSelects.documentType);
   };
 
-  // const inicializaIdentidad = () => {
-  //   if (!identidad) {
-  //     setIdentidad(typeClient == 'PN' ? 'DNI' : 'RUC');
-  //     console.log('inicializaIdentidad', identidad);
-  //   }
-  //   return '';
-  // };
+  const  handlerTags = (event, values)=>{
+    console.log("Cambiando tags")
+    console.log("evento tag", event)
+    console.log("values tag", values)
+    console.log("tag seleccionado", event.target.attributes.value)
+    setTagSelected(values);
+    reloadPage();
+  };
+
+  const reloadPage = () => {
+    setReload(!reload);
+  };
 
   return identidad ? (
     <Card sx={{p: 4}}>
@@ -626,6 +635,42 @@ const NewClient = (props) => {
                           }}
                         />
                       </Grid>
+                      <Autocomplete
+                        sx={{
+                          m: 1,
+                          width: '100%', // Establece el ancho al 100% por defecto
+                          [(theme) => theme.breakpoints.down('sm')]: {
+                            width: '80%', // Ancho del 80% en pantallas pequeñas
+                          },
+                          [(theme) => theme.breakpoints.up('md')]: {
+                            width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                          },
+                        }}
+                        multiple
+                        options={listTags.filter((option) => option[2] == true)}
+                        getOptionLabel={(option) => option[0]}
+                        onChange={handlerTags}
+                        disableCloseOnSelect
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Etiqueta'
+                            placeholder='Etiqueta'
+                          />
+                        )}
+                        renderOption={(props, option, {selected}) => (
+                          <MenuItem
+                            {...props}
+                            key={option[1]}
+                            value={option}
+                            sx={{justifyContent: 'space-between'}}
+                          >
+                            {option[0]}
+                            {selected ? <CheckIcon color='info' /> : null}
+                          </MenuItem>
+                        )}
+                      />
                     </>
                   ) : (
                     <>
@@ -796,6 +841,42 @@ const NewClient = (props) => {
                           }}
                         />
                       </Grid>
+                      <Autocomplete
+                        sx={{
+                          m: 1,
+                          width: '100%', // Establece el ancho al 100% por defecto
+                          [(theme) => theme.breakpoints.down('sm')]: {
+                            width: '80%', // Ancho del 80% en pantallas pequeñas
+                          },
+                          [(theme) => theme.breakpoints.up('md')]: {
+                            width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                          },
+                        }}
+                        multiple
+                        options={listTags.filter((option) => option[2] == true)}
+                        getOptionLabel={(option) => option[0]}
+                        onChange={handlerTags}
+                        disableCloseOnSelect
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Etiqueta'
+                            placeholder='Etiqueta'
+                          />
+                        )}
+                        renderOption={(props, option, {selected}) => (
+                          <MenuItem
+                            {...props}
+                            key={option[1]}
+                            value={option}
+                            sx={{justifyContent: 'space-between'}}
+                          >
+                            {option[0]}
+                            {selected ? <CheckIcon color='info' /> : null}
+                          </MenuItem>
+                        )}
+                      />
                     </>
                   )}
                 </Grid>
