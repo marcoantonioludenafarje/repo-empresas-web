@@ -177,6 +177,7 @@ export const UPDATE_CATALOGS = 'update_catalogs';
 
 //IMAGE
 export const GET_PRESIGNED = 'get_presigned';
+export const GET_CLIENTS_PRESIGNED = 'get_clients_presigned';
 export const UPLOAD_IMAGE = 'upload_image';
 export const GET_DATA_BUSINESS = 'get_data_business';
 export const UPDATE_DATA_BUSINESS = 'update_data_business';

@@ -36,6 +36,7 @@ import {
   CircularProgress,
   Typography,
   Divider,
+  Autocomplete,
 } from '@mui/material';
 
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
@@ -68,6 +69,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
 } from '../../../shared/constants/ActionTypes';
+import CheckIcon from '@mui/icons-material/Check';
 
 const useStyles = makeStyles((theme) => ({
   closeButton: {
@@ -195,6 +197,10 @@ const UpdateClient = (props) => {
     query.birthDay ? query.birthDay : new Date(),
   );
 
+  const [listTags, setListTags] = React.useState([]);
+  const [tagSelected, setTagSelected] = React.useState([]);
+  const [reload, setReload] = React.useState(0); // integer state
+
   const toUpdateClient = (payload) => {
     dispatch(updateClient(payload));
   };
@@ -239,6 +245,18 @@ const UpdateClient = (props) => {
     }
   }, [loading]);
 
+  useEffect(() => {
+    if (userDataRes && userDataRes.merchantSelected && businessParameter && listTags.length == 0) {
+      let listTags1 = businessParameter.find(
+        (obj) => obj.abreParametro == 'CLIENT_TAGS',
+      ).value;
+
+      listTags1.forEach (item => {
+        listTags.push([item.tagName, item.id, true]);
+      }); 
+    }
+  }, [userDataRes]);
+
   if (listClients != undefined) {
     selectedClient = listClients.find(
       (input) => input.clientId == query.clientId,
@@ -271,20 +289,6 @@ const UpdateClient = (props) => {
       },
     },
   };
-  // let newClientPayload = {
-  //   request: {
-  //     payload: {
-  //       clientId: query.clientId,
-  //       denominationClient: '',
-  //       addressClient: '',
-  //       nameContact: '',
-  //       numberContact: '',
-  //       emailContact: '',
-  //       emailClient: '',
-  //       extraInformationClient: '',
-  //     },
-  //   },
-  // };
 
   let objSelects = {
     documentType: '',
@@ -330,6 +334,15 @@ const UpdateClient = (props) => {
         },
       },
     };
+
+    if (tagSelected.length > 0) {
+      let listTagsSelected = [];
+      tagSelected.forEach (item => {
+        listTagsSelected.push(item[1]);
+      }); 
+      newClientPayload.request.payload.tags = listTagsSelected;
+    }
+
     console.log('updateClientPayload', newClientPayload);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
@@ -353,6 +366,19 @@ const UpdateClient = (props) => {
     setOpen(true);
     setTypeDialog(type);
     setShowAlert(false);
+  };
+
+  const  handlerTags = (event, values)=>{
+    console.log("Cambiando tags")
+    console.log("evento tag", event)
+    console.log("values tag", values)
+    console.log("tag seleccionado", event.target.attributes.value)
+    setTagSelected(values);
+    reloadPage();
+  };
+
+  const reloadPage = () => {
+    setReload(!reload);
   };
 
   const showMessage = () => {
@@ -662,6 +688,42 @@ const UpdateClient = (props) => {
                           }}
                         />
                       </Grid>
+                      <Autocomplete
+                        sx={{
+                          m: 1,
+                          width: '100%', // Establece el ancho al 100% por defecto
+                          [(theme) => theme.breakpoints.down('sm')]: {
+                            width: '80%', // Ancho del 80% en pantallas pequeñas
+                          },
+                          [(theme) => theme.breakpoints.up('md')]: {
+                            width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                          },
+                        }}
+                        multiple
+                        options={listTags.filter((option) => option[2] == true)}
+                        getOptionLabel={(option) => option[0]}
+                        onChange={handlerTags}
+                        disableCloseOnSelect
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Etiqueta'
+                            placeholder='Etiqueta'
+                          />
+                        )}
+                        renderOption={(props, option, {selected}) => (
+                          <MenuItem
+                            {...props}
+                            key={option[1]}
+                            value={option}
+                            sx={{justifyContent: 'space-between'}}
+                          >
+                            {option[0]}
+                            {selected ? <CheckIcon color='info' /> : null}
+                          </MenuItem>
+                        )}
+                      />
                     </>
                   ) : (
                     <>
@@ -832,6 +894,42 @@ const UpdateClient = (props) => {
                           }}
                         />
                       </Grid>
+                      <Autocomplete
+                        sx={{
+                          m: 1,
+                          width: '100%', // Establece el ancho al 100% por defecto
+                          [(theme) => theme.breakpoints.down('sm')]: {
+                            width: '80%', // Ancho del 80% en pantallas pequeñas
+                          },
+                          [(theme) => theme.breakpoints.up('md')]: {
+                            width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                          },
+                        }}
+                        multiple
+                        options={listTags.filter((option) => option[2] == true)}
+                        getOptionLabel={(option) => option[0]}
+                        onChange={handlerTags}
+                        disableCloseOnSelect
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Etiqueta'
+                            placeholder='Etiqueta'
+                          />
+                        )}
+                        renderOption={(props, option, {selected}) => (
+                          <MenuItem
+                            {...props}
+                            key={option[1]}
+                            value={option}
+                            sx={{justifyContent: 'space-between'}}
+                          >
+                            {option[0]}
+                            {selected ? <CheckIcon color='info' /> : null}
+                          </MenuItem>
+                        )}
+                      />
                     </>
                   )}
                 </Grid>
