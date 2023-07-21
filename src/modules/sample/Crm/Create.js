@@ -45,23 +45,24 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {newCampaign} from '../../../redux/actions/Campaign';
-import {createPresigned} from '../../../redux/actions/General';
+import {createPresigned, createClientsPresigned} from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   RESET_CAMPAIGNS,
+  GET_CLIENTS_PRESIGNED,
 } from '../../../shared/constants/ActionTypes';
 import {DataGrid} from '@mui/x-data-grid';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
-  date: yup
-    .date()
-    .typeError('Ingresa una fecha valida')
-    .required('La fecha es obligatoria'),
-  campaignContent: yup
-    .string()
-    .required('El contenido de la campaña es obligatorio'),
+  // date: yup
+  //   .date()
+  //   .typeError('Ingresa una fecha valida')
+  //   .required('La fecha es obligatoria'),
+  // campaignContent: yup
+  //   .string()
+  //   .required('El contenido de la campaña es obligatorio'),
   campaignImages: yup
     .array()
     .of(yup.mixed().required('Requiere una imagen'))
@@ -76,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Create = (props) => {
+  let toSubmitting;
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const dispatch = useDispatch();
@@ -84,8 +86,12 @@ const Create = (props) => {
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
   const [selectedClients, setSelectedClients] = useState('Todos');
   const [selectedClientCount, setSelectedClientCount] = useState(0);
+  const [payloadToCreateCampaign, setPayloadToCreateCampaign] = useState('');
 
   const [previewImages, setPreviewImages] = useState([]);
+  const [publishDate, setPublishDate] = React.useState(
+    Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
+  );
   let fecha = new Date();
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
@@ -95,7 +101,7 @@ const Create = (props) => {
 
   const defaultValues = {
     campaignName: '',
-    date: fecha.setHours(fecha.getHours() + 1),
+    date: Date.now() + 60 * 60 * 1000,
     campaignContent: '',
     campaignImages: null,
   };
@@ -116,6 +122,7 @@ const Create = (props) => {
   };
 
   const handleContentChange = (id, content) => {
+    console.log("content Mensaje", content)
     const updatedContents = campaignContents.map((contentData) =>
       contentData.id === id ? {...contentData, content} : contentData,
     );
@@ -135,12 +142,15 @@ const Create = (props) => {
     ({clients}) => clients,
   );
 
-  const {presigned} = useSelector(({general}) => general);
+  const {presigned, clientsPresigned} = useSelector(({general}) => general);
   const createCampaign = (payload) => {
     dispatch(newCampaign(payload));
   };
   const toCreatePresigned = (payload, file) => {
     dispatch(createPresigned(payload, file));
+  };
+  const toCreateClientsPresigned = (payload, file) => {
+    dispatch(createClientsPresigned(payload, file));
   };
   const {newCampaignRes, successMessage, errorMessage, process, loading} =
     useSelector(({campaigns}) => campaigns);
@@ -236,6 +246,29 @@ const Create = (props) => {
       });
     }
     console.log('RECEIVERS', receivers);
+    const clientsData = {
+      receivers: receivers
+    }
+    // Convierte el objeto JSON a una cadena JSON
+    const jsonString = JSON.stringify(clientsData, null, 2); // null, 2 para una representación más legible
+
+    // Crea un Blob con la cadena JSON
+    const clientsBlob = new Blob([jsonString], { type: 'application/json' });
+
+    let clientsJsonPayload = {
+      request: {
+        payload: {
+          key: 'clientsJson',
+          action: 'putObject',
+          contentType: 'application/json',
+          name: 'clientsJson'
+        },
+      },
+    };
+    toCreateClientsPresigned(clientsJsonPayload, {
+      image: clientsBlob,
+      type: clientsBlob?.type || null,
+    });
     const payload = {
       request: {
         payload: {
@@ -243,7 +276,9 @@ const Create = (props) => {
             {
               campaignName: data.campaignName,
               scheduledAt: data.date,
-              receivers,
+              receivers: {
+                urlClients: ''
+              },
               messages: [
                 {
                   order: 1,
@@ -263,21 +298,28 @@ const Create = (props) => {
         },
       },
     };
+    setPayloadToCreateCampaign(payload)
 
-    setTimeout(() => {
-      // Show success message
-
-      dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
-      console.log('newCampaignPayload', payload);
-      createCampaign(payload);
-
-      setOpenStatus(true);
-
-      // Reset form
-      setSubmitting(false);
-    }, 1000);
   };
-
+  useEffect(() => {
+    if (clientsPresigned) {
+      
+      const payload = payloadToCreateCampaign;
+      payload.request.payload.campaign[0].receivers.urlClients =  clientsPresigned.keymaster
+      setTimeout(() => {
+        // Show success message
+        dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
+        console.log('newCampaignPayload', payload);
+        createCampaign(payload);
+  
+        setOpenStatus(true);
+  
+        // Reset form
+        toSubmitting(false);
+        dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
+      }, 1000);
+    }
+  }, [clientsPresigned]);
   const showMessage = () => {
     if (successMessage !== undefined) {
       console.log('MENSAJE DE VALIDEZ', successMessage);
@@ -462,12 +504,14 @@ const Create = (props) => {
           validationSchema={validationSchema}
           initialValues={defaultValues}
           onSubmit={handleData}
-          enableReinitialize={true}
+          //enableReinitialize={true}
         >
-          {({values, errors, isSubmitting, setFieldValue}) => {
+          {({values, errors, isSubmitting, setFieldValue, setSubmitting}) => {
+            toSubmitting = setSubmitting;
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
+                id='principal-form'
                 noValidate
                 autoComplete='on'
               >
@@ -489,15 +533,16 @@ const Create = (props) => {
                   </Grid>
                   <Grid item xs={12} md={6}>
                     <DateTimePicker
-                      minDateTime={new Date()}
-                      value={values.date}
+                      minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
+                      value={publishDate}
                       onChange={(e) => {
                         console.log('tipo', e);
-                        setFieldValue('date', e);
+                        setPublishDate(e);
+
                       }}
                       label='Fecha *'
                       name='date'
-                      inputFormat='dd/MM/yyyy HH:mm'
+                      inputFormat='dd/MM/yyyy hh:mm a'
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -705,7 +750,7 @@ const Create = (props) => {
                         </AccordionSummary>
                         <AccordionDetails>
                           <Grid item xs={12} md={12}>
-                            <AppTextField
+                            <TextField
                               label='Contenido de la Campaña *'
                               name={`campaignContent${contentData.id}`}
                               variant='outlined'
@@ -749,6 +794,7 @@ const Create = (props) => {
                     sx={{mx: 'auto', width: '40%', py: 2}}
                     type='submit'
                     variant='contained'
+                    form='principal-form'
                     disabled={isSubmitting}
                     startIcon={<SaveAltOutlinedIcon />}
                   >
