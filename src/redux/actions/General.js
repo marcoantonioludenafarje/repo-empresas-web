@@ -25,6 +25,7 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
   GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
   UPDATE_CATALOGS,
+  GET_CLIENTS_PRESIGNED,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -75,6 +76,30 @@ export const createPresigned = (payload, file) => {
         console.log('createPresigned resultado', data);
         dispatch({
           type: GET_PRESIGNED,
+          payload: data.response.payload.response.payload,
+        });
+        let newPresigned = {...data?.response?.payload.response.payload};
+        newPresigned.name = key;
+        console.log('newPresigned json', newPresigned);
+        // dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        await dispatch(uploadFileByPresign(newPresigned?.presignedS3Url, file));
+      })
+      .catch((error) => {
+        console.log('createPresigned error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+export const createClientsPresigned = (payload, file) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    const key = payload?.request?.payload.name;
+    API.post('tunexo', '/utility/getPresignedUrl', {body: payload})
+      .then(async (data) => {
+        data.response.payload.response.payload.name = key;
+        console.log('createPresigned resultado', data);
+        dispatch({
+          type: GET_CLIENTS_PRESIGNED,
           payload: data.response.payload.response.payload,
         });
         let newPresigned = {...data?.response?.payload.response.payload};
