@@ -184,9 +184,12 @@ const validationSchema = yup.object({
     .number()
     // .moreThan(0)
     .typeError(<IntlMessages id='validation.number' />)
-    .required(<IntlMessages id='validation.required' />)
     .integer(<IntlMessages id='validation.number.integer' />)
-    .max(maxLengthNumber, <IntlMessages id='validation.maxLength' />),
+    .max(maxLengthNumber, <IntlMessages id='validation.maxLength' />)
+    /*.when("stockNeeded", {
+      is: true,
+      then: yup.string()*/.required(<IntlMessages id='validation.required' />)
+    /*})*/
 });
 
 const defaultValues = {
@@ -281,6 +284,7 @@ const NewProduct = (props) => {
   const [categories, setCategories] = React.useState([]);
   const [typeIcon, setTypeIcon] = React.useState('2');
   const [secondaryUnitMeasure, setSecondaryUnitMeasure] = React.useState('ML');
+  const [isStockNeeded, setIsStockNeeded] = React.useState(true);
 
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
@@ -720,6 +724,7 @@ const NewProduct = (props) => {
                     unitsToProduce: 1,
                     inputsProduct: cleanProducts,
                     publish: publish,
+                    isStockNeeded: isStockNeeded,
                   },
                 ],
                 merchantId: userDataRes.merchantSelected.merchantId,
@@ -753,6 +758,7 @@ const NewProduct = (props) => {
                     unitsToProduce: 1,
                     inputsProduct: cleanProducts,
                     publish: publish,
+                    isStockNeeded: isStockNeeded,
                   },
                 ],
                 merchantId: userDataRes.merchantSelected.merchantId,
@@ -931,6 +937,10 @@ const NewProduct = (props) => {
       }&fit=crop&auto=format&dpr=2 2x`,
     };
   }
+
+  const handleStock = (event, isInputChecked) => {
+    setIsStockNeeded(isInputChecked);
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -1167,6 +1177,18 @@ const NewProduct = (props) => {
                         my: 2,
                       }}
                     />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{display: 'flex', alignItems: 'center', px: 2}}
+                  >
+                    <FormControlLabel
+                      checked={isStockNeeded}
+                      control={<Checkbox onChange={handleStock} />}
+                      label='Necesita Stock?'
+                    />
+                    {isStockNeeded}
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
