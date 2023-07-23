@@ -234,7 +234,11 @@ export default function Views(props) {
                 <TableCell>{row.messages[0].text}</TableCell>
                 <TableCell>{convertToDate(row.scheduledAt)}</TableCell>
                 <TableCell>
-                  <img src={row.messages[0].img_url} alt='Imagen' width='100' />
+                  {row.messages[0].img_url ? (
+                    <img src={row.messages[0].img_url} alt='Imagen' width='100' onError={(e) => {
+                      e.target.style.display = 'none'; // Ocultar la etiqueta img en caso de error
+                    }}/>
+                  ) : null}
                 </TableCell>
                 <TableCell>{row.receivers.length}</TableCell>
                 <TableCell>

@@ -256,6 +256,8 @@ const UpdateProduct = (props) => {
   const [secondaryUnitMeasure, setSecondaryUnitMeasure] = React.useState(
     query.secondaryUnitMeasure || 'ML',
   );
+  const [isStockNeeded, setIsStockNeeded] = React.useState(true);
+
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
   });
@@ -364,6 +366,7 @@ const UpdateProduct = (props) => {
     title: query.title,
     commercialDescription: query.commercialDescription,
     selectedFilters: originalProduct.tags,
+    isStockNeeded: (query.isStockNeeded ? query.isStockNeeded : false),
   };
 
   useEffect(() => {
@@ -744,6 +747,7 @@ const UpdateProduct = (props) => {
             inputsProduct: cleanProducts,
             inputsProductHistory: originalProduct.inputsProductHistory,
             publish: publish,
+            isStockNeeded: isStockNeeded,
           },
         },
       });
@@ -865,6 +869,11 @@ const UpdateProduct = (props) => {
       return <>VER TUTORIAL</>;
     }
   };
+  
+  const handleStock = (event, isInputChecked) => {
+    setIsStockNeeded(isInputChecked);
+  };
+
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -1134,6 +1143,18 @@ const UpdateProduct = (props) => {
                         my: 2,
                       }}
                     />
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{display: 'flex', alignItems: 'center', px: 2}}
+                  >
+                    <FormControlLabel
+                      checked={isStockNeeded}
+                      control={<Checkbox onChange={handleStock} />}
+                      label='Necesita Stock?'
+                    />
+                    {isStockNeeded}
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField

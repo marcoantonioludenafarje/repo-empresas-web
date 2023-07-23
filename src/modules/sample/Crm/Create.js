@@ -46,7 +46,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {newCampaign} from '../../../redux/actions/Campaign';
-import {createPresigned, createClientsPresigned} from '../../../redux/actions/General';
+import {createPresigned, createClientsPresigned, createImagePresigned} from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -102,6 +102,7 @@ const Create = (props) => {
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
+  const [actualImage, setActualImage] = React.useState('');
   const [clientSelection, setClientSelection] = useState();
   const classes = useStyles(props);
 
@@ -160,12 +161,15 @@ const Create = (props) => {
     ({clients}) => clients,
   );
 
-  const {presigned, clientsPresigned} = useSelector(({general}) => general);
+  const {clientsPresigned, imagePresigned} = useSelector(({general}) => general);
   const createCampaign = (payload) => {
     dispatch(newCampaign(payload));
   };
   const toCreatePresigned = (payload, file) => {
     dispatch(createPresigned(payload, file));
+  };
+  const toCreateImagePresigned = (payload, file) => {
+    dispatch(createImagePresigned(payload, file));
   };
   const toCreateClientsPresigned = (payload, file) => {
     dispatch(createClientsPresigned(payload, file));
@@ -220,6 +224,10 @@ const Create = (props) => {
 
   const handleData = (data, {setSubmitting}) => {
     console.log('Data crear', data);
+    let nameSimplified = data.campaignName;
+    nameSimplified = nameSimplified.replace(/ /g, "");
+    nameSimplified = nameSimplified.toLowerCase();
+
     setSubmitting(true);
     let receivers = [];
 
@@ -272,7 +280,25 @@ const Create = (props) => {
 
     // Crea un Blob con la cadena JSON
     const clientsBlob = new Blob([jsonString], { type: 'application/json' });
-
+    if(actualImage){
+      let imagePayload = {
+        request: {
+          payload: {
+            key: actualImage.name.split('.')
+            .slice(0, -1)
+            .join('.'),
+            action: 'putObject',
+            contentType: actualImage.type,
+            merchantId: userDataRes.merchantSelected.merchantId,
+            path: "campaign/" + nameSimplified,
+          },
+        },
+      };
+      toCreateImagePresigned(imagePayload, {
+        image: actualImage,
+        type: actualImage?.type || null,
+      });
+    }
     let clientsJsonPayload = {
       request: {
         payload: {
@@ -287,6 +313,11 @@ const Create = (props) => {
       image: clientsBlob,
       type: clientsBlob?.type || null,
     });
+    const extensions = {
+      'image/jpeg': 'jpeg',
+      'image/jpg': 'jpg',
+      'image/png': 'png',
+    };
     const payload = {
       request: {
         payload: {
@@ -300,14 +331,17 @@ const Create = (props) => {
               messages: [
                 {
                   order: 1,
-                  type: selectedJsonImages[0] ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
-                  metadata: selectedJsonImages[0]
-                    ? {
-                        keyMaster: selectedJsonImages[0]?.keyMaster || '',
-                        nameFile: selectedJsonImages[0]?.nameFile || '',
-                      }
-                    : null,
-                  text: data.campaignContent,
+                  type: actualImage ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
+                  // metadata: selectedJsonImages[0]
+                  //   ? {
+                  //       keyMaster: selectedJsonImages[0]?.keyMaster || '',
+                  //       nameFile: selectedJsonImages[0]?.nameFile || '',
+                  //     }
+                  //   : null,
+                  img_url: actualImage ? "https://d2moc5ro519bc0.cloudfront.net/merchant/"  + userDataRes.merchantSelected.merchantId + "/" + "campaign/" + nameSimplified + "/" + actualImage.name.split('.')
+                  .slice(0, -1)
+                  .join('.') + "." + extensions[actualImage.type]: "", 
+                  text: campaignContents[0].content,
                 },
               ],
             },
@@ -394,41 +428,14 @@ const Create = (props) => {
     setFieldValue('campaignImages', files);
 
     const imagePreviews = files.map((file) => {
-      let imagePayload = {
-        request: {
-          payload: {
-            key: 'general',
-            action: 'putObject',
-            contentType: '',
-          },
-        },
-      };
-      imagePayload.request.payload.contentType = file.type;
-      imagePayload.request.payload.name = file.name;
       setNameLastFile(file.name);
-      toCreatePresigned(imagePayload, {
-        image: file,
-        type: file?.type || null,
-      });
+      setActualImage(file);
       return URL.createObjectURL(file);
     });
     setPreviewImages(imagePreviews);
     Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
   };
-  useEffect(() => {
-    if (presigned) {
-      console.log('useEffect presigned', presigned);
-      let actualSelectedJsonImages = selectedJsonImages;
-      const newJsonImages = {
-        keyMaster: presigned.keymaster,
-        nameFile: nameLastFile,
-      };
-      console.log('newJsonImages', newJsonImages);
-      actualSelectedJsonImages = [newJsonImages];
-      console.log('actualSelectedJsonImages', actualSelectedJsonImages);
-      setSelectedJsonImages(actualSelectedJsonImages);
-    }
-  }, [presigned]);
+
   const removeImagePreview = (index, setFieldValue) => {
     const updatedImages = [...previewImages];
     updatedImages.splice(index, 1);
