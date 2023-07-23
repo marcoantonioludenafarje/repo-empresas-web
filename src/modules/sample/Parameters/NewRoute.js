@@ -53,6 +53,7 @@ import * as yup from 'yup';
 import Router, {useRouter} from 'next/router';
 import FilterCard from './FilterCard';
 import CategoryCard from './CategoryCard';
+import TagCard from './TagCard';
 import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useDispatch, useSelector} from 'react-redux';
 import {generatePredefinedRoute} from '../../../redux/actions/Movements';
@@ -109,13 +110,19 @@ const Distribution = () => {
     description: '',
     productCategoryId: '',
   };
+  const emptyTag = {
+    id: '',
+    tagName: '',
+  };
   const dispatch = useDispatch();
   const [typeAlert, setTypeAlert] = React.useState(
     'existProductsWithThisCategory',
   );
+
   const [routes, setRoutes] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
+  const [tags, setTags] = React.useState([]);
   const [reload, setReload] = React.useState(false);
   const [execAll, setExecAll] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
@@ -137,6 +144,7 @@ const Distribution = () => {
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [listProductsState, setListProductsState] = React.useState({});
+  const [listTagsState, setListTagsState] = React.useState([]);
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -340,6 +348,11 @@ const Distribution = () => {
       // setProductsSelected(newProductsSelected)
     }
   }, [listProducts]);
+  // useEffect(() => {
+  //   if (listTags) {
+  //     setListTagsState(listTags);
+  //   }
+  // }, [listTags]);
   useEffect(() => {
     if (businessParameter !== undefined && businessParameter.length >= 1) {
       let ecommerceProductParameter = businessParameter.find(
@@ -347,6 +360,9 @@ const Distribution = () => {
       );
       let categoriesProductParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'DEFAULT_CATEGORIES_PRODUCTS',
+      ).value;
+      let clientTagsParameter = businessParameter.find(
+        (obj) => obj.abreParametro == 'CLIENT_TAGS',
       ).value;
       let defaultIgvParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'IGV',
@@ -366,6 +382,7 @@ const Distribution = () => {
         'ecommerceTagsProductParameter',
         ecommerceProductParameter.tags,
       );
+      console.log('clientTagsParameter', clientTagsParameter);
       console.log(
         'ecommercePriceProductParameter',
         ecommerceProductParameter.price,
@@ -379,12 +396,15 @@ const Distribution = () => {
         Number(ecommerceProductParameter.price.min),
         Number(ecommerceProductParameter.price.max),
       ]);
+
       setDefaultMoney(defaultMoneyParameter);
       setDefaultWeight(defaultWeightParameter);
       setDefaultIgvActivation(Number(defaultIgvParameter));
       setDefaultProductsPayDetail(
         ecommerceProductParameter.defaultProductsPayDetail,
       );
+      setTags(clientTagsParameter);
+      console.log('clientTagsParameter', clientTagsParameter);
       setCategories(categoriesProductParameter);
       setMoneyUnit(obtainedMoneyUnit);
       changeValue('defaultWeight', defaultWeightParameter);
@@ -500,6 +520,7 @@ const Distribution = () => {
       reloadPage();
     }
   };
+
   const setCategoryIndex = (index, obj) => {
     console.log('obj: ', obj);
     let changedCategories = categories;
@@ -507,6 +528,14 @@ const Distribution = () => {
     setCategories(changedCategories);
     console.log('changedCategories', changedCategories);
     console.log('categories', categories);
+  };
+  const setTagIndex = (index, obj) => {
+    console.log('obj: ', obj);
+    let changedTag = tags;
+    changedTag[index] = obj;
+    setTags(changedTag);
+    console.log('changedTag', changedTag);
+    console.log('tags', tags);
   };
 
   const validationSchema = yup.object({
@@ -566,6 +595,7 @@ const Distribution = () => {
           filters: publish ? filters : [],
           categories: finalCategories,
           isEcommerceEnabled: publish,
+          tagsClients: tags,
         },
       },
     };
@@ -1274,6 +1304,109 @@ const Distribution = () => {
         </FormGroup>
       </Box>
 
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          mb: 5,
+        }}
+      >
+        <Stack
+          direction='row'
+          divider={<Divider orientation='vertical' flexItem />}
+          spacing={2}
+        >
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: 20,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <IntlMessages id='Tags de clientes' />
+          </Typography>
+          <IconButton
+            onClick={() => {
+              console.log('tags', tags);
+              let newTags = tags;
+              let newEmptyTag = emptyTag;
+              newEmptyTag.tagName = '';
+              newTags.push(newEmptyTag);
+              setTags(newTags);
+              reloadPage();
+            }}
+            aria-label='delete'
+            size='large'
+          >
+            <AddIcon fontSize='inherit' />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              console.log('tags', tags);
+              let newTags = tags;
+              newTags.pop();
+              setTags(newTags);
+              reloadPage();
+            }}
+            aria-label='delete'
+            size='large'
+          >
+            <RemoveIcon fontSize='inherit' />
+          </IconButton>
+        </Stack>
+      </Box>
+      <Box
+        sx={{
+          m: 'auto',
+          border: '1px solid grey',
+          borderRadius: '10px',
+          width: '95  %',
+        }}
+      >
+        {tags &&
+          tags.map((tag, index) => (
+            <>
+              <Card key={index} sx={{p: 2}}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <TagCard
+                    key={index}
+                    order={index}
+                    execFunctions={execAll}
+                    newValuesData={setTagIndex}
+                    initialValues={tag}
+                  />
+
+                  <IconButton
+                    onClick={() => {
+                      const clientsWithThisTag = listTagsState.filter(
+                        (element) =>
+                          element.tagName == tag.tagName ||
+                          element.id == tag.id,
+                      );
+                      console.log('clientsWithThisTag', clientsWithThisTag);
+
+                      console.log('tags', tags);
+                      let newTags = tags;
+                      newTags = newTags.filter((item) => item.id !== tag.id);
+                      setTags(newTags);
+                      reloadPage();
+                    }}
+                    aria-label='delete'
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              </Card>
+            </>
+          ))}
+      </Box>
       {/* <Button
         variant='outlined'
         component='label'
