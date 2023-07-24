@@ -82,6 +82,9 @@ export default function Views(props) {
   const [open2, setOpen2] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
 
+  const [searchValue, setSearchValue] = useState('');
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+
   let popUp = false;
 
   const getCampaign = (payload) => {
@@ -174,6 +177,22 @@ export default function Views(props) {
     Router.push('/sample/crm/create');
   };
 
+  // Paso 2: Función para filtrar las campañas por el nombre de la campaña
+  const filterCampaigns = (searchText) => {
+    if (!searchText) {
+      setFilteredCampaigns(listCampaigns); // Si el valor del TextField está vacío, mostrar todas las campañas.
+    } else {
+      const filtered = listCampaigns.filter((campaign) =>
+        campaign.campaignName.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      setFilteredCampaigns(filtered);
+    }
+  };
+
+  useEffect(() => {
+    filterCampaigns(searchValue);
+  }, [searchValue, listCampaigns]);
+
   return (
     <Card sx={{p: 4}}>
       <Stack
@@ -187,7 +206,8 @@ export default function Views(props) {
           variant='outlined'
           name='nameToSearch'
           size='small'
-          onChange={''}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
@@ -222,7 +242,7 @@ export default function Views(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listCampaigns?.map((row, index) => (
+            {filteredCampaigns?.map((row, index) => (
               <TableRow
                 key={index}
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -231,13 +251,20 @@ export default function Views(props) {
                 <TableCell component='th' scope='row'>
                   {row.campaignName}
                 </TableCell>
-                <TableCell>{row.messages[0].text}</TableCell>
+                <TableCell>
+                  {row.messages.map((text) => text.text).join(' | ')}
+                </TableCell>
                 <TableCell>{convertToDate(row.scheduledAt)}</TableCell>
                 <TableCell>
                   {row.messages[0].img_url ? (
-                    <img src={row.messages[0].img_url} alt='Imagen' width='100' onError={(e) => {
-                      e.target.style.display = 'none'; // Ocultar la etiqueta img en caso de error
-                    }}/>
+                    <img
+                      src={row.messages[0].img_url}
+                      alt='Imagen'
+                      width='100'
+                      onError={(e) => {
+                        e.target.style.display = 'none'; // Ocultar la etiqueta img en caso de error
+                      }}
+                    />
                   ) : null}
                 </TableCell>
                 <TableCell>{row.receivers.length}</TableCell>

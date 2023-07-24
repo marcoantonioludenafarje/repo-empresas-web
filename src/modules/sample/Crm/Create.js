@@ -46,7 +46,11 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {newCampaign} from '../../../redux/actions/Campaign';
-import {createPresigned, createClientsPresigned, createImagePresigned} from '../../../redux/actions/General';
+import {
+  createPresigned,
+  createClientsPresigned,
+  createImagePresigned,
+} from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -129,7 +133,7 @@ const Create = (props) => {
   };
 
   const handleContentChange = (id, content) => {
-    console.log("content Mensaje", content)
+    console.log('content Mensaje', content);
     const updatedContents = campaignContents.map((contentData) =>
       contentData.id === id ? {...contentData, content} : contentData,
     );
@@ -161,7 +165,9 @@ const Create = (props) => {
     ({clients}) => clients,
   );
 
-  const {clientsPresigned, imagePresigned} = useSelector(({general}) => general);
+  const {clientsPresigned, imagePresigned} = useSelector(
+    ({general}) => general,
+  );
   const createCampaign = (payload) => {
     dispatch(newCampaign(payload));
   };
@@ -225,7 +231,7 @@ const Create = (props) => {
   const handleData = (data, {setSubmitting}) => {
     console.log('Data crear', data);
     let nameSimplified = data.campaignName;
-    nameSimplified = nameSimplified.replace(/ /g, "");
+    nameSimplified = nameSimplified.replace(/ /g, '');
     nameSimplified = nameSimplified.toLowerCase();
 
     setSubmitting(true);
@@ -273,24 +279,22 @@ const Create = (props) => {
     }
     console.log('RECEIVERS', receivers);
     const clientsData = {
-      receivers: receivers
-    }
+      receivers: receivers,
+    };
     // Convierte el objeto JSON a una cadena JSON
     const jsonString = JSON.stringify(clientsData, null, 2); // null, 2 para una representación más legible
 
     // Crea un Blob con la cadena JSON
-    const clientsBlob = new Blob([jsonString], { type: 'application/json' });
-    if(actualImage){
+    const clientsBlob = new Blob([jsonString], {type: 'application/json'});
+    if (actualImage) {
       let imagePayload = {
         request: {
           payload: {
-            key: actualImage.name.split('.')
-            .slice(0, -1)
-            .join('.'),
+            key: actualImage.name.split('.').slice(0, -1).join('.'),
             action: 'putObject',
             contentType: actualImage.type,
             merchantId: userDataRes.merchantSelected.merchantId,
-            path: "campaign/" + nameSimplified,
+            path: 'campaign/' + nameSimplified,
           },
         },
       };
@@ -305,7 +309,7 @@ const Create = (props) => {
           key: 'clientsJson',
           action: 'putObject',
           contentType: 'application/json',
-          name: 'clientsJson'
+          name: 'clientsJson',
         },
       },
     };
@@ -318,6 +322,8 @@ const Create = (props) => {
       'image/jpg': 'jpg',
       'image/png': 'png',
     };
+
+    console.log('Contenidodecamapañas', campaignContents);
     const payload = {
       request: {
         payload: {
@@ -326,7 +332,7 @@ const Create = (props) => {
               campaignName: data.campaignName,
               scheduledAt: data.date,
               receivers: {
-                urlClients: ''
+                urlClients: '',
               },
               messages: [
                 {
@@ -338,9 +344,17 @@ const Create = (props) => {
                   //       nameFile: selectedJsonImages[0]?.nameFile || '',
                   //     }
                   //   : null,
-                  img_url: actualImage ? "https://d2moc5ro519bc0.cloudfront.net/merchant/"  + userDataRes.merchantSelected.merchantId + "/" + "campaign/" + nameSimplified + "/" + actualImage.name.split('.')
-                  .slice(0, -1)
-                  .join('.') + "." + extensions[actualImage.type]: "", 
+                  img_url: actualImage
+                    ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
+                      userDataRes.merchantSelected.merchantId +
+                      '/' +
+                      'campaign/' +
+                      nameSimplified +
+                      '/' +
+                      actualImage.name.split('.').slice(0, -1).join('.') +
+                      '.' +
+                      extensions[actualImage.type]
+                    : '',
                   text: campaignContents[0].content,
                 },
               ],
@@ -350,22 +364,33 @@ const Create = (props) => {
         },
       },
     };
-    setPayloadToCreateCampaign(payload)
 
+    if (campaignContents.length > 1) {
+      campaignContents.slice(1).forEach((content, index) => {
+        payload.request.payload.campaign[0].messages.push({
+          order: index + 2,
+          type: 'text',
+          text: content.content,
+        });
+      });
+    }
+
+    console.log('Payload create', payload);
+    setPayloadToCreateCampaign(payload);
   };
   useEffect(() => {
     if (clientsPresigned) {
-      
       const payload = payloadToCreateCampaign;
-      payload.request.payload.campaign[0].receivers.urlClients =  clientsPresigned.keymaster
+      payload.request.payload.campaign[0].receivers.urlClients =
+        clientsPresigned.keymaster;
       setTimeout(() => {
         // Show success message
         dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
         console.log('newCampaignPayload', payload);
         createCampaign(payload);
-  
+
         setOpenStatus(true);
-  
+
         // Reset form
         toSubmitting(false);
         dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
@@ -506,30 +531,37 @@ const Create = (props) => {
     {field: 'clientId', headerName: 'ID', width: 150},
     {field: 'denominationClient', headerName: 'Cliente', width: 200},
     {field: 'numberContact', headerName: 'Contacto', width: 150},
+    {field: 'tags', headerName: 'Tags', width: 100},
   ];
+
+  console.log('LISTA DE CLIENTES,', listClients);
 
   const rows = listClients.map((client) => ({
     id: client.clientId,
     clientId: client.clientId,
     denominationClient: client.denominationClient,
     numberContact: client.numberContact,
+    tags: verTags(client, businessParameter),
   }));
 
   const handleClientSelectionChange = (event) => {
     const {name, checked} = event.target;
 
+    console.log('Name', name);
+    console.log('Check', checked);
     if (name === 'Todos' && checked) {
       setClientSelection('Todos');
       setSelectedClientCount(listClients.length);
-      setSelectedClientIds([]); // <-- Añade esta línea
+      setSelectedClientIds(listClients.map((client) => client.clientId));
     } else if (name === 'Algunos' && checked) {
       setClientSelection('Algunos');
       setSelectedClientCount(0);
-      setSelectedClientIds([]); // <-- Añade esta línea
+      setSelectedClientIds([]);
     } else {
-      setSelectedClientCount(listClients.length);
+      // If none is selected, set the default values (selecting all clients)
       setClientSelection('Todos');
-      setSelectedClientIds(listClients.map((client) => client.clientId)); // <-- Añade esta línea
+      setSelectedClientCount(listClients.length);
+      setSelectedClientIds(listClients.map((client) => client.clientId));
     }
   };
 
@@ -591,7 +623,6 @@ const Create = (props) => {
                       onChange={(e) => {
                         console.log('tipo', e);
                         setPublishDate(e);
-
                       }}
                       label='Fecha *'
                       name='date'
@@ -797,6 +828,11 @@ const Create = (props) => {
                       sx={{width: '100%', my: 2}}
                     />
                   </Grid> */}
+                  <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                      Total de clientes: {selectedClientCount}
+                    </Typography>
+                  </Box>
                   {campaignContents.map((contentData) => (
                     <Grid item xs={12} md={12} key={contentData.id}>
                       <Accordion
@@ -973,7 +1009,7 @@ const Create = (props) => {
       >
         <DialogTitle id='alert-dialog-title'>Seleccionar Clientes</DialogTitle>
         <DialogContent dividers>
-          <div style={{height: 400, width: '560px'}}>
+          <div style={{height: 400, width: '700px'}}>
             <DataGrid
               rows={rows}
               columns={columns}
