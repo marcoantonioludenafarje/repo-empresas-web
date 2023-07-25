@@ -90,7 +90,7 @@ const Create = (props) => {
   const router = useRouter();
 
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
-  const [selectedClients, setSelectedClients] = useState('Todos');
+  const [selectedClients, setSelectedClients] = useState([]);
   const [selectedClientCount, setSelectedClientCount] = useState(0);
   const [payloadToCreateCampaign, setPayloadToCreateCampaign] = useState('');
 
@@ -238,26 +238,27 @@ const Create = (props) => {
     let receivers = [];
 
     if (clientSelection === 'Todos') {
-      // receivers = listClients.map((client, index) => ({
-      //   type: 'client',
-      //   id: index,
-      //   clientId: client.clientId,
-      //   nameContact: client.nameContact || "",
-      //   emailContact: client.emailContact || "",
-      //   numberCountryCode: client.numberCountryCode || "51",
-      //   addressClient: client.addressClient || "",
-      //   givenName: client.givenName || "",
-      //   lastName: client.lastName || "",
-      //   secondLastName: client.secondLastName || "",
-      //   extraInformationClient: client.extraInformationClient || "",
-      //   numberContact: client.numberContact || "",
-      //   birthDay: client.birthDay || "",
-      // }));
+      receivers = listClients.map((client, index) => ({
+        type: 'client',
+        id: index,
+        clientId: client.clientId,
+        nameContact: client.nameContact || '',
+        emailContact: client.emailContact || '',
+        numberCountryCode: client.numberCountryCode || '51',
+        addressClient: client.addressClient || '',
+        givenName: client.givenName || '',
+        lastName: client.lastName || '',
+        secondLastName: client.secondLastName || '',
+        extraInformationClient: client.extraInformationClient || '',
+        numberContact: client.numberContact || '',
+        birthDay: client.birthDay || '',
+      }));
       receivers.push({
         type: 'tag',
         tagId: 'ALL',
       });
     } else if (clientSelection === 'Algunos') {
+      console.log('CLIENTES SELECCIONADOS:', selectedClients);
       receivers = selectedClients.map((clientId, index) => {
         const client = listClients.find((c) => c.clientId === clientId);
         return {
@@ -482,43 +483,6 @@ const Create = (props) => {
       .then((blob) => new File([blob], 'image.jpg', {type: 'image/jpeg'}));
   };
 
-  const handleClientSelect = (selectedClientIds) => {
-    setSelectedClients(selectedClientIds);
-
-    if (selectedClientIds.length === listClients.length) {
-      setSelectedClientCount(listClients.length);
-      setClientSelection('Todos');
-      setSelectedTags(['ALL']); // Deshabilitamos la selección de tags
-    } else {
-      setSelectedClientCount(selectedClientIds.length);
-      setClientSelection('Algunos');
-    }
-  };
-
-  const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
-
-  const handleTagSelect = (selectedTags) => {
-    setSelectedTags(selectedTags);
-
-    if (selectedTags.includes('ALL')) {
-      setSelectedTagsCount(namesTags.length);
-      setSelectedClientsByTag([]);
-      setSelectedClientCount(listClients.length);
-      setClientSelection('Todos');
-    } else {
-      setSelectedTagsCount(selectedTags.length);
-
-      // Filtrar clientes basados en los tags seleccionados
-      const filteredClients = listClients.filter((client) =>
-        client.tags?.some((tagId) => selectedTags.includes(tagId)),
-      );
-
-      setSelectedClientsByTag(filteredClients.map((client) => client.clientId));
-      setSelectedClientCount(filteredClients.length);
-      setClientSelection('Algunos');
-    }
-  };
-
   const handleOpenClientsDialog = () => {
     setOpenClientsDialog(true);
   };
@@ -544,24 +508,62 @@ const Create = (props) => {
     tags: verTags(client, businessParameter),
   }));
 
+  const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
+  console.log('seleccion,', selectedClientsByTag);
+
+  const handleTagSelect = (selectedTags) => {
+    setSelectedTags(selectedTags);
+
+    if (selectedTags.includes('ALL')) {
+      console.log('CUANDO SE MARCA EL TAG ALL');
+      setSelectedTagsCount(namesTags.length);
+      setSelectedClientCount(listClients.length);
+      setClientSelection('Todos');
+      setSelectedClientsByTag(listClients.map((client) => client.clientId));
+    } else {
+      console.log('CUANDO SE MARCAN TAGS');
+      setSelectedTagsCount(selectedTags.length);
+      console.log('Conteo', selectedTags.length);
+      // Filtrar clientes basados en los tags seleccionados
+      const filteredClients = listClients.filter((client) =>
+        client.tags?.some((tagId) => selectedTags.includes(tagId)),
+      );
+
+      console.log('Clientes filtrados', filteredClients);
+      setSelectedClientsByTag(filteredClients.map((client) => client.clientId));
+      setSelectedClientCount(filteredClients.length);
+      setClientSelection('Algunos');
+    }
+  };
+
   const handleClientSelectionChange = (event) => {
     const {name, checked} = event.target;
 
     console.log('Name', name);
     console.log('Check', checked);
     if (name === 'Todos' && checked) {
+      console.log('ENTRA EN TODOS Y CHECK');
       setClientSelection('Todos');
       setSelectedClientCount(listClients.length);
       setSelectedClientIds(listClients.map((client) => client.clientId));
+      setSelectedClientsByTag(listClients.map((client) => client.clientId));
     } else if (name === 'Algunos' && checked) {
-      setClientSelection('Algunos');
+      console.log('ENTRA EN ALGUNOS Y CHECK');
+      setSelectedClientsByTag([]);
       setSelectedClientCount(0);
+      setClientSelection('Algunos');
       setSelectedClientIds([]);
-    } else {
-      // If none is selected, set the default values (selecting all clients)
-      setClientSelection('Todos');
-      setSelectedClientCount(listClients.length);
-      setSelectedClientIds(listClients.map((client) => client.clientId));
+      setSelectedTags([]);
+    }
+  };
+
+  const totaldeClientes = () => {
+    console.log('VALOR DE TOTAL DE CLIENTES SELECT', clientSelection);
+    if (clientSelection === 'Todos') {
+      return listClients.length;
+    }
+    if (clientSelection === 'Algunos') {
+      return selectedClients.length;
     }
   };
 
@@ -673,7 +675,7 @@ const Create = (props) => {
                                 name='Algunos'
                               />
                             }
-                            label={`Algunos (${selectedClientCount})`}
+                            label={`Algunos (${totaldeClientes()})`}
                           />
                           {clientSelection === 'Algunos' && (
                             <Button
@@ -700,9 +702,10 @@ const Create = (props) => {
                       >
                         <Autocomplete
                           value={selectedTags}
-                          onChange={(event, newValue) =>
-                            handleTagSelect(newValue)
-                          }
+                          onChange={(event, newValue) => {
+                            console.log('Nuevo Tag seleccionado:', newValue);
+                            handleTagSelect(newValue);
+                          }}
                           disabled={selectedClientCount === listClients.length}
                           sx={{
                             m: 1,
@@ -722,8 +725,8 @@ const Create = (props) => {
                             <TextField
                               {...params}
                               variant='outlined'
-                              label='Selecciona los tags'
-                              placeholder='tags...'
+                              label='Selecciona Etiquetas'
+                              placeholder='etiquetas...'
                             />
                           )}
                           renderOption={(props, option, {selected}) => (
@@ -830,7 +833,7 @@ const Create = (props) => {
                   </Grid> */}
                   <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
                     <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                      Total de clientes: {selectedClientCount}
+                      Total de clientes: {totaldeClientes()}
                     </Typography>
                   </Box>
                   {campaignContents.map((contentData) => (
@@ -881,7 +884,6 @@ const Create = (props) => {
                   <Button
                     variant='outlined'
                     color='primary'
-                    onClick={''}
                     startIcon={<AddCircleOutlineOutlinedIcon />}
                   >
                     Generar Variación
@@ -1016,9 +1018,16 @@ const Create = (props) => {
               checkboxSelection
               pageSize={5}
               rowsPerPageOptions={[5, 10, 20]}
-              onSelectionModelChange={(newSelection) =>
-                setSelectedClientsByTag(newSelection)
-              }
+              onSelectionModelChange={(newSelection) => {
+                console.log('Nueva selecc client', newSelection);
+                setSelectedClientsByTag(newSelection);
+                console.log(
+                  'tamaño selecc client',
+                  selectedClientsByTag.length,
+                );
+                setSelectedClientCount(selectedClientsByTag.length);
+                setSelectedClients(newSelection);
+              }}
               selectionModel={selectedClientsByTag}
             />
           </div>
