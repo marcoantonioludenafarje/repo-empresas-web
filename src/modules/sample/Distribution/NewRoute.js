@@ -121,7 +121,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
+function completarCeros(texto) {
+  let cadena = String(texto);
+  while (cadena.length < 7) {
+    cadena = '0' + cadena;
+  }
+  return cadena;
+}
 let selectedDelivery = {};
 let selectedSummaryRow = {};
 let selectedDistribution = '';
@@ -463,7 +469,7 @@ const Distribution = (props) => {
       const {'ORDEN ENTREGA': fila} = item;
 
       const matchOriginal = originalPoints.find(
-        (d) => d.COD_INTERNO == originalPoint,
+        (d) => completarCeros(d.COD_INTERNO) == completarCeros(originalPoint),
       );
       if (!matchOriginal) {
         msjError =
@@ -476,7 +482,7 @@ const Distribution = (props) => {
       }
 
       const matchArrival = arrivalPoints.find(
-        (d) => d.COD_INTERNO == arrivalPoint,
+        (d) => completarCeros(d.COD_INTERNO) == completarCeros(arrivalPoint),
       );
       if (!matchArrival) {
         msjError =
