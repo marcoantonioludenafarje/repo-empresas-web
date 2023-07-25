@@ -29,6 +29,7 @@ import {
   Switch,
 } from '@mui/material';
 
+import axios from 'axios';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
@@ -45,7 +46,11 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {newCampaign} from '../../../redux/actions/Campaign';
-import {createPresigned, createClientsPresigned, createImagePresigned} from '../../../redux/actions/General';
+import {
+  createPresigned,
+  createClientsPresigned,
+  createImagePresigned,
+} from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -53,6 +58,7 @@ import {
   GET_CLIENTS_PRESIGNED,
 } from '../../../shared/constants/ActionTypes';
 import {DataGrid} from '@mui/x-data-grid';
+import {verTags} from '../../../Utils/utils';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -84,9 +90,13 @@ const Create = (props) => {
   const router = useRouter();
 
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
-  const [selectedClients, setSelectedClients] = useState('Todos');
+  const [selectedClients, setSelectedClients] = useState([]);
   const [selectedClientCount, setSelectedClientCount] = useState(0);
   const [payloadToCreateCampaign, setPayloadToCreateCampaign] = useState('');
+
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedClientIds, setSelectedClientIds] = useState([]);
+  const [selectedTagsCount, setSelectedTagsCount] = useState(0);
 
   const [previewImages, setPreviewImages] = useState([]);
   const [publishDate, setPublishDate] = React.useState(
@@ -123,7 +133,7 @@ const Create = (props) => {
   };
 
   const handleContentChange = (id, content) => {
-    console.log("content Mensaje", content)
+    console.log('content Mensaje', content);
     const updatedContents = campaignContents.map((contentData) =>
       contentData.id === id ? {...contentData, content} : contentData,
     );
@@ -139,11 +149,25 @@ const Create = (props) => {
   };
   const {userDataRes} = useSelector(({user}) => user);
 
+  const {businessParameter} = useSelector(({general}) => general);
+
+  console.log('Businees: ', businessParameter);
+  console.log(
+    'bisnees people',
+    businessParameter?.find((obj) => obj.abreParametro == 'CLIENT_TAGS').value,
+  );
+
+  const listadeTags = businessParameter?.find(
+    (obj) => obj.abreParametro == 'CLIENT_TAGS',
+  ).value;
+
   const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
     ({clients}) => clients,
   );
 
-  const {clientsPresigned, imagePresigned} = useSelector(({general}) => general);
+  const {clientsPresigned, imagePresigned} = useSelector(
+    ({general}) => general,
+  );
   const createCampaign = (payload) => {
     dispatch(newCampaign(payload));
   };
@@ -202,38 +226,39 @@ const Create = (props) => {
     }
   }, [loading]);
 
-  const namesTags = ['Navidad', 'Infantil', 'Juvenil', 'Adultez', 'Verano'];
+  const namesTags = listadeTags?.map((tag) => tag.tagName);
 
   const handleData = (data, {setSubmitting}) => {
     console.log('Data crear', data);
     let nameSimplified = data.campaignName;
-    nameSimplified = nameSimplified.replace(/ /g, "");
+    nameSimplified = nameSimplified.replace(/ /g, '');
     nameSimplified = nameSimplified.toLowerCase();
 
     setSubmitting(true);
     let receivers = [];
 
     if (clientSelection === 'Todos') {
-      // receivers = listClients.map((client, index) => ({
-      //   type: 'client',
-      //   id: index,
-      //   clientId: client.clientId,
-      //   nameContact: client.nameContact || "",
-      //   emailContact: client.emailContact || "",
-      //   numberCountryCode: client.numberCountryCode || "51",
-      //   addressClient: client.addressClient || "",
-      //   givenName: client.givenName || "",
-      //   lastName: client.lastName || "",
-      //   secondLastName: client.secondLastName || "",
-      //   extraInformationClient: client.extraInformationClient || "",
-      //   numberContact: client.numberContact || "",
-      //   birthDay: client.birthDay || "",
-      // }));
+      receivers = listClients.map((client, index) => ({
+        type: 'client',
+        id: index,
+        clientId: client.clientId,
+        nameContact: client.nameContact || '',
+        emailContact: client.emailContact || '',
+        numberCountryCode: client.numberCountryCode || '51',
+        addressClient: client.addressClient || '',
+        givenName: client.givenName || '',
+        lastName: client.lastName || '',
+        secondLastName: client.secondLastName || '',
+        extraInformationClient: client.extraInformationClient || '',
+        numberContact: client.numberContact || '',
+        birthDay: client.birthDay || '',
+      }));
       receivers.push({
         type: 'tag',
         tagId: 'ALL',
       });
     } else if (clientSelection === 'Algunos') {
+      console.log('CLIENTES SELECCIONADOS:', selectedClients);
       receivers = selectedClients.map((clientId, index) => {
         const client = listClients.find((c) => c.clientId === clientId);
         return {
@@ -255,24 +280,22 @@ const Create = (props) => {
     }
     console.log('RECEIVERS', receivers);
     const clientsData = {
-      receivers: receivers
-    }
+      receivers: receivers,
+    };
     // Convierte el objeto JSON a una cadena JSON
     const jsonString = JSON.stringify(clientsData, null, 2); // null, 2 para una representación más legible
 
     // Crea un Blob con la cadena JSON
-    const clientsBlob = new Blob([jsonString], { type: 'application/json' });
-    if(actualImage){
+    const clientsBlob = new Blob([jsonString], {type: 'application/json'});
+    if (actualImage) {
       let imagePayload = {
         request: {
           payload: {
-            key: actualImage.name.split('.')
-            .slice(0, -1)
-            .join('.'),
+            key: actualImage.name.split('.').slice(0, -1).join('.'),
             action: 'putObject',
             contentType: actualImage.type,
             merchantId: userDataRes.merchantSelected.merchantId,
-            path: "campaign/" + nameSimplified,
+            path: 'campaign/' + nameSimplified,
           },
         },
       };
@@ -287,7 +310,7 @@ const Create = (props) => {
           key: 'clientsJson',
           action: 'putObject',
           contentType: 'application/json',
-          name: 'clientsJson'
+          name: 'clientsJson',
         },
       },
     };
@@ -300,6 +323,8 @@ const Create = (props) => {
       'image/jpg': 'jpg',
       'image/png': 'png',
     };
+
+    console.log('Contenidodecamapañas', campaignContents);
     const payload = {
       request: {
         payload: {
@@ -308,7 +333,7 @@ const Create = (props) => {
               campaignName: data.campaignName,
               scheduledAt: data.date,
               receivers: {
-                urlClients: ''
+                urlClients: '',
               },
               messages: [
                 {
@@ -320,9 +345,17 @@ const Create = (props) => {
                   //       nameFile: selectedJsonImages[0]?.nameFile || '',
                   //     }
                   //   : null,
-                  img_url: actualImage ? "https://d2moc5ro519bc0.cloudfront.net/merchant/"  + userDataRes.merchantSelected.merchantId + "/" + "campaign/" + nameSimplified + "/" + actualImage.name.split('.')
-                  .slice(0, -1)
-                  .join('.') + "." + extensions[actualImage.type]: "", 
+                  img_url: actualImage
+                    ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
+                      userDataRes.merchantSelected.merchantId +
+                      '/' +
+                      'campaign/' +
+                      nameSimplified +
+                      '/' +
+                      actualImage.name.split('.').slice(0, -1).join('.') +
+                      '.' +
+                      extensions[actualImage.type]
+                    : '',
                   text: campaignContents[0].content,
                 },
               ],
@@ -332,22 +365,33 @@ const Create = (props) => {
         },
       },
     };
-    setPayloadToCreateCampaign(payload)
 
+    if (campaignContents.length > 1) {
+      campaignContents.slice(1).forEach((content, index) => {
+        payload.request.payload.campaign[0].messages.push({
+          order: index + 2,
+          type: 'text',
+          text: content.content,
+        });
+      });
+    }
+
+    console.log('Payload create', payload);
+    setPayloadToCreateCampaign(payload);
   };
   useEffect(() => {
     if (clientsPresigned) {
-      
       const payload = payloadToCreateCampaign;
-      payload.request.payload.campaign[0].receivers.urlClients =  clientsPresigned.keymaster
+      payload.request.payload.campaign[0].receivers.urlClients =
+        clientsPresigned.keymaster;
       setTimeout(() => {
         // Show success message
         dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
         console.log('newCampaignPayload', payload);
         createCampaign(payload);
-  
+
         setOpenStatus(true);
-  
+
         // Reset form
         toSubmitting(false);
         dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
@@ -439,18 +483,6 @@ const Create = (props) => {
       .then((blob) => new File([blob], 'image.jpg', {type: 'image/jpeg'}));
   };
 
-  const handleClientSelect = (selectedClientIds) => {
-    setSelectedClients(selectedClientIds);
-
-    if (selectedClientIds.length === listClients.length) {
-      setSelectedClientCount(listClients.length);
-      setClientSelection('Todos');
-    } else {
-      setSelectedClientCount(selectedClientIds.length);
-      setClientSelection('Algunos');
-    }
-  };
-
   const handleOpenClientsDialog = () => {
     setOpenClientsDialog(true);
   };
@@ -463,27 +495,75 @@ const Create = (props) => {
     {field: 'clientId', headerName: 'ID', width: 150},
     {field: 'denominationClient', headerName: 'Cliente', width: 200},
     {field: 'numberContact', headerName: 'Contacto', width: 150},
+    {field: 'tags', headerName: 'Tags', width: 100},
   ];
+
+  console.log('LISTA DE CLIENTES,', listClients);
 
   const rows = listClients.map((client) => ({
     id: client.clientId,
     clientId: client.clientId,
     denominationClient: client.denominationClient,
     numberContact: client.numberContact,
+    tags: verTags(client, businessParameter),
   }));
+
+  const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
+  console.log('seleccion,', selectedClientsByTag);
+
+  const handleTagSelect = (selectedTags) => {
+    setSelectedTags(selectedTags);
+
+    if (selectedTags.includes('ALL')) {
+      console.log('CUANDO SE MARCA EL TAG ALL');
+      setSelectedTagsCount(namesTags.length);
+      setSelectedClientCount(listClients.length);
+      setClientSelection('Todos');
+      setSelectedClientsByTag(listClients.map((client) => client.clientId));
+    } else {
+      console.log('CUANDO SE MARCAN TAGS');
+      setSelectedTagsCount(selectedTags.length);
+      console.log('Conteo', selectedTags.length);
+      // Filtrar clientes basados en los tags seleccionados
+      const filteredClients = listClients.filter((client) =>
+        client.tags?.some((tagId) => selectedTags.includes(tagId)),
+      );
+
+      console.log('Clientes filtrados', filteredClients);
+      setSelectedClientsByTag(filteredClients.map((client) => client.clientId));
+      setSelectedClientCount(filteredClients.length);
+      setClientSelection('Algunos');
+    }
+  };
 
   const handleClientSelectionChange = (event) => {
     const {name, checked} = event.target;
 
+    console.log('Name', name);
+    console.log('Check', checked);
     if (name === 'Todos' && checked) {
+      console.log('ENTRA EN TODOS Y CHECK');
       setClientSelection('Todos');
       setSelectedClientCount(listClients.length);
+      setSelectedClientIds(listClients.map((client) => client.clientId));
+      setSelectedClientsByTag(listClients.map((client) => client.clientId));
     } else if (name === 'Algunos' && checked) {
-      setClientSelection('Algunos');
+      console.log('ENTRA EN ALGUNOS Y CHECK');
+      setSelectedClientsByTag([]);
       setSelectedClientCount(0);
-    } else {
-      setSelectedClientCount(listClients.length);
-      setClientSelection('Todos');
+      setClientSelection('Algunos');
+      setSelectedClientIds([]);
+      setSelectedTags([]);
+    }
+  };
+
+  const totaldeClientes = () => {
+    console.log('VALOR DE TOTAL DE CLIENTES SELECT', clientSelection);
+    if (clientSelection === 'Todos') {
+      return listClients.length;
+    }
+    if (clientSelection === 'Algunos') {
+      return selectedClients.length;
     }
   };
 
@@ -545,7 +625,6 @@ const Create = (props) => {
                       onChange={(e) => {
                         console.log('tipo', e);
                         setPublishDate(e);
-
                       }}
                       label='Fecha *'
                       name='date'
@@ -596,7 +675,7 @@ const Create = (props) => {
                                 name='Algunos'
                               />
                             }
-                            label={`Algunos (${selectedClientCount})`}
+                            label={`Algunos (${totaldeClientes()})`}
                           />
                           {clientSelection === 'Algunos' && (
                             <Button
@@ -622,6 +701,12 @@ const Create = (props) => {
                         }}
                       >
                         <Autocomplete
+                          value={selectedTags}
+                          onChange={(event, newValue) => {
+                            console.log('Nuevo Tag seleccionado:', newValue);
+                            handleTagSelect(newValue);
+                          }}
+                          disabled={selectedClientCount === listClients.length}
                           sx={{
                             m: 1,
                             width: '100%', // Establece el ancho al 100% por defecto
@@ -633,15 +718,15 @@ const Create = (props) => {
                             },
                           }}
                           multiple
-                          options={namesTags}
+                          options={['ALL', ...namesTags]}
                           getOptionLabel={(option) => option}
                           disableCloseOnSelect
                           renderInput={(params) => (
                             <TextField
                               {...params}
                               variant='outlined'
-                              label='Selecciona los tags'
-                              placeholder='tags...'
+                              label='Selecciona Etiquetas'
+                              placeholder='etiquetas...'
                             />
                           )}
                           renderOption={(props, option, {selected}) => (
@@ -746,6 +831,11 @@ const Create = (props) => {
                       sx={{width: '100%', my: 2}}
                     />
                   </Grid> */}
+                  <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                      Total de clientes: {totaldeClientes()}
+                    </Typography>
+                  </Box>
                   {campaignContents.map((contentData) => (
                     <Grid item xs={12} md={12} key={contentData.id}>
                       <Accordion
@@ -790,6 +880,41 @@ const Create = (props) => {
                     </Button>
                   </Grid>
                 </Grid>
+                <Grid container item xs={12} justifyContent='center'>
+                  <Button
+                    variant='outlined'
+                    color='primary'
+                    startIcon={<AddCircleOutlineOutlinedIcon />}
+                  >
+                    Generar Variación
+                  </Button>
+                </Grid>
+                ;
+                {'showSecondAccordion' && (
+                  <Grid item xs={12} md={12}>
+                    <Accordion>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        Mensaje N. 2 (Variación)
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Grid item xs={12} md={12}>
+                          <AppTextField
+                            label='Contenido de la Campaña *'
+                            name='campaignContent2'
+                            variant='outlined'
+                            multiline
+                            rows={4}
+                            value={'generatedVariation'}
+                            onChange={
+                              '(event) => setGeneratedVariation(event.target.value)'
+                            }
+                            sx={{width: '100%', my: 2}}
+                          />
+                        </Grid>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Grid>
+                )}
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -886,15 +1011,24 @@ const Create = (props) => {
       >
         <DialogTitle id='alert-dialog-title'>Seleccionar Clientes</DialogTitle>
         <DialogContent dividers>
-          <div style={{height: 400, width: '560px'}}>
+          <div style={{height: 400, width: '700px'}}>
             <DataGrid
               rows={rows}
               columns={columns}
               checkboxSelection
               pageSize={5}
               rowsPerPageOptions={[5, 10, 20]}
-              onSelectionModelChange={handleClientSelect}
-              selectionModel={selectedClients}
+              onSelectionModelChange={(newSelection) => {
+                console.log('Nueva selecc client', newSelection);
+                setSelectedClientsByTag(newSelection);
+                console.log(
+                  'tamaño selecc client',
+                  selectedClientsByTag.length,
+                );
+                setSelectedClientCount(selectedClientsByTag.length);
+                setSelectedClients(newSelection);
+              }}
+              selectionModel={selectedClientsByTag}
             />
           </div>
         </DialogContent>
