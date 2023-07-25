@@ -22,6 +22,11 @@ import ForkRightIcon from '@mui/icons-material/ForkRight';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import UnfoldLessIcon from '@mui/icons-material/UnfoldLess';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
+import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import SettingsIcon from '@mui/icons-material/Settings';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import LocalAtmOutlinedIcon from '@mui/icons-material/LocalAtmOutlined';
+import InventoryOutlinedIcon from '@mui/icons-material/InventoryOutlined';
 const rolesRoutesConfig = {
   APP_CLIENT: [
     /* {
@@ -68,7 +73,7 @@ const rolesRoutesConfig = {
       title: 'CRM',
       messageId: 'sidebar.sample.crm',
       type: 'collapse',
-      icon: <Inventory2OutlinedIcon fontSize='small' />,
+      icon: <CampaignIcon fontSize='small' />,
       children: [
         {
           id: 'campaignsTable',
@@ -81,11 +86,36 @@ const rolesRoutesConfig = {
       ],
     },
     {
+      id: 'crm',
+      title: 'SALES',
+      messageId: 'sidebar.sample.sales',
+      type: 'collapse',
+      icon: <PointOfSaleIcon fontSize='small' />,
+      children: [
+        {
+          id: 'campaignsTable',
+          title: 'Sales Table',
+          messageId: 'sidebar.sample.sales',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/sales/table',
+        },
+        {
+          id: 'campaignsTable',
+          title: 'Sales Table',
+          messageId: 'sidebar.sample.orders',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/orders/table',
+        },
+      ],
+    },
+    {
       id: 'finances',
       title: 'Finances',
       messageId: 'sidebar.sample.finances',
       type: 'collapse',
-      icon: <CompareArrowsIcon fontSize='small' />,
+      icon: <LocalAtmOutlinedIcon fontSize='small' />,
       children: [
         {
           id: 'movements0',
@@ -142,7 +172,7 @@ const rolesRoutesConfig = {
       title: 'Inventory',
       messageId: 'sidebar.sample.inventory',
       type: 'collapse',
-      icon: <PlaylistAddCheckIcon fontSize='small' />,
+      icon: <InventoryOutlinedIcon fontSize='small' />,
       children: [
         {
           id: 'inventoryTable',
@@ -216,7 +246,7 @@ const rolesRoutesConfig = {
       title: 'Configurations',
       messageId: 'sidebar.sample.configuration',
       type: 'collapse',
-      icon: <Inventory2OutlinedIcon fontSize='small' />,
+      icon: <SettingsIcon fontSize='small' />,
       children: [
         {
           id: 'productsTable',
@@ -387,7 +417,7 @@ const rolesRoutesConfig = {
       title: 'Inventory',
       messageId: 'sidebar.sample.inventory',
       type: 'collapse',
-      icon: <PlaylistAddCheckIcon fontSize='small' />,
+      icon: <InventoryOutlinedIcon fontSize='small' />,
       children: [
         {
           id: 'inventoryTable',
@@ -420,7 +450,7 @@ const rolesRoutesConfig = {
       title: 'Finances',
       messageId: 'sidebar.sample.finances',
       type: 'collapse',
-      icon: <CompareArrowsIcon fontSize='small' />,
+      icon: <LocalAtmOutlinedIcon fontSize='small' />,
       children: [
         {
           id: 'movements0',
@@ -668,7 +698,7 @@ const routesConfig = [
     title: 'Finances',
     messageId: 'sidebar.sample.finances',
     type: 'collapse',
-    icon: <CompareArrowsIcon fontSize='small' />,
+    icon: <LocalAtmOutlinedIcon fontSize='small' />,
     children: [
       {
         id: 'movements',
@@ -725,7 +755,7 @@ const routesConfig = [
     title: 'Inventory',
     messageId: 'sidebar.sample.inventory',
     type: 'collapse',
-    icon: <PlaylistAddCheckIcon fontSize='small' />,
+    icon: <InventoryOutlinedIcon fontSize='small' />,
     children: [
       {
         id: 'inventoryTable',

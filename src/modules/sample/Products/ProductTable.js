@@ -729,10 +729,10 @@ const ProductTable = (arrayObjs, props) => {
   };
 
   const compare = (a, b) => {
-    if (a.createdDate < b.createdDate) {
+    if (a.createdAt < b.createdAt) {
       return 1;
     }
-    if (a.createdDate > b.createdDate) {
+    if (a.createdAt > b.createdAt) {
       return -1;
     }
     return 0;
@@ -794,6 +794,15 @@ const ProductTable = (arrayObjs, props) => {
                   onClick={() => handleSort('businessProductCode')}
                 >
                   Código
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === 'unitMeasure'}
+                  direction={orderBy === 'unitMeasure' ? order : 'asc'}
+                  onClick={() => handleSort('unitMeasure')}
+                >
+                  Prod&Serv
                 </TableSortLabel>
               </TableCell>
               <TableCell>
@@ -861,9 +870,9 @@ const ProductTable = (arrayObjs, props) => {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={orderBy === 'createdDate'}
-                  direction={orderBy === 'createdDate' ? order : 'asc'}
-                  onClick={() => handleSort('createdDate', 'date')}
+                  active={orderBy === 'createdAt'}
+                  direction={orderBy === 'createdAt' ? order : 'asc'}
+                  onClick={() => handleSort('createdAt', 'date')}
                 >
                   Fecha registrada
                 </TableSortLabel>
@@ -891,6 +900,7 @@ const ProductTable = (arrayObjs, props) => {
                       key={index}
                     >
                       <TableCell>{obj.businessProductCode}</TableCell>
+                      <TableCell>{obj.unitMeasure == 'ZZ' ? 'SERVICIO' : 'PRODUCTO'}</TableCell>
                       <TableCell
                         hover
                         sx={{
@@ -929,7 +939,7 @@ const ProductTable = (arrayObjs, props) => {
                       )} ${money_unit}`}</TableCell>
                       <TableCell>{obj.initialStock}</TableCell>
                       <TableCell>
-                        {convertToDateWithoutTime(obj.createdDate)}
+                        {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       <TableCell>
                         {convertToDateWithoutTime(obj.updatedDate)}

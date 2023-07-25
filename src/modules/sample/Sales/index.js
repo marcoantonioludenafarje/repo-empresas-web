@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import Typography from '@mui/material/Typography';
 import * as yup from 'yup';
 import {useIntl} from 'react-intl';
@@ -134,21 +133,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
   },
 }));
-/* let listFinancesPayload = {
-  request: {
-    payload: {
-      initialTime: null,
-      finalTime: null,
-      movementType: 'INCOME',
-      merchantId: '',
-      createdAt: null,
-      monthMovement: null,
-      yearMovement: null,
-      searchByBill: '',
-      searchByContableMovement: null,
-    },
-  },
-}; */
 let deletePayload = {
   request: {
     payload: {
@@ -219,7 +203,7 @@ const useForceUpdate = () => {
   return () => setReload((value) => value + 1); // update the state to force render
 };
 
-const OutputsTable = (props) => {
+const SalesTable = (props) => {
   //Dependencias
   const classes = useStyles(props);
   const dispatch = useDispatch();
@@ -241,7 +225,7 @@ const OutputsTable = (props) => {
   //UseStates
   const [openStatus, setOpenStatus] = React.useState(false);
   const [ticketResponseDialog, setTicketResponseDialog] = React.useState(false);
-  const [eliminated, setEliminated] = React.useState(false);
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState("all");
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [open2valida, setOpen2valida] = React.useState(false);
@@ -263,8 +247,8 @@ const OutputsTable = (props) => {
   const [deliverySelected, setDeliverySelected] = React.useState(false);
   //FECHAS
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 2678400000);
-  const [value2, setValue2] = React.useState(Date.now());
+  const [initialTimeValue, setInitialTimeValue] = React.useState(Date.now() - 2678400000);
+  const [finalTimeValue, setFinalTimeValue] = React.useState(Date.now());
   const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isListLoading, setListIsLoading] = React.useState(false);
@@ -433,7 +417,7 @@ const OutputsTable = (props) => {
   }, [userDataRes, getRolUserRes, query]);
 
   useEffect(() => {
-    setValue2(Date.now());
+    setFinalTimeValue(Date.now());
 
     console.log('Se ejecuta esto?');
     if (userDataRes) {
@@ -499,10 +483,6 @@ const OutputsTable = (props) => {
         },
       };
       console.log('Se manda al ticket de venta', generateSellTicketRes);
-      // const link = document.createElement('a');
-      // link.href = generateSellTicketRes.enlace_del_pdf;
-      // link.target = `${generateSellTicketRes.enlace_del_pdf}`;
-      // link.click();
       setIsLoading(false);
       toGetMovements(listPayload);
       window.open(`${generateSellTicketRes.enlace_del_pdf}`);
@@ -586,7 +566,6 @@ const OutputsTable = (props) => {
       // Si se hace clic en un encabezado diferente, establecemos un nuevo campo de ordenación y la dirección ascendente
       setOrderBy(field);
       setOrder('asc');
-      // const newListProducts = listProducts.sort((a, b) => a[`${field}`] - b[`${field}`])
       if (field !== 'totalPriceWithIgv') {
         const sortedProducts = [...outputItems_pageListOutput].sort((a, b) => {
           const descriptionA = a[`${field}`] ?? '';
@@ -632,7 +611,7 @@ const OutputsTable = (props) => {
     toGetMovements(listPayload);
   };
   const newOutput = () => {
-    Router.push('/sample/outputs/new');
+    Router.push('/sample/sales/new');
   };
 
   //BUSQUEDA
@@ -1147,13 +1126,6 @@ const OutputsTable = (props) => {
   };
 
   const goToFile = () => {
-    // Router.push({
-    //   pathname: '/sample/explorer',
-    //   query: {
-    //     goDirectory: true,
-    //     path: selectedOutput.folderMovement,
-    //   },
-    // });
     const data = {
       goDirectory: true,
       path: selectedOutput.folderMovement,
@@ -1238,9 +1210,6 @@ const OutputsTable = (props) => {
       getFinancesRes.length &&
       redirect == true
     ) {
-      /* income = getFinancesRes.find(
-        (income) => income.financeId == selectedOutput.incomeId,
-      ); */
       income = getFinancesRes[0];
       Router.push({
         pathname: '/sample/finances/update-earning',
@@ -1250,11 +1219,6 @@ const OutputsTable = (props) => {
     }
   }, [getFinancesRes]);
 
-  // useEffect(() => {
-  //   setValue2(Date.now());
-  //   listPayload.request.payload.finalTime = toEpoch(newValue2);
-  //   setOpen3(false)
-  // }, [open3]);
   const showStatus = (status, text) => {
     if (!text) {
       switch (status) {
@@ -1335,7 +1299,6 @@ const OutputsTable = (props) => {
             <Button
               variant='secondary'
               sx={{fontSize: '1em'}}
-              /* disabled={type == 'referralGuide'} */
               onClick={() => showObject(obj.movementHeaderId, type)}
             >
               {`${mintype} - ${cod}`}
@@ -1371,7 +1334,6 @@ const OutputsTable = (props) => {
               <Button
                 variant='secondary'
                 sx={{fontSize: '1em'}}
-                /* disabled={type == 'referralGuide'} */
                 onClick={() => showObject(obj.movementHeaderId, type)}
               >
                 {serialDocument}
@@ -1382,7 +1344,6 @@ const OutputsTable = (props) => {
               <Button
                 variant='secondary'
                 sx={{fontSize: '1em'}}
-                /* disabled={type == 'referralGuide'} */
                 onClick={() => {
                   window.open(obj.existSellTicket);
                 }}
@@ -1395,7 +1356,6 @@ const OutputsTable = (props) => {
               <Button
                 variant='secondary'
                 sx={{fontSize: '1em'}}
-                /* disabled={type == 'referralGuide'} */
                 onClick={() => showObject(obj.movementHeaderId, type)}
               >
                 Generado
@@ -1490,10 +1450,6 @@ const OutputsTable = (props) => {
     }
   };
   const goToDistribution = (id) => {
-    // Router.push({
-    //   pathname: '/sample/distribution/distributions',
-    //   query: {id: id},
-    // });
     window.open(`/sample/distribution/distributions?id=${id}`, '_blank');
   };
 
@@ -1629,34 +1585,62 @@ const OutputsTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
+        <FormControl sx={{my: 0, width: 140}}>
+          <InputLabel id='proofOfPaymentType-label' style={{fontWeight: 200}}>
+            Tipo de Comprobante
+          </InputLabel>
+          <Select
+            size={isMobile ? 'small' : 'medium'}
+            defaultValue={proofOfPaymentType}
+            name='proofOfPaymentType'
+            labelId='proofOfPaymentType-label'
+            label='Tipo de Comprobante'
+            sx={{maxWidth: 140}}
+            onChange={(event) => {
+              setProofOfPaymentType(event.target.value);
+            }}
+          >
+            <MenuItem value='all' style={{fontWeight: 200}}>
+              Todos
+            </MenuItem>
+            <MenuItem value='receipt' style={{fontWeight: 200}}>
+              Boleta
+            </MenuItem>
+            <MenuItem value='bill' style={{fontWeight: 200}}>
+              Factura
+            </MenuItem>
+            <MenuItem value='ticket' style={{fontWeight: 200}}>
+              Ticket
+            </MenuItem>
+          </Select>
+        </FormControl>
         <DateTimePicker
-          renderInput={(params) => <TextField size='small' {...params} />}
-          value={value}
+          renderInput={(params) => <TextField {...params} />}
+          value={initialTimeValue}
           label='Inicio'
+          size={isMobile ? 'small' : 'medium'}
           inputFormat='dd/MM/yyyy hh:mm a'
           onChange={(newValue) => {
-            setValue(newValue);
+            setInitialTimeValue(newValue);
             console.log('date', newValue);
             const epochValue = toEpoch(newValue);
             setInitialTime(epochValue);
-            // listPayload.request.payload.initialTime = toEpoch(newValue);
-            // console.log('payload de busqueda', listPayload);
           }}
         />
         <DateTimePicker
-          renderInput={(params) => <TextField size='small' {...params} />}
+          renderInput={(params) => <TextField {...params} />}
           label='Fin'
+          size={isMobile ? 'small' : 'medium'}
           inputFormat='dd/MM/yyyy hh:mm a'
-          value={value2}
+          value={finalTimeValue}
           onChange={(newValue2) => {
-            setValue2(newValue2);
+            setFinalTimeValue(newValue2);
             const epochValue = toEpoch(newValue2);
             setFinalTime(epochValue);
-            // listPayload.request.payload.finalTime = toEpoch(newValue2);
-            // console.log('payload de busqueda', listPayload);
           }}
         />
         <Button
+          size='small'
           onClick={() => setMoreFilters(true)}
           startIcon={<FilterAltOutlinedIcon />}
           variant='outlined'
@@ -1664,6 +1648,7 @@ const OutputsTable = (props) => {
           Más filtros
         </Button>
         <Button
+          size='small'
           variant='contained'
           startIcon={<ManageSearchOutlinedIcon />}
           color='primary'
@@ -1685,7 +1670,8 @@ const OutputsTable = (props) => {
               <TableCell>Codigo</TableCell>
               <TableCell>Fecha registrada</TableCell>
               <TableCell>Última actualización</TableCell>
-              <TableCell>Tipo de movimiento</TableCell>
+              <TableCell>Tipo Documento</TableCell>
+              <TableCell>Numero Documento</TableCell>
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'denominationClient'}
@@ -1695,19 +1681,13 @@ const OutputsTable = (props) => {
                   Cliente
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Detalle productos</TableCell>
-              <TableCell>Detalle documentos</TableCell>
-              <TableCell>Boleta Venta relacionada</TableCell>
-              {typeClient == 'PN' ? (
-                <TableCell>Ticket Venta relacionada</TableCell>
-              ) : null}
-              <TableCell>Guía de remisión relacionada</TableCell>
-              <TableCell>Factura relacionada</TableCell>
-              <TableCell>Último ingreso</TableCell>
-              <TableCell>Ingresos</TableCell>
-              <TableCell>Precio total sin IGV</TableCell>
-              <TableCell>Precio total con IGV</TableCell>
-              <TableCell>Estado</TableCell>
+              <TableCell>Productos</TableCell>
+              <TableCell>Subtotal</TableCell>
+              <TableCell>IGV</TableCell>
+              <TableCell>Precio Total</TableCell>
+              <TableCell>Ingreso</TableCell>
+              <TableCell>Salida</TableCell>
+              <TableCell>Aceptado Sunat</TableCell>
               <TableCell>Creado por</TableCell>
               <TableCell>Modificado por</TableCell>
               <TableCell>Opciones</TableCell>
@@ -1792,10 +1772,13 @@ const OutputsTable = (props) => {
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       <TableCell>
-                        {convertToDateWithoutTime(obj.updatedDate)}
+                        {convertToDateWithoutTime(obj.updatedAt)}
                       </TableCell>
                       <TableCell>
-                        {showSubtypeMovement(obj.movementSubType)}
+                        Tipo Documento
+                      </TableCell>
+                      <TableCell>
+                        Número Documento
                       </TableCell>
                       <TableCell>
                         {(obj.clientId
@@ -1806,9 +1789,6 @@ const OutputsTable = (props) => {
                             : obj.clientName)}
                       </TableCell>
                       <TableCell align='center'>
-                        {/* {obj.descriptionProductsInfo
-                          ? obj.descriptionProducts
-                          : ''} */}
                         {obj.descriptionProductsInfo &&
                         obj.descriptionProductsInfo.length != 0 ? (
                           <IconButton
@@ -1822,40 +1802,13 @@ const OutputsTable = (props) => {
                         )}
                       </TableCell>
                       <TableCell align='center'>
-                        {obj.documentsMovement &&
-                        obj.documentsMovement.length != 0 ? (
-                          <IconButton
-                            onClick={() => checkDocuments(obj, index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : (
-                          <></>
-                        )}
+                        Subtotal
                       </TableCell>
-                      <TableCell align='center'>
-                        {statusObject(obj, obj.existReceipt, 'receipt')}
+                      <TableCell>
+                        IGV
                       </TableCell>
-                      {typeClient == 'PN' ? (
-                        <TableCell align='center'>
-                          {statusObject(
-                            obj,
-                            obj.existSellTicket ? true : false,
-                            'ticket',
-                          )}
-                        </TableCell>
-                      ) : null}
-                      <TableCell align='center'>
-                        {statusObject(
-                          obj,
-                          obj.existReferralGuide,
-                          'referralGuide',
-                        )}
-                      </TableCell>
-                      {/* factura */}
-                      <TableCell align='center'>
-                        {statusObject(obj, obj.existBill, 'bill')}
+                      <TableCell>
+                        Precio Total
                       </TableCell>
                       <TableCell align='center'>
                         {statusObject(
@@ -1872,30 +1825,12 @@ const OutputsTable = (props) => {
                             : '',
                         )}
                       </TableCell>
-                      <TableCell align='center'>
-                        {obj.contableMovements &&
-                        obj.contableMovements.length != 0 ? (
-                          <IconButton
-                            onClick={() => checkContableMovementsInfo(index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : (
-                          <></>
-                        )}
+                      <TableCell>
+                        Salida
                       </TableCell>
                       <TableCell>
-                        {obj.totalPrice
-                          ? `${moneySymbol} ${obj.totalPrice.toFixed(3)}`
-                          : ''}
+                        Aceptado Sunat
                       </TableCell>
-                      <TableCell>
-                        {obj.totalPriceWithIgv
-                          ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(3)}`
-                          : ''}
-                      </TableCell>
-                      <TableCell>{showStatus(obj.status)}</TableCell>
                       <TableCell>
                         {obj.userCreatedMetadata
                           ? obj.userCreatedMetadata.nombreCompleto
@@ -2318,9 +2253,6 @@ const OutputsTable = (props) => {
           .includes(
             '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
           ) && selectedOutput.movementSubType == 'sales' ? (
-          // && !selectedOutput.existSellTicket &&
-          // !selectedOutput.existReceipt &&
-          // !selectedOutput.existBill
           <MenuItem
             onClick={() => {
               setEarningGeneration(
@@ -2341,8 +2273,6 @@ const OutputsTable = (props) => {
             '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
           ) &&
         selectedOutput.movementSubType == 'sales' ? (
-          // && !selectedOutput.existReceipt &&
-          // !selectedOutput.existSellTicket
           <MenuItem onClick={getReceipt}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Boleta Venta
@@ -2648,4 +2578,4 @@ const OutputsTable = (props) => {
   ) : null;
 };
 
-export default OutputsTable;
+export default SalesTable;

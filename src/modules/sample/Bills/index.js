@@ -608,10 +608,10 @@ const BillsTable = (props) => {
   };
 
   const compare = (a, b) => {
-    if (a.createdDate < b.createdDate) {
+    if (a.createdAt < b.createdAt) {
       return 1;
     }
-    if (a.createdDate > b.createdDate) {
+    if (a.createdAt > b.createdAt) {
       return -1;
     }
     return 0;

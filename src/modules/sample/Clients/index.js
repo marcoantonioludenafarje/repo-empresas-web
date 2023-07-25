@@ -519,7 +519,7 @@ const ClientTable = (arrayObjs, props) => {
         className={classes.stack}
       >
         <FormControl sx={{my: 0, width: 140}}>
-          <InputLabel id='categoria-label' style={{fontWeight: 200}}>
+          <InputLabel id='categoria-label' style={{fontWeight: 200}} sx={{mt:-2}}>
             Identificador
           </InputLabel>
           <Select
@@ -527,6 +527,7 @@ const ClientTable = (arrayObjs, props) => {
             name='typeDocumentClient'
             labelId='documentType-label'
             label='Identificador'
+            size='small'
             sx={{maxWidth: 140}}
             onChange={(event) => {
               console.log('Está pasando por aquí?', event.target.value);
@@ -576,12 +577,10 @@ const ClientTable = (arrayObjs, props) => {
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'column',
-              mt: 2,
             }}
           >
             <Autocomplete
               sx={{
-                m: 1,
                 width: '100%', // Establece el ancho al 100% por defecto
                 [(theme) => theme.breakpoints.down('sm')]: {
                   width: '80%', // Ancho del 80% en pantallas pequeñas
@@ -601,6 +600,7 @@ const ClientTable = (arrayObjs, props) => {
                   variant='outlined'
                   label='Etiqueta'
                   placeholder='Etiqueta'
+                  size='small'
                 />
               )}
               renderOption={(props, option, {selected}) => (

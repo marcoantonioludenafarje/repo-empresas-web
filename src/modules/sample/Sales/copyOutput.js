@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import Typography from '@mui/material/Typography';
 import * as yup from 'yup';
 import {useIntl} from 'react-intl';
@@ -134,21 +133,6 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
   },
 }));
-/* let listFinancesPayload = {
-  request: {
-    payload: {
-      initialTime: null,
-      finalTime: null,
-      movementType: 'INCOME',
-      merchantId: '',
-      createdAt: null,
-      monthMovement: null,
-      yearMovement: null,
-      searchByBill: '',
-      searchByContableMovement: null,
-    },
-  },
-}; */
 let deletePayload = {
   request: {
     payload: {
@@ -219,7 +203,7 @@ const useForceUpdate = () => {
   return () => setReload((value) => value + 1); // update the state to force render
 };
 
-const OutputsTable = (props) => {
+const SalesTable = (props) => {
   //Dependencias
   const classes = useStyles(props);
   const dispatch = useDispatch();
@@ -241,7 +225,7 @@ const OutputsTable = (props) => {
   //UseStates
   const [openStatus, setOpenStatus] = React.useState(false);
   const [ticketResponseDialog, setTicketResponseDialog] = React.useState(false);
-  const [eliminated, setEliminated] = React.useState(false);
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState("all");
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [open2valida, setOpen2valida] = React.useState(false);
@@ -263,8 +247,8 @@ const OutputsTable = (props) => {
   const [deliverySelected, setDeliverySelected] = React.useState(false);
   //FECHAS
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 2678400000);
-  const [value2, setValue2] = React.useState(Date.now());
+  const [initialTimeValue, setInitialTimeValue] = React.useState(Date.now() - 2678400000);
+  const [finalTimeValue, setFinalTimeValue] = React.useState(Date.now());
   const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [isListLoading, setListIsLoading] = React.useState(false);
@@ -433,7 +417,7 @@ const OutputsTable = (props) => {
   }, [userDataRes, getRolUserRes, query]);
 
   useEffect(() => {
-    setValue2(Date.now());
+    setFinalTimeValue(Date.now());
 
     console.log('Se ejecuta esto?');
     if (userDataRes) {
@@ -632,7 +616,7 @@ const OutputsTable = (props) => {
     toGetMovements(listPayload);
   };
   const newOutput = () => {
-    Router.push('/sample/outputs/new');
+    Router.push('/sample/sales/new');
   };
 
   //BUSQUEDA
@@ -1250,11 +1234,6 @@ const OutputsTable = (props) => {
     }
   }, [getFinancesRes]);
 
-  // useEffect(() => {
-  //   setValue2(Date.now());
-  //   listPayload.request.payload.finalTime = toEpoch(newValue2);
-  //   setOpen3(false)
-  // }, [open3]);
   const showStatus = (status, text) => {
     if (!text) {
       switch (status) {
@@ -1629,13 +1608,43 @@ const OutputsTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
+        <FormControl sx={{my: 0, width: 140}}>
+          <InputLabel id='proofOfPaymentType-label' style={{fontWeight: 200}}>
+            Tipo de Comprobante
+          </InputLabel>
+          <Select
+            size={isMobile ? 'small' : 'medium'}
+            defaultValue={proofOfPaymentType}
+            name='proofOfPaymentType'
+            labelId='proofOfPaymentType-label'
+            label='Tipo de Comprobante'
+            sx={{maxWidth: 140}}
+            onChange={(event) => {
+              setProofOfPaymentType(event.target.value);
+            }}
+          >
+            <MenuItem value='all' style={{fontWeight: 200}}>
+              Todos
+            </MenuItem>
+            <MenuItem value='receipt' style={{fontWeight: 200}}>
+              Boleta
+            </MenuItem>
+            <MenuItem value='bill' style={{fontWeight: 200}}>
+              Factura
+            </MenuItem>
+            <MenuItem value='ticket' style={{fontWeight: 200}}>
+              Ticket
+            </MenuItem>
+          </Select>
+        </FormControl>
         <DateTimePicker
-          renderInput={(params) => <TextField size='small' {...params} />}
-          value={value}
+          renderInput={(params) => <TextField {...params} />}
+          value={initialTimeValue}
           label='Inicio'
+          size={isMobile ? 'small' : 'medium'}
           inputFormat='dd/MM/yyyy hh:mm a'
           onChange={(newValue) => {
-            setValue(newValue);
+            setInitialTimeValue(newValue);
             console.log('date', newValue);
             const epochValue = toEpoch(newValue);
             setInitialTime(epochValue);
@@ -1644,12 +1653,13 @@ const OutputsTable = (props) => {
           }}
         />
         <DateTimePicker
-          renderInput={(params) => <TextField size='small' {...params} />}
+          renderInput={(params) => <TextField {...params} />}
           label='Fin'
+          size={isMobile ? 'small' : 'medium'}
           inputFormat='dd/MM/yyyy hh:mm a'
-          value={value2}
+          value={finalTimeValue}
           onChange={(newValue2) => {
-            setValue2(newValue2);
+            setFinalTimeValue(newValue2);
             const epochValue = toEpoch(newValue2);
             setFinalTime(epochValue);
             // listPayload.request.payload.finalTime = toEpoch(newValue2);
@@ -1657,6 +1667,7 @@ const OutputsTable = (props) => {
           }}
         />
         <Button
+          size='small'
           onClick={() => setMoreFilters(true)}
           startIcon={<FilterAltOutlinedIcon />}
           variant='outlined'
@@ -1664,6 +1675,7 @@ const OutputsTable = (props) => {
           Más filtros
         </Button>
         <Button
+          size='small'
           variant='contained'
           startIcon={<ManageSearchOutlinedIcon />}
           color='primary'
@@ -2648,4 +2660,4 @@ const OutputsTable = (props) => {
   ) : null;
 };
 
-export default OutputsTable;
+export default SalesTable;
