@@ -32,7 +32,11 @@ import {
   useMediaQuery,
   useTheme,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
+import { ClickAwayListener } from '@mui/base';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import {orange} from '@mui/material/colors';
@@ -117,8 +121,15 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
+function completarCeros(texto) {
+  let cadena = String(texto);
+  while (cadena.length < 7) {
+    cadena = '0' + cadena;
+  }
+  return cadena;
+}
 let selectedDelivery = {};
+let selectedSummaryRow = {};
 let selectedDistribution = '';
 let selectedRoute = '';
 let typeAlert = '';
@@ -165,6 +176,20 @@ const Distribution = (props) => {
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const {listProducts} = useSelector(({products}) => products);
 
+  const [summaryType, setSummaryType] = React.useState('driver');
+  const [nombreAgrupador, setNombreAgrupador] = React.useState('');
+  const [cantidadAgrupacion, setCantidadAgrupacion] = React.useState('');
+  const [routesSummary, setRoutesSummary] = React.useState([]);
+  const [summaryRowNumber, setSummaryRowNumber] = React.useState(0);
+  const [openSummaryProducts, setOpenSummaryProducts] = React.useState(false);
+  const [openSummaryPoints, setOpenSummaryPoints] = React.useState(false);
+    // Ejemplo de datos de la tabla (puedes reemplazar esto con tus datos reales)
+    const tablaDatos = [
+      { producto: 'Producto 1', cantidad: 5, puntos: 'Punto A - Punto B', chofer: 'Juan', placa: 'ABC123' },
+      { producto: 'Producto 2', cantidad: 10, puntos: 'Punto C - Punto D', chofer: 'María', placa: 'XYZ789' },
+      // Agrega más filas de datos si es necesario
+    ];
+  const [openSummary, setOpenSummary] = React.useState(false);
   const [deliveriesData, setDeliveriesData] = React.useState([]);
   const [driversData, setDriversData] = React.useState([]);
   const [excelOrCsv, setExcelOrCsv] = React.useState('');
@@ -324,7 +349,10 @@ const Distribution = (props) => {
     dispatch({type: GENERATE_ROUTE, payload: undefined});
     generateRoute(finalPayload);
     setOpenStatus(true);
-    setSubmitting(false);
+
+    setTimeout(() => {
+      setSubmitting(false);
+    }, 2000);
   };
 
   const setFunction = (index, func) => {
@@ -400,6 +428,10 @@ const Distribution = (props) => {
       return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
     }
   };
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const handleFile = (event) => {
     console.log('evento', event);
     setExcelOrCsvName(
@@ -437,7 +469,7 @@ const Distribution = (props) => {
       const {'ORDEN ENTREGA': fila} = item;
 
       const matchOriginal = originalPoints.find(
-        (d) => d.COD_INTERNO == originalPoint,
+        (d) => completarCeros(d.COD_INTERNO) == completarCeros(originalPoint),
       );
       if (!matchOriginal) {
         msjError =
@@ -450,7 +482,7 @@ const Distribution = (props) => {
       }
 
       const matchArrival = arrivalPoints.find(
-        (d) => d.COD_INTERNO == arrivalPoint,
+        (d) => completarCeros(d.COD_INTERNO) == completarCeros(arrivalPoint),
       );
       if (!matchArrival) {
         msjError =
@@ -814,6 +846,26 @@ const Distribution = (props) => {
     }
     setRowNumber2(index);
   };
+  const checkSummaryProducts = (row, index) => {
+    selectedSummaryRow = row;
+    console.log('selectedSummaryRow', selectedSummaryRow);
+    setOpenSummaryProducts(false);
+    setOpenSummaryProducts(true);
+    if (openSummaryProducts == true && summaryRowNumber == index) {
+      setOpenSummaryProducts(false);
+    }
+    setSummaryRowNumber(index);
+  };
+  const checkSummaryPoints = (row, index) => {
+    selectedSummaryRow = row;
+    console.log('selectedSummaryRow', selectedSummaryRow);
+    setOpenSummaryPoints(false);
+    setOpenSummaryPoints(true);
+    if (openSummaryPoints == true && summaryRowNumber == index) {
+      setOpenSummaryPoints(false);
+    }
+    setSummaryRowNumber(index);
+  };
   const showIconStatus = (bool, obj) => {
     switch (bool) {
       case true:
@@ -943,7 +995,70 @@ const Distribution = (props) => {
       document.body.removeChild(link);
     }
   }, [excelTemplateGeneratedToRouteRes, downloadExcel]);
+  // Creamos una función para acumular los productos por conductor (driver)
+  const acumularProductosPorConductor = (entregas) => {
+    const acumulador = {};
 
+    entregas.forEach((entrega) => {
+      const conductorKey = `${entrega.driverDocumentType}_${entrega.driverDocumentNumber}`;
+
+      if (!acumulador[conductorKey]) {
+        acumulador[conductorKey] = {
+          driverDocumentType: entrega.driverDocumentType,
+          driverDocumentNumber: entrega.driverDocumentNumber,
+          driverName: entrega.driverName,
+          driverLastName: entrega.driverLastName,
+          plate: entrega.plate,
+          points: [
+            {
+              arrivalPointUbigeo: entrega.arrivalPointUbigeo,
+              arrivalAddress: entrega.arrivalAddress,
+              arrivalInternalCode: entrega.arrivalInternalCode,
+              startingInternalCode: entrega.startingInternalCode,
+              startingAddress: entrega.startingAddress,
+              startingPointUbigeo: entrega.startingPointUbigeo
+            }
+          ],
+          products: [],
+        };
+      }
+
+      entrega.products.forEach((producto) => {
+        const conductorProducto = acumulador[conductorKey].products.find(
+          (item) => item.product === producto.product
+        );
+
+        if (conductorProducto) {
+          conductorProducto.count += producto.count;
+        } else {
+          acumulador[conductorKey].products.push({
+            product: producto.product,
+            count: producto.count,
+            description: producto.description,
+            weight: producto.weight,
+            unitMeasure: producto.unitMeasure
+          });
+        }
+      });
+
+      const conductorPuntos = acumulador[conductorKey].points.find(
+        (item) => (item.arrivalInternalCode === entrega.arrivalInternalCode && item.startingInternalCode === entrega.startingInternalCode)
+      );
+
+      if (!conductorPuntos) {
+        acumulador[conductorKey].points.push({
+          arrivalPointUbigeo: entrega.arrivalPointUbigeo,
+          arrivalAddress: entrega.arrivalAddress,
+          arrivalInternalCode: entrega.arrivalInternalCode,
+          startingInternalCode: entrega.startingInternalCode,
+          startingAddress: entrega.startingAddress,
+          startingPointUbigeo: entrega.startingPointUbigeo
+        });
+      }
+    });
+
+    return Object.values(acumulador);
+  };
   const handleExport = () => {
     exportToExcel(products, deliveries);
   };
@@ -1153,6 +1268,7 @@ const Distribution = (props) => {
               {routes && routes.length !== 0
                 ? routes.map((route, index2) => {
                     const products = route.products;
+                    console.log("routes de newRoute", routes)
                     return (
                       <>
                         <TableRow key={index2}>
@@ -1297,7 +1413,24 @@ const Distribution = (props) => {
             />
           ))}
       </Box> */}
-
+      <Stack
+        sx={{m: 2, justifyContent: 'center', marginBottom: '10px'}}
+        direction={isSmallScreen ? 'column' : 'row'}
+        spacing={2}
+      >
+        <Button
+          color='secondary'
+          variant='outlined'
+          onClick={() => {
+            const productosPorConductor = acumularProductosPorConductor(routes)
+            console.log("routesSummary", productosPorConductor)
+            setRoutesSummary(productosPorConductor)
+            setOpenSummary(true)
+          }}
+        >
+          Ver Resumen
+        </Button>
+      </Stack>
       <ButtonGroup
         orientation='vertical'
         variant='outlined'
@@ -1417,6 +1550,211 @@ const Distribution = (props) => {
         </Box>
       )}
 
+      <Dialog
+        open={openSummary}
+        onClose={() => setOpenSummary(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{ fontSize: '1.5em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Stack
+          sx={{m: 2, justifyContent: 'center', marginBottom: '10px'}}
+          direction={isSmallScreen ? 'column' : 'row'}
+          spacing={2}
+        >
+          <FormControl sx={{my: 0, mx:'auto', width: 160}}>
+            <InputLabel id='summary-label' style={{fontWeight: 200}}>
+              Tipo Resumen
+            </InputLabel>
+            <Select
+              name='summary'
+              labelId='summary-label'
+              label='Tipo Resumen'
+              onChange={(event) => {
+                console.log(event.target.value);
+                setSummaryType(event.target.value);
+              }}
+              defaultValue="driver"
+            >
+              <MenuItem
+                value="driver"
+                style={{fontWeight: 200}}
+              >
+                Chofer
+              </MenuItem>
+              <MenuItem
+                value="arrivalPoint"
+                style={{fontWeight: 200}}
+              >
+                Puntos de Llegada
+              </MenuItem>
+            </Select>
+          </FormControl>
+
+          <TextField
+            label='Nombre de Agrupador'
+            value={nombreAgrupador}
+            onChange={(e) => setNombreAgrupador(e.target.value)}
+            variant='outlined'
+          />
+          <TextField
+            label='Cantidad de Agrupación'
+            value={cantidadAgrupacion}
+            onChange={(e) => setCantidadAgrupacion(e.target.value)}
+            variant='outlined'
+          /> 
+        </Stack>
+          
+          <IconButton edge='end' onClick={handleClose} aria-label='close'>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Chofer</TableCell>
+              <TableCell>Placa</TableCell>
+              <TableCell>Productos</TableCell>
+              <TableCell>Puntos de Partida - Llegada</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {routesSummary.map((fila, indexSummary) => 
+              {
+                const summaryProducts = fila.products;
+                const summaryPoints = fila.points;
+                return (
+                <>
+                  <TableRow key={indexSummary}>
+                    <TableCell>{fila.driverName + " " + fila.driverLastName}</TableCell>
+                    <TableCell>{fila.plate}</TableCell>
+                    <TableCell>
+                      {fila.products && fila.products.length !== 0 ? (
+                        <IconButton
+                          onClick={() => checkSummaryProducts(fila, indexSummary)}
+                          size='small'
+                        >
+                          <FormatListBulletedIcon fontSize='small' />
+                        </IconButton>
+                      ) : null}
+                    </TableCell>
+                    <TableCell>
+                        <IconButton
+                          onClick={() => checkSummaryPoints(fila, indexSummary)}
+                          size='small'
+                        >
+                          <FormatListBulletedIcon fontSize='small' />
+                        </IconButton>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow key={`sub-${indexSummary}`}>
+                    <TableCell sx={{p: 0}} colSpan={10}>
+                      <Collapse
+                        in={openSummaryProducts && indexSummary === summaryRowNumber}
+                        timeout='auto'
+                        unmountOnExit
+                      >
+                        <Box sx={{margin: 0}}>
+                          <Table size='small' aria-label='purchases'>
+                            <TableHead
+                              sx={{
+                                backgroundColor: '#ededed',
+                              }}
+                            >
+                              <TableRow>
+                                <TableCell>Código</TableCell>
+                                <TableCell>Descripción</TableCell>
+                                <TableCell>Cantidad</TableCell>
+                                <TableCell>Peso Unitario</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {summaryProducts && summaryProducts.length !== 0
+                                ? summaryProducts.map((product, indexSummaryProducts) => {
+                                    return (
+                                      <TableRow
+                                        key={`${indexSummaryProducts}-${indexSummaryProducts}`}
+                                      >
+                                        <TableCell>
+                                          {product.product}
+                                        </TableCell>
+                                        <TableCell>
+                                          {product.description}
+                                        </TableCell>
+                                        <TableCell>
+                                          {product.count}
+                                        </TableCell>
+                                        <TableCell>
+                                          {product.weight}
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })
+                                : null}
+                            </TableBody>
+                          </Table>
+                        </Box>
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow key={`sub-${indexSummary}-2`}>
+                    <TableCell sx={{p: 0}} colSpan={10}>
+                      <Collapse
+                        in={openSummaryPoints && indexSummary === summaryRowNumber}
+                        timeout='auto'
+                        unmountOnExit
+                      >
+                        <Box sx={{margin: 0}}>
+                          <Table size='small' aria-label='purchases'>
+                            <TableHead
+                              sx={{
+                                backgroundColor: '#ededed',
+                              }}
+                            >
+                              <TableRow>
+                                <TableCell>Punto Partida</TableCell>
+                                <TableCell>Direccion Partida</TableCell>
+                                <TableCell>Punto Llegada</TableCell>
+                                <TableCell>Direccion Llegada</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {summaryPoints && summaryPoints.length !== 0
+                                ? summaryPoints.map((point, indexSummaryPoints) => {
+                                    return (
+                                      <TableRow
+                                        key={`${indexSummaryPoints}-${indexSummaryPoints}`}
+                                      >
+                                        <TableCell>
+                                          {point.startingInternalCode}
+                                        </TableCell>
+                                        <TableCell>
+                                          {point.startingAddress}
+                                        </TableCell>
+                                        <TableCell>
+                                          {point.arrivalInternalCode}
+                                        </TableCell>
+                                        <TableCell>
+                                          {point.arrivalAddress}
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })
+                                : null}
+                            </TableBody>
+                          </Table>
+                        </Box>
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                </>)
+                }
+            )}
+          </TableBody>
+        </Table>
+      </Dialog>
       {/* <Dialog
         open={openDelivery}
         onClose={sendStatus2}
@@ -1466,23 +1804,27 @@ const Distribution = (props) => {
           </Box>
         </Fade>
       </Modal>
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {<IntlMessages id='message.register.newRoute' />}
-        </DialogTitle>
-        {showMessage()}
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={sendStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+          disableEscapeKeyDown
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {<IntlMessages id='message.register.newRoute' />}
+          </DialogTitle>
+          {showMessage()}
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={sendStatus}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
 
       <Dialog
         open={open2}

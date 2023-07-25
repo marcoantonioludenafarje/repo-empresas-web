@@ -29,6 +29,7 @@ import {
   Alert,
 } from '@mui/material';
 import Router, {useRouter} from 'next/router';
+import { ClickAwayListener } from '@mui/base';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
@@ -625,7 +626,9 @@ const GetReferralGuide = () => {
       setTypeDialog('add');
       setOpenDialog(true);
     }
-    setSubmitting(false);
+    setTimeout(() => {
+      setSubmitting(false);
+    }, 2000);
   };
 
   const cancel = () => {
@@ -785,7 +788,10 @@ const GetReferralGuide = () => {
     setDriverDocumentType(event.target.value);
     console.log('Tipo de documento conductor', event.target.value);
   };
-
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const openSelectCarrier = () => {
     setTypeDialog('selectCarrier');
     setOpenDialog(true);
@@ -1575,71 +1581,73 @@ const GetReferralGuide = () => {
           }}
         </Formik>
       </Box>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openDialog}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+          maxWidth='xl'
+          disableEscapeKeyDown
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            <Box sx={{mx: 10}}>
+              {(typeDialog == 'add') | (typeDialog == 'confirmCancel')
+                ? 'Registro de Guía de Remisión'
+                : null}
+              {typeDialog == 'selectCarrier'
+                ? 'Selecciona un transportista'
+                : null}
+            </Box>
+            <IconButton
+              aria-label='close'
+              onClick={sendStatus}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
 
-      <Dialog
-        open={openDialog}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-        maxWidth='xl'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          <Box sx={{mx: 10}}>
-            {(typeDialog == 'add') | (typeDialog == 'confirmCancel')
-              ? 'Registro de Guía de Remisión'
-              : null}
-            {typeDialog == 'selectCarrier'
-              ? 'Selecciona un transportista'
-              : null}
-          </Box>
-          <IconButton
-            aria-label='close'
-            onClick={sendStatus}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+          {typeDialog == 'add' ? (
+            showMessage()
+          ) : (
+            <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+              {typeDialog == 'confirmCancel' ? showCancelMessage() : null}
+              {typeDialog == 'selectCarrier' ? showSelectCarrier() : null}
+            </DialogContent>
+          )}
 
-        {typeDialog == 'add' ? (
-          showMessage()
-        ) : (
-          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            {typeDialog == 'confirmCancel' ? showCancelMessage() : null}
-            {typeDialog == 'selectCarrier' ? showSelectCarrier() : null}
-          </DialogContent>
-        )}
-
-        <DialogActions sx={{justifyContent: 'center'}}>
-          {/* {typeDialog == 'add' ? (
-            <Button variant='outlined' onClick={closeDialog}>
-              Aceptar
-            </Button>
-          ) : null} */}
-
-          {typeDialog == 'confirmCancel' ? (
-            <>
-              <Button
-                variant='outlined'
-                onClick={() => {
-                  Router.push('/sample/outputs/table');
-                }}
-              >
-                Sí
+          <DialogActions sx={{justifyContent: 'center'}}>
+            {/* {typeDialog == 'add' ? (
+              <Button variant='outlined' onClick={closeDialog}>
+                Aceptar
               </Button>
-              <Button variant='outlined' onClick={() => setOpenDialog(false)}>
-                No
-              </Button>
-            </>
-          ) : null}
-        </DialogActions>
-      </Dialog>
+            ) : null} */}
+
+            {typeDialog == 'confirmCancel' ? (
+              <>
+                <Button
+                  variant='outlined'
+                  onClick={() => {
+                    Router.push('/sample/outputs/table');
+                  }}
+                >
+                  Sí
+                </Button>
+                <Button variant='outlined' onClick={() => setOpenDialog(false)}>
+                  No
+                </Button>
+              </>
+            ) : null}
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
 
       <Dialog
         open={showForms}

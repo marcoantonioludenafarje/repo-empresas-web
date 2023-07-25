@@ -28,6 +28,7 @@ import {
   FormControlLabel,
   CircularProgress,
 } from '@mui/material';
+import { ClickAwayListener } from '@mui/base';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import SchoolIcon from '@mui/icons-material/School';
@@ -600,6 +601,9 @@ const GetReceipt = (props) => {
   };
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
+    setTimeout(() => {
+      setSubmitting(false);
+    }, 2000);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: ADD_RECEIPT, payload: undefined});
@@ -685,10 +689,7 @@ const GetReceipt = (props) => {
     console.log('finalPayload', finalPayload);
     getAddReceipt(finalPayload);
     console.log('Data formulario principal', finalPayload);
-    setTimeout(() => {
-      setOpenStatus(true);
-    }, 1000);
-    setSubmitting(false);
+    setOpenStatus(true);
   };
 
   const handleActualData = (event) => {
@@ -821,7 +822,10 @@ const GetReceipt = (props) => {
     setSendSunat(isInputChecked);
     console.log('Enviar a Sunat', isInputChecked);
   };
-
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const getNewProduct = (product) => {
     console.log('ver ahora nuevo producto', product);
     product.subtotal = Number(product.subtotal);
@@ -1489,18 +1493,21 @@ const GetReceipt = (props) => {
             );
           }}
         </Formik>
-        <Dialog
-          open={openStatus}
-          onClose={sendStatus}
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Boleta'}
-          </DialogTitle>
-          {showMessage()}
-        </Dialog>
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Dialog
+            open={openStatus}
+            onClose={sendStatus}
+            sx={{textAlign: 'center'}}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+            disableEscapeKeyDown
+          >
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Registro de Boleta'}
+            </DialogTitle>
+            {showMessage()}
+          </Dialog>
+        </ClickAwayListener>
       </Box>
       <Collapse in={showAlert}>
         <Alert
