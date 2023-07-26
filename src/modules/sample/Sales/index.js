@@ -1720,7 +1720,7 @@ const SalesTable = (props) => {
                         <Button
                           variant='secondary'
                           sx={{fontSize: '1em'}}
-                          onClick={() => showObject(obj.proofOfPaymentId, obj.proofOfPaymentType)}
+                          onClick={() => showObject(obj.proofOfPaymentType !== 'ticket' ? obj.proofOfPaymentId : obj.prooOfPaymentPdf, obj.proofOfPaymentType)}
                         >
                           {obj.proofOfPaymentNumber}
                         </Button>

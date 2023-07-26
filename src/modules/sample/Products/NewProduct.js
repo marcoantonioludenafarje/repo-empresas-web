@@ -139,7 +139,8 @@ const validationSchema = yup.object({
   alias: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
+    //.required(<IntlMessages id='validation.required' />)
+    ,
   title: yup.string().typeError(<IntlMessages id='validation.string' />),
   commercialDescription: yup
     .string()
@@ -724,7 +725,7 @@ const NewProduct = (props) => {
                   {
                     businessProductCode: data.businessProductCode,
                     description: data.description,
-                    alias: data.alias,
+                    alias: unitMeasure == "ZZ" ? data.description : data.alias,
                     costPriceUnit: Number(data.costPriceUnit),
                     sellPriceUnit: Number(data.referecialPriceSell),
                     weight: Number(data.weight),
@@ -997,113 +998,6 @@ const NewProduct = (props) => {
                   spacing={2}
                   sx={{maxWidth: 500, mb: 4}}
                 >
-                  <Grid item xs={12}>
-                    <AppUpperCaseTextField
-                      label='Código *'
-                      name='businessProductCode'
-                      variant='outlined'
-                      onChange={handleFieldProduct}
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppUpperCaseTextField
-                      label='Descripción *'
-                      name='description'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <AppUpperCaseTextField
-                      label='Alias *'
-                      name='alias'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Código aduanero (opcional)'
-                      name='customCodeProduct'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        mx: 2,
-                        mb: 3,
-                        cursor: 'pointer',
-                        color: '#5194c4',
-                        textDecoration: 'underline',
-                      }}
-                      onClick={() =>
-                        window.open(
-                          'https://colombiacompra.gov.co/clasificador-de-bienes-y-Servicios',
-                        )
-                      }
-                    >
-                      Consúltalo aquí
-                    </Typography>
-                  </Grid>
-                  {/* <Grid item xs={12}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel
-                        id='unitMeasure-label'
-                        style={{fontWeight: 200}}
-                      >
-                        PROD&SERV
-                      </InputLabel>
-                      <Select
-                        defaultValue='NIU'
-                        name='unitMeasure'
-                        labelId='unitMeasure-label'
-                        label='Unidad de Medida'
-                        onChange={handleUnitMeasure}
-                      >
-                        <MenuItem
-                          key={`unitMeasureItem-1`}
-                          value='NIU'
-                          style={{fontWeight: 200}}
-                        >
-                          PRODUCTO
-                        </MenuItem>
-                        <MenuItem
-                          key={`unitMeasureItem-2`}
-                          value='ZZ'
-                          style={{fontWeight: 200}}
-                        >
-                          SERVICIO
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid> */}
                   <Grid container justify="center" alignItems="center">
                     <Grid item xs={12} sm={12}> {/* Puedes ajustar el tamaño del Grid según tus necesidades */}
                       <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -1139,6 +1033,115 @@ const NewProduct = (props) => {
                       </div>
                     </Grid>
                   </Grid>
+                  <Grid item xs={12}>
+                    <AppUpperCaseTextField
+                      label='Código *'
+                      name='businessProductCode'
+                      variant='outlined'
+                      onChange={handleFieldProduct}
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppUpperCaseTextField
+                      label='Descripción *'
+                      name='description'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  { unitMeasure !== 'ZZ' ? (
+                    <>
+                      <Grid item xs={12}>
+                        <AppUpperCaseTextField
+                          label='Alias *'
+                          name='alias'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Código aduanero (opcional)'
+                          name='customCodeProduct'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            mx: 2,
+                            mb: 3,
+                            cursor: 'pointer',
+                            color: '#5194c4',
+                            textDecoration: 'underline',
+                          }}
+                          onClick={() =>
+                            window.open(
+                              'https://colombiacompra.gov.co/clasificador-de-bienes-y-Servicios',
+                            )
+                          }
+                        >
+                          Consúltalo aquí
+                        </Typography>
+                      </Grid>
+                    </>
+                  ) : null}
+                  {/* <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='unitMeasure-label'
+                        style={{fontWeight: 200}}
+                      >
+                        PROD&SERV
+                      </InputLabel>
+                      <Select
+                        defaultValue='NIU'
+                        name='unitMeasure'
+                        labelId='unitMeasure-label'
+                        label='Unidad de Medida'
+                        onChange={handleUnitMeasure}
+                      >
+                        <MenuItem
+                          key={`unitMeasureItem-1`}
+                          value='NIU'
+                          style={{fontWeight: 200}}
+                        >
+                          PRODUCTO
+                        </MenuItem>
+                        <MenuItem
+                          key={`unitMeasureItem-2`}
+                          value='ZZ'
+                          style={{fontWeight: 200}}
+                        >
+                          SERVICIO
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid> */}
                   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel

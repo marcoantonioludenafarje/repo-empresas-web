@@ -727,7 +727,6 @@ const NewSale = (props) => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      dispatch({type: LIST_SALES, payload: [], request: []});
       let listPayload = {
         request: {
           payload: {
@@ -1374,7 +1373,7 @@ const NewSale = (props) => {
           aria-describedby='alert-dialog-description'
         >
           <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Boleta'}
+            {'Registro de Venta'}
           </DialogTitle>
           {showMessage()}
         </Dialog>
