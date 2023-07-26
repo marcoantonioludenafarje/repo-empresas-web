@@ -18,6 +18,7 @@ import Requests from './Requests';
 import Notifications from './Notifications';
 import Orders from './Orders';
 import Campaign from './Campaign';
+import Sales from './Sales';
 
 const reducers = combineReducers({
   settings: Settings,
@@ -39,5 +40,6 @@ const reducers = combineReducers({
   notifications: Notifications,
   orders: Orders,
   campaigns: Campaign,
+  sale: Sales,
 });
 export default reducers;

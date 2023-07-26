@@ -116,8 +116,10 @@ import {
   GET_ROL_USER,
   GENERATE_SELL_TICKET,
   GET_OUTPUT_PAGE_LISTGUIDE,
+  LIST_SALES
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
+import { listSales } from '../../../redux/actions/Sales';
 
 //ESTILOS
 const useStyles = makeStyles((theme) => ({
@@ -270,6 +272,9 @@ const SalesTable = (props) => {
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
   };
+  const toListSales = (payload) => {
+    dispatch(listSales(payload));
+  };
   const toDeleteMovement = (payload) => {
     dispatch(deleteMovement(payload));
   };
@@ -298,12 +303,17 @@ const SalesTable = (props) => {
     outputItems_pageListOutput,
     outputLastEvaluatedKey_pageListOutput,
   } = useSelector(({movements}) => movements);
+  const {
+    listSalesRes,
+    salesLastEvaluatedKey_pageListSales,
+  } = useSelector(({sale}) => sale);
   console.log('getMovementsRes', getMovementsRes);
   console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   console.log(
-    'outputLastEvaluatedKey_pageListOutput',
-    outputLastEvaluatedKey_pageListOutput,
+    'salesLastEvaluatedKey_pageListSales',
+    salesLastEvaluatedKey_pageListSales,
   );
+  console.log("listSalesRes", listSalesRes)
   const {deleteMovementRes} = useSelector(({movements}) => movements);
   console.log('deleteMovementRes', deleteMovementRes);
   const {successMessage} = useSelector(({movements}) => movements);
@@ -346,16 +356,15 @@ const SalesTable = (props) => {
     }
   }, []);
   useEffect(() => {
-    if (outputItems_pageListOutput) {
+    if (listSalesRes) {
       setListIsLoading(false);
     }
-  }, [outputItems_pageListOutput]);
+  }, [listSalesRes]);
   useEffect(() => {
     if (userDataRes && userDataRes.merchantSelected && getRolUserRes) {
       setListIsLoading(true);
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      dispatch({type: GET_MOVEMENTS, payload: undefined});
       let listPayload = {
         request: {
           payload: {
@@ -388,12 +397,14 @@ const SalesTable = (props) => {
           listPayload.request.payload.initialTime = Number(query.createdAt);
         }
       }
-
+      listPayload.request.payload.LastEvaluatedKey = null;
       searchPrivilege('outputsTable')
         ? (listPayload.request.payload.userCreated = null)
         : (listPayload.request.payload.userCreated = userDataRes.userId);
-      console.log('toGetMovements [userDataRes] ', listPayload);
-      toGetMovements(listPayload);
+      console.log('toListSales [userDataRes] ', listPayload);
+      
+    listPayload.request.payload.needItems = true;
+      toListSales(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
         listPayload.request.payload.movementDetailId = null;
@@ -456,8 +467,11 @@ const SalesTable = (props) => {
       searchPrivilege('outputsTable')
         ? (listPayload.request.payload.userCreated = null)
         : (listPayload.request.payload.userCreated = userDataRes.userId);
-      console.log('toGetMovements [actualDateRes] ', listPayload);
-      toGetMovements(listPayload);
+      console.log('toListSales [actualDateRes] ', listPayload);
+      listPayload.request.payload.LastEvaluatedKey = null;
+      
+    listPayload.request.payload.needItems = true;
+      toListSales(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
       }
@@ -484,7 +498,9 @@ const SalesTable = (props) => {
       };
       console.log('Se manda al ticket de venta', generateSellTicketRes);
       setIsLoading(false);
-      toGetMovements(listPayload);
+      
+    listPayload.request.payload.needItems = true;
+      toListSales(listPayload);
       window.open(`${generateSellTicketRes.enlace_del_pdf}`);
     }
   }, [generateSellTicketRes]);
@@ -525,9 +541,11 @@ const SalesTable = (props) => {
       },
     };
     listPayload.request.payload.LastEvaluatedKey =
-      outputLastEvaluatedKey_pageListOutput;
+    salesLastEvaluatedKey_pageListSales || null;
+    
+    listPayload.request.payload.needItems = true;
     console.log('listPayload111:handleNextPage:', listPayload);
-    toGetMovements(listPayload);
+    toListSales(listPayload);
     // setPage(page+1);
   };
 
@@ -546,7 +564,7 @@ const SalesTable = (props) => {
       // Si se hace clic en el mismo encabezado, cambiamos la dirección de ordenación
       setOrder(order === 'asc' ? 'desc' : 'asc');
       if (field !== 'totalPriceWithIgv') {
-        const sortedProducts = [...outputItems_pageListOutput].sort((a, b) => {
+        const sortedProducts = [...listSalesRes].sort((a, b) => {
           const descriptionA = a[`${field}`] ?? '';
           const descriptionB = b[`${field}`] ?? '';
           if (order === 'asc') {
@@ -567,7 +585,7 @@ const SalesTable = (props) => {
       setOrderBy(field);
       setOrder('asc');
       if (field !== 'totalPriceWithIgv') {
-        const sortedProducts = [...outputItems_pageListOutput].sort((a, b) => {
+        const sortedProducts = [...listSalesRes].sort((a, b) => {
           const descriptionA = a[`${field}`] ?? '';
           const descriptionB = b[`${field}`] ?? '';
           return descriptionB.localeCompare(descriptionA);
@@ -604,11 +622,15 @@ const SalesTable = (props) => {
     listPayload.request.payload.searchByDocument = '';
     listPayload.request.payload.typeDocumentClient = '';
     listPayload.request.payload.numberDocumentClient = '';
+    listPayload.request.payload.LastEvaluatedKey =
+    salesLastEvaluatedKey_pageListSales || null;
     searchPrivilege('outputsTable')
       ? (listPayload.request.payload.userCreated = null)
       : (listPayload.request.payload.userCreated = userDataRes.userId);
-    console.log('toGetMovements [searchOutputs] ', listPayload);
-    toGetMovements(listPayload);
+    console.log('toListSales [searchOutputs] ', listPayload);
+    
+    listPayload.request.payload.needItems = true;
+    toListSales(listPayload);
   };
   const newOutput = () => {
     Router.push('/sample/sales/new');
@@ -669,7 +691,6 @@ const SalesTable = (props) => {
       userDataRes.nombreCompleto;
     deletePayload.request.payload.userUpdatedMetadata.email = userDataRes.email;
 
-    dispatch({type: GET_MOVEMENTS, payload: undefined});
     toDeleteMovement(deletePayload);
     setOpen2(false);
     setTimeout(() => {
@@ -714,8 +735,12 @@ const SalesTable = (props) => {
       searchPrivilege('outputsTable')
         ? (listPayload.request.payload.userCreated = null)
         : (listPayload.request.payload.userCreated = userDataRes.userId);
-      console.log('toGetMovements [sendStatus] ', listPayload);
-      toGetMovements(listPayload);
+      console.log('toListSales [sendStatus] ', listPayload);
+      listPayload.request.payload.LastEvaluatedKey =
+    salesLastEvaluatedKey_pageListSales || null;
+    
+    listPayload.request.payload.needItems = true;
+      toListSales(listPayload);
     }, 2200);
   };
 
@@ -742,7 +767,7 @@ const SalesTable = (props) => {
   };
   const cleanList = () => {
     let listResult = [];
-    outputItems_pageListOutput.map((obj) => {
+    listSalesRes.map((obj) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       obj.codigo1 =
         showMinType(obj.movementType) +
@@ -1148,35 +1173,36 @@ const SalesTable = (props) => {
   };
 
   const findOutput = (outputId) => {
-    return outputItems_pageListOutput.find(
+    return listSalesRes.find(
       (obj) => obj.movementHeaderId == outputId,
     );
   };
-  const showObject = (codOutput, type) => {
-    codProdSelected = codOutput;
-    selectedOutput = findOutput(codOutput);
-    if (type == 'income') {
-      Router.push({
-        pathname: '/sample/finances/table',
-        query: {contableMovementId: selectedOutput.contableMovementId},
-      });
-    } else if (type == 'bill') {
-      Router.push({
-        pathname: '/sample/bills/table',
-        query: {billId: selectedOutput.billId},
-      });
-    } else if (type == 'referralGuide') {
-      Router.push({
-        pathname: '/sample/referral-guide/table',
-        query: {movementHeaderId: selectedOutput.movementHeaderId},
-      });
-    } else if (type == 'receipt') {
-      Router.push({
-        pathname: '/sample/receipts/table',
-        query: {receiptId: selectedOutput.receiptId},
-      });
-    } else {
-      return null;
+  const showObject = (id, type) => {
+    if(id){
+      if (type == 'income') {
+        window.open(`/sample/finances/table?contableMovementId=${id}`, '_blank');
+      } else if (type == 'bill') {
+        Router.push({
+          pathname: '/sample/bills/table',
+          query: {billId: id},
+        });
+      } else if (type == 'referralGuide') {
+        Router.push({
+          pathname: '/sample/referral-guide/table',
+          query: {movementHeaderId: id},
+        });
+      } else if (type == 'receipt') {
+        window.open(`/sample/receipts/table?receiptId=${id}`, '_blank');
+      } else if (type == 'ticket') {
+        window.open(id)
+      } else if (type == 'output') {
+        Router.push({
+          pathname: '/sample/output/table',
+          query: {movementHeaderId: id},
+        });
+      } else {
+        return null;
+      }
     }
   };
   const generateObject = (codOutput, type) => {
@@ -1285,94 +1311,6 @@ const SalesTable = (props) => {
         }
       } else {
         return 'No generado';
-      }
-    } else {
-      return 'No aplica';
-    }
-  };
-
-  const statusObject = (obj, exist, type, mintype, cod) => {
-    if (obj.movementSubType == 'sales') {
-      if (exist) {
-        if (mintype) {
-          return (
-            <Button
-              variant='secondary'
-              sx={{fontSize: '1em'}}
-              onClick={() => showObject(obj.movementHeaderId, type)}
-            >
-              {`${mintype} - ${cod}`}
-            </Button>
-          );
-        } else {
-          if (
-            type != 'ticket' &&
-            obj.documentsMovement &&
-            obj.documentsMovement.length > 0
-          ) {
-            let serialDocumentObj = obj.documentsMovement.filter(
-              (item) => item.typeDocument === type,
-            );
-            let serialDocument =
-              serialDocumentObj &&
-              serialDocumentObj.length > 0 &&
-              type != 'referralGuide'
-                ? serialDocumentObj[0].serialDocument
-                : 'Generado';
-
-            if (
-              serialDocumentObj &&
-              serialDocumentObj.length > 0 &&
-              type == 'referralGuide'
-            )
-              serialDocument =
-                serialDocumentObj.length == 1
-                  ? serialDocumentObj[0].serialDocument
-                  : 'Varias';
-
-            return (
-              <Button
-                variant='secondary'
-                sx={{fontSize: '1em'}}
-                onClick={() => showObject(obj.movementHeaderId, type)}
-              >
-                {serialDocument}
-              </Button>
-            );
-          } else if (type == 'ticket') {
-            return (
-              <Button
-                variant='secondary'
-                sx={{fontSize: '1em'}}
-                onClick={() => {
-                  window.open(obj.existSellTicket);
-                }}
-              >
-                NRO. {obj.codMovement.split('-')[1]}
-              </Button>
-            );
-          } else {
-            return (
-              <Button
-                variant='secondary'
-                sx={{fontSize: '1em'}}
-                onClick={() => showObject(obj.movementHeaderId, type)}
-              >
-                Generado
-              </Button>
-            );
-          }
-        }
-      } else {
-        return (
-          <Button
-            variant='secondary'
-            sx={{fontSize: '1em'}}
-            onClick={() => generateObject(obj.movementHeaderId, type)}
-          >
-            No Generado
-          </Button>
-        );
       }
     } else {
       return 'No aplica';
@@ -1507,12 +1445,14 @@ const SalesTable = (props) => {
     listPayload.request.payload.denominationClient =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toLowerCase();
     console.log('listPayload', listPayload);
-    dispatch({type: GET_MOVEMENTS, payload: undefined});
     searchPrivilege('outputsTable')
       ? (listPayload.request.payload.userCreated = null)
       : (listPayload.request.payload.userCreated = userDataRes.userId);
-    console.log('toGetMovements [filterData] ', listPayload);
-    toGetMovements(listPayload);
+    console.log('toListSales [filterData] ', listPayload);
+    listPayload.request.payload.LastEvaluatedKey = null;
+    
+    listPayload.request.payload.needItems = true;
+    toListSales(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
       (listPayload.request.payload.typeDocumentClient = '');
     listPayload.request.payload.numberDocumentClient = '';
@@ -1657,7 +1597,7 @@ const SalesTable = (props) => {
           Buscar
         </Button>
       </Stack>
-      <span>{`Items: ${outputItems_pageListOutput.length}`}</span>
+      <span>{`Items: ${listSalesRes.length}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -1694,11 +1634,12 @@ const SalesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {outputItems_pageListOutput &&
-            Array.isArray(outputItems_pageListOutput) &&
-            outputItems_pageListOutput.length > 0 &&
-            !isListLoading ? (
-              outputItems_pageListOutput.sort(compare).map((obj, index) => {
+            {listSalesRes &&
+            Array.isArray(listSalesRes) &&
+            listSalesRes.length >= 0 &&
+            !isListLoading 
+            ? (
+              listSalesRes.sort(compare).map((obj, index) => {
                 const style =
                   obj.descriptionProductsInfo &&
                   obj.descriptionProductsInfo.length != 0
@@ -1758,16 +1699,14 @@ const SalesTable = (props) => {
                       <TableCell
                         sx={{
                           color:
-                            obj.existIncome &&
+                            obj.proofOfPaymentId &&
                             Array.isArray(obj.documentsMovement) &&
                             obj.documentsMovement.length > 0
                               ? 'inherit'
                               : 'rgba(198, 50, 91, 1)',
                           fontWeight: 'bold',
                         }}
-                      >{`${showMinType(obj.movementType)} - ${
-                        obj.codMovement ? obj.codMovement.split('-')[1] : ''
-                      }`}</TableCell>
+                      >{obj.codMovement}</TableCell>
                       <TableCell>
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
@@ -1775,10 +1714,16 @@ const SalesTable = (props) => {
                         {convertToDateWithoutTime(obj.updatedAt)}
                       </TableCell>
                       <TableCell>
-                        Tipo Documento
+                        <IntlMessages id={`document.type.${obj.proofOfPaymentType}`}/>
                       </TableCell>
                       <TableCell>
-                        Número Documento
+                        <Button
+                          variant='secondary'
+                          sx={{fontSize: '1em'}}
+                          onClick={() => showObject(obj.proofOfPaymentId, obj.proofOfPaymentType)}
+                        >
+                          {obj.proofOfPaymentNumber}
+                        </Button>
                       </TableCell>
                       <TableCell>
                         {(obj.clientId
@@ -1789,8 +1734,8 @@ const SalesTable = (props) => {
                             : obj.clientName)}
                       </TableCell>
                       <TableCell align='center'>
-                        {obj.descriptionProductsInfo &&
-                        obj.descriptionProductsInfo.length != 0 ? (
+                        {obj.products &&
+                        obj.products.length != 0 ? (
                           <IconButton
                             onClick={() => checkProductsInfo(index)}
                             size='small'
@@ -1802,31 +1747,33 @@ const SalesTable = (props) => {
                         )}
                       </TableCell>
                       <TableCell align='center'>
-                        Subtotal
+                        {obj.totalPriceWithIgv - obj.totalIgv}
                       </TableCell>
                       <TableCell>
-                        IGV
+                        {Number(obj.totalIgv).toFixed(2)}
                       </TableCell>
                       <TableCell>
-                        Precio Total
-                      </TableCell>
-                      <TableCell align='center'>
-                        {statusObject(
-                          obj,
-                          obj.existIncome,
-                          'income',
-                          obj.codContableMovementRelated
-                            ? showMinTypeRelated(
-                                obj.codContableMovementRelated.split('-')[0],
-                              )
-                            : '',
-                          obj.codContableMovementRelated
-                            ? obj.codContableMovementRelated.split('-')[1]
-                            : '',
-                        )}
+                        {obj.totalPriceWithIgv}
                       </TableCell>
                       <TableCell>
-                        Salida
+                        <Button
+                          variant='secondary'
+                          sx={{fontSize: '1em'}}
+                          onClick={() => showObject(obj.contableMovement.contableMovementId, 'income')}
+                        >
+                          {`${showMinTypeRelated(
+                                "INCOME",
+                              )}-${obj.contableMovement.codMovement.split('-')[1]}`}
+                        </Button>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant='secondary'
+                          sx={{fontSize: '1em'}}
+                          onClick={() => obj.output?showObject(obj.output.outputId, 'output'):null}
+                        >
+                          {obj.output ? obj.output.codMovement : "No Generado"}
+                        </Button>
                       </TableCell>
                       <TableCell>
                         Aceptado Sunat
@@ -1870,12 +1817,13 @@ const SalesTable = (props) => {
                                   <TableCell>Código</TableCell>
                                   <TableCell>Descripcion</TableCell>
                                   <TableCell>Cantidad</TableCell>
+                                  <TableCell>Precio sin Igv</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {obj.descriptionProductsInfo !== undefined &&
-                                obj.descriptionProductsInfo.length !== 0 ? (
-                                  obj.descriptionProductsInfo.map(
+                                {obj.products !== undefined &&
+                                obj.products.length !== 0 ? (
+                                  obj.products.map(
                                     (subProduct, index) => {
                                       return (
                                         <TableRow key={index}>
@@ -1891,182 +1839,13 @@ const SalesTable = (props) => {
                                           <TableCell>
                                             {subProduct.quantityMovement}
                                           </TableCell>
-                                        </TableRow>
-                                      );
-                                    },
-                                  )
-                                ) : (
-                                  <></>
-                                )}
-                              </TableBody>
-                            </Table>
-                          </Box>
-                        </Collapse>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow key={`cont-${index}`}>
-                      <TableCell
-                        style={{paddingBottom: 0, paddingTop: 0}}
-                        colSpan={6}
-                      >
-                        <Collapse
-                          in={openContableMovements && index == rowNumber}
-                          timeout='auto'
-                          unmountOnExit
-                        >
-                          <Box sx={{margin: 0}}>
-                            <Table size='small' aria-label='purchases'>
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell>Número documento</TableCell>
-                                  <TableCell>Fecha</TableCell>
-                                  <TableCell>Monto</TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {obj.contableMovements !== undefined &&
-                                obj.contableMovements.length !== 0 ? (
-                                  obj.contableMovements.map(
-                                    (contableMovement, index) => {
-                                      return (
-                                        <TableRow
-                                          key={index}
-                                          sx={{cursor: 'pointer'}}
-                                          hover
-                                          onClick={() =>
-                                            goToMovements(contableMovement)
-                                          }
-                                        >
                                           <TableCell>
-                                            {contableMovement.serialNumberBill}
-                                          </TableCell>
-                                          <TableCell>
-                                            {contableMovement.billIssueDate}
-                                          </TableCell>
-                                          <TableCell>
-                                            {contableMovement.totalAmount}
+                                            {subProduct.unitPrice}
                                           </TableCell>
                                         </TableRow>
                                       );
                                     },
                                   )
-                                ) : (
-                                  <></>
-                                )}
-                              </TableBody>
-                            </Table>
-                          </Box>
-                        </Collapse>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow key={`doc-${index}`}>
-                      <TableCell
-                        style={{paddingBottom: 0, paddingTop: 0}}
-                        colSpan={6}
-                      >
-                        <Collapse
-                          in={openDocuments && index == rowNumber}
-                          timeout='auto'
-                          unmountOnExit
-                        >
-                          <Box sx={{margin: 0}}>
-                            <Table size='small' aria-label='purchases'>
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell>Fecha de documento</TableCell>
-                                  <TableCell>Número de documento</TableCell>
-                                  <TableCell>Tipo de documento</TableCell>
-                                  <TableCell>Anulado?</TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {groupedDocuments.length !== 0 ? (
-                                  groupedDocuments.map((delivery, index) => (
-                                    <React.Fragment key={index}>
-                                      <TableRow>
-                                        <TableCell
-                                          colSpan={4}
-                                          sx={{cursor: 'pointer'}}
-                                          hover
-                                          onClick={() =>
-                                            handleToggle(delivery.distribution)
-                                          }
-                                        >
-                                          <IconButton size='small'>
-                                            {openDelivery &&
-                                            deliverySelected ==
-                                              delivery.distribution ? (
-                                              <KeyboardArrowUpIcon />
-                                            ) : (
-                                              <KeyboardArrowDownIcon />
-                                            )}
-                                          </IconButton>
-                                          {delivery.distribution
-                                            ? `Distribución: ${
-                                                delivery.routeName ||
-                                                delivery.distribution
-                                              }`
-                                            : 'Más comprobantes'}
-                                        </TableCell>
-                                        {delivery.distribution ? (
-                                          <TableCell
-                                            colSpan={4}
-                                            sx={{cursor: 'pointer'}}
-                                            hover
-                                            onClick={() =>
-                                              goToDistribution(
-                                                delivery.distribution,
-                                              )
-                                            }
-                                          >
-                                            <IconButton
-                                              size='small'
-                                              color='secondary'
-                                            >
-                                              <ArrowForwardIcon />
-                                            </IconButton>
-                                          </TableCell>
-                                        ) : null}
-                                      </TableRow>
-                                      {delivery.items.length > 0 &&
-                                      openDelivery &&
-                                      deliverySelected ==
-                                        delivery.distribution ? (
-                                        delivery.items.map(
-                                          (subDocument, subIndex) => (
-                                            <TableRow
-                                              key={subIndex}
-                                              sx={{cursor: 'pointer'}}
-                                              hover
-                                              onClick={() =>
-                                                goToDocument(subDocument)
-                                              }
-                                            >
-                                              <TableCell>
-                                                {subDocument.issueDate}
-                                              </TableCell>
-                                              <TableCell>
-                                                {subDocument.serialDocument}
-                                              </TableCell>
-                                              <TableCell>
-                                                {translateValue(
-                                                  'DOCUMENTTYPE',
-                                                  subDocument.typeDocument.toUpperCase(),
-                                                )}
-                                              </TableCell>
-                                              <TableCell>
-                                                {showCanceled(
-                                                  subDocument.cancelStatus,
-                                                )}
-                                              </TableCell>
-                                            </TableRow>
-                                          ),
-                                        )
-                                      ) : (
-                                        <></>
-                                      )}
-                                    </React.Fragment>
-                                  ))
                                 ) : (
                                   <></>
                                 )}
@@ -2084,7 +1863,7 @@ const SalesTable = (props) => {
             )}
           </TableBody>
         </Table>
-        {outputLastEvaluatedKey_pageListOutput ? (
+        {salesLastEvaluatedKey_pageListSales ? (
           <Stack spacing={2}>
             <IconButton onClick={() => handleNextPage()} size='small'>
               Siguiente <ArrowForwardIosIcon fontSize='inherit' />

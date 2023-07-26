@@ -52,6 +52,9 @@ import {
   getMovements,
   getOutputItems_pageListOutput,
 } from '../../../redux/actions/Movements';
+import {
+  newSale
+} from '../../../redux/actions/Sales';
 import Router, {useRouter} from 'next/router';
 import ProductsList from './ProductsList';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
@@ -65,9 +68,9 @@ import AddDocumentForm from '../DocumentSelector/AddDocumentForm';
 import {
   FETCH_ERROR,
   FETCH_SUCCESS,
-  ADD_RECEIPT,
+  NEW_SALE,
   GET_BUSINESS_PARAMETER,
-  GET_MOVEMENTS,
+  LIST_SALES,
 } from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
@@ -144,8 +147,8 @@ const NewSale = (props) => {
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
-  const getAddReceipt = (payload) => {
-    dispatch(addReceipt(payload));
+  const getAddSale = (payload) => {
+    dispatch(newSale(payload));
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
@@ -181,7 +184,7 @@ const NewSale = (props) => {
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   //CALENDARIO
   const [value, setValue] = React.useState(
-    Date.now() /* Number(query.createdAt) */,
+    Date.now()
   );
   const [value2, setValue2] = React.useState(
     query.deletedAt ? query.deletedAt : Date.now(),
@@ -209,7 +212,7 @@ const NewSale = (props) => {
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const {newSaleRes} = useSelector(({sale}) => sale);
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
     /* guide: '', */
@@ -233,17 +236,6 @@ const NewSale = (props) => {
     totalField: '',
     totalFieldIgv: '',
     money_unit: '',
-  };
-  let listPayload = {
-    request: {
-      payload: {
-        initialTime: null,
-        finalTime: null,
-        businessProductCode: null,
-        movementType: 'OUTPUT',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
   };
   let businessParameterPayload = {
     request: {
@@ -571,7 +563,7 @@ const NewSale = (props) => {
     setSubmitting(true);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: ADD_RECEIPT, payload: undefined});
+    dispatch({type: NEW_SALE, payload: undefined});
     console.log('listDocuments', listDocuments);
     let parsedDocuments = listDocuments.map((obj) => {
       return {
@@ -591,13 +583,10 @@ const NewSale = (props) => {
         request: {
           payload: {
             merchantId: userDataRes.merchantSelected.merchantId,
-            movementTypeMerchantId: query.movementTypeMerchantId,
-            movementHeaderId: query.movementHeaderId,
             contableMovementId: query.contableMovementId || '',
             contableMovements: [],
             exchangeRate: exchangeRate,
             moneyUnit: moneyToConvert,
-            createdAt: Number(query.createdAt),
             clientId: selectedClient && selectedClient.clientId ? selectedClient.clientId : "",
             client: {
                 id: selectedClient.clientId || "",
@@ -608,7 +597,8 @@ const NewSale = (props) => {
             totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)),
             issueDate: specialFormatToSunat(value),
             serial: serial,
-            documentIntern: query.documentIntern,
+            documentIntern: "",
+            documentsMovement: [],
             clientEmail: data.clientEmail,
             transactionNumber: data.transactionNumber || '',
             /* numberBill: 3, */
@@ -642,7 +632,6 @@ const NewSale = (props) => {
             proofOfPaymentType: proofOfPaymentType,
             referralGuides: parsedDocuments,
             typePDF: userDataRes.merchantSelected.typeMerchant,
-            folderMovement: query.folderMovement,
             denominationMerchant:
               userDataRes.merchantSelected.denominationMerchant,
             sendEmail: sendEmail,
@@ -659,7 +648,7 @@ const NewSale = (props) => {
       throw new Error('Algo pasa al crear el payload de boleta');
     }
     console.log('finalPayload', finalPayload);
-    //getAddReceipt(finalPayload);
+    getAddSale(finalPayload);
     console.log('Data formulario principal', finalPayload);
     setOpenStatus(true);
     setSubmitting(false);
@@ -669,16 +658,16 @@ const NewSale = (props) => {
   const registerSuccess = () => {
     return (
       successMessage != undefined &&
-      addReceiptRes != undefined &&
-      !('error' in addReceiptRes)
+      newSaleRes != undefined &&
+      !('error' in newSaleRes)
     );
   };
 
   const registerError = () => {
     return (
       (successMessage != undefined &&
-        addReceiptRes !== undefined &&
-        'error' in addReceiptRes) ||
+        newSaleRes !== undefined &&
+        'error' in newSaleRes) ||
       errorMessage
     );
   };
@@ -719,8 +708,8 @@ const NewSale = (props) => {
               id='alert-dialog-description'
             >
               Se ha producido un error al registrar. <br />
-              {addReceiptRes !== undefined && 'error' in addReceiptRes
-                ? addReceiptRes.error
+              {newSaleRes !== undefined && 'error' in newSaleRes
+                ? newSaleRes.error
                 : null}
             </DialogContentText>
           </DialogContent>
@@ -738,7 +727,15 @@ const NewSale = (props) => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      dispatch({type: GET_MOVEMENTS, payload: []});
+      dispatch({type: LIST_SALES, payload: [], request: []});
+      let listPayload = {
+        request: {
+          payload: {
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
       toGetMovements(listPayload);
       setOpenStatus(false);
       Router.push('/sample/sales/table');
@@ -1215,6 +1212,21 @@ const NewSale = (props) => {
                         label='Tipo de comprobante'
                         onChange={
                           (event) => {
+                            if(event.target.value == 'bill'){
+                              let serieParameter = businessParameter.find(
+                                (obj) => obj.abreParametro == 'SERIES_BILL',
+                              );
+                              setSerial(serieParameter.metadata ? serieParameter.metadata : '');
+                            }
+                            if(event.target.value == 'receipt'){
+                              let serieParameter = businessParameter.find(
+                                (obj) => obj.abreParametro == 'SERIES_RECEIPT',
+                              );
+                              setSerial(serieParameter.metadata ? serieParameter.metadata : '');
+                            }
+                            if(event.target.value == 'ticket'){
+                              setSerial('S');
+                            }
                             setProofOfPaymentType(event.target.value);
                           }
                         }

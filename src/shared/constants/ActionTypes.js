@@ -364,3 +364,9 @@ export const CREATE_CAMPAIGN = 'create_campaign';
 export const LIST_CAMPAIGN = 'list_campaign';
 export const DELETE_CAMPAIGN = 'delete_campaign';
 export const UPDATE_CAMPAIGN = 'update_capaign';
+
+//SALE
+export const LIST_SALES = 'list_sales';
+export const NEW_SALE = 'new_sale';
+export const DELETE_SALE = 'delete_sale';
+export const UPDATE_SALE = 'update_sale';
