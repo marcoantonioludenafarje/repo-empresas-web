@@ -179,6 +179,9 @@ const NewSale = (props) => {
   const [earningGeneration, setEarningGeneration] = React.useState(
     query.contableMovementId ? false : true,
   );
+  const [proofOfPaymentGeneration, setProofOfPaymentGeneration] = React.useState(
+    query.proofOfPaymentId ? false : true,
+  );
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [selectedClient, setSelectedClient] = React.useState('');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
@@ -450,6 +453,10 @@ const NewSale = (props) => {
     setEarningGeneration(isInputChecked);
     console.log('Evento de earningGeneration', isInputChecked);
   };
+  const handleProofOfPaymentGeneration = (event, isInputChecked) => {
+    setProofOfPaymentGeneration(isInputChecked);
+    console.log('Evento de proofOfPaymentGeneration', isInputChecked)
+  }
   const valueWithIGV = (value) => {
     const IGV = igvDefault;
     const precioConIGV = (value * (1 + IGV)).toFixed(10);
@@ -1186,7 +1193,7 @@ const NewSale = (props) => {
                   sx={{maxWidth: 500, mx: 'auto', mb: 4, mt: 4}}
                 >
                   <Grid
-                    xs={6}
+                    xs={12}
                     sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
                   >
                     <FormControlLabel
@@ -1195,6 +1202,19 @@ const NewSale = (props) => {
                         <Checkbox
                           onChange={handleEarningGeneration}
                           defaultChecked={!query.contableMovementId}
+                        />
+                      }
+                    />
+                  </Grid>
+                  <Grid
+                    xs={6}
+                    sx={{px: 1, mt: 2}}>
+                    <FormControlLabel
+                      label='Generar Comprobante'
+                      control={
+                        <Checkbox
+                          onChange={handleProofOfPaymentGeneration}
+                          defaultChecked={!query.proofOfPaymentId}
                         />
                       }
                     />
