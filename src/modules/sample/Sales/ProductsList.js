@@ -155,12 +155,12 @@ const ProductsList = ({
                       }}
                     />
                   </TableCell>
-                  <TableCell>{obj.priceBusinessMoneyWithIgv}</TableCell>
+                  <TableCell>{obj.unitPrice}</TableCell>
                   {igvEnabled ? (
                     <TableCell>
                       {obj.taxCode == 1000
-                        ? valueWithIGV(obj.priceBusinessMoneyWithIgv)
-                        : obj.priceBusinessMoneyWithIgv}
+                        ? valueWithIGV(obj.unitPrice)
+                        : obj.unitPrice}
                     </TableCell>
                   ) : null}
                   <TableCell>{Number(obj.subtotal.toFixed(2))}</TableCell>

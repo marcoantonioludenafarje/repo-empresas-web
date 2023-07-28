@@ -180,6 +180,7 @@ const Distribution = (props) => {
   const [nombreAgrupador, setNombreAgrupador] = React.useState('');
   const [cantidadAgrupacion, setCantidadAgrupacion] = React.useState('');
   const [routesSummary, setRoutesSummary] = React.useState([]);
+  const [productsSummary, setProductsSummary] = React.useState([]);
   const [summaryRowNumber, setSummaryRowNumber] = React.useState(0);
   const [openSummaryProducts, setOpenSummaryProducts] = React.useState(false);
   const [openSummaryPoints, setOpenSummaryPoints] = React.useState(false);
@@ -1059,6 +1060,30 @@ const Distribution = (props) => {
 
     return Object.values(acumulador);
   };
+  // Creamos una función para acumular los productos por conductor (driver)
+  const acumularProductos = (entregas) => {
+    const acumulador = {};
+  
+    entregas.forEach((entrega) => {
+      entrega.products.forEach((producto) => {
+        const productoKey = producto.product;
+  
+        if (!acumulador[productoKey]) {
+          acumulador[productoKey] = {
+            product: producto.product,
+            count: producto.count,
+            description: producto.description,
+            weight: producto.weight,
+            unitMeasure: producto.unitMeasure,
+          };
+        } else {
+          acumulador[productoKey].count += producto.count;
+        }
+      });
+    });
+  
+    return Object.values(acumulador);
+  };  
   const handleExport = () => {
     exportToExcel(products, deliveries);
   };
@@ -1423,8 +1448,11 @@ const Distribution = (props) => {
           variant='outlined'
           onClick={() => {
             const productosPorConductor = acumularProductosPorConductor(routes)
+            const productosResumen = acumularProductos(routes)
             console.log("routesSummary", productosPorConductor)
+            console.log("productsSummary", productosResumen)
             setRoutesSummary(productosPorConductor)
+            setProductsSummary(productosResumen)
             setOpenSummary(true)
           }}
         >
@@ -1575,7 +1603,7 @@ const Distribution = (props) => {
                 console.log(event.target.value);
                 setSummaryType(event.target.value);
               }}
-              defaultValue="driver"
+              value={summaryType}
             >
               <MenuItem
                 value="driver"
@@ -1584,10 +1612,10 @@ const Distribution = (props) => {
                 Chofer
               </MenuItem>
               <MenuItem
-                value="arrivalPoint"
+                value="all"
                 style={{fontWeight: 200}}
               >
-                Puntos de Llegada
+                Todo
               </MenuItem>
             </Select>
           </FormControl>
@@ -1606,12 +1634,12 @@ const Distribution = (props) => {
           /> 
         </Stack>
           
-          <IconButton edge='end' onClick={handleClose} aria-label='close'>
+          <IconButton edge='end' onClick={() => setOpenSummary(false)} aria-label='close'>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        
-        <Table>
+        {summaryType == 'driver' ? (
+          <Table>
           <TableHead>
             <TableRow>
               <TableCell>Chofer</TableCell>
@@ -1754,6 +1782,43 @@ const Distribution = (props) => {
             )}
           </TableBody>
         </Table>
+        ) : null}
+        {summaryType == 'all' ? (
+          <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Producto</TableCell>
+              <TableCell>Descripcion</TableCell>
+              <TableCell>Cantidad</TableCell>
+              <TableCell>Peso</TableCell>
+              <TableCell>Peso Total</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {productsSummary.map((fila, indexSummary) => 
+              {
+                return (
+                <>
+                  <TableRow key={indexSummary}>
+                    <TableCell>{fila.product}</TableCell>
+                    <TableCell>{fila.description}</TableCell>
+                    <TableCell>
+                      {fila.count}
+                    </TableCell>
+                    <TableCell>
+                        {fila.weight}
+                    </TableCell>
+                    <TableCell>
+                        {fila.count*fila.weight}
+                    </TableCell>
+                  </TableRow>
+                </>)
+                }
+            )}
+          </TableBody>
+        </Table>
+        ) : null}
+        
       </Dialog>
       {/* <Dialog
         open={openDelivery}

@@ -539,7 +539,7 @@ const AppHeader = () => {
               variant='contained'
               onClick={() =>
                 window.open(
-                  `https://dev.ecommerce.tunexo.pe/ecommerce?business=${userDataRes.merchantSelected.ecommerceMerchantSlug}`,
+                  `https://dynamic-seahorse-63fc0f.netlify.app/ecommerce?business=${userDataRes.merchantSelected.ecommerceMerchantSlug}`,
                 )
               }
             >
