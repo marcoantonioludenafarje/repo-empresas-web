@@ -189,6 +189,10 @@ export default function Views(props) {
     }
   };
 
+  const buscarCampaña = () => {
+    console.log('prueba boton ');
+  };
+
   useEffect(() => {
     filterCampaigns(searchValue);
   }, [searchValue, listCampaigns]);
@@ -216,7 +220,7 @@ export default function Views(props) {
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          onClick={''}
+          onClick={buscarCampaña()}
         >
           Buscar
         </Button>
@@ -248,10 +252,14 @@ export default function Views(props) {
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
               >
                 <TableCell>{convertToDate(row.createdAt)}</TableCell>
-                <TableCell component='th' scope='row'>
+                <TableCell
+                  component='th'
+                  scope='row'
+                  style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                >
                   {row.campaignName}
                 </TableCell>
-                <TableCell>
+                <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
                   {row.messages.map((text) => text.text).join(' | ')}
                 </TableCell>
                 <TableCell>{convertToDate(row.scheduledAt)}</TableCell>
