@@ -983,6 +983,7 @@
   "product.type.rawMaterial": "Insumo",
   "product.type.intermediateProduct": "Producto intermedio",
   "product.type.endProduct": "Producto final",
+  "product.type.service": "Servicio",
   "product.secondaryUnitMeasure.ml": "Mililitro (ML)",
   "product.secondaryUnitMeasure.l": "Litro (L)",
   "product.secondaryUnitMeasure.mgr": "Miligramo (MGR)",

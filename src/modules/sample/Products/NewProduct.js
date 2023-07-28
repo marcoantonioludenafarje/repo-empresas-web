@@ -739,7 +739,7 @@ const NewProduct = (props) => {
                     unitMeasureMoney: money_unit,
                     category: selectedCategory,
                     tags: selectedFilters,
-                    typeProduct: objSelects.typeProduct,
+                    typeProduct: unitMeasure == 'ZZ' ? 'service' : objSelects.typeProduct,
                     imgKeys: selectedJsonImages,
                     unitMeasure: unitMeasure,
                     unitsToProduce: 1,
