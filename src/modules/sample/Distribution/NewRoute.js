@@ -567,6 +567,9 @@ const Distribution = (props) => {
             //   msjError = msjError + "PRODUCTO: Error con el producto: '"+item2['DESCRIPCION']+"' tiene el símbolo | o el - en su descripción, debe de retirarlos.  ";
             //   return;
             // }
+            console.log("producto no encontrado", item2)
+            console.log("producto no encontrado", product)
+
             if (
               item2['ALIAS'].trim().replace(/ /g, '').toUpperCase() ===
               product.alias.trim().replace(/ /g, '').toUpperCase()
@@ -576,9 +579,7 @@ const Distribution = (props) => {
           });
           console.log('productInfo::', productInfo);
           if (productInfo) {
-            console.log('productInfo12::', productInfo);
             if (productInfo['DOSIFICACION']) {
-              console.log('productInfo', productInfo);
               productInfo['DOSIFICACION'].split('|').forEach((inputProduct) => {
                 let productInfo2 = products.find(
                   (item3) =>
@@ -631,16 +632,17 @@ const Distribution = (props) => {
             } else {
               if (productInfo) {
                 let existingProduct = productsInfo.find(
-                  (p) => p.product === productInfo['CODIGO'],
+                  (p) => String(p.product) === String(productInfo['CODIGO']),
                 );
                 if (existingProduct) {
                   existingProduct.count += product.quantity;
                 } else {
+                  console.log("productInfo problema", productInfo);
                   productsInfo.push({
-                    productId: `${productInfo['CODIGO'].padStart(32, '0')}-${
+                    productId: `${String(productInfo['CODIGO']).padStart(32, '0')}-${
                       userDataRes.merchantSelected.merchantId
                     }`,
-                    product: productInfo['CODIGO'],
+                    product: String(productInfo['CODIGO']),
                     description: productInfo['DESCRIPCION'].trim(),
                     unitMeasure: productInfo['UNIDAD DE MEDIDA'],
                     typeProduct:
@@ -660,12 +662,13 @@ const Distribution = (props) => {
               }
             }
           } else {
+            console.log("llega aquí", product);
             msjError =
               msjError +
               'PRODUCTO(fila ' +
               fila +
               "): El producto: '" +
-              product.product +
+              product.alias +
               "' no existe, debe de coincidir con algun producto listado en la pestaña PRODUCTOS.  ";
             return;
           }
