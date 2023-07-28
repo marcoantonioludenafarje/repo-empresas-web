@@ -535,24 +535,24 @@ const Distribution = (props) => {
           existeError = true;
           return;
         } else {
-          if (parseInt(product.split('-')[1].trim()) <= 0) {
-            msjError =
-              msjError +
-              'PRODUCTOS(fila ' +
-              fila +
-              "): Error con el producto: '" +
-              tempprod +
-              "' La cantidad debe de ser mayor a CERO.  ";
-            existeError = true;
-            return;
-          } else {
+          // if (parseInt(product.split('-')[1].trim()) <= 0) {
+            // msjError =
+            //   msjError +
+            //   'PRODUCTOS(fila ' +
+            //   fila +
+            //   "): Error con el producto: '" +
+            //   tempprod +
+            //   "' La cantidad debe de ser mayor a CERO.  ";
+            // existeError = true;
+            // return;
+          // } else {
             return {
               alias: product.split('-')[0].trim(),
               quantity: parseInt(product.split('-')[1].trim()),
             };
-          }
+          // }
         }
-      });
+      }).filter(obj => obj.quantity > 0);
 
       let totalWeight = 0;
       let productsInfo = [];
