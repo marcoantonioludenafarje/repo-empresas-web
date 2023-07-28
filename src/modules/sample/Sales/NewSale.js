@@ -332,7 +332,12 @@ const NewSale = (props) => {
       console.log('moneyUnit', moneyUnit);
     }
   }, [businessParameter]);
-
+  useEffect(() => {
+    if (newSaleRes) {
+      //setIsLoading(false);
+      window.open(`${newSaleRes.enlace_del_pdf}`);
+    }
+  }, [newSaleRes]);
   useEffect(() => {
     if (globalParameter != undefined && moneyUnit) {
       let obtainedExchangeRate = globalParameter.find(
@@ -615,6 +620,7 @@ const NewSale = (props) => {
             creditSale: paymentWay == 'credit',
             methodToPay: paymentMethod,
             earningGeneration: earningGeneration,
+            proofOfPaymentGeneration: proofOfPaymentGeneration,
             referralGuideSerial: data.guide ? data.guide : '',
             dueDate: specialFormatToSunat(value),
             observation: data.observation ? data.observation : '',
@@ -1080,6 +1086,7 @@ const NewSale = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
+                  {paymentWay == 'credit' ? (
                   <Grid xs={6} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='quota-label' style={{fontWeight: 200}}>
@@ -1108,8 +1115,8 @@ const NewSale = (props) => {
                           })}
                       </Select>
                     </FormControl>
-                  </Grid>
-                </Grid>
+                  </Grid> ) : null}
+                </Grid> 
 
                 <Grid
                   container
