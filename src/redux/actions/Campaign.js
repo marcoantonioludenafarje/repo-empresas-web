@@ -80,3 +80,20 @@ export const deleteCampaigns = (payload) => {
     }
   };
 };
+
+export const updateCampaigns = (payload) => {
+  return async (dispatch, getState) => {
+    dispatch({type: FETCH_START, payload: {process: 'UPDATE_CAMPAIGNS'}});
+    try {
+      const data = await API.post('tunexo', '/inventory/campaigns/update', {
+        body: payload,
+      });
+      console.log('Campaña data update', data);
+      dispatch({type: UPDATE_CAMPAIGN, payload: data.response.payload});
+      dispatch({type: FETCH_SUCCESS, payload: 'success'});
+    } catch (error) {
+      console.log('Update error campaña', data);
+      dispatch({type: FETCH_ERROR, payload: 'error'});
+    }
+  };
+};

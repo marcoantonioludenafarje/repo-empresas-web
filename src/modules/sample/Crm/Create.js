@@ -27,6 +27,16 @@ import {
   IconButton,
   TextField,
   Switch,
+  TableContainer,
+  TableCell,
+  Table,
+  TableHead,
+  TableRow,
+  Checkbox,
+  TableBody,
+  Stack,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 
 import axios from 'axios';
@@ -38,6 +48,7 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import CheckIcon from '@mui/icons-material/Check';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import {red} from '@mui/material/colors';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import {makeStyles} from '@mui/styles';
@@ -89,6 +100,9 @@ const Create = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
   const [selectedClients, setSelectedClients] = useState([]);
   const [selectedClientCount, setSelectedClientCount] = useState(0);
@@ -102,7 +116,17 @@ const Create = (props) => {
   const [publishDate, setPublishDate] = React.useState(
     Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
   );
-  let fecha = new Date();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [variations, setVariations] = useState(['Variación 1']);
+  const [numVariations, setNumVariations] = useState(1);
+  //const [message, setMessage] = useState('');
+
+  // Function to add more variations
+  const handleAddVariation = () => {
+    const newVariation = `Variación ${numVariations + 1}`;
+    setVariations([...variations, newVariation]);
+    setNumVariations(numVariations + 1);
+  };
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
@@ -127,10 +151,11 @@ const Create = (props) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  const handleAddAccordion = () => {
-    const newId = campaignContents.length + 1;
-    setCampaignContents([...campaignContents, {id: newId, content: ''}]);
-  };
+  // Código de agregar acordion
+  // const handleAddAccordion = () => {
+  //   const newId = campaignContents.length + 1;
+  //   setCampaignContents([...campaignContents, {id: newId, content: ''}]);
+  // };
 
   const handleContentChange = (id, content) => {
     console.log('content Mensaje', content);
@@ -211,7 +236,7 @@ const Create = (props) => {
       getClients(listPayload);
       // setFirstload(true);
     }
-  }, [userDataRes]);
+  }, [userDataRes, listadeTags]);
 
   useEffect(() => {
     switch (process) {
@@ -333,8 +358,10 @@ const Create = (props) => {
               campaignName: data.campaignName,
               scheduledAt: data.date,
               receivers: {
+                type: 'client',
                 urlClients: '',
               },
+              robotId: 'ID_BOT_CUENTA_SOPORTE',
               messages: [
                 {
                   order: 1,
@@ -362,6 +389,7 @@ const Create = (props) => {
             },
           ],
           merchantId: userDataRes.merchantSelected.merchantId,
+          levelBusiness: 'ORO',
         },
       },
     };
@@ -565,7 +593,83 @@ const Create = (props) => {
     if (clientSelection === 'Algunos') {
       return selectedClients.length;
     }
+    return 0;
   };
+
+  // Función para manejar el cambio en el checkbox del encabezado
+  const handleHeaderCheckboxChange = (e) => {
+    if (e.target.checked) {
+      const newSelection = listClients.map((row) => row.clientId);
+      console.log('Confeti header', newSelection);
+      setSelectedClients(newSelection);
+    } else {
+      setSelectedClients([]);
+    }
+  };
+
+  // Función para verificar si un cliente está seleccionado
+  const isClientSelected = (clientId) => selectedClients.includes(clientId);
+
+  // Función para manejar el cambio en los checkboxes individuales
+  const handleRowCheckboxChange = (clientId) => {
+    if (isClientSelected(clientId)) {
+      setSelectedClients((prevSelection) =>
+        prevSelection.filter((id) => id !== clientId),
+      );
+
+      console.log('Selección >>>', selectedClients);
+    } else {
+      setSelectedClients((prevSelection) => [...prevSelection, clientId]);
+      console.log('Selecion else >>', selectedClients);
+    }
+  };
+
+  // Calcula si todos los clientes están seleccionados
+  const isAllSelected = selectedClients.length === listClients.length;
+  const isSomeSelected = selectedClients.length > 0 && !isAllSelected;
+
+  const [searchDialogResults, setSearchDialogResults] = useState([]);
+  const [searchDialogValue, setSearchDialogValue] = useState('');
+  // Filtros en el dialog Clientes
+  const searchClients = (event) => {
+    console.log('Evento', event.target);
+    if (searchDialogValue) {
+      console.log('VALOR DEL SEARCH', searchDialogValue);
+      const filteredClients = listClients.filter((client) =>
+        client.denominationClient
+          .toLowerCase()
+          .includes(searchDialogValue.toLowerCase()),
+      );
+      setSearchDialogResults(filteredClients);
+    } else if (selectedTags.length > 0) {
+      console.log('Entra al slectedTags', selectedTags);
+      const filteredClients = listClients.filter((client) => {
+        let clienttags = verTags(client, businessParameter);
+        let splittags = clienttags.split(' | ');
+        console.log('TAGS >>>', splittags);
+        let hasMatchingTag = splittags.some((tag) =>
+          selectedTags.includes(tag),
+        );
+        console.log('TAGS >>> MATCH', hasMatchingTag);
+        return hasMatchingTag;
+      });
+      setSearchDialogResults(filteredClients);
+    } else {
+      setSearchDialogResults(listClients);
+    }
+  };
+  //BUSQUEDA
+  const handleSearchValues = (e) => {
+    setSearchDialogValue(e.target.value);
+    if (e.key === 'Enter') {
+      searchClients();
+    }
+  };
+
+  useEffect(() => {
+    setSearchDialogResults(listClients);
+    console.log('clientes antes>>', searchDialogResults);
+  }, [listClients]);
 
   return (
     <Card sx={{p: 4}}>
@@ -640,7 +744,7 @@ const Create = (props) => {
                   </Grid>
                   <Grid container spacing={2}>
                     {/* Primer Grid - Contiene el Clientes Box */}
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={6}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -690,7 +794,7 @@ const Create = (props) => {
                     </Grid>
 
                     {/* Segundo Grid - Contiene el componente Autocomplete */}
-                    <Grid item xs={12} md={4}>
+                    {/* <Grid item xs={12} md={4}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -742,10 +846,10 @@ const Create = (props) => {
                           )}
                         />
                       </Box>
-                    </Grid>
+                    </Grid> */}
 
                     {/* Tercer Grid - Contiene el box image */}
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={6}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -820,17 +924,6 @@ const Create = (props) => {
                       </Box>
                     </Grid>
                   </Grid>
-                  {/*Mensaje de campaña */}
-                  {/* <Grid item xs={12} md={12}>
-                    <AppTextField
-                      label='Contenido de la Campaña *'
-                      name='campaignContent'
-                      variant='outlined'
-                      multiline
-                      rows={4}
-                      sx={{width: '100%', my: 2}}
-                    />
-                  </Grid> */}
                   <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
                     <Typography sx={{fontSize: 18, fontWeight: 600}}>
                       Total de clientes: {totaldeClientes()}
@@ -869,7 +962,7 @@ const Create = (props) => {
                   ))}
 
                   {/* Botón "Más" para agregar un nuevo acordeón */}
-                  <Grid container item xs={12} justifyContent='center'>
+                  {/* <Grid container item xs={12} justifyContent='center'>
                     <Button
                       variant='outlined'
                       color='primary'
@@ -878,43 +971,75 @@ const Create = (props) => {
                     >
                       Más
                     </Button>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
-                <Grid container item xs={12} justifyContent='center'>
-                  <Button
-                    variant='outlined'
-                    color='primary'
-                    startIcon={<AddCircleOutlineOutlinedIcon />}
-                  >
-                    Generar Variación
-                  </Button>
-                </Grid>
-                ;
-                {'showSecondAccordion' && (
-                  <Grid item xs={12} md={12}>
-                    <Accordion>
-                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        Mensaje N. 2 (Variación)
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Grid item xs={12} md={12}>
-                          <AppTextField
-                            label='Contenido de la Campaña *'
-                            name='campaignContent2'
-                            variant='outlined'
-                            multiline
-                            rows={4}
-                            value={'generatedVariation'}
-                            onChange={
-                              '(event) => setGeneratedVariation(event.target.value)'
-                            }
-                            sx={{width: '100%', my: 2}}
-                          />
-                        </Grid>
-                      </AccordionDetails>
-                    </Accordion>
+                {selectedClients.length > 50 ? (
+                  <Grid container item xs={12} justifyContent='center'>
+                    <Button
+                      variant='outlined'
+                      color='primary'
+                      startIcon={<AddCircleOutlineOutlinedIcon />}
+                      onClick={() => setOpenDialog(true)}
+                    >
+                      Generar Variación
+                    </Button>
                   </Grid>
+                ) : (
+                  <Typography></Typography>
                 )}
+
+                <Dialog
+                  open={openDialog}
+                  onClose={() => setOpenDialog(false)}
+                  maxWidth='md'
+                  fullWidth
+                >
+                  <DialogTitle>
+                    Variaciones
+                    <IconButton
+                      edge='end'
+                      color='inherit'
+                      onClick={() => setOpenDialog(false)}
+                      aria-label='close'
+                    >
+                      <CancelOutlinedIcon />
+                    </IconButton>
+                  </DialogTitle>
+                  <DialogContent>
+                    {variations.map((variation, index) => (
+                      <Accordion key={index}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          {variation}
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          {/* Additional content for each variation */}
+                        </AccordionDetails>
+                      </Accordion>
+                    ))}
+                  </DialogContent>
+                  <DialogActions>
+                    <Button variant='outlined' onClick={handleAddVariation}>
+                      Más
+                    </Button>
+                    <Button
+                      variant='outlined'
+                      onClick={() => setOpenDialog(false)}
+                    >
+                      Cerrar
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
+                {selectedClients > 50 ? (
+                  <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                      Cantidad de variaciones: {numVariations}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography></Typography>
+                )}
+
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -1008,30 +1133,135 @@ const Create = (props) => {
         sx={{textAlign: 'center'}}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
+        maxWidth='lg'
       >
         <DialogTitle id='alert-dialog-title'>Seleccionar Clientes</DialogTitle>
         <DialogContent dividers>
-          <div style={{height: 400, width: '700px'}}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              checkboxSelection
-              pageSize={5}
-              rowsPerPageOptions={[5, 10, 20]}
-              onSelectionModelChange={(newSelection) => {
-                console.log('Nueva selecc client', newSelection);
-                setSelectedClientsByTag(newSelection);
-                console.log(
-                  'tamaño selecc client',
-                  selectedClientsByTag.length,
-                );
-                setSelectedClientCount(selectedClientsByTag.length);
-                setSelectedClients(newSelection);
-              }}
-              selectionModel={selectedClientsByTag}
-            />
+          <div style={{height: 400, width: 1000}}>
+            <Stack
+              sx={{m: 2}}
+              direction={isMobile ? 'column' : 'row'}
+              spacing={2}
+              className={classes.stack}
+            >
+              <TextField
+                label='Nombre / Razón social'
+                variant='outlined'
+                name='nameToSearch'
+                size='small'
+                value={searchDialogValue}
+                onChange={(e) => setSearchDialogValue(e.target.value)}
+              />
+
+              <Grid item xs={12} md={4}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    mt: 2,
+                  }}
+                >
+                  <Autocomplete
+                    value={selectedTags}
+                    onChange={(event, newValue) => {
+                      console.log('Nuevo Tag seleccionado:', newValue);
+                      handleTagSelect(newValue);
+                    }}
+                    disabled={selectedClientCount === listClients.length}
+                    sx={{
+                      m: 1,
+                      width: '100%', // Establece el ancho al 100% por defecto
+                      [(theme) => theme.breakpoints.down('sm')]: {
+                        width: '80%', // Ancho del 80% en pantallas pequeñas
+                      },
+                      [(theme) => theme.breakpoints.up('md')]: {
+                        width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                      },
+                    }}
+                    multiple
+                    options={namesTags}
+                    getOptionLabel={(option) => option}
+                    disableCloseOnSelect
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Selecciona Etiquetas'
+                        placeholder='etiquetas...'
+                      />
+                    )}
+                    renderOption={(props, option, {selected}) => (
+                      <MenuItem
+                        {...props}
+                        key={option}
+                        value={option}
+                        sx={{justifyContent: 'space-between'}}
+                      >
+                        {option}
+                        {selected ? <CheckIcon color='info' /> : null}
+                      </MenuItem>
+                    )}
+                  />
+                </Box>
+              </Grid>
+
+              <Button
+                startIcon={<ManageSearchOutlinedIcon />}
+                variant='contained'
+                color='primary'
+                onClick={searchClients}
+              >
+                Buscar
+              </Button>
+            </Stack>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding='checkbox'>
+                      <Checkbox
+                        color='primary'
+                        checked={isAllSelected}
+                        indeterminate={isSomeSelected}
+                        onChange={handleHeaderCheckboxChange}
+                      />
+                    </TableCell>
+                    <TableCell>Identificador</TableCell>
+                    <TableCell>Nombre / Razón social</TableCell>
+                    <TableCell>Contacto</TableCell>
+                    <TableCell>Etiquetas</TableCell>
+                    {/* Agrega más TableCell para las columnas que necesites */}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {searchDialogResults.map((row) => (
+                    <TableRow key={row.clientId}>
+                      <TableCell padding='checkbox'>
+                        <Checkbox
+                          color='primary'
+                          checked={isClientSelected(row.clientId)}
+                          onChange={() => handleRowCheckboxChange(row.clientId)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {row.clientId.split('-')[0] +
+                          ' ' +
+                          row.clientId.split('-')[1]}
+                      </TableCell>
+                      <TableCell>{row.denominationClient}</TableCell>
+                      <TableCell>{row.numberContact}</TableCell>
+                      <TableCell>{verTags(row, businessParameter)}</TableCell>
+                      {/* Agrega más TableCell para las columnas que necesites */}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         </DialogContent>
+        <Typography>Total seleccionados {totaldeClientes()}</Typography>
         <DialogActions>
           <Button onClick={handleCloseClientsDialog}>Cerrar</Button>
         </DialogActions>
