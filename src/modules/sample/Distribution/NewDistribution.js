@@ -825,7 +825,7 @@ const Distribution = (props) => {
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='transportMode-label'
@@ -858,7 +858,7 @@ const Distribution = (props) => {
                         </MenuItem>
                       </Select>
                     </FormControl>
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={8}>
                     <FormControl fullWidth sx={{my: 2}}>
