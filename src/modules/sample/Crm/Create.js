@@ -357,10 +357,10 @@ const Create = (props) => {
             {
               campaignName: data.campaignName,
               scheduledAt: data.date,
-              receivers: {
+              receivers: [{
                 type: 'client',
                 urlClients: '',
-              },
+              }],
               robotId: 'ID_BOT_CUENTA_SOPORTE',
               messages: [
                 {
@@ -410,7 +410,7 @@ const Create = (props) => {
   useEffect(() => {
     if (clientsPresigned) {
       const payload = payloadToCreateCampaign;
-      payload.request.payload.campaign[0].receivers.urlClients =
+      payload.request.payload.campaign[0].receivers[0].urlClients =
         clientsPresigned.keymaster;
       setTimeout(() => {
         // Show success message

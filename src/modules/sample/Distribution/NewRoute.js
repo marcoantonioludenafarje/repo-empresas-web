@@ -494,9 +494,15 @@ const Distribution = (props) => {
           arrivalPoint +
           "' no existe, debe de coincidir con algún código de punto listado en la pestaña PUNTOS DE LLEGADA.  ";
       }
-
+      if (driver.split('-').length !== 3) {
+        msjError =
+          msjError +
+          'CONDUCTOR(fila ' +
+          fila +
+          "): No sigue el formato correcto (NOMBRES-APELLIDOS-NroDNI) '";
+      }
       const matchDriver = drivers.find(
-        (d) => d['NRO IDENTIFICADOR'] == driver.split('-')[2].trim(),
+        (d) => d['NRO IDENTIFICADOR'] == driver.split('-')[2]?.trim(),
       );
       if (!matchDriver) {
         msjError =
@@ -507,9 +513,15 @@ const Distribution = (props) => {
           driver +
           "' no existe, debe de coincidir con algún chofer listado en la pestaña CHOFERES.  ";
       }
-
+      if (carrier.split('-').length !== 2) {
+        msjError =
+          msjError +
+          'EMPRESA TRANSPORTISTA(fila ' +
+          fila +
+          "): No sigue el formato correcto (RAZÓN SOCIAL-NroRUC) '";
+      }
       const matchCarrier = carriers.find(
-        (d) => d['NRO IDENTIFICADOR'] == carrier.split('-')[1].trim(),
+        (d) => d['NRO IDENTIFICADOR'] == carrier.split('-')[1]?.trim(),
       );
       if (!matchCarrier) {
         msjError =
