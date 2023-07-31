@@ -242,7 +242,8 @@ export default function Views(props) {
               <TableCell>Contenido</TableCell>
               <TableCell>Fecha/Hora de envío</TableCell>
               <TableCell>Imagen</TableCell>
-              <TableCell>Receptores</TableCell>
+              <TableCell>Total de receptores</TableCell>
+              <TableCell>Plan de ejecución</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -260,7 +261,12 @@ export default function Views(props) {
                   {row.campaignName}
                 </TableCell>
                 <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
-                  {row.messages.map((text) => text.text).join(' | ')}
+                  {row.messages
+                    .map((text) => text.text)
+                    .join(' | ')
+                    .slice(0, 300)}
+                  {row.messages.map((text) => text.text).join(' | ').length >
+                    300 && '...'}
                 </TableCell>
                 <TableCell>{convertToDate(row.scheduledAt)}</TableCell>
                 <TableCell>
