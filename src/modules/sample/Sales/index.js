@@ -226,6 +226,7 @@ const SalesTable = (props) => {
   let changeValueField;
   //UseStates
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [selectedSale, setSelectedSale] = React.useState('');
   const [ticketResponseDialog, setTicketResponseDialog] = React.useState(false);
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState("all");
   const [open, setOpen] = React.useState(false);
@@ -656,11 +657,12 @@ const SalesTable = (props) => {
 
   //FUNCIONES MENU
   const openMenu = Boolean(anchorEl);
-  const handleClick = (codOutput, event) => {
+  const handleClick = (cod, event) => {
     setAnchorEl(event.currentTarget);
-    codProdSelected = codOutput;
-    selectedOutput = findOutput(codOutput);
-    console.log('selectedOutput', selectedOutput);
+    const sale = findSale(cod);
+    setSelectedSale(sale)
+    console.log('selectedSale', sale);
+    //forceUpdate();
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -670,6 +672,27 @@ const SalesTable = (props) => {
     Router.push({
       pathname: '/sample/outputs/update',
       query: {...selectedOutput},
+    });
+  };
+  const goToGenerateTicket = () => {
+    console.log('Abriendo generar ticket', selectedSale);
+    Router.push({
+      pathname: '/sample/sales/newProofOfPayment',
+      query: {...selectedSale, registerType: 'saleWithProofOfPayment', earningGeneration: true, proofOfPaymentType: 'ticket', proofOfPaymentGeneration: true},
+    });
+  };
+  const goToGenerateReceipt = () => {
+    console.log('Abriendo generar receipt', selectedSale);
+    Router.push({
+      pathname: '/sample/sales/newProofOfPayment',
+      query: {...selectedSale, registerType: 'saleWithProofOfPayment', earningGeneration: true, proofOfPaymentType: 'receipt', proofOfPaymentGeneration: true},
+    });
+  };
+  const goToGenerateBill = () => {
+    console.log('Abriendo generar bill', selectedSale);
+    Router.push({
+      pathname: '/sample/sales/newProofOfPayment',
+      query: {...selectedSale, registerType: 'saleWithProofOfPayment', earningGeneration: true, proofOfPaymentType: 'bill', proofOfPaymentGeneration: true},
     });
   };
   const confirmDelete = () => {
@@ -1172,9 +1195,9 @@ const SalesTable = (props) => {
     });
   };
 
-  const findOutput = (outputId) => {
+  const findSale = (id) => {
     return listSalesRes.find(
-      (obj) => obj.movementHeaderId == outputId,
+      (obj) => obj.saleId == id,
     );
   };
   const showObject = (id, type) => {
@@ -1794,7 +1817,7 @@ const SalesTable = (props) => {
                           aria-controls={openMenu ? 'basic-menu' : undefined}
                           aria-haspopup='true'
                           aria-expanded={openMenu ? 'true' : undefined}
-                          onClick={handleClick.bind(this, obj.movementHeaderId)}
+                          onClick={handleClick.bind(this, obj.saleId)}
                         >
                           <KeyboardArrowDownIcon />
                         </Button>
@@ -2005,6 +2028,33 @@ const SalesTable = (props) => {
           <MenuItem onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Actualizar
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/update?path=/output/*') ===
+        true && selectedSale && (!selectedSale.client.id || selectedSale.client.id.split("-")[0] !== "RUC") ? (
+          <MenuItem onClick={goToGenerateTicket}>
+            <CachedIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Ticket
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/update?path=/output/*') ===
+        true && selectedSale && (!selectedSale.client.id || selectedSale.client.id.split("-")[0] !== "RUC") ? (
+          <MenuItem onClick={goToGenerateReceipt}>
+            <CachedIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Boleta
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/update?path=/output/*') ===
+        true && selectedSale && !(!selectedSale.client.id || selectedSale.client.id.split("-")[0] !== "RUC") ? (
+          <MenuItem onClick={goToGenerateBill}>
+            <CachedIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Factura
           </MenuItem>
         ) : null}
         {localStorage

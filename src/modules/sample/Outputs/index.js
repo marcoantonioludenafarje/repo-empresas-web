@@ -1721,7 +1721,7 @@ const OutputsTable = (props) => {
           <TableBody>
             {outputItems_pageListOutput &&
             Array.isArray(outputItems_pageListOutput) &&
-            outputItems_pageListOutput.length > 0 &&
+            outputItems_pageListOutput.length >= 0 &&
             !isListLoading ? (
               outputItems_pageListOutput.sort(compare).map((obj, index) => {
                 const style =

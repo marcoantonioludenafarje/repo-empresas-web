@@ -6,6 +6,7 @@ import {
     DELETE_SALE,
     UPDATE_SALE,
     RESET_SALES,
+    NEW_SALE_PROOF_OF_PAYMENT,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -56,6 +57,12 @@ const salesReducer = (state = INIT_STATE, action) => {
             return {
                 ...state,
                 newSaleRes: action.payload,
+            };
+        case NEW_SALE_PROOF_OF_PAYMENT:
+            console.log('data de reducer NEW_SALE_PROOF_OF_PAYMENT', action.payload);
+            return {
+                ...state,
+                newSaleProofOfPaymentRes: action.payload,
             };
         case DELETE_SALE:
             console.log('data de reducer DELETE_SALE', action.payload);

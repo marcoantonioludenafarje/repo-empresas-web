@@ -6,6 +6,7 @@ import {
     NEW_SALE,
     DELETE_SALE,
     UPDATE_SALE,
+    NEW_SALE_PROOF_OF_PAYMENT,
   } from '../../shared/constants/ActionTypes';
   import API from '@aws-amplify/api';
   import {request} from '../../@crema/utility/Utils';
@@ -46,6 +47,21 @@ import {
         })
         .catch((error) => {
           console.log('newCarrier error', error);
+          dispatch({type: FETCH_ERROR, payload: 'error'});
+        });
+    };
+  };
+  export const newSaleProofOfPayment = (payload) => {
+    return (dispatch, getState) => {
+      dispatch({type: FETCH_START});
+      API.post('tunexo', '/facturacion/sale/registerProofOfPayment', {body: payload})
+        .then((data) => {
+          console.log('newSaleProofOfPayment resultado', data);
+          dispatch({type: NEW_SALE_PROOF_OF_PAYMENT, payload: data.response.payload});
+          dispatch({type: FETCH_SUCCESS, payload: 'success'});
+        })
+        .catch((error) => {
+          console.log('newSaleProofOfPayment error', error);
           dispatch({type: FETCH_ERROR, payload: 'error'});
         });
     };

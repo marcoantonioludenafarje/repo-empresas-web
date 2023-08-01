@@ -59,7 +59,7 @@ import {
   getOutputItems_pageListOutput,
 } from '../../../redux/actions/Movements';
 import {
-  newSale
+  newSaleProofOfPayment
 } from '../../../redux/actions/Sales';
 import Router, {useRouter} from 'next/router';
 import ProductsList from './ProductsList';
@@ -138,7 +138,7 @@ let listDocuments = [];
 let typeAlert = '';
 let total = 0;
 
-const NewSale = (props) => {
+const NewSaleProofOfPayment = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
   const forceUpdate = useForceUpdate();
@@ -153,8 +153,8 @@ const NewSale = (props) => {
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
-  const getAddSale = (payload) => {
-    dispatch(newSale(payload));
+  const getAddSaleProofOfPayment = (payload) => {
+    dispatch(newSaleProofOfPayment(payload));
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
@@ -166,10 +166,10 @@ const NewSale = (props) => {
   let changeValueField;
   let getValueField;
 
-  const [proofOfPaymentType, setProofOfPaymentType] = React.useState('ticket');
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState(query.proofOfPaymentType || 'ticket');
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [sendEmail, setSendEmail] = React.useState(true);
-  const [isIgvChecked, setIsIgvChecked] = React.useState(false);
+  const [isIgvChecked, setIsIgvChecked] = React.useState(query.igv || false);
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showDelete, setShowDelete] = React.useState(false);
@@ -180,7 +180,7 @@ const NewSale = (props) => {
   const [exchangeRate, setExchangeRate] = React.useState('');
   const prevExchangeRateRef = useRef();
   const [serial, setSerial] = React.useState('');
-  const [registerType, setRegisterType] = React.useState('onlySale');
+  const [registerType, setRegisterType] = React.useState('saleWithProofOfPayment');
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [reload, setReload] = React.useState(0); // integer state
   const [earningGeneration, setEarningGeneration] = React.useState(
@@ -190,7 +190,7 @@ const NewSale = (props) => {
     query.proofOfPaymentGeneration ? true : false,
   );
   const [paymentWay, setPaymentWay] = React.useState('credit');
-  const [selectedClient, setSelectedClient] = React.useState('');
+  const [selectedClient, setSelectedClient] = React.useState(query.client);
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   //CALENDARIO
   const [value, setValue] = React.useState(
@@ -222,7 +222,7 @@ const NewSale = (props) => {
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
-  const {newSaleRes} = useSelector(({sale}) => sale);
+  const {newSaleProofOfPaymentRes} = useSelector(({sale}) => sale);
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
     /* guide: '', */
@@ -340,11 +340,11 @@ const NewSale = (props) => {
     }
   }, [businessParameter]);
   useEffect(() => {
-    if (newSaleRes && newSaleRes.enlace_del_pdf) {
+    if (newSaleProofOfPaymentRes && newSaleProofOfPaymentRes.enlace_del_pdf) {
       //setIsLoading(false);
-      window.open(`${newSaleRes.enlace_del_pdf}`);
+      window.open(`${newSaleProofOfPaymentRes.enlace_del_pdf}`);
     }
-  }, [newSaleRes]);
+  }, [newSaleProofOfPaymentRes]);
   useEffect(() => {
     if (globalParameter != undefined && moneyUnit) {
       let obtainedExchangeRate = globalParameter.find(
@@ -603,6 +603,7 @@ const NewSale = (props) => {
         finalPayload = {
           request: {
             payload: {
+              saleId: query.saleId,
               merchantId: userDataRes.merchantSelected.merchantId,
               contableMovementId: query.contableMovementId || '',
               contableMovements: [],
@@ -672,7 +673,7 @@ const NewSale = (props) => {
         throw new Error('Algo pasa al crear el payload de boleta');
       }
       console.log('finalPayload', finalPayload);
-      getAddSale(finalPayload);
+      getAddSaleProofOfPayment(finalPayload);
       console.log('Data formulario principal', finalPayload);
       setOpenStatus(true);
       setSubmitting(false);
@@ -687,16 +688,16 @@ const NewSale = (props) => {
   const registerSuccess = () => {
     return (
       successMessage != undefined &&
-      newSaleRes != undefined &&
-      !('error' in newSaleRes)
+      newSaleProofOfPaymentRes != undefined &&
+      !('error' in newSaleProofOfPaymentRes)
     );
   };
 
   const registerError = () => {
     return (
       (successMessage != undefined &&
-        newSaleRes !== undefined &&
-        'error' in newSaleRes) ||
+        newSaleProofOfPaymentRes !== undefined &&
+        'error' in newSaleProofOfPaymentRes) ||
       errorMessage
     );
   };
@@ -737,8 +738,8 @@ const NewSale = (props) => {
               id='alert-dialog-description'
             >
               Se ha producido un error al registrar. <br />
-              {newSaleRes !== undefined && 'error' in newSaleRes
-                ? newSaleRes.error
+              {newSaleProofOfPaymentRes !== undefined && 'error' in newSaleRes
+                ? newSaleProofOfPaymentRes.error
                 : null}
             </DialogContentText>
           </DialogContent>
@@ -846,7 +847,7 @@ const NewSale = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          GENERAR VENTA
+          GENERAR COMPROBANTE
         </Typography>
       </Box>
       <Box sx={{ width: 1, textAlign: 'center' }}>
@@ -1483,7 +1484,7 @@ const NewSale = (props) => {
           aria-describedby='alert-dialog-description'
         >
           <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Venta'}
+            {'Registro de Comprobante'}
           </DialogTitle>
           {showMessage()}
         </Dialog>
@@ -1579,7 +1580,7 @@ const NewSale = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Generar Venta'}
+          {'Generar Comprobante'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -1610,4 +1611,4 @@ const NewSale = (props) => {
   );
 };
 
-export default NewSale;
+export default NewSaleProofOfPayment;

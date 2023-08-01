@@ -997,6 +997,8 @@
   "movements.status.received": "Recibido",
   "movements.status.complete": "Completado",
   "movements.type.sales": "Ventas",
+  "movements.type.sales.typeRegister.onlySale": "Solo Venta",
+  "movements.type.sales.typeRegister.saleWithProofOfPayment": "Venta+Comprobante",
   "movements.type.sampling": "Muestreo",
   "movements.type.internalUses": "Usos internos",
   "movements.type.production": "Producción",
