@@ -357,14 +357,14 @@ const Create = (props) => {
             {
               campaignName: data.campaignName,
               scheduledAt: data.date,
-              receivers: [{
-                type: 'client',
+              receivers: {
+                //type: 'client',
                 urlClients: '',
-              }],
+              },
               robotId: 'ID_BOT_CUENTA_SOPORTE',
               messages: [
                 {
-                  order: 1,
+                  order: 0,
                   type: actualImage ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
                   // metadata: selectedJsonImages[0]
                   //   ? {
@@ -384,6 +384,7 @@ const Create = (props) => {
                       extensions[actualImage.type]
                     : '',
                   text: campaignContents[0].content,
+                  variations: ['text', 'text'],
                 },
               ],
             },
@@ -410,7 +411,7 @@ const Create = (props) => {
   useEffect(() => {
     if (clientsPresigned) {
       const payload = payloadToCreateCampaign;
-      payload.request.payload.campaign[0].receivers[0].urlClients =
+      payload.request.payload.campaign[0].receivers.urlClients =
         clientsPresigned.keymaster;
       setTimeout(() => {
         // Show success message
@@ -427,7 +428,7 @@ const Create = (props) => {
     }
   }, [clientsPresigned]);
   const showMessage = () => {
-    if (successMessage !== undefined) {
+    if (successMessage != '') {
       console.log('MENSAJE DE VALIDEZ', successMessage);
       return (
         <>
@@ -518,24 +519,7 @@ const Create = (props) => {
   const handleCloseClientsDialog = () => {
     setOpenClientsDialog(false);
   };
-
-  const columns = [
-    {field: 'clientId', headerName: 'ID', width: 150},
-    {field: 'denominationClient', headerName: 'Cliente', width: 200},
-    {field: 'numberContact', headerName: 'Contacto', width: 150},
-    {field: 'tags', headerName: 'Tags', width: 100},
-  ];
-
   console.log('LISTA DE CLIENTES,', listClients);
-
-  const rows = listClients.map((client) => ({
-    id: client.clientId,
-    clientId: client.clientId,
-    denominationClient: client.denominationClient,
-    numberContact: client.numberContact,
-    tags: verTags(client, businessParameter),
-  }));
-
   const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
   console.log('seleccion,', selectedClientsByTag);
 
@@ -657,6 +641,7 @@ const Create = (props) => {
     } else {
       setSearchDialogResults(listClients);
     }
+    console.log('LOS CLIENTES LUEGO DEL FILTRO EN TOTAL', searchDialogResults);
   };
   //BUSQUEDA
   const handleSearchValues = (e) => {
@@ -973,7 +958,8 @@ const Create = (props) => {
                     </Button>
                   </Grid> */}
                 </Grid>
-                {selectedClients.length > 50 ? (
+                {/* {selectedClients.length > 50 ? ( */}
+                {totaldeClientes() > 1 ? (
                   <Grid container item xs={12} justifyContent='center'>
                     <Button
                       variant='outlined'
@@ -1012,7 +998,17 @@ const Create = (props) => {
                           {variation}
                         </AccordionSummary>
                         <AccordionDetails>
-                          {/* Additional content for each variation */}
+                          <Grid item xs={12} md={12}>
+                            <TextField
+                              label='Contenido de la Campaña *'
+                              variant='outlined'
+                              multiline
+                              rows={4}
+                              value={''}
+                              onChange={''}
+                              sx={{width: '100%', my: 2}}
+                            />
+                          </Grid>
                         </AccordionDetails>
                       </Accordion>
                     ))}
