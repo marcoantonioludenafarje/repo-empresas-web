@@ -14,24 +14,6 @@ const withData = (ComposedComponent) => (props) => {
   const dispatch = useDispatch();
   const {userDataRes} = useSelector(({user}) => user);
   // //Si no está que llame
-  useEffect(() => {
-    if (!userDataRes && localStorage.getItem('payload')) {
-      console.log('Esto se ejecuta with data?');
-
-      const toGetUserData = (payload) => {
-        dispatch(getUserData(payload));
-      };
-      let getUserDataPayload = {
-        request: {
-          payload: {
-            userId: JSON.parse(localStorage.getItem('payload')).sub,
-          },
-        },
-      };
-
-      toGetUserData(getUserDataPayload);
-    }
-  }, []);
   console.log('userDataRes de withData AppPage', userDataRes);
 
   const isDataUserComplete = () => {

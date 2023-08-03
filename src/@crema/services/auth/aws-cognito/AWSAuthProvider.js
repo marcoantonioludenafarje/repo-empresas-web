@@ -48,6 +48,7 @@ import {
   getDataBusiness,
   getRolUser,
   onGetBusinessParameter,
+  onGetGlobalParameter,
 } from '../../../../redux/actions/General';
 import {getEmailToSendCode, getUserData} from '../../../../redux/actions/User';
 // import {useHistory} from 'react-router-dom';
@@ -105,7 +106,9 @@ const AwsAuthProvider = ({children}) => {
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
   };
-
+  const getGlobalParameter = (payload) => {
+    dispatch(onGetGlobalParameter(payload));
+  };
   useEffect(() => {
     if (getRolUserRes) {
       function checkAvailability(arr, val) {
@@ -244,6 +247,16 @@ const AwsAuthProvider = ({children}) => {
       getBusinessParameter(businessParameterPayload);
       toGetDataBusiness(dataBusinessPayload);
       toGetRolUser(getRolUserPayload);
+      let globalParameterPayload = {
+        request: {
+          payload: {
+            abreParametro: null,
+            codTipoparametro: null,
+            country: 'peru',
+          },
+        },
+      };
+      getGlobalParameter(globalParameterPayload);
     }
   }, [awsCognitoData.user != null]);
 

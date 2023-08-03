@@ -11,22 +11,8 @@ import {alpha} from '@mui/material/styles';
 import NotificationEmpty from '../../../assets/icon/notificationEmpty.svg';
 import NotificationNonEmpty from '../../../assets/icon/notificationNonEmpty.svg';
 import Router, {useRouter} from 'next/router';
-import {getUserData} from '../../../redux/actions/User';
-import {
-  FETCH_SUCCESS,
-  FETCH_ERROR,
-  GET_USER_DATA,
-  GET_NOTIFICATIONS,
-} from '../../../shared/constants/ActionTypes';
-import {getNotifications} from '../../../redux/actions/Notifications';
 import {useDispatch, useSelector} from 'react-redux';
-let listNotificationsPayload = {
-  request: {
-    payload: {
-      merchantMasterId: '',
-    },
-  },
-};
+
 //FORCE UPDATE
 const useForceUpdate = () => {
   const [reload, setReload] = React.useState(0); // integer state
@@ -42,54 +28,11 @@ const AppNotifications = ({
   const dispatch = useDispatch();
   const router = useRouter();
   //API FUNCTIONS
-  const toGetNotifications = (payload) => {
-    dispatch(getNotifications(payload));
-  };
   const forceUpdate = useForceUpdate();
   //GET APIS RES
   const {getNotificationsRes} = useSelector(({notifications}) => notifications);
-  console.log('getNotificationsRes', getNotificationsRes);
-  let getActiveNotifications;
   const {userDataRes} = useSelector(({user}) => user);
 
-  useEffect(() => {
-    if (!userDataRes) {
-      console.log('Esto se ejecuta notificaciones?');
-
-      const toGetUserData = (payload) => {
-        dispatch(getUserData(payload));
-      };
-      let getUserDataPayload = {
-        request: {
-          payload: {
-            userId: localStorage.getItem('payload')
-              ? JSON.parse(localStorage.getItem('payload')).sub
-              : '',
-          },
-        },
-      };
-
-      toGetUserData(getUserDataPayload);
-    }
-  }, []);
-  useEffect(() => {
-    if (userDataRes) {
-      dispatch({type: GET_NOTIFICATIONS, payload: undefined});
-      // if (Object.keys(query).length !== 0) {
-      //   console.log('Query con datos', query);
-      //   listPayload.request.payload.notificationId = query.notificationId;
-      // }
-      listNotificationsPayload.request.payload.merchantId =
-        userDataRes.merchantMasterId;
-      listNotificationsPayload.request.payload.userId = userDataRes.userId;
-      toGetNotifications(listNotificationsPayload);
-      getActiveNotifications = getNotificationsRes;
-    }
-  }, [userDataRes]);
-
-  useEffect(() => {
-    forceUpdate();
-  }, [getNotificationsRes]);
   // A modificar
   //Esto se debe de mejorar añadiendo un index para merchantMasterId, por mientras es así
 

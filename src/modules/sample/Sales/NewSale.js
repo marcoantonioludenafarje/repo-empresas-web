@@ -147,12 +147,6 @@ const NewSale = (props) => {
   console.log('query', query);
 
   //APIS FUNCTIONS
-  const getBusinessParameter = (payload) => {
-    dispatch(onGetBusinessParameter(payload));
-  };
-  const getGlobalParameter = (payload) => {
-    dispatch(onGetGlobalParameter(payload));
-  };
   const getAddSale = (payload) => {
     dispatch(newSale(payload));
   };
@@ -207,8 +201,7 @@ const NewSale = (props) => {
   );
 
   //RESULTADOS DE LLAMADAS A APIS
-  const {outputItems_pageListOutput} = useSelector(({movements}) => movements);
-  console.log('outputItems_pageListOutput', outputItems_pageListOutput);
+  
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -247,25 +240,6 @@ const NewSale = (props) => {
     totalFieldIgv: '',
     money_unit: '',
   };
-  let businessParameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-  let globalParameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        country: 'peru',
-      },
-    },
-  };
-
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
   });
@@ -279,21 +253,21 @@ const NewSale = (props) => {
   const prevMoneyToConvert = prevMoneyToConvertRef.current;
 
   useEffect(() => {
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
-
-    if (
-      userDataRes.merchantSelected.typeClient == 'PN' ||
-      userDataRes.merchantSelected.paymentWay == 'debit'
-    ) {
-      setPaymentWay('debit');
+    if(userDataRes){
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+  
+      if (
+        userDataRes.merchantSelected.typeClient == 'PN' ||
+        userDataRes.merchantSelected.paymentWay == 'debit'
+      ) {
+        setPaymentWay('debit');
+      }
+      setTimeout(() => {
+        setMinTutorial(true);
+      }, 2000);
     }
-    getBusinessParameter(businessParameterPayload);
-    setTimeout(() => {
-      setMinTutorial(true);
-    }, 2000);
-  }, []);
+  }, [userDataRes]);
 
   useEffect(() => {
     if (businessParameter != undefined) {
@@ -756,15 +730,7 @@ const NewSale = (props) => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      let listPayload = {
-        request: {
-          payload: {
-            merchantId: userDataRes.merchantSelected.merchantId,
-            LastEvaluatedKey: null,
-          },
-        },
-      };
-      toGetMovements(listPayload);
+      dispatch({type: NEW_SALE, payload: undefined});
       setOpenStatus(false);
       Router.push('/sample/sales/table');
     } else if (registerError()) {
