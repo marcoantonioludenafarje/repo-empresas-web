@@ -59,7 +59,7 @@ import {
   getOutputItems_pageListOutput,
 } from '../../../redux/actions/Movements';
 import {
-  newSale
+  newSaleProofOfPayment
 } from '../../../redux/actions/Sales';
 import Router, {useRouter} from 'next/router';
 import ProductsList from './ProductsList';
@@ -77,6 +77,7 @@ import {
   NEW_SALE,
   GET_BUSINESS_PARAMETER,
   LIST_SALES,
+  NEW_SALE_PROOF_OF_PAYMENT,
 } from '../../../shared/constants/ActionTypes';
 
 const useStyles = makeStyles((theme) => ({
@@ -138,7 +139,7 @@ let listDocuments = [];
 let typeAlert = '';
 let total = 0;
 
-const NewSale = (props) => {
+const NewSaleProofOfPayment = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
   const forceUpdate = useForceUpdate();
@@ -147,8 +148,8 @@ const NewSale = (props) => {
   console.log('query', query);
 
   //APIS FUNCTIONS
-  const getAddSale = (payload) => {
-    dispatch(newSale(payload));
+  const getAddSaleProofOfPayment = (payload) => {
+    dispatch(newSaleProofOfPayment(payload));
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
@@ -160,31 +161,31 @@ const NewSale = (props) => {
   let changeValueField;
   let getValueField;
 
-  const [proofOfPaymentType, setProofOfPaymentType] = React.useState('ticket');
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState(query.proofOfPaymentType);
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [sendEmail, setSendEmail] = React.useState(true);
-  const [isIgvChecked, setIsIgvChecked] = React.useState(false);
+  const [isIgvChecked, setIsIgvChecked] = React.useState(query.igv || false);
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showDelete, setShowDelete] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
-  const [selectedProducts2, setSelectedProducts2] = React.useState([]);
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [editTotal, setEditTotal] = React.useState(false);
   const [exchangeRate, setExchangeRate] = React.useState('');
   const prevExchangeRateRef = useRef();
   const [serial, setSerial] = React.useState('');
-  const [registerType, setRegisterType] = React.useState('onlySale');
+  const [registerType, setRegisterType] = React.useState('saleWithProofOfPayment');
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [reload, setReload] = React.useState(0); // integer state
   const [earningGeneration, setEarningGeneration] = React.useState(
     query.earningGeneration ? true : false,
   );
+  const [selectedSale, setSelectedSale] = React.useState('');
   const [proofOfPaymentGeneration, setProofOfPaymentGeneration] = React.useState(
     query.proofOfPaymentGeneration ? true : false,
   );
   const [paymentWay, setPaymentWay] = React.useState('credit');
-  const [selectedClient, setSelectedClient] = React.useState('');
+  const [selectedClient, setSelectedClient] = React.useState(query.client);
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   //CALENDARIO
   const [value, setValue] = React.useState(
@@ -202,6 +203,10 @@ const NewSale = (props) => {
 
   //RESULTADOS DE LLAMADAS A APIS
   
+  const {
+    listSalesRes,
+    salesLastEvaluatedKey_pageListSales,
+  } = useSelector(({sale}) => sale);
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -215,7 +220,7 @@ const NewSale = (props) => {
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
-  const {newSaleRes} = useSelector(({sale}) => sale);
+  const {newSaleProofOfPaymentRes} = useSelector(({sale}) => sale);
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
     /* guide: '', */
@@ -223,7 +228,7 @@ const NewSale = (props) => {
     issueDate: Date.now(),
     wayToPay: Date.now(),
     methodToPay: 'Efectivo',
-    totalField: Number(query.totalPriceWithoutIgv),
+    totalField: Number((query.totalPriceWithIgv - query.totalIgv)),
     totalFieldIgv: Number(query.totalPriceWithIgv),
     money_unit: money_unit,
     clientEmail: query.clientEmail,
@@ -240,6 +245,7 @@ const NewSale = (props) => {
     totalFieldIgv: '',
     money_unit: '',
   };
+
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
   });
@@ -253,10 +259,92 @@ const NewSale = (props) => {
   const prevMoneyToConvert = prevMoneyToConvertRef.current;
 
   useEffect(() => {
-    if(userDataRes){
+    if(businessParameter){
+      if(query.proofOfPaymentType == "bill"){
+        let serieParameter = businessParameter.find(
+          (obj) => obj.abreParametro == 'SERIES_BILL',
+        );
+        setSerial(serieParameter.metadata ? serieParameter.metadata : '');
+      } else if (query.proofOfPaymentType == "receipt") {
+        let serieParameter = businessParameter.find(
+          (obj) => obj.abreParametro == 'SERIES_RECEIPT',
+        );
+        setSerial(serieParameter.metadata ? serieParameter.metadata : '');
+      } else if (query.proofOfPaymentType == "ticket") {
+        setSerial('S');
+      }
+
+
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
+      
+      let obtainedMoneyUnit = businessParameter.find(
+        (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
+      ).value;
+      let igvDefaultParam = businessParameter.find(
+        (obj) => obj.abreParametro == 'IGV',
+      ).value;
+      setIgvDefault(igvDefaultParam);
+      setIsIgvChecked(Number(igvDefaultParam) > 0 ? true : false);
+      setMoneyUnit(obtainedMoneyUnit);
+      setMoneyToConvert(obtainedMoneyUnit);
+
+      console.log('moneyUnit', moneyUnit);
+
+      console.log("query.saleId", query.saleId)
+      let sale = listSalesRes.find(
+        (obj) => obj.saleId == query.saleId,
+      );
+      setSelectedSale(sale);
+      const duePayDate = (new Date(String(sale.dueDate)));
+      const duePayDateMiliseconds = duePayDate.getTime();
+      //setExpirationDate(duePayDateMiliseconds)
+      setSelectedClient({
+        clientId: sale.client.id,
+        denominationClient: sale.client.denomination,
+        addressClient: sale.client.address,
+        emailClient: sale.client.email,
+        typeDocumentClient: sale.client.type,
+      }),
   
+      setPaymentWay(String(sale.paymentMethod).toLowerCase())
+      console.log('sale seleccionado', sale);
+      if (sale.products) {
+        selectedProducts = sale.products.map((obj) => {
+          let count = Number(obj.quantityMovement);
+          let price = Number(
+            obj.unitPrice
+          );
+          return {
+            product: obj.product,
+            description: obj.description,
+            unitMeasure: obj.unitMeasure,
+            stockChange: obj.stockChange,
+            customCodeProduct: obj.customCodeProduct,
+            businessProductCode: obj.product,
+            taxCode: obj.taxCode || '',
+            igvCode: obj.igvCode || '',
+            quantityMovement: count,
+            unitPrice: price,
+            subtotal: obj.subtotal || Number((price * count).toFixed(2)),
+          };
+        });
+      }
+      console.log('selectedProducts', selectedProducts);
+  
+      let totalWithIgv = 0;
+      let calculatedtotal = 0;
+      selectedProducts.map((obj) => {
+        calculatedtotal += Number(obj.subtotal);
+        totalWithIgv +=
+          obj.taxCode == 1000 && Number(igvDefaultParam) > 0 && (Number(igvDefaultParam) > 0 ? true : false)
+            ? Number((Number(obj.subtotal) * (1 + igvDefaultParam)).toFixed(2))
+            : Number(obj.subtotal);
+      });
+      total = Number(calculatedtotal.toFixed(2));
+      changeValueField('totalField', Number(calculatedtotal.toFixed(2)));
+      changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
+      forceUpdate();
       if (
         userDataRes.merchantSelected.typeClient == 'PN' ||
         userDataRes.merchantSelected.paymentWay == 'debit'
@@ -266,17 +354,7 @@ const NewSale = (props) => {
       setTimeout(() => {
         setMinTutorial(true);
       }, 2000);
-    }
-  }, [userDataRes]);
 
-  useEffect(() => {
-    if (businessParameter != undefined) {
-      let serieParameter = businessParameter.find(
-        (obj) => obj.abreParametro == 'SERIES_RECEIPT',
-      );
-      console.log('serieParameter', serieParameter);
-      console.log('serieParameter.metadata', serieParameter.metadata);
-      setSerial(serieParameter.metadata ? serieParameter.metadata : '');
     }
   }, [businessParameter]);
 
@@ -287,38 +365,15 @@ const NewSale = (props) => {
   useEffect(() => {
     if (prevExchangeRate !== exchangeRate) {
       console.log('exchangerate cambiaso', exchangeRate);
-      changeValueField('totalField', Number(total));
-      changeValueField(
-        'totalFieldIgv',
-        Number(igvDefault) > 0 && isIgvChecked
-          ? fixDecimals(total + fixDecimals(total * fixDecimals(igvDefault)))
-          : Number(total.toFixed(2)),
-      );
     }
   }, [exchangeRate]);
 
   useEffect(() => {
-    if (businessParameter) {
-      let obtainedMoneyUnit = businessParameter.find(
-        (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
-      ).value;
-      let igvDefault = businessParameter.find(
-        (obj) => obj.abreParametro == 'IGV',
-      ).value;
-      setIgvDefault(igvDefault);
-      setIsIgvChecked(Number(igvDefault) > 0 ? true : false);
-      setMoneyUnit(obtainedMoneyUnit);
-      setMoneyToConvert(obtainedMoneyUnit);
-      reloadPage()
-      console.log('moneyUnit', moneyUnit);
-    }
-  }, [businessParameter]);
-  useEffect(() => {
-    if (newSaleRes && newSaleRes.enlace_del_pdf) {
+    if (newSaleProofOfPaymentRes && newSaleProofOfPaymentRes.enlace_del_pdf) {
       //setIsLoading(false);
-      window.open(`${newSaleRes.enlace_del_pdf}`);
+      window.open(`${newSaleProofOfPaymentRes.enlace_del_pdf}`);
     }
-  }, [newSaleRes]);
+  }, [newSaleProofOfPaymentRes]);
   useEffect(() => {
     if (globalParameter != undefined && moneyUnit) {
       let obtainedExchangeRate = globalParameter.find(
@@ -577,6 +632,7 @@ const NewSale = (props) => {
         finalPayload = {
           request: {
             payload: {
+              saleId: query.saleId,
               merchantId: userDataRes.merchantSelected.merchantId,
               contableMovementId: query.contableMovementId || '',
               contableMovements: [],
@@ -606,13 +662,15 @@ const NewSale = (props) => {
               methodToPay: paymentMethod,
               earningGeneration: earningGeneration,
               proofOfPaymentGeneration: proofOfPaymentGeneration,
+              codMovement: query.codMovement,
+              saleFolderMovement: query.folderMovement,
               referralGuideSerial: data.guide ? data.guide : '',
               dueDate: specialFormatToSunat(value),
               observation: data.observation ? data.observation : '',
               igv: isIgvChecked ? Number(igvDefault) : 0,
               productsInfo: selectedProducts.map((obj) => {
                 return {
-                  product: obj.product,
+                  product: obj.product || obj.businessProductCode,
                   quantityMovement: Number(obj.quantityMovement),
                   unitPrice: Number(
                     obj.unitPrice,
@@ -646,7 +704,7 @@ const NewSale = (props) => {
         throw new Error('Algo pasa al crear el payload de boleta');
       }
       console.log('finalPayload', finalPayload);
-      getAddSale(finalPayload);
+      getAddSaleProofOfPayment(finalPayload);
       console.log('Data formulario principal', finalPayload);
       setOpenStatus(true);
       setSubmitting(false);
@@ -661,16 +719,16 @@ const NewSale = (props) => {
   const registerSuccess = () => {
     return (
       successMessage != undefined &&
-      newSaleRes != undefined &&
-      !('error' in newSaleRes)
+      newSaleProofOfPaymentRes != undefined &&
+      !('error' in newSaleProofOfPaymentRes)
     );
   };
 
   const registerError = () => {
     return (
       (successMessage != undefined &&
-        newSaleRes !== undefined &&
-        'error' in newSaleRes) ||
+        newSaleProofOfPaymentRes !== undefined &&
+        'error' in newSaleProofOfPaymentRes) ||
       errorMessage
     );
   };
@@ -711,8 +769,8 @@ const NewSale = (props) => {
               id='alert-dialog-description'
             >
               Se ha producido un error al registrar. <br />
-              {newSaleRes !== undefined && 'error' in newSaleRes
-                ? newSaleRes.error
+              {newSaleProofOfPaymentRes !== undefined && 'error' in newSaleRes
+                ? newSaleProofOfPaymentRes.error
                 : null}
             </DialogContentText>
           </DialogContent>
@@ -730,7 +788,7 @@ const NewSale = (props) => {
 
   const sendStatus = () => {
     if (registerSuccess()) {
-      dispatch({type: NEW_SALE, payload: undefined});
+      dispatch({type: NEW_SALE_PROOF_OF_PAYMENT, payload: undefined});
       setOpenStatus(false);
       Router.push('/sample/sales/table');
     } else if (registerError()) {
@@ -812,10 +870,10 @@ const NewSale = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          GENERAR VENTA
+          <IntlMessages id={`movements.sales.typeProofOfPayment.${query.proofOfPaymentType}`} />
         </Typography>
       </Box>
-      <Box sx={{ width: 1, textAlign: 'center' }}>
+      {/* <Box sx={{ width: 1, textAlign: 'center' }}>
         <ToggleButtonGroup
           value={registerType}
           exclusive
@@ -854,7 +912,7 @@ const NewSale = (props) => {
             <IntlMessages id='movements.type.sales.typeRegister.saleWithProofOfPayment' />
           </StyledToggleButton>
         </ToggleButtonGroup>
-      </Box>
+      </Box> */}
       <Box>
         <AppPageMeta />
 
@@ -874,7 +932,7 @@ const NewSale = (props) => {
                 /* onChange={handleActualData} */
               >
                 <Grid container sx={{maxWidth: 500, margin: 'auto'}}>
-                  <Grid sx={{px: 1, mt: 2}} xs={12}>
+                  {/* <Grid sx={{px: 1, mt: 2}} xs={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -882,9 +940,9 @@ const NewSale = (props) => {
                     >
                       Selecciona un cliente
                     </Button>
-                  </Grid>
+                  </Grid> */}
                   <Grid sx={{px: 1, mt: 2}} xs={12}>
-                    <Typography sx={{mx: 'auto', my: '10px'}}>
+                    <Typography color='primary' sx={{mx: 'auto', my: '10px', fontWeight: 'bold'}}>
                       Cliente:  {selectedClient && selectedClient.denominationClient ? selectedClient.denominationClient : 'No Definido'}
                     </Typography>
                   </Grid>
@@ -903,7 +961,7 @@ const NewSale = (props) => {
                       }}
                     />
                   </Grid> */}
-                  {selectedClient && selectedClient.denominationClient ? (
+                  {/* {selectedClient && selectedClient.denominationClient ? (
                     <Grid sx={{px: 1, mt: 2}} xs={12}>
                       <Button
                         color='secondary'
@@ -918,7 +976,7 @@ const NewSale = (props) => {
                         Quitar Cliente
                       </Button>
                     </Grid>
-                  ) : null}
+                  ) : null} */}
 
                 </Grid> 
 
@@ -1255,68 +1313,6 @@ const NewSale = (props) => {
                         }
                       />
                     </Grid>
-                    <Grid
-                      xs={6}
-                      sx={{ px: 1, mt: 2 }}>
-                      <FormControlLabel
-                        label='Generar Comprobante'
-                        control={
-                          <Checkbox
-                            onChange={handleProofOfPaymentGeneration}
-                            checked={proofOfPaymentGeneration}
-                          />
-                        }
-                      />
-                    </Grid>
-                    <Grid xs={6} sx={{ px: 1, mt: 2 }}>
-                      <FormControl fullWidth sx={{ my: 2 }}>
-                        <InputLabel id='proofOfPaymentType-label' style={{ fontWeight: 200 }}>
-                          Tipo de Comprobante
-                        </InputLabel>
-                        <Select
-                          value={proofOfPaymentType}
-                          name='proofOfPaymentType'
-                          labelId='proofOfPaymentType-label'
-                          label='Tipo de comprobante'
-                          onChange={
-                            (event) => {
-                              if (event.target.value == 'bill') {
-                                let serieParameter = businessParameter.find(
-                                  (obj) => obj.abreParametro == 'SERIES_BILL',
-                                );
-                                setSerial(serieParameter.metadata ? serieParameter.metadata : '');
-                              }
-                              if (event.target.value == 'receipt') {
-                                let serieParameter = businessParameter.find(
-                                  (obj) => obj.abreParametro == 'SERIES_RECEIPT',
-                                );
-                                setSerial(serieParameter.metadata ? serieParameter.metadata : '');
-                              }
-                              if (event.target.value == 'ticket') {
-                                setSerial('S');
-                              }
-                              setProofOfPaymentType(event.target.value);
-                            }
-                          }
-                        >
-                          {(selectedClient && selectedClient.typeDocumentClient == 'RUC') ? (
-                            <MenuItem value='bill' style={{ fontWeight: 200 }}>
-                              Factura
-                            </MenuItem>
-                          ) : null}
-                          {!(selectedClient && selectedClient.typeDocumentClient == 'RUC') ? (
-                            <MenuItem value='ticket' style={{ fontWeight: 200 }}>
-                              Ticket
-                            </MenuItem>
-                          ) : null}
-                          {!(selectedClient && selectedClient.typeDocumentClient == 'RUC') ? (
-                            <MenuItem value='receipt' style={{ fontWeight: 200 }}>
-                              Boleta
-                            </MenuItem>
-                          ) : null}
-                        </Select>
-                      </FormControl>
-                    </Grid>
                   </Grid>
                 ) : null}
                 <Divider sx={{my: 3}} />
@@ -1449,7 +1445,7 @@ const NewSale = (props) => {
           aria-describedby='alert-dialog-description'
         >
           <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Venta'}
+            {'Registro de Comprobante'}
           </DialogTitle>
           {showMessage()}
         </Dialog>
@@ -1545,7 +1541,7 @@ const NewSale = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Generar Venta'}
+          <IntlMessages id={`movements.sales.typeProofOfPayment.${query.proofOfPaymentType}`} />
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -1576,4 +1572,4 @@ const NewSale = (props) => {
   );
 };
 
-export default NewSale;
+export default NewSaleProofOfPayment;

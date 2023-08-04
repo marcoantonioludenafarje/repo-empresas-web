@@ -370,3 +370,4 @@ export const LIST_SALES = 'list_sales';
 export const NEW_SALE = 'new_sale';
 export const DELETE_SALE = 'delete_sale';
 export const UPDATE_SALE = 'update_sale';
+export const NEW_SALE_PROOF_OF_PAYMENT = 'new_sale_proof_of_payment';

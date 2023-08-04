@@ -11,7 +11,7 @@ import {
 
 const INIT_STATE = {
   list: [],
-  getNotificationsRes: [],
+  getNotificationsRes: '',
   subscriptionStateRes: false,
   updateNotificationListRes: false,
   updateNotificationToSeenRes: '',
