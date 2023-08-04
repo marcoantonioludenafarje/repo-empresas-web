@@ -38,6 +38,8 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import BlockSharpIcon from '@mui/icons-material/BlockSharp';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import {getCampaigns, deleteCampaigns} from '../../../redux/actions/Campaign';
 import {convertToDate} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
@@ -49,6 +51,7 @@ import {
 import Router from 'next/router';
 import {red} from '@mui/material/colors';
 import axios from 'axios';
+import IntlMessages from '@crema/utility/IntlMessages';
 
 function createData(name, fecha, containt, receipt) {
   return {name, fecha, containt, receipt};
@@ -237,6 +240,19 @@ export default function Views(props) {
     console.log('ReceiversCloud', receiversCloud);
   };
 
+  const [cancelDisabled, setCancelDisabled] = useState(false);
+
+  // useEffect(() => {
+  //   let isCancelDisabled = false;
+  //   for (const campaign of listCampaigns) {
+  //     if (campaign.processes && campaign.processes[0] && !campaign.processes[0].active) {
+  //       isCancelDisabled = true;
+  //       break;
+  //     }
+  //   }
+  //   setCancelDisabled(isCancelDisabled);
+  // }, [listCampaigns]);
+
   return (
     <Card sx={{p: 4}}>
       <Stack
@@ -266,7 +282,7 @@ export default function Views(props) {
         </Button>
       </Stack>
       <span>{`Items: ${
-        listCampaigns ? listCampaigns.length : 'Cargando...'
+        filteredCampaigns ? filteredCampaigns.length : 'Cargando...'
       }`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
@@ -310,7 +326,7 @@ export default function Views(props) {
                     .slice(0, 300)}
                   {row.messages
                     .map((text) => {
-                      console.log('Tamaño', text.text.length);
+                      // console.log('Tamaño', text.text.length);
                       return text.text;
                     })
                     .join(' | ').length > 300 && '...'}
@@ -340,17 +356,33 @@ export default function Views(props) {
                 <TableCell>
                   {row.processes && row.processes.length > 0 ? (
                     row.processes[0].active ? (
-                      <CheckCircleOutlineIcon />
+                      <CheckCircleOutlineOutlinedIcon
+                        color='success'
+                        sx={{fontSize: '2em', mx: 2}}
+                      />
                     ) : (
-                      <BlockSharpIcon />
+                      <CancelOutlinedIcon
+                        sx={{fontSize: '2em', mx: 2, color: red[500]}}
+                      />
                     )
                   ) : row.active ? (
-                    <CheckCircleOutlineIcon />
+                    <CheckCircleOutlineOutlinedIcon
+                      color='success'
+                      sx={{fontSize: '2em', mx: 2}}
+                    />
                   ) : (
-                    <BlockSharpIcon />
+                    <CancelOutlinedIcon
+                      sx={{fontSize: '2em', mx: 2, color: red[500]}}
+                    />
                   )}
                 </TableCell>
-                <TableCell>{row.status ? row.status : 'Antiguo'}</TableCell>
+                <TableCell>
+                  {row.status == 'PENDING' ? (
+                    <IntlMessages id='sidebar.sample.crm.pending' />
+                  ) : (
+                    <IntlMessages id='sidebar.sample.crm.finalized' />
+                  )}
+                </TableCell>
                 <TableCell>
                   <Button
                     id='basic-button'
@@ -493,16 +525,26 @@ export default function Views(props) {
             <TableHead>
               <TableRow>
                 <TableCell>Orden</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Número</TableCell>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Apellido Paterno</TableCell>
+                <TableCell>Apellido Materno</TableCell>
+                <TableCell>Cumpleaños</TableCell>
+                <TableCell>Número de Contacto</TableCell>
+                <TableCell>Correo</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {receiversCloud.map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell>{row.id}</TableCell>
-                  <TableCell>{row.nameContact}</TableCell>
-                  <TableCell>{row.numberContact}</TableCell>
+                  <TableCell>{row.id ? row.id + 1 : 1}</TableCell>
+                  <TableCell>{row.givenName}</TableCell>
+                  <TableCell>{row.lastName}</TableCell>
+                  <TableCell>{row.secondLastName}</TableCell>
+                  <TableCell>{row.birthDay}</TableCell>
+                  <TableCell>
+                    {row.numberCountryCode + '-' + row.numberContact}
+                  </TableCell>
+                  <TableCell>{row.emailContact}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -536,8 +578,8 @@ export default function Views(props) {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/campaigns/delete') === true ? (
-          <MenuItem onClick={setDeleteState}>
+          .includes('/inventory/campaigns/cancel') === true ? (
+          <MenuItem onClick={setDeleteState} disabled={cancelDisabled}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Cancelar
           </MenuItem>

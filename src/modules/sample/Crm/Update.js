@@ -70,6 +70,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import {DataGrid} from '@mui/x-data-grid';
 import {verTags} from '../../../Utils/utils';
+import {convertToDate} from '../../../Utils/utils';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -93,12 +94,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Create = (props) => {
+const Update = (props) => {
   let toSubmitting;
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
+  let {query} = router;
+
+  console.log('query', query);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -114,7 +118,7 @@ const Create = (props) => {
 
   const [previewImages, setPreviewImages] = useState([]);
   const [publishDate, setPublishDate] = React.useState(
-    Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
+    convertToDate(query.scheduledAt) /* Number(query.createdAt) */,
   );
   const [openDialog, setOpenDialog] = useState(false);
   const [variations, setVariations] = useState(['Variación 1']);
@@ -135,7 +139,7 @@ const Create = (props) => {
   const classes = useStyles(props);
 
   const defaultValues = {
-    campaignName: '',
+    campaignName: query.campaignName,
     date: Date.now() + 60 * 60 * 1000,
     campaignContent: '',
     campaignImages: null,
@@ -662,7 +666,7 @@ const Create = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          Crear Campaña
+          Clonar Campaña
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -1266,4 +1270,4 @@ const Create = (props) => {
   );
 };
 
-export default Create;
+export default Update;
