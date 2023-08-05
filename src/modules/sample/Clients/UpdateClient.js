@@ -256,10 +256,12 @@ const UpdateClient = (props) => {
       let listTags1 = businessParameter.find(
         (obj) => obj.abreParametro == 'CLIENT_TAGS',
       ).value;
+      console.log('listTags1', listTags1);
 
       listTags1.forEach((item) => {
         listTags.push([item.tagName, item.id, true]);
       });
+      console.log('listTags este es:', listTags);
     }
   }, [userDataRes]);
 

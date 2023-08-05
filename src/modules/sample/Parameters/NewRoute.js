@@ -612,7 +612,7 @@ const Distribution = () => {
       };
     }
     let finalCategories = categories;
-
+    let finalTag = tags;
     if (finalCategories.length >= 1) {
       finalCategories[0].default = true;
     }
@@ -633,7 +633,7 @@ const Distribution = () => {
           filters: publish ? filters : [],
           categories: finalCategories,
           isEcommerceEnabled: publish,
-          tagsClients: tags,
+          tagsClients: finalTag,
         },
       },
     };

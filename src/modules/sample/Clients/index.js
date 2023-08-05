@@ -219,7 +219,7 @@ const ClientTable = (arrayObjs, props) => {
       getClients(listPayload);
       // setFirstload(true);
     }
-  }, [userDataRes]);
+  }, [userDataRes, listTags]);
   useEffect(() => {
     // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
 
