@@ -90,12 +90,41 @@ const validationSchema = yup.object({
         .number()
         .typeError(<IntlMessages id='validation.number' />)
         .required(<IntlMessages id='validation.required' />)
-        .positive(<IntlMessages id='validation.positive' />),
+        .positive(<IntlMessages id='validation.positive' />)
+        .test('ten-decimals', <IntlMessages id='validation.tenDecimals' />, (value) => {
+            // Verificar si el valor tiene dos o menos decimales
+            if (typeof value === 'number') {
+                return /^-?\d+(\.\d{1,10})?$/.test(value.toString());
+            }
+            return true; // Permitir otros tipos de entrada sin verificar
+        }),
     count: yup
         .number()
         .typeError(<IntlMessages id='validation.number' />)
         .positive(<IntlMessages id='validation.positive' />)
         .required(<IntlMessages id='validation.required' />),
+    subtotalWithIgv: yup
+        .number()
+        .typeError(<IntlMessages id='validation.number' />)
+        .positive(<IntlMessages id='validation.positive' />)
+        .test('two-decimals', <IntlMessages id='validation.twoDecimals' />, (value) => {
+            // Verificar si el valor tiene dos o menos decimales
+            if (typeof value === 'number') {
+                return /^-?\d+(\.\d{1,2})?$/.test(value.toString());
+            }
+            return true; // Permitir otros tipos de entrada sin verificar
+        }),
+    subtotalWithoutIgv: yup
+        .number()
+        .typeError(<IntlMessages id='validation.number' />)
+        .positive(<IntlMessages id='validation.positive' />)
+        .test('two-decimals', <IntlMessages id='validation.twoDecimals' />, (value) => {
+            // Verificar si el valor tiene dos o menos decimales
+            if (typeof value === 'number') {
+                return /^-?\d+(\.\d{1,2})?$/.test(value.toString());
+            }
+            return true; // Permitir otros tipos de entrada sin verificar
+        }),
 });
 
 let selectedProduct = {};
@@ -146,7 +175,7 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
     let getValueField;
     console.log('funcion recibida', sendData);
     console.log('igv recibida', igvEnabled);
-   
+
     const { userAttributes } = useSelector(({ user }) => user);
     const { userDataRes } = useSelector(({ user }) => user);
     let listProductsPayload = {
@@ -197,9 +226,12 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
             setStockChange(true)
         }
         changeValueField('productPrice', selectedProduct.sellPriceUnit);
-        changeValueField('subtotalWithoutIgv', (selectedProduct.sellPriceUnit * getValueField('count').value));
-        changeValueField('productIgv', typeTaxCode == 1000 ? (selectedProduct.sellPriceUnit * getValueField('count').value) * igvDefault : 0);
-        changeValueField('subtotalWithIgv', typeTaxCode == 1000 ? (selectedProduct.sellPriceUnit * getValueField('count').value) * (1 + igvDefault) : (selectedProduct.sellPriceUnit * getValueField('count').value));
+        changeValueField('subtotalWithoutIgv', Number(
+            (selectedProduct.sellPriceUnit * getValueField('count').value)).toFixed(2));
+        changeValueField('productIgv', Number(
+            typeTaxCode == 1000 ? (selectedProduct.sellPriceUnit * getValueField('count').value) * igvDefault : 0).toFixed(2));
+        changeValueField('subtotalWithIgv', Number(
+            typeTaxCode == 1000 ? (selectedProduct.sellPriceUnit * getValueField('count').value) * (1 + igvDefault) : (selectedProduct.sellPriceUnit * getValueField('count').value)).toFixed(2));
 
         changeValueField('productSearch', selectedProduct.description);
         setOpen(false);
@@ -213,8 +245,8 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
     const handleValues = (event) => {
         console.log('evento', event.target);
         Object.keys(actualValues).map((key) => {
-            if (key == event.target.name) {
-                actualValues[key] = event.target.value;
+            if (key == event.target.name && (key == 'productPrice' || key == 'count')) {
+                actualValues[key] = Number(event.target.value);
                 let productQuantity = getValueField('count').value;
                 let actualProductPrice = getValueField('productPrice').value;
                 if (event.target.name == 'productPrice') {
@@ -222,9 +254,39 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
                 } else if (event.target.name == 'count') {
                     productQuantity = Number(event.target.value)
                 }
-                changeValueField('subtotalWithoutIgv', (actualProductPrice * productQuantity));
-                changeValueField('productIgv', typeTaxCode == 1000 ? (actualProductPrice * productQuantity) * igvDefault : 0);
-                changeValueField('subtotalWithIgv', typeTaxCode == 1000 ? (actualProductPrice * productQuantity) * (1 + igvDefault) : (actualProductPrice * productQuantity));
+                changeValueField('subtotalWithoutIgv', Number(
+                    (actualProductPrice * productQuantity)).toFixed(2));
+                changeValueField('productIgv', Number(
+                    typeTaxCode == 1000 ? (actualProductPrice * productQuantity) * igvDefault : 0).toFixed(2));
+                changeValueField('subtotalWithIgv', Number(
+                    typeTaxCode == 1000 ? (actualProductPrice * productQuantity) * (1 + igvDefault) : (actualProductPrice * productQuantity)).toFixed(2));
+            } else if (key == event.target.name && (key == 'subtotalWithoutIgv' || key == 'subtotalWithIgv')) {
+                actualValues[key] = Number(event.target.value);
+                let productQuantity = getValueField('count').value;
+                let actualProductPrice = getValueField('productPrice').value;
+                let actualSubtotalWithoutIgv = getValueField('subtotalWithoutIgv').value;
+                let actualProductIgv = getValueField('productIgv').value;
+                let actualSubtotalWithIgv = getValueField('subtotalWithIgv').value;
+                if (event.target.name == 'subtotalWithoutIgv') {
+                    actualSubtotalWithoutIgv = Number(event.target.value)
+
+                    changeValueField('productPrice', Number(
+                        (actualSubtotalWithoutIgv / productQuantity)).toFixed(10));
+                    changeValueField('productIgv', Number(
+                        typeTaxCode == 1000 ? (actualSubtotalWithoutIgv) * igvDefault : 0).toFixed(2));
+                    changeValueField('subtotalWithIgv', Number(
+                        typeTaxCode == 1000 ? (Number(
+                            (actualSubtotalWithoutIgv / productQuantity)).toFixed(10) * productQuantity) * (1 + igvDefault) : (Number(
+                                (actualSubtotalWithoutIgv / productQuantity)).toFixed(10) * productQuantity)).toFixed(2));
+                } else if (event.target.name == 'subtotalWithIgv') {
+                    actualSubtotalWithIgv = Number(event.target.value)
+                    changeValueField('productPrice', Number(
+                        typeTaxCode == 1000 ? ((actualSubtotalWithIgv / (1 + igvDefault)) / productQuantity) : actualSubtotalWithIgv / productQuantity).toFixed(10));
+                    changeValueField('subtotalWithoutIgv', Number(
+                        typeTaxCode == 1000 ? (actualSubtotalWithIgv / (1 + igvDefault)) : actualSubtotalWithIgv).toFixed(2));
+                    changeValueField('productIgv', Number(
+                        typeTaxCode == 1000 ? (actualSubtotalWithIgv * igvDefault) / (1 + igvDefault) : 0).toFixed(2));
+                }
             }
             if (event.target.name == 'productSearch') {
                 setProSearch(event.target.value);
@@ -346,9 +408,12 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
         setTypeTaxCode(event.target.value);
         let productQuantity = getValueField('count').value;
         let actualProductPrice = getValueField('productPrice').value;
-        changeValueField('subtotalWithoutIgv', (actualProductPrice * productQuantity));
-        changeValueField('productIgv', event.target.value == 1000 ? (actualProductPrice * productQuantity) * igvDefault : 0);
-        changeValueField('subtotalWithIgv', event.target.value == 1000 ? (actualProductPrice * productQuantity) * (1 + igvDefault) : (actualProductPrice * productQuantity));
+        changeValueField('subtotalWithoutIgv', Number(
+            (actualProductPrice * productQuantity)).toFixed(2));
+        changeValueField('productIgv', Number(
+            event.target.value == 1000 ? (actualProductPrice * productQuantity) * igvDefault : 0).toFixed(2));
+        changeValueField('subtotalWithIgv', Number(
+            event.target.value == 1000 ? (actualProductPrice * productQuantity) * (1 + igvDefault) : (actualProductPrice * productQuantity)).toFixed(2));
 
     };
 
@@ -374,7 +439,7 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
                                 <Grid
                                     container
                                     spacing={2}
-                                    sx={{margin: 'auto', justifyContent: 'center' }}
+                                    sx={{ margin: 'auto', justifyContent: 'center' }}
                                 >
                                     <Grid item xs={isMobile ? 12 : 8}>
                                         <AppTextField
@@ -427,14 +492,14 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
                                             onClick={handleClickOpen}
                                             sx={{ top: 0 }}
                                         >
-                                            <ManageSearchIcon 
-                                            color='primary' />
+                                            <ManageSearchIcon
+                                                color='primary' />
                                         </IconButton>
                                     </Grid>
 
                                     <Grid item xs={isMobile ? 12 : 4}>
                                         <AppTextField
-                                            label='Precio venta sugerido'
+                                            label='Precio sin IGV'
                                             name='productPrice'
                                             variant='outlined'
                                             sx={{
@@ -487,13 +552,13 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
                                     <Grid item xs={isMobile ? 6 : 4}>
                                         <AppTextField
                                             label='Monto sin IGV'
-                                            disabled
                                             name='subtotalWithoutIgv'
                                             variant='outlined'
                                             sx={{
                                                 width: '100%',
                                                 '& .MuiInputBase-input': {
                                                     fontSize: 14,
+                                                    fontWeight: 'bold',
                                                 },
                                                 my: 2,
                                             }}
@@ -509,6 +574,7 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
                                                 width: '100%',
                                                 '& .MuiInputBase-input': {
                                                     fontSize: 14,
+                                                    fontWeight: 'bold',
                                                 },
                                                 my: 2,
                                             }}
@@ -517,13 +583,13 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
                                     <Grid item xs={isMobile ? 6 : 4}>
                                         <AppTextField
                                             label='Monto con Igv'
-                                            disabled
                                             name='subtotalWithIgv'
                                             variant='outlined'
                                             sx={{
                                                 width: '100%',
                                                 '& .MuiInputBase-input': {
                                                     fontSize: 14,
+                                                    fontWeight: 'bold',
                                                 },
                                                 my: 2,
                                             }}
@@ -532,7 +598,7 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
                                     <Grid
                                         container
                                         spacing={2}
-                                        sx={{margin: 'auto', justifyContent: 'center' }}
+                                        sx={{ margin: 'auto', justifyContent: 'center' }}
                                     >
                                         <Grid
                                             item

@@ -1857,7 +1857,7 @@ const SalesTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/movementProducts/update?path=/output/*') ===
-        true && selectedSale && (!selectedSale.client.id || selectedSale.client.id.split("-")[0] !== "RUC") ? (
+        true && selectedSale && (!selectedSale.client.id || selectedSale.client.id.split("-")[0] !== "RUC") && !selectedSale.proofOfPaymentType ? (
           <MenuItem onClick={goToGenerateTicket}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
@@ -1866,7 +1866,7 @@ const SalesTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/movementProducts/update?path=/output/*') ===
-        true && selectedSale && (!selectedSale.client.id || selectedSale.client.id.split("-")[0] !== "RUC") ? (
+        true && selectedSale && (!selectedSale.client.id || selectedSale.client.id.split("-")[0] !== "RUC") && !selectedSale.proofOfPaymentType ? (
           <MenuItem onClick={goToGenerateReceipt}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Boleta
@@ -1875,7 +1875,7 @@ const SalesTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/movementProducts/update?path=/output/*') ===
-        true && selectedSale && !(!selectedSale.client.id || selectedSale.client.id.split("-")[0] !== "RUC") ? (
+        true && selectedSale && !(!selectedSale.client.id || selectedSale.client.id.split("-")[0] !== "RUC") && !selectedSale.proofOfPaymentType ? (
           <MenuItem onClick={goToGenerateBill}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Factura
