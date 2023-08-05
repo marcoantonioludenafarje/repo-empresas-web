@@ -482,7 +482,7 @@ export const completeWithZeros = (num, size) => {
 export const verTags = (obj, listBussinesParameteres) => {
   let descripcion='';
   let listTagsClient= null;
-
+  console.log("Que viene en obj", obj);
   if (listBussinesParameteres)
     listTagsClient = listBussinesParameteres.find(
       (obj) => obj.abreParametro == 'CLIENT_TAGS',
@@ -491,16 +491,17 @@ export const verTags = (obj, listBussinesParameteres) => {
   if (obj.tags)
     obj.tags.forEach((item) => {
       let descripciontemp='';
-
+      console.log("listTagsClient", listTagsClient)
       if (listTagsClient) 
       descripciontemp = listTagsClient.find(
         (obj) => obj.id == item,
-      ).tagName;
-
-      if (descripcion.length == 0) {
-        descripcion = descripciontemp;
-      } else {
-        descripcion = descripcion + ' | ' + descripciontemp;
+      )?.tagName;
+      if(descripciontemp){
+        if (descripcion.length == 0) {
+          descripcion = descripciontemp;
+        } else {
+          descripcion = descripcion + ' | ' + descripciontemp;
+        }
       }
     });
 
