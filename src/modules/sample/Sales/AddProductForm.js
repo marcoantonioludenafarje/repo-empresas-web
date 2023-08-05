@@ -350,7 +350,7 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
                     ).toFixed(3),
                     businessProductCode: selectedProduct.businessProductCode,
                     taxCode: Number(typeTaxCode),
-                    stockChange: stockChange,
+                    stockChange: typeElement == 'ZZ' ? false : stockChange,
                 });
                 actualValues.productSearch = '';
                 actualValues.subtotalWithoutIgv = '';
