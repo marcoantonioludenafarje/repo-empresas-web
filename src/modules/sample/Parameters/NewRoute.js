@@ -150,7 +150,7 @@ const Distribution = () => {
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [listProductsState, setListProductsState] = React.useState({});
-  const [listClientsState, setListClientState]=React.useState({});
+  const [listClientsState, setListClientState] = React.useState({});
   const {listClients} = useSelector(({clients}) => clients);
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
@@ -357,7 +357,7 @@ const Distribution = () => {
   }, [listProducts]);
   useEffect(() => {
     if (listClients) {
-      console.log("listClients",listClients);
+      console.log('listClients', listClients);
       setListClientState(listClients);
     }
   }, [listClients]);
@@ -1426,10 +1426,10 @@ const Distribution = () => {
 
                   <IconButton
                     onClick={() => {
-                      console.log("listClientsState",listClientsState);
-                      const prub=[]; 
-                      listClientsState.forEach(element=>{
-                        if(element.tags && element.tags.includes(tag.id)){
+                      console.log('listClientsState', listClientsState);
+                      const prub = [];
+                      listClientsState.forEach((element) => {
+                        if (element.tags && element.tags.includes(tag.id)) {
                           prub.push(element);
                         }
                       });

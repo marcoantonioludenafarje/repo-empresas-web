@@ -214,7 +214,7 @@ const UpdateClient = (props) => {
 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  const [tagsClient, setTagsClient] = React.useState([]);
+
   // const {listClients} = useSelector(({clients}) => clients);
   // console.log('listClients', listClients);
   const {businessParameter} = useSelector(({general}) => general);
@@ -269,7 +269,7 @@ const UpdateClient = (props) => {
     );
     console.log('selectedClient', selectedClient);
   }
-  setTagsClient(selectedClient.tags);
+
   let defaultValues = {
     documentType: query.clientId.split('-')[0],
     nroDocument: query.clientId.split('-')[1],

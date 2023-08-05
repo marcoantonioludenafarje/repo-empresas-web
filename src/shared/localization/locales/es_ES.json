@@ -411,6 +411,8 @@
   "common.undefinedFilter": "Sin definir",
   "validation.required": "!Por favor, complete este campo!",
   "validation.positive": "!Por favor, complete valor positivo!",
+  "validation.twoDecimals": "!Por favor, máximo dos decimales!",
+  "validation.tenDecimals": "!Por favor, máximo 10 decimales!",
   "validation.select.product": "Seleccione un producto primero",
   "validation.minLength": "!Este campo solo acepta letras!",
   "validation.maxLength": "Solo puedes escribir 20 carácteres como máximo",

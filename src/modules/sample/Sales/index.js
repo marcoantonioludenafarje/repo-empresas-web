@@ -1900,7 +1900,8 @@ const SalesTable = (props) => {
           true &&
         selectedSale &&
         (!selectedSale.client.id ||
-          selectedSale.client.id.split('-')[0] !== 'RUC') ? (
+          selectedSale.client.id.split('-')[0] !== 'RUC') &&
+        !selectedSale.proofOfPaymentType ? (
           <MenuItem onClick={goToGenerateTicket}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Ticket
@@ -1912,7 +1913,8 @@ const SalesTable = (props) => {
           true &&
         selectedSale &&
         (!selectedSale.client.id ||
-          selectedSale.client.id.split('-')[0] !== 'RUC') ? (
+          selectedSale.client.id.split('-')[0] !== 'RUC') &&
+        !selectedSale.proofOfPaymentType ? (
           <MenuItem onClick={goToGenerateReceipt}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Boleta
@@ -1926,7 +1928,8 @@ const SalesTable = (props) => {
         !(
           !selectedSale.client.id ||
           selectedSale.client.id.split('-')[0] !== 'RUC'
-        ) ? (
+        ) &&
+        !selectedSale.proofOfPaymentType ? (
           <MenuItem onClick={goToGenerateBill}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
             Generar Factura
