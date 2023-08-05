@@ -55,7 +55,7 @@ const defaultValues = {
     subtotalWithoutIgv: '',
     productIgv: '',
     subtotalWithIgv: '',
-    count: '',
+    count: 1,
     unitMeasure: '',
     taxCode: '',
 };
@@ -192,7 +192,7 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
     const [open, setOpen] = React.useState(false);
     const [typeAlert, setTypeAlert] = React.useState('faltaProduct');
     const [showAlert, setShowAlert] = React.useState(false);
-    const [typeElement, setTypeElement] = React.useState('NIU');
+    const [typeElement, setTypeElement] = React.useState(userDataRes.merchantSelected.businessLine == 'services' ? 'ZZ' : 'NIU');
     const [typeTaxCode, setTypeTaxCode] = React.useState(
         igvEnabled ? '1000' : '9998',
     );
@@ -468,7 +468,7 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
                                                 label='Unidad'
                                                 labelId='unitMeasure-label'
                                                 onChange={handleTypeElement}
-                                                defaultValue='NIU'
+                                                defaultValue={userDataRes.merchantSelected.businessLine == 'services' ? 'ZZ' : 'NIU'}
                                                 value={typeElement}
                                                 MenuProps={MenuProps}
                                             >
@@ -499,7 +499,7 @@ const AddProductForm = ({ sendData, type, igvEnabled, igvDefault }) => {
 
                                     <Grid item xs={isMobile ? 12 : 4}>
                                         <AppTextField
-                                            label='Precio sin IGV'
+                                            label='Precio unitario sin IGV'
                                             name='productPrice'
                                             variant='outlined'
                                             sx={{

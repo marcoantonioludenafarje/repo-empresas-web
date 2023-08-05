@@ -133,7 +133,7 @@ const useForceUpdate = () => {
   return () => setReload((value) => value + 1); // update the state to force render
 };
 
-let selectedProducts = [];
+//let selectedProducts = [];
 let listDocuments = [];
 let typeAlert = '';
 let total = 0;
@@ -168,7 +168,7 @@ const NewSale = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showDelete, setShowDelete] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
-  const [selectedProducts2, setSelectedProducts2] = React.useState([]);
+  const [selectedProducts, setSelectedProducts] = React.useState([]);
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [editTotal, setEditTotal] = React.useState(false);
   const [exchangeRate, setExchangeRate] = React.useState('');
@@ -393,7 +393,7 @@ const NewSale = (props) => {
         total = 0;
       } else {
         let calculatedtotal = 0;
-        selectedProducts = selectedProducts.map((obj) => {
+        const newSelectedProducts = selectedProducts.map((obj) => {
           obj.taxCode = 1000
           calculatedtotal += obj.subtotal;
           totalWithIgv +=
@@ -402,6 +402,7 @@ const NewSale = (props) => {
               : obj.subtotal;
           return obj
         });
+        setSelectedProducts(newSelectedProducts)
         total = calculatedtotal;
       }
       changeValueField('totalField', Number(total.toFixed(2)));
@@ -413,7 +414,7 @@ const NewSale = (props) => {
         total = 0;
       } else {
         let calculatedtotal = 0;
-        selectedProducts = selectedProducts.map((obj) => {
+        const newSelectedProducts = selectedProducts.map((obj) => {
           obj.taxCode = 9998
           calculatedtotal += obj.subtotal;
           totalWithIgv +=
@@ -422,6 +423,7 @@ const NewSale = (props) => {
               : obj.subtotal;
           return obj
         });
+        setSelectedProducts(newSelectedProducts)
         total = calculatedtotal;
       }
       changeValueField('totalField', Number(total.toFixed(2)));
@@ -449,13 +451,14 @@ const NewSale = (props) => {
     return precioConIGV;
   };
   const removeProduct = (index) => {
-    selectedProducts.splice(index, 1);
+    let newSelectedProducts = selectedProducts;
+    newSelectedProducts.splice(index, 1);
     let totalWithIgv = 0;
-    if (selectedProducts.length == 0) {
+    if (newSelectedProducts.length == 0) {
       total = 0;
     } else {
       let calculatedtotal = 0;
-      selectedProducts.map((obj) => {
+      newSelectedProducts.forEach((obj) => {
         calculatedtotal += obj.subtotal;
         totalWithIgv +=
           obj.taxCode == 1000 && Number(igvDefault) > 0 && isIgvChecked
@@ -464,6 +467,8 @@ const NewSale = (props) => {
       });
       total = calculatedtotal;
     }
+    setSelectedProducts(newSelectedProducts)
+
     changeValueField('totalField', Number(total.toFixed(2)));
     changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
     forceUpdate();
@@ -497,20 +502,25 @@ const NewSale = (props) => {
       taxCode: taxCode,
     };
     console.log('selectedProducts product 2', actualProduct);
-    selectedProducts = selectedProducts.map((obj, i) => {
+    const newSelectedProducts = selectedProducts.map((obj, i) => {
       if (i == index) {
         return actualProduct;
       } else {
         return obj;
       }
     });
+    setSelectedProducts(newSelectedProducts)
+
     changeValueField('totalFieldIgv', Number(calculatedtotalIgv.toFixed(2)));
     forceUpdate();
   };
   const changeUnitMeasure = (index, unitMeasure) => {
     console.log('selectedProducts product', selectedProducts[index]);
     console.log('selectedProducts unitMeasure', unitMeasure);
-    selectedProducts[index].unitMeasure = unitMeasure;
+    let newSelectedProducts = selectedProducts;
+    newSelectedProducts[index].unitMeasure = unitMeasure;
+    setSelectedProducts(newSelectedProducts)
+
     forceUpdate();
   };
   const changeQuantity = (index, quantity) => {
@@ -539,10 +549,12 @@ const NewSale = (props) => {
       getValueField('totalField').value +
       (quantity - selectedProducts[index].quantityMovement) *
         selectedProducts[index].unitPrice;
-
-    selectedProducts[index].quantityMovement = quantity;
-    selectedProducts[index].subtotal =
-      quantity * selectedProducts[index].unitPrice;
+    let newSelectedProducts = selectedProducts;
+    newSelectedProducts[index].quantityMovement = quantity;
+    newSelectedProducts[index].subtotal =
+      quantity * newSelectedProducts[index].unitPrice;
+      
+    setSelectedProducts(newSelectedProducts)
     let calculatedtotalIgv =
       getValueField('totalFieldIgv').value -
       subTotalWithPreviousQuantity +
@@ -744,30 +756,32 @@ const NewSale = (props) => {
     console.log('ver ahora nuevo producto', product);
     product.subtotal = Number(product.subtotal);
     console.log('ver ahora selectedProducts', selectedProducts);
-    if (selectedProducts && selectedProducts.length >= 1) {
-      selectedProducts.map((obj, index) => {
+    let newSelectedProducts = selectedProducts;
+    if (newSelectedProducts && newSelectedProducts.length >= 1) {
+      newSelectedProducts.forEach((obj, index) => {
         console.log('obj', obj);
         if (
           obj.product == product.product &&
           obj.description == product.description &&
           obj.customCodeProduct == product.customCodeProduct
         ) {
-          console.log('selectedProducts 1', selectedProducts);
-          selectedProducts.splice(index, 1);
-          console.log('selectedProducts 2', selectedProducts);
+          console.log('selectedProducts 1', newSelectedProducts);
+          newSelectedProducts.splice(index, 1);
+          console.log('selectedProducts 2', newSelectedProducts);
         }
       });
     }
-    selectedProducts.push(product);
+    newSelectedProducts.push(product);
     let totalWithIgv = 0;
     let calculatedtotal = 0;
-    selectedProducts.map((obj) => {
+    newSelectedProducts.forEach((obj) => {
       calculatedtotal += Number(obj.subtotal);
       totalWithIgv +=
         obj.taxCode == 1000 && Number(igvDefault) > 0 && isIgvChecked
           ? Number((Number(obj.subtotal) * (1 + igvDefault)).toFixed(2))
           : Number(obj.subtotal);
     });
+    setSelectedProducts(newSelectedProducts)
     total = Number(calculatedtotal.toFixed(2));
     changeValueField('totalField', Number(calculatedtotal.toFixed(2)));
     changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
