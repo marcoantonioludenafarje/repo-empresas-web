@@ -238,6 +238,7 @@ const SalesTable = (props) => {
   const [finalTimeValue, setFinalTimeValue] = React.useState(Date.now());
   const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [saleIgvDefault, setSaleIgvDefault] = React.useState(0);
   const [initialTime, setInitialTime] = React.useState(
     toEpoch(Date.now() - 2678400000),
   );
@@ -392,7 +393,14 @@ const SalesTable = (props) => {
       window.open(`${generateSellTicketRes.enlace_del_pdf}`);
     }
   }, [generateSellTicketRes]);
-
+  useEffect(()=>{
+    if(businessParameter && businessParameter.length>0){
+      let igvDefault = businessParameter.find(
+        (obj) => obj.abreParametro == 'IGV',
+      ).value;
+      setSaleIgvDefault(igvDefault)
+    }
+  }, [businessParameter])
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
       (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
@@ -1352,6 +1360,23 @@ const SalesTable = (props) => {
     return validation;
   }
 
+  function showSubtotal (saleProducts){
+    let saleSubtotal = 0;
+    
+    saleProducts.forEach((obj)=>{
+      saleSubtotal+=(obj.unitPrice*obj.quantityMovement)
+    })
+    return Number(saleSubtotal).toFixed(2)
+  }
+  function showTotalIgv (saleProducts){
+    let saleTotalIgv = 0;
+    saleProducts.forEach((obj)=>{
+      if(obj.taxCode == 1000){
+        saleTotalIgv+=(obj.unitPrice*obj.quantityMovement)*saleIgvDefault
+      }
+    })
+    return Number(saleTotalIgv).toFixed(2)
+  }
   return typeClient ? (
     <Card sx={{p: 4}}>
       <Stack
@@ -1585,10 +1610,10 @@ const SalesTable = (props) => {
                         )}
                       </TableCell>
                       <TableCell align='center'>
-                        {obj.totalPriceWithIgv - obj.totalIgv}
+                      {obj.totalIgv ? (obj.totalPriceWithIgv - obj.totalIgv) : showSubtotal(obj.products)}
                       </TableCell>
                       <TableCell>
-                        {Number(obj.totalIgv).toFixed(2)}
+                      {obj.totalIgv ? Number(obj.totalIgv).toFixed(2) : showTotalIgv(obj.products)}
                       </TableCell>
                       <TableCell>
                         {obj.totalPriceWithIgv}
