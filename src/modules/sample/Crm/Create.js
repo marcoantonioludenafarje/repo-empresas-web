@@ -49,6 +49,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import {red} from '@mui/material/colors';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import {makeStyles} from '@mui/styles';
@@ -61,6 +62,8 @@ import {
   createPresigned,
   createClientsPresigned,
   createImagePresigned,
+  onGetBusinessParameter,
+  onGetGlobalParameter,
 } from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
@@ -91,6 +94,12 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     bottom: '-8px',
   },
+  closeButton: {
+    cursor: 'pointer',
+    float: 'right',
+    marginTop: '5px',
+    width: '20px',
+  },
 }));
 
 const Create = (props) => {
@@ -119,13 +128,19 @@ const Create = (props) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [variations, setVariations] = useState(['Variación 1']);
   const [numVariations, setNumVariations] = useState(1);
-  //const [message, setMessage] = useState('');
-
+  const [campaignContentVariations, setCampaignContentsVariations] = useState([
+    {id: 1, content: ''},
+  ]);
   // Function to add more variations
   const handleAddVariation = () => {
     const newVariation = `Variación ${numVariations + 1}`;
     setVariations([...variations, newVariation]);
     setNumVariations(numVariations + 1);
+    const newIdVariation = campaignContentVariations.length + 1;
+    setCampaignContentsVariations([
+      ...campaignContentVariations,
+      {id: newIdVariation, content: ''},
+    ]);
   };
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
@@ -146,10 +161,6 @@ const Create = (props) => {
   const [campaignContents, setCampaignContents] = useState([
     {id: 1, content: ''}, // Primer acordeón desplegado
   ]);
-
-  const handleAccordionChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
 
   // Código de agregar acordion
   // const handleAddAccordion = () => {
@@ -193,6 +204,11 @@ const Create = (props) => {
   const {clientsPresigned, imagePresigned} = useSelector(
     ({general}) => general,
   );
+
+  const getGlobalParameter = (payload) => {
+    dispatch(onGetGlobalParameter(payload));
+  };
+
   const createCampaign = (payload) => {
     dispatch(newCampaign(payload));
   };
@@ -233,7 +249,17 @@ const Create = (props) => {
           },
         },
       };
+      let globalParameterPayload = {
+        request: {
+          payload: {
+            abreParametro: null,
+            codTipoparametro: null,
+            country: 'peru',
+          },
+        },
+      };
       getClients(listPayload);
+      getGlobalParameter(globalParameterPayload);
       // setFirstload(true);
     }
   }, [userDataRes, listadeTags]);
@@ -267,6 +293,7 @@ const Create = (props) => {
         type: 'client',
         id: index,
         clientId: client.clientId,
+        denominationClient: client.denominationClient || '',
         nameContact: client.nameContact || '',
         emailContact: client.emailContact || '',
         numberCountryCode: client.numberCountryCode || '51',
@@ -290,6 +317,7 @@ const Create = (props) => {
           type: 'client',
           id: index,
           clientId: client.clientId,
+          denominationClient: client.denominationClient || '',
           nameContact: client.nameContact || '',
           emailContact: client.emailContact || '',
           numberCountryCode: client.numberCountryCode || '51',
@@ -324,6 +352,7 @@ const Create = (props) => {
           },
         },
       };
+      console.log('newImage', imagePayload);
       toCreateImagePresigned(imagePayload, {
         image: actualImage,
         type: actualImage?.type || null,
@@ -350,6 +379,7 @@ const Create = (props) => {
     };
 
     console.log('Contenidodecamapañas', campaignContents);
+    console.log('ACTUAL IMAGE', imagePresigned);
     const payload = {
       request: {
         payload: {
@@ -357,39 +387,41 @@ const Create = (props) => {
             {
               campaignName: data.campaignName,
               scheduledAt: data.date,
-              receivers: [{
-                type: 'client',
+              receivers: {
+                //type: 'client',
                 urlClients: '',
-              }],
+              },
+              targetSummary: [...selectedTags, totaldeClientes()],
               robotId: 'ID_BOT_CUENTA_SOPORTE',
               messages: [
                 {
-                  order: 1,
+                  order: 0,
                   type: actualImage ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
-                  // metadata: selectedJsonImages[0]
-                  //   ? {
-                  //       keyMaster: selectedJsonImages[0]?.keyMaster || '',
-                  //       nameFile: selectedJsonImages[0]?.nameFile || '',
-                  //     }
-                  //   : null,
-                  img_url: actualImage
-                    ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
-                      userDataRes.merchantSelected.merchantId +
-                      '/' +
-                      'campaign/' +
-                      nameSimplified +
-                      '/' +
-                      actualImage.name.split('.').slice(0, -1).join('.') +
-                      '.' +
-                      extensions[actualImage.type]
-                    : '',
+                  metadata: actualImage
+                    ? {
+                        keyMaster: imagePresigned.keymaster || '',
+                        nameFile: actualImage?.name || '',
+                      }
+                    : null,
+                  // img_url: actualImage
+                  //   ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
+                  //     userDataRes.merchantSelected.merchantId +
+                  //     '/' +
+                  //     'campaign/' +
+                  //     nameSimplified +
+                  //     '/' +
+                  //     actualImage.name.split('.').slice(0, -1).join('.') +
+                  //     '.' +
+                  //     extensions[actualImage.type]
+                  //   : '',
                   text: campaignContents[0].content,
+                  variations: variationsData ? variationsData : [''],
                 },
               ],
             },
           ],
           merchantId: userDataRes.merchantSelected.merchantId,
-          levelBusiness: 'ORO',
+          levelBusiness: levelEnter.level || 'BRONCE',
         },
       },
     };
@@ -410,7 +442,7 @@ const Create = (props) => {
   useEffect(() => {
     if (clientsPresigned) {
       const payload = payloadToCreateCampaign;
-      payload.request.payload.campaign[0].receivers[0].urlClients =
+      payload.request.payload.campaign[0].receivers.urlClients =
         clientsPresigned.keymaster;
       setTimeout(() => {
         // Show success message
@@ -426,8 +458,9 @@ const Create = (props) => {
       }, 1000);
     }
   }, [clientsPresigned]);
+
   const showMessage = () => {
-    if (successMessage !== undefined) {
+    if (successMessage != '') {
       console.log('MENSAJE DE VALIDEZ', successMessage);
       return (
         <>
@@ -518,24 +551,7 @@ const Create = (props) => {
   const handleCloseClientsDialog = () => {
     setOpenClientsDialog(false);
   };
-
-  const columns = [
-    {field: 'clientId', headerName: 'ID', width: 150},
-    {field: 'denominationClient', headerName: 'Cliente', width: 200},
-    {field: 'numberContact', headerName: 'Contacto', width: 150},
-    {field: 'tags', headerName: 'Tags', width: 100},
-  ];
-
   console.log('LISTA DE CLIENTES,', listClients);
-
-  const rows = listClients.map((client) => ({
-    id: client.clientId,
-    clientId: client.clientId,
-    denominationClient: client.denominationClient,
-    numberContact: client.numberContact,
-    tags: verTags(client, businessParameter),
-  }));
-
   const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
   console.log('seleccion,', selectedClientsByTag);
 
@@ -657,6 +673,7 @@ const Create = (props) => {
     } else {
       setSearchDialogResults(listClients);
     }
+    console.log('LOS CLIENTES LUEGO DEL FILTRO EN TOTAL', searchDialogResults);
   };
   //BUSQUEDA
   const handleSearchValues = (e) => {
@@ -670,6 +687,111 @@ const Create = (props) => {
     setSearchDialogResults(listClients);
     console.log('clientes antes>>', searchDialogResults);
   }, [listClients]);
+
+  const {globalParameter} = useSelector(({general}) => general);
+  console.log('globalParameter123', globalParameter);
+
+  const [parameterLevel, setParameterLevel] = useState([]);
+  useEffect(() => {
+    if (globalParameter != undefined) {
+      let obtainedLevels = globalParameter.find(
+        (obj) => obj.abreParametro == 'LEVEL_INTERACTIONS',
+      ).value;
+      console.log('Levels parameter', obtainedLevels);
+      setParameterLevel(obtainedLevels);
+    }
+  }, [globalParameter != undefined]);
+
+  const LevelClients = (array) => {
+    if (array.length === 0) {
+      return {order: 1, clientsAmount: 20, level: 'BRONCE'};
+    }
+
+    // Inicializar la variable para almacenar el objeto con el mayor order
+    let objetoMayorOrder = array[0];
+
+    // Recorrer el array y encontrar el objeto con el mayor order
+    for (let i = 1; i < array.length; i++) {
+      if (array[i].order > objetoMayorOrder.order) {
+        objetoMayorOrder = array[i];
+      }
+    }
+
+    return objetoMayorOrder;
+  };
+  const levelEnter = LevelClients(parameterLevel);
+  console.log('LEVEL ENTER', levelEnter);
+
+  const [verification, setVerification] = useState(true);
+
+  const verificationVariations = () => {
+    let valor = totaldeClientes() / levelEnter.clientsAmount; //  6 / 5   1.2
+    let mayorPosible = Math.ceil(valor); // 2
+
+    console.log('DATA-VARIATIONS', variationsData[0], mayorPosible);
+    // if (totaldeClientes()<= levelEnter.clientsAmount && totaldeClientes()>0) {
+    //   setVerification(false)
+    //   return xd - 1;
+    // }
+    if (mayorPosible - 1 == 1) {
+      console.log('DATA-VARIATIONS', variationsData[0]);
+      if (
+        variationsData &&
+        variationsData[0] !== '' &&
+        variationsData[0] !== undefined
+      ) {
+        setVerification(false);
+      }
+      return mayorPosible - 1;
+    }
+
+    // if (totaldeClientes() > levelEnter.clientsAmount && (xd-1)===variationsData.length) { // 6>5 && 1===0
+    //   console.log("VARIATONSDATA ", variationsData.length);
+    //   console.log("VARIATONSDATAXD", xd-1);
+    //   setVerification(false);
+    // }
+  };
+
+  // State to keep track of expanded accordion
+  const [expandedAccordion, setExpandedAccordion] = useState(null);
+
+  // State to keep track of campaign content variations
+  const [variationsData, setVariationsData] = useState(
+    variations.map((v) => v.content),
+  );
+
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    setExpandedAccordion(isExpanded ? panel : null);
+  };
+
+  const handleVariationContentChange = (index, value) => {
+    // Update the campaignContentVariations state with the latest changes
+    const newData = [...variationsData];
+    newData[index] = value;
+    setVariationsData(newData);
+  };
+
+  const handleDeleteAccordion = (index) => {
+    // Remove the accordion by updating the variations and variationsData states
+    const newVariations = [...variations];
+    newVariations.splice(index, 1);
+    setVariations(newVariations);
+
+    const newData = [...variationsData];
+    newData.splice(index, 1);
+    setVariationsData(newData);
+  };
+
+  const handleAccordionVariationsClose = () => {
+    setVariations(['Variación 1']);
+    setNumVariations(1);
+    setCampaignContentsVariations([{id: 1, content: ''}]);
+    setVariationsData(variations.map((v) => v.content));
+    console.log('SAVE >>', variationsData);
+
+    // Close the dialog
+    setOpenDialog(false);
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -793,61 +915,6 @@ const Create = (props) => {
                       </Box>
                     </Grid>
 
-                    {/* Segundo Grid - Contiene el componente Autocomplete */}
-                    {/* <Grid item xs={12} md={4}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          flexDirection: 'column',
-                          mt: 2,
-                        }}
-                      >
-                        <Autocomplete
-                          value={selectedTags}
-                          onChange={(event, newValue) => {
-                            console.log('Nuevo Tag seleccionado:', newValue);
-                            handleTagSelect(newValue);
-                          }}
-                          disabled={selectedClientCount === listClients.length}
-                          sx={{
-                            m: 1,
-                            width: '100%', // Establece el ancho al 100% por defecto
-                            [(theme) => theme.breakpoints.down('sm')]: {
-                              width: '80%', // Ancho del 80% en pantallas pequeñas
-                            },
-                            [(theme) => theme.breakpoints.up('md')]: {
-                              width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
-                            },
-                          }}
-                          multiple
-                          options={['ALL', ...namesTags]}
-                          getOptionLabel={(option) => option}
-                          disableCloseOnSelect
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant='outlined'
-                              label='Selecciona Etiquetas'
-                              placeholder='etiquetas...'
-                            />
-                          )}
-                          renderOption={(props, option, {selected}) => (
-                            <MenuItem
-                              {...props}
-                              key={option}
-                              value={option}
-                              sx={{justifyContent: 'space-between'}}
-                            >
-                              {option}
-                              {selected ? <CheckIcon color='info' /> : null}
-                            </MenuItem>
-                          )}
-                        />
-                      </Box>
-                    </Grid> */}
-
                     {/* Tercer Grid - Contiene el box image */}
                     <Grid item xs={12} md={6}>
                       <Box
@@ -960,33 +1027,18 @@ const Create = (props) => {
                       </Accordion>
                     </Grid>
                   ))}
-
-                  {/* Botón "Más" para agregar un nuevo acordeón */}
-                  {/* <Grid container item xs={12} justifyContent='center'>
-                    <Button
-                      variant='outlined'
-                      color='primary'
-                      onClick={handleAddAccordion}
-                      startIcon={<AddCircleOutlineOutlinedIcon />}
-                    >
-                      Más
-                    </Button>
-                  </Grid> */}
                 </Grid>
-                {selectedClients.length > 50 ? (
-                  <Grid container item xs={12} justifyContent='center'>
-                    <Button
-                      variant='outlined'
-                      color='primary'
-                      startIcon={<AddCircleOutlineOutlinedIcon />}
-                      onClick={() => setOpenDialog(true)}
-                    >
-                      Generar Variación
-                    </Button>
-                  </Grid>
-                ) : (
-                  <Typography></Typography>
-                )}
+
+                <Grid container item xs={12} justifyContent='center'>
+                  <Button
+                    variant='outlined'
+                    color='primary'
+                    startIcon={<AddCircleOutlineOutlinedIcon />}
+                    onClick={() => setOpenDialog(true)}
+                  >
+                    Generar Variación
+                  </Button>
+                </Grid>
 
                 <Dialog
                   open={openDialog}
@@ -995,45 +1047,96 @@ const Create = (props) => {
                   fullWidth
                 >
                   <DialogTitle>
-                    Variaciones
-                    <IconButton
-                      edge='end'
-                      color='inherit'
-                      onClick={() => setOpenDialog(false)}
-                      aria-label='close'
+                    <Typography
+                      sx={{
+                        mx: 'auto',
+                        my: '10px',
+                        fontWeight: 600,
+                        fontSize: 25,
+                      }}
                     >
-                      <CancelOutlinedIcon />
-                    </IconButton>
+                      {'Primeras Variaciones'}
+                    </Typography>
                   </DialogTitle>
                   <DialogContent>
                     {variations.map((variation, index) => (
-                      <Accordion key={index}>
+                      <Accordion
+                        key={index}
+                        expanded={expandedAccordion === index}
+                        onChange={handleAccordionChange(index)}
+                      >
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                           {variation}
+                          <Box sx={{ml: 'auto'}}>
+                            <Button
+                              onClick={() => handleDeleteAccordion(index)}
+                            >
+                              <DeleteOutlineOutlinedIcon />
+                            </Button>
+                          </Box>
                         </AccordionSummary>
                         <AccordionDetails>
-                          {/* Additional content for each variation */}
+                          <Grid item xs={12} md={12}>
+                            <TextField
+                              label='Contenido de la Variación Campaña *'
+                              variant='outlined'
+                              multiline
+                              rows={4}
+                              value={variationsData[index]} // Use the updated variationsData
+                              onChange={(e) =>
+                                handleVariationContentChange(
+                                  index,
+                                  e.target.value,
+                                )
+                              }
+                              sx={{width: '100%', my: 2}}
+                            />
+                          </Grid>
                         </AccordionDetails>
                       </Accordion>
                     ))}
+                    <Box
+                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                    >
+                      <Button variant='outlined' onClick={handleAddVariation}>
+                        Más
+                      </Button>
+                    </Box>
                   </DialogContent>
                   <DialogActions>
-                    <Button variant='outlined' onClick={handleAddVariation}>
-                      Más
+                    <Button
+                      color='primary'
+                      sx={{mx: 'auto', width: '15%'}}
+                      type='submit'
+                      variant='contained'
+                      startIcon={<SaveAltOutlinedIcon />}
+                      onClick={() => {
+                        // Save the variationsData when clicking "Guardar"
+                        console.log('Saving variations:', variationsData);
+                        // ... (Add your saving logic here)
+                        verificationVariations();
+                        setOpenDialog(false);
+                      }}
+                    >
+                      Guardar
                     </Button>
                     <Button
                       variant='outlined'
-                      onClick={() => setOpenDialog(false)}
+                      startIcon={<ArrowCircleLeftOutlinedIcon />}
+                      onClick={handleAccordionVariationsClose}
                     >
                       Cerrar
                     </Button>
                   </DialogActions>
                 </Dialog>
 
-                {selectedClients > 50 ? (
-                  <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
+                {totaldeClientes() > levelEnter.clientsAmount ? (
+                  <Box
+                    sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
+                  >
                     <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                      Cantidad de variaciones: {numVariations}
+                      Cantidad de variaciones obligatorias:{' '}
+                      {verificationVariations()}
                     </Typography>
                   </Box>
                 ) : (
@@ -1052,7 +1155,13 @@ const Create = (props) => {
                     type='submit'
                     variant='contained'
                     form='principal-form'
-                    disabled={isSubmitting}
+                    disabled={
+                      isSubmitting ||
+                      (totaldeClientes() <= levelEnter.clientsAmount &&
+                        totaldeClientes() > 0)
+                        ? false
+                        : verification
+                    }
                     startIcon={<SaveAltOutlinedIcon />}
                   >
                     Finalizar
@@ -1135,7 +1244,17 @@ const Create = (props) => {
         aria-describedby='alert-dialog-description'
         maxWidth='lg'
       >
-        <DialogTitle id='alert-dialog-title'>Seleccionar Clientes</DialogTitle>
+        <DialogTitle id='alert-dialog-title'>
+          <Typography
+            sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
+          >
+            {'Seleccionar Clientes'}
+            <CancelOutlinedIcon
+              onClick={handleCloseClientsDialog}
+              className={classes.closeButton}
+            />
+          </Typography>
+        </DialogTitle>
         <DialogContent dividers>
           <div style={{height: 400, width: 1000}}>
             <Stack
@@ -1151,16 +1270,16 @@ const Create = (props) => {
                 size='small'
                 value={searchDialogValue}
                 onChange={(e) => setSearchDialogValue(e.target.value)}
+                sx={{flex: 1}}
               />
 
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <Box
                   sx={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     flexDirection: 'column',
-                    mt: 2,
                   }}
                 >
                   <Autocomplete
@@ -1212,6 +1331,7 @@ const Create = (props) => {
                 variant='contained'
                 color='primary'
                 onClick={searchClients}
+                sx={{height: '100%'}}
               >
                 Buscar
               </Button>
@@ -1263,7 +1383,22 @@ const Create = (props) => {
         </DialogContent>
         <Typography>Total seleccionados {totaldeClientes()}</Typography>
         <DialogActions>
-          <Button onClick={handleCloseClientsDialog}>Cerrar</Button>
+          <Button
+            color='primary'
+            sx={{mr: '35%', width: '10%'}}
+            type='submit'
+            variant='contained'
+            startIcon={<SaveAltOutlinedIcon />}
+          >
+            Guardar
+          </Button>
+          <Button
+            onClick={handleCloseClientsDialog}
+            startIcon={<ArrowCircleLeftOutlinedIcon />}
+            variant='outlined'
+          >
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
     </Card>

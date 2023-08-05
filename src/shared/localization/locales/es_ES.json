@@ -714,6 +714,8 @@
   "sidebar.sample.createCampaign": "Crear campaña",
   "sidebar.sample.createRoute": "Crear rutas",
   "sidebar.sample.crm": "CRM",
+  "sidebar.sample.crm.pending": "Pendiente",
+  "sidebar.sample.crm.finalized": "Finalizado",
   "sidebar.sample.distribution": "Distribución",
   "sidebar.sample.distributions": "Distribuciones",
   "sidebar.sample.ecommerce": "Ecommerce",

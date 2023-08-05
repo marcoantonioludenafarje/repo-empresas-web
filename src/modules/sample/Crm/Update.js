@@ -1,17 +1,6 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {makeStyles} from '@mui/styles';
-import * as yup from 'yup';
+import React, {useEffect, useState} from 'react';
 import {Form, Formik} from 'formik';
-import AppPage from '../../../@crema/hoc/AppPage';
-import AppPageMeta from '../../../@crema/core/AppPageMeta';
-
-import IntlMessages from '../../../@crema/utility/IntlMessages';
-import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
-import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
-
-console.log('Al menos aquí 1?');
-
+import * as yup from 'yup';
 import {
   Accordion,
   AccordionSummary,
@@ -50,360 +39,401 @@ import {
   useTheme,
 } from '@mui/material';
 
+import axios from 'axios';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-import CloseIcon from '@mui/icons-material/Close';
-
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import CheckIcon from '@mui/icons-material/Check';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
-import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import {red} from '@mui/material/colors';
-
-import {DataGrid} from '@mui/x-data-grid';
-import {
-  onGetBusinessParameter,
-  onGetGlobalParameter,
-} from '../../../redux/actions/General';
-import {useDispatch, useSelector} from 'react-redux';
-import Router, {useRouter} from 'next/router';
+import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import {makeStyles} from '@mui/styles';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
-import {width} from '@mui/system';
-
+import Router, {useRouter} from 'next/router';
+import {useDispatch, useSelector} from 'react-redux';
+import {newClient, onGetClients} from '../../../redux/actions/Clients';
+import {newCampaign} from '../../../redux/actions/Campaign';
 import {
-  getActualMonth,
-  getYear,
-  toEpoch,
-  simpleDateToDateObj,
-  convertToDateWithoutTime,
-} from '../../../Utils/utils';
-
-import {updateClient, onGetClients} from '../../../redux/actions/Clients';
-import {} from '../../../redux/actions/Campaign';
+  createPresigned,
+  createClientsPresigned,
+  createImagePresigned,
+} from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
+  RESET_CAMPAIGNS,
+  GET_CLIENTS_PRESIGNED,
 } from '../../../shared/constants/ActionTypes';
-import CheckIcon from '@mui/icons-material/Check';
+import {DataGrid} from '@mui/x-data-grid';
+import {verTags} from '../../../Utils/utils';
+import {convertToDate} from '../../../Utils/utils';
+
+const validationSchema = yup.object({
+  campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
+  // date: yup
+  //   .date()
+  //   .typeError('Ingresa una fecha valida')
+  //   .required('La fecha es obligatoria'),
+  // campaignContent: yup
+  //   .string()
+  //   .required('El contenido de la campaña es obligatorio'),
+  campaignImages: yup
+    .array()
+    .of(yup.mixed().required('Requiere una imagen'))
+    .nullable(),
+});
 
 const useStyles = makeStyles((theme) => ({
-  closeButton: {
-    cursor: 'pointer',
-    float: 'right',
-    marginTop: '5px',
-    width: '20px',
+  fixPosition: {
+    position: 'relative',
+    bottom: '-8px',
   },
 }));
 
-const maxLengthNumber = 111111111111; //11 caracteres
-const validationSchema = yup.object({
-  /* name: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required(<IntlMessages id='validation.required' />),
-    nroDocument: yup
-      .number()
-      .typeError(<IntlMessages id='validation.number' />)
-      .required(<IntlMessages id='validation.required' />)
-      .integer(<IntlMessages id='validation.number.integer' />)
-      .max(maxLengthNumber, 'Solo puedes ecribir 11 carácteres como máximo'), */
-  // numberDocumentClient: yup
-  //   .number()
-  //   .typeError(<IntlMessages id='validation.number' />)
-  //   .required(<IntlMessages id='validation.required' />)
-  //   .max(100000000000, 'Se puede ingresar como maximo 11 caracteres'),
-  // denominationClient: yup
-  //   .string()
-  //   .typeError(<IntlMessages id='validation.string' />)
-  //   .required(<IntlMessages id='validation.required' />),
-
-  documentType: yup.string(),
-  nroDocument: yup
-    .number()
-    .typeError(<IntlMessages id='validation.number' />)
-    .required(<IntlMessages id='validation.required' />)
-    .max(100000000000, 'Se puede ingresar como maximo 11 caracteres'),
-  givenName: yup.string().when('documentType', {
-    is: 'RUC',
-    then: yup.string().typeError(<IntlMessages id='validation.string' />),
-    otherwise: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required('Es un campo obligatorio'),
-  }),
-  // .typeError(<IntlMessages id='validation.string' />)
-  // .required(<IntlMessages id='validation.required' />),
-
-  lastName: yup.string().when('documentType', {
-    is: 'RUC',
-    then: yup.string().typeError(<IntlMessages id='validation.string' />),
-    otherwise: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required('Es un campo obligatorio'),
-  }),
-  secondLastName: yup.string().when('documentType', {
-    is: 'RUC',
-    then: yup.string().typeError(<IntlMessages id='validation.string' />),
-    otherwise: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required('Es un campo obligatorio'),
-  }),
-  // .typeError(<IntlMessages id='validation.string' />)
-  // .required(<IntlMessages id='validation.required' />),
-
-  name: yup
-    .string()
-    .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
-
-  addressClient: yup
-    .string()
-    .required(<IntlMessages id='validation.required' />)
-    .typeError(<IntlMessages id='validation.string' />),
-  emailClient: yup
-    .string()
-    .typeError(<IntlMessages id='validation.number' />)
-    .email('Formato de correo invalido'),
-  emailContact: yup
-    .string()
-    .typeError(<IntlMessages id='validation.number' />)
-    .email('Formato de correo invalido'),
-  nameContact: yup.string().when('documentType', {
-    is: 'RUC',
-    then: yup
-      .string()
-      .typeError(<IntlMessages id='validation.string' />)
-      .required('Es un campo obligatorio'),
-    otherwise: yup.string().typeError(<IntlMessages id='validation.string' />),
-  }),
-  numberContact: yup
-    .number()
-    .typeError(<IntlMessages id='validation.number' />)
-    .max(1000000000, 'Se puede ingresar como maximo 11 caracteres'),
-  birthDay: yup.date(),
-  // .when("documentType", {
-  //   is: 'RUC',
-  //   then: yup.string().typeError(<IntlMessages id='validation.date' />).required("Es un campo obligatorio"),
-  //   otherwise:  yup.string().typeError(<IntlMessages id='validation.date' />)
-  // }),
-  extraInformationClient: yup
-    .string()
-    .typeError(<IntlMessages id='validation.string' />),
-});
-let selectedClient = {};
-let typeAlert = '';
-const UpdateClient = (props) => {
+const Update = (props) => {
+  let toSubmitting;
+  const [open, setOpen] = React.useState(false);
+  const [openStatus, setOpenStatus] = React.useState(false);
+  const dispatch = useDispatch();
   const router = useRouter();
   let {query} = router;
+
   console.log('query', query);
-  const [typeDialog, setTypeDialog] = React.useState('');
-  const [openStatus, setOpenStatus] = React.useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
 
-  const [showAlert, setShowAlert] = React.useState(false);
-  const [statusClient, setStatusClient] = React.useState(query.status);
-  const dispatch = useDispatch();
-  const [isRUC, setRUC] = React.useState(false);
-  const [identidad, setIdentidad] = React.useState('');
-  const [birthDay, setBirthDay] = React.useState(
-    query.birthDay ? query.birthDay : new Date(),
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [openClientsDialog, setOpenClientsDialog] = useState(false);
+  const [selectedClients, setSelectedClients] = useState([]);
+  const [selectedClientCount, setSelectedClientCount] = useState(0);
+  const [payloadToCreateCampaign, setPayloadToCreateCampaign] = useState('');
+
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedClientIds, setSelectedClientIds] = useState([]);
+  const [selectedTagsCount, setSelectedTagsCount] = useState(0);
+
+  const [previewImages, setPreviewImages] = useState([]);
+  const [publishDate, setPublishDate] = React.useState(
+    convertToDate(query.scheduledAt) /* Number(query.createdAt) */,
   );
+  const [openDialog, setOpenDialog] = useState(false);
+  const [variations, setVariations] = useState(['Variación 1']);
+  const [numVariations, setNumVariations] = useState(1);
+  //const [message, setMessage] = useState('');
 
-  const [listTags, setListTags] = React.useState([]);
-  const [tagSelected, setTagSelected] = React.useState([]);
-  const [reload, setReload] = React.useState(0); // integer state
-
-  const toUpdateClient = (payload) => {
-    dispatch(updateClient(payload));
+  // Function to add more variations
+  const handleAddVariation = () => {
+    const newVariation = `Variación ${numVariations + 1}`;
+    setVariations([...variations, newVariation]);
+    setNumVariations(numVariations + 1);
   };
 
-  const useForceUpdate = () => {
-    const [reload, setReload] = React.useState(0); // integer state
-    return () => setReload((val) => val + 1); // update the state to force render
-  };
-  const forceUpdate = useForceUpdate();
+  const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
+  const [nameLastFile, setNameLastFile] = React.useState('');
+  const [actualImage, setActualImage] = React.useState('');
+  const [clientSelection, setClientSelection] = useState();
+  const classes = useStyles(props);
 
-  const {userAttributes} = useSelector(({user}) => user);
+  const defaultValues = {
+    campaignName: query.campaignName,
+    date: Date.now() + 60 * 60 * 1000,
+    campaignContent: '',
+    campaignImages: null,
+  };
+
+  // Estado para controlar el acordeón abierto
+  const [expanded, setExpanded] = useState(1);
+  const [campaignContents, setCampaignContents] = useState([
+    {id: 1, content: ''}, // Primer acordeón desplegado
+  ]);
+
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  // Código de agregar acordion
+  // const handleAddAccordion = () => {
+  //   const newId = campaignContents.length + 1;
+  //   setCampaignContents([...campaignContents, {id: newId, content: ''}]);
+  // };
+
+  const handleContentChange = (id, content) => {
+    console.log('content Mensaje', content);
+    const updatedContents = campaignContents.map((contentData) =>
+      contentData.id === id ? {...contentData, content} : contentData,
+    );
+    setCampaignContents(updatedContents);
+  };
+
+  const handleClientSelection = (selectedClients) => {
+    setSelectedClients(selectedClients);
+  };
+
+  const getClients = (payload) => {
+    dispatch(onGetClients(payload));
+  };
   const {userDataRes} = useSelector(({user}) => user);
 
-  // const {listClients} = useSelector(({clients}) => clients);
-  // console.log('listClients', listClients);
   const {businessParameter} = useSelector(({general}) => general);
-  console.log('businessParameter', businessParameter);
-  const {
-    listClients,
-    updateClientRes,
-    successMessage,
-    errorMessage,
-    process,
-    loading,
-  } = useSelector(({clients}) => clients);
-  console.log('updateClientRes', updateClientRes);
-  // const {successMessage} = useSelector(({finances}) => finances);
-  // console.log('successMessage', successMessage);
-  // const {errorMessage} = useSelector(({finances}) => finances);
-  // console.log('errorMessage', errorMessage);
+
+  console.log('Businees: ', businessParameter);
+  console.log(
+    'bisnees people',
+    businessParameter?.find((obj) => obj.abreParametro == 'CLIENT_TAGS').value,
+  );
+
+  const listadeTags = businessParameter?.find(
+    (obj) => obj.abreParametro == 'CLIENT_TAGS',
+  ).value;
+
+  const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
+    ({clients}) => clients,
+  );
+
+  const {clientsPresigned, imagePresigned} = useSelector(
+    ({general}) => general,
+  );
+  const createCampaign = (payload) => {
+    dispatch(newCampaign(payload));
+  };
+  const toCreatePresigned = (payload, file) => {
+    dispatch(createPresigned(payload, file));
+  };
+  const toCreateImagePresigned = (payload, file) => {
+    dispatch(createImagePresigned(payload, file));
+  };
+  const toCreateClientsPresigned = (payload, file) => {
+    dispatch(createClientsPresigned(payload, file));
+  };
+  const {newCampaignRes, successMessage, errorMessage, process, loading} =
+    useSelector(({campaigns}) => campaigns);
+  console.log('Respuesta de campañas : ', errorMessage);
+
+  console.log('Confeti los clientes', listClients);
+
+  useEffect(() => {
+    console.log('Estamos userDataResINCampaign', userDataRes);
+    if (
+      userDataRes &&
+      userDataRes.merchantSelected &&
+      userDataRes.merchantSelected.merchantId
+    ) {
+      console.log('Estamos entrando al getClients');
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      //dispatch({type: GET_CLIENTS, payload: undefined});
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      getClients(listPayload);
+      // setFirstload(true);
+    }
+  }, [userDataRes, listadeTags]);
 
   useEffect(() => {
     switch (process) {
-      case 'UPDATE_CLIENT':
+      case 'CREATE_NEW_CAMPAIGN':
         if (!loading && (successMessage || errorMessage)) {
           setOpenStatus(true);
         }
 
         break;
       default:
-        console.log('Esto esta cool');
+        console.log('Se supone que pasa por aquí XD');
     }
   }, [loading]);
 
-  useEffect(() => {
-    if (
-      userDataRes &&
-      userDataRes.merchantSelected &&
-      businessParameter &&
-      listTags.length == 0
-    ) {
-      let listTags1 = businessParameter.find(
-        (obj) => obj.abreParametro == 'CLIENT_TAGS',
-      ).value;
-
-      listTags1.forEach((item) => {
-        listTags.push([item.tagName, item.id, true]);
-      });
-    }
-  }, [userDataRes]);
-
-  if (listClients != undefined) {
-    selectedClient = listClients.find(
-      (input) => input.clientId == query.clientId,
-    );
-    console.log('selectedClient', selectedClient);
-  }
-
-  let defaultValues = {
-    documentType: query.clientId.split('-')[0],
-    nroDocument: query.clientId.split('-')[1],
-    givenName: query.givenName || '',
-    lastName: query.lastName || '',
-    secondLastName: query.secondLastName || '',
-    birthDay: query.birthDay || '',
-    name: query.denominationClient || '',
-    addressClient: query.addressClient || '',
-    emailClient: query.emailClient || '',
-    emailContact: query.emailContact || '',
-    nameContact: query.nameContact || '',
-    numberContact: query.numberContact || '',
-    numberCountryCode: '51',
-    extraInformationClient: query.extraInformationClient || '',
-  };
-  let businessParameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-
-  let objSelects = {
-    documentType: '',
-  };
+  const namesTags = listadeTags?.map((tag) => tag.tagName);
 
   const handleData = (data, {setSubmitting}) => {
+    console.log('Data crear', data);
+    let nameSimplified = data.campaignName;
+    nameSimplified = nameSimplified.replace(/ /g, '');
+    nameSimplified = nameSimplified.toLowerCase();
+
     setSubmitting(true);
+    let receivers = [];
 
-    let extraTrama;
-    if (data.documentType == 'RUC') {
-      extraTrama = {
-        emailContact: data.emailContact,
-        nameContact: data.nameContact,
-      };
-    } else {
-      // DNI CE
-      extraTrama = {
-        givenName: data.givenName,
-        lastName: data.lastName,
-        secondLastName: data.secondLastName,
-        birthDay: data.birthDay,
-        emailContact: data.emailClient,
-        nameContact:
-          data.givenName + ' ' + data.lastName + ' ' + data.secondLastName,
-      };
+    if (clientSelection === 'Todos') {
+      receivers = listClients.map((client, index) => ({
+        type: 'client',
+        id: index,
+        clientId: client.clientId,
+        nameContact: client.nameContact || '',
+        emailContact: client.emailContact || '',
+        numberCountryCode: client.numberCountryCode || '51',
+        addressClient: client.addressClient || '',
+        givenName: client.givenName || '',
+        lastName: client.lastName || '',
+        secondLastName: client.secondLastName || '',
+        extraInformationClient: client.extraInformationClient || '',
+        numberContact: client.numberContact || '',
+        birthDay: client.birthDay || '',
+      }));
+      receivers.push({
+        type: 'tag',
+        tagId: 'ALL',
+      });
+    } else if (clientSelection === 'Algunos') {
+      console.log('CLIENTES SELECCIONADOS:', selectedClients);
+      receivers = selectedClients.map((clientId, index) => {
+        const client = listClients.find((c) => c.clientId === clientId);
+        return {
+          type: 'client',
+          id: index,
+          clientId: client.clientId,
+          nameContact: client.nameContact || '',
+          emailContact: client.emailContact || '',
+          numberCountryCode: client.numberCountryCode || '51',
+          addressClient: client.addressClient || '',
+          givenName: client.givenName || '',
+          lastName: client.lastName || '',
+          secondLastName: client.secondLastName || '',
+          extraInformationClient: client.extraInformationClient || '',
+          numberContact: client.numberContact || '',
+          birthDay: client.birthDay || '',
+        };
+      });
     }
+    console.log('RECEIVERS', receivers);
+    const clientsData = {
+      receivers: receivers,
+    };
+    // Convierte el objeto JSON a una cadena JSON
+    const jsonString = JSON.stringify(clientsData, null, 2); // null, 2 para una representación más legible
 
-    let newClientPayload = {
+    // Crea un Blob con la cadena JSON
+    const clientsBlob = new Blob([jsonString], {type: 'application/json'});
+    if (actualImage) {
+      let imagePayload = {
+        request: {
+          payload: {
+            key: actualImage.name.split('.').slice(0, -1).join('.'),
+            action: 'putObject',
+            contentType: actualImage.type,
+            merchantId: userDataRes.merchantSelected.merchantId,
+            path: 'campaign/' + nameSimplified,
+          },
+        },
+      };
+      toCreateImagePresigned(imagePayload, {
+        image: actualImage,
+        type: actualImage?.type || null,
+      });
+    }
+    let clientsJsonPayload = {
       request: {
         payload: {
-          clientId: query.clientId,
-          typeDocumentClient: data.documentType,
-          numberDocumentClient: data.nroDocument,
-          denominationClient: data.name,
-          addressClient: data.addressClient,
-          emailClient: data.emailClient,
-          numberContact: data.numberContact,
-          numberCountryCode: '51',
-          extraInformationClient: data.extraInformationClient,
-          ...extraTrama,
+          key: 'clientsJson',
+          action: 'putObject',
+          contentType: 'application/json',
+          name: 'clientsJson',
+        },
+      },
+    };
+    toCreateClientsPresigned(clientsJsonPayload, {
+      image: clientsBlob,
+      type: clientsBlob?.type || null,
+    });
+    const extensions = {
+      'image/jpeg': 'jpeg',
+      'image/jpg': 'jpg',
+      'image/png': 'png',
+    };
 
-          // merchantId: userDataRes.merchantSelected.merchantId,
+    console.log('Contenidodecamapañas', campaignContents);
+    const payload = {
+      request: {
+        payload: {
+          campaign: [
+            {
+              campaignName: data.campaignName,
+              scheduledAt: data.date,
+              receivers: {
+                //type: 'client',
+                urlClients: '',
+              },
+              robotId: 'ID_BOT_CUENTA_SOPORTE',
+              messages: [
+                {
+                  order: 0,
+                  type: actualImage ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
+                  // metadata: selectedJsonImages[0]
+                  //   ? {
+                  //       keyMaster: selectedJsonImages[0]?.keyMaster || '',
+                  //       nameFile: selectedJsonImages[0]?.nameFile || '',
+                  //     }
+                  //   : null,
+                  img_url: actualImage
+                    ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
+                      userDataRes.merchantSelected.merchantId +
+                      '/' +
+                      'campaign/' +
+                      nameSimplified +
+                      '/' +
+                      actualImage.name.split('.').slice(0, -1).join('.') +
+                      '.' +
+                      extensions[actualImage.type]
+                    : '',
+                  text: campaignContents[0].content,
+                  variations: ['text', 'text'],
+                },
+              ],
+            },
+          ],
+          merchantId: userDataRes.merchantSelected.merchantId,
+          levelBusiness: 'ORO',
         },
       },
     };
 
-    if (tagSelected.length > 0) {
-      let listTagsSelected = [];
-      tagSelected.forEach((item) => {
-        listTagsSelected.push(item[1]);
+    if (campaignContents.length > 1) {
+      campaignContents.slice(1).forEach((content, index) => {
+        payload.request.payload.campaign[0].messages.push({
+          order: index + 2,
+          type: 'text',
+          text: content.content,
+        });
       });
-      newClientPayload.request.payload.tags = listTagsSelected;
     }
 
-    console.log('updateClientPayload', newClientPayload);
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    toUpdateClient(newClientPayload);
-    setSubmitting(false);
-    setOpenStatus(true);
+    console.log('Payload create', payload);
+    setPayloadToCreateCampaign(payload);
   };
+  useEffect(() => {
+    if (clientsPresigned) {
+      const payload = payloadToCreateCampaign;
+      payload.request.payload.campaign[0].receivers.urlClients =
+        clientsPresigned.keymaster;
+      setTimeout(() => {
+        // Show success message
+        dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
+        console.log('newCampaignPayload', payload);
+        createCampaign(payload);
 
-  const cancel = () => {
-    setOpen(true);
-  };
+        setOpenStatus(true);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleClose2 = () => {
-    setOpen2(false);
-  };
-
-  const handleClickOpen = (type) => {
-    setOpen(true);
-    setTypeDialog(type);
-    setShowAlert(false);
-  };
-
-  const handlerTags = (event, values) => {
-    console.log('Cambiando tags');
-    console.log('evento tag', event);
-    console.log('values tag', values);
-    console.log('tag seleccionado', event.target.attributes.value);
-    setTagSelected(values);
-    reloadPage();
-  };
-
-  const reloadPage = () => {
-    setReload(!reload);
-  };
-
+        // Reset form
+        toSubmitting(false);
+        dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
+      }, 1000);
+    }
+  }, [clientsPresigned]);
   const showMessage = () => {
-    if (successMessage) {
+    if (successMessage != '') {
+      console.log('MENSAJE DE VALIDEZ', successMessage);
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -414,12 +444,14 @@ const UpdateClient = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha actualizado la información <br />
-            correctamente
+            {/* Se ha registrado la información <br />
+            correctamente */}
+            {successMessage}
           </DialogContentText>
         </>
       );
     } else if (errorMessage) {
+      console.log('MENSAJE DE ERROR', errorMessage);
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -427,7 +459,7 @@ const UpdateClient = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error al actualizar.
+            {errorMessage}
           </DialogContentText>
         </>
       );
@@ -437,38 +469,196 @@ const UpdateClient = (props) => {
   };
 
   const sendStatus = () => {
-    setTimeout(() => {
-      setOpenStatus(false);
-      Router.push('/sample/clients/table');
-    }, 2000);
+    console.log('Esto es el momento');
+    setOpenStatus(false);
+    Router.push('/sample/crm/views');
   };
 
-  const handleField = (event) => {
-    console.log('evento', event);
-    objSelects[event.target.name] = event.target.value;
-    console.log('objSelects', objSelects);
-    setRUC(objSelects.documentType == 'RUC' ? true : false);
-  };
-  const formatSentence = (phrase) => {
-    let firstSentence = phrase
-      .trim()
-      .split(' ')
-      .filter((ele) => ele !== '')
-      .join(' ');
-
-    return (
-      firstSentence.charAt(0).toUpperCase() +
-      firstSentence.slice(1).toUpperCase()
-    );
+  const handleCancel = () => {
+    setOpen(true);
   };
 
-  const inicializaIdentidad = () => {
-    if (!identidad) {
-      setIdentidad(query.clientId.split('-')[0]);
-      setRUC(query.clientId.split('-')[0] == 'RUC' ? true : false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleImageChange = (event, setFieldValue) => {
+    const files = Array.from(event.target.files);
+    setFieldValue('campaignImages', files);
+
+    const imagePreviews = files.map((file) => {
+      setNameLastFile(file.name);
+      setActualImage(file);
+      return URL.createObjectURL(file);
+    });
+    setPreviewImages(imagePreviews);
+    Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
+  };
+
+  const removeImagePreview = (index, setFieldValue) => {
+    const updatedImages = [...previewImages];
+    updatedImages.splice(index, 1);
+    setPreviewImages(updatedImages);
+
+    let newImagesJson = selectedJsonImages;
+    delete newImagesJson[index];
+    setSelectedJsonImages(newImagesJson);
+    const updatedFiles = previewImages.map((image) => {
+      const file = imageToBlob(image);
+      return file;
+    });
+    setFieldValue('campaignImages', updatedFiles);
+  };
+
+  const imageToBlob = (imageUrl) => {
+    return fetch(imageUrl)
+      .then((response) => response.blob())
+      .then((blob) => new File([blob], 'image.jpg', {type: 'image/jpeg'}));
+  };
+
+  const handleOpenClientsDialog = () => {
+    setOpenClientsDialog(true);
+  };
+
+  const handleCloseClientsDialog = () => {
+    setOpenClientsDialog(false);
+  };
+  console.log('LISTA DE CLIENTES,', listClients);
+  const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
+  console.log('seleccion,', selectedClientsByTag);
+
+  const handleTagSelect = (selectedTags) => {
+    setSelectedTags(selectedTags);
+
+    if (selectedTags.includes('ALL')) {
+      console.log('CUANDO SE MARCA EL TAG ALL');
+      setSelectedTagsCount(namesTags.length);
+      setSelectedClientCount(listClients.length);
+      setClientSelection('Todos');
+      setSelectedClientsByTag(listClients.map((client) => client.clientId));
+    } else {
+      console.log('CUANDO SE MARCAN TAGS');
+      setSelectedTagsCount(selectedTags.length);
+      console.log('Conteo', selectedTags.length);
+      // Filtrar clientes basados en los tags seleccionados
+      const filteredClients = listClients.filter((client) =>
+        client.tags?.some((tagId) => selectedTags.includes(tagId)),
+      );
+
+      console.log('Clientes filtrados', filteredClients);
+      setSelectedClientsByTag(filteredClients.map((client) => client.clientId));
+      setSelectedClientCount(filteredClients.length);
+      setClientSelection('Algunos');
     }
-    return '';
   };
+
+  const handleClientSelectionChange = (event) => {
+    const {name, checked} = event.target;
+
+    console.log('Name', name);
+    console.log('Check', checked);
+    if (name === 'Todos' && checked) {
+      console.log('ENTRA EN TODOS Y CHECK');
+      setClientSelection('Todos');
+      setSelectedClientCount(listClients.length);
+      setSelectedClientIds(listClients.map((client) => client.clientId));
+      setSelectedClientsByTag(listClients.map((client) => client.clientId));
+    } else if (name === 'Algunos' && checked) {
+      console.log('ENTRA EN ALGUNOS Y CHECK');
+      setSelectedClientsByTag([]);
+      setSelectedClientCount(0);
+      setClientSelection('Algunos');
+      setSelectedClientIds([]);
+      setSelectedTags([]);
+    }
+  };
+
+  const totaldeClientes = () => {
+    console.log('VALOR DE TOTAL DE CLIENTES SELECT', clientSelection);
+    if (clientSelection === 'Todos') {
+      return listClients.length;
+    }
+    if (clientSelection === 'Algunos') {
+      return selectedClients.length;
+    }
+    return 0;
+  };
+
+  // Función para manejar el cambio en el checkbox del encabezado
+  const handleHeaderCheckboxChange = (e) => {
+    if (e.target.checked) {
+      const newSelection = listClients.map((row) => row.clientId);
+      console.log('Confeti header', newSelection);
+      setSelectedClients(newSelection);
+    } else {
+      setSelectedClients([]);
+    }
+  };
+
+  // Función para verificar si un cliente está seleccionado
+  const isClientSelected = (clientId) => selectedClients.includes(clientId);
+
+  // Función para manejar el cambio en los checkboxes individuales
+  const handleRowCheckboxChange = (clientId) => {
+    if (isClientSelected(clientId)) {
+      setSelectedClients((prevSelection) =>
+        prevSelection.filter((id) => id !== clientId),
+      );
+
+      console.log('Selección >>>', selectedClients);
+    } else {
+      setSelectedClients((prevSelection) => [...prevSelection, clientId]);
+      console.log('Selecion else >>', selectedClients);
+    }
+  };
+
+  // Calcula si todos los clientes están seleccionados
+  const isAllSelected = selectedClients.length === listClients.length;
+  const isSomeSelected = selectedClients.length > 0 && !isAllSelected;
+
+  const [searchDialogResults, setSearchDialogResults] = useState([]);
+  const [searchDialogValue, setSearchDialogValue] = useState('');
+  // Filtros en el dialog Clientes
+  const searchClients = (event) => {
+    console.log('Evento', event.target);
+    if (searchDialogValue) {
+      console.log('VALOR DEL SEARCH', searchDialogValue);
+      const filteredClients = listClients.filter((client) =>
+        client.denominationClient
+          .toLowerCase()
+          .includes(searchDialogValue.toLowerCase()),
+      );
+      setSearchDialogResults(filteredClients);
+    } else if (selectedTags.length > 0) {
+      console.log('Entra al slectedTags', selectedTags);
+      const filteredClients = listClients.filter((client) => {
+        let clienttags = verTags(client, businessParameter);
+        let splittags = clienttags.split(' | ');
+        console.log('TAGS >>>', splittags);
+        let hasMatchingTag = splittags.some((tag) =>
+          selectedTags.includes(tag),
+        );
+        console.log('TAGS >>> MATCH', hasMatchingTag);
+        return hasMatchingTag;
+      });
+      setSearchDialogResults(filteredClients);
+    } else {
+      setSearchDialogResults(listClients);
+    }
+    console.log('LOS CLIENTES LUEGO DEL FILTRO EN TOTAL', searchDialogResults);
+  };
+  //BUSQUEDA
+  const handleSearchValues = (e) => {
+    setSearchDialogValue(e.target.value);
+    if (e.key === 'Enter') {
+      searchClients();
+    }
+  };
+
+  useEffect(() => {
+    setSearchDialogResults(listClients);
+    console.log('clientes antes>>', searchDialogResults);
+  }, [listClients]);
 
   return (
     <Card sx={{p: 4}}>
@@ -476,7 +666,7 @@ const UpdateClient = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          Crear Campaña
+          Clonar Campaña
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -543,7 +733,7 @@ const UpdateClient = (props) => {
                   </Grid>
                   <Grid container spacing={2}>
                     {/* Primer Grid - Contiene el Clientes Box */}
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={6}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -593,7 +783,7 @@ const UpdateClient = (props) => {
                     </Grid>
 
                     {/* Segundo Grid - Contiene el componente Autocomplete */}
-                    <Grid item xs={12} md={4}>
+                    {/* <Grid item xs={12} md={4}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -645,10 +835,10 @@ const UpdateClient = (props) => {
                           )}
                         />
                       </Box>
-                    </Grid>
+                    </Grid> */}
 
                     {/* Tercer Grid - Contiene el box image */}
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={6}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -762,26 +952,31 @@ const UpdateClient = (props) => {
 
                   {/* Botón "Más" para agregar un nuevo acordeón */}
                   {/* <Grid container item xs={12} justifyContent='center'>
-                  <Button
-                    variant='outlined'
-                    color='primary'
-                    onClick={handleAddAccordion}
-                    startIcon={<AddCircleOutlineOutlinedIcon />}
-                  >
-                    Más
-                  </Button>
-                </Grid> */}
+                    <Button
+                      variant='outlined'
+                      color='primary'
+                      onClick={handleAddAccordion}
+                      startIcon={<AddCircleOutlineOutlinedIcon />}
+                    >
+                      Más
+                    </Button>
+                  </Grid> */}
                 </Grid>
-                <Grid container item xs={12} justifyContent='center'>
-                  <Button
-                    variant='outlined'
-                    color='primary'
-                    startIcon={<AddCircleOutlineOutlinedIcon />}
-                    onClick={() => setOpenDialog(true)}
-                  >
-                    Generar Variación
-                  </Button>
-                </Grid>
+                {/* {selectedClients.length > 50 ? ( */}
+                {totaldeClientes() > 1 ? (
+                  <Grid container item xs={12} justifyContent='center'>
+                    <Button
+                      variant='outlined'
+                      color='primary'
+                      startIcon={<AddCircleOutlineOutlinedIcon />}
+                      onClick={() => setOpenDialog(true)}
+                    >
+                      Generar Variación
+                    </Button>
+                  </Grid>
+                ) : (
+                  <Typography></Typography>
+                )}
 
                 <Dialog
                   open={openDialog}
@@ -807,7 +1002,17 @@ const UpdateClient = (props) => {
                           {variation}
                         </AccordionSummary>
                         <AccordionDetails>
-                          {/* Additional content for each variation */}
+                          <Grid item xs={12} md={12}>
+                            <TextField
+                              label='Contenido de la Campaña *'
+                              variant='outlined'
+                              multiline
+                              rows={4}
+                              value={''}
+                              onChange={''}
+                              sx={{width: '100%', my: 2}}
+                            />
+                          </Grid>
                         </AccordionDetails>
                       </Accordion>
                     ))}
@@ -825,11 +1030,15 @@ const UpdateClient = (props) => {
                   </DialogActions>
                 </Dialog>
 
-                <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
-                  <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                    Cantidad de variaciones: {numVariations}
-                  </Typography>
-                </Box>
+                {selectedClients > 50 ? (
+                  <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                      Cantidad de variaciones: {numVariations}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography></Typography>
+                )}
 
                 <ButtonGroup
                   orientation='vertical'
@@ -924,30 +1133,135 @@ const UpdateClient = (props) => {
         sx={{textAlign: 'center'}}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
+        maxWidth='lg'
       >
         <DialogTitle id='alert-dialog-title'>Seleccionar Clientes</DialogTitle>
         <DialogContent dividers>
-          <div style={{height: 400, width: '700px'}}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              checkboxSelection
-              pageSize={5}
-              rowsPerPageOptions={[5, 10, 20]}
-              onSelectionModelChange={(newSelection) => {
-                console.log('Nueva selecc client', newSelection);
-                setSelectedClientsByTag(newSelection);
-                console.log(
-                  'tamaño selecc client',
-                  selectedClientsByTag.length,
-                );
-                setSelectedClientCount(selectedClientsByTag.length);
-                setSelectedClients(newSelection);
-              }}
-              selectionModel={selectedClientsByTag}
-            />
+          <div style={{height: 400, width: 1000}}>
+            <Stack
+              sx={{m: 2}}
+              direction={isMobile ? 'column' : 'row'}
+              spacing={2}
+              className={classes.stack}
+            >
+              <TextField
+                label='Nombre / Razón social'
+                variant='outlined'
+                name='nameToSearch'
+                size='small'
+                value={searchDialogValue}
+                onChange={(e) => setSearchDialogValue(e.target.value)}
+              />
+
+              <Grid item xs={12} md={4}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    mt: 2,
+                  }}
+                >
+                  <Autocomplete
+                    value={selectedTags}
+                    onChange={(event, newValue) => {
+                      console.log('Nuevo Tag seleccionado:', newValue);
+                      handleTagSelect(newValue);
+                    }}
+                    disabled={selectedClientCount === listClients.length}
+                    sx={{
+                      m: 1,
+                      width: '100%', // Establece el ancho al 100% por defecto
+                      [(theme) => theme.breakpoints.down('sm')]: {
+                        width: '80%', // Ancho del 80% en pantallas pequeñas
+                      },
+                      [(theme) => theme.breakpoints.up('md')]: {
+                        width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                      },
+                    }}
+                    multiple
+                    options={namesTags}
+                    getOptionLabel={(option) => option}
+                    disableCloseOnSelect
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Selecciona Etiquetas'
+                        placeholder='etiquetas...'
+                      />
+                    )}
+                    renderOption={(props, option, {selected}) => (
+                      <MenuItem
+                        {...props}
+                        key={option}
+                        value={option}
+                        sx={{justifyContent: 'space-between'}}
+                      >
+                        {option}
+                        {selected ? <CheckIcon color='info' /> : null}
+                      </MenuItem>
+                    )}
+                  />
+                </Box>
+              </Grid>
+
+              <Button
+                startIcon={<ManageSearchOutlinedIcon />}
+                variant='contained'
+                color='primary'
+                onClick={searchClients}
+              >
+                Buscar
+              </Button>
+            </Stack>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding='checkbox'>
+                      <Checkbox
+                        color='primary'
+                        checked={isAllSelected}
+                        indeterminate={isSomeSelected}
+                        onChange={handleHeaderCheckboxChange}
+                      />
+                    </TableCell>
+                    <TableCell>Identificador</TableCell>
+                    <TableCell>Nombre / Razón social</TableCell>
+                    <TableCell>Contacto</TableCell>
+                    <TableCell>Etiquetas</TableCell>
+                    {/* Agrega más TableCell para las columnas que necesites */}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {searchDialogResults.map((row) => (
+                    <TableRow key={row.clientId}>
+                      <TableCell padding='checkbox'>
+                        <Checkbox
+                          color='primary'
+                          checked={isClientSelected(row.clientId)}
+                          onChange={() => handleRowCheckboxChange(row.clientId)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {row.clientId.split('-')[0] +
+                          ' ' +
+                          row.clientId.split('-')[1]}
+                      </TableCell>
+                      <TableCell>{row.denominationClient}</TableCell>
+                      <TableCell>{row.numberContact}</TableCell>
+                      <TableCell>{verTags(row, businessParameter)}</TableCell>
+                      {/* Agrega más TableCell para las columnas que necesites */}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         </DialogContent>
+        <Typography>Total seleccionados {totaldeClientes()}</Typography>
         <DialogActions>
           <Button onClick={handleCloseClientsDialog}>Cerrar</Button>
         </DialogActions>
@@ -956,4 +1270,4 @@ const UpdateClient = (props) => {
   );
 };
 
-export default UpdateClient;
+export default Update;

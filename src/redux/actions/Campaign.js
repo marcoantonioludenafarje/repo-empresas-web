@@ -58,7 +58,7 @@ export const deleteCampaigns = (payload) => {
   return async (dispatch, getState) => {
     dispatch({type: FETCH_START, payload: {process: 'DELETE_CAMPAIGN'}});
     try {
-      const data = await API.post('tunexo', '/inventory/campaigns/delete', {
+      const data = await API.post('tunexo', '/inventory/campaigns/cancel', {
         body: payload,
       });
       console.log('se borro la campaña', data);
