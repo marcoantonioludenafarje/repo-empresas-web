@@ -62,6 +62,7 @@ import {
   toEpoch,
   simpleDateToDateObj,
   convertToDateWithoutTime,
+  verTags,
 } from '../../../Utils/utils';
 
 import {updateClient, onGetClients} from '../../../redux/actions/Clients';
@@ -197,10 +198,10 @@ const UpdateClient = (props) => {
     query.birthDay ? query.birthDay : new Date(),
   );
 
+  const [tagsClientDefault,setTagsClientDefault]=React.useState(query.tags);
   const [listTags, setListTags] = React.useState([]);
-  const [tagSelected, setTagSelected] = React.useState([]);
+  const [tagSelected, setTagSelected] = React.useState(tagsClientDefault);
   const [reload, setReload] = React.useState(0); // integer state
-
   const toUpdateClient = (payload) => {
     dispatch(updateClient(payload));
   };
@@ -213,7 +214,7 @@ const UpdateClient = (props) => {
 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const [tagsClient,setTagsClient]=React.useState([]);
   // const {listClients} = useSelector(({clients}) => clients);
   // console.log('listClients', listClients);
   const {businessParameter} = useSelector(({general}) => general);
@@ -373,6 +374,7 @@ const UpdateClient = (props) => {
     console.log("evento tag", event)
     console.log("values tag", values)
     console.log("tag seleccionado", event.target.attributes.value)
+    console.log('ala');
     setTagSelected(values);
     reloadPage();
   };
@@ -721,6 +723,7 @@ const UpdateClient = (props) => {
                           >
                             {option[0]}
                             {selected ? <CheckIcon color='info' /> : null}
+                            
                           </MenuItem>
                         )}
                       />
@@ -928,7 +931,10 @@ const UpdateClient = (props) => {
                             {option[0]}
                             {selected ? <CheckIcon color='info' /> : null}
                           </MenuItem>
+                          
+                         
                         )}
+                
                       />
                     </>
                   )}

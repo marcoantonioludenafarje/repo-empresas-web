@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {v4 as uuidv4} from 'uuid';
+import React, { useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Card,
   Box,
@@ -35,7 +35,7 @@ import {
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
-import {orange} from '@mui/material/colors';
+import { orange } from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AddIcon from '@mui/icons-material/Add';
@@ -48,22 +48,22 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-import {Form, Formik} from 'formik';
+import { Form, Formik } from 'formik';
 import * as yup from 'yup';
-import Router, {useRouter} from 'next/router';
+import Router, { useRouter } from 'next/router';
 import FilterCard from './FilterCard';
 import CategoryCard from './CategoryCard';
 import TagCard from './TagCard';
 import AppInfoView from '../../../@crema/core/AppInfoView';
-import {useDispatch, useSelector} from 'react-redux';
-import {generatePredefinedRoute} from '../../../redux/actions/Movements';
-import {onGetProducts, deleteProduct} from '../../../redux/actions/Products';
-import {getCarriers} from '../../../redux/actions/Carriers';
-import {blue, green, red} from '@mui/material/colors';
+import { useDispatch, useSelector } from 'react-redux';
+import { generatePredefinedRoute } from '../../../redux/actions/Movements';
+import { onGetProducts, deleteProduct } from '../../../redux/actions/Products';
+import { getCarriers } from '../../../redux/actions/Carriers';
+import { blue, green, red } from '@mui/material/colors';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
-import {getUserData} from '../../../redux/actions/User';
-import {completeWithZeros} from '../../../Utils/utils';
+import { getUserData } from '../../../redux/actions/User';
+import { completeWithZeros } from '../../../Utils/utils';
 import {
   onGetBusinessParameter,
   updateAllBusinessParameter,
@@ -150,34 +150,34 @@ const Distribution = () => {
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [listProductsState, setListProductsState] = React.useState({});
-  const [listClientsState, setListClientState]=React.useState({});
-  const {listClients} = useSelector(({clients}) => clients);
-  const {listProducts} = useSelector(({products}) => products);
+  const [listClientsState, setListClientState] = React.useState({});
+  const { listClients } = useSelector(({ clients }) => clients);
+  const { listProducts } = useSelector(({ products }) => products);
   console.log('listProducts', listProducts);
-  const {businessParameter} = useSelector(({general}) => general);
+  const { businessParameter } = useSelector(({ general }) => general);
   console.log('globalParameter123', businessParameter);
-  const {userAttributes} = useSelector(({user}) => user);
+  const { userAttributes } = useSelector(({ user }) => user);
   console.log('userAttributes', userAttributes);
-  const {userDataRes} = useSelector(({user}) => user);
+  const { userDataRes } = useSelector(({ user }) => user);
   console.log('userDataRes', userDataRes);
-  const {generateRouteRes} = useSelector(({movements}) => movements);
+  const { generateRouteRes } = useSelector(({ movements }) => movements);
   console.log('generateRouteRes', generateRouteRes);
-  const {updateCatalogsRes} = useSelector(({general}) => general);
+  const { updateCatalogsRes } = useSelector(({ general }) => general);
   console.log('updateCatalogsRes', updateCatalogsRes);
-  const {updateAllBusinessParameterRes} = useSelector(({general}) => general);
+  const { updateAllBusinessParameterRes } = useSelector(({ general }) => general);
   console.log('updateAllBusinessParameterRes', updateAllBusinessParameterRes);
-  const {generalSuccess} = useSelector(({general}) => general);
+  const { generalSuccess } = useSelector(({ general }) => general);
   console.log('generalSuccess', generalSuccess);
-  const {generalError} = useSelector(({general}) => general);
+  const { generalError } = useSelector(({ general }) => general);
   console.log('generalError', generalError);
-  const {jwtToken} = useSelector(({general}) => general);
-  const {successMessage} = useSelector(({products}) => products);
+  const { jwtToken } = useSelector(({ general }) => general);
+  const { successMessage } = useSelector(({ products }) => products);
   console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({products}) => products);
+  const { errorMessage } = useSelector(({ products }) => products);
   console.log('errorMessage', errorMessage);
   const [excelOrCsv, setExcelOrCsv] = React.useState('');
   const [excelOrCsvName, setExcelOrCsvName] = React.useState('');
-
+  const [tagSelectedDelete,setTagSelectedDelete]=React.useState({});
   let deletePayload = {
     request: {
       payload: {
@@ -223,7 +223,7 @@ const Distribution = () => {
       const reader = new FileReader();
       reader.onload = (excelOrCsv) => {
         const bstr = excelOrCsv.target.result;
-        const wb = XLSX.read(bstr, {type: 'binary'});
+        const wb = XLSX.read(bstr, { type: 'binary' });
         console.log('wb', wb);
 
         const productsSheet = wb.Sheets['PRODUCTOS'];
@@ -233,7 +233,7 @@ const Distribution = () => {
         const productsDataV2 = processData(productsData);
 
         const clientsSheet = wb.Sheets['CLIENTES'];
-        const clientsData = XLSX.utils.sheet_to_json(clientsSheet, {header: 1});
+        const clientsData = XLSX.utils.sheet_to_json(clientsSheet, { header: 1 });
         const clientsDataV2 = processData(clientsData);
 
         const deliveryPointsSheet = wb.Sheets['PUNTOS_ENTREGA'];
@@ -246,7 +246,7 @@ const Distribution = () => {
         const deliveryPointsDataV2 = processData(deliveryPointsData);
 
         const driversSheet = wb.Sheets['CHOFERES'];
-        const driversData = XLSX.utils.sheet_to_json(driversSheet, {header: 1});
+        const driversData = XLSX.utils.sheet_to_json(driversSheet, { header: 1 });
         const driversDataV2 = processData(driversData);
 
         const carriersSheet = wb.Sheets['EMPRESA TRANSPORTISTA'];
@@ -280,9 +280,9 @@ const Distribution = () => {
           },
         };
         console.log('payloadCatalogs', payloadCatalogs);
-        dispatch({type: FETCH_SUCCESS, payload: undefined});
-        dispatch({type: FETCH_ERROR, payload: undefined});
-        dispatch({type: UPDATE_CATALOGS, payload: undefined});
+        dispatch({ type: FETCH_SUCCESS, payload: undefined });
+        dispatch({ type: FETCH_ERROR, payload: undefined });
+        dispatch({ type: UPDATE_CATALOGS, payload: undefined });
         toUpdateCatalogs(payloadCatalogs);
       };
       reader.readAsBinaryString(excelOrCsv.target.files[0]);
@@ -357,7 +357,7 @@ const Distribution = () => {
   }, [listProducts]);
   useEffect(() => {
     if (listClients) {
-      console.log("listClients",listClients);
+      console.log("listClients", listClients);
       setListClientState(listClients);
     }
   }, [listClients]);
@@ -440,7 +440,7 @@ const Distribution = () => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 
-      dispatch({type: GET_USER_DATA, payload: undefined});
+      dispatch({ type: GET_USER_DATA, payload: undefined });
       const toGetUserData = (payload) => {
         dispatch(getUserData(payload));
       };
@@ -582,11 +582,11 @@ const Distribution = () => {
     //   .typeError(<IntlMessages id='validation.string' />)
     //   .required(<IntlMessages id='validation.required' />),
   });
-  const handleData = (data, {setSubmitting}) => {
+  const handleData = (data, { setSubmitting }) => {
     setSubmitting(true);
     setExecAll(true);
     setExecAll(false);
-    console.log('data final', {...data, filters: filters});
+    console.log('data final', { ...data, filters: filters });
     // setFilters();
     // setCategories();
 
@@ -638,8 +638,8 @@ const Distribution = () => {
       },
     };
     console.log('finalPayload', finalPayload);
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({ type: FETCH_SUCCESS, payload: undefined });
+    dispatch({ type: FETCH_ERROR, payload: undefined });
     dispatch({
       type: GET_USER_DATA,
       payload: {
@@ -650,7 +650,7 @@ const Distribution = () => {
         },
       },
     });
-    dispatch({type: UPDATE_ALL_BUSINESS_PARAMETER, payload: undefined});
+    dispatch({ type: UPDATE_ALL_BUSINESS_PARAMETER, payload: undefined });
     updateParameters(finalPayload);
     setOpenStatus(true);
     setSubmitting(false);
@@ -757,10 +757,10 @@ const Distribution = () => {
         <>
           <CheckCircleOutlineOutlinedIcon
             color='success'
-            sx={{fontSize: '6em', mx: 2}}
+            sx={{ fontSize: '6em', mx: 2 }}
           />
           <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
+            sx={{ fontSize: '1.2em', m: 'auto' }}
             id='alert-dialog-description'
           >
             <IntlMessages id='message.register.data.success' />
@@ -771,22 +771,22 @@ const Distribution = () => {
       console.log('No Fue exitoso?');
       return (
         <>
-          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <CancelOutlinedIcon sx={{ fontSize: '6em', mx: 2, color: red[500] }} />
           <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
+            sx={{ fontSize: '1.2em', m: 'auto' }}
             id='alert-dialog-description'
           >
             <IntlMessages id='message.register.data.error' />
             <br />
             {updateAllBusinessParameterRes &&
-            'error' in updateAllBusinessParameterRes
+              'error' in updateAllBusinessParameterRes
               ? updateAllBusinessParameterRes.error
               : null}
           </DialogContentText>
         </>
       );
     } else {
-      return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
+      return <CircularProgress disableShrink sx={{ mx: 'auto', my: '20px' }} />;
     }
   };
   const showMessageDelete = () => {
@@ -795,10 +795,10 @@ const Distribution = () => {
         <>
           <CheckCircleOutlineOutlinedIcon
             color='success'
-            sx={{fontSize: '6em', mx: 2}}
+            sx={{ fontSize: '6em', mx: 2 }}
           />
           <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
+            sx={{ fontSize: '1.2em', m: 'auto' }}
             id='alert-dialog-description'
           >
             Se ha eliminado la información correctamente.
@@ -808,9 +808,9 @@ const Distribution = () => {
     } else if (errorMessage) {
       return (
         <>
-          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <CancelOutlinedIcon sx={{ fontSize: '6em', mx: 2, color: red[500] }} />
           <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
+            sx={{ fontSize: '1.2em', m: 'auto' }}
             id='alert-dialog-description'
           >
             Se ha producido un error al eliminar.
@@ -890,8 +890,8 @@ const Distribution = () => {
     // }
   };
   return (
-    <Card sx={{p: 4}}>
-      <Box sx={{width: 1, textAlign: 'center'}}>
+    <Card sx={{ p: 4 }}>
+      <Box sx={{ width: 1, textAlign: 'center' }}>
         <Typography
           sx={{
             mx: 'auto',
@@ -904,7 +904,7 @@ const Distribution = () => {
           <IntlMessages id='sidebar.sample.update.parameters' />
         </Typography>
       </Box>
-      <Divider sx={{mt: 2, mb: 4}} />
+      <Divider sx={{ mt: 2, mb: 4 }} />
 
       <Box
         sx={{
@@ -918,24 +918,24 @@ const Distribution = () => {
         <Formik
           validateOnChange={true}
           validationSchema={validationSchema}
-          initialValues={{...defaultValues}}
+          initialValues={{ ...defaultValues }}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({ isSubmitting, setFieldValue }) => {
             changeValue = setFieldValue;
             return (
               <Form
                 id='principal-form'
-                style={{textAlign: 'left', justifyContent: 'center'}}
+                style={{ textAlign: 'left', justifyContent: 'center' }}
                 noValidate
                 autoComplete='on'
                 onChange={handleChange}
               >
                 <Grid item xs={12}>
-                  <FormControl fullWidth sx={{my: 2}}>
+                  <FormControl fullWidth sx={{ my: 2 }}>
                     <InputLabel
                       id='defaultMoney-label'
-                      style={{fontWeight: 200}}
+                      style={{ fontWeight: 200 }}
                     >
                       <IntlMessages id='common.busines.defaultMoney' />
                     </InputLabel>
@@ -947,23 +947,23 @@ const Distribution = () => {
                       onChange={handleField}
                       value={defaultMoney}
                     >
-                      <MenuItem value='PEN' style={{fontWeight: 200}}>
+                      <MenuItem value='PEN' style={{ fontWeight: 200 }}>
                         Sol peruano
                       </MenuItem>
-                      <MenuItem value='USD' style={{fontWeight: 200}}>
+                      <MenuItem value='USD' style={{ fontWeight: 200 }}>
                         Dólar estadounidense
                       </MenuItem>
-                      <MenuItem value='EUR' style={{fontWeight: 200}}>
+                      <MenuItem value='EUR' style={{ fontWeight: 200 }}>
                         Euro
                       </MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl fullWidth sx={{my: 2}}>
+                  <FormControl fullWidth sx={{ my: 2 }}>
                     <InputLabel
                       id='defaultWeight-label'
-                      style={{fontWeight: 200}}
+                      style={{ fontWeight: 200 }}
                     >
                       <IntlMessages id='common.busines.defaultWeight' />
                     </InputLabel>
@@ -975,19 +975,19 @@ const Distribution = () => {
                       onChange={handleField}
                       value={defaultWeight}
                     >
-                      <MenuItem value='KG' style={{fontWeight: 200}}>
+                      <MenuItem value='KG' style={{ fontWeight: 200 }}>
                         Kilogramo
                       </MenuItem>
-                      <MenuItem value='LB' style={{fontWeight: 200}}>
+                      <MenuItem value='LB' style={{ fontWeight: 200 }}>
                         Libra
                       </MenuItem>
-                      <MenuItem value='T' style={{fontWeight: 200}}>
+                      <MenuItem value='T' style={{ fontWeight: 200 }}>
                         Tonelada
                       </MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid sx={{mb: 3, my: 2}} item xs={12} md={12}>
+                <Grid sx={{ mb: 3, my: 2 }} item xs={12} md={12}>
                   <AppTextField
                     name='defaultIgvActivation'
                     value={defaultIgvActivation}
@@ -997,7 +997,7 @@ const Distribution = () => {
                 </Grid>
                 {publish && (
                   <>
-                    <Grid sx={{mb: 3, my: 2}} item xs={12} md={12}>
+                    <Grid sx={{ mb: 3, my: 2 }} item xs={12} md={12}>
                       <AppTextField
                         name='defaultProductsPayDetail'
                         value={defaultProductsPayDetail}
@@ -1006,12 +1006,12 @@ const Distribution = () => {
                         label={'Detalle de Pago de Productos'}
                       />
                     </Grid>
-                    <Grid sx={{mb: 3}} item xs={12} md={12}>
-                      <InputLabel id='price' style={{fontWeight: 800}}>
+                    <Grid sx={{ mb: 3 }} item xs={12} md={12}>
+                      <InputLabel id='price' style={{ fontWeight: 800 }}>
                         Precio
                       </InputLabel>
                     </Grid>
-                    <Grid sx={{mb: 2}} item xs={6} md={3}>
+                    <Grid sx={{ mb: 2 }} item xs={6} md={3}>
                       <AppTextField
                         name='defaultMinPrice'
                         value={defaultPriceRange[0]}
@@ -1127,15 +1127,15 @@ const Distribution = () => {
                     initialValues={filter}
                     deleteFilter={deleteFilter}
                   />
-                  <Divider sx={{my: 0}} />
+                  <Divider sx={{ my: 0 }} />
                   <ButtonGroup
                     orientation='vertical'
-                    sx={{width: 1}}
+                    sx={{ width: 1 }}
                     aria-label='outlined button group'
                   >
                     <Button
                       color='primary'
-                      sx={{mx: 'auto', my: 2, py: 1}}
+                      sx={{ mx: 'auto', my: 2, py: 1 }}
                       form='principal-form'
                       variant='contained'
                       onClick={() => {
@@ -1223,7 +1223,7 @@ const Distribution = () => {
         {categories &&
           categories.map((category, index) => (
             <>
-              <Card key={index} sx={{p: 2}}>
+              <Card key={index} sx={{ p: 2 }}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -1287,7 +1287,7 @@ const Distribution = () => {
                   setOpenAlert(true);
                 }}
               >
-                <Button color='primary' variant='contained' sx={{p: '4px'}}>
+                <Button color='primary' variant='contained' sx={{ p: '4px' }}>
                   Productos
                 </Button>
               </IconButton>
@@ -1298,12 +1298,12 @@ const Distribution = () => {
                 onClick={() => {
                   setShowAlert(false);
                 }}
-                sx={{height: '100%'}}
+                sx={{ height: '100%' }}
               >
                 <Button
                   color='secondary'
                   variant='contained'
-                  sx={{p: '9px', height: '100%'}}
+                  sx={{ p: '9px', height: '100%' }}
                 >
                   <CloseIcon fontSize='inherit' />
                 </Button>
@@ -1311,7 +1311,7 @@ const Distribution = () => {
               </IconButton>
             </>
           }
-          sx={{mb: 1, pt: 0, alignItems: 'center', height: '100%'}}
+          sx={{ mb: 1, pt: 0, alignItems: 'center', height: '100%' }}
         >
           {typeAlert == 'existProductsWithThisCategory' ? (
             <IntlMessages id='alert.configurationParameters.existProductsWithThisCategory' />
@@ -1409,7 +1409,7 @@ const Distribution = () => {
         {tags &&
           tags.map((tag, index) => (
             <>
-              <Card key={index} sx={{p: 2}}>
+              <Card key={index} sx={{ p: 2 }}>
                 <Box
                   sx={{
                     display: 'flex',
@@ -1426,10 +1426,10 @@ const Distribution = () => {
 
                   <IconButton
                     onClick={() => {
-                      console.log("listClientsState",listClientsState);
-                      const prub=[]; 
-                      listClientsState.forEach(element=>{
-                        if(element.tags && element.tags.includes(tag.id)){
+                      console.log("listClientsState", listClientsState);
+                      const prub = [];
+                      listClientsState.forEach(element => {
+                        if (element.tags && element.tags.includes(tag.id)) {
                           prub.push(element);
                         }
                       });
@@ -1439,6 +1439,8 @@ const Distribution = () => {
                         setTypeAlertTag('existClientWithThisTag');
                         setClientsSelected(clientsWithThisTag);
                         setShowAlertTag(true);
+                        console.log("Este es el tag:",tag);
+                        setTagSelectedDelete(tag);
                       } else {
                         console.log('tags', tags);
                         let newTags = tags;
@@ -1467,9 +1469,16 @@ const Distribution = () => {
                 size='small'
                 onClick={() => {
                   setOpenAlertTag(true);
+                  console.log('tags', tags);
+                  let newTags = tags;
+                  console.log("tagSelectedDelete",tagSelectedDelete);
+                  newTags = newTags.filter((item) => item.id !== tagSelectedDelete.id);
+                  setTags(newTags);
+                  setShowAlertTag(false);
+ 
                 }}
               >
-                <Button color='primary' variant='contained' sx={{p: '4px'}}>
+                <Button color='primary' variant='contained' sx={{ p: '4px' }}>
                   Confirmar
                 </Button>
               </IconButton>
@@ -1480,12 +1489,12 @@ const Distribution = () => {
                 onClick={() => {
                   setShowAlertTag(false);
                 }}
-                sx={{height: '100%'}}
+                sx={{ height: '100%' }}
               >
                 <Button
                   color='secondary'
                   variant='contained'
-                  sx={{p: '9px', height: '100%'}}
+                  sx={{ p: '9px', height: '100%' }}
                 >
                   <CloseIcon fontSize='inherit' />
                 </Button>
@@ -1493,7 +1502,7 @@ const Distribution = () => {
               </IconButton>
             </>
           }
-          sx={{mb: 1, pt: 0, alignItems: 'center', height: '100%'}}
+          sx={{ mb: 1, pt: 0, alignItems: 'center', height: '100%' }}
         >
           {typeAlertTag == 'existClientWithThisTag' ? (
             <IntlMessages id='alert.configurationParameters.existClientWithThisTag' />
@@ -1552,12 +1561,12 @@ const Distribution = () => {
       <ButtonGroup
         orientation='vertical'
         variant='outlined'
-        sx={{width: 1}}
+        sx={{ width: 1 }}
         aria-label='outlined button group'
       >
         <Button
           color='primary'
-          sx={{mx: 'auto', my: 6, width: '50%', py: 3}}
+          sx={{ mx: 'auto', my: 6, width: '50%', py: 3 }}
           type='submit'
           form='principal-form'
           variant='contained'
@@ -1571,7 +1580,7 @@ const Distribution = () => {
           sx={{
             position: 'fixed',
             right: 0,
-            top: {xs: 325, xl: 305},
+            top: { xs: 325, xl: 305 },
             zIndex: 1110,
           }}
           className='customizerOption'
@@ -1619,7 +1628,7 @@ const Distribution = () => {
           sx={{
             position: 'fixed',
             right: 0,
-            top: {xs: 325, xl: 305},
+            top: { xs: 325, xl: 305 },
             zIndex: 1110,
           }}
           className='customizerOption'
@@ -1663,17 +1672,17 @@ const Distribution = () => {
       <Dialog
         open={openStatus}
         onClose={sendStatus}
-        sx={{textAlign: 'center'}}
+        sx={{ textAlign: 'center' }}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+        <DialogTitle sx={{ fontSize: '1.5em' }} id='alert-dialog-title'>
           {<IntlMessages id='message.update.configurationParameters' />}
         </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
           {showMessage()}
         </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
+        <DialogActions sx={{ justifyContent: 'center' }}>
           <Button variant='outlined' onClick={sendStatus}>
             Aceptar
           </Button>
@@ -1682,17 +1691,17 @@ const Distribution = () => {
       <Dialog
         open={openAlert}
         onClose={sendAlert}
-        sx={{textAlign: 'center'}}
+        sx={{ textAlign: 'center' }}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+        <DialogTitle sx={{ fontSize: '1.5em' }} id='alert-dialog-title'>
           {<IntlMessages id='message.alert.configurationParameters' />}
         </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
           <>
             <TableContainer component={Paper}>
-              <Table sx={{minWidth: 650}} aria-label='simple table'>
+              <Table sx={{ minWidth: 650 }} aria-label='simple table'>
                 <TableHead>
                   <TableRow>
                     <TableCell>Código</TableCell>
@@ -1718,13 +1727,13 @@ const Distribution = () => {
                       return (
                         <TableRow
                           sx={{
-                            '&:last-child td, &:last-child th': {border: 0},
+                            '&:last-child td, &:last-child th': { border: 0 },
                             cursor: 'pointer',
                           }}
                           key={obj.product}
                           id={obj.product}
                           hover
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           <TableCell>{obj.businessProductCode}</TableCell>
                           <TableCell>{obj.description}</TableCell>
@@ -1775,7 +1784,7 @@ const Distribution = () => {
                   ) : (
                     <CircularProgress
                       disableShrink
-                      sx={{m: '10px', position: 'relative'}}
+                      sx={{ m: '10px', position: 'relative' }}
                     />
                   )}
                 </TableBody>
@@ -1783,7 +1792,7 @@ const Distribution = () => {
             </TableContainer>
           </>
         </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
+        <DialogActions sx={{ justifyContent: 'center' }}>
           <Button variant='outlined' onClick={sendAlert}>
             Aceptar
           </Button>
@@ -1792,23 +1801,23 @@ const Distribution = () => {
       <Dialog
         open={openDelete}
         onClose={handleClose2}
-        sx={{textAlign: 'center'}}
+        sx={{ textAlign: 'center' }}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+        <DialogTitle sx={{ fontSize: '1.5em' }} id='alert-dialog-title'>
           {'Eliminar producto'}
         </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
+          <PriorityHighIcon sx={{ fontSize: '6em', mx: 2, color: red[500] }} />
           <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
+            sx={{ fontSize: '1.2em', m: 'auto' }}
             id='alert-dialog-description'
           >
             ¿Desea eliminar realmente la información seleccionada?
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
+        <DialogActions sx={{ justifyContent: 'center' }}>
           <Button
             variant='outlined'
             onClick={() => {
@@ -1825,17 +1834,17 @@ const Distribution = () => {
       <Dialog
         open={openDeleteStatus}
         onClose={sendDeleteStatus}
-        sx={{textAlign: 'center'}}
+        sx={{ textAlign: 'center' }}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+        <DialogTitle sx={{ fontSize: '1.5em' }} id='alert-dialog-title'>
           {'Eliminar Producto'}
         </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center' }}>
           {showMessageDelete()}
         </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
+        <DialogActions sx={{ justifyContent: 'center' }}>
           <Button variant='outlined' onClick={sendDeleteStatus}>
             Aceptar
           </Button>

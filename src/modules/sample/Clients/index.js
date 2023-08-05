@@ -417,6 +417,7 @@ const ClientTable = (arrayObjs, props) => {
   };
   const goToUpdate = () => {
     console.log('Actualizando', selectedClient);
+    
     Router.push({
       pathname: '/sample/clients/update',
       query: selectedClient,

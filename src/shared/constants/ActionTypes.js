@@ -376,3 +376,4 @@ export const CREATE_AGENT='create_agent';
 export const LIST_AGENT='list_agent';
 export const DELETE_AGENT='delete_agent';
 export const UPDATE_AGENT='update_agent';
+export const ONCHANGE_QR_AGENT='onchange_agent';

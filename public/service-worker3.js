@@ -158,99 +158,115 @@ self.addEventListener('message', event => {
 self.addEventListener('push', e => {
 
     // console.log(e);
-
     console.log("El push ha llegado", e);
     const data = JSON.parse( e.data.text() );
 
     console.log("El push se ha parseado", data);
-
-
-    const title = data.notification.title;
-    // const url = data.url;
-    // const urlObject = new URL(url);
-    // const relativeURL = urlObject.pathname + urlObject.search;
-    // const options = {
-    //     body: data.message,
-    //     // icon: 'img/icons/icon-72x72.png',
-    //     tag: 'notification-tag',
-    //     icon: `favicon.ico`,
-    //     badge: 'favicon.ico',
-    //     image: relativeURL || 'https://d2moc5ro519bc0.cloudfront.net/merchant/ae1a9ea0036542d889ebd0d062474400/logo/logo_png.png',
-    //     vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600],
-    //     openUrl: data.url,
-    //     data: {
-    //         //url: data.url,
-    //         url: `${relativeURL}` || `/sample/outputs/table?movementHeaderId=${data.saleId}`,
-    //         //url: "https://www.google.com/",
-    //         id: data.userCreatedAt
-    //     },
-    //     actions: [
-    //         {
-    //             action: 'output-action',
-    //             title: 'Ir a Salida',
-    //             //icon: 'favicon.ico',
-    //         }
-    //     ]
-    // };
-    const options = data.options
-
-    console.log("options push notification", options)
-    console.log("Nuevo ServiceWorker 2", options)
-
-
-
-    //const notificationPromise = self.registration.showNotification( title, options);
-    // Enviar un mensaje al cliente para indicar que se ha recibido una notificación
-    // const clientsPromise = self.clients.matchAll().then(clients => {
-    //     console.log("clients sw", clients ? clients : "no hay clients")
-    //     clients.forEach(client => {
-    //     //client.postMessage({ type: 'notificationUpdate' });
-    //     client.navigate('http://localhost:3000/sample/outputs/table')
-    //     client.focus();
-    //     });
-    // });
-
-
-    const sendMessageToClient = () => {
-        return self.clients.matchAll().then(clients => {
+    
+    if(data.type=="QRBot" || data.type=="failureAgentQR" || data.type=="successAgentQR"){
+      const ClientsPromise = self.clients.matchAll().then(clients => {
           console.log("Entrando a clientes")
+          console.log(clients);
           const messagePromises = clients.map(client => {
             console.log("Enviando mensaje a cliente")
-            return client.postMessage({ type: 'notificationUpdate', data: data.notification });
+            return client.postMessage({ type: data.type, data: data });
           });
           return Promise.all(messagePromises);
         });
-      };
-    
+      
       e.waitUntil(
-        sendMessageToClient().then(() => {
-          return self.registration.showNotification(title, options);
-        })
+        ClientsPromise
       );
-    // e.waitUntil(self.registration.showNotification( title, options));
-    
 
-    //e.waitUntil(self.registration.showNotification(title, options));
+    }else{
+      const title = data.notification.title;
+      // const url = data.url;
+      // const urlObject = new URL(url);
+      // const relativeURL = urlObject.pathname + urlObject.search;
+      // const options = {
+      //     body: data.message,
+      //     // icon: 'img/icons/icon-72x72.png',
+      //     tag: 'notification-tag',
+      //     icon: `favicon.ico`,
+      //     badge: 'favicon.ico',
+      //     image: relativeURL || 'https://d2moc5ro519bc0.cloudfront.net/merchant/ae1a9ea0036542d889ebd0d062474400/logo/logo_png.png',
+      //     vibrate: [125,75,125,275,200,275,125,75,125,275,200,600,200,600],
+      //     openUrl: data.url,
+      //     data: {
+      //         //url: data.url,
+      //         url: `${relativeURL}` || `/sample/outputs/table?movementHeaderId=${data.saleId}`,
+      //         //url: "https://www.google.com/",
+      //         id: data.userCreatedAt
+      //     },
+      //     actions: [
+      //         {
+      //             action: 'output-action',
+      //             title: 'Ir a Salida',
+      //             //icon: 'favicon.ico',
+      //         }
+      //     ]
+      // };
+      const options = data.options
+  
+      console.log("options push notification", options)
+      console.log("Nuevo ServiceWorker 2", options)
+  
+  
+  
+      //const notificationPromise = self.registration.showNotification( title, options);
+      // Enviar un mensaje al cliente para indicar que se ha recibido una notificación
+      // const clientsPromise = self.clients.matchAll().then(clients => {
+      //     console.log("clients sw", clients ? clients : "no hay clients")
+      //     clients.forEach(client => {
+      //     //client.postMessage({ type: 'notificationUpdate' });
+      //     client.navigate('http://localhost:3000/sample/outputs/table')
+      //     client.focus();
+      //     });
+      // });
+  
+  
+      const sendMessageToClient = () => {
+          return self.clients.matchAll().then(clients => {
+            console.log("Entrando a clientes")
+            const messagePromises = clients.map(client => {
+              console.log("Enviando mensaje a cliente")
+              return client.postMessage({ type: 'notificationUpdate', data: data.notification });
+            });
+            return Promise.all(messagePromises);
+          });
+        };
+      
+        e.waitUntil(
+          sendMessageToClient().then(() => {
+            return self.registration.showNotification(title, options);
+          })
+        );
+      // e.waitUntil(self.registration.showNotification( title, options));
+      
+  
+      //e.waitUntil(self.registration.showNotification(title, options));
+  
+      // const clientsPromise = self.clients.matchAll().then(clients => {
+      //     console.log("Encuentra clientes");
+      //     const messagePromises = clients.map(client => {
+      //         console.log("Va a enviar mensaje");
+      //         //const randomNumber =  Math.floor(Math.random() * (10000 - 1)) + 1;
+      //         //localStorage.setItem('updateNotification', randomNumber)
+      //         return client.postMessage({ type: 'notificationUpdate' });
+      //     });
+      //     return Promise.all(messagePromises);
+      // });
+  
+      // e.waitUntil(clientsPromise);
+  
+      // Envía el mensaje a todas las instancias abiertas de la aplicación
+      // swivel.broadcast({ type: 'updateNotification', data: { title, options } });
+  
+      // e.waitUntil(
+      //     self.registration.showNotification(title, options)
+      // );
 
-    // const clientsPromise = self.clients.matchAll().then(clients => {
-    //     console.log("Encuentra clientes");
-    //     const messagePromises = clients.map(client => {
-    //         console.log("Va a enviar mensaje");
-    //         //const randomNumber =  Math.floor(Math.random() * (10000 - 1)) + 1;
-    //         //localStorage.setItem('updateNotification', randomNumber)
-    //         return client.postMessage({ type: 'notificationUpdate' });
-    //     });
-    //     return Promise.all(messagePromises);
-    // });
-
-    // e.waitUntil(clientsPromise);
-
-    // Envía el mensaje a todas las instancias abiertas de la aplicación
-    // swivel.broadcast({ type: 'updateNotification', data: { title, options } });
-
-    // e.waitUntil(
-    //     self.registration.showNotification(title, options)
-    // );
+    }
 });
 
 
