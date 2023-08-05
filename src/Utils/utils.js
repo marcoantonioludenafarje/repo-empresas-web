@@ -490,11 +490,14 @@ export const verTags = (obj, listBussinesParameteres) => {
 
   if (obj.tags)
     obj.tags.forEach((item) => {
-      let descripciontemp = '';
-      console.log('listTagsClient', listTagsClient);
-      if (listTagsClient)
-        descripciontemp = listTagsClient.find((obj) => obj.id == item)?.tagName;
-      if (descripciontemp) {
+      if (listTagsClient.some((obj) => obj.id == item)) {
+        let descripciontemp = '';
+        console.log('listTagsClient', listTagsClient);
+        if (listTagsClient)
+          descripciontemp = listTagsClient.find(
+            (obj) => obj.id == item,
+          ).tagName;
+
         if (descripcion.length == 0) {
           descripcion = descripciontemp;
         } else {

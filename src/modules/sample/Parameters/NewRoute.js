@@ -177,7 +177,7 @@ const Distribution = () => {
   console.log('errorMessage', errorMessage);
   const [excelOrCsv, setExcelOrCsv] = React.useState('');
   const [excelOrCsvName, setExcelOrCsvName] = React.useState('');
-
+  const [tagSelectedDelete, setTagSelectedDelete] = React.useState({});
   let deletePayload = {
     request: {
       payload: {
@@ -1439,6 +1439,8 @@ const Distribution = () => {
                         setTypeAlertTag('existClientWithThisTag');
                         setClientsSelected(clientsWithThisTag);
                         setShowAlertTag(true);
+                        console.log('Este es el tag:', tag);
+                        setTagSelectedDelete(tag);
                       } else {
                         console.log('tags', tags);
                         let newTags = tags;
@@ -1467,6 +1469,14 @@ const Distribution = () => {
                 size='small'
                 onClick={() => {
                   setOpenAlertTag(true);
+                  console.log('tags', tags);
+                  let newTags = tags;
+                  console.log('tagSelectedDelete', tagSelectedDelete);
+                  newTags = newTags.filter(
+                    (item) => item.id !== tagSelectedDelete.id,
+                  );
+                  setTags(newTags);
+                  setShowAlertTag(false);
                 }}
               >
                 <Button color='primary' variant='contained' sx={{p: '4px'}}>

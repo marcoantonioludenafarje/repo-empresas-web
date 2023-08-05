@@ -198,10 +198,10 @@ const UpdateClient = (props) => {
     query.birthDay ? query.birthDay : new Date(),
   );
 
+  const [tagsClientDefault, setTagsClientDefault] = React.useState(query.tags);
   const [listTags, setListTags] = React.useState([]);
-  const [tagSelected, setTagSelected] = React.useState([]);
+  const [tagSelected, setTagSelected] = React.useState(tagsClientDefault);
   const [reload, setReload] = React.useState(0); // integer state
-
   const toUpdateClient = (payload) => {
     dispatch(updateClient(payload));
   };
@@ -214,7 +214,7 @@ const UpdateClient = (props) => {
 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const [tagsClient, setTagsClient] = React.useState([]);
   // const {listClients} = useSelector(({clients}) => clients);
   // console.log('listClients', listClients);
   const {businessParameter} = useSelector(({general}) => general);
