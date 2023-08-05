@@ -57,7 +57,6 @@ const NotificationItem = (props) => {
     dispatch(updateOneOfTheListNotification(payload));
   };
   const {userDataRes} = useSelector(({user}) => user);
-  const {getNotificationsRes} = useSelector(({notifications}) => notifications);
   /*const convertToDate = (miliseconds) => {
     const fecha = new Date(miliseconds);
     const fecha_actual = `${fecha.getDate()}/${

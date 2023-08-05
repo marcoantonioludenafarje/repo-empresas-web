@@ -125,6 +125,12 @@ const objectsAreEqual = (a, b) => {
 };
 
 const GetCreditNote = () => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const {query} = router;
+  const forceUpdate = useForceUpdate();
+  let changeValueField;
+  let getValueField;
   const [issueDate, setIssueDate] = React.useState(Date.now());
   const [addIgv, setAddIgv] = React.useState(false);
   const [showDialog, setShowDialog] = React.useState(false);
@@ -144,6 +150,7 @@ const GetCreditNote = () => {
   const [expirationDate, setExpirationDate] = React.useState(Date.now());
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [typeDocumentRelated, setTypeDocumentRelated] = React.useState('bill');
+  const [paymentWay, setPaymentWay] = React.useState('credit');
 
   const [igvDefault, setIgvDefault] = React.useState(0);
   const prevMoneyToConvertRef = useRef();
@@ -151,13 +158,6 @@ const GetCreditNote = () => {
     prevMoneyToConvertRef.current = moneyToConvert;
   });
   const prevMoneyToConvert = prevMoneyToConvertRef.current;
-
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const {query} = router;
-  const forceUpdate = useForceUpdate();
-  let changeValueField;
-  let getValueField;
 
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
@@ -273,6 +273,10 @@ const GetCreditNote = () => {
         (obj) => obj.movementHeaderId == query.idBill,
       );
       setSelectedBill(bill);
+      const duePayDate = new Date(String(bill.dueDate));
+      const duePayDateMiliseconds = duePayDate.getTime();
+      setExpirationDate(duePayDateMiliseconds);
+      setPaymentWay(String(bill.paymentMethod).toLowerCase());
       console.log('Bill seleccionado', bill);
       if (bill.productsInfo) {
         selectedProducts = bill.productsInfo.map((obj) => {
@@ -474,12 +478,13 @@ const GetCreditNote = () => {
             clientId: selectedClient.clientId,
             clientEmail: selectedClient.emailClient,
             totalPriceWithIgv: data.totalFieldIgv,
+            totalPriceWithIgv: data.totalFieldIgv,
             issueDate: dateWithHyphen(issueDate),
             serial: data.nroBill.split('-')[0],
             documentIntern: '',
             automaticSendSunat: true,
             automaticSendClient: true,
-            creditSale: false,
+            creditSale: paymentWay == 'credit',
             previousTotalPriceWithIgv: selectedBill.totalPriceWithIgv,
             previousTotalPriceWithoutIgv: selectedBill.totalPriceWithoutIgv,
             dueDate: dateWithHyphen(expirationDate),
@@ -770,7 +775,15 @@ const GetCreditNote = () => {
     }
     setOpenDialog(false);
   };
-
+  const handleActualData = (event) => {
+    console.log('evento onchange', event);
+    Object.keys(actualValues).map((key) => {
+      if (key == event.target.name) {
+        actualValues[key] = event.target.value;
+      }
+    });
+    console.log('actualValues', actualValues);
+  };
   const showMessage = () => {
     if (
       successMessage != undefined &&
@@ -1012,6 +1025,64 @@ const GetCreditNote = () => {
                     />
                   </Grid> */}
 
+                      <Grid item xs={6}>
+                        <FormControl fullWidth sx={{my: 2}}>
+                          <InputLabel
+                            id='wayToPay-label'
+                            style={{fontWeight: 200}}
+                          >
+                            Forma de pago
+                          </InputLabel>
+                          <Select
+                            value={paymentWay}
+                            name='wayToPay'
+                            labelId='wayToPay-label'
+                            label='Forma de pago'
+                            onChange={(event) => {
+                              setPaymentWay(event.target.value);
+                            }}
+                          >
+                            <MenuItem value='credit' style={{fontWeight: 200}}>
+                              Credito
+                            </MenuItem>
+                            <MenuItem value='debit' style={{fontWeight: 200}}>
+                              Al contado
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={6}>
+                        <FormControl disabled fullWidth sx={{my: 2}}>
+                          <InputLabel
+                            id='quota-label'
+                            style={{fontWeight: 200}}
+                          >
+                            Nro de cuotas
+                          </InputLabel>
+                          <Select
+                            defaultValue='1'
+                            name='quota'
+                            labelId='quota-label'
+                            label='Nro de cuotas'
+                            onChange={handleActualData}
+                          >
+                            {Array(12)
+                              .fill(0)
+                              .map((val, index) => {
+                                index++;
+                                return (
+                                  <MenuItem
+                                    key={index}
+                                    value={index}
+                                    style={{fontWeight: 200}}
+                                  >
+                                    {index}
+                                  </MenuItem>
+                                );
+                              })}
+                          </Select>
+                        </FormControl>
+                      </Grid>
                       <Grid item xs={8}>
                         <Button
                           sx={{width: 1}}

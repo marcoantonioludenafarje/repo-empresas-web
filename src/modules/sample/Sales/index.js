@@ -116,10 +116,10 @@ import {
   GET_ROL_USER,
   GENERATE_SELL_TICKET,
   GET_OUTPUT_PAGE_LISTGUIDE,
-  LIST_SALES
+  LIST_SALES,
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
-import { listSales } from '../../../redux/actions/Sales';
+import {listSales} from '../../../redux/actions/Sales';
 
 //ESTILOS
 const useStyles = makeStyles((theme) => ({
@@ -153,24 +153,6 @@ let deletePayload = {
   },
 };
 
-let businessParameterPayload = {
-  request: {
-    payload: {
-      abreParametro: null,
-      codTipoparametro: null,
-      merchantId: '',
-    },
-  },
-};
-let globalParameterPayload = {
-  request: {
-    payload: {
-      abreParametro: null,
-      codTipoparametro: null,
-      country: 'peru',
-    },
-  },
-};
 let invoicePayload = {
   request: {
     payload: {
@@ -226,8 +208,9 @@ const SalesTable = (props) => {
   let changeValueField;
   //UseStates
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [selectedSale, setSelectedSale] = React.useState('');
   const [ticketResponseDialog, setTicketResponseDialog] = React.useState(false);
-  const [proofOfPaymentType, setProofOfPaymentType] = React.useState("all");
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState('all');
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [open2valida, setOpen2valida] = React.useState(false);
@@ -249,11 +232,12 @@ const SalesTable = (props) => {
   const [deliverySelected, setDeliverySelected] = React.useState(false);
   //FECHAS
   //SELECCIÓN CALENDARIO
-  const [initialTimeValue, setInitialTimeValue] = React.useState(Date.now() - 2678400000);
+  const [initialTimeValue, setInitialTimeValue] = React.useState(
+    Date.now() - 2678400000,
+  );
   const [finalTimeValue, setFinalTimeValue] = React.useState(Date.now());
   const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [isListLoading, setListIsLoading] = React.useState(false);
   const [initialTime, setInitialTime] = React.useState(
     toEpoch(Date.now() - 2678400000),
   );
@@ -263,12 +247,6 @@ const SalesTable = (props) => {
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   // setOpen3(query.operationBack)
   //API FUNCTIONS
-  const getBusinessParameter = (payload) => {
-    dispatch(onGetBusinessParameter(payload));
-  };
-  const getGlobalParameter = (payload) => {
-    dispatch(onGetGlobalParameter(payload));
-  };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
   };
@@ -303,17 +281,16 @@ const SalesTable = (props) => {
     outputItems_pageListOutput,
     outputLastEvaluatedKey_pageListOutput,
   } = useSelector(({movements}) => movements);
-  const {
-    listSalesRes,
-    salesLastEvaluatedKey_pageListSales,
-  } = useSelector(({sale}) => sale);
+  const {listSalesRes, salesLastEvaluatedKey_pageListSales} = useSelector(
+    ({sale}) => sale,
+  );
   console.log('getMovementsRes', getMovementsRes);
   console.log('outputItems_pageListOutput', outputItems_pageListOutput);
   console.log(
     'salesLastEvaluatedKey_pageListSales',
     salesLastEvaluatedKey_pageListSales,
   );
-  console.log("listSalesRes", listSalesRes)
+  console.log('listSalesRes', listSalesRes);
   const {deleteMovementRes} = useSelector(({movements}) => movements);
   console.log('deleteMovementRes', deleteMovementRes);
   const {successMessage} = useSelector(({movements}) => movements);
@@ -324,8 +301,6 @@ const SalesTable = (props) => {
   console.log('getFinancesRes', getFinancesRes);
   const {generateInvoiceRes} = useSelector(({movements}) => movements);
   console.log('generateInvoiceRes', generateInvoiceRes);
-  const {actualDateRes} = useSelector(({general}) => general);
-  console.log('actualDateRes', actualDateRes);
   const {generateSellTicketRes} = useSelector(({movements}) => movements);
   console.log('generateSellTicketRes', generateSellTicketRes);
   const {userAttributes} = useSelector(({user}) => user);
@@ -337,32 +312,7 @@ const SalesTable = (props) => {
   console.log('Esto es getRolUserRes', getRolUserRes);
 
   useEffect(() => {
-    dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
-    if (!userDataRes) {
-      console.log('Esto se ejecuta?');
-      dispatch({type: GET_USER_DATA, payload: undefined});
-      const toGetUserData = (payload) => {
-        dispatch(getUserData(payload));
-      };
-      let getUserDataPayload = {
-        request: {
-          payload: {
-            userId: JSON.parse(localStorage.getItem('payload')).sub,
-          },
-        },
-      };
-
-      toGetUserData(getUserDataPayload);
-    }
-  }, []);
-  useEffect(() => {
-    if (listSalesRes) {
-      setListIsLoading(false);
-    }
-  }, [listSalesRes]);
-  useEffect(() => {
     if (userDataRes && userDataRes.merchantSelected && getRolUserRes) {
-      setListIsLoading(true);
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       let listPayload = {
@@ -370,22 +320,12 @@ const SalesTable = (props) => {
           payload: {
             initialTime: initialTime,
             finalTime: finalTime,
-            businessProductCode: null,
-            movementType: 'OUTPUT',
             merchantId: userDataRes.merchantSelected.merchantId,
             createdAt: null,
-            searchByDocument: null,
-            movementHeaderId: null,
-            outputId: null,
             userCreated: null,
           },
         },
       };
-      listPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-      businessParameterPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-
       if (Object.keys(query).length !== 0) {
         console.log('Query con datos', query);
         if (query.movementHeaderId)
@@ -402,8 +342,8 @@ const SalesTable = (props) => {
         ? (listPayload.request.payload.userCreated = null)
         : (listPayload.request.payload.userCreated = userDataRes.userId);
       console.log('toListSales [userDataRes] ', listPayload);
-      
-    listPayload.request.payload.needItems = true;
+
+      listPayload.request.payload.needItems = true;
       toListSales(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -411,8 +351,6 @@ const SalesTable = (props) => {
         listPayload.request.payload.movementTypeMerchantId = null;
         listPayload.request.payload.initialTime = null;
       }
-      getBusinessParameter(businessParameterPayload);
-      getGlobalParameter(globalParameterPayload);
       console.log('userDataRes1234', userDataRes);
       console.log(
         'userDataRes.merchantSelected.typeClien',
@@ -426,57 +364,6 @@ const SalesTable = (props) => {
       );
     }
   }, [userDataRes, getRolUserRes, query]);
-
-  useEffect(() => {
-    setFinalTimeValue(Date.now());
-
-    console.log('Se ejecuta esto?');
-    if (userDataRes) {
-      let listPayload = {
-        request: {
-          payload: {
-            initialTime: initialTime,
-            finalTime: finalTime,
-            businessProductCode: null,
-            movementType: 'OUTPUT',
-            merchantId: userDataRes.merchantSelected.merchantId,
-            createdAt: null,
-            searchByDocument: null,
-            movementHeaderId: null,
-            outputId: null,
-            userCreated: null,
-          },
-        },
-      };
-      dispatch({type: FETCH_SUCCESS, payload: undefined});
-      dispatch({type: FETCH_ERROR, payload: undefined});
-      listPayload.request.payload.finalTime = toEpoch(Date.now());
-      listPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-      if (Object.keys(query).length !== 0) {
-        console.log('Query con datos', query);
-        if (query.movementHeaderId)
-          listPayload.request.payload.movementHeaderId = query.movementHeaderId;
-        if (query.movementDetailId) {
-          listPayload.request.payload.movementDetailId = query.movementDetailId;
-          listPayload.request.payload.movementTypeMerchantId =
-            query.movementTypeMerchantId;
-          listPayload.request.payload.initialTime = Number(query.createdAt);
-        }
-      }
-      searchPrivilege('outputsTable')
-        ? (listPayload.request.payload.userCreated = null)
-        : (listPayload.request.payload.userCreated = userDataRes.userId);
-      console.log('toListSales [actualDateRes] ', listPayload);
-      listPayload.request.payload.LastEvaluatedKey = null;
-      
-    listPayload.request.payload.needItems = true;
-      toListSales(listPayload);
-      if (Object.keys(query).length !== 0) {
-        listPayload.request.payload.movementHeaderId = null;
-      }
-    }
-  }, [actualDateRes]);
 
   useEffect(() => {
     if (generateSellTicketRes) {
@@ -498,8 +385,8 @@ const SalesTable = (props) => {
       };
       console.log('Se manda al ticket de venta', generateSellTicketRes);
       setIsLoading(false);
-      
-    listPayload.request.payload.needItems = true;
+
+      listPayload.request.payload.needItems = true;
       toListSales(listPayload);
       window.open(`${generateSellTicketRes.enlace_del_pdf}`);
     }
@@ -541,8 +428,8 @@ const SalesTable = (props) => {
       },
     };
     listPayload.request.payload.LastEvaluatedKey =
-    salesLastEvaluatedKey_pageListSales || null;
-    
+      salesLastEvaluatedKey_pageListSales || null;
+
     listPayload.request.payload.needItems = true;
     console.log('listPayload111:handleNextPage:', listPayload);
     toListSales(listPayload);
@@ -623,12 +510,12 @@ const SalesTable = (props) => {
     listPayload.request.payload.typeDocumentClient = '';
     listPayload.request.payload.numberDocumentClient = '';
     listPayload.request.payload.LastEvaluatedKey =
-    salesLastEvaluatedKey_pageListSales || null;
+      salesLastEvaluatedKey_pageListSales || null;
     searchPrivilege('outputsTable')
       ? (listPayload.request.payload.userCreated = null)
       : (listPayload.request.payload.userCreated = userDataRes.userId);
     console.log('toListSales [searchOutputs] ', listPayload);
-    
+
     listPayload.request.payload.needItems = true;
     toListSales(listPayload);
   };
@@ -656,11 +543,12 @@ const SalesTable = (props) => {
 
   //FUNCIONES MENU
   const openMenu = Boolean(anchorEl);
-  const handleClick = (codOutput, event) => {
+  const handleClick = (cod, event) => {
     setAnchorEl(event.currentTarget);
-    codProdSelected = codOutput;
-    selectedOutput = findOutput(codOutput);
-    console.log('selectedOutput', selectedOutput);
+    const sale = findSale(cod);
+    setSelectedSale(sale);
+    console.log('selectedSale', sale);
+    //forceUpdate();
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -670,6 +558,45 @@ const SalesTable = (props) => {
     Router.push({
       pathname: '/sample/outputs/update',
       query: {...selectedOutput},
+    });
+  };
+  const goToGenerateTicket = () => {
+    console.log('Abriendo generar ticket', selectedSale);
+    Router.push({
+      pathname: '/sample/sales/newProofOfPayment',
+      query: {
+        ...selectedSale,
+        registerType: 'saleWithProofOfPayment',
+        earningGeneration: true,
+        proofOfPaymentType: 'ticket',
+        proofOfPaymentGeneration: true,
+      },
+    });
+  };
+  const goToGenerateReceipt = () => {
+    console.log('Abriendo generar receipt', selectedSale);
+    Router.push({
+      pathname: '/sample/sales/newProofOfPayment',
+      query: {
+        ...selectedSale,
+        registerType: 'saleWithProofOfPayment',
+        earningGeneration: true,
+        proofOfPaymentType: 'receipt',
+        proofOfPaymentGeneration: true,
+      },
+    });
+  };
+  const goToGenerateBill = () => {
+    console.log('Abriendo generar bill', selectedSale);
+    Router.push({
+      pathname: '/sample/sales/newProofOfPayment',
+      query: {
+        ...selectedSale,
+        registerType: 'saleWithProofOfPayment',
+        earningGeneration: true,
+        proofOfPaymentType: 'bill',
+        proofOfPaymentGeneration: true,
+      },
     });
   };
   const confirmDelete = () => {
@@ -737,9 +664,9 @@ const SalesTable = (props) => {
         : (listPayload.request.payload.userCreated = userDataRes.userId);
       console.log('toListSales [sendStatus] ', listPayload);
       listPayload.request.payload.LastEvaluatedKey =
-    salesLastEvaluatedKey_pageListSales || null;
-    
-    listPayload.request.payload.needItems = true;
+        salesLastEvaluatedKey_pageListSales || null;
+
+      listPayload.request.payload.needItems = true;
       toListSales(listPayload);
     }, 2200);
   };
@@ -976,79 +903,6 @@ const SalesTable = (props) => {
       return <CircularProgress disableShrink />;
     }
   };
-  const getSellTicket = (data, {setSubmitting}) => {
-    setSubmitting(true);
-    handleClose();
-    let finalPayload = {
-      request: {
-        payload: {
-          merchantId: userDataRes.merchantSelected.merchantId,
-          denominationMerchant:
-            userDataRes.merchantSelected.denominationMerchant,
-          typePDF: userDataRes.merchantSelected.typeMerchant,
-          folderMovement: selectedOutput.folderMovement,
-          contableMovements: selectedOutput.contableMovements || [],
-          movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
-          contableMovementId: selectedOutput.contableMovementId || '',
-          movementHeaderId: selectedOutput.movementHeaderId,
-          createdAt: Number(selectedOutput.createdAt),
-          clientId: selectedOutput.clientId,
-          totalPriceWithIgv: Number(
-            selectedOutput.totalPriceWithIgv.toFixed(3),
-          ), //
-          issueDate: specialFormatToSunat(),
-          serial: 'V001',
-          documentIntern: selectedOutput.documentIntern,
-          clientEmail: selectedOutput.client.email,
-          transactionNumber: data.transactionNumber || '',
-          numberSellTicket: selectedOutput.codMovement.split('-')[1],
-          automaticSendSunat: /* sendSunat */ true,
-          automaticSendClient: /* sendClient */ true,
-          referralGuide: false,
-          creditSale: false,
-          methodToPay: paymentMethod,
-          earningGeneration: earningGeneration,
-          referralGuideSerial: '',
-          dueDate: dateWithHyphen(Date.now() + 1 * 24 * 60 * 60 * 1000),
-          observation: '',
-          igv: Number(selectedOutput.igv),
-          productsInfo: selectedOutput.descriptionProductsInfo.map((obj) => {
-            console.log('facturabusinessProductCode', obj.businessProductCode);
-            return {
-              product: obj.product,
-              quantityMovement: Number(obj.quantityMovement),
-              priceBusinessMoneyWithIgv: Number(obj.priceBusinessMoneyWithIgv),
-              category: obj.category || '',
-              customCodeProduct: obj.customCodeProduct,
-              description: obj.description,
-              unitMeasure: obj.unitMeasure,
-              businessProductCode: obj.businessProductCode,
-              taxCode: obj.taxCode || '',
-              igvCode: obj.igvCode || '',
-            };
-          }),
-          documentsMovement: selectedOutput.documentsMovement,
-          referralGuides: [],
-          userCreated: userDataRes.userId,
-          userCreatedMetadata: {
-            nombreCompleto: userDataRes.nombreCompleto,
-            email: userDataRes.email,
-          },
-          outputUserCreated: selectedOutput.userCreated,
-          outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
-        },
-      },
-    };
-    console.log('getSellTicket payload', finalPayload);
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
-    toGenerateSellTicket(finalPayload);
-    setIsLoading(true);
-    setSellTicketDialog(false);
-    setTicketResponseDialog(true);
-    setSubmitting(false);
-  };
   const getReferralGuide = () => {
     console.log('Selected Output', selectedOutput);
     Router.push({
@@ -1172,15 +1026,16 @@ const SalesTable = (props) => {
     });
   };
 
-  const findOutput = (outputId) => {
-    return listSalesRes.find(
-      (obj) => obj.movementHeaderId == outputId,
-    );
+  const findSale = (id) => {
+    return listSalesRes.find((obj) => obj.saleId == id);
   };
   const showObject = (id, type) => {
-    if(id){
+    if (id) {
       if (type == 'income') {
-        window.open(`/sample/finances/table?contableMovementId=${id}`, '_blank');
+        window.open(
+          `/sample/finances/table?contableMovementId=${id}`,
+          '_blank',
+        );
       } else if (type == 'bill') {
         Router.push({
           pathname: '/sample/bills/table',
@@ -1194,7 +1049,7 @@ const SalesTable = (props) => {
       } else if (type == 'receipt') {
         window.open(`/sample/receipts/table?receiptId=${id}`, '_blank');
       } else if (type == 'ticket') {
-        window.open(id)
+        window.open(id);
       } else if (type == 'output') {
         Router.push({
           pathname: '/sample/output/table',
@@ -1450,7 +1305,7 @@ const SalesTable = (props) => {
       : (listPayload.request.payload.userCreated = userDataRes.userId);
     console.log('toListSales [filterData] ', listPayload);
     listPayload.request.payload.LastEvaluatedKey = null;
-    
+
     listPayload.request.payload.needItems = true;
     toListSales(listPayload);
     (listPayload.request.payload.searchByDocument = ''),
@@ -1636,9 +1491,7 @@ const SalesTable = (props) => {
           <TableBody>
             {listSalesRes &&
             Array.isArray(listSalesRes) &&
-            listSalesRes.length >= 0 &&
-            !isListLoading 
-            ? (
+            listSalesRes.length >= 0 ? (
               listSalesRes.sort(compare).map((obj, index) => {
                 const style =
                   obj.descriptionProductsInfo &&
@@ -1700,13 +1553,14 @@ const SalesTable = (props) => {
                         sx={{
                           color:
                             obj.proofOfPaymentId &&
-                            Array.isArray(obj.documentsMovement) &&
-                            obj.documentsMovement.length > 0
+                            obj.contableMovement.contableMovementId
                               ? 'inherit'
                               : 'rgba(198, 50, 91, 1)',
                           fontWeight: 'bold',
                         }}
-                      >{obj.codMovement}</TableCell>
+                      >
+                        {obj.codMovement}
+                      </TableCell>
                       <TableCell>
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
@@ -1714,13 +1568,26 @@ const SalesTable = (props) => {
                         {convertToDateWithoutTime(obj.updatedAt)}
                       </TableCell>
                       <TableCell>
-                        <IntlMessages id={`document.type.${obj.proofOfPaymentType}`}/>
+                        {obj.proofOfPaymentType ? (
+                          <IntlMessages
+                            id={`document.type.${obj.proofOfPaymentType}`}
+                          />
+                        ) : (
+                          ''
+                        )}
                       </TableCell>
                       <TableCell>
                         <Button
                           variant='secondary'
                           sx={{fontSize: '1em'}}
-                          onClick={() => showObject(obj.proofOfPaymentType !== 'ticket' ? obj.proofOfPaymentId : obj.proofOfPaymentPdf, obj.proofOfPaymentType)}
+                          onClick={() =>
+                            showObject(
+                              obj.proofOfPaymentType !== 'ticket'
+                                ? obj.proofOfPaymentId
+                                : obj.proofOfPaymentPdf,
+                              obj.proofOfPaymentType,
+                            )
+                          }
                         >
                           {obj.proofOfPaymentNumber}
                         </Button>
@@ -1734,8 +1601,7 @@ const SalesTable = (props) => {
                             : obj.clientName)}
                       </TableCell>
                       <TableCell align='center'>
-                        {obj.products &&
-                        obj.products.length != 0 ? (
+                        {obj.products && obj.products.length != 0 ? (
                           <IconButton
                             onClick={() => checkProductsInfo(index)}
                             size='small'
@@ -1749,35 +1615,40 @@ const SalesTable = (props) => {
                       <TableCell align='center'>
                         {obj.totalPriceWithIgv - obj.totalIgv}
                       </TableCell>
-                      <TableCell>
-                        {Number(obj.totalIgv).toFixed(2)}
-                      </TableCell>
-                      <TableCell>
-                        {obj.totalPriceWithIgv}
-                      </TableCell>
+                      <TableCell>{Number(obj.totalIgv).toFixed(2)}</TableCell>
+                      <TableCell>{obj.totalPriceWithIgv}</TableCell>
                       <TableCell>
                         <Button
                           variant='secondary'
                           sx={{fontSize: '1em'}}
-                          onClick={() => showObject(obj.contableMovement.contableMovementId, 'income')}
+                          onClick={() =>
+                            showObject(
+                              obj.contableMovement.contableMovementId,
+                              'income',
+                            )
+                          }
                         >
-                          {`${showMinTypeRelated(
-                                "INCOME",
-                              )}-${obj.contableMovement.codMovement.split('-')[1]}`}
+                          {obj.contableMovement.contableMovementId
+                            ? `${showMinTypeRelated('INCOME')}-${
+                                obj.contableMovement.codMovement.split('-')[1]
+                              }`
+                            : ''}
                         </Button>
                       </TableCell>
                       <TableCell>
                         <Button
                           variant='secondary'
                           sx={{fontSize: '1em'}}
-                          onClick={() => obj.output?showObject(obj.output.outputId, 'output'):null}
+                          onClick={() =>
+                            obj.output
+                              ? showObject(obj.output.outputId, 'output')
+                              : null
+                          }
                         >
-                          {obj.output ? obj.output.codMovement : "No Generado"}
+                          {obj.output ? obj.output.codMovement : 'No Generado'}
                         </Button>
                       </TableCell>
-                      <TableCell>
-                        Aceptado Sunat
-                      </TableCell>
+                      <TableCell>Aceptado Sunat</TableCell>
                       <TableCell>
                         {obj.userCreatedMetadata
                           ? obj.userCreatedMetadata.nombreCompleto
@@ -1794,7 +1665,7 @@ const SalesTable = (props) => {
                           aria-controls={openMenu ? 'basic-menu' : undefined}
                           aria-haspopup='true'
                           aria-expanded={openMenu ? 'true' : undefined}
-                          onClick={handleClick.bind(this, obj.movementHeaderId)}
+                          onClick={handleClick.bind(this, obj.saleId)}
                         >
                           <KeyboardArrowDownIcon />
                         </Button>
@@ -1823,29 +1694,27 @@ const SalesTable = (props) => {
                               <TableBody>
                                 {obj.products !== undefined &&
                                 obj.products.length !== 0 ? (
-                                  obj.products.map(
-                                    (subProduct, index) => {
-                                      return (
-                                        <TableRow key={index}>
-                                          <TableCell>
-                                            {subProduct.businessProductCode !=
-                                            null
-                                              ? subProduct.businessProductCode
-                                              : subProduct.product}
-                                          </TableCell>
-                                          <TableCell>
-                                            {subProduct.description}
-                                          </TableCell>
-                                          <TableCell>
-                                            {subProduct.quantityMovement}
-                                          </TableCell>
-                                          <TableCell>
-                                            {subProduct.unitPrice}
-                                          </TableCell>
-                                        </TableRow>
-                                      );
-                                    },
-                                  )
+                                  obj.products.map((subProduct, index) => {
+                                    return (
+                                      <TableRow key={index}>
+                                        <TableCell>
+                                          {subProduct.businessProductCode !=
+                                          null
+                                            ? subProduct.businessProductCode
+                                            : subProduct.product}
+                                        </TableCell>
+                                        <TableCell>
+                                          {subProduct.description}
+                                        </TableCell>
+                                        <TableCell>
+                                          {subProduct.quantityMovement}
+                                        </TableCell>
+                                        <TableCell>
+                                          {subProduct.unitPrice}
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })
                                 ) : (
                                   <></>
                                 )}
@@ -2001,10 +1870,66 @@ const SalesTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/movementProducts/update?path=/output/*') ===
+          true && selectedSale.proofOfPaymentPdf ? (
+          <MenuItem
+            onClick={() =>
+              showObject(
+                selectedSale.proofOfPaymentType !== 'ticket'
+                  ? selectedSale.proofOfPaymentId
+                  : selectedSale.proofOfPaymentPdf,
+                selectedSale.proofOfPaymentType,
+              )
+            }
+          >
+            <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
+            Ver PDF
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/update?path=/output/*') ===
         true ? (
-          <MenuItem onClick={goToUpdate}>
+          <MenuItem disabled onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Actualizar
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          true &&
+        selectedSale &&
+        (!selectedSale.client.id ||
+          selectedSale.client.id.split('-')[0] !== 'RUC') ? (
+          <MenuItem onClick={goToGenerateTicket}>
+            <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Ticket
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          true &&
+        selectedSale &&
+        (!selectedSale.client.id ||
+          selectedSale.client.id.split('-')[0] !== 'RUC') ? (
+          <MenuItem onClick={goToGenerateReceipt}>
+            <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Boleta
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          true &&
+        selectedSale &&
+        !(
+          !selectedSale.client.id ||
+          selectedSale.client.id.split('-')[0] !== 'RUC'
+        ) ? (
+          <MenuItem onClick={goToGenerateBill}>
+            <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
+            Generar Factura
           </MenuItem>
         ) : null}
         {localStorage
@@ -2016,17 +1941,6 @@ const SalesTable = (props) => {
             Eliminar
           </MenuItem>
         ) : null}
-
-        {localStorage
-          .getItem('pathsBack')
-          .includes('/inventory/movementProducts/list?path=/output/*') ===
-        true ? (
-          <MenuItem disabled onClick={goToMoves}>
-            <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
-            Exportar
-          </MenuItem>
-        ) : null}
-
         {localStorage
           .getItem('pathsBack')
           .includes(
@@ -2169,160 +2083,6 @@ const SalesTable = (props) => {
             id='alert-dialog-description'
           >
             <MoreFilters sendData={filterData} />
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={sellTicketDialog}
-        onClose={() => setSellTicketDialog(false)}
-        maxWidth='sm'
-        fullWidth
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          <IconButton
-            aria-label='close'
-            onClick={() => setSellTicketDialog(false)}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          {'Ticket de Venta'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          <DialogContentText
-            sx={{fontSize: '1.2em'}}
-            id='alert-dialog-description'
-          >
-            <Formik
-              validateOnChange={false}
-              validationSchema={validationSchema}
-              initialValues={{...defaultValues}}
-              onSubmit={getSellTicket}
-            >
-              {({isSubmitting, setFieldValue}) => {
-                changeValueField = setFieldValue;
-                return (
-                  <Form
-                    style={{textAlign: 'left', justifyContent: 'center'}}
-                    noValidate
-                    autoComplete='on'
-                  >
-                    <Grid container spacing={2} sx={{width: 1}}>
-                      <Grid item xs={12}>
-                        <FormControl fullWidth sx={{my: 2}}>
-                          <InputLabel
-                            id='methodToPay-label'
-                            style={{fontWeight: 200}}
-                          >
-                            Medio de pago
-                          </InputLabel>
-                          <Select
-                            value={paymentMethod}
-                            name='methodToPay'
-                            labelId='methodToPay-label'
-                            label='Medio de pago'
-                            onChange={
-                              /* handleActualData */ (event) => {
-                                setPaymentMethod(event.target.value);
-                              }
-                            }
-                          >
-                            <MenuItem value='cash' style={{fontWeight: 200}}>
-                              Efectivo
-                            </MenuItem>
-                            <MenuItem value='yape' style={{fontWeight: 200}}>
-                              Yape
-                            </MenuItem>
-                            <MenuItem value='plin' style={{fontWeight: 200}}>
-                              Plin
-                            </MenuItem>
-                            <MenuItem
-                              value='bankTransfer'
-                              style={{fontWeight: 200}}
-                            >
-                              Transferencia Bancaria
-                            </MenuItem>
-                            <MenuItem value='card' style={{fontWeight: 200}}>
-                              Tarjeta de crédito/débito
-                            </MenuItem>
-                            <MenuItem
-                              value='bankDeposit'
-                              style={{fontWeight: 200}}
-                            >
-                              <IntlMessages id='common.bankDeposit' />
-                            </MenuItem>
-                            <MenuItem
-                              value='giftCard'
-                              style={{fontWeight: 200}}
-                            >
-                              GiftCard
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <AppTextField
-                          label='Número de transacción'
-                          disabled={paymentMethod == 'cash'}
-                          name='transactionNumber'
-                          variant='outlined'
-                          sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              fontSize: 14,
-                            },
-                            my: 2,
-                          }}
-                        />
-                      </Grid>
-                      <Grid
-                        item
-                        xs={12}
-                        sx={{display: 'flex', alignItems: 'center'}}
-                      >
-                        <FormControlLabel
-                          label='Generar Ingreso contable'
-                          control={
-                            <Checkbox
-                              onChange={handleEarningGeneration}
-                              defaultChecked={
-                                !selectedOutput.contableMovementId
-                              }
-                            />
-                          }
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <ButtonGroup
-                      orientation='vertical'
-                      variant='outlined'
-                      sx={{width: 1, my: '10px'}}
-                      aria-label='outlined button group'
-                    >
-                      <Button
-                        color='primary'
-                        sx={{mx: 'auto', width: '50%', py: 3}}
-                        type='submit'
-                        variant='contained'
-                        disabled={isSubmitting}
-                      >
-                        Generar
-                      </Button>
-                    </ButtonGroup>
-                  </Form>
-                );
-              }}
-            </Formik>
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>

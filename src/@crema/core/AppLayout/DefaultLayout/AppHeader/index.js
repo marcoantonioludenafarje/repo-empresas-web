@@ -34,6 +34,12 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ServiceWorkerListener from '../../../../../pages/serviceWorkerListener';
 
+import {getNotifications} from '../../../../../redux/actions/Notifications';
+import {
+  onGetBusinessParameter,
+  onGetGlobalParameter,
+} from '../../../../../redux/actions/General';
+import {getUserData} from '../../../../../redux/actions/User';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import NotificationAddOutlinedIcon from '@mui/icons-material/NotificationAddOutlined';
@@ -55,6 +61,10 @@ import NotificationON from '../../../../../assets/icon/notificationON.svg';
 import {
   SUBSCRIPTION_STATE,
   UPDATE_NOTIFICATION_LIST,
+  FETCH_SUCCESS,
+  FETCH_ERROR,
+  GET_USER_DATA,
+  GET_NOTIFICATIONS,
 } from '../../../../../shared/constants/ActionTypes';
 import {useDispatch, useSelector} from 'react-redux';
 import localforage from 'localforage';
@@ -95,7 +105,17 @@ const AppHeader = () => {
     ({notifications}) => notifications,
   );
   //const {updateNotificationListRes} = useContext(AppContext); // Ejemplo de uso del useContext con el contexto de la aplicación
-
+  const {getNotificationsRes} = useSelector(({notifications}) => notifications);
+  const {businessParameter, globalParameter} = useSelector(
+    ({general}) => general,
+  );
+  console.log('businessParameter123', businessParameter);
+  console.log('globalParameter123', globalParameter);
+  const {dataBusinessRes} = useSelector(({general}) => general);
+  console.log('dataBusinessRes', dataBusinessRes);
+  const toGetNotifications = (payload) => {
+    dispatch(getNotifications(payload));
+  };
   console.log('subscriptionStateRes inicial', subscriptionStateRes);
   const requestAxios = (method, path, payload) => {
     console.log('Ahora axios');
@@ -320,7 +340,24 @@ const AppHeader = () => {
 
   useEffect(() => {
     console.log('UseEffect de AppHeader');
+    if (!userDataRes) {
+      console.log('Esto se ejecuta notificaciones?');
 
+      const toGetUserData = (payload) => {
+        dispatch(getUserData(payload));
+      };
+      let getUserDataPayload = {
+        request: {
+          payload: {
+            userId: localStorage.getItem('payload')
+              ? JSON.parse(localStorage.getItem('payload')).sub
+              : '',
+          },
+        },
+      };
+
+      toGetUserData(getUserDataPayload);
+    }
     let swReg;
     var swLocation = '/service-worker3.js';
     if ('serviceWorker' in navigator) {
@@ -364,7 +401,24 @@ const AppHeader = () => {
         });
     }
   }, []);
-
+  useEffect(() => {
+    if (userDataRes) {
+      if (!getNotificationsRes) {
+        dispatch({type: GET_NOTIFICATIONS, payload: undefined});
+        let listNotificationsPayload = {
+          request: {
+            payload: {
+              merchantMasterId: '',
+            },
+          },
+        };
+        listNotificationsPayload.request.payload.merchantId =
+          userDataRes.merchantMasterId;
+        listNotificationsPayload.request.payload.userId = userDataRes.userId;
+        toGetNotifications(listNotificationsPayload);
+      }
+    }
+  }, [userDataRes]);
   useEffect(() => {
     setAllowedNotifications(subscriptionStateRes);
   }, [subscriptionStateRes]);

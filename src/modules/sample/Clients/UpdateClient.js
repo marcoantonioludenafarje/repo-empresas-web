@@ -62,6 +62,7 @@ import {
   toEpoch,
   simpleDateToDateObj,
   convertToDateWithoutTime,
+  verTags,
 } from '../../../Utils/utils';
 
 import {updateClient, onGetClients} from '../../../redux/actions/Clients';
@@ -213,7 +214,7 @@ const UpdateClient = (props) => {
 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const [tagsClient, setTagsClient] = React.useState([]);
   // const {listClients} = useSelector(({clients}) => clients);
   // console.log('listClients', listClients);
   const {businessParameter} = useSelector(({general}) => general);
@@ -246,14 +247,19 @@ const UpdateClient = (props) => {
   }, [loading]);
 
   useEffect(() => {
-    if (userDataRes && userDataRes.merchantSelected && businessParameter && listTags.length == 0) {
+    if (
+      userDataRes &&
+      userDataRes.merchantSelected &&
+      businessParameter &&
+      listTags.length == 0
+    ) {
       let listTags1 = businessParameter.find(
         (obj) => obj.abreParametro == 'CLIENT_TAGS',
       ).value;
 
-      listTags1.forEach (item => {
+      listTags1.forEach((item) => {
         listTags.push([item.tagName, item.id, true]);
-      }); 
+      });
     }
   }, [userDataRes]);
 
@@ -263,7 +269,7 @@ const UpdateClient = (props) => {
     );
     console.log('selectedClient', selectedClient);
   }
-
+  setTagsClient(selectedClient.tags);
   let defaultValues = {
     documentType: query.clientId.split('-')[0],
     nroDocument: query.clientId.split('-')[1],
@@ -337,9 +343,9 @@ const UpdateClient = (props) => {
 
     if (tagSelected.length > 0) {
       let listTagsSelected = [];
-      tagSelected.forEach (item => {
+      tagSelected.forEach((item) => {
         listTagsSelected.push(item[1]);
-      }); 
+      });
       newClientPayload.request.payload.tags = listTagsSelected;
     }
 
@@ -368,11 +374,11 @@ const UpdateClient = (props) => {
     setShowAlert(false);
   };
 
-  const  handlerTags = (event, values)=>{
-    console.log("Cambiando tags")
-    console.log("evento tag", event)
-    console.log("values tag", values)
-    console.log("tag seleccionado", event.target.attributes.value)
+  const handlerTags = (event, values) => {
+    console.log('Cambiando tags');
+    console.log('evento tag', event);
+    console.log('values tag', values);
+    console.log('tag seleccionado', event.target.attributes.value);
     setTagSelected(values);
     reloadPage();
   };
@@ -646,7 +652,9 @@ const UpdateClient = (props) => {
                         <TextField
                           disabled
                           defaultValue={'+51'}
-                          label={<IntlMessages id='common.cellphoneCountryCod' />}
+                          label={
+                            <IntlMessages id='common.cellphoneCountryCod' />
+                          }
                           variant='filled'
                           sx={{
                             my: 2,
@@ -852,7 +860,9 @@ const UpdateClient = (props) => {
                         <TextField
                           disabled
                           defaultValue={'+51'}
-                          label={<IntlMessages id='common.cellphoneCountryCod' />}
+                          label={
+                            <IntlMessages id='common.cellphoneCountryCod' />
+                          }
                           variant='filled'
                           sx={{
                             my: 2,

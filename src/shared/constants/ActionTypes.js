@@ -372,7 +372,9 @@ export const DELETE_SALE = 'delete_sale';
 export const UPDATE_SALE = 'update_sale';
 
 //AGENT
-export const CREATE_AGENT='create_agent';
-export const LIST_AGENT='list_agent';
-export const DELETE_AGENT='delete_agent';
-export const UPDATE_AGENT='update_agent';
+export const CREATE_AGENT = 'create_agent';
+export const LIST_AGENT = 'list_agent';
+export const DELETE_AGENT = 'delete_agent';
+export const UPDATE_AGENT = 'update_agent';
+
+export const NEW_SALE_PROOF_OF_PAYMENT = 'new_sale_proof_of_payment';
