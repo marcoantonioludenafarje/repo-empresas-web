@@ -352,6 +352,7 @@ const Create = (props) => {
           },
         },
       };
+      console.log('newImage', imagePayload);
       toCreateImagePresigned(imagePayload, {
         image: actualImage,
         type: actualImage?.type || null,
@@ -378,6 +379,7 @@ const Create = (props) => {
     };
 
     console.log('Contenidodecamapañas', campaignContents);
+    console.log('ACTUAL IMAGE', imagePresigned);
     const payload = {
       request: {
         payload: {
@@ -395,23 +397,23 @@ const Create = (props) => {
                 {
                   order: 0,
                   type: actualImage ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
-                  // metadata: selectedJsonImages[0]
-                  //   ? {
-                  //       keyMaster: selectedJsonImages[0]?.keyMaster || '',
-                  //       nameFile: selectedJsonImages[0]?.nameFile || '',
-                  //     }
-                  //   : null,
-                  img_url: actualImage
-                    ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
-                      userDataRes.merchantSelected.merchantId +
-                      '/' +
-                      'campaign/' +
-                      nameSimplified +
-                      '/' +
-                      actualImage.name.split('.').slice(0, -1).join('.') +
-                      '.' +
-                      extensions[actualImage.type]
-                    : '',
+                  metadata: actualImage
+                    ? {
+                        keyMaster: imagePresigned.keymaster || '',
+                        nameFile: actualImage?.name || '',
+                      }
+                    : null,
+                  // img_url: actualImage
+                  //   ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
+                  //     userDataRes.merchantSelected.merchantId +
+                  //     '/' +
+                  //     'campaign/' +
+                  //     nameSimplified +
+                  //     '/' +
+                  //     actualImage.name.split('.').slice(0, -1).join('.') +
+                  //     '.' +
+                  //     extensions[actualImage.type]
+                  //   : '',
                   text: campaignContents[0].content,
                   variations: variationsData ? variationsData : [''],
                 },
@@ -456,6 +458,7 @@ const Create = (props) => {
       }, 1000);
     }
   }, [clientsPresigned]);
+
   const showMessage = () => {
     if (successMessage != '') {
       console.log('MENSAJE DE VALIDEZ', successMessage);
@@ -722,12 +725,31 @@ const Create = (props) => {
   const [verification, setVerification] = useState(true);
 
   const verificationVariations = () => {
-    let valor = totaldeClientes() / levelEnter.clientsAmount;
-    let xd = Math.ceil(valor);
-    if (verification && totaldeClientes() > levelEnter.clientsAmount) {
-      setVerification(false);
+    let valor = totaldeClientes() / levelEnter.clientsAmount; //  6 / 5   1.2
+    let mayorPosible = Math.ceil(valor); // 2
+
+    console.log('DATA-VARIATIONS', variationsData[0], mayorPosible);
+    // if (totaldeClientes()<= levelEnter.clientsAmount && totaldeClientes()>0) {
+    //   setVerification(false)
+    //   return xd - 1;
+    // }
+    if (mayorPosible - 1 == 1) {
+      console.log('DATA-VARIATIONS', variationsData[0]);
+      if (
+        variationsData &&
+        variationsData[0] !== '' &&
+        variationsData[0] !== undefined
+      ) {
+        setVerification(false);
+      }
+      return mayorPosible - 1;
     }
-    return xd - 1;
+
+    // if (totaldeClientes() > levelEnter.clientsAmount && (xd-1)===variationsData.length) { // 6>5 && 1===0
+    //   console.log("VARIATONSDATA ", variationsData.length);
+    //   console.log("VARIATONSDATAXD", xd-1);
+    //   setVerification(false);
+    // }
   };
 
   // State to keep track of expanded accordion
@@ -737,8 +759,6 @@ const Create = (props) => {
   const [variationsData, setVariationsData] = useState(
     variations.map((v) => v.content),
   );
-
-  // ... (existing code)
 
   const handleAccordionChange = (panel) => (event, isExpanded) => {
     setExpandedAccordion(isExpanded ? panel : null);
@@ -1008,21 +1028,17 @@ const Create = (props) => {
                     </Grid>
                   ))}
                 </Grid>
-                {/* {selectedClients.length > 50 ? ( */}
-                {selectedClients ? (
-                  <Grid container item xs={12} justifyContent='center'>
-                    <Button
-                      variant='outlined'
-                      color='primary'
-                      startIcon={<AddCircleOutlineOutlinedIcon />}
-                      onClick={() => setOpenDialog(true)}
-                    >
-                      Generar Variación
-                    </Button>
-                  </Grid>
-                ) : (
-                  <Typography></Typography>
-                )}
+
+                <Grid container item xs={12} justifyContent='center'>
+                  <Button
+                    variant='outlined'
+                    color='primary'
+                    startIcon={<AddCircleOutlineOutlinedIcon />}
+                    onClick={() => setOpenDialog(true)}
+                  >
+                    Generar Variación
+                  </Button>
+                </Grid>
 
                 <Dialog
                   open={openDialog}
@@ -1098,6 +1114,7 @@ const Create = (props) => {
                         // Save the variationsData when clicking "Guardar"
                         console.log('Saving variations:', variationsData);
                         // ... (Add your saving logic here)
+                        verificationVariations();
                         setOpenDialog(false);
                       }}
                     >
@@ -1138,7 +1155,13 @@ const Create = (props) => {
                     type='submit'
                     variant='contained'
                     form='principal-form'
-                    disabled={isSubmitting || verification}
+                    disabled={
+                      isSubmitting ||
+                      (totaldeClientes() <= levelEnter.clientsAmount &&
+                        totaldeClientes() > 0)
+                        ? false
+                        : verification
+                    }
                     startIcon={<SaveAltOutlinedIcon />}
                   >
                     Finalizar
@@ -1365,7 +1388,6 @@ const Create = (props) => {
             sx={{mr: '35%', width: '10%'}}
             type='submit'
             variant='contained'
-            form='principal-form'
             startIcon={<SaveAltOutlinedIcon />}
           >
             Guardar
