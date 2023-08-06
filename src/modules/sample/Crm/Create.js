@@ -555,6 +555,12 @@ const Create = (props) => {
   const handleCloseClientsDialog = () => {
     setOpenClientsDialog(false);
   };
+
+  const handleCloseClientsDialogReload = () => {
+    setSelectedClients([]);
+    setOpenClientsDialog(false);
+  };
+
   console.log('LISTA DE CLIENTES,', listClients);
   const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
   console.log('seleccion,', selectedClientsByTag);
@@ -1399,14 +1405,14 @@ const Create = (props) => {
           <Button
             color='primary'
             sx={{mr: '35%', width: '10%'}}
-            type='submit'
             variant='contained'
             startIcon={<SaveAltOutlinedIcon />}
+            onClick={handleCloseClientsDialog}
           >
             Guardar
           </Button>
           <Button
-            onClick={handleCloseClientsDialog}
+            onClick={handleCloseClientsDialogReload}
             startIcon={<ArrowCircleLeftOutlinedIcon />}
             variant='outlined'
           >
