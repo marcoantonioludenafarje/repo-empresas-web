@@ -512,6 +512,28 @@ export default function Views(props) {
               </TableRow>
             </TableHead>
             <TableBody>
+              {/* {
+                selectCampaign?.processes.map((process)=>{
+                  <TableRow>
+                    <TableCell>{process.order}</TableCell>
+                    <TableCell>{convertToDate(selectCampaign.scheduledAt)}</TableCell>
+                    <TableCell>
+                    {selectCampaign?.urlTargetClients ? (
+                    <a
+                      href='#'
+                      onClick={() =>
+                        handleVerDetalleClick(selectCampaign.urlTargetClients)
+                      }
+                    >
+                      Ver Detalle
+                    </a>
+                  ) : (
+                    'Ver Detalle'
+                  )}
+                    </TableCell>
+                  </TableRow>
+                })
+              } */}
               <TableRow>
                 <TableCell>1</TableCell>
                 <TableCell>
