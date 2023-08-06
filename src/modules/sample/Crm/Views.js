@@ -596,13 +596,19 @@ export default function Views(props) {
       <Dialog
         open={dialogDetalleOpen}
         onClose={() => setDialogDetalleOpen(false)}
+        maxWidth='xl'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='detail-dialog-title'>
           {'Detalle de Clientes'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {/* Mostrar la información de la campaña seleccionada en el diálogo */}
-          <Table>
+          <Table
+            sx={{minWidth: 800}}
+            stickyHeader
+            size='small'
+            aria-label='sticky table'
+          >
             <TableHead>
               <TableRow>
                 <TableCell>Orden</TableCell>
@@ -616,7 +622,10 @@ export default function Views(props) {
             </TableHead>
             <TableBody>
               {receiversCloud.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                >
                   <TableCell>{row.id ? row.id + 1 : 1}</TableCell>
                   <TableCell>{row.givenName}</TableCell>
                   <TableCell>{row.lastName}</TableCell>

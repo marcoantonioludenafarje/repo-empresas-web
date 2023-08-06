@@ -822,6 +822,16 @@ const Create = (props) => {
     setOpenDialog(false);
   };
 
+  const handleDummy = () => {
+    let data = 'Hola a todos amigos';
+    let arrayx = [];
+    arrayx.push({id: 1, content: data});
+    setVariationsData(arrayx);
+    setCampaignContentsVariations(arrayx);
+    console.log('dummy', campaignContentVariations);
+    console.log('dummydata', variationsData);
+  };
+
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -1076,16 +1086,13 @@ const Create = (props) => {
                   fullWidth
                 >
                   <DialogTitle>
-                    <Typography
-                      sx={{
-                        mx: 'auto',
-                        my: '10px',
-                        fontWeight: 600,
-                        fontSize: 25,
-                      }}
+                    <Box
+                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
                     >
-                      {'Primeras Variaciones'}
-                    </Typography>
+                      <Button variant='outlined' onClick={handleDummy}>
+                        ¡Necesito Ayuda!
+                      </Button>
+                    </Box>
                   </DialogTitle>
                   <DialogContent>
                     {variations.map((variation, index) => (

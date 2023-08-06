@@ -57,7 +57,7 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
-import {newCampaign} from '../../../redux/actions/Campaign';
+import {newCampaign, getCampaigns} from '../../../redux/actions/Campaign';
 import {
   createPresigned,
   createClientsPresigned,
@@ -101,6 +101,8 @@ const useStyles = makeStyles((theme) => ({
     width: '20px',
   },
 }));
+
+let selectedCampaign = {};
 
 const Update = (props) => {
   let toSubmitting;
@@ -162,8 +164,9 @@ const Update = (props) => {
   // Estado para controlar el acordeón abierto
   const [expanded, setExpanded] = useState(1);
   const [campaignContents, setCampaignContents] = useState([
-    {id: 1, content: ''}, // Primer acordeón desplegado
+    {id: 1, content: selectedCampaign.campaignName}, // Primer acordeón desplegado
   ]);
+  console.log('mensajes', selectedCampaign.targetSummary);
 
   // Código de agregar acordion
   // const handleAddAccordion = () => {
@@ -212,6 +215,10 @@ const Update = (props) => {
     dispatch(onGetGlobalParameter(payload));
   };
 
+  const getCampaign = (payload) => {
+    dispatch(getCampaigns(payload));
+  };
+
   const createCampaign = (payload) => {
     dispatch(newCampaign(payload));
   };
@@ -227,6 +234,10 @@ const Update = (props) => {
   const {newCampaignRes, successMessage, errorMessage, process, loading} =
     useSelector(({campaigns}) => campaigns);
   console.log('Respuesta de campañas : ', errorMessage);
+
+  const {listCampaigns, campaignsLastEvaluatedKey_pageListCampaigns} =
+    useSelector(({campaigns}) => campaigns);
+  console.log('Confeti los campañas', listCampaigns);
 
   console.log('Confeti los clientes', listClients);
 
@@ -261,6 +272,7 @@ const Update = (props) => {
           },
         },
       };
+      getCampaign(listPayload);
       getClients(listPayload);
       getGlobalParameter(globalParameterPayload);
       // setFirstload(true);
@@ -279,6 +291,13 @@ const Update = (props) => {
         console.log('Se supone que pasa por aquí XD');
     }
   }, [loading]);
+
+  if (listCampaigns != undefined) {
+    selectedCampaign = listCampaigns.find(
+      (input) => input.campaignId == query.campaignId,
+    );
+    console.log('CAMPAÑA SELECTA', selectedCampaign);
+  }
 
   const namesTags = listadeTags?.map((tag) => tag.tagName);
 
