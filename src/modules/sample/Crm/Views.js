@@ -159,7 +159,11 @@ export default function Views(props) {
       selectedCampaign.processes[0] &&
       !selectedCampaign.processes[0].active
     ) {
-      console.log('Select Campaña >', !selectedCampaign.processes[0].active);
+      console.log(
+        'Select Campaña >',
+        !selectedCampaign.processes[0].active,
+        cancelDisabled,
+      );
       setCancelDisabled(true);
     }
   };

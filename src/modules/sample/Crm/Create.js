@@ -310,8 +310,8 @@ const Create = (props) => {
         tagId: 'ALL',
       });
     } else if (clientSelection === 'Algunos') {
-      console.log('CLIENTES SELECCIONADOS:', selectedClients);
-      receivers = selectedClients.map((clientId, index) => {
+      console.log('CLIENTES SELECCIONADOS:', clientsDataset);
+      receivers = clientsDataset.map((clientId, index) => {
         const client = listClients.find((c) => c.clientId === clientId);
         return {
           type: 'client',
@@ -552,13 +552,23 @@ const Create = (props) => {
     setOpenClientsDialog(true);
   };
 
+  const [clientsDataset, setClientsDataset] = useState([]);
+
   const handleCloseClientsDialog = () => {
+    console.log('CLIENTES DATA CLOSE', clientsDataset);
+    setClientsDataset(selectedClients);
     setOpenClientsDialog(false);
   };
 
   const handleCloseClientsDialogReload = () => {
-    setSelectedClients([]);
-    setOpenClientsDialog(false);
+    console.log('CLIENTES DATA', clientsDataset);
+    if (clientsDataset.length > 0) {
+      setSelectedClients(clientsDataset);
+      setOpenClientsDialog(false);
+    } else {
+      setSelectedClients([]);
+      setOpenClientsDialog(false);
+    }
   };
 
   console.log('LISTA DE CLIENTES,', listClients);
