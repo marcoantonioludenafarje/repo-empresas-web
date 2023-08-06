@@ -125,6 +125,7 @@ export default function Views(props) {
   const openLimitQRPop = () => {
     setopenErrorQR(false);
     setopenQRSuccess(false);
+    console.log('vip');
     setopenLimitQR(true);
   };
 
