@@ -159,8 +159,6 @@ const GetCreditNote = () => {
   });
   const prevMoneyToConvert = prevMoneyToConvertRef.current;
 
-
-
   const {getMovementsRes} = useSelector(({movements}) => movements);
   console.log('getMovementsRes', getMovementsRes);
   const {outputItems_pageListOutput} = useSelector(({movements}) => movements);
@@ -275,10 +273,10 @@ const GetCreditNote = () => {
         (obj) => obj.movementHeaderId == query.idBill,
       );
       setSelectedBill(bill);
-      const duePayDate = (new Date(String(bill.dueDate)));
+      const duePayDate = new Date(String(bill.dueDate));
       const duePayDateMiliseconds = duePayDate.getTime();
-      setExpirationDate(duePayDateMiliseconds)
-      setPaymentWay(String(bill.paymentMethod).toLowerCase())
+      setExpirationDate(duePayDateMiliseconds);
+      setPaymentWay(String(bill.paymentMethod).toLowerCase());
       console.log('Bill seleccionado', bill);
       if (bill.productsInfo) {
         selectedProducts = bill.productsInfo.map((obj) => {
@@ -1029,7 +1027,10 @@ const GetCreditNote = () => {
 
                       <Grid item xs={6}>
                         <FormControl fullWidth sx={{my: 2}}>
-                          <InputLabel id='wayToPay-label' style={{fontWeight: 200}}>
+                          <InputLabel
+                            id='wayToPay-label'
+                            style={{fontWeight: 200}}
+                          >
                             Forma de pago
                           </InputLabel>
                           <Select
@@ -1037,11 +1038,9 @@ const GetCreditNote = () => {
                             name='wayToPay'
                             labelId='wayToPay-label'
                             label='Forma de pago'
-                            onChange={
-                              (event) => {
-                                setPaymentWay(event.target.value);
-                              }
-                            }
+                            onChange={(event) => {
+                              setPaymentWay(event.target.value);
+                            }}
                           >
                             <MenuItem value='credit' style={{fontWeight: 200}}>
                               Credito
@@ -1054,7 +1053,10 @@ const GetCreditNote = () => {
                       </Grid>
                       <Grid item xs={6}>
                         <FormControl disabled fullWidth sx={{my: 2}}>
-                          <InputLabel id='quota-label' style={{fontWeight: 200}}>
+                          <InputLabel
+                            id='quota-label'
+                            style={{fontWeight: 200}}
+                          >
                             Nro de cuotas
                           </InputLabel>
                           <Select

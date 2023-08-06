@@ -62,6 +62,7 @@ import {
   toEpoch,
   simpleDateToDateObj,
   convertToDateWithoutTime,
+  verTags,
 } from '../../../Utils/utils';
 
 import {updateClient, onGetClients} from '../../../redux/actions/Clients';
@@ -197,10 +198,10 @@ const UpdateClient = (props) => {
     query.birthDay ? query.birthDay : new Date(),
   );
 
+  const [tagsClientDefault, setTagsClientDefault] = React.useState(query.tags);
   const [listTags, setListTags] = React.useState([]);
-  const [tagSelected, setTagSelected] = React.useState([]);
+  const [tagSelected, setTagSelected] = React.useState(tagsClientDefault);
   const [reload, setReload] = React.useState(0); // integer state
-
   const toUpdateClient = (payload) => {
     dispatch(updateClient(payload));
   };
@@ -213,7 +214,7 @@ const UpdateClient = (props) => {
 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const [tagsClient, setTagsClient] = React.useState([]);
   // const {listClients} = useSelector(({clients}) => clients);
   // console.log('listClients', listClients);
   const {businessParameter} = useSelector(({general}) => general);
@@ -246,14 +247,21 @@ const UpdateClient = (props) => {
   }, [loading]);
 
   useEffect(() => {
-    if (userDataRes && userDataRes.merchantSelected && businessParameter && listTags.length == 0) {
+    if (
+      userDataRes &&
+      userDataRes.merchantSelected &&
+      businessParameter &&
+      listTags.length == 0
+    ) {
       let listTags1 = businessParameter.find(
         (obj) => obj.abreParametro == 'CLIENT_TAGS',
       ).value;
+      console.log('listTags1', listTags1);
 
-      listTags1.forEach (item => {
+      listTags1.forEach((item) => {
         listTags.push([item.tagName, item.id, true]);
-      }); 
+      });
+      console.log('listTags este es:', listTags);
     }
   }, [userDataRes]);
 
@@ -337,9 +345,9 @@ const UpdateClient = (props) => {
 
     if (tagSelected.length > 0) {
       let listTagsSelected = [];
-      tagSelected.forEach (item => {
+      tagSelected.forEach((item) => {
         listTagsSelected.push(item[1]);
-      }); 
+      });
       newClientPayload.request.payload.tags = listTagsSelected;
     }
 
@@ -368,11 +376,11 @@ const UpdateClient = (props) => {
     setShowAlert(false);
   };
 
-  const  handlerTags = (event, values)=>{
-    console.log("Cambiando tags")
-    console.log("evento tag", event)
-    console.log("values tag", values)
-    console.log("tag seleccionado", event.target.attributes.value)
+  const handlerTags = (event, values) => {
+    console.log('Cambiando tags');
+    console.log('evento tag', event);
+    console.log('values tag', values);
+    console.log('tag seleccionado', event.target.attributes.value);
     setTagSelected(values);
     reloadPage();
   };
@@ -646,7 +654,9 @@ const UpdateClient = (props) => {
                         <TextField
                           disabled
                           defaultValue={'+51'}
-                          label={<IntlMessages id='common.cellphoneCountryCod' />}
+                          label={
+                            <IntlMessages id='common.cellphoneCountryCod' />
+                          }
                           variant='filled'
                           sx={{
                             my: 2,
@@ -852,7 +862,9 @@ const UpdateClient = (props) => {
                         <TextField
                           disabled
                           defaultValue={'+51'}
-                          label={<IntlMessages id='common.cellphoneCountryCod' />}
+                          label={
+                            <IntlMessages id='common.cellphoneCountryCod' />
+                          }
                           variant='filled'
                           sx={{
                             my: 2,

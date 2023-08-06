@@ -44,7 +44,7 @@ import {
   TableSortLabel,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
-import { ClickAwayListener } from '@mui/base';
+import {ClickAwayListener} from '@mui/base';
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Backdrop from '@mui/material/Backdrop';

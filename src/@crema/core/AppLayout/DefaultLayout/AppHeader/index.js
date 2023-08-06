@@ -35,7 +35,10 @@ import MenuItem from '@mui/material/MenuItem';
 import ServiceWorkerListener from '../../../../../pages/serviceWorkerListener';
 
 import {getNotifications} from '../../../../../redux/actions/Notifications';
-import {onGetBusinessParameter, onGetGlobalParameter} from '../../../../../redux/actions/General';
+import {
+  onGetBusinessParameter,
+  onGetGlobalParameter,
+} from '../../../../../redux/actions/General';
 import {getUserData} from '../../../../../redux/actions/User';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
@@ -58,7 +61,6 @@ import NotificationON from '../../../../../assets/icon/notificationON.svg';
 import {
   SUBSCRIPTION_STATE,
   UPDATE_NOTIFICATION_LIST,
-  
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
@@ -104,7 +106,9 @@ const AppHeader = () => {
   );
   //const {updateNotificationListRes} = useContext(AppContext); // Ejemplo de uso del useContext con el contexto de la aplicación
   const {getNotificationsRes} = useSelector(({notifications}) => notifications);
-  const {businessParameter, globalParameter} = useSelector(({general}) => general);
+  const {businessParameter, globalParameter} = useSelector(
+    ({general}) => general,
+  );
   console.log('businessParameter123', businessParameter);
   console.log('globalParameter123', globalParameter);
   const {dataBusinessRes} = useSelector(({general}) => general);
@@ -399,7 +403,7 @@ const AppHeader = () => {
   }, []);
   useEffect(() => {
     if (userDataRes) {
-      if(!getNotificationsRes){
+      if (!getNotificationsRes) {
         dispatch({type: GET_NOTIFICATIONS, payload: undefined});
         let listNotificationsPayload = {
           request: {
@@ -412,11 +416,8 @@ const AppHeader = () => {
           userDataRes.merchantMasterId;
         listNotificationsPayload.request.payload.userId = userDataRes.userId;
         toGetNotifications(listNotificationsPayload);
-
       }
     }
-
-    
   }, [userDataRes]);
   useEffect(() => {
     setAllowedNotifications(subscriptionStateRes);
