@@ -178,7 +178,7 @@ export default function Views(props) {
     setOpen2(false);
     setOpenStatus(true);
 
-    setFilteredCampaigns(listCampaigns);
+    //setFilteredCampaigns(listCampaigns);
   };
 
   const newClient = () => {

@@ -480,29 +480,37 @@ export const completeWithZeros = (num, size) => {
 };
 
 export const verTags = (obj, listBussinesParameteres) => {
-  let descripcion='';
-  let listTagsClient= null;
+  let descripcion = '';
+  let listTagsClient = null;
 
-  if (listBussinesParameteres)
-    listTagsClient = listBussinesParameteres.find(
-      (obj) => obj.abreParametro == 'CLIENT_TAGS',
-    ).value;
+  if (listBussinesParameteres) {
+    const clientTagsParam = listBussinesParameteres.find(
+      (obj) => obj.abreParametro === 'CLIENT_TAGS',
+    );
 
-  if (obj.tags)
+    if (clientTagsParam && Array.isArray(clientTagsParam.value)) {
+      listTagsClient = clientTagsParam.value;
+    }
+  }
+
+  if (obj.tags && Array.isArray(obj.tags)) {
     obj.tags.forEach((item) => {
-      let descripciontemp='';
+      let descripciontemp = '';
 
-      if (listTagsClient) 
-      descripciontemp = listTagsClient.find(
-        (obj) => obj.id == item,
-      ).tagName;
+      if (listTagsClient) {
+        const tagItem = listTagsClient.find((obj) => obj.id === item);
+        if (tagItem && tagItem.tagName) {
+          descripciontemp = tagItem.tagName;
+        }
+      }
 
-      if (descripcion.length == 0) {
+      if (descripcion.length === 0) {
         descripcion = descripciontemp;
       } else {
         descripcion = descripcion + ' | ' + descripciontemp;
       }
     });
+  }
 
   return descripcion;
 };

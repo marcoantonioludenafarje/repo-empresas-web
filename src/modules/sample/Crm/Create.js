@@ -615,7 +615,7 @@ const Create = (props) => {
   // Función para manejar el cambio en el checkbox del encabezado
   const handleHeaderCheckboxChange = (e) => {
     if (e.target.checked) {
-      const newSelection = listClients.map((row) => row.clientId);
+      const newSelection = searchDialogResults.map((row) => row.clientId);
       console.log('Confeti header', newSelection);
       setSelectedClients(newSelection);
     } else {
@@ -729,10 +729,6 @@ const Create = (props) => {
     let mayorPosible = Math.ceil(valor); // 2
 
     console.log('DATA-VARIATIONS', variationsData[0], mayorPosible);
-    // if (totaldeClientes()<= levelEnter.clientsAmount && totaldeClientes()>0) {
-    //   setVerification(false)
-    //   return xd - 1;
-    // }
     if (mayorPosible - 1 == 1) {
       console.log('DATA-VARIATIONS', variationsData[0]);
       if (
@@ -744,12 +740,18 @@ const Create = (props) => {
       }
       return mayorPosible - 1;
     }
-
-    // if (totaldeClientes() > levelEnter.clientsAmount && (xd-1)===variationsData.length) { // 6>5 && 1===0
-    //   console.log("VARIATONSDATA ", variationsData.length);
-    //   console.log("VARIATONSDATAXD", xd-1);
-    //   setVerification(false);
-    // }
+    let parametro = valor % 1 === 0 ? valor : Math.ceil(valor) - 1;
+    if (
+      totaldeClientes() > levelEnter.clientsAmount &&
+      parametro === variationsData.length
+    ) {
+      // 11>5 && ===0
+      console.log('VARIATONSDATA ', variationsData.length, parametro);
+      if (variationsData.filter((vari) => vari !== '' && vari !== undefined)) {
+        setVerification(false);
+        return parametro;
+      }
+    }
   };
 
   // State to keep track of expanded accordion
