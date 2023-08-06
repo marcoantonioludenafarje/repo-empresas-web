@@ -512,7 +512,9 @@ const GetReferralGuide = () => {
     totalWeight: totalWeight,
     numberPackages: 1,
     startingPoint: '',
+    startingSunatCode: '',
     arrivalPoint: '',
+    arrivalSunatCode: '',
     licensePlate: '',
     driverName: '',
     driverLastName: '',
@@ -603,8 +605,10 @@ const GetReferralGuide = () => {
             driverLastName: data.driverLastName,
             startingPointUbigeo: ubigeoStartingPoint.toString(),
             startingPointAddress: data.startingPoint,
+            startingSunatCode: data.startingSunatCode,
             arrivalPointUbigeo: ubigeoArrivalPoint.toString(),
             arrivalPointAddress: data.arrivalPoint,
+            arrivalSunatCode: data.arrivalSunatCode,
             observation: data.observation,
             productsInfo: parsedProducts,
             documentsMovement: selectedOutput.documentsMovement,
@@ -1199,6 +1203,25 @@ const GetReferralGuide = () => {
                           }}
                         />
                       </Grid>
+                      {reasonVal == 'transferBetweenEstablishmentsOfTheSameCompany' ? (
+                        <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
+                          <AppUpperCaseTextField
+                            label='Codigo de establecimiento Sunat (Domicilio Fiscal = 0000) **'
+                            name='startingSunatCode'
+                            variant='outlined'
+                            sx={{
+                              width: '100%',
+                              '& .MuiInputBase-input': {
+                                fontSize: 14,
+                              },
+                              my: 2,
+                              mx: 0,
+                            }}
+                          />
+                        </Grid>
+                      )
+                      : null
+                      }
                     </>
                   ) : null}
 
@@ -1268,7 +1291,7 @@ const GetReferralGuide = () => {
                             sx={{mb: 2}}
                           >
                             Es necesario que selecciones un ubigeo para el punto
-                            de partida.
+                            de llegada.
                           </Alert>
                         </Collapse>
                       </Grid>
@@ -1287,6 +1310,25 @@ const GetReferralGuide = () => {
                           }}
                         />
                       </Grid>
+                      {reasonVal == 'transferBetweenEstablishmentsOfTheSameCompany' ? (
+                        <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
+                          <AppUpperCaseTextField
+                            label='Codigo de establecimiento Sunat (Domicilio Fiscal = 0000) **'
+                            name='arrivalSunatCode'
+                            variant='outlined'
+                            sx={{
+                              width: '100%',
+                              '& .MuiInputBase-input': {
+                                fontSize: 14,
+                              },
+                              my: 2,
+                              mx: 0,
+                            }}
+                          />
+                        </Grid>
+                      )
+                      : null
+                      }
                     </>
                   ) : null}
                 </Grid>
