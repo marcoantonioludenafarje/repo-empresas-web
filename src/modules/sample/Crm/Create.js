@@ -341,9 +341,11 @@ const Create = (props) => {
     // Crea un Blob con la cadena JSON
     const clientsBlob = new Blob([jsonString], {type: 'application/json'});
     if (actualImage) {
+      console.log('RASTREA IMAGEN', actualImage);
       let imagePayload = {
         request: {
           payload: {
+            name: actualImage.name.split('.').slice(0, -1).join('.'),
             key: actualImage.name.split('.').slice(0, -1).join('.'),
             action: 'putObject',
             contentType: actualImage.type,
@@ -353,10 +355,11 @@ const Create = (props) => {
         },
       };
       console.log('newImage', imagePayload);
-      toCreateImagePresigned(imagePayload, {
-        image: actualImage,
-        type: actualImage?.type || null,
-      });
+      // toCreateImagePresigned(imagePayload, {
+      //   image: actualImage,
+      //   type: actualImage?.type || null,
+      // });
+      toCreateImagePresigned(imagePayload, actualImage);
     }
     let clientsJsonPayload = {
       request: {
@@ -442,6 +445,7 @@ const Create = (props) => {
   useEffect(() => {
     if (clientsPresigned) {
       const payload = payloadToCreateCampaign;
+      console.log('Payload creates', payload);
       payload.request.payload.campaign[0].receivers.urlClients =
         clientsPresigned.keymaster;
       setTimeout(() => {
@@ -790,6 +794,13 @@ const Create = (props) => {
     setCampaignContentsVariations([{id: 1, content: ''}]);
     setVariationsData(variations.map((v) => v.content));
     console.log('SAVE >>', variationsData);
+
+    // if (variationsData && variationsData.length > 0 && variationsData[0] != '' ) {
+    //   setVariations(['Variación 1']);
+    //   setNumVariations(1);
+    //   setCampaignContentsVariations([{id: 1, content: ''}]);
+    //   setVariationsData(variations.map((v) => v.content));
+    // }
 
     // Close the dialog
     setOpenDialog(false);

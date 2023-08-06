@@ -104,6 +104,11 @@ export default function Views(props) {
 
   const {userDataRes} = useSelector(({user}) => user);
 
+  const {successMessage} = useSelector(({clients}) => clients);
+  console.log('successMessage', successMessage);
+  const {errorMessage} = useSelector(({clients}) => clients);
+  console.log('errorMessage', errorMessage);
+
   const {listCampaigns, campaignsLastEvaluatedKey_pageListCampaigns} =
     useSelector(({campaigns}) => campaigns);
 
@@ -138,6 +143,7 @@ export default function Views(props) {
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [cancelDisabled, setCancelDisabled] = useState(false);
   /* let anchorEl = null; */
   const openMenu = Boolean(anchorEl);
   const handleClick = (codPro, event) => {
@@ -148,6 +154,14 @@ export default function Views(props) {
     selectedCampaign =
       listCampaigns[codPro]; /* .find((obj) => obj.client == codPro); */
     console.log('Select Campaña', selectedCampaign);
+    if (
+      selectedCampaign.processes &&
+      selectedCampaign.processes[0] &&
+      !selectedCampaign.processes[0].active
+    ) {
+      console.log('Select Campaña >', !selectedCampaign.processes[0].active);
+      setCancelDisabled(true);
+    }
   };
 
   const handleClose = () => {
@@ -175,13 +189,11 @@ export default function Views(props) {
     deletePayload.request.payload.campaignId = selectedCampaign.campaignId;
     console.log('deletePayload', deletePayload);
     deleteCampaign(deletePayload);
-    setOpen2(false);
     setOpenStatus(true);
-
-    //setFilteredCampaigns(listCampaigns);
+    setOpen2(false);
   };
 
-  const newClient = () => {
+  const newCamp = () => {
     console.log('Para redireccionar a nuevo cliente');
     Router.push('/sample/crm/create');
   };
@@ -201,7 +213,7 @@ export default function Views(props) {
   useEffect(() => {
     // Update filteredCampaigns when listCampaigns changes
     setFilteredCampaigns(listCampaigns);
-  }, [listCampaigns]);
+  }, [listCampaigns, filteredCampaigns]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectCampaign, setSelectCampaign] = useState(null);
@@ -240,18 +252,58 @@ export default function Views(props) {
     console.log('ReceiversCloud', receiversCloud);
   };
 
-  const [cancelDisabled, setCancelDisabled] = useState(false);
+  const showMessage = () => {
+    if (successMessage != '') {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha eliminado correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al eliminar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
+  };
 
-  // useEffect(() => {
-  //   let isCancelDisabled = false;
-  //   for (const campaign of listCampaigns) {
-  //     if (campaign.processes && campaign.processes[0] && !campaign.processes[0].active) {
-  //       isCancelDisabled = true;
-  //       break;
-  //     }
-  //   }
-  //   setCancelDisabled(isCancelDisabled);
-  // }, [listCampaigns]);
+  const sendStatus = () => {
+    setOpenStatus(false);
+    setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      // listPayload.request.payload.LastEvaluatedKey = null;
+      // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+      getCampaign(listPayload);
+    }, 2000);
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -344,7 +396,11 @@ export default function Views(props) {
                     />
                   ) : null}
                 </TableCell>
-                <TableCell>{row.receivers?.length}</TableCell>
+                <TableCell>
+                  {Array.isArray(row.targetSummary)
+                    ? row.targetSummary.find((item) => typeof item === 'number')
+                    : row.targetSummary}
+                </TableCell>
                 <TableCell>
                   <Button
                     id='plan-button'
@@ -410,7 +466,7 @@ export default function Views(props) {
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={newClient}
+            onClick={newCamp}
           >
             Nuevo
           </Button>
@@ -511,6 +567,27 @@ export default function Views(props) {
         </DialogActions>
       </Dialog>
       {/* Dialog DEtalle */}
+
+      {/*Respuesta */}
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar Cliente'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog
         open={dialogDetalleOpen}

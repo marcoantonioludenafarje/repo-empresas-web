@@ -58,9 +58,7 @@ import {
   getMovements,
   getOutputItems_pageListOutput,
 } from '../../../redux/actions/Movements';
-import {
-  newSale
-} from '../../../redux/actions/Sales';
+import {newSale} from '../../../redux/actions/Sales';
 import Router, {useRouter} from 'next/router';
 import ProductsList from './ProductsList';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
@@ -133,7 +131,7 @@ const useForceUpdate = () => {
   return () => setReload((value) => value + 1); // update the state to force render
 };
 
-let selectedProducts = [];
+//let selectedProducts = [];
 let listDocuments = [];
 let typeAlert = '';
 let total = 0;
@@ -168,7 +166,7 @@ const NewSale = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [showDelete, setShowDelete] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
-  const [selectedProducts2, setSelectedProducts2] = React.useState([]);
+  const [selectedProducts, setSelectedProducts] = React.useState([]);
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [editTotal, setEditTotal] = React.useState(false);
   const [exchangeRate, setExchangeRate] = React.useState('');
@@ -180,28 +178,23 @@ const NewSale = (props) => {
   const [earningGeneration, setEarningGeneration] = React.useState(
     query.earningGeneration ? true : false,
   );
-  const [proofOfPaymentGeneration, setProofOfPaymentGeneration] = React.useState(
-    query.proofOfPaymentGeneration ? true : false,
-  );
+  const [proofOfPaymentGeneration, setProofOfPaymentGeneration] =
+    React.useState(query.proofOfPaymentGeneration ? true : false);
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [selectedClient, setSelectedClient] = React.useState('');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   //CALENDARIO
-  const [value, setValue] = React.useState(
-    Date.now()
-  );
+  const [value, setValue] = React.useState(Date.now());
   const [value2, setValue2] = React.useState(
     query.deletedAt ? query.deletedAt : Date.now(),
   );
 
   //FUNCIONES DIALOG
   const [open, setOpen] = React.useState(false);
-  const [moneyToConvert, setMoneyToConvert] = React.useState(
-    '',
-  );
+  const [moneyToConvert, setMoneyToConvert] = React.useState('');
 
   //RESULTADOS DE LLAMADAS A APIS
-  
+
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -253,10 +246,10 @@ const NewSale = (props) => {
   const prevMoneyToConvert = prevMoneyToConvertRef.current;
 
   useEffect(() => {
-    if(userDataRes){
+    if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-  
+
       if (
         userDataRes.merchantSelected.typeClient == 'PN' ||
         userDataRes.merchantSelected.paymentWay == 'debit'
@@ -309,7 +302,7 @@ const NewSale = (props) => {
       setIsIgvChecked(Number(igvDefault) > 0 ? true : false);
       setMoneyUnit(obtainedMoneyUnit);
       setMoneyToConvert(obtainedMoneyUnit);
-      reloadPage()
+      reloadPage();
       console.log('moneyUnit', moneyUnit);
     }
   }, [businessParameter]);
@@ -330,11 +323,7 @@ const NewSale = (props) => {
     }
   }, [globalParameter && moneyUnit]);
   useEffect(() => {
-    if (
-      globalParameter &&
-      moneyUnit &&
-      prevMoneyToConvert !== moneyToConvert
-    ) {
+    if (globalParameter && moneyUnit && prevMoneyToConvert !== moneyToConvert) {
       let obtainedExchangeRate = globalParameter.find(
         (obj) =>
           obj.abreParametro == `ExchangeRate_${moneyToConvert}_${moneyUnit}`,
@@ -344,7 +333,6 @@ const NewSale = (props) => {
     }
   }, [globalParameter && moneyUnit, moneyToConvert]);
 
-  
   //SETEANDO PARAMETROS
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
@@ -355,7 +343,7 @@ const NewSale = (props) => {
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
   const cancel = () => {
-    setShowDelete(true)
+    setShowDelete(true);
   };
   const handleClose = () => {
     setOpen(false);
@@ -365,7 +353,7 @@ const NewSale = (props) => {
     setTypeDialog(type);
     setShowAlert(false);
   };
-  
+
   const handleActualData = (event) => {
     console.log('evento onchange', event);
     Object.keys(actualValues).map((key) => {
@@ -385,23 +373,24 @@ const NewSale = (props) => {
     });
     console.log('actualValues', actualValues);
   };
-  
+
   const handleIGV = (event, isInputChecked) => {
-    if(isInputChecked){
+    if (isInputChecked) {
       let totalWithIgv = 0;
       if (selectedProducts.length == 0) {
         total = 0;
       } else {
         let calculatedtotal = 0;
-        selectedProducts = selectedProducts.map((obj) => {
-          obj.taxCode = 1000
+        const newSelectedProducts = selectedProducts.map((obj) => {
+          obj.taxCode = 1000;
           calculatedtotal += obj.subtotal;
           totalWithIgv +=
             obj.taxCode == 1000 && Number(igvDefault) > 0 && isInputChecked
               ? Number((obj.subtotal * (1 + igvDefault)).toFixed(2))
               : obj.subtotal;
-          return obj
+          return obj;
         });
+        setSelectedProducts(newSelectedProducts);
         total = calculatedtotal;
       }
       changeValueField('totalField', Number(total.toFixed(2)));
@@ -413,15 +402,16 @@ const NewSale = (props) => {
         total = 0;
       } else {
         let calculatedtotal = 0;
-        selectedProducts = selectedProducts.map((obj) => {
-          obj.taxCode = 9998
+        const newSelectedProducts = selectedProducts.map((obj) => {
+          obj.taxCode = 9998;
           calculatedtotal += obj.subtotal;
           totalWithIgv +=
             obj.taxCode == 1000 && Number(igvDefault) > 0 && isInputChecked
               ? Number((obj.subtotal * (1 + igvDefault)).toFixed(2))
               : obj.subtotal;
-          return obj
+          return obj;
         });
+        setSelectedProducts(newSelectedProducts);
         total = calculatedtotal;
       }
       changeValueField('totalField', Number(total.toFixed(2)));
@@ -441,21 +431,22 @@ const NewSale = (props) => {
   };
   const handleProofOfPaymentGeneration = (event, isInputChecked) => {
     setProofOfPaymentGeneration(isInputChecked);
-    console.log('Evento de proofOfPaymentGeneration', isInputChecked)
-  }
+    console.log('Evento de proofOfPaymentGeneration', isInputChecked);
+  };
   const valueWithIGV = (value) => {
     const IGV = igvDefault;
     const precioConIGV = (value * (1 + IGV)).toFixed(10);
     return precioConIGV;
   };
   const removeProduct = (index) => {
-    selectedProducts.splice(index, 1);
+    let newSelectedProducts = selectedProducts;
+    newSelectedProducts.splice(index, 1);
     let totalWithIgv = 0;
-    if (selectedProducts.length == 0) {
+    if (newSelectedProducts.length == 0) {
       total = 0;
     } else {
       let calculatedtotal = 0;
-      selectedProducts.map((obj) => {
+      newSelectedProducts.forEach((obj) => {
         calculatedtotal += obj.subtotal;
         totalWithIgv +=
           obj.taxCode == 1000 && Number(igvDefault) > 0 && isIgvChecked
@@ -464,6 +455,8 @@ const NewSale = (props) => {
       });
       total = calculatedtotal;
     }
+    setSelectedProducts(newSelectedProducts);
+
     changeValueField('totalField', Number(total.toFixed(2)));
     changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
     forceUpdate();
@@ -476,7 +469,8 @@ const NewSale = (props) => {
     console.log('selectedProducts taxCode', taxCode);
     const subTotalWithPreviousTaxCode =
       selectedProducts[index].taxCode == 1000 &&
-      Number(igvDefault) > 0 && isIgvChecked
+      Number(igvDefault) > 0 &&
+      isIgvChecked
         ? Number(
             (selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2),
           )
@@ -497,20 +491,25 @@ const NewSale = (props) => {
       taxCode: taxCode,
     };
     console.log('selectedProducts product 2', actualProduct);
-    selectedProducts = selectedProducts.map((obj, i) => {
+    const newSelectedProducts = selectedProducts.map((obj, i) => {
       if (i == index) {
         return actualProduct;
       } else {
         return obj;
       }
     });
+    setSelectedProducts(newSelectedProducts);
+
     changeValueField('totalFieldIgv', Number(calculatedtotalIgv.toFixed(2)));
     forceUpdate();
   };
   const changeUnitMeasure = (index, unitMeasure) => {
     console.log('selectedProducts product', selectedProducts[index]);
     console.log('selectedProducts unitMeasure', unitMeasure);
-    selectedProducts[index].unitMeasure = unitMeasure;
+    let newSelectedProducts = selectedProducts;
+    newSelectedProducts[index].unitMeasure = unitMeasure;
+    setSelectedProducts(newSelectedProducts);
+
     forceUpdate();
   };
   const changeQuantity = (index, quantity) => {
@@ -518,14 +517,16 @@ const NewSale = (props) => {
     console.log('selectedProducts quantity', quantity);
     const subTotalWithPreviousQuantity =
       selectedProducts[index].taxCode == 1000 &&
-      Number(igvDefault) > 0 && isIgvChecked
+      Number(igvDefault) > 0 &&
+      isIgvChecked
         ? Number(
             (selectedProducts[index].subtotal * (1 + igvDefault)).toFixed(2),
           )
         : Number(selectedProducts[index].subtotal);
     const subTotalWithNextQuantity =
       selectedProducts[index].taxCode == 1000 &&
-      Number(igvDefault) > 0 && isIgvChecked
+      Number(igvDefault) > 0 &&
+      isIgvChecked
         ? Number(
             (
               quantity *
@@ -539,10 +540,12 @@ const NewSale = (props) => {
       getValueField('totalField').value +
       (quantity - selectedProducts[index].quantityMovement) *
         selectedProducts[index].unitPrice;
+    let newSelectedProducts = selectedProducts;
+    newSelectedProducts[index].quantityMovement = quantity;
+    newSelectedProducts[index].subtotal =
+      quantity * newSelectedProducts[index].unitPrice;
 
-    selectedProducts[index].quantityMovement = quantity;
-    selectedProducts[index].subtotal =
-      quantity * selectedProducts[index].unitPrice;
+    setSelectedProducts(newSelectedProducts);
     let calculatedtotalIgv =
       getValueField('totalFieldIgv').value -
       subTotalWithPreviousQuantity +
@@ -571,7 +574,7 @@ const NewSale = (props) => {
       9998: 30,
     };
     // Validar si hay al menos un producto
-    if (selectedProducts && selectedProducts.length >= 1){
+    if (selectedProducts && selectedProducts.length >= 1) {
       setSubmitting(true);
       try {
         finalPayload = {
@@ -582,19 +585,23 @@ const NewSale = (props) => {
               contableMovements: [],
               exchangeRate: exchangeRate,
               moneyUnit: moneyToConvert,
-              clientId: selectedClient && selectedClient.clientId ? selectedClient.clientId : "",
+              clientId:
+                selectedClient && selectedClient.clientId
+                  ? selectedClient.clientId
+                  : '',
               client: {
-                  id: selectedClient.clientId || "",
-                  denomination: selectedClient.denominationClient || "Cliente No Definido",
-                  address: selectedClient.addressClient || "",
-                  email: selectedClient.emailClient || "",
-                  type: selectedClient.typeDocumentClient || ""
+                id: selectedClient.clientId || '',
+                denomination:
+                  selectedClient.denominationClient || 'Cliente No Definido',
+                address: selectedClient.addressClient || '',
+                email: selectedClient.emailClient || '',
+                type: selectedClient.typeDocumentClient || '',
               },
               totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)),
               issueDate: specialFormatToSunat(value),
               outputGeneration: true,
               serial: serial,
-              documentIntern: "",
+              documentIntern: '',
               documentsMovement: [],
               clientEmail: data.clientEmail,
               transactionNumber: data.transactionNumber || '',
@@ -614,9 +621,7 @@ const NewSale = (props) => {
                 return {
                   product: obj.product,
                   quantityMovement: Number(obj.quantityMovement),
-                  unitPrice: Number(
-                    obj.unitPrice,
-                  ),
+                  unitPrice: Number(obj.unitPrice),
                   stockChange: obj.stockChange,
                   category: obj.category || '',
                   customCodeProduct: obj.customCodeProduct,
@@ -650,13 +655,12 @@ const NewSale = (props) => {
       console.log('Data formulario principal', finalPayload);
       setOpenStatus(true);
       setSubmitting(false);
-    }else {
+    } else {
       typeAlert = 'product';
       setShowAlert(true);
       setSubmitting(false);
     }
   };
-
 
   const registerSuccess = () => {
     return (
@@ -744,30 +748,32 @@ const NewSale = (props) => {
     console.log('ver ahora nuevo producto', product);
     product.subtotal = Number(product.subtotal);
     console.log('ver ahora selectedProducts', selectedProducts);
-    if (selectedProducts && selectedProducts.length >= 1) {
-      selectedProducts.map((obj, index) => {
+    let newSelectedProducts = selectedProducts;
+    if (newSelectedProducts && newSelectedProducts.length >= 1) {
+      newSelectedProducts.forEach((obj, index) => {
         console.log('obj', obj);
         if (
           obj.product == product.product &&
           obj.description == product.description &&
           obj.customCodeProduct == product.customCodeProduct
         ) {
-          console.log('selectedProducts 1', selectedProducts);
-          selectedProducts.splice(index, 1);
-          console.log('selectedProducts 2', selectedProducts);
+          console.log('selectedProducts 1', newSelectedProducts);
+          newSelectedProducts.splice(index, 1);
+          console.log('selectedProducts 2', newSelectedProducts);
         }
       });
     }
-    selectedProducts.push(product);
+    newSelectedProducts.push(product);
     let totalWithIgv = 0;
     let calculatedtotal = 0;
-    selectedProducts.map((obj) => {
+    newSelectedProducts.forEach((obj) => {
       calculatedtotal += Number(obj.subtotal);
       totalWithIgv +=
         obj.taxCode == 1000 && Number(igvDefault) > 0 && isIgvChecked
           ? Number((Number(obj.subtotal) * (1 + igvDefault)).toFixed(2))
           : Number(obj.subtotal);
     });
+    setSelectedProducts(newSelectedProducts);
     total = Number(calculatedtotal.toFixed(2));
     changeValueField('totalField', Number(calculatedtotal.toFixed(2)));
     changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
@@ -787,15 +793,15 @@ const NewSale = (props) => {
   };
   const getClient = (client) => {
     console.log('Estoy en el getClient');
-    if(client.typeDocumentClient == "RUC"){
+    if (client.typeDocumentClient == 'RUC') {
       let serieParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'SERIES_BILL',
       );
       setSerial(serieParameter.metadata ? serieParameter.metadata : '');
-      setProofOfPaymentType('bill')
+      setProofOfPaymentType('bill');
     } else {
       setSerial('S');
-      setProofOfPaymentType('ticket')
+      setProofOfPaymentType('ticket');
     }
     setSelectedClient(client);
     console.log('Cliente seleccionado', client);
@@ -815,21 +821,21 @@ const NewSale = (props) => {
           GENERAR VENTA
         </Typography>
       </Box>
-      <Box sx={{ width: 1, textAlign: 'center' }}>
+      <Box sx={{width: 1, textAlign: 'center'}}>
         <ToggleButtonGroup
           value={registerType}
           exclusive
           onChange={(event) => {
             console.log(event.target.value);
             setRegisterType(event.target.value);
-            if (event.target.value == "onlySale") {
+            if (event.target.value == 'onlySale') {
               setEarningGeneration(false);
               setProofOfPaymentGeneration(false);
-            } else if (event.target.value == "saleWithProofOfPayment") {
+            } else if (event.target.value == 'saleWithProofOfPayment') {
               setEarningGeneration(true);
               setProofOfPaymentGeneration(true);
             }
-            
+
             forceUpdate();
           }}
           aria-label='text alignment'
@@ -885,7 +891,10 @@ const NewSale = (props) => {
                   </Grid>
                   <Grid sx={{px: 1, mt: 2}} xs={12}>
                     <Typography sx={{mx: 'auto', my: '10px'}}>
-                      Cliente:  {selectedClient && selectedClient.denominationClient ? selectedClient.denominationClient : 'No Definido'}
+                      Cliente:{' '}
+                      {selectedClient && selectedClient.denominationClient
+                        ? selectedClient.denominationClient
+                        : 'No Definido'}
                     </Typography>
                   </Grid>
                   {/* <Grid xs={12} sx={{px: 1, mt: 2}}>
@@ -911,23 +920,22 @@ const NewSale = (props) => {
                         variant='outlined'
                         onClick={() => {
                           setSerial('S');
-                          setProofOfPaymentType('ticket')
-                          setSelectedClient('Cliente No Definido')
+                          setProofOfPaymentType('ticket');
+                          setSelectedClient('Cliente No Definido');
                         }}
                       >
                         Quitar Cliente
                       </Button>
                     </Grid>
                   ) : null}
-
-                </Grid> 
+                </Grid>
 
                 <Grid
                   container
                   spacing={2}
                   sx={{maxWidth: 500, mx: 'auto', mb: 4, mt: 4}}
                 >
-                  {registerType == "saleWithProofOfPayment" ? (
+                  {registerType == 'saleWithProofOfPayment' ? (
                     <>
                       <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                         <AppTextField
@@ -959,8 +967,12 @@ const NewSale = (props) => {
                           label='Fecha de emisión'
                           inputFormat='dd/MM/yyyy'
                           name='issueDate'
-                          minDate={new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)} // establece la fecha mínima en dos días a partir de la actual
-                          maxDate={new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)}
+                          minDate={
+                            new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+                          } // establece la fecha mínima en dos días a partir de la actual
+                          maxDate={
+                            new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+                          }
                           onChange={(newValue) => {
                             setValue(newValue);
                             console.log('date1', newValue);
@@ -969,7 +981,7 @@ const NewSale = (props) => {
                       </Grid>
                     </>
                   ) : null}
-                  
+
                   <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='moneda-label' style={{fontWeight: 200}}>
@@ -991,7 +1003,7 @@ const NewSale = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  {registerType == "saleWithProofOfPayment" ? (
+                  {registerType == 'saleWithProofOfPayment' ? (
                     <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                       <AppTextField
                         label={`Total ${moneyUnit} sin IGV`}
@@ -1039,11 +1051,7 @@ const NewSale = (props) => {
                       disabled={Number(igvDefault) > 0 ? false : true}
                       checked={isIgvChecked}
                       sx={{mr: 1}}
-                      control={
-                        <Checkbox
-                          onChange={handleIGV}
-                        />
-                      }
+                      control={<Checkbox onChange={handleIGV} />}
                     />
                     {igvDefault}
                   </Grid>
@@ -1058,10 +1066,9 @@ const NewSale = (props) => {
                   </Grid>
                 </Grid>
 
-
                 {selectedProducts && selectedProducts.length > 0 ? (
                   <>
-                    <Divider sx={{ my: 3 }} />
+                    <Divider sx={{my: 3}} />
                     <ProductsList
                       data={selectedProducts}
                       valueWithIGV={valueWithIGV}
@@ -1069,24 +1076,25 @@ const NewSale = (props) => {
                       toChangeTaxCode={changeTaxCode}
                       toChangeUnitMeasure={changeUnitMeasure}
                       toChangeQuantity={changeQuantity}
-                      igvEnabled={Number(igvDefault) > 0 && isIgvChecked ? true : false}
+                      igvEnabled={
+                        Number(igvDefault) > 0 && isIgvChecked ? true : false
+                      }
                     ></ProductsList>
                   </>
                 ) : null}
 
-                <Divider sx={{ my: 3 }} />
-                {registerType == "saleWithProofOfPayment" ? (
-
+                <Divider sx={{my: 3}} />
+                {registerType == 'saleWithProofOfPayment' ? (
                   <Grid
                     container
                     spacing={2}
-                    sx={{ maxWidth: 500, mx: 'auto', mb: 4, mt: 4 }}
+                    sx={{maxWidth: 500, mx: 'auto', mb: 4, mt: 4}}
                   >
-                    <Grid sx={{ px: 1, mt: 2 }} xs={12} sm={6}>
-                      <FormControl fullWidth >
+                    <Grid sx={{px: 1, mt: 2}} xs={12} sm={6}>
+                      <FormControl fullWidth>
                         <InputLabel
                           id='methodToPay-label'
-                          style={{ fontWeight: 200 }}
+                          style={{fontWeight: 200}}
                         >
                           Medio de pago
                         </InputLabel>
@@ -1096,33 +1104,36 @@ const NewSale = (props) => {
                           labelId='methodToPay-label'
                           label='Medio de pago'
                           onChange={
-                        /* handleActualData */ (event) => {
+                            /* handleActualData */ (event) => {
                               setPaymentMethod(event.target.value);
                             }
                           }
                         >
-                          <MenuItem value='cash' style={{ fontWeight: 200 }}>
+                          <MenuItem value='cash' style={{fontWeight: 200}}>
                             Efectivo
                           </MenuItem>
-                          <MenuItem value='yape' style={{ fontWeight: 200 }}>
+                          <MenuItem value='yape' style={{fontWeight: 200}}>
                             Yape
                           </MenuItem>
-                          <MenuItem value='plin' style={{ fontWeight: 200 }}>
+                          <MenuItem value='plin' style={{fontWeight: 200}}>
                             Plin
                           </MenuItem>
                           <MenuItem
                             value='bankTransfer'
-                            style={{ fontWeight: 200 }}
+                            style={{fontWeight: 200}}
                           >
                             Transferencia Bancaria
                           </MenuItem>
-                          <MenuItem value='card' style={{ fontWeight: 200 }}>
+                          <MenuItem value='card' style={{fontWeight: 200}}>
                             Tarjeta de crédito/débito
                           </MenuItem>
-                          <MenuItem value='bankDeposit' style={{ fontWeight: 200 }}>
+                          <MenuItem
+                            value='bankDeposit'
+                            style={{fontWeight: 200}}
+                          >
                             <IntlMessages id='common.bankDeposit' />
                           </MenuItem>
-                          <MenuItem value='giftCard' style={{ fontWeight: 200 }}>
+                          <MenuItem value='giftCard' style={{fontWeight: 200}}>
                             GiftCard
                           </MenuItem>
                         </Select>
@@ -1142,9 +1153,12 @@ const NewSale = (props) => {
                         }}
                       />
                     </Grid>
-                    <Grid xs={6} sx={{ px: 1, mt: 4}}>
+                    <Grid xs={6} sx={{px: 1, mt: 4}}>
                       <FormControl fullWidth>
-                        <InputLabel id='wayToPay-label' style={{ fontWeight: 200 }}>
+                        <InputLabel
+                          id='wayToPay-label'
+                          style={{fontWeight: 200}}
+                        >
                           Forma de pago
                         </InputLabel>
                         <Select
@@ -1152,25 +1166,26 @@ const NewSale = (props) => {
                           name='wayToPay'
                           labelId='wayToPay-label'
                           label='Forma de pago'
-                          onChange={
-                            (event) => {
-                              setPaymentWay(event.target.value);
-                            }
-                          }
+                          onChange={(event) => {
+                            setPaymentWay(event.target.value);
+                          }}
                         >
-                          <MenuItem value='credit' style={{ fontWeight: 200 }}>
+                          <MenuItem value='credit' style={{fontWeight: 200}}>
                             Credito
                           </MenuItem>
-                          <MenuItem value='debit' style={{ fontWeight: 200 }}>
+                          <MenuItem value='debit' style={{fontWeight: 200}}>
                             Al contado
                           </MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
                     {paymentWay == 'credit' ? (
-                      <Grid xs={6} sx={{  pl:2,  mt: 4 }}>
-                        <FormControl fullWidth >
-                          <InputLabel id='quota-label' style={{ fontWeight: 200 }}>
+                      <Grid xs={6} sx={{pl: 2, mt: 4}}>
+                        <FormControl fullWidth>
+                          <InputLabel
+                            id='quota-label'
+                            style={{fontWeight: 200}}
+                          >
                             Nro de cuotas
                           </InputLabel>
                           <Select
@@ -1188,7 +1203,7 @@ const NewSale = (props) => {
                                   <MenuItem
                                     key={index}
                                     value={index}
-                                    style={{ fontWeight: 200 }}
+                                    style={{fontWeight: 200}}
                                   >
                                     {index}
                                   </MenuItem>
@@ -1196,8 +1211,9 @@ const NewSale = (props) => {
                               })}
                           </Select>
                         </FormControl>
-                      </Grid>) : null}
-                    <Grid sx={{ px: 1 }} xs={8}>
+                      </Grid>
+                    ) : null}
+                    <Grid sx={{px: 1}} xs={8}>
                       <AppTextField
                         label='Correo de cliente'
                         name='clientEmail'
@@ -1213,7 +1229,7 @@ const NewSale = (props) => {
                     </Grid>
                     <Grid
                       xs={3}
-                      sx={{ display: 'flex', alignItems: 'center', px: 1, mt: 2 }}
+                      sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
                     >
                       <FormControlLabel
                         label='Enviar Correo'
@@ -1225,7 +1241,7 @@ const NewSale = (props) => {
                         }
                       />
                     </Grid>
-                    <Grid sx={{ px: 1, mt: 2 }} xs={12}>
+                    <Grid sx={{px: 1, mt: 2}} xs={12}>
                       <AppTextField
                         label='Observación'
                         name='observation'
@@ -1243,7 +1259,7 @@ const NewSale = (props) => {
                     </Grid>
                     <Grid
                       xs={12}
-                      sx={{ display: 'flex', alignItems: 'center', px: 1, mt: 2 }}
+                      sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
                     >
                       <FormControlLabel
                         label='Generar Ingreso contable'
@@ -1255,9 +1271,7 @@ const NewSale = (props) => {
                         }
                       />
                     </Grid>
-                    <Grid
-                      xs={6}
-                      sx={{ px: 1, mt: 2 }}>
+                    <Grid xs={6} sx={{px: 1, mt: 2}}>
                       <FormControlLabel
                         label='Generar Comprobante'
                         control={
@@ -1268,9 +1282,12 @@ const NewSale = (props) => {
                         }
                       />
                     </Grid>
-                    <Grid xs={6} sx={{ px: 1, mt: 2 }}>
-                      <FormControl fullWidth sx={{ my: 2 }}>
-                        <InputLabel id='proofOfPaymentType-label' style={{ fontWeight: 200 }}>
+                    <Grid xs={6} sx={{px: 1, mt: 2}}>
+                      <FormControl fullWidth sx={{my: 2}}>
+                        <InputLabel
+                          id='proofOfPaymentType-label'
+                          style={{fontWeight: 200}}
+                        >
                           Tipo de Comprobante
                         </InputLabel>
                         <Select
@@ -1278,39 +1295,52 @@ const NewSale = (props) => {
                           name='proofOfPaymentType'
                           labelId='proofOfPaymentType-label'
                           label='Tipo de comprobante'
-                          onChange={
-                            (event) => {
-                              if (event.target.value == 'bill') {
-                                let serieParameter = businessParameter.find(
-                                  (obj) => obj.abreParametro == 'SERIES_BILL',
-                                );
-                                setSerial(serieParameter.metadata ? serieParameter.metadata : '');
-                              }
-                              if (event.target.value == 'receipt') {
-                                let serieParameter = businessParameter.find(
-                                  (obj) => obj.abreParametro == 'SERIES_RECEIPT',
-                                );
-                                setSerial(serieParameter.metadata ? serieParameter.metadata : '');
-                              }
-                              if (event.target.value == 'ticket') {
-                                setSerial('S');
-                              }
-                              setProofOfPaymentType(event.target.value);
+                          onChange={(event) => {
+                            if (event.target.value == 'bill') {
+                              let serieParameter = businessParameter.find(
+                                (obj) => obj.abreParametro == 'SERIES_BILL',
+                              );
+                              setSerial(
+                                serieParameter.metadata
+                                  ? serieParameter.metadata
+                                  : '',
+                              );
                             }
-                          }
+                            if (event.target.value == 'receipt') {
+                              let serieParameter = businessParameter.find(
+                                (obj) => obj.abreParametro == 'SERIES_RECEIPT',
+                              );
+                              setSerial(
+                                serieParameter.metadata
+                                  ? serieParameter.metadata
+                                  : '',
+                              );
+                            }
+                            if (event.target.value == 'ticket') {
+                              setSerial('S');
+                            }
+                            setProofOfPaymentType(event.target.value);
+                          }}
                         >
-                          {(selectedClient && selectedClient.typeDocumentClient == 'RUC') ? (
-                            <MenuItem value='bill' style={{ fontWeight: 200 }}>
+                          {selectedClient &&
+                          selectedClient.typeDocumentClient == 'RUC' ? (
+                            <MenuItem value='bill' style={{fontWeight: 200}}>
                               Factura
                             </MenuItem>
                           ) : null}
-                          {!(selectedClient && selectedClient.typeDocumentClient == 'RUC') ? (
-                            <MenuItem value='ticket' style={{ fontWeight: 200 }}>
+                          {!(
+                            selectedClient &&
+                            selectedClient.typeDocumentClient == 'RUC'
+                          ) ? (
+                            <MenuItem value='ticket' style={{fontWeight: 200}}>
                               Ticket
                             </MenuItem>
                           ) : null}
-                          {!(selectedClient && selectedClient.typeDocumentClient == 'RUC') ? (
-                            <MenuItem value='receipt' style={{ fontWeight: 200 }}>
+                          {!(
+                            selectedClient &&
+                            selectedClient.typeDocumentClient == 'RUC'
+                          ) ? (
+                            <MenuItem value='receipt' style={{fontWeight: 200}}>
                               Boleta
                             </MenuItem>
                           ) : null}
@@ -1498,7 +1528,9 @@ const NewSale = (props) => {
                 type='sale'
                 igvDefault={Number(igvDefault)}
                 sendData={getNewProduct}
-                igvEnabled={Number(igvDefault) > 0 && isIgvChecked ? true : false}
+                igvEnabled={
+                  Number(igvDefault) > 0 && isIgvChecked ? true : false
+                }
               />
             </DialogContent>
           </>
@@ -1521,21 +1553,21 @@ const NewSale = (props) => {
           </>
         ) : null}
         {typeDialog == 'client' ? (
-            <>
-              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Búsqueda de clientes'}
-                <CancelOutlinedIcon
-                  onClick={setOpen.bind(this, false)}
-                  className={classes.closeButton}
-                />
-              </DialogTitle>
-              <DialogContent>
-                <AddClientForm sendData={getClient} />
-              </DialogContent>
-            </>
-          ) : (
-            <></>
-          )}
+          <>
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Búsqueda de clientes'}
+              <CancelOutlinedIcon
+                onClick={setOpen.bind(this, false)}
+                className={classes.closeButton}
+              />
+            </DialogTitle>
+            <DialogContent>
+              <AddClientForm sendData={getClient} />
+            </DialogContent>
+          </>
+        ) : (
+          <></>
+        )}
       </Dialog>
       <Dialog
         open={showDelete}

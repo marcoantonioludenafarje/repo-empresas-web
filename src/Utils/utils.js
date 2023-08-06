@@ -482,35 +482,26 @@ export const completeWithZeros = (num, size) => {
 export const verTags = (obj, listBussinesParameteres) => {
   let descripcion = '';
   let listTagsClient = null;
+  console.log('Que viene en obj', obj);
+  if (listBussinesParameteres)
+    listTagsClient = listBussinesParameteres.find(
+      (obj) => obj.abreParametro == 'CLIENT_TAGS',
+    ).value;
 
-  if (listBussinesParameteres) {
-    const clientTagsParam = listBussinesParameteres.find(
-      (obj) => obj.abreParametro === 'CLIENT_TAGS',
-    );
-
-    if (clientTagsParam && Array.isArray(clientTagsParam.value)) {
-      listTagsClient = clientTagsParam.value;
-    }
-  }
-
-  if (obj.tags && Array.isArray(obj.tags)) {
+  if (obj.tags)
     obj.tags.forEach((item) => {
       let descripciontemp = '';
-
-      if (listTagsClient) {
-        const tagItem = listTagsClient.find((obj) => obj.id === item);
-        if (tagItem && tagItem.tagName) {
-          descripciontemp = tagItem.tagName;
+      console.log('listTagsClient', listTagsClient);
+      if (listTagsClient)
+        descripciontemp = listTagsClient.find((obj) => obj.id == item)?.tagName;
+      if (descripciontemp) {
+        if (descripcion.length == 0) {
+          descripcion = descripciontemp;
+        } else {
+          descripcion = descripcion + ' | ' + descripciontemp;
         }
       }
-
-      if (descripcion.length === 0) {
-        descripcion = descripciontemp;
-      } else {
-        descripcion = descripcion + ' | ' + descripciontemp;
-      }
     });
-  }
 
   return descripcion;
 };
