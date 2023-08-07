@@ -55,7 +55,7 @@ const defaultValues = {
   subtotalWithoutIgv: '',
   productIgv: '',
   subtotalWithIgv: '',
-  count: 1,
+  count: '',
   unitMeasure: '',
   taxCode: '',
 };
@@ -204,9 +204,7 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
   const [open, setOpen] = React.useState(false);
   const [typeAlert, setTypeAlert] = React.useState('faltaProduct');
   const [showAlert, setShowAlert] = React.useState(false);
-  const [typeElement, setTypeElement] = React.useState(
-    userDataRes.merchantSelected.businessLine == 'services' ? 'ZZ' : 'NIU',
-  );
+  const [typeElement, setTypeElement] = React.useState('NIU');
   const [typeTaxCode, setTypeTaxCode] = React.useState(
     igvEnabled ? '1000' : '9998',
   );
@@ -442,7 +440,7 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
           ).toFixed(3),
           businessProductCode: selectedProduct.businessProductCode,
           taxCode: Number(typeTaxCode),
-          stockChange: typeElement == 'ZZ' ? false : stockChange,
+          stockChange: stockChange,
         });
         actualValues.productSearch = '';
         actualValues.subtotalWithoutIgv = '';
@@ -576,12 +574,7 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
                         label='Unidad'
                         labelId='unitMeasure-label'
                         onChange={handleTypeElement}
-                        defaultValue={
-                          userDataRes.merchantSelected.businessLine ==
-                          'services'
-                            ? 'ZZ'
-                            : 'NIU'
-                        }
+                        defaultValue='NIU'
                         value={typeElement}
                         MenuProps={MenuProps}
                       >
@@ -611,7 +604,7 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
 
                   <Grid item xs={isMobile ? 12 : 4}>
                     <AppTextField
-                      label='Precio unitario sin IGV'
+                      label='Precio sin IGV'
                       name='productPrice'
                       variant='outlined'
                       sx={{

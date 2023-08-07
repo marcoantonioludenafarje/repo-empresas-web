@@ -381,7 +381,7 @@ const NewSale = (props) => {
         total = 0;
       } else {
         let calculatedtotal = 0;
-        const newSelectedProducts = selectedProducts.map((obj) => {
+        selectedProducts = selectedProducts.map((obj) => {
           obj.taxCode = 1000;
           calculatedtotal += obj.subtotal;
           totalWithIgv +=
@@ -402,7 +402,7 @@ const NewSale = (props) => {
         total = 0;
       } else {
         let calculatedtotal = 0;
-        const newSelectedProducts = selectedProducts.map((obj) => {
+        selectedProducts = selectedProducts.map((obj) => {
           obj.taxCode = 9998;
           calculatedtotal += obj.subtotal;
           totalWithIgv +=

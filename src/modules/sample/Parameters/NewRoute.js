@@ -118,9 +118,12 @@ const Distribution = () => {
   const [typeAlert, setTypeAlert] = React.useState(
     'existProductsWithThisCategory',
   );
-
+  const [typeAlertTag, setTypeAlertTag] = React.useState(
+    'existClientWithThisTag',
+  );
   const [routes, setRoutes] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
+  const [filtersClient, setFiltersClient] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
   const [tags, setTags] = React.useState([]);
   const [reload, setReload] = React.useState(false);
@@ -129,6 +132,7 @@ const Distribution = () => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [openDeleteStatus, setOpenDeleteStatus] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
+  const [openAlertTag, setOpenAlertTag] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [defaultMoney, setDefaultMoney] = React.useState('PEN');
   const [defaultWeight, setDefaultWeight] = React.useState('KG');
@@ -139,12 +143,15 @@ const Distribution = () => {
   const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
   const [publish, setPublish] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
+  const [showAlertTag, setShowAlertTag] = React.useState(false);
   const [typeIcon, setTypeIcon] = React.useState('2');
   const [productsSelected, setProductsSelected] = React.useState([]);
+  const [clientsSelected, setClientsSelected] = React.useState([]);
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [listProductsState, setListProductsState] = React.useState({});
-  const [listTagsState, setListTagsState] = React.useState([]);
+  const [listClientsState, setListClientState] = React.useState({});
+  const {listClients} = useSelector(({clients}) => clients);
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -170,7 +177,7 @@ const Distribution = () => {
   console.log('errorMessage', errorMessage);
   const [excelOrCsv, setExcelOrCsv] = React.useState('');
   const [excelOrCsvName, setExcelOrCsvName] = React.useState('');
-
+  const [tagSelectedDelete, setTagSelectedDelete] = React.useState({});
   let deletePayload = {
     request: {
       payload: {
@@ -348,11 +355,12 @@ const Distribution = () => {
       // setProductsSelected(newProductsSelected)
     }
   }, [listProducts]);
-  // useEffect(() => {
-  //   if (listTags) {
-  //     setListTagsState(listTags);
-  //   }
-  // }, [listTags]);
+  useEffect(() => {
+    if (listClients) {
+      console.log('listClients', listClients);
+      setListClientState(listClients);
+    }
+  }, [listClients]);
   useEffect(() => {
     if (businessParameter !== undefined && businessParameter.length >= 1) {
       let ecommerceProductParameter = businessParameter.find(
@@ -392,6 +400,7 @@ const Distribution = () => {
       console.log('defaultWeightParameter', defaultWeightParameter);
 
       setFilters(ecommerceProductParameter.tags);
+      setFiltersClient(clientTagsParameter);
       setDefaultPriceRange([
         Number(ecommerceProductParameter.price.min),
         Number(ecommerceProductParameter.price.max),
@@ -505,7 +514,7 @@ const Distribution = () => {
       productsWithThisFilter.length,
     );
     if (productsWithThisFilter.length > 0) {
-      setTypeAlert('existProductsWithThisFilter');
+      setTypeAlert('existProductstWithThisCategory');
       setProductsSelected(productsWithThisFilter);
       setShowAlert(true);
     } else {
@@ -520,7 +529,36 @@ const Distribution = () => {
       reloadPage();
     }
   };
-
+  // const deleteTag = (filterName, order) => {
+  //   let clientsWithThisFilter = listClientsState.filter((element) => {
+  //     let response = false;
+  //     Object.entries(element.tags).forEach(([key, value]) => {
+  //       filtersClient.tags.forEach(tag=>{
+  //         if( tag.id == key ){
+  //           console.log(value);
+  //           response = true;
+  //         }
+  //       });
+  //     });
+  //     return response;
+  //   });
+  //   console.log(
+  //     'Longitud clientes con el tag',
+  //     clientsWithThisFilter.length,
+  //   );
+  //   if (clientsWithThisFilter.length > 0) {
+  //     setTypeAlertTag('existClientWithThisTag');
+  //     setClientsSelected(clientsWithThisFilter);
+  //     setShowAlertTag(true);
+  //   } else {
+  //     console.log('Llego aquí?', filterName);
+  //     let newFilters = filters;
+  //     newFilters.splice(order, 1);
+  //     console.log('nuevosFiltros', newFilters);
+  //     setFilters(newFilters);
+  //     reloadPage();
+  //   }
+  // }
   const setCategoryIndex = (index, obj) => {
     console.log('obj: ', obj);
     let changedCategories = categories;
@@ -574,7 +612,7 @@ const Distribution = () => {
       };
     }
     let finalCategories = categories;
-
+    let finalTag = tags;
     if (finalCategories.length >= 1) {
       finalCategories[0].default = true;
     }
@@ -595,7 +633,7 @@ const Distribution = () => {
           filters: publish ? filters : [],
           categories: finalCategories,
           isEcommerceEnabled: publish,
-          tagsClients: tags,
+          tagsClients: finalTag,
         },
       },
     };
@@ -711,6 +749,7 @@ const Distribution = () => {
   const sendAlert = () => {
     setOpenAlert(false);
   };
+
   const showMessage = () => {
     if (registerSuccess()) {
       console.log('Fue exitoso?');
@@ -809,7 +848,9 @@ const Distribution = () => {
     setOpenDeleteStatus(false);
     setOpenDelete(false);
     setOpenAlert(false);
+    setOpenAlertTag(false);
     setShowAlert(false);
+    setShowAlertTag(false);
     setTimeout(() => {
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
@@ -1385,18 +1426,28 @@ const Distribution = () => {
 
                   <IconButton
                     onClick={() => {
-                      const clientsWithThisTag = listTagsState.filter(
-                        (element) =>
-                          element.tagName == tag.tagName ||
-                          element.id == tag.id,
-                      );
+                      console.log('listClientsState', listClientsState);
+                      const prub = [];
+                      listClientsState.forEach((element) => {
+                        if (element.tags && element.tags.includes(tag.id)) {
+                          prub.push(element);
+                        }
+                      });
+                      const clientsWithThisTag = prub;
                       console.log('clientsWithThisTag', clientsWithThisTag);
-
-                      console.log('tags', tags);
-                      let newTags = tags;
-                      newTags = newTags.filter((item) => item.id !== tag.id);
-                      setTags(newTags);
-                      reloadPage();
+                      if (clientsWithThisTag.length > 0) {
+                        setTypeAlertTag('existClientWithThisTag');
+                        setClientsSelected(clientsWithThisTag);
+                        setShowAlertTag(true);
+                        console.log('Este es el tag:', tag);
+                        setTagSelectedDelete(tag);
+                      } else {
+                        console.log('tags', tags);
+                        let newTags = tags;
+                        newTags = newTags.filter((item) => item.id !== tag.id);
+                        setTags(newTags);
+                        reloadPage();
+                      }
                     }}
                     aria-label='delete'
                   >
@@ -1407,6 +1458,60 @@ const Distribution = () => {
             </>
           ))}
       </Box>
+      <Collapse in={showAlertTag}>
+        <Alert
+          severity='error'
+          action={
+            <>
+              <IconButton
+                aria-label='close'
+                color='inherit'
+                size='small'
+                onClick={() => {
+                  setOpenAlertTag(true);
+                  console.log('tags', tags);
+                  let newTags = tags;
+                  console.log('tagSelectedDelete', tagSelectedDelete);
+                  newTags = newTags.filter(
+                    (item) => item.id !== tagSelectedDelete.id,
+                  );
+                  setTags(newTags);
+                  setShowAlertTag(false);
+                }}
+              >
+                <Button color='primary' variant='contained' sx={{p: '4px'}}>
+                  Confirmar
+                </Button>
+              </IconButton>
+              <IconButton
+                aria-label='close'
+                color='inherit'
+                size='small'
+                onClick={() => {
+                  setShowAlertTag(false);
+                }}
+                sx={{height: '100%'}}
+              >
+                <Button
+                  color='secondary'
+                  variant='contained'
+                  sx={{p: '9px', height: '100%'}}
+                >
+                  <CloseIcon fontSize='inherit' />
+                </Button>
+                {/* <CloseIcon fontSize='inherit' /> */}
+              </IconButton>
+            </>
+          }
+          sx={{mb: 1, pt: 0, alignItems: 'center', height: '100%'}}
+        >
+          {typeAlertTag == 'existClientWithThisTag' ? (
+            <IntlMessages id='alert.configurationParameters.existClientWithThisTag' />
+          ) : (
+            <></>
+          )}
+        </Alert>
+      </Collapse>
       {/* <Button
         variant='outlined'
         component='label'

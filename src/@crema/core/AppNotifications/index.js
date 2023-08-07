@@ -60,13 +60,15 @@ const AppNotifications = ({
             {getNotificationsRes && getNotificationsRes.length > 0 ? (
               <Badge
                 badgeContent={
-                  userDataRes ? getNotificationsRes.filter((item) => {
-                    return !(
-                      item.seenBy &&
-                      item.seenBy.length &&
-                      item.seenBy.some((item) => item == userDataRes.userId)
-                    );
-                  }).length : 0
+                  userDataRes
+                    ? getNotificationsRes.filter((item) => {
+                        return !(
+                          item.seenBy &&
+                          item.seenBy.length &&
+                          item.seenBy.some((item) => item == userDataRes.userId)
+                        );
+                      }).length
+                    : 0
                 }
                 color='primary'
                 overlap='circular'
