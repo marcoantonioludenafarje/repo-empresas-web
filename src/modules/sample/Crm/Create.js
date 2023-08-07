@@ -345,7 +345,7 @@ const Create = (props) => {
       let imagePayload = {
         request: {
           payload: {
-            name: actualImage.name.split('.').slice(0, -1).join('.'),
+            //name: actualImage.name.split('.').slice(0, -1).join('.'),
             key: actualImage.name.split('.').slice(0, -1).join('.'),
             action: 'putObject',
             contentType: actualImage.type,
@@ -355,11 +355,10 @@ const Create = (props) => {
         },
       };
       console.log('newImage', imagePayload);
-      // toCreateImagePresigned(imagePayload, {
-      //   image: actualImage,
-      //   type: actualImage?.type || null,
-      // });
-      toCreateImagePresigned(imagePayload, actualImage);
+      toCreateImagePresigned(imagePayload, {
+        image: actualImage,
+        type: actualImage?.type || null,
+      });
     }
     let clientsJsonPayload = {
       request: {
@@ -400,23 +399,23 @@ const Create = (props) => {
                 {
                   order: 0,
                   type: actualImage ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
-                  metadata: actualImage
-                    ? {
-                        keyMaster: imagePresigned.keymaster || '',
-                        nameFile: actualImage?.name || '',
-                      }
-                    : null,
-                  // img_url: actualImage
-                  //   ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
-                  //     userDataRes.merchantSelected.merchantId +
-                  //     '/' +
-                  //     'campaign/' +
-                  //     nameSimplified +
-                  //     '/' +
-                  //     actualImage.name.split('.').slice(0, -1).join('.') +
-                  //     '.' +
-                  //     extensions[actualImage.type]
-                  //   : '',
+                  // metadata: actualImage
+                  //   ? {
+                  //       keyMaster: imagePresigned.keymaster || '',
+                  //       nameFile: actualImage?.name || '',
+                  //     }
+                  //   : null,
+                  img_url: actualImage
+                    ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
+                      userDataRes.merchantSelected.merchantId +
+                      '/' +
+                      'campaign/' +
+                      nameSimplified +
+                      '/' +
+                      actualImage.name.split('.').slice(0, -1).join('.') +
+                      '.' +
+                      extensions[actualImage.type]
+                    : '',
                   text: campaignContents[0].content,
                   variations: variationsData ? variationsData : [''],
                 },
