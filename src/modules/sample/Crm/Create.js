@@ -76,13 +76,9 @@ import {verTags} from '../../../Utils/utils';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
-  // date: yup
-  //   .date()
-  //   .typeError('Ingresa una fecha valida')
-  //   .required('La fecha es obligatoria'),
-  // campaignContent: yup
-  //   .string()
-  //   .required('El contenido de la campaña es obligatorio'),
+  campaignContent: yup
+    .string()
+    .required('El contenido de la campaña es obligatorio'),
   campaignImages: yup
     .array()
     .of(yup.mixed().required('Requiere una imagen'))
@@ -131,6 +127,7 @@ const Create = (props) => {
   const [campaignContentVariations, setCampaignContentsVariations] = useState([
     {id: 1, content: ''},
   ]);
+  const [campaignContent, setCampaignContent] = useState('');
   // Function to add more variations
   const handleAddVariation = () => {
     const newVariation = `Variación ${numVariations + 1}`;
@@ -146,7 +143,7 @@ const Create = (props) => {
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
   const [actualImage, setActualImage] = React.useState('');
-  const [clientSelection, setClientSelection] = useState();
+  const [clientSelection, setClientSelection] = useState('Todos');
   const classes = useStyles(props);
 
   const defaultValues = {
@@ -158,27 +155,17 @@ const Create = (props) => {
 
   // Estado para controlar el acordeón abierto
   const [expanded, setExpanded] = useState(1);
-  const [campaignContents, setCampaignContents] = useState([
-    {id: 1, content: ''}, // Primer acordeón desplegado
-  ]);
+  // const [campaignContents, setCampaignContents] = useState([
+  //   {id: 1, content: ''}, // Primer acordeón desplegado
+  // ]);
 
-  // Código de agregar acordion
-  // const handleAddAccordion = () => {
-  //   const newId = campaignContents.length + 1;
-  //   setCampaignContents([...campaignContents, {id: newId, content: ''}]);
+  // const handleContentChange = (id, content) => {
+  //   console.log('content Mensaje', content);
+  //   const updatedContents = campaignContents.map((contentData) =>
+  //     contentData.id === id ? {...contentData, content} : contentData,
+  //   );
+  //   setCampaignContents(updatedContents);
   // };
-
-  const handleContentChange = (id, content) => {
-    console.log('content Mensaje', content);
-    const updatedContents = campaignContents.map((contentData) =>
-      contentData.id === id ? {...contentData, content} : contentData,
-    );
-    setCampaignContents(updatedContents);
-  };
-
-  const handleClientSelection = (selectedClients) => {
-    setSelectedClients(selectedClients);
-  };
 
   const getClients = (payload) => {
     dispatch(onGetClients(payload));
@@ -380,7 +367,7 @@ const Create = (props) => {
       'image/png': 'png',
     };
 
-    console.log('Contenidodecamapañas', campaignContents);
+    console.log('Contenidodecamapañas', campaignContent);
     console.log('ACTUAL IMAGE', imagePresigned);
     const payload = {
       request: {
@@ -416,7 +403,7 @@ const Create = (props) => {
                       '.' +
                       extensions[actualImage.type]
                     : '',
-                  text: campaignContents[0].content,
+                  text: data.campaignContent,
                   variations: variationsData ? variationsData : [''],
                 },
               ],
@@ -428,15 +415,15 @@ const Create = (props) => {
       },
     };
 
-    if (campaignContents.length > 1) {
-      campaignContents.slice(1).forEach((content, index) => {
-        payload.request.payload.campaign[0].messages.push({
-          order: index + 2,
-          type: 'text',
-          text: content.content,
-        });
-      });
-    }
+    // if (campaignContents.length > 1) {
+    //   campaignContents.slice(1).forEach((content, index) => {
+    //     payload.request.payload.campaign[0].messages.push({
+    //       order: index + 2,
+    //       type: 'text',
+    //       text: content.content,
+    //     });
+    //   });
+    // }
 
     console.log('Payload create', payload);
     setPayloadToCreateCampaign(payload);
@@ -746,6 +733,12 @@ const Create = (props) => {
   const verificationVariations = () => {
     let valor = totaldeClientes() / levelEnter.clientsAmount; //  6 / 5   1.2
     let mayorPosible = Math.ceil(valor); // 2
+    console.log(
+      'TOTAL DE DATA',
+      totaldeClientes(),
+      'mayorposible',
+      mayorPosible,
+    );
 
     console.log('DATA-VARIATIONS', variationsData[0], mayorPosible);
     if (mayorPosible - 1 == 1) {
@@ -760,6 +753,7 @@ const Create = (props) => {
       return mayorPosible - 1;
     }
     let parametro = valor % 1 === 0 ? valor : Math.ceil(valor) - 1;
+    console.log('TOTAL DE DATA', parametro);
     if (
       totaldeClientes() > levelEnter.clientsAmount &&
       parametro === variationsData.length
@@ -768,9 +762,11 @@ const Create = (props) => {
       console.log('VARIATONSDATA ', variationsData.length, parametro);
       if (variationsData.filter((vari) => vari !== '' && vari !== undefined)) {
         setVerification(false);
+        console.log('TOTAL DE DATA PARA');
         return parametro;
       }
     }
+    return parametro;
   };
 
   // State to keep track of expanded accordion
@@ -804,7 +800,7 @@ const Create = (props) => {
   };
 
   const handleAccordionVariationsClose = () => {
-    setVariations(['Variación 1']);
+    setVariations(['Variación']);
     setNumVariations(1);
     setCampaignContentsVariations([{id: 1, content: ''}]);
     setVariationsData(variations.map((v) => v.content));
@@ -819,16 +815,68 @@ const Create = (props) => {
 
     // Close the dialog
     setOpenDialog(false);
+    //Corregir XD
+    if (variationsData.length > 0 && variationsData[0] != '') {
+    }
   };
 
-  const handleDummy = () => {
-    let data = 'Hola a todos amigos';
-    let arrayx = [];
-    arrayx.push({id: 1, content: data});
-    setVariationsData(arrayx);
-    setCampaignContentsVariations(arrayx);
-    console.log('dummy', campaignContentVariations);
-    console.log('dummydata', variationsData);
+  const handleSaveVariations = () => {
+    setVariationsData(variations.map((v) => v.content));
+    setOpenDialog(false);
+  };
+
+  // const handleCloseClientsDialogReload = () => {
+  //   console.log('CLIENTES DATA', clientsDataset);
+  //   if (clientsDataset.length > 0) {
+  //     setSelectedClients(clientsDataset);
+  //     setOpenClientsDialog(false);
+  //   } else {
+  //     setSelectedClients([]);
+  //     setOpenClientsDialog(false);
+  //   }
+  // };
+
+  const handleDummy = async () => {
+    let dummy = 'hola amigos';
+    const newData = [...variationsData];
+    newData[0] = dummy;
+    setVariationsData(newData);
+    console.log('index campaña', campaignContent);
+    console.log('index dummy>', variationsData);
+  };
+
+  const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
+
+  const sameData = () => {
+    const duplicates = {};
+    variationsData.forEach((item, index) => {
+      if (variationsData.indexOf(item) !== index) {
+        duplicates[item] = true;
+      }
+    });
+
+    const hasTrueValue = Object.values(duplicates).some(
+      (value) => value === true,
+    );
+
+    if (hasTrueValue) {
+      setValidateVariations(true);
+      return (
+        <Box sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}>
+          <Typography sx={{fontSize: 18, fontWeight: 600}}>
+            Hay variaciones repetidas
+          </Typography>
+        </Box>
+      );
+    } else {
+      setValidateVariations(false);
+      console.log('El objeto no tiene ninguna propiedad con valor true.');
+    }
+  };
+
+  const handleCampaignContentChange = (event) => {
+    setCampaignContent(event.target.value);
+    console.log('index camp', campaignContent);
   };
 
   return (
@@ -1034,7 +1082,7 @@ const Create = (props) => {
                       Total de clientes: {totaldeClientes()}
                     </Typography>
                   </Box>
-                  {campaignContents.map((contentData) => (
+                  {/* {campaignContents.map((contentData) => (
                     <Grid item xs={12} md={12} key={contentData.id}>
                       <Accordion
                         expanded={expanded === contentData.id}
@@ -1047,7 +1095,7 @@ const Create = (props) => {
                           <Grid item xs={12} md={12}>
                             <TextField
                               label='Contenido de la Campaña *'
-                              name={`campaignContent${contentData.id}`}
+                              name={`campaignContents.contents`}
                               variant='outlined'
                               multiline
                               rows={4}
@@ -1064,7 +1112,19 @@ const Create = (props) => {
                         </AccordionDetails>
                       </Accordion>
                     </Grid>
-                  ))}
+                  ))} */}
+                  <Grid item xs={12} md={12}>
+                    <AppTextField
+                      label='Contenido de la Campaña *'
+                      name='campaignContent'
+                      value={campaignContent}
+                      onChange={handleCampaignContentChange}
+                      variant='outlined'
+                      multiline
+                      rows={4}
+                      sx={{width: '100%', my: 2}}
+                    />
+                  </Grid>
                 </Grid>
 
                 <Grid container item xs={12} justifyContent='center'>
@@ -1093,6 +1153,20 @@ const Create = (props) => {
                       </Button>
                     </Box>
                   </DialogTitle>
+                  {sameData()};
+                  {totaldeClientes() > levelEnter.clientsAmount ? (
+                    <Box
+                      sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
+                    >
+                      <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                        Cantidad de variaciones obligatorias:
+                        {verificationVariations()}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Typography></Typography>
+                  )}
+                  ;
                   <DialogContent>
                     {variations.map((variation, index) => (
                       <Accordion
@@ -1145,6 +1219,7 @@ const Create = (props) => {
                       type='submit'
                       variant='contained'
                       startIcon={<SaveAltOutlinedIcon />}
+                      disabled={validateVariations}
                       onClick={() => {
                         // Save the variationsData when clicking "Guardar"
                         console.log('Saving variations:', variationsData);
@@ -1170,7 +1245,7 @@ const Create = (props) => {
                     sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
                   >
                     <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                      Cantidad de variaciones obligatorias:{' '}
+                      Cantidad de variaciones obligatorias:
                       {verificationVariations()}
                     </Typography>
                   </Box>

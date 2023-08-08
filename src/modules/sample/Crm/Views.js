@@ -224,6 +224,7 @@ export default function Views(props) {
 
   // Función para abrir el diálogo y guardar la información de la campaña seleccionada
   const handleClickOpenDialog = (campaign) => {
+    console.log('CAMPAÑA INFO SELECT', campaign);
     setOpenDialog(true);
     setSelectCampaign(campaign);
   };
@@ -232,9 +233,9 @@ export default function Views(props) {
 
   const [receiversCloud, setReceiversCloud] = useState([]);
 
-  const handleVerDetalleClick = (url) => {
+  const handleVerDetalleClick = (url, order, number, arrayproccess) => {
     console.log('LA URL', url);
-
+    console.log('Hace la petición', order, number, arrayproccess);
     axios
       .get(url)
       .then((response) => {
@@ -244,7 +245,22 @@ export default function Views(props) {
         const arregloFiltrado = response.data.receivers.filter(
           (objeto) => objeto.type !== 'tag',
         );
-        setReceiversCloud(arregloFiltrado);
+
+        let startIndex = 0;
+
+        for (let i = 0; i < arrayproccess.length; i++) {
+          if (arrayproccess[i].order < order) {
+            startIndex += arrayproccess[i].amount;
+          }
+        }
+
+        console.log('hace', startIndex, number);
+        const procesosSeleccionados = arregloFiltrado.slice(
+          startIndex,
+          startIndex + number,
+        );
+
+        setReceiversCloud(procesosSeleccionados);
         // Finalmente, abre el diálogo.
         setDialogDetalleOpen(true);
       })
@@ -280,7 +296,7 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error al eliminar.
+            Se ha producido un error al cancelar.
           </DialogContentText>
         </>
       );
@@ -512,48 +528,36 @@ export default function Views(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {/* {
-                selectCampaign?.processes.map((process)=>{
-                  <TableRow>
+              {selectCampaign?.processes.map((process) => {
+                console.log('PROCESO INFO >>', process);
+                return (
+                  <TableRow key={process.processId}>
                     <TableCell>{process.order}</TableCell>
-                    <TableCell>{convertToDate(selectCampaign.scheduledAt)}</TableCell>
                     <TableCell>
-                    {selectCampaign?.urlTargetClients ? (
-                    <a
-                      href='#'
-                      onClick={() =>
-                        handleVerDetalleClick(selectCampaign.urlTargetClients)
-                      }
-                    >
-                      Ver Detalle
-                    </a>
-                  ) : (
-                    'Ver Detalle'
-                  )}
+                      {convertToDate(selectCampaign.scheduledAt)}
+                    </TableCell>
+                    <TableCell>
+                      {selectCampaign?.urlTargetClients ? (
+                        <a
+                          href='#'
+                          onClick={() =>
+                            handleVerDetalleClick(
+                              selectCampaign.urlTargetClients,
+                              process.order,
+                              process.amount,
+                              selectCampaign.processes,
+                            )
+                          }
+                        >
+                          Ver Detalle
+                        </a>
+                      ) : (
+                        'Ver Detalle'
+                      )}
                     </TableCell>
                   </TableRow>
-                })
-              } */}
-              <TableRow>
-                <TableCell>1</TableCell>
-                <TableCell>
-                  {convertToDate(selectCampaign?.scheduledAt)}
-                </TableCell>
-                <TableCell>
-                  {selectCampaign?.urlTargetClients ? (
-                    <a
-                      href='#'
-                      onClick={() =>
-                        handleVerDetalleClick(selectCampaign.urlTargetClients)
-                      }
-                    >
-                      Ver Detalle
-                    </a>
-                  ) : (
-                    'Ver Detalle'
-                  )}
-                </TableCell>
-              </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </DialogContent>
@@ -572,7 +576,7 @@ export default function Views(props) {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar campaña'}
+          {'Cancelar campaña'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -603,7 +607,7 @@ export default function Views(props) {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar Cliente'}
+          {'Cancelar Campaña'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -649,7 +653,15 @@ export default function Views(props) {
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                 >
                   <TableCell>{row.id ? row.id + 1 : 1}</TableCell>
-                  <TableCell>{row.givenName}</TableCell>
+                  <TableCell>
+                    {row.clientId
+                      ? row.clientId.startsWith('DNI-')
+                        ? row.givenName
+                          ? row.givenName
+                          : row.denominationClient
+                        : row.denominationClient
+                      : 'XD'}
+                  </TableCell>
                   <TableCell>{row.lastName}</TableCell>
                   <TableCell>{row.secondLastName}</TableCell>
                   <TableCell>{row.birthDay}</TableCell>
