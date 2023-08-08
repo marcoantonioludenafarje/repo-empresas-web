@@ -49,6 +49,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import {red} from '@mui/material/colors';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import {makeStyles} from '@mui/styles';
@@ -56,11 +57,13 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
-import {newCampaign} from '../../../redux/actions/Campaign';
+import {newCampaign, getCampaigns} from '../../../redux/actions/Campaign';
 import {
   createPresigned,
   createClientsPresigned,
   createImagePresigned,
+  onGetBusinessParameter,
+  onGetGlobalParameter,
 } from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
@@ -70,17 +73,12 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import {DataGrid} from '@mui/x-data-grid';
 import {verTags} from '../../../Utils/utils';
-import {convertToDate} from '../../../Utils/utils';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
-  // date: yup
-  //   .date()
-  //   .typeError('Ingresa una fecha valida')
-  //   .required('La fecha es obligatoria'),
-  // campaignContent: yup
-  //   .string()
-  //   .required('El contenido de la campaña es obligatorio'),
+  campaignContent: yup
+    .string()
+    .required('El contenido de la campaña es obligatorio'),
   campaignImages: yup
     .array()
     .of(yup.mixed().required('Requiere una imagen'))
@@ -92,7 +90,15 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     bottom: '-8px',
   },
+  closeButton: {
+    cursor: 'pointer',
+    float: 'right',
+    marginTop: '5px',
+    width: '20px',
+  },
 }));
+
+let selectedCampaign = {};
 
 const Update = (props) => {
   let toSubmitting;
@@ -100,9 +106,24 @@ const Update = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
-  let {query} = router;
 
+  const getCampaign = (payload) => {
+    dispatch(getCampaigns(payload));
+  };
+
+  let {query} = router;
   console.log('query', query);
+
+  const {listCampaigns, campaignsLastEvaluatedKey_pageListCampaigns} =
+    useSelector(({campaigns}) => campaigns);
+  console.log('Confeti los campañas', listCampaigns);
+
+  if (listCampaigns != undefined) {
+    selectedCampaign = listCampaigns.find(
+      (input) => input.campaignId == query.campaignId,
+    );
+    console.log('CAMPAÑA SELECTA', selectedCampaign);
+  }
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -118,60 +139,53 @@ const Update = (props) => {
 
   const [previewImages, setPreviewImages] = useState([]);
   const [publishDate, setPublishDate] = React.useState(
-    convertToDate(query.scheduledAt) /* Number(query.createdAt) */,
+    Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
   );
   const [openDialog, setOpenDialog] = useState(false);
   const [variations, setVariations] = useState(['Variación 1']);
   const [numVariations, setNumVariations] = useState(1);
-  //const [message, setMessage] = useState('');
-
+  const [campaignContentVariations, setCampaignContentsVariations] = useState([
+    {id: 1, content: ''},
+  ]);
+  const [campaignContent, setCampaignContent] = useState('');
   // Function to add more variations
   const handleAddVariation = () => {
     const newVariation = `Variación ${numVariations + 1}`;
     setVariations([...variations, newVariation]);
     setNumVariations(numVariations + 1);
+    const newIdVariation = campaignContentVariations.length + 1;
+    setCampaignContentsVariations([
+      ...campaignContentVariations,
+      {id: newIdVariation, content: ''},
+    ]);
   };
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
   const [actualImage, setActualImage] = React.useState('');
-  const [clientSelection, setClientSelection] = useState();
+  const [clientSelection, setClientSelection] = useState('Todos');
   const classes = useStyles(props);
 
   const defaultValues = {
     campaignName: query.campaignName,
     date: Date.now() + 60 * 60 * 1000,
-    campaignContent: '',
+    campaignContent: selectedCampaign.messages[0].text,
     campaignImages: null,
   };
 
   // Estado para controlar el acordeón abierto
   const [expanded, setExpanded] = useState(1);
-  const [campaignContents, setCampaignContents] = useState([
-    {id: 1, content: ''}, // Primer acordeón desplegado
-  ]);
+  // const [campaignContents, setCampaignContents] = useState([
+  //   {id: 1, content: ''}, // Primer acordeón desplegado
+  // ]);
 
-  const handleAccordionChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
-  // Código de agregar acordion
-  // const handleAddAccordion = () => {
-  //   const newId = campaignContents.length + 1;
-  //   setCampaignContents([...campaignContents, {id: newId, content: ''}]);
+  // const handleContentChange = (id, content) => {
+  //   console.log('content Mensaje', content);
+  //   const updatedContents = campaignContents.map((contentData) =>
+  //     contentData.id === id ? {...contentData, content} : contentData,
+  //   );
+  //   setCampaignContents(updatedContents);
   // };
-
-  const handleContentChange = (id, content) => {
-    console.log('content Mensaje', content);
-    const updatedContents = campaignContents.map((contentData) =>
-      contentData.id === id ? {...contentData, content} : contentData,
-    );
-    setCampaignContents(updatedContents);
-  };
-
-  const handleClientSelection = (selectedClients) => {
-    setSelectedClients(selectedClients);
-  };
 
   const getClients = (payload) => {
     dispatch(onGetClients(payload));
@@ -197,6 +211,11 @@ const Update = (props) => {
   const {clientsPresigned, imagePresigned} = useSelector(
     ({general}) => general,
   );
+
+  const getGlobalParameter = (payload) => {
+    dispatch(onGetGlobalParameter(payload));
+  };
+
   const createCampaign = (payload) => {
     dispatch(newCampaign(payload));
   };
@@ -237,7 +256,18 @@ const Update = (props) => {
           },
         },
       };
+      let globalParameterPayload = {
+        request: {
+          payload: {
+            abreParametro: null,
+            codTipoparametro: null,
+            country: 'peru',
+          },
+        },
+      };
+      getCampaign(listPayload);
       getClients(listPayload);
+      getGlobalParameter(globalParameterPayload);
       // setFirstload(true);
     }
   }, [userDataRes, listadeTags]);
@@ -271,6 +301,7 @@ const Update = (props) => {
         type: 'client',
         id: index,
         clientId: client.clientId,
+        denominationClient: client.denominationClient || '',
         nameContact: client.nameContact || '',
         emailContact: client.emailContact || '',
         numberCountryCode: client.numberCountryCode || '51',
@@ -287,13 +318,14 @@ const Update = (props) => {
         tagId: 'ALL',
       });
     } else if (clientSelection === 'Algunos') {
-      console.log('CLIENTES SELECCIONADOS:', selectedClients);
-      receivers = selectedClients.map((clientId, index) => {
+      console.log('CLIENTES SELECCIONADOS:', clientsDataset);
+      receivers = clientsDataset.map((clientId, index) => {
         const client = listClients.find((c) => c.clientId === clientId);
         return {
           type: 'client',
           id: index,
           clientId: client.clientId,
+          denominationClient: client.denominationClient || '',
           nameContact: client.nameContact || '',
           emailContact: client.emailContact || '',
           numberCountryCode: client.numberCountryCode || '51',
@@ -317,9 +349,11 @@ const Update = (props) => {
     // Crea un Blob con la cadena JSON
     const clientsBlob = new Blob([jsonString], {type: 'application/json'});
     if (actualImage) {
+      console.log('RASTREA IMAGEN', actualImage);
       let imagePayload = {
         request: {
           payload: {
+            //name: actualImage.name.split('.').slice(0, -1).join('.'),
             key: actualImage.name.split('.').slice(0, -1).join('.'),
             action: 'putObject',
             contentType: actualImage.type,
@@ -328,6 +362,7 @@ const Update = (props) => {
           },
         },
       };
+      console.log('newImage', imagePayload);
       toCreateImagePresigned(imagePayload, {
         image: actualImage,
         type: actualImage?.type || null,
@@ -353,7 +388,8 @@ const Update = (props) => {
       'image/png': 'png',
     };
 
-    console.log('Contenidodecamapañas', campaignContents);
+    console.log('Contenidodecamapañas', campaignContent);
+    console.log('ACTUAL IMAGE', imagePresigned);
     const payload = {
       request: {
         payload: {
@@ -365,15 +401,16 @@ const Update = (props) => {
                 //type: 'client',
                 urlClients: '',
               },
+              targetSummary: [...selectedTags, totaldeClientes()],
               robotId: 'ID_BOT_CUENTA_SOPORTE',
               messages: [
                 {
                   order: 0,
                   type: actualImage ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
-                  // metadata: selectedJsonImages[0]
+                  // metadata: actualImage
                   //   ? {
-                  //       keyMaster: selectedJsonImages[0]?.keyMaster || '',
-                  //       nameFile: selectedJsonImages[0]?.nameFile || '',
+                  //       keyMaster: imagePresigned.keymaster || '',
+                  //       nameFile: actualImage?.name || '',
                   //     }
                   //   : null,
                   img_url: actualImage
@@ -387,27 +424,27 @@ const Update = (props) => {
                       '.' +
                       extensions[actualImage.type]
                     : '',
-                  text: campaignContents[0].content,
-                  variations: ['text', 'text'],
+                  text: data.campaignContent,
+                  variations: variationsData ? variationsData : [''],
                 },
               ],
             },
           ],
           merchantId: userDataRes.merchantSelected.merchantId,
-          levelBusiness: 'ORO',
+          levelBusiness: levelEnter.level || 'BRONCE',
         },
       },
     };
 
-    if (campaignContents.length > 1) {
-      campaignContents.slice(1).forEach((content, index) => {
-        payload.request.payload.campaign[0].messages.push({
-          order: index + 2,
-          type: 'text',
-          text: content.content,
-        });
-      });
-    }
+    // if (campaignContents.length > 1) {
+    //   campaignContents.slice(1).forEach((content, index) => {
+    //     payload.request.payload.campaign[0].messages.push({
+    //       order: index + 2,
+    //       type: 'text',
+    //       text: content.content,
+    //     });
+    //   });
+    // }
 
     console.log('Payload create', payload);
     setPayloadToCreateCampaign(payload);
@@ -415,6 +452,7 @@ const Update = (props) => {
   useEffect(() => {
     if (clientsPresigned) {
       const payload = payloadToCreateCampaign;
+      console.log('Payload creates', payload);
       payload.request.payload.campaign[0].receivers.urlClients =
         clientsPresigned.keymaster;
       setTimeout(() => {
@@ -431,6 +469,7 @@ const Update = (props) => {
       }, 1000);
     }
   }, [clientsPresigned]);
+
   const showMessage = () => {
     if (successMessage != '') {
       console.log('MENSAJE DE VALIDEZ', successMessage);
@@ -520,9 +559,25 @@ const Update = (props) => {
     setOpenClientsDialog(true);
   };
 
+  const [clientsDataset, setClientsDataset] = useState([]);
+
   const handleCloseClientsDialog = () => {
+    console.log('CLIENTES DATA CLOSE', clientsDataset);
+    setClientsDataset(selectedClients);
     setOpenClientsDialog(false);
   };
+
+  const handleCloseClientsDialogReload = () => {
+    console.log('CLIENTES DATA', clientsDataset);
+    if (clientsDataset.length > 0) {
+      setSelectedClients(clientsDataset);
+      setOpenClientsDialog(false);
+    } else {
+      setSelectedClients([]);
+      setOpenClientsDialog(false);
+    }
+  };
+
   console.log('LISTA DE CLIENTES,', listClients);
   const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
   console.log('seleccion,', selectedClientsByTag);
@@ -587,7 +642,7 @@ const Update = (props) => {
   // Función para manejar el cambio en el checkbox del encabezado
   const handleHeaderCheckboxChange = (e) => {
     if (e.target.checked) {
-      const newSelection = listClients.map((row) => row.clientId);
+      const newSelection = searchDialogResults.map((row) => row.clientId);
       console.log('Confeti header', newSelection);
       setSelectedClients(newSelection);
     } else {
@@ -659,6 +714,186 @@ const Update = (props) => {
     setSearchDialogResults(listClients);
     console.log('clientes antes>>', searchDialogResults);
   }, [listClients]);
+
+  const {globalParameter} = useSelector(({general}) => general);
+  console.log('globalParameter123', globalParameter);
+
+  const [parameterLevel, setParameterLevel] = useState([]);
+  useEffect(() => {
+    if (globalParameter != undefined) {
+      let obtainedLevels = globalParameter.find(
+        (obj) => obj.abreParametro == 'LEVEL_INTERACTIONS',
+      ).value;
+      console.log('Levels parameter', obtainedLevels);
+      setParameterLevel(obtainedLevels);
+    }
+  }, [globalParameter != undefined]);
+
+  const LevelClients = (array) => {
+    if (array.length === 0) {
+      return {order: 1, clientsAmount: 20, level: 'BRONCE'};
+    }
+
+    // Inicializar la variable para almacenar el objeto con el mayor order
+    let objetoMayorOrder = array[0];
+
+    // Recorrer el array y encontrar el objeto con el mayor order
+    for (let i = 1; i < array.length; i++) {
+      if (array[i].order > objetoMayorOrder.order) {
+        objetoMayorOrder = array[i];
+      }
+    }
+
+    return objetoMayorOrder;
+  };
+  const levelEnter = LevelClients(parameterLevel);
+  console.log('LEVEL ENTER', levelEnter);
+
+  const [verification, setVerification] = useState(true);
+
+  const verificationVariations = () => {
+    let valor = totaldeClientes() / levelEnter.clientsAmount; //  6 / 5   1.2
+    let mayorPosible = Math.ceil(valor); // 2
+    console.log(
+      'TOTAL DE DATA',
+      totaldeClientes(),
+      'mayorposible',
+      mayorPosible,
+    );
+
+    console.log('DATA-VARIATIONS', variationsData[0], mayorPosible);
+    if (mayorPosible - 1 == 1) {
+      console.log('DATA-VARIATIONS', variationsData[0]);
+      if (
+        variationsData &&
+        variationsData[0] !== '' &&
+        variationsData[0] !== undefined
+      ) {
+        setVerification(false);
+      }
+      return mayorPosible - 1;
+    }
+    let parametro = valor % 1 === 0 ? valor : Math.ceil(valor) - 1;
+    console.log('TOTAL DE DATA', parametro);
+    if (
+      totaldeClientes() > levelEnter.clientsAmount &&
+      parametro === variationsData.length
+    ) {
+      // 11>5 && ===0
+      console.log('VARIATONSDATA ', variationsData.length, parametro);
+      if (variationsData.filter((vari) => vari !== '' && vari !== undefined)) {
+        setVerification(false);
+        console.log('TOTAL DE DATA PARA');
+        return parametro;
+      }
+    }
+    return parametro;
+  };
+
+  // State to keep track of expanded accordion
+  const [expandedAccordion, setExpandedAccordion] = useState(null);
+
+  // State to keep track of campaign content variations
+  const [variationsData, setVariationsData] = useState(
+    variations.map((v) => v.content),
+  );
+
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    setExpandedAccordion(isExpanded ? panel : null);
+  };
+
+  const handleVariationContentChange = (index, value) => {
+    // Update the campaignContentVariations state with the latest changes
+    const newData = [...variationsData];
+    newData[index] = value;
+    setVariationsData(newData);
+  };
+
+  const handleDeleteAccordion = (index) => {
+    // Remove the accordion by updating the variations and variationsData states
+    const newVariations = [...variations];
+    newVariations.splice(index, 1);
+    setVariations(newVariations);
+
+    const newData = [...variationsData];
+    newData.splice(index, 1);
+    setVariationsData(newData);
+  };
+
+  const handleAccordionVariationsClose = () => {
+    setVariations(['Variación']);
+    setNumVariations(1);
+    setCampaignContentsVariations([{id: 1, content: ''}]);
+    setVariationsData(variations.map((v) => v.content));
+    console.log('SAVE >>', variationsData);
+
+    // if (variationsData && variationsData.length > 0 && variationsData[0] != '' ) {
+    //   setVariations(['Variación 1']);
+    //   setNumVariations(1);
+    //   setCampaignContentsVariations([{id: 1, content: ''}]);
+    //   setVariationsData(variations.map((v) => v.content));
+    // }
+
+    // Close the dialog
+    setOpenDialog(false);
+    //Corregir XD
+    if (variationsData.length > 0 && variationsData[0] != '') {
+    }
+  };
+
+  const handleSaveVariations = () => {
+    setVariationsData(variations.map((v) => v.content));
+    setOpenDialog(false);
+  };
+
+  // const handleCloseClientsDialogReload = () => {
+  //   console.log('CLIENTES DATA', clientsDataset);
+  //   if (clientsDataset.length > 0) {
+  //     setSelectedClients(clientsDataset);
+  //     setOpenClientsDialog(false);
+  //   } else {
+  //     setSelectedClients([]);
+  //     setOpenClientsDialog(false);
+  //   }
+  // };
+
+  const handleDummy = async () => {
+    let dummy = 'hola amigos';
+    const newData = [...variationsData];
+    newData[0] = dummy;
+    setVariationsData(newData);
+    console.log('index campaña', campaignContent);
+    console.log('index dummy>', variationsData);
+  };
+
+  const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
+
+  const sameData = () => {
+    const duplicates = {};
+    variationsData.forEach((item, index) => {
+      if (variationsData.indexOf(item) !== index) {
+        duplicates[item] = true;
+      }
+    });
+
+    const hasTrueValue = Object.values(duplicates).some(
+      (value) => value === true,
+    );
+
+    if (hasTrueValue) {
+      setValidateVariations(true);
+      return (
+        <Box sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}>
+          <Typography sx={{fontSize: 18, fontWeight: 600}}>
+            Hay variaciones repetidas
+          </Typography>
+        </Box>
+      );
+    } else {
+      setValidateVariations(false);
+      console.log('El objeto no tiene ninguna propiedad con valor true.');
+    }
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -782,61 +1017,6 @@ const Update = (props) => {
                       </Box>
                     </Grid>
 
-                    {/* Segundo Grid - Contiene el componente Autocomplete */}
-                    {/* <Grid item xs={12} md={4}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          flexDirection: 'column',
-                          mt: 2,
-                        }}
-                      >
-                        <Autocomplete
-                          value={selectedTags}
-                          onChange={(event, newValue) => {
-                            console.log('Nuevo Tag seleccionado:', newValue);
-                            handleTagSelect(newValue);
-                          }}
-                          disabled={selectedClientCount === listClients.length}
-                          sx={{
-                            m: 1,
-                            width: '100%', // Establece el ancho al 100% por defecto
-                            [(theme) => theme.breakpoints.down('sm')]: {
-                              width: '80%', // Ancho del 80% en pantallas pequeñas
-                            },
-                            [(theme) => theme.breakpoints.up('md')]: {
-                              width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
-                            },
-                          }}
-                          multiple
-                          options={['ALL', ...namesTags]}
-                          getOptionLabel={(option) => option}
-                          disableCloseOnSelect
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant='outlined'
-                              label='Selecciona Etiquetas'
-                              placeholder='etiquetas...'
-                            />
-                          )}
-                          renderOption={(props, option, {selected}) => (
-                            <MenuItem
-                              {...props}
-                              key={option}
-                              value={option}
-                              sx={{justifyContent: 'space-between'}}
-                            >
-                              {option}
-                              {selected ? <CheckIcon color='info' /> : null}
-                            </MenuItem>
-                          )}
-                        />
-                      </Box>
-                    </Grid> */}
-
                     {/* Tercer Grid - Contiene el box image */}
                     <Grid item xs={12} md={6}>
                       <Box
@@ -918,7 +1098,7 @@ const Update = (props) => {
                       Total de clientes: {totaldeClientes()}
                     </Typography>
                   </Box>
-                  {campaignContents.map((contentData) => (
+                  {/* {campaignContents.map((contentData) => (
                     <Grid item xs={12} md={12} key={contentData.id}>
                       <Accordion
                         expanded={expanded === contentData.id}
@@ -931,7 +1111,7 @@ const Update = (props) => {
                           <Grid item xs={12} md={12}>
                             <TextField
                               label='Contenido de la Campaña *'
-                              name={`campaignContent${contentData.id}`}
+                              name={`campaignContents.contents`}
                               variant='outlined'
                               multiline
                               rows={4}
@@ -948,35 +1128,30 @@ const Update = (props) => {
                         </AccordionDetails>
                       </Accordion>
                     </Grid>
-                  ))}
-
-                  {/* Botón "Más" para agregar un nuevo acordeón */}
-                  {/* <Grid container item xs={12} justifyContent='center'>
-                    <Button
+                  ))} */}
+                  <Grid item xs={12} md={12}>
+                    <AppTextField
+                      label='Contenido de la Campaña *'
+                      name='campaignContent'
+                      onChange={''}
                       variant='outlined'
-                      color='primary'
-                      onClick={handleAddAccordion}
-                      startIcon={<AddCircleOutlineOutlinedIcon />}
-                    >
-                      Más
-                    </Button>
-                  </Grid> */}
-                </Grid>
-                {/* {selectedClients.length > 50 ? ( */}
-                {totaldeClientes() > 1 ? (
-                  <Grid container item xs={12} justifyContent='center'>
-                    <Button
-                      variant='outlined'
-                      color='primary'
-                      startIcon={<AddCircleOutlineOutlinedIcon />}
-                      onClick={() => setOpenDialog(true)}
-                    >
-                      Generar Variación
-                    </Button>
+                      multiline
+                      rows={4}
+                      sx={{width: '100%', my: 2}}
+                    />
                   </Grid>
-                ) : (
-                  <Typography></Typography>
-                )}
+                </Grid>
+
+                <Grid container item xs={12} justifyContent='center'>
+                  <Button
+                    variant='outlined'
+                    color='primary'
+                    startIcon={<AddCircleOutlineOutlinedIcon />}
+                    onClick={() => setOpenDialog(true)}
+                  >
+                    Generar Variación
+                  </Button>
+                </Grid>
 
                 <Dialog
                   open={openDialog}
@@ -985,55 +1160,107 @@ const Update = (props) => {
                   fullWidth
                 >
                   <DialogTitle>
-                    Variaciones
-                    <IconButton
-                      edge='end'
-                      color='inherit'
-                      onClick={() => setOpenDialog(false)}
-                      aria-label='close'
+                    <Box
+                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
                     >
-                      <CancelOutlinedIcon />
-                    </IconButton>
+                      <Button variant='outlined' onClick={handleDummy}>
+                        ¡Necesito Ayuda!
+                      </Button>
+                    </Box>
                   </DialogTitle>
+                  {sameData()}
+                  {totaldeClientes() > levelEnter.clientsAmount ? (
+                    <Box
+                      sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
+                    >
+                      <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                        Cantidad de variaciones obligatorias:
+                        {verificationVariations()}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Typography></Typography>
+                  )}
                   <DialogContent>
                     {variations.map((variation, index) => (
-                      <Accordion key={index}>
+                      <Accordion
+                        key={index}
+                        expanded={expandedAccordion === index}
+                        onChange={handleAccordionChange(index)}
+                      >
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                           {variation}
+                          <Box sx={{ml: 'auto'}}>
+                            <Button
+                              onClick={() => handleDeleteAccordion(index)}
+                            >
+                              <DeleteOutlineOutlinedIcon />
+                            </Button>
+                          </Box>
                         </AccordionSummary>
                         <AccordionDetails>
                           <Grid item xs={12} md={12}>
                             <TextField
-                              label='Contenido de la Campaña *'
+                              label='Contenido de la Variación Campaña *'
                               variant='outlined'
                               multiline
                               rows={4}
-                              value={''}
-                              onChange={''}
+                              value={variationsData[index]} // Use the updated variationsData
+                              onChange={(e) =>
+                                handleVariationContentChange(
+                                  index,
+                                  e.target.value,
+                                )
+                              }
                               sx={{width: '100%', my: 2}}
                             />
                           </Grid>
                         </AccordionDetails>
                       </Accordion>
                     ))}
+                    <Box
+                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                    >
+                      <Button variant='outlined' onClick={handleAddVariation}>
+                        Más
+                      </Button>
+                    </Box>
                   </DialogContent>
                   <DialogActions>
-                    <Button variant='outlined' onClick={handleAddVariation}>
-                      Más
+                    <Button
+                      color='primary'
+                      sx={{mx: 'auto', width: '15%'}}
+                      type='submit'
+                      variant='contained'
+                      startIcon={<SaveAltOutlinedIcon />}
+                      disabled={validateVariations}
+                      onClick={() => {
+                        // Save the variationsData when clicking "Guardar"
+                        console.log('Saving variations:', variationsData);
+                        // ... (Add your saving logic here)
+                        verificationVariations();
+                        setOpenDialog(false);
+                      }}
+                    >
+                      Guardar
                     </Button>
                     <Button
                       variant='outlined'
-                      onClick={() => setOpenDialog(false)}
+                      startIcon={<ArrowCircleLeftOutlinedIcon />}
+                      onClick={handleAccordionVariationsClose}
                     >
                       Cerrar
                     </Button>
                   </DialogActions>
                 </Dialog>
 
-                {selectedClients > 50 ? (
-                  <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
+                {totaldeClientes() > levelEnter.clientsAmount ? (
+                  <Box
+                    sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
+                  >
                     <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                      Cantidad de variaciones: {numVariations}
+                      Cantidad de variaciones obligatorias:
+                      {verificationVariations()}
                     </Typography>
                   </Box>
                 ) : (
@@ -1052,7 +1279,13 @@ const Update = (props) => {
                     type='submit'
                     variant='contained'
                     form='principal-form'
-                    disabled={isSubmitting}
+                    disabled={
+                      isSubmitting ||
+                      (totaldeClientes() <= levelEnter.clientsAmount &&
+                        totaldeClientes() > 0)
+                        ? false
+                        : verification
+                    }
                     startIcon={<SaveAltOutlinedIcon />}
                   >
                     Finalizar
@@ -1135,7 +1368,17 @@ const Update = (props) => {
         aria-describedby='alert-dialog-description'
         maxWidth='lg'
       >
-        <DialogTitle id='alert-dialog-title'>Seleccionar Clientes</DialogTitle>
+        <DialogTitle id='alert-dialog-title'>
+          <Typography
+            sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
+          >
+            {'Seleccionar Clientes'}
+            <CancelOutlinedIcon
+              onClick={handleCloseClientsDialog}
+              className={classes.closeButton}
+            />
+          </Typography>
+        </DialogTitle>
         <DialogContent dividers>
           <div style={{height: 400, width: 1000}}>
             <Stack
@@ -1151,16 +1394,16 @@ const Update = (props) => {
                 size='small'
                 value={searchDialogValue}
                 onChange={(e) => setSearchDialogValue(e.target.value)}
+                sx={{flex: 1}}
               />
 
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <Box
                   sx={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
                     flexDirection: 'column',
-                    mt: 2,
                   }}
                 >
                   <Autocomplete
@@ -1212,6 +1455,7 @@ const Update = (props) => {
                 variant='contained'
                 color='primary'
                 onClick={searchClients}
+                sx={{height: '100%'}}
               >
                 Buscar
               </Button>
@@ -1263,7 +1507,22 @@ const Update = (props) => {
         </DialogContent>
         <Typography>Total seleccionados {totaldeClientes()}</Typography>
         <DialogActions>
-          <Button onClick={handleCloseClientsDialog}>Cerrar</Button>
+          <Button
+            color='primary'
+            sx={{mr: '35%', width: '10%'}}
+            variant='contained'
+            startIcon={<SaveAltOutlinedIcon />}
+            onClick={handleCloseClientsDialog}
+          >
+            Guardar
+          </Button>
+          <Button
+            onClick={handleCloseClientsDialogReload}
+            startIcon={<ArrowCircleLeftOutlinedIcon />}
+            variant='outlined'
+          >
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
     </Card>

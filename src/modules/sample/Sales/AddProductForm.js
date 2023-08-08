@@ -29,11 +29,17 @@ import {
   Checkbox,
   useMediaQuery,
   useTheme,
+  Snackbar,
 } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import MuiAlert from '@mui/material/Alert';
 
+
+const Alert2 = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
@@ -55,7 +61,7 @@ const defaultValues = {
   subtotalWithoutIgv: '',
   productIgv: '',
   subtotalWithIgv: '',
-  count: '',
+  count: 1,
   unitMeasure: '',
   taxCode: '',
 };
@@ -139,7 +145,6 @@ const validationSchema = yup.object({
     ),
 });
 
-let selectedProduct = {};
 
 const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
   const useStyles = {
@@ -202,19 +207,28 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
 
   //FUNCIONES DIALOG
   const [open, setOpen] = React.useState(false);
+  const [selectedProduct, setSelectedProduct] = React.useState([]);
   const [typeAlert, setTypeAlert] = React.useState('faltaProduct');
   const [showAlert, setShowAlert] = React.useState(false);
-  const [typeElement, setTypeElement] = React.useState('NIU');
+  const [typeElement, setTypeElement] = React.useState(userDataRes.merchantSelected.businessLine == 'services' ? 'ZZ' : 'NIU');
   const [typeTaxCode, setTypeTaxCode] = React.useState(
     igvEnabled ? '1000' : '9998',
   );
   const [proSearch, setProSearch] = React.useState();
   const [nameChanged, setNameChanged] = React.useState(false);
-  const [stockChange, setStockChange] = React.useState(true);
+  const [stockChange, setStockChange] = React.useState(userDataRes.merchantSelected.businessLine == 'services' ? false : true);
+  const [openAddedProduct, setOpenAddedProduct] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
   };
+  
+  const handleCloseAddedProduct = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
 
+    setOpenAddedProduct(false);
+  };
   const handleClickOpen = () => {
     setShowAlert(false);
     if (actualValues.productSearch != '') {
@@ -229,29 +243,29 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
   };
 
   const addProduct = (obj) => {
-    selectedProduct = obj;
-    console.log('Producto seleccionado', selectedProduct);
+    let newSelectedProduct = obj;
+    console.log('Producto seleccionado', newSelectedProduct);
     setTypeElement(obj.unitMeasure);
     if (
       obj.unitMeasure == 'ZZ' ||
-      (selectedProduct && selectedProduct.isStockNeeded === false)
+      (newSelectedProduct && newSelectedProduct.isStockNeeded === false)
     ) {
       setStockChange(false);
     } else {
       setStockChange(true);
     }
-    changeValueField('productPrice', selectedProduct.sellPriceUnit);
+    changeValueField('productPrice', newSelectedProduct.sellPriceUnit);
     changeValueField(
       'subtotalWithoutIgv',
       Number(
-        selectedProduct.sellPriceUnit * getValueField('count').value,
+        newSelectedProduct.sellPriceUnit * getValueField('count').value,
       ).toFixed(2),
     );
     changeValueField(
       'productIgv',
       Number(
         typeTaxCode == 1000
-          ? selectedProduct.sellPriceUnit *
+          ? newSelectedProduct.sellPriceUnit *
               getValueField('count').value *
               igvDefault
           : 0,
@@ -261,14 +275,15 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
       'subtotalWithIgv',
       Number(
         typeTaxCode == 1000
-          ? selectedProduct.sellPriceUnit *
+          ? newSelectedProduct.sellPriceUnit *
               getValueField('count').value *
               (1 + igvDefault)
-          : selectedProduct.sellPriceUnit * getValueField('count').value,
+          : newSelectedProduct.sellPriceUnit * getValueField('count').value,
       ).toFixed(2),
     );
 
-    changeValueField('productSearch', selectedProduct.description);
+    changeValueField('productSearch', newSelectedProduct.description);
+    setSelectedProduct(newSelectedProduct);
     setOpen(false);
   };
 
@@ -388,7 +403,8 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
     setShowAlert(false);
-    if (selectedProduct.stock < data.count && stockChange) {
+    let newSelectedProduct = selectedProduct;
+    if (newSelectedProduct.stock < data.count && stockChange) {
       console.log('porfavor selecciona un numero menor al total de productos');
       setTypeAlert('maxCount');
       setShowAlert(true);
@@ -396,11 +412,11 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
       let requiredKeys = ['product', 'description', 'costPriceUnit'];
       let objCorrect = true;
       requiredKeys.map((key, index) => {
-        if (!(key in selectedProduct)) {
+        if (!(key in newSelectedProduct)) {
           objCorrect = false;
         }
       });
-      delete selectedProduct['referencialPriceProduct'];
+      delete newSelectedProduct['referencialPriceProduct'];
       if (true) {
         // console.log("addProductForm", {
         //   product:
@@ -424,21 +440,21 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
         // })
         sendData({
           product:
-            data.productSearch === selectedProduct.description
-              ? selectedProduct.product
+            data.productSearch === newSelectedProduct.description
+              ? newSelectedProduct.product
               : '',
           description: data.productSearch,
           unitMeasure: typeElement,
           customCodeProduct:
-            selectedProduct.customCodeProduct !== undefined
-              ? selectedProduct.customCodeProduct
+          newSelectedProduct.customCodeProduct !== undefined
+              ? newSelectedProduct.customCodeProduct
               : '',
           quantityMovement: Number(data.count),
           unitPrice: Number(data.productPrice),
           subtotal: Number(
             Number(data.count) * Number(data.productPrice),
           ).toFixed(3),
-          businessProductCode: selectedProduct.businessProductCode,
+          businessProductCode: newSelectedProduct.businessProductCode,
           taxCode: Number(typeTaxCode),
           stockChange: stockChange,
         });
@@ -449,6 +465,7 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
         actualValues.productPrice = '';
         actualValues.count = '';
         actualValues.subTotal = '';
+        setOpenAddedProduct(true);
       } else {
         console.log('Porfavor selecciona un producto');
         setTypeAlert('faltaProduct');
@@ -759,6 +776,13 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
           );
         }}
       </Formik>
+      
+      <Snackbar open={openAddedProduct} autoHideDuration={4000} onClose={handleCloseAddedProduct}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+        <Alert2 >
+          Producto añadido correctamente!
+        </Alert2>
+      </Snackbar>
       <Collapse in={showAlert}>
         <Alert
           severity='error'
