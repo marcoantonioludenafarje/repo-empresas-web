@@ -778,7 +778,7 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
       <Snackbar open={openAddedProduct} autoHideDuration={4000} onClose={handleCloseAddedProduct}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
         <Alert2 >
-          This is a success message!
+          Producto añadido correctamente!
         </Alert2>
       </Snackbar>
       <Collapse in={showAlert}>
