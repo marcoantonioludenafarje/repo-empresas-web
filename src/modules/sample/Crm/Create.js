@@ -46,6 +46,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CheckIcon from '@mui/icons-material/Check';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
@@ -73,6 +74,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import {DataGrid} from '@mui/x-data-grid';
 import {verTags} from '../../../Utils/utils';
+import {useRef} from 'react';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -128,9 +130,167 @@ const Create = (props) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [variations, setVariations] = useState(['Variación 1']);
   const [numVariations, setNumVariations] = useState(1);
+  const [textMessage, setTextMessage] = useState('');
+  const [idTextMessage, setIdTextMessage] = useState(0);
   const [campaignContentVariations, setCampaignContentsVariations] = useState([
     {id: 1, content: ''},
   ]);
+  const [openReviewPop, setopenReviewPop] = React.useState(false);
+  const textRef = useRef(null);
+
+  const handleCloseReview = () => {
+    setopenReviewPop(false);
+  };
+  const handleBoldMessage = () => {
+    const updatedTextMessage = ` *Text*`;
+    console.log(textRef);
+    const textarea = textRef.current;
+    console.log(textarea);
+    const cursorPosition = textarea.selectionStart;
+    if (cursorPosition !== undefined) {
+      const currentText = textMessage;
+      const newText =
+        currentText.slice(0, cursorPosition) +
+        updatedTextMessage +
+        currentText.slice(cursorPosition);
+      setTextMessage(newText);
+      handleContentChange(newText);
+    }
+  };
+
+  const handleItalicsMessage = () => {
+    const updatedTextMessage = ` _Text_`;
+    console.log(textRef);
+    const textarea = textRef.current;
+    console.log(textarea);
+    const cursorPosition = textarea.selectionStart;
+    if (cursorPosition !== undefined) {
+      const currentText = textMessage;
+      const newText =
+        currentText.slice(0, cursorPosition) +
+        updatedTextMessage +
+        currentText.slice(cursorPosition);
+      setTextMessage(newText);
+      handleContentChange(newText);
+    }
+  };
+
+  const handleStrikethrough = () => {
+    const updatedTextMessage = ` ~Text~`;
+    console.log(textRef);
+    const textarea = textRef.current;
+    console.log(textarea);
+    const cursorPosition = textarea.selectionStart;
+    if (cursorPosition !== undefined) {
+      const currentText = textMessage;
+      const newText =
+        currentText.slice(0, cursorPosition) +
+        updatedTextMessage +
+        currentText.slice(cursorPosition);
+      setTextMessage(newText);
+      handleContentChange(newText);
+    }
+  };
+
+  const handleFullName = () => {
+    const updatedTextMessage = ` {{denominationClient}}`;
+    console.log(textRef);
+    const textarea = textRef.current;
+    console.log(textarea);
+    const cursorPosition = textarea.selectionStart;
+    if (cursorPosition !== undefined) {
+      const currentText = textMessage;
+      const newText =
+        currentText.slice(0, cursorPosition) +
+        updatedTextMessage +
+        currentText.slice(cursorPosition);
+      setTextMessage(newText);
+      handleContentChange(newText);
+    }
+  };
+
+  const handleNameMessage = () => {
+    const updatedTextMessage = ` {{givenName}}`;
+    console.log(textRef);
+    const textarea = textRef.current;
+    console.log(textarea);
+    const cursorPosition = textarea.selectionStart;
+    if (cursorPosition !== undefined) {
+      const currentText = textMessage;
+      const newText =
+        currentText.slice(0, cursorPosition) +
+        updatedTextMessage +
+        currentText.slice(cursorPosition);
+      setTextMessage(newText);
+      handleContentChange(newText);
+    }
+  };
+
+  const handlePaternalLastNameMessage = () => {
+    const updatedTextMessage = ` {{lastName}}`;
+    console.log(textRef);
+    const textarea = textRef.current;
+    console.log(textarea);
+    const cursorPosition = textarea.selectionStart;
+    if (cursorPosition !== undefined) {
+      const currentText = textMessage;
+      const newText =
+        currentText.slice(0, cursorPosition) +
+        updatedTextMessage +
+        currentText.slice(cursorPosition);
+      setTextMessage(newText);
+      handleContentChange(newText);
+    }
+  };
+
+  const handleMaternalLastNameMessage = () => {
+    const updatedTextMessage = ` {{secondLastName}}`;
+    console.log(textRef);
+    const textarea = textRef.current;
+    console.log(textarea);
+    const cursorPosition = textarea.selectionStart;
+    if (cursorPosition !== undefined) {
+      const currentText = textMessage;
+      const newText =
+        currentText.slice(0, cursorPosition) +
+        updatedTextMessage +
+        currentText.slice(cursorPosition);
+      setTextMessage(newText);
+      handleContentChange(newText);
+    }
+  };
+  const handleEmailMessage = () => {
+    const updatedTextMessage = ` {{emailClient}}`;
+    console.log(textRef);
+    const textarea = textRef.current;
+    console.log(textarea);
+    const cursorPosition = textarea.selectionStart;
+    if (cursorPosition !== undefined) {
+      const currentText = textMessage;
+      const newText =
+        currentText.slice(0, cursorPosition) +
+        updatedTextMessage +
+        currentText.slice(cursorPosition);
+      setTextMessage(newText);
+      handleContentChange(newText);
+    }
+  };
+  const handleBirthDateMessage = () => {
+    const updatedTextMessage = ` {{birtDay}}`;
+    console.log(textRef);
+    const textarea = textRef.current;
+    console.log(textarea);
+    const cursorPosition = textarea.selectionStart;
+    if (cursorPosition !== undefined) {
+      const currentText = textMessage;
+      const newText =
+        currentText.slice(0, cursorPosition) +
+        updatedTextMessage +
+        currentText.slice(cursorPosition);
+      setTextMessage(newText);
+      handleContentChange(newText);
+    }
+  };
   // Function to add more variations
   const handleAddVariation = () => {
     const newVariation = `Variación ${numVariations + 1}`;
@@ -142,7 +302,9 @@ const Create = (props) => {
       {id: newIdVariation, content: ''},
     ]);
   };
-
+  const setEnablePopReview = () => {
+    setopenReviewPop(true);
+  };
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
   const [actualImage, setActualImage] = React.useState('');
@@ -155,25 +317,42 @@ const Create = (props) => {
     campaignContent: '',
     campaignImages: null,
   };
+  const tranformMessageReview = (text) => {
+    const boldRegex = /\*(.*?)\*/g;
+    const italicRegex = /_(.*?)_/g;
+    const strikethroughRegex = /~(.*?)~/g;
+
+    const boldText = text.replace(boldRegex, '<b>$1</b>');
+    const italicText = boldText.replace(italicRegex, '<i>$1</i>');
+    const transformedText = italicText.replace(strikethroughRegex, '<s>$1</s>');
+
+    console.log('Hola desde tranformMessageReview', transformedText);
+    return transformedText;
+  };
+  const transformText = () => {
+    console.log('content Hola desde tranforText');
+    let updatedContents = '';
+    updatedContents += tranformMessageReview(campaignContent);
+    console.log('Este es el updateContents', updatedContents);
+    return <div dangerouslySetInnerHTML={{__html: updatedContents}}></div>;
+  };
 
   // Estado para controlar el acordeón abierto
   const [expanded, setExpanded] = useState(1);
   const [campaignContents, setCampaignContents] = useState([
-    {id: 1, content: ''}, // Primer acordeón desplegado
+    {id: 1, content: textMessage}, // Primer acordeón desplegado
   ]);
-
+  const [campaignContent, setCampaignContent] = useState('');
   // Código de agregar acordion
   // const handleAddAccordion = () => {
   //   const newId = campaignContents.length + 1;
   //   setCampaignContents([...campaignContents, {id: newId, content: ''}]);
   // };
 
-  const handleContentChange = (id, content) => {
+  const handleContentChange = (content) => {
     console.log('content Mensaje', content);
-    const updatedContents = campaignContents.map((contentData) =>
-      contentData.id === id ? {...contentData, content} : contentData,
-    );
-    setCampaignContents(updatedContents);
+    const updatedContents = content;
+    setCampaignContent(updatedContents);
   };
 
   const handleClientSelection = (selectedClients) => {
@@ -996,39 +1175,210 @@ const Create = (props) => {
                       Total de clientes: {totaldeClientes()}
                     </Typography>
                   </Box>
-                  {campaignContents.map((contentData) => (
-                    <Grid item xs={12} md={12} key={contentData.id}>
-                      <Accordion
-                        expanded={expanded === contentData.id}
-                        onChange={handleAccordionChange(contentData.id)}
+                  {campaignContents.map((contentData) => {
+                    setIdTextMessage(contentData.id);
+                    return (
+                      <Grid
+                        item
+                        xs={12}
+                        md={12}
+                        key={contentData.id}
+                        sx={{mb: '1rem'}}
                       >
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Mensaje N. {contentData.id}
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Grid item xs={12} md={12}>
-                            <TextField
-                              label='Contenido de la Campaña *'
-                              name={`campaignContent${contentData.id}`}
+                        <Accordion
+                          expanded={expanded === contentData.id}
+                          onChange={handleAccordionChange(contentData.id)}
+                        >
+                          <Box
+                            sx={{
+                              width: '100%',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              padding: '.5rem',
+                              gap: '.5rem',
+                            }}
+                          >
+                            <ButtonGroup
                               variant='outlined'
-                              multiline
-                              rows={4}
-                              value={contentData.content}
-                              onChange={(event) =>
-                                handleContentChange(
-                                  contentData.id,
-                                  event.target.value,
-                                )
-                              }
-                              sx={{width: '100%', my: 2}}
-                            />
-                          </Grid>
-                        </AccordionDetails>
-                      </Accordion>
-                    </Grid>
-                  ))}
-                </Grid>
+                              aria-label='outlined button group'
+                            >
+                              <Button
+                                variant='contained'
+                                onClick={handleBoldMessage}
+                                sx={{fontWeight: 'bold', fontSize: '.8rem'}}
+                              >
+                                Negrita
+                              </Button>
+                              <Button
+                                variant='contained'
+                                onClick={handleItalicsMessage}
+                                sx={{fontStyle: 'italic', fontSize: '.8rem'}}
+                              >
+                                Cursiva
+                              </Button>
+                              <Button
+                                variant='contained'
+                                onClick={handleStrikethrough}
+                                sx={{
+                                  textDecoration: 'line-through',
+                                  fontSize: '.8rem',
+                                }}
+                              >
+                                Tachado
+                              </Button>
+                              <Button
+                                variant='outlined'
+                                onClick={handleFullName}
+                                sx={{fontSize: '.8rem'}}
+                              >
+                                Nombre Completo
+                              </Button>
+                              <Button
+                                variant='outlined'
+                                onClick={handleNameMessage}
+                                sx={{fontSize: '.8rem'}}
+                              >
+                                Nombre
+                              </Button>
+                              <Button
+                                variant='outlined'
+                                onClick={handlePaternalLastNameMessage}
+                                sx={{fontSize: '.8rem'}}
+                              >
+                                Apellido Paterno
+                              </Button>
+                              <Button
+                                variant='outlined'
+                                onClick={handleMaternalLastNameMessage}
+                                sx={{fontSize: '.8rem'}}
+                              >
+                                Apellido Materno
+                              </Button>
+                              <Button
+                                variant='outlined'
+                                onClick={handleEmailMessage}
+                                sx={{fontSize: '.8rem'}}
+                              >
+                                Correo
+                              </Button>
+                              <Button
+                                variant='outlined'
+                                onClick={handleBirthDateMessage}
+                                sx={{fontSize: '.8rem'}}
+                              >
+                                Fecha Nacimiento
+                              </Button>
+                            </ButtonGroup>
+                          </Box>
 
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            Mensaje N. {contentData.id}
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <Grid item xs={12} md={12}>
+                              <TextField
+                                label='Contenido de la Campaña *'
+                                name={`campaignContent${contentData.id}`}
+                                variant='outlined'
+                                multiline
+                                rows={4}
+                                inputRef={textRef}
+                                value={textMessage}
+                                onInput={(event) => {
+                                  setTextMessage(event.target.value);
+                                  handleContentChange(event.target.value);
+                                }}
+                                sx={{width: '100%', my: 2}}
+                              />
+                            </Grid>
+                            <Box
+                              sx={{
+                                width: '100%',
+                                display: 'flex',
+                                justifyContent: 'end',
+                              }}
+                            >
+                              <Button
+                                variant='contained'
+                                sx={{fontSize: '.7rem'}}
+                                onClick={setEnablePopReview}
+                              >
+                                Previsualizar Mensaje
+                              </Button>
+                            </Box>
+                          </AccordionDetails>
+                        </Accordion>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+                <Dialog
+                  open={openReviewPop}
+                  onClose={handleCloseReview}
+                  sx={{textAlign: 'center'}}
+                  aria-labelledby='alert-dialog-title'
+                  aria-describedby='alert-dialog-description'
+                >
+                  <DialogTitle
+                    sx={{
+                      fontSize: '1.3em',
+                      background: '#1976d2',
+                      color: 'white',
+                      marginBottom: '1rem',
+                    }}
+                    id='alert-dialog-title'
+                  >
+                    {'MENSAJE'}
+                  </DialogTitle>
+                  <DialogContent
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {textMessage ? (
+                      <>
+                        <p>{transformText()}</p>
+                      </>
+                    ) : null}
+                    {previewImages.map((image, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          position: 'relative',
+                          mx: 1,
+                          my: 1,
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <img
+                          src={image}
+                          alt='Preview'
+                          style={{
+                            width: 200,
+                            height: 200,
+                            objectFit: 'cover',
+                            borderRadius: '8px',
+                          }}
+                        />
+                      </Box>
+                    ))}
+                  </DialogContent>
+                  <DialogActions sx={{justifyContent: 'center'}}>
+                    <Button
+                      variant='outlined'
+                      startIcon={<SaveAltIcon />}
+                      sx={{width: '100%'}}
+                      onClick={handleCloseReview}
+                    >
+                      Cerrar
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 <Grid container item xs={12} justifyContent='center'>
                   <Button
                     variant='outlined'
