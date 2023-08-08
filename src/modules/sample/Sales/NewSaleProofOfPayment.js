@@ -682,6 +682,8 @@ const NewSaleProofOfPayment = (props) => {
               denominationMerchant:
                 userDataRes.merchantSelected.denominationMerchant,
               sendEmail: sendEmail,
+              saleUserCreated: query.userCreated || "",
+              saleUserCreatedMetadata: selectedSale.userCreatedMetadata || "",
               userCreated: userDataRes.userId,
               userCreatedMetadata: {
                 nombreCompleto: userDataRes.nombreCompleto,
