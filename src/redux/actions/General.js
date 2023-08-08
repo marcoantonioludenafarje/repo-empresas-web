@@ -95,6 +95,7 @@ export const createImagePresigned = (payload, file) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     const key = payload?.request?.payload.name;
+    console.log('newImage', key);
     API.post('tunexo', '/utility/preSignAnyPathMerchant', {body: payload})
       .then(async (data) => {
         data.response.payload.response.payload.name = key;
@@ -107,6 +108,7 @@ export const createImagePresigned = (payload, file) => {
         newPresigned.name = key;
         console.log('newImagePresigned json', newPresigned);
         // dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        console.log('newImagePresigned', file);
         await dispatch(uploadFileByPresign(newPresigned?.presignedS3Url, file));
       })
       .catch((error) => {
@@ -196,7 +198,7 @@ export const uploadFile = (payload, url) => {
 export const uploadFileByPresign = (url, file) => {
   return async (dispatch) => {
     dispatch({type: FETCH_START});
-
+    console.log('image', url, 'filesImages', file);
     await fetch(url, {
       method: 'PUT',
       body: file.image,

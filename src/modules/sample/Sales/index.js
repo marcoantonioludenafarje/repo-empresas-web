@@ -392,14 +392,14 @@ const SalesTable = (props) => {
       window.open(`${generateSellTicketRes.enlace_del_pdf}`);
     }
   }, [generateSellTicketRes]);
-  useEffect(()=>{
-    if(businessParameter && businessParameter.length>0){
+  useEffect(() => {
+    if (businessParameter && businessParameter.length > 0) {
       let igvDefault = businessParameter.find(
         (obj) => obj.abreParametro == 'IGV',
       ).value;
-      setSaleIgvDefault(igvDefault)
+      setSaleIgvDefault(igvDefault);
     }
-  }, [businessParameter])
+  }, [businessParameter]);
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
       (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
@@ -1378,22 +1378,22 @@ const SalesTable = (props) => {
     return validation;
   }
 
-  function showSubtotal (saleProducts){
+  function showSubtotal(saleProducts) {
     let saleSubtotal = 0;
-    
-    saleProducts.forEach((obj)=>{
-      saleSubtotal+=(obj.unitPrice*obj.quantityMovement)
-    })
-    return Number(saleSubtotal).toFixed(2)
+
+    saleProducts.forEach((obj) => {
+      saleSubtotal += obj.unitPrice * obj.quantityMovement;
+    });
+    return Number(saleSubtotal).toFixed(2);
   }
-  function showTotalIgv (saleProducts){
+  function showTotalIgv(saleProducts) {
     let saleTotalIgv = 0;
-    saleProducts.forEach((obj)=>{
-      if(obj.taxCode == 1000){
-        saleTotalIgv+=(obj.unitPrice*obj.quantityMovement)*saleIgvDefault
+    saleProducts.forEach((obj) => {
+      if (obj.taxCode == 1000) {
+        saleTotalIgv += obj.unitPrice * obj.quantityMovement * saleIgvDefault;
       }
-    })
-    return Number(saleTotalIgv).toFixed(2)
+    });
+    return Number(saleTotalIgv).toFixed(2);
   }
   return typeClient ? (
     <Card sx={{p: 4}}>
@@ -1638,7 +1638,9 @@ const SalesTable = (props) => {
                         )}
                       </TableCell>
                       <TableCell align='center'>
-                      {obj.totalIgv ? (obj.totalPriceWithIgv - obj.totalIgv) : showSubtotal(obj.products)}
+                        {obj.totalIgv
+                          ? obj.totalPriceWithIgv - obj.totalIgv
+                          : showSubtotal(obj.products)}
                       </TableCell>
                       <TableCell>{Number(obj.totalIgv).toFixed(2)}</TableCell>
                       <TableCell>{obj.totalPriceWithIgv}</TableCell>

@@ -397,7 +397,7 @@ const NewSale = (props) => {
               : obj.subtotal;
           return obj;
         });
-        setSelectedProducts(newSelectedProducts)
+        setSelectedProducts(newSelectedProducts);
         total = calculatedtotal;
       }
       changeValueField('totalField', Number(total.toFixed(2)));
@@ -418,7 +418,7 @@ const NewSale = (props) => {
               : obj.subtotal;
           return obj;
         });
-        setSelectedProducts(newSelectedProducts)
+        setSelectedProducts(newSelectedProducts);
         total = calculatedtotal;
       }
       changeValueField('totalField', Number(total.toFixed(2)));
@@ -463,7 +463,7 @@ const NewSale = (props) => {
       });
       total = calculatedtotal;
     }
-    setSelectedProducts(newSelectedProducts)
+    setSelectedProducts(newSelectedProducts);
 
     changeValueField('totalField', Number(total.toFixed(2)));
     changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));
@@ -506,7 +506,7 @@ const NewSale = (props) => {
         return obj;
       }
     });
-    setSelectedProducts(newSelectedProducts)
+    setSelectedProducts(newSelectedProducts);
 
     changeValueField('totalFieldIgv', Number(calculatedtotalIgv.toFixed(2)));
     forceUpdate();
@@ -516,7 +516,7 @@ const NewSale = (props) => {
     console.log('selectedProducts unitMeasure', unitMeasure);
     let newSelectedProducts = selectedProducts;
     newSelectedProducts[index].unitMeasure = unitMeasure;
-    setSelectedProducts(newSelectedProducts)
+    setSelectedProducts(newSelectedProducts);
 
     forceUpdate();
   };
@@ -552,8 +552,8 @@ const NewSale = (props) => {
     newSelectedProducts[index].quantityMovement = quantity;
     newSelectedProducts[index].subtotal =
       quantity * newSelectedProducts[index].unitPrice;
-      
-    setSelectedProducts(newSelectedProducts)
+
+    setSelectedProducts(newSelectedProducts);
     let calculatedtotalIgv =
       getValueField('totalFieldIgv').value -
       subTotalWithPreviousQuantity +
@@ -792,7 +792,7 @@ const NewSale = (props) => {
           ? Number((Number(obj.subtotal) * (1 + igvDefault)).toFixed(2))
           : Number(obj.subtotal);
     });
-    setSelectedProducts(newSelectedProducts)
+    setSelectedProducts(newSelectedProducts);
     total = Number(calculatedtotal.toFixed(2));
     changeValueField('totalField', Number(calculatedtotal.toFixed(2)));
     changeValueField('totalFieldIgv', Number(totalWithIgv.toFixed(2)));

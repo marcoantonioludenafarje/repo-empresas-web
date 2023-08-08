@@ -29,7 +29,7 @@ import {
   Alert,
 } from '@mui/material';
 import Router, {useRouter} from 'next/router';
-import { ClickAwayListener } from '@mui/base';
+import {ClickAwayListener} from '@mui/base';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
@@ -1203,7 +1203,8 @@ const GetReferralGuide = () => {
                           }}
                         />
                       </Grid>
-                      {reasonVal == 'transferBetweenEstablishmentsOfTheSameCompany' ? (
+                      {reasonVal ==
+                      'transferBetweenEstablishmentsOfTheSameCompany' ? (
                         <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                           <AppUpperCaseTextField
                             label='Codigo de establecimiento Sunat (Domicilio Fiscal = 0000) **'
@@ -1219,9 +1220,7 @@ const GetReferralGuide = () => {
                             }}
                           />
                         </Grid>
-                      )
-                      : null
-                      }
+                      ) : null}
                     </>
                   ) : null}
 
@@ -1310,7 +1309,8 @@ const GetReferralGuide = () => {
                           }}
                         />
                       </Grid>
-                      {reasonVal == 'transferBetweenEstablishmentsOfTheSameCompany' ? (
+                      {reasonVal ==
+                      'transferBetweenEstablishmentsOfTheSameCompany' ? (
                         <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                           <AppUpperCaseTextField
                             label='Codigo de establecimiento Sunat (Domicilio Fiscal = 0000) **'
@@ -1326,9 +1326,7 @@ const GetReferralGuide = () => {
                             }}
                           />
                         </Grid>
-                      )
-                      : null
-                      }
+                      ) : null}
                     </>
                   ) : null}
                 </Grid>
