@@ -1642,7 +1642,7 @@ const SalesTable = (props) => {
                           ? obj.totalPriceWithIgv - obj.totalIgv
                           : showSubtotal(obj.products)}
                       </TableCell>
-                      <TableCell>{Number(obj.totalIgv).toFixed(2)}</TableCell>
+                      <TableCell>{obj.totalIgv ? Number(obj.totalIgv).toFixed(2) : showTotalIgv(obj.products)}</TableCell>
                       <TableCell>{obj.totalPriceWithIgv}</TableCell>
                       <TableCell>
                         <Button

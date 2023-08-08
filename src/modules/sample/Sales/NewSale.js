@@ -223,8 +223,8 @@ const NewSale = (props) => {
     issueDate: Date.now(),
     wayToPay: Date.now(),
     methodToPay: 'Efectivo',
-    totalField: Number(query.totalPriceWithoutIgv),
-    totalFieldIgv: Number(query.totalPriceWithIgv),
+    totalField: 0,
+    totalFieldIgv: 0,
     money_unit: money_unit,
     clientEmail: query.clientEmail,
     transactionNumber: '',
@@ -283,19 +283,6 @@ const NewSale = (props) => {
   useEffect(() => {
     console.log('selectedProducts change', selectedProducts);
   }, [selectedProducts]);
-
-  useEffect(() => {
-    if (prevExchangeRate !== exchangeRate) {
-      console.log('exchangerate cambiaso', exchangeRate);
-      changeValueField('totalField', Number(total));
-      changeValueField(
-        'totalFieldIgv',
-        Number(igvDefault) > 0 && isIgvChecked
-          ? fixDecimals(total + fixDecimals(total * fixDecimals(igvDefault)))
-          : Number(total.toFixed(2)),
-      );
-    }
-  }, [exchangeRate]);
 
   useEffect(() => {
     if (businessParameter) {
