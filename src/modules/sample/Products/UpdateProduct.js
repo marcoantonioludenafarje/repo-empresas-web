@@ -256,8 +256,10 @@ const UpdateProduct = (props) => {
   const [secondaryUnitMeasure, setSecondaryUnitMeasure] = React.useState(
     query.secondaryUnitMeasure || 'ML',
   );
-  const [isStockNeeded, setIsStockNeeded] = React.useState(true);
-
+  const [isStockNeeded, setIsStockNeeded] = React.useState(query.isStockNeeded == 'false' ? false : true);
+    console.log ("abcd",query.isStockNeeded)
+    console.log ("abcde",isStockNeeded)
+    console.log ("abcdf",query.isStockNeeded == 'false')
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
   });
