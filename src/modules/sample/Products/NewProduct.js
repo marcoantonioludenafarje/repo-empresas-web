@@ -7,6 +7,7 @@ import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import SchoolIcon from '@mui/icons-material/School';
 import {Fonts} from '../../../shared/constants/AppEnums';
+import unitMeasureOptions from '../../../Utils/unitMeasureOptions.json';
 
 import {orange} from '@mui/material/colors';
 import {
@@ -20,6 +21,7 @@ import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
+import clsx from 'clsx';
 import {
   Button,
   ButtonGroup,
@@ -51,7 +53,12 @@ import {
   FormLabel,
   Checkbox,
   FormHelperText,
+  ToggleButtonGroup,
 } from '@mui/material';
+import {
+  CustomizerItemWrapper,
+  StyledToggleButton,
+} from '../../../@crema/core/AppThemeSetting/index.style';
 import DeleteIcon from '@mui/icons-material/Delete';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
@@ -132,7 +139,8 @@ const validationSchema = yup.object({
   alias: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
+    //.required(<IntlMessages id='validation.required' />)
+    ,
   title: yup.string().typeError(<IntlMessages id='validation.string' />),
   commercialDescription: yup
     .string()
@@ -203,10 +211,11 @@ const defaultValues = {
   sumQuantity: 0,
   costPriceUnit: undefined,
   referecialPriceSell: undefined,
-  weight: undefined,
+  weight: 0,
   category: '',
   typeProduct: '',
-  initialStock: undefined,
+  unitMeasure: '',
+  initialStock: 0,
   merchantId: '',
   imgKey: null,
 };
@@ -270,6 +279,7 @@ const NewProduct = (props) => {
   const [selectedCategory, setSelectedCategory] =
     React.useState('noCategories');
   const [typeProduct, setTypeProduct] = React.useState('rawMaterial');
+  const [unitMeasure, setUnitMeasure] = React.useState('NIU');
   const [openSelect, setOpenSelect] = React.useState(false);
   const prevSelectedCategoryRef = useRef();
   const [open, setOpen] = React.useState(false);
@@ -528,6 +538,17 @@ const NewProduct = (props) => {
     setTypeProduct(event.target.value);
     console.log('ocjSelects', objSelects);
   };
+  const handleUnitMeasure = (event) => {
+    console.log('evento', event);
+    objSelects[event.target.name] = event.target.value;
+    if(event.target.value == 'ZZ'){
+      setIsStockNeeded(false)
+    } else {
+      setIsStockNeeded(true)
+    }
+    setUnitMeasure(event.target.value);
+    console.log('ocjSelects', objSelects);
+  };
   const handleFieldSum = (event) => {
     console.log('evento', event);
     objSelects[event.target.name] = event.target.value;
@@ -704,7 +725,7 @@ const NewProduct = (props) => {
                   {
                     businessProductCode: data.businessProductCode,
                     description: data.description,
-                    alias: data.alias,
+                    alias: unitMeasure == "ZZ" ? data.description : data.alias,
                     costPriceUnit: Number(data.costPriceUnit),
                     sellPriceUnit: Number(data.referecialPriceSell),
                     weight: Number(data.weight),
@@ -718,9 +739,9 @@ const NewProduct = (props) => {
                     unitMeasureMoney: money_unit,
                     category: selectedCategory,
                     tags: selectedFilters,
-                    typeProduct: objSelects.typeProduct,
+                    typeProduct: unitMeasure == 'ZZ' ? 'service' : objSelects.typeProduct,
                     imgKeys: selectedJsonImages,
-                    unitMeasure: objSelects.unitMeasure,
+                    unitMeasure: unitMeasure,
                     unitsToProduce: 1,
                     inputsProduct: cleanProducts,
                     publish: publish,
@@ -754,7 +775,7 @@ const NewProduct = (props) => {
                     tags: selectedFilters,
                     typeProduct: objSelects.typeProduct,
                     imgKeys: selectedJsonImages,
-                    unitMeasure: objSelects.unitMeasure,
+                    unitMeasure: unitMeasure,
                     unitsToProduce: 1,
                     inputsProduct: cleanProducts,
                     publish: publish,
@@ -943,12 +964,12 @@ const NewProduct = (props) => {
   };
 
   return (
-    <Card sx={{p: 4}}>
+    <Card sx={{p: 4, mx:'auto'}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
         <Typography
-          sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
+          sx={{my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          Nuevo Producto
+          Nuevo Producto/Servicio
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -958,7 +979,6 @@ const NewProduct = (props) => {
           display: 'flex',
           flexDirection: 'column',
           mb: 5,
-          mx: 'auto',
         }}
       >
         <AppPageMeta />
@@ -976,8 +996,43 @@ const NewProduct = (props) => {
                 <Grid
                   container
                   spacing={2}
-                  sx={{maxWidth: 500, mx: 'auto', mb: 4, px: 2}}
+                  sx={{maxWidth: 500, mb: 4}}
                 >
+                  <Grid container justify="center" alignItems="center">
+                    <Grid item xs={12} sm={12}> {/* Puedes ajustar el tamaño del Grid según tus necesidades */}
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <ToggleButtonGroup
+                          value={unitMeasure}
+                          exclusive
+                          onChange={(event) => {
+                            console.log(event.target.value);
+                            setUnitMeasure(event.target.value);
+                          }}
+                          aria-label='text alignment'
+                        >
+                          <StyledToggleButton
+                            value={'NIU'}
+                            className={clsx({
+                              active: unitMeasure === 'NIU',
+                            })}
+                            aria-label='left aligned'
+                          >
+                            PRODUCTO
+                          </StyledToggleButton>
+
+                          <StyledToggleButton
+                            value={'ZZ'}
+                            className={clsx({
+                              active: unitMeasure === 'ZZ',
+                            })}
+                            aria-label='centered'
+                          >
+                            SERVICIO
+                          </StyledToggleButton>
+                        </ToggleButtonGroup>
+                      </div>
+                    </Grid>
+                  </Grid>
                   <Grid item xs={12}>
                     <AppUpperCaseTextField
                       label='Código *'
@@ -1007,52 +1062,86 @@ const NewProduct = (props) => {
                       }}
                     />
                   </Grid>
-
-                  <Grid item xs={12}>
-                    <AppUpperCaseTextField
-                      label='Alias *'
-                      name='alias'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Código aduanero (opcional)'
-                      name='customCodeProduct'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        mx: 2,
-                        mb: 3,
-                        cursor: 'pointer',
-                        color: '#5194c4',
-                        textDecoration: 'underline',
-                      }}
-                      onClick={() =>
-                        window.open(
-                          'https://colombiacompra.gov.co/clasificador-de-bienes-y-Servicios',
-                        )
-                      }
-                    >
-                      Consúltalo aquí
-                    </Typography>
-                  </Grid>
+                  { unitMeasure !== 'ZZ' ? (
+                    <>
+                      <Grid item xs={12}>
+                        <AppUpperCaseTextField
+                          label='Alias *'
+                          name='alias'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Código aduanero (opcional)'
+                          name='customCodeProduct'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                        <Typography
+                          sx={{
+                            mx: 2,
+                            mb: 3,
+                            cursor: 'pointer',
+                            color: '#5194c4',
+                            textDecoration: 'underline',
+                          }}
+                          onClick={() =>
+                            window.open(
+                              'https://colombiacompra.gov.co/clasificador-de-bienes-y-Servicios',
+                            )
+                          }
+                        >
+                          Consúltalo aquí
+                        </Typography>
+                      </Grid>
+                    </>
+                  ) : null}
+                  {/* <Grid item xs={12}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='unitMeasure-label'
+                        style={{fontWeight: 200}}
+                      >
+                        PROD&SERV
+                      </InputLabel>
+                      <Select
+                        defaultValue='NIU'
+                        name='unitMeasure'
+                        labelId='unitMeasure-label'
+                        label='Unidad de Medida'
+                        onChange={handleUnitMeasure}
+                      >
+                        <MenuItem
+                          key={`unitMeasureItem-1`}
+                          value='NIU'
+                          style={{fontWeight: 200}}
+                        >
+                          PRODUCTO
+                        </MenuItem>
+                        <MenuItem
+                          key={`unitMeasureItem-2`}
+                          value='ZZ'
+                          style={{fontWeight: 200}}
+                        >
+                          SERVICIO
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid> */}
                   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
@@ -1086,67 +1175,73 @@ const NewProduct = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label={`Peso (${weight_unit}) *`}
-                      name='weight'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel
-                        id='secondaryUnitMeasure-label'
-                        style={{fontWeight: 200}}
-                      >
-                        Unidad de medida secundaria
-                      </InputLabel>
-                      <Select
-                        defaultValue='ML'
-                        name='secondaryUnitMeasure'
-                        labelId='secondaryUnitMeasure-label'
-                        label='Unidad de medida secundaria'
-                        onChange={handleFieldSum}
-                      >
-                        <MenuItem value='ML' style={{fontWeight: 200}}>
-                          <IntlMessages id='product.secondaryUnitMeasure.ml' />
-                        </MenuItem>
-                        <MenuItem value='L' style={{fontWeight: 200}}>
-                          <IntlMessages id='product.secondaryUnitMeasure.l' />
-                        </MenuItem>
-                        <MenuItem value='MGR' style={{fontWeight: 200}}>
-                          <IntlMessages id='product.secondaryUnitMeasure.mgr' />
-                        </MenuItem>
-                        <MenuItem value='GR' style={{fontWeight: 200}}>
-                          <IntlMessages id='product.secondaryUnitMeasure.gr' />
-                        </MenuItem>
-                        <MenuItem value='TM' style={{fontWeight: 200}}>
-                          <IntlMessages id='product.secondaryUnitMeasure.tm' />
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label={`Cantidad (${secondaryUnitMeasure})`}
-                      name='sumQuantity'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
+                  { unitMeasure !== 'ZZ' ? (
+                    <>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label={`Peso (${weight_unit}) *`}
+                          name='weight'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <FormControl fullWidth sx={{my: 2}}>
+                          <InputLabel
+                            id='secondaryUnitMeasure-label'
+                            style={{fontWeight: 200}}
+                          >
+                            Unidad de medida secundaria
+                          </InputLabel>
+                          <Select
+                            defaultValue='ML'
+                            name='secondaryUnitMeasure'
+                            labelId='secondaryUnitMeasure-label'
+                            label='Unidad de medida secundaria'
+                            onChange={handleFieldSum}
+                          >
+                            <MenuItem value='ML' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.ml' />
+                            </MenuItem>
+                            <MenuItem value='L' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.l' />
+                            </MenuItem>
+                            <MenuItem value='MGR' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.mgr' />
+                            </MenuItem>
+                            <MenuItem value='GR' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.gr' />
+                            </MenuItem>
+                            <MenuItem value='TM' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.tm' />
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label={`Cantidad (${secondaryUnitMeasure})`}
+                          name='sumQuantity'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                    </>
+                  ) : null
+                  }
+                  
                   <Grid item xs={12}>
                     <AppTextField
                       label={`Precio costo sugerido (${money_unit}) *`}
@@ -1161,9 +1256,6 @@ const NewProduct = (props) => {
                       }}
                     />
                   </Grid>
-                  {/* <Typography variant='caption' display='block' gutterBottom>
-                Solo se registran hasta 3 decimales
-              </Typography> */}
                   <Grid item xs={12}>
                     <AppTextField
                       label={`Precio venta sugerido (${money_unit}) *`}
@@ -1178,114 +1270,122 @@ const NewProduct = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    sx={{display: 'flex', alignItems: 'center', px: 2}}
-                  >
-                    <FormControlLabel
-                      checked={isStockNeeded}
-                      control={<Checkbox onChange={handleStock} />}
-                      label='Necesita Stock?'
-                    />
-                    {isStockNeeded}
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label='Stock inicial *'
-                      name='initialStock'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel
-                        id='typeProduct-label'
-                        style={{fontWeight: 200}}
+                  
+                  { unitMeasure !== 'ZZ' ? (
+                    <>
+                      <Grid
+                        item
+                        xs={12}
+                        sx={{display: 'flex', alignItems: 'center', px: 2}}
                       >
-                        Tipo de producto *
-                      </InputLabel>
-                      <Select
-                        defaultValue='rawMaterial'
-                        name='typeProduct'
-                        labelId='typeProduct-label'
-                        label='Tipo de producto'
-                        onChange={handleFieldType}
-                      >
-                        <MenuItem value='rawMaterial' style={{fontWeight: 200}}>
-                          <IntlMessages id='product.type.rawMaterial' />
-                        </MenuItem>
-                        <MenuItem
-                          value='intermediateProduct'
-                          style={{fontWeight: 200}}
-                        >
-                          <IntlMessages id='product.type.intermediateProduct' />
-                        </MenuItem>
-                        <MenuItem value='endProduct' style={{fontWeight: 200}}>
-                          <IntlMessages id='product.type.endProduct' />
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                    {typeProduct != 'rawMaterial' ? (
-                      <Box sx={{textAlign: 'center'}}>
-                        <Button
-                          sx={{width: 1 / 2, mb: 4}}
-                          variant='outlined'
-                          onClick={handleClickOpen}
-                        >
-                          Añade productos
-                        </Button>
-                        <SubProducts
-                          arrayObjs={selectedProducts}
-                          toDelete={removeProduct}
+                        <FormControlLabel
+                          disabled={unitMeasure=='ZZ'}
+                          checked={isStockNeeded}
+                          control={<Checkbox onChange={handleStock} />}
+                          label='Necesita Stock?'
                         />
-                      </Box>
-                    ) : (
-                      <></>
-                    )}
-
-                    <Collapse in={showAlert}>
-                      <Alert
-                        severity='error'
-                        action={
-                          <IconButton
-                            aria-label='close'
-                            color='inherit'
-                            size='small'
-                            onClick={() => {
-                              setShowAlert(false);
-                            }}
+                        {isStockNeeded}
+                      </Grid>
+                      <Grid item xs={12}>
+                        <AppTextField
+                          label='Stock inicial *'
+                          name='initialStock'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <FormControl fullWidth sx={{my: 2}}>
+                          <InputLabel
+                            id='typeProduct-label'
+                            style={{fontWeight: 200}}
                           >
-                            <CloseIcon fontSize='inherit' />
-                          </IconButton>
-                        }
-                        sx={{mb: 2}}
-                      >
-                        {typeAlert == 'faltaProduct' ? (
-                          'Selecciona un producto.'
+                            Tipo de producto *
+                          </InputLabel>
+                          <Select
+                            defaultValue='rawMaterial'
+                            name='typeProduct'
+                            labelId='typeProduct-label'
+                            label='Tipo de producto'
+                            onChange={handleFieldType}
+                          >
+                            <MenuItem value='rawMaterial' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.type.rawMaterial' />
+                            </MenuItem>
+                            <MenuItem
+                              value='intermediateProduct'
+                              style={{fontWeight: 200}}
+                            >
+                              <IntlMessages id='product.type.intermediateProduct' />
+                            </MenuItem>
+                            <MenuItem value='endProduct' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.type.endProduct' />
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                        {typeProduct != 'rawMaterial' ? (
+                          <Box sx={{textAlign: 'center'}}>
+                            <Button
+                              sx={{width: 1 / 2, mb: 4}}
+                              variant='outlined'
+                              onClick={handleClickOpen}
+                            >
+                              Añade productos
+                            </Button>
+                            <SubProducts
+                              arrayObjs={selectedProducts}
+                              toDelete={removeProduct}
+                            />
+                          </Box>
                         ) : (
                           <></>
                         )}
-                        {typeAlert == 'maxStock' ? (
-                          'No puedes sobrepasar el stock.'
-                        ) : (
-                          <></>
-                        )}
-                        {typeAlert == 'limitCatalog' ? (
-                          'Se alcanzó el límite de registros de productos.'
-                        ) : (
-                          <></>
-                        )}
-                      </Alert>
-                    </Collapse>
-                  </Grid>
+
+                        <Collapse in={showAlert}>
+                          <Alert
+                            severity='error'
+                            action={
+                              <IconButton
+                                aria-label='close'
+                                color='inherit'
+                                size='small'
+                                onClick={() => {
+                                  setShowAlert(false);
+                                }}
+                              >
+                                <CloseIcon fontSize='inherit' />
+                              </IconButton>
+                            }
+                            sx={{mb: 2}}
+                          >
+                            {typeAlert == 'faltaProduct' ? (
+                              'Selecciona un producto.'
+                            ) : (
+                              <></>
+                            )}
+                            {typeAlert == 'maxStock' ? (
+                              'No puedes sobrepasar el stock.'
+                            ) : (
+                              <></>
+                            )}
+                            {typeAlert == 'limitCatalog' ? (
+                              'Se alcanzó el límite de registros de productos.'
+                            ) : (
+                              <></>
+                            )}
+                          </Alert>
+                        </Collapse>
+                      </Grid>
+                    </>
+                  ) : null
+                  }
+                  
                   {sectionEcommerce === true ? (
                     <>
                       <Grid item xs={12} md={12}>
@@ -1546,14 +1646,6 @@ const NewProduct = (props) => {
                   >
                     Finalizar
                   </Button>
-                  {/* <Button
-                  sx={{mx: 'auto', width: '80%', py: 3}}
-                  variant='outlined'
-                  size='medium'
-                  startIcon={<SaveAltOutlinedIcon />}
-                >
-                  Guardar y registrar nuevo
-                </Button> */}
                   <Button
                     sx={{mx: 'auto', width: '50%', py: 3}}
                     variant='outlined'

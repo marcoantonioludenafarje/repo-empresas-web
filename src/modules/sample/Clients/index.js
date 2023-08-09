@@ -196,9 +196,9 @@ const ClientTable = (arrayObjs, props) => {
           (obj) => obj.abreParametro == 'CLIENT_TAGS',
         ).value;
 
-        listTags1.forEach (item => {
+        listTags1.forEach((item) => {
           listTags.push([item.tagName, item.id, true]);
-        }); 
+        });
       }
 
       console.log('Estamos entrando al getClients');
@@ -219,7 +219,7 @@ const ClientTable = (arrayObjs, props) => {
       getClients(listPayload);
       // setFirstload(true);
     }
-  }, [userDataRes]);
+  }, [userDataRes, listTags]);
   useEffect(() => {
     // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
 
@@ -317,9 +317,9 @@ const ClientTable = (arrayObjs, props) => {
     // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
     if (tagSelected.length > 0) {
       let listTagsSelected = [];
-      tagSelected.forEach (item => {
+      tagSelected.forEach((item) => {
         listTagsSelected.push(item[1]);
-      }); 
+      });
       listPayload.request.payload.tags = listTagsSelected;
     }
     getClients(listPayload);
@@ -417,6 +417,7 @@ const ClientTable = (arrayObjs, props) => {
   };
   const goToUpdate = () => {
     console.log('Actualizando', selectedClient);
+
     Router.push({
       pathname: '/sample/clients/update',
       query: selectedClient,
@@ -497,11 +498,11 @@ const ClientTable = (arrayObjs, props) => {
     Router.push('/sample/clients/bulk-load');
   };
 
-  const  handlerTags = (event, values)=>{
-    console.log("Cambiando tags")
-    console.log("evento tag", event)
-    console.log("values tag", values)
-    console.log("tag seleccionado", event.target.attributes.value)
+  const handlerTags = (event, values) => {
+    console.log('Cambiando tags');
+    console.log('evento tag', event);
+    console.log('values tag', values);
+    console.log('tag seleccionado', event.target.attributes.value);
     setTagSelected(values);
     reloadPage();
   };
@@ -519,7 +520,11 @@ const ClientTable = (arrayObjs, props) => {
         className={classes.stack}
       >
         <FormControl sx={{my: 0, width: 140}}>
-          <InputLabel id='categoria-label' style={{fontWeight: 200}}>
+          <InputLabel
+            id='categoria-label'
+            style={{fontWeight: 200}}
+            sx={{mt: -2}}
+          >
             Identificador
           </InputLabel>
           <Select
@@ -527,6 +532,7 @@ const ClientTable = (arrayObjs, props) => {
             name='typeDocumentClient'
             labelId='documentType-label'
             label='Identificador'
+            size='small'
             sx={{maxWidth: 140}}
             onChange={(event) => {
               console.log('Está pasando por aquí?', event.target.value);
@@ -566,9 +572,9 @@ const ClientTable = (arrayObjs, props) => {
           variant='outlined'
           name='nameToSearch'
           size='small'
-          onChange={handleSearchValues} 
+          onChange={handleSearchValues}
         />
-        
+
         <Grid item xs={12} md={3}>
           <Box
             sx={{
@@ -576,12 +582,10 @@ const ClientTable = (arrayObjs, props) => {
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'column',
-              mt: 2,
             }}
           >
             <Autocomplete
               sx={{
-                m: 1,
                 width: '100%', // Establece el ancho al 100% por defecto
                 [(theme) => theme.breakpoints.down('sm')]: {
                   width: '80%', // Ancho del 80% en pantallas pequeñas
@@ -601,6 +605,7 @@ const ClientTable = (arrayObjs, props) => {
                   variant='outlined'
                   label='Etiqueta'
                   placeholder='Etiqueta'
+                  size='small'
                 />
               )}
               renderOption={(props, option, {selected}) => (
@@ -794,7 +799,6 @@ const ClientTable = (arrayObjs, props) => {
           </MenuItem>
         ) : null}
       </Menu>
-
     </Card>
   );
 };

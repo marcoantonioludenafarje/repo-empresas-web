@@ -53,6 +53,7 @@ import * as yup from 'yup';
 import Router, {useRouter} from 'next/router';
 import FilterCard from './FilterCard';
 import CategoryCard from './CategoryCard';
+import TagCard from './TagCard';
 import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useDispatch, useSelector} from 'react-redux';
 import {generatePredefinedRoute} from '../../../redux/actions/Movements';
@@ -109,19 +110,29 @@ const Distribution = () => {
     description: '',
     productCategoryId: '',
   };
+  const emptyTag = {
+    id: '',
+    tagName: '',
+  };
   const dispatch = useDispatch();
   const [typeAlert, setTypeAlert] = React.useState(
     'existProductsWithThisCategory',
   );
+  const [typeAlertTag, setTypeAlertTag] = React.useState(
+    'existClientWithThisTag',
+  );
   const [routes, setRoutes] = React.useState([]);
   const [filters, setFilters] = React.useState([]);
+  const [filtersClient, setFiltersClient] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
+  const [tags, setTags] = React.useState([]);
   const [reload, setReload] = React.useState(false);
   const [execAll, setExecAll] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [openDeleteStatus, setOpenDeleteStatus] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
+  const [openAlertTag, setOpenAlertTag] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [defaultMoney, setDefaultMoney] = React.useState('PEN');
   const [defaultWeight, setDefaultWeight] = React.useState('KG');
@@ -132,11 +143,15 @@ const Distribution = () => {
   const [sectionEcommerce, setSectionEcommerce] = React.useState(false);
   const [publish, setPublish] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
+  const [showAlertTag, setShowAlertTag] = React.useState(false);
   const [typeIcon, setTypeIcon] = React.useState('2');
   const [productsSelected, setProductsSelected] = React.useState([]);
+  const [clientsSelected, setClientsSelected] = React.useState([]);
   const [moneyUnit, setMoneyUnit] = React.useState('');
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [listProductsState, setListProductsState] = React.useState({});
+  const [listClientsState, setListClientState] = React.useState({});
+  const {listClients} = useSelector(({clients}) => clients);
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -162,7 +177,7 @@ const Distribution = () => {
   console.log('errorMessage', errorMessage);
   const [excelOrCsv, setExcelOrCsv] = React.useState('');
   const [excelOrCsvName, setExcelOrCsvName] = React.useState('');
-
+  const [tagSelectedDelete, setTagSelectedDelete] = React.useState({});
   let deletePayload = {
     request: {
       payload: {
@@ -341,12 +356,21 @@ const Distribution = () => {
     }
   }, [listProducts]);
   useEffect(() => {
+    if (listClients) {
+      console.log('listClients', listClients);
+      setListClientState(listClients);
+    }
+  }, [listClients]);
+  useEffect(() => {
     if (businessParameter !== undefined && businessParameter.length >= 1) {
       let ecommerceProductParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'ECOMMERCE_PRODUCT_PARAMETERS',
       );
       let categoriesProductParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'DEFAULT_CATEGORIES_PRODUCTS',
+      ).value;
+      let clientTagsParameter = businessParameter.find(
+        (obj) => obj.abreParametro == 'CLIENT_TAGS',
       ).value;
       let defaultIgvParameter = businessParameter.find(
         (obj) => obj.abreParametro == 'IGV',
@@ -366,6 +390,7 @@ const Distribution = () => {
         'ecommerceTagsProductParameter',
         ecommerceProductParameter.tags,
       );
+      console.log('clientTagsParameter', clientTagsParameter);
       console.log(
         'ecommercePriceProductParameter',
         ecommerceProductParameter.price,
@@ -375,16 +400,20 @@ const Distribution = () => {
       console.log('defaultWeightParameter', defaultWeightParameter);
 
       setFilters(ecommerceProductParameter.tags);
+      setFiltersClient(clientTagsParameter);
       setDefaultPriceRange([
         Number(ecommerceProductParameter.price.min),
         Number(ecommerceProductParameter.price.max),
       ]);
+
       setDefaultMoney(defaultMoneyParameter);
       setDefaultWeight(defaultWeightParameter);
       setDefaultIgvActivation(Number(defaultIgvParameter));
       setDefaultProductsPayDetail(
         ecommerceProductParameter.defaultProductsPayDetail,
       );
+      setTags(clientTagsParameter);
+      console.log('clientTagsParameter', clientTagsParameter);
       setCategories(categoriesProductParameter);
       setMoneyUnit(obtainedMoneyUnit);
       changeValue('defaultWeight', defaultWeightParameter);
@@ -485,7 +514,7 @@ const Distribution = () => {
       productsWithThisFilter.length,
     );
     if (productsWithThisFilter.length > 0) {
-      setTypeAlert('existProductsWithThisFilter');
+      setTypeAlert('existProductstWithThisCategory');
       setProductsSelected(productsWithThisFilter);
       setShowAlert(true);
     } else {
@@ -500,6 +529,36 @@ const Distribution = () => {
       reloadPage();
     }
   };
+  // const deleteTag = (filterName, order) => {
+  //   let clientsWithThisFilter = listClientsState.filter((element) => {
+  //     let response = false;
+  //     Object.entries(element.tags).forEach(([key, value]) => {
+  //       filtersClient.tags.forEach(tag=>{
+  //         if( tag.id == key ){
+  //           console.log(value);
+  //           response = true;
+  //         }
+  //       });
+  //     });
+  //     return response;
+  //   });
+  //   console.log(
+  //     'Longitud clientes con el tag',
+  //     clientsWithThisFilter.length,
+  //   );
+  //   if (clientsWithThisFilter.length > 0) {
+  //     setTypeAlertTag('existClientWithThisTag');
+  //     setClientsSelected(clientsWithThisFilter);
+  //     setShowAlertTag(true);
+  //   } else {
+  //     console.log('Llego aquí?', filterName);
+  //     let newFilters = filters;
+  //     newFilters.splice(order, 1);
+  //     console.log('nuevosFiltros', newFilters);
+  //     setFilters(newFilters);
+  //     reloadPage();
+  //   }
+  // }
   const setCategoryIndex = (index, obj) => {
     console.log('obj: ', obj);
     let changedCategories = categories;
@@ -507,6 +566,14 @@ const Distribution = () => {
     setCategories(changedCategories);
     console.log('changedCategories', changedCategories);
     console.log('categories', categories);
+  };
+  const setTagIndex = (index, obj) => {
+    console.log('obj: ', obj);
+    let changedTag = tags;
+    changedTag[index] = obj;
+    setTags(changedTag);
+    console.log('changedTag', changedTag);
+    console.log('tags', tags);
   };
 
   const validationSchema = yup.object({
@@ -545,7 +612,7 @@ const Distribution = () => {
       };
     }
     let finalCategories = categories;
-
+    let finalTag = tags;
     if (finalCategories.length >= 1) {
       finalCategories[0].default = true;
     }
@@ -566,6 +633,7 @@ const Distribution = () => {
           filters: publish ? filters : [],
           categories: finalCategories,
           isEcommerceEnabled: publish,
+          tagsClients: finalTag,
         },
       },
     };
@@ -681,6 +749,7 @@ const Distribution = () => {
   const sendAlert = () => {
     setOpenAlert(false);
   };
+
   const showMessage = () => {
     if (registerSuccess()) {
       console.log('Fue exitoso?');
@@ -779,7 +848,9 @@ const Distribution = () => {
     setOpenDeleteStatus(false);
     setOpenDelete(false);
     setOpenAlert(false);
+    setOpenAlertTag(false);
     setShowAlert(false);
+    setShowAlertTag(false);
     setTimeout(() => {
       listPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
@@ -1274,6 +1345,173 @@ const Distribution = () => {
         </FormGroup>
       </Box>
 
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          mb: 5,
+        }}
+      >
+        <Stack
+          direction='row'
+          divider={<Divider orientation='vertical' flexItem />}
+          spacing={2}
+        >
+          <Typography
+            sx={{
+              fontWeight: 600,
+              fontSize: 20,
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <IntlMessages id='Tags de clientes' />
+          </Typography>
+          <IconButton
+            onClick={() => {
+              console.log('tags', tags);
+              let newTags = tags;
+              let newEmptyTag = emptyTag;
+              newEmptyTag.tagName = '';
+              newTags.push(newEmptyTag);
+              setTags(newTags);
+              reloadPage();
+            }}
+            aria-label='delete'
+            size='large'
+          >
+            <AddIcon fontSize='inherit' />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              console.log('tags', tags);
+              let newTags = tags;
+              newTags.pop();
+              setTags(newTags);
+              reloadPage();
+            }}
+            aria-label='delete'
+            size='large'
+          >
+            <RemoveIcon fontSize='inherit' />
+          </IconButton>
+        </Stack>
+      </Box>
+      <Box
+        sx={{
+          m: 'auto',
+          border: '1px solid grey',
+          borderRadius: '10px',
+          width: '95  %',
+        }}
+      >
+        {tags &&
+          tags.map((tag, index) => (
+            <>
+              <Card key={index} sx={{p: 2}}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <TagCard
+                    key={index}
+                    order={index}
+                    execFunctions={execAll}
+                    newValuesData={setTagIndex}
+                    initialValues={tag}
+                  />
+
+                  <IconButton
+                    onClick={() => {
+                      console.log('listClientsState', listClientsState);
+                      const prub = [];
+                      listClientsState.forEach((element) => {
+                        if (element.tags && element.tags.includes(tag.id)) {
+                          prub.push(element);
+                        }
+                      });
+                      const clientsWithThisTag = prub;
+                      console.log('clientsWithThisTag', clientsWithThisTag);
+                      if (clientsWithThisTag.length > 0) {
+                        setTypeAlertTag('existClientWithThisTag');
+                        setClientsSelected(clientsWithThisTag);
+                        setShowAlertTag(true);
+                        console.log('Este es el tag:', tag);
+                        setTagSelectedDelete(tag);
+                      } else {
+                        console.log('tags', tags);
+                        let newTags = tags;
+                        newTags = newTags.filter((item) => item.id !== tag.id);
+                        setTags(newTags);
+                        reloadPage();
+                      }
+                    }}
+                    aria-label='delete'
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Box>
+              </Card>
+            </>
+          ))}
+      </Box>
+      <Collapse in={showAlertTag}>
+        <Alert
+          severity='error'
+          action={
+            <>
+              <IconButton
+                aria-label='close'
+                color='inherit'
+                size='small'
+                onClick={() => {
+                  setOpenAlertTag(true);
+                  console.log('tags', tags);
+                  let newTags = tags;
+                  console.log('tagSelectedDelete', tagSelectedDelete);
+                  newTags = newTags.filter(
+                    (item) => item.id !== tagSelectedDelete.id,
+                  );
+                  setTags(newTags);
+                  setShowAlertTag(false);
+                }}
+              >
+                <Button color='primary' variant='contained' sx={{p: '4px'}}>
+                  Confirmar
+                </Button>
+              </IconButton>
+              <IconButton
+                aria-label='close'
+                color='inherit'
+                size='small'
+                onClick={() => {
+                  setShowAlertTag(false);
+                }}
+                sx={{height: '100%'}}
+              >
+                <Button
+                  color='secondary'
+                  variant='contained'
+                  sx={{p: '9px', height: '100%'}}
+                >
+                  <CloseIcon fontSize='inherit' />
+                </Button>
+                {/* <CloseIcon fontSize='inherit' /> */}
+              </IconButton>
+            </>
+          }
+          sx={{mb: 1, pt: 0, alignItems: 'center', height: '100%'}}
+        >
+          {typeAlertTag == 'existClientWithThisTag' ? (
+            <IntlMessages id='alert.configurationParameters.existClientWithThisTag' />
+          ) : (
+            <></>
+          )}
+        </Alert>
+      </Collapse>
       {/* <Button
         variant='outlined'
         component='label'

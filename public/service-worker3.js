@@ -4,103 +4,92 @@
 // importScripts('js/sw-db.js');
 // importScripts('js/sw-utils.js');
 
-
-const STATIC_CACHE    = 'static-v2';
-const DYNAMIC_CACHE   = 'dynamic-v1';
+const STATIC_CACHE = 'static-v2';
+const DYNAMIC_CACHE = 'dynamic-v1';
 const INMUTABLE_CACHE = 'inmutable-v1';
 // importScripts('/swivel/swivel.js');
 // const swivel = new Swivel();
 
-
 //import swivel from 'swivel'
 
 const APP_SHELL = [
-    '/',
-    'index.html',
-    'css/style.css',
-    'img/favicon.ico',
-    'img/avatars/hulk.jpg',
-    'img/avatars/ironman.jpg',
-    'img/avatars/spiderman.jpg',
-    'img/avatars/thor.jpg',
-    'img/avatars/wolverine.jpg',
-    'js/app.js',
-    'js/sw-utils.js',
-    'js/libs/plugins/mdtoast.min.js',
-    'js/libs/plugins/mdtoast.min.css'
+  '/',
+  'index.html',
+  'css/style.css',
+  'img/favicon.ico',
+  'img/avatars/hulk.jpg',
+  'img/avatars/ironman.jpg',
+  'img/avatars/spiderman.jpg',
+  'img/avatars/thor.jpg',
+  'img/avatars/wolverine.jpg',
+  'js/app.js',
+  'js/sw-utils.js',
+  'js/libs/plugins/mdtoast.min.js',
+  'js/libs/plugins/mdtoast.min.css',
 ];
 
 const APP_SHELL_INMUTABLE = [
-    'https://fonts.googleapis.com/css?family=Quicksand:300,400',
-    'https://fonts.googleapis.com/css?family=Lato:400,300',
-    'https://use.fontawesome.com/releases/v5.3.1/css/all.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css',
-    'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js',
-    'https://cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js'
+  'https://fonts.googleapis.com/css?family=Quicksand:300,400',
+  'https://fonts.googleapis.com/css?family=Lato:400,300',
+  'https://use.fontawesome.com/releases/v5.3.1/css/all.css',
+  'https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css',
+  'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js',
+  'https://cdn.jsdelivr.net/npm/pouchdb@7.0.0/dist/pouchdb.min.js',
 ];
 
+self.addEventListener('install', (e) => {
+  console.log('Hello world from the Service Worker 🤙');
 
+  // const cacheStatic = caches.open( STATIC_CACHE ).then(cache =>
+  //     cache.addAll( APP_SHELL ));
 
-self.addEventListener('install', e => {
+  // const cacheInmutable = caches.open( INMUTABLE_CACHE ).then(cache =>
+  //     cache.addAll( APP_SHELL_INMUTABLE ));
 
-    console.log("Hello world from the Service Worker 🤙");
-
-    // const cacheStatic = caches.open( STATIC_CACHE ).then(cache => 
-    //     cache.addAll( APP_SHELL ));
-
-    // const cacheInmutable = caches.open( INMUTABLE_CACHE ).then(cache => 
-    //     cache.addAll( APP_SHELL_INMUTABLE ));
-
-
-
-    // e.waitUntil( Promise.all([ cacheStatic, cacheInmutable ])  );
-
+  // e.waitUntil( Promise.all([ cacheStatic, cacheInmutable ])  );
 });
 
+self.addEventListener('activate', (e) => {
+  console.log('Se ha activado el service worker');
+  // const respuesta = caches.keys().then( keys => {
 
-self.addEventListener('activate', e => {
-    console.log("Se ha activado el service worker")
-    // const respuesta = caches.keys().then( keys => {
+  //     keys.forEach( key => {
 
-    //     keys.forEach( key => {
+  //         if (  key !== STATIC_CACHE && key.includes('static') ) {
+  //             return caches.delete(key);
+  //         }
 
-    //         if (  key !== STATIC_CACHE && key.includes('static') ) {
-    //             return caches.delete(key);
-    //         }
+  //         if (  key !== DYNAMIC_CACHE && key.includes('dynamic') ) {
+  //             return caches.delete(key);
+  //         }
 
-    //         if (  key !== DYNAMIC_CACHE && key.includes('dynamic') ) {
-    //             return caches.delete(key);
-    //         }
+  //     });
 
-    //     });
+  // });
 
-    // });
-
-    // e.waitUntil( respuesta );
-
+  // e.waitUntil( respuesta );
 });
 
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.action === 'subscribe') {
+    const subscription = {
+      request: {
+        payload: event.data.subscription,
+      },
+    };
 
-self.addEventListener('message', event => {
-    if (event.data && event.data.action === 'subscribe') {
-      const subscription = {"request": {
-                                "payload": event.data.subscription
-                            }};
-      
     //   request('post', '/utility/webpushnotifications/getKey', subscription)
     //   .then((data) => {
     //     console.log('getKey resultado', data);
-        
+
     //   })
     //   .catch((error) => {
     //     console.log('getKey error', error);
     //   });
-  
-      console.log('Suscripción guardada:', subscription);
-    }
-  });
 
-
+    console.log('Suscripción guardada:', subscription);
+  }
+});
 
 // self.addEventListener( 'fetch', e => {
 
@@ -116,20 +105,20 @@ self.addEventListener('message', event => {
 //         respuesta = caches.match( e.request ).then( res => {
 
 //             if ( res ) {
-                
+
 //                 actualizaCacheStatico( STATIC_CACHE, e.request, APP_SHELL_INMUTABLE );
 //                 return res;
-                
+
 //             } else {
-    
+
 //                 return fetch( e.request ).then( newRes => {
-    
+
 //                     return actualizaCacheDinamico( DYNAMIC_CACHE, e.request, newRes );
-    
+
 //                 });
-    
+
 //             }
-    
+
 //         });
 
 //     }
@@ -137,7 +126,6 @@ self.addEventListener('message', event => {
 //     e.respondWith( respuesta );
 
 // });
-
 
 // // tareas asíncronas
 // self.addEventListener('sync', e => {
@@ -148,23 +136,37 @@ self.addEventListener('message', event => {
 
 //     //     // postear a BD cuando hay conexión
 //     //     const respuesta = postearMensajes();
-        
+
 //     //     e.waitUntil( respuesta );
 //     // }
 
 // });
 
 // Escuchar PUSH
-self.addEventListener('push', e => {
+self.addEventListener('push', (e) => {
+  // console.log(e);
+  console.log('El push ha llegado', e);
+  const data = JSON.parse(e.data.text());
 
-    // console.log(e);
+  console.log('El push se ha parseado', data);
 
-    console.log("El push ha llegado", e);
-    const data = JSON.parse( e.data.text() );
+  if (
+    data.type == 'QRBot' ||
+    data.type == 'failureAgentQR' ||
+    data.type == 'successAgentQR'
+  ) {
+    const ClientsPromise = self.clients.matchAll().then((clients) => {
+      console.log('Entrando a clientes');
+      console.log(clients);
+      const messagePromises = clients.map((client) => {
+        console.log('Enviando mensaje a cliente');
+        return client.postMessage({type: data.type, data: data});
+      });
+      return Promise.all(messagePromises);
+    });
 
-    console.log("El push se ha parseado", data);
-
-
+    e.waitUntil(ClientsPromise);
+  } else {
     const title = data.notification.title;
     // const url = data.url;
     // const urlObject = new URL(url);
@@ -192,12 +194,10 @@ self.addEventListener('push', e => {
     //         }
     //     ]
     // };
-    const options = data.options
+    const options = data.options;
 
-    console.log("options push notification", options)
-    console.log("Nuevo ServiceWorker 2", options)
-
-
+    console.log('options push notification', options);
+    console.log('Nuevo ServiceWorker 2', options);
 
     //const notificationPromise = self.registration.showNotification( title, options);
     // Enviar un mensaje al cliente para indicar que se ha recibido una notificación
@@ -210,25 +210,26 @@ self.addEventListener('push', e => {
     //     });
     // });
 
-
     const sendMessageToClient = () => {
-        return self.clients.matchAll().then(clients => {
-          console.log("Entrando a clientes")
-          const messagePromises = clients.map(client => {
-            console.log("Enviando mensaje a cliente")
-            return client.postMessage({ type: 'notificationUpdate', data: data.notification });
+      return self.clients.matchAll().then((clients) => {
+        console.log('Entrando a clientes');
+        const messagePromises = clients.map((client) => {
+          console.log('Enviando mensaje a cliente');
+          return client.postMessage({
+            type: 'notificationUpdate',
+            data: data.notification,
           });
-          return Promise.all(messagePromises);
         });
-      };
-    
-      e.waitUntil(
-        sendMessageToClient().then(() => {
-          return self.registration.showNotification(title, options);
-        })
-      );
+        return Promise.all(messagePromises);
+      });
+    };
+
+    e.waitUntil(
+      sendMessageToClient().then(() => {
+        return self.registration.showNotification(title, options);
+      }),
+    );
     // e.waitUntil(self.registration.showNotification( title, options));
-    
 
     //e.waitUntil(self.registration.showNotification(title, options));
 
@@ -251,26 +252,22 @@ self.addEventListener('push', e => {
     // e.waitUntil(
     //     self.registration.showNotification(title, options)
     // );
+  }
 });
-
 
 // Cierra la notificacion
-self.addEventListener('notificationclose', e => {
-    console.log('Notificación cerrada', e);
+self.addEventListener('notificationclose', (e) => {
+  console.log('Notificación cerrada', e);
 });
 
-
 // self.addEventListener('notificationclick', e => {
-
 
 //     const notificacion = e.notification;
 //     const accion = e.action;
 
-
 //     console.log('notificationclick', { notificacion, accion });
 //     // console.log(notificacion);
 //     // console.log(accion);
-    
 
 //     const respuesta = clients.matchAll()
 //     .then( clientes => {
@@ -292,28 +289,22 @@ self.addEventListener('notificationclose', e => {
 
 //     e.waitUntil( respuesta );
 
-
 // });
 
-self.addEventListener('notificationclick', function(event) {
-    console.log("notificationclick", event)
+self.addEventListener('notificationclick', function (event) {
+  console.log('notificationclick', event);
 
-    const action = event.action;
-    // Aquí también puedes redireccionar a una URL específica si es necesario
-    let url = event.notification.data.url;
-    // if (action === 'output-action') {
-        // Acción específica para Thor seleccionada
-        // Agrega la lógica que deseas ejecutar para esa acción
-        if(url){
-          event.waitUntil(
-            self.clients.openWindow(url)
-            );
-          event.notification.close();
-        }
-    // }
-
-
+  const action = event.action;
+  // Aquí también puedes redireccionar a una URL específica si es necesario
+  let url = event.notification.data.url;
+  // if (action === 'output-action') {
+  // Acción específica para Thor seleccionada
+  // Agrega la lógica que deseas ejecutar para esa acción
+  if (url) {
+    event.waitUntil(self.clients.openWindow(url));
+    event.notification.close();
+  }
+  // }
 });
-  
 
 //precacheAndRoute(self.__WB_MANIFEST);

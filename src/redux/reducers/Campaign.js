@@ -59,6 +59,12 @@ const campaignsReducer = (state = INIT_STATE, action) => {
         ...state,
         deleteClientRes: action.payload,
       };
+    case UPDATE_CAMPAIGN:
+      console.log('data reducer UPdate CAMPAIGN', action.payload);
+      return {
+        ...state,
+        updateClientRes: action.payload,
+      };
     case FETCH_START:
       if (!action.payload || !action.payload.process) {
         action.payload = {process: 'LIST_CAMPAIGNS'};
@@ -85,8 +91,8 @@ const campaignsReducer = (state = INIT_STATE, action) => {
       };
     case RESET_CAMPAIGNS:
       return {
-        successMessage: undefined,
-        errorMessage: undefined,
+        successMessage: '',
+        errorMessage: '',
         clientsLastEvalutedKey_pageListClients: null,
       };
     default:

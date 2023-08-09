@@ -199,17 +199,17 @@ const InputsTable = (props) => {
     let listResult = [];
     getMovementsRes.map((obj) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
-      obj.createdDate = convertToDate(obj.createdDate);
+      obj.createdAt = convertToDate(obj.createdAt);
       listResult.push(
         (({
-          createdDate,
+          createdAt,
           documentIntern,
           providerName,
           descriptionProducts,
           totalQuantity,
           totalPriceWithIgv,
         }) => ({
-          createdDate,
+          createdAt,
           documentIntern,
           providerName,
           descriptionProducts,

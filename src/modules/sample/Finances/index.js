@@ -539,10 +539,10 @@ const FinancesTable = (props) => {
   };
 
   const compare = (a, b) => {
-    if (a.createdDate < b.createdDate) {
+    if (a.createdAt < b.createdAt) {
       return 1;
     }
-    if (a.createdDate > b.createdDate) {
+    if (a.createdAt > b.createdAt) {
       return -1;
     }
     return 0;
@@ -1178,7 +1178,7 @@ const FinancesTable = (props) => {
                         {`${moneySymbol} ${fixDecimals(obj.debt)}`}
                       </TableCell>
                       <TableCell>
-                        {convertToDateWithoutTime(obj.createdDate)}
+                        {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       <TableCell>
                         {convertToDateWithoutTime(obj.updatedDate)}

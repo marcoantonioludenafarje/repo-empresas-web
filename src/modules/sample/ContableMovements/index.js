@@ -604,10 +604,10 @@ const ContableMovements = (props) => {
   };
 
   const compare = (a, b) => {
-    if (a.createdDate < b.createdDate) {
+    if (a.createdAt < b.createdAt) {
       return 1;
     }
-    if (a.createdDate > b.createdDate) {
+    if (a.createdAt > b.createdAt) {
       return -1;
     }
     return 0;
@@ -1096,7 +1096,7 @@ const ContableMovements = (props) => {
                       }`}</TableCell>
                       <TableCell>{showType(obj.movementType)}</TableCell>
                       <TableCell>
-                        {convertToDateWithoutTime(obj.createdDate)}
+                        {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       <TableCell>{obj.serialNumberBill}</TableCell>
                       <TableCell>{obj.billIssueDate}</TableCell>

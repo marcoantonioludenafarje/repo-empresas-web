@@ -37,7 +37,6 @@ export const getUserData = (payload) => {
     /* request('post', '/new/user/getUserInventory', payload) */
     API.post('tunexo', '/new/user/getUserInventory', {body: payload})
       .then((data) => {
-        console.log('getUserData resultado', data);
         console.log('getUserData resultado', data.response.payload);
         dispatch({type: GET_USER_DATA, payload: data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});

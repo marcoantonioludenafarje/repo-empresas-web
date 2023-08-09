@@ -79,8 +79,7 @@ const validationSchema = yup.object({
   priceProduct: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
-    .required(<IntlMessages id='validation.required' />)
-    .positive(<IntlMessages id='validation.positive' />),
+    .required(<IntlMessages id='validation.required' />),
   count: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)

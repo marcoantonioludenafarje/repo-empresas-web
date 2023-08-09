@@ -19,7 +19,6 @@ import {
   MenuItem,
   Menu,
   MenuList,
-  ClickAwayListener,
   Popper,
   Grow,
   Stack,
@@ -45,6 +44,7 @@ import {
   TableSortLabel,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
+import {ClickAwayListener} from '@mui/base';
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Backdrop from '@mui/material/Backdrop';
@@ -652,7 +652,10 @@ const OutputsTable = (props) => {
       }
     }
   };
-
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   //FUNCIONES MENU
   const openMenu = Boolean(anchorEl);
   const handleClick = (codOutput, event) => {
@@ -1043,7 +1046,9 @@ const OutputsTable = (props) => {
     setIsLoading(true);
     setSellTicketDialog(false);
     setTicketResponseDialog(true);
-    setSubmitting(false);
+    setTimeout(() => {
+      setSubmitting(false);
+    }, 2000);
   };
   const getReferralGuide = () => {
     console.log('Selected Output', selectedOutput);
@@ -1130,10 +1135,10 @@ const OutputsTable = (props) => {
   };
 
   const compare = (a, b) => {
-    if (a.createdDate < b.createdDate) {
+    if (a.createdAt < b.createdAt) {
       return 1;
     }
-    if (a.createdDate > b.createdDate) {
+    if (a.createdAt > b.createdAt) {
       return -1;
     }
     return 0;
@@ -1716,7 +1721,7 @@ const OutputsTable = (props) => {
           <TableBody>
             {outputItems_pageListOutput &&
             Array.isArray(outputItems_pageListOutput) &&
-            outputItems_pageListOutput.length > 0 &&
+            outputItems_pageListOutput.length >= 0 &&
             !isListLoading ? (
               outputItems_pageListOutput.sort(compare).map((obj, index) => {
                 const style =
@@ -2619,31 +2624,34 @@ const OutputsTable = (props) => {
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
 
-      <Dialog
-        open={ticketResponseDialog}
-        onClose={() => setTicketResponseDialog(false)}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Ticket'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessageTicketRegistration()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button
-            variant='outlined'
-            onClick={() => {
-              dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
-              setTicketResponseDialog(false);
-            }}
-          >
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={ticketResponseDialog}
+          onClose={() => setTicketResponseDialog(false)}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+          disableEscapeKeyDown
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Registro de Ticket'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessageTicketRegistration()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button
+              variant='outlined'
+              onClick={() => {
+                dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
+                setTicketResponseDialog(false);
+              }}
+            >
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
     </Card>
   ) : null;
 };

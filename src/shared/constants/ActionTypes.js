@@ -177,6 +177,7 @@ export const UPDATE_CATALOGS = 'update_catalogs';
 
 //IMAGE
 export const GET_PRESIGNED = 'get_presigned';
+export const GET_IMAGE_PRESIGNED = 'get_image_presigned';
 export const GET_CLIENTS_PRESIGNED = 'get_clients_presigned';
 export const UPLOAD_IMAGE = 'upload_image';
 export const GET_DATA_BUSINESS = 'get_data_business';
@@ -363,3 +364,18 @@ export const CREATE_CAMPAIGN = 'create_campaign';
 export const LIST_CAMPAIGN = 'list_campaign';
 export const DELETE_CAMPAIGN = 'delete_campaign';
 export const UPDATE_CAMPAIGN = 'update_capaign';
+
+//SALE
+export const LIST_SALES = 'list_sales';
+export const NEW_SALE = 'new_sale';
+export const DELETE_SALE = 'delete_sale';
+export const UPDATE_SALE = 'update_sale';
+
+//AGENT
+export const CREATE_AGENT = 'create_agent';
+export const LIST_AGENT = 'list_agent';
+export const DELETE_AGENT = 'delete_agent';
+export const UPDATE_AGENT = 'update_agent';
+export const ONCHANGE_QR_AGENT = 'onchange_agent';
+
+export const NEW_SALE_PROOF_OF_PAYMENT = 'new_sale_proof_of_payment';

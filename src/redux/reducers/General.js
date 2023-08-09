@@ -31,6 +31,7 @@ import {
   UPDATE_CATALOGS,
   RESET_GENERAL,
   GET_CLIENTS_PRESIGNED,
+  GET_IMAGE_PRESIGNED,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -62,6 +63,12 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         presigned: action.payload,
+      };
+    case GET_IMAGE_PRESIGNED:
+      console.log('data de reducer GET_IMAGE_PRESIGNED', action.payload);
+      return {
+        ...state,
+        imagePresigned: action.payload,
       };
     case GET_CLIENTS_PRESIGNED:
       console.log('data de reducer GET_CLIENTS_PRESIGNED', action.payload);

@@ -27,8 +27,19 @@ import {
   IconButton,
   TextField,
   Switch,
+  TableContainer,
+  TableCell,
+  Table,
+  TableHead,
+  TableRow,
+  Checkbox,
+  TableBody,
+  Stack,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 
+import axios from 'axios';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
@@ -37,6 +48,8 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import CheckIcon from '@mui/icons-material/Check';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
+import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import {red} from '@mui/material/colors';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import {makeStyles} from '@mui/styles';
@@ -45,7 +58,13 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {newCampaign} from '../../../redux/actions/Campaign';
-import {createPresigned, createClientsPresigned} from '../../../redux/actions/General';
+import {
+  createPresigned,
+  createClientsPresigned,
+  createImagePresigned,
+  onGetBusinessParameter,
+  onGetGlobalParameter,
+} from '../../../redux/actions/General';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -53,16 +72,13 @@ import {
   GET_CLIENTS_PRESIGNED,
 } from '../../../shared/constants/ActionTypes';
 import {DataGrid} from '@mui/x-data-grid';
+import {verTags} from '../../../Utils/utils';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
-  // date: yup
-  //   .date()
-  //   .typeError('Ingresa una fecha valida')
-  //   .required('La fecha es obligatoria'),
-  // campaignContent: yup
-  //   .string()
-  //   .required('El contenido de la campaña es obligatorio'),
+  campaignContent: yup
+    .string()
+    .required('El contenido de la campaña es obligatorio'),
   campaignImages: yup
     .array()
     .of(yup.mixed().required('Requiere una imagen'))
@@ -74,6 +90,12 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     bottom: '-8px',
   },
+  closeButton: {
+    cursor: 'pointer',
+    float: 'right',
+    marginTop: '5px',
+    width: '20px',
+  },
 }));
 
 const Create = (props) => {
@@ -83,20 +105,45 @@ const Create = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [openClientsDialog, setOpenClientsDialog] = useState(false);
-  const [selectedClients, setSelectedClients] = useState('Todos');
+  const [selectedClients, setSelectedClients] = useState([]);
   const [selectedClientCount, setSelectedClientCount] = useState(0);
   const [payloadToCreateCampaign, setPayloadToCreateCampaign] = useState('');
+
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedClientIds, setSelectedClientIds] = useState([]);
+  const [selectedTagsCount, setSelectedTagsCount] = useState(0);
 
   const [previewImages, setPreviewImages] = useState([]);
   const [publishDate, setPublishDate] = React.useState(
     Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
   );
-  let fecha = new Date();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [variations, setVariations] = useState(['Variación 1']);
+  const [numVariations, setNumVariations] = useState(1);
+  const [campaignContentVariations, setCampaignContentsVariations] = useState([
+    {id: 1, content: ''},
+  ]);
+  const [campaignContent, setCampaignContent] = useState('');
+  // Function to add more variations
+  const handleAddVariation = () => {
+    const newVariation = `Variación ${numVariations + 1}`;
+    setVariations([...variations, newVariation]);
+    setNumVariations(numVariations + 1);
+    const newIdVariation = campaignContentVariations.length + 1;
+    setCampaignContentsVariations([
+      ...campaignContentVariations,
+      {id: newIdVariation, content: ''},
+    ]);
+  };
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
-  const [clientSelection, setClientSelection] = useState();
+  const [actualImage, setActualImage] = React.useState('');
+  const [clientSelection, setClientSelection] = useState('Todos');
   const classes = useStyles(props);
 
   const defaultValues = {
@@ -108,46 +155,55 @@ const Create = (props) => {
 
   // Estado para controlar el acordeón abierto
   const [expanded, setExpanded] = useState(1);
-  const [campaignContents, setCampaignContents] = useState([
-    {id: 1, content: ''}, // Primer acordeón desplegado
-  ]);
+  // const [campaignContents, setCampaignContents] = useState([
+  //   {id: 1, content: ''}, // Primer acordeón desplegado
+  // ]);
 
-  const handleAccordionChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
-  const handleAddAccordion = () => {
-    const newId = campaignContents.length + 1;
-    setCampaignContents([...campaignContents, {id: newId, content: ''}]);
-  };
-
-  const handleContentChange = (id, content) => {
-    console.log("content Mensaje", content)
-    const updatedContents = campaignContents.map((contentData) =>
-      contentData.id === id ? {...contentData, content} : contentData,
-    );
-    setCampaignContents(updatedContents);
-  };
-
-  const handleClientSelection = (selectedClients) => {
-    setSelectedClients(selectedClients);
-  };
+  // const handleContentChange = (id, content) => {
+  //   console.log('content Mensaje', content);
+  //   const updatedContents = campaignContents.map((contentData) =>
+  //     contentData.id === id ? {...contentData, content} : contentData,
+  //   );
+  //   setCampaignContents(updatedContents);
+  // };
 
   const getClients = (payload) => {
     dispatch(onGetClients(payload));
   };
   const {userDataRes} = useSelector(({user}) => user);
 
+  const {businessParameter} = useSelector(({general}) => general);
+
+  console.log('Businees: ', businessParameter);
+  console.log(
+    'bisnees people',
+    businessParameter?.find((obj) => obj.abreParametro == 'CLIENT_TAGS').value,
+  );
+
+  const listadeTags = businessParameter?.find(
+    (obj) => obj.abreParametro == 'CLIENT_TAGS',
+  ).value;
+
   const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
     ({clients}) => clients,
   );
 
-  const {presigned, clientsPresigned} = useSelector(({general}) => general);
+  const {clientsPresigned, imagePresigned} = useSelector(
+    ({general}) => general,
+  );
+
+  const getGlobalParameter = (payload) => {
+    dispatch(onGetGlobalParameter(payload));
+  };
+
   const createCampaign = (payload) => {
     dispatch(newCampaign(payload));
   };
   const toCreatePresigned = (payload, file) => {
     dispatch(createPresigned(payload, file));
+  };
+  const toCreateImagePresigned = (payload, file) => {
+    dispatch(createImagePresigned(payload, file));
   };
   const toCreateClientsPresigned = (payload, file) => {
     dispatch(createClientsPresigned(payload, file));
@@ -180,10 +236,20 @@ const Create = (props) => {
           },
         },
       };
+      let globalParameterPayload = {
+        request: {
+          payload: {
+            abreParametro: null,
+            codTipoparametro: null,
+            country: 'peru',
+          },
+        },
+      };
       getClients(listPayload);
+      getGlobalParameter(globalParameterPayload);
       // setFirstload(true);
     }
-  }, [userDataRes]);
+  }, [userDataRes, listadeTags]);
 
   useEffect(() => {
     switch (process) {
@@ -198,40 +264,47 @@ const Create = (props) => {
     }
   }, [loading]);
 
-  const namesTags = ['Navidad', 'Infantil', 'Juvenil', 'Adultez', 'Verano'];
+  const namesTags = listadeTags?.map((tag) => tag.tagName);
 
   const handleData = (data, {setSubmitting}) => {
     console.log('Data crear', data);
+    let nameSimplified = data.campaignName;
+    nameSimplified = nameSimplified.replace(/ /g, '');
+    nameSimplified = nameSimplified.toLowerCase();
+
     setSubmitting(true);
     let receivers = [];
 
     if (clientSelection === 'Todos') {
-      // receivers = listClients.map((client, index) => ({
-      //   type: 'client',
-      //   id: index,
-      //   clientId: client.clientId,
-      //   nameContact: client.nameContact || "",
-      //   emailContact: client.emailContact || "",
-      //   numberCountryCode: client.numberCountryCode || "51",
-      //   addressClient: client.addressClient || "",
-      //   givenName: client.givenName || "",
-      //   lastName: client.lastName || "",
-      //   secondLastName: client.secondLastName || "",
-      //   extraInformationClient: client.extraInformationClient || "",
-      //   numberContact: client.numberContact || "",
-      //   birthDay: client.birthDay || "",
-      // }));
+      receivers = listClients.map((client, index) => ({
+        type: 'client',
+        id: index,
+        clientId: client.clientId,
+        denominationClient: client.denominationClient || '',
+        nameContact: client.nameContact || '',
+        emailContact: client.emailContact || '',
+        numberCountryCode: client.numberCountryCode || '51',
+        addressClient: client.addressClient || '',
+        givenName: client.givenName || '',
+        lastName: client.lastName || '',
+        secondLastName: client.secondLastName || '',
+        extraInformationClient: client.extraInformationClient || '',
+        numberContact: client.numberContact || '',
+        birthDay: client.birthDay || '',
+      }));
       receivers.push({
         type: 'tag',
         tagId: 'ALL',
       });
     } else if (clientSelection === 'Algunos') {
-      receivers = selectedClients.map((clientId, index) => {
+      console.log('CLIENTES SELECCIONADOS:', clientsDataset);
+      receivers = clientsDataset.map((clientId, index) => {
         const client = listClients.find((c) => c.clientId === clientId);
         return {
           type: 'client',
           id: index,
           clientId: client.clientId,
+          denominationClient: client.denominationClient || '',
           nameContact: client.nameContact || '',
           emailContact: client.emailContact || '',
           numberCountryCode: client.numberCountryCode || '51',
@@ -247,21 +320,40 @@ const Create = (props) => {
     }
     console.log('RECEIVERS', receivers);
     const clientsData = {
-      receivers: receivers
-    }
+      receivers: receivers,
+    };
     // Convierte el objeto JSON a una cadena JSON
     const jsonString = JSON.stringify(clientsData, null, 2); // null, 2 para una representación más legible
 
     // Crea un Blob con la cadena JSON
-    const clientsBlob = new Blob([jsonString], { type: 'application/json' });
-
+    const clientsBlob = new Blob([jsonString], {type: 'application/json'});
+    if (actualImage) {
+      console.log('RASTREA IMAGEN', actualImage);
+      let imagePayload = {
+        request: {
+          payload: {
+            //name: actualImage.name.split('.').slice(0, -1).join('.'),
+            key: actualImage.name.split('.').slice(0, -1).join('.'),
+            action: 'putObject',
+            contentType: actualImage.type,
+            merchantId: userDataRes.merchantSelected.merchantId,
+            path: 'campaign/' + nameSimplified,
+          },
+        },
+      };
+      console.log('newImage', imagePayload);
+      toCreateImagePresigned(imagePayload, {
+        image: actualImage,
+        type: actualImage?.type || null,
+      });
+    }
     let clientsJsonPayload = {
       request: {
         payload: {
           key: 'clientsJson',
           action: 'putObject',
           contentType: 'application/json',
-          name: 'clientsJson'
+          name: 'clientsJson',
         },
       },
     };
@@ -269,6 +361,14 @@ const Create = (props) => {
       image: clientsBlob,
       type: clientsBlob?.type || null,
     });
+    const extensions = {
+      'image/jpeg': 'jpeg',
+      'image/jpg': 'jpg',
+      'image/png': 'png',
+    };
+
+    console.log('Contenidodecamapañas', campaignContent);
+    console.log('ACTUAL IMAGE', imagePresigned);
     const payload = {
       request: {
         payload: {
@@ -277,51 +377,80 @@ const Create = (props) => {
               campaignName: data.campaignName,
               scheduledAt: data.date,
               receivers: {
-                urlClients: ''
+                //type: 'client',
+                urlClients: '',
               },
+              targetSummary: [...selectedTags, totaldeClientes()],
+              robotId: 'ID_BOT_CUENTA_SOPORTE',
               messages: [
                 {
-                  order: 1,
-                  type: selectedJsonImages[0] ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
-                  metadata: selectedJsonImages[0]
-                    ? {
-                        keyMaster: selectedJsonImages[0]?.keyMaster || '',
-                        nameFile: selectedJsonImages[0]?.nameFile || '',
-                      }
-                    : null,
+                  order: 0,
+                  type: actualImage ? 'image' : 'text', //  FATA "image"|"audio"|"video"|"document"| "text"
+                  // metadata: actualImage
+                  //   ? {
+                  //       keyMaster: imagePresigned.keymaster || '',
+                  //       nameFile: actualImage?.name || '',
+                  //     }
+                  //   : null,
+                  img_url: actualImage
+                    ? 'https://d2moc5ro519bc0.cloudfront.net/merchant/' +
+                      userDataRes.merchantSelected.merchantId +
+                      '/' +
+                      'campaign/' +
+                      nameSimplified +
+                      '/' +
+                      actualImage.name.split('.').slice(0, -1).join('.') +
+                      '.' +
+                      extensions[actualImage.type]
+                    : '',
                   text: data.campaignContent,
+                  variations: variationsData ? variationsData : [''],
                 },
               ],
             },
           ],
           merchantId: userDataRes.merchantSelected.merchantId,
+          levelBusiness: levelEnter.level || 'BRONCE',
         },
       },
     };
-    setPayloadToCreateCampaign(payload)
 
+    // if (campaignContents.length > 1) {
+    //   campaignContents.slice(1).forEach((content, index) => {
+    //     payload.request.payload.campaign[0].messages.push({
+    //       order: index + 2,
+    //       type: 'text',
+    //       text: content.content,
+    //     });
+    //   });
+    // }
+
+    console.log('Payload create', payload);
+    setPayloadToCreateCampaign(payload);
   };
   useEffect(() => {
     if (clientsPresigned) {
-      
       const payload = payloadToCreateCampaign;
-      payload.request.payload.campaign[0].receivers.urlClients =  clientsPresigned.keymaster
+      console.log('Payload creates', payload);
+      payload.request.payload.campaign[0].receivers.urlClients =
+        clientsPresigned.keymaster;
       setTimeout(() => {
         // Show success message
         dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
         console.log('newCampaignPayload', payload);
         createCampaign(payload);
-  
+
         setOpenStatus(true);
-  
+
         // Reset form
         toSubmitting(false);
         dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
       }, 1000);
     }
   }, [clientsPresigned]);
+
   const showMessage = () => {
-    if (successMessage !== undefined) {
+    if (successMessage != '') {
       console.log('MENSAJE DE VALIDEZ', successMessage);
       return (
         <>
@@ -376,41 +505,14 @@ const Create = (props) => {
     setFieldValue('campaignImages', files);
 
     const imagePreviews = files.map((file) => {
-      let imagePayload = {
-        request: {
-          payload: {
-            key: 'general',
-            action: 'putObject',
-            contentType: '',
-          },
-        },
-      };
-      imagePayload.request.payload.contentType = file.type;
-      imagePayload.request.payload.name = file.name;
       setNameLastFile(file.name);
-      toCreatePresigned(imagePayload, {
-        image: file,
-        type: file?.type || null,
-      });
+      setActualImage(file);
       return URL.createObjectURL(file);
     });
     setPreviewImages(imagePreviews);
     Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
   };
-  useEffect(() => {
-    if (presigned) {
-      console.log('useEffect presigned', presigned);
-      let actualSelectedJsonImages = selectedJsonImages;
-      const newJsonImages = {
-        keyMaster: presigned.keymaster,
-        nameFile: nameLastFile,
-      };
-      console.log('newJsonImages', newJsonImages);
-      actualSelectedJsonImages = [newJsonImages];
-      console.log('actualSelectedJsonImages', actualSelectedJsonImages);
-      setSelectedJsonImages(actualSelectedJsonImages);
-    }
-  }, [presigned]);
+
   const removeImagePreview = (index, setFieldValue) => {
     const updatedImages = [...previewImages];
     updatedImages.splice(index, 1);
@@ -432,52 +534,349 @@ const Create = (props) => {
       .then((blob) => new File([blob], 'image.jpg', {type: 'image/jpeg'}));
   };
 
-  const handleClientSelect = (selectedClientIds) => {
-    setSelectedClients(selectedClientIds);
-
-    if (selectedClientIds.length === listClients.length) {
-      setSelectedClientCount(listClients.length);
-      setClientSelection('Todos');
-    } else {
-      setSelectedClientCount(selectedClientIds.length);
-      setClientSelection('Algunos');
-    }
-  };
-
   const handleOpenClientsDialog = () => {
     setOpenClientsDialog(true);
   };
 
+  const [clientsDataset, setClientsDataset] = useState([]);
+
   const handleCloseClientsDialog = () => {
+    console.log('CLIENTES DATA CLOSE', clientsDataset);
+    setClientsDataset(selectedClients);
     setOpenClientsDialog(false);
   };
 
-  const columns = [
-    {field: 'clientId', headerName: 'ID', width: 150},
-    {field: 'denominationClient', headerName: 'Cliente', width: 200},
-    {field: 'numberContact', headerName: 'Contacto', width: 150},
-  ];
+  const handleCloseClientsDialogReload = () => {
+    console.log('CLIENTES DATA', clientsDataset);
+    if (clientsDataset.length > 0) {
+      setSelectedClients(clientsDataset);
+      setOpenClientsDialog(false);
+    } else {
+      setSelectedClients([]);
+      setOpenClientsDialog(false);
+    }
+  };
 
-  const rows = listClients.map((client) => ({
-    id: client.clientId,
-    clientId: client.clientId,
-    denominationClient: client.denominationClient,
-    numberContact: client.numberContact,
-  }));
+  console.log('LISTA DE CLIENTES,', listClients);
+  const [selectedClientsByTag, setSelectedClientsByTag] = useState([]);
+  console.log('seleccion,', selectedClientsByTag);
+
+  const handleTagSelect = (selectedTags) => {
+    setSelectedTags(selectedTags);
+
+    if (selectedTags.includes('ALL')) {
+      console.log('CUANDO SE MARCA EL TAG ALL');
+      setSelectedTagsCount(namesTags.length);
+      setSelectedClientCount(listClients.length);
+      setClientSelection('Todos');
+      setSelectedClientsByTag(listClients.map((client) => client.clientId));
+    } else {
+      console.log('CUANDO SE MARCAN TAGS');
+      setSelectedTagsCount(selectedTags.length);
+      console.log('Conteo', selectedTags.length);
+      // Filtrar clientes basados en los tags seleccionados
+      const filteredClients = listClients.filter((client) =>
+        client.tags?.some((tagId) => selectedTags.includes(tagId)),
+      );
+
+      console.log('Clientes filtrados', filteredClients);
+      setSelectedClientsByTag(filteredClients.map((client) => client.clientId));
+      setSelectedClientCount(filteredClients.length);
+      setClientSelection('Algunos');
+    }
+  };
 
   const handleClientSelectionChange = (event) => {
     const {name, checked} = event.target;
 
+    console.log('Name', name);
+    console.log('Check', checked);
     if (name === 'Todos' && checked) {
+      console.log('ENTRA EN TODOS Y CHECK');
       setClientSelection('Todos');
       setSelectedClientCount(listClients.length);
+      setSelectedClientIds(listClients.map((client) => client.clientId));
+      setSelectedClientsByTag(listClients.map((client) => client.clientId));
     } else if (name === 'Algunos' && checked) {
-      setClientSelection('Algunos');
+      console.log('ENTRA EN ALGUNOS Y CHECK');
+      setSelectedClientsByTag([]);
       setSelectedClientCount(0);
-    } else {
-      setSelectedClientCount(listClients.length);
-      setClientSelection('Todos');
+      setClientSelection('Algunos');
+      setSelectedClientIds([]);
+      setSelectedTags([]);
     }
+  };
+
+  const totaldeClientes = () => {
+    console.log('VALOR DE TOTAL DE CLIENTES SELECT', clientSelection);
+    if (clientSelection === 'Todos') {
+      return listClients.length;
+    }
+    if (clientSelection === 'Algunos') {
+      return selectedClients.length;
+    }
+    return 0;
+  };
+
+  // Función para manejar el cambio en el checkbox del encabezado
+  const handleHeaderCheckboxChange = (e) => {
+    if (e.target.checked) {
+      const newSelection = searchDialogResults.map((row) => row.clientId);
+      console.log('Confeti header', newSelection);
+      setSelectedClients(newSelection);
+    } else {
+      setSelectedClients([]);
+    }
+  };
+
+  // Función para verificar si un cliente está seleccionado
+  const isClientSelected = (clientId) => selectedClients.includes(clientId);
+
+  // Función para manejar el cambio en los checkboxes individuales
+  const handleRowCheckboxChange = (clientId) => {
+    if (isClientSelected(clientId)) {
+      setSelectedClients((prevSelection) =>
+        prevSelection.filter((id) => id !== clientId),
+      );
+
+      console.log('Selección >>>', selectedClients);
+    } else {
+      setSelectedClients((prevSelection) => [...prevSelection, clientId]);
+      console.log('Selecion else >>', selectedClients);
+    }
+  };
+
+  // Calcula si todos los clientes están seleccionados
+  const isAllSelected = selectedClients.length === listClients.length;
+  const isSomeSelected = selectedClients.length > 0 && !isAllSelected;
+
+  const [searchDialogResults, setSearchDialogResults] = useState([]);
+  const [searchDialogValue, setSearchDialogValue] = useState('');
+  // Filtros en el dialog Clientes
+  const searchClients = (event) => {
+    console.log('Evento', event.target);
+    if (searchDialogValue) {
+      console.log('VALOR DEL SEARCH', searchDialogValue);
+      const filteredClients = listClients.filter((client) =>
+        client.denominationClient
+          .toLowerCase()
+          .includes(searchDialogValue.toLowerCase()),
+      );
+      setSearchDialogResults(filteredClients);
+    } else if (selectedTags.length > 0) {
+      console.log('Entra al slectedTags', selectedTags);
+      const filteredClients = listClients.filter((client) => {
+        let clienttags = verTags(client, businessParameter);
+        let splittags = clienttags.split(' | ');
+        console.log('TAGS >>>', splittags);
+        let hasMatchingTag = splittags.some((tag) =>
+          selectedTags.includes(tag),
+        );
+        console.log('TAGS >>> MATCH', hasMatchingTag);
+        return hasMatchingTag;
+      });
+      setSearchDialogResults(filteredClients);
+    } else {
+      setSearchDialogResults(listClients);
+    }
+    console.log('LOS CLIENTES LUEGO DEL FILTRO EN TOTAL', searchDialogResults);
+  };
+  //BUSQUEDA
+  const handleSearchValues = (e) => {
+    setSearchDialogValue(e.target.value);
+    if (e.key === 'Enter') {
+      searchClients();
+    }
+  };
+
+  useEffect(() => {
+    setSearchDialogResults(listClients);
+    console.log('clientes antes>>', searchDialogResults);
+  }, [listClients]);
+
+  const {globalParameter} = useSelector(({general}) => general);
+  console.log('globalParameter123', globalParameter);
+
+  const [parameterLevel, setParameterLevel] = useState([]);
+  useEffect(() => {
+    if (globalParameter != undefined) {
+      let obtainedLevels = globalParameter.find(
+        (obj) => obj.abreParametro == 'LEVEL_INTERACTIONS',
+      ).value;
+      console.log('Levels parameter', obtainedLevels);
+      setParameterLevel(obtainedLevels);
+    }
+  }, [globalParameter != undefined]);
+
+  const LevelClients = (array) => {
+    if (array.length === 0) {
+      return {order: 1, clientsAmount: 20, level: 'BRONCE'};
+    }
+
+    // Inicializar la variable para almacenar el objeto con el mayor order
+    let objetoMayorOrder = array[0];
+
+    // Recorrer el array y encontrar el objeto con el mayor order
+    for (let i = 1; i < array.length; i++) {
+      if (array[i].order > objetoMayorOrder.order) {
+        objetoMayorOrder = array[i];
+      }
+    }
+
+    return objetoMayorOrder;
+  };
+  const levelEnter = LevelClients(parameterLevel);
+  console.log('LEVEL ENTER', levelEnter);
+
+  const [verification, setVerification] = useState(true);
+
+  const verificationVariations = () => {
+    let valor = totaldeClientes() / levelEnter.clientsAmount; //  6 / 5   1.2
+    let mayorPosible = Math.ceil(valor); // 2
+    console.log(
+      'TOTAL DE DATA',
+      totaldeClientes(),
+      'mayorposible',
+      mayorPosible,
+    );
+
+    console.log('DATA-VARIATIONS', variationsData[0], mayorPosible);
+    if (mayorPosible - 1 == 1) {
+      console.log('DATA-VARIATIONS', variationsData[0]);
+      if (
+        variationsData &&
+        variationsData[0] !== '' &&
+        variationsData[0] !== undefined
+      ) {
+        setVerification(false);
+      }
+      return mayorPosible - 1;
+    }
+    let parametro = valor % 1 === 0 ? valor : Math.ceil(valor) - 1;
+    console.log('TOTAL DE DATA', parametro);
+    if (
+      totaldeClientes() > levelEnter.clientsAmount &&
+      parametro === variationsData.length
+    ) {
+      // 11>5 && ===0
+      console.log('VARIATONSDATA ', variationsData.length, parametro);
+      if (variationsData.filter((vari) => vari !== '' && vari !== undefined)) {
+        setVerification(false);
+        console.log('TOTAL DE DATA PARA');
+        return parametro;
+      }
+    }
+    return parametro;
+  };
+
+  // State to keep track of expanded accordion
+  const [expandedAccordion, setExpandedAccordion] = useState(null);
+
+  // State to keep track of campaign content variations
+  const [variationsData, setVariationsData] = useState(
+    variations.map((v) => v.content),
+  );
+
+  const handleAccordionChange = (panel) => (event, isExpanded) => {
+    setExpandedAccordion(isExpanded ? panel : null);
+  };
+
+  const handleVariationContentChange = (index, value) => {
+    // Update the campaignContentVariations state with the latest changes
+    const newData = [...variationsData];
+    newData[index] = value;
+    setVariationsData(newData);
+  };
+
+  const handleDeleteAccordion = (index) => {
+    // Remove the accordion by updating the variations and variationsData states
+    const newVariations = [...variations];
+    newVariations.splice(index, 1);
+    setVariations(newVariations);
+
+    const newData = [...variationsData];
+    newData.splice(index, 1);
+    setVariationsData(newData);
+  };
+
+  const handleAccordionVariationsClose = () => {
+    setVariations(['Variación']);
+    setNumVariations(1);
+    setCampaignContentsVariations([{id: 1, content: ''}]);
+    setVariationsData(variations.map((v) => v.content));
+    console.log('SAVE >>', variationsData);
+
+    // if (variationsData && variationsData.length > 0 && variationsData[0] != '' ) {
+    //   setVariations(['Variación 1']);
+    //   setNumVariations(1);
+    //   setCampaignContentsVariations([{id: 1, content: ''}]);
+    //   setVariationsData(variations.map((v) => v.content));
+    // }
+
+    // Close the dialog
+    setOpenDialog(false);
+    //Corregir XD
+    if (variationsData.length > 0 && variationsData[0] != '') {
+    }
+  };
+
+  const handleSaveVariations = () => {
+    setVariationsData(variations.map((v) => v.content));
+    setOpenDialog(false);
+  };
+
+  // const handleCloseClientsDialogReload = () => {
+  //   console.log('CLIENTES DATA', clientsDataset);
+  //   if (clientsDataset.length > 0) {
+  //     setSelectedClients(clientsDataset);
+  //     setOpenClientsDialog(false);
+  //   } else {
+  //     setSelectedClients([]);
+  //     setOpenClientsDialog(false);
+  //   }
+  // };
+
+  const handleDummy = async () => {
+    let dummy = 'hola amigos';
+    const newData = [...variationsData];
+    newData[0] = dummy;
+    setVariationsData(newData);
+    console.log('index campaña', campaignContent);
+    console.log('index dummy>', variationsData);
+  };
+
+  const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
+
+  const sameData = () => {
+    const duplicates = {};
+    variationsData.forEach((item, index) => {
+      if (variationsData.indexOf(item) !== index) {
+        duplicates[item] = true;
+      }
+    });
+
+    const hasTrueValue = Object.values(duplicates).some(
+      (value) => value === true,
+    );
+
+    if (hasTrueValue) {
+      setValidateVariations(true);
+      return (
+        <Box sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}>
+          <Typography sx={{fontSize: 18, fontWeight: 600}}>
+            Hay variaciones repetidas
+          </Typography>
+        </Box>
+      );
+    } else {
+      setValidateVariations(false);
+      console.log('El objeto no tiene ninguna propiedad con valor true.');
+    }
+  };
+
+  const handleCampaignContentChange = (event) => {
+    setCampaignContent(event.target.value);
+    console.log('index camp', campaignContent);
   };
 
   return (
@@ -538,7 +937,6 @@ const Create = (props) => {
                       onChange={(e) => {
                         console.log('tipo', e);
                         setPublishDate(e);
-
                       }}
                       label='Fecha *'
                       name='date'
@@ -554,7 +952,7 @@ const Create = (props) => {
                   </Grid>
                   <Grid container spacing={2}>
                     {/* Primer Grid - Contiene el Clientes Box */}
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={6}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -589,7 +987,7 @@ const Create = (props) => {
                                 name='Algunos'
                               />
                             }
-                            label={`Algunos (${selectedClientCount})`}
+                            label={`Algunos (${totaldeClientes()})`}
                           />
                           {clientSelection === 'Algunos' && (
                             <Button
@@ -603,57 +1001,8 @@ const Create = (props) => {
                       </Box>
                     </Grid>
 
-                    {/* Segundo Grid - Contiene el componente Autocomplete */}
-                    <Grid item xs={12} md={4}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          flexDirection: 'column',
-                          mt: 2,
-                        }}
-                      >
-                        <Autocomplete
-                          sx={{
-                            m: 1,
-                            width: '100%', // Establece el ancho al 100% por defecto
-                            [(theme) => theme.breakpoints.down('sm')]: {
-                              width: '80%', // Ancho del 80% en pantallas pequeñas
-                            },
-                            [(theme) => theme.breakpoints.up('md')]: {
-                              width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
-                            },
-                          }}
-                          multiple
-                          options={namesTags}
-                          getOptionLabel={(option) => option}
-                          disableCloseOnSelect
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant='outlined'
-                              label='Selecciona los tags'
-                              placeholder='tags...'
-                            />
-                          )}
-                          renderOption={(props, option, {selected}) => (
-                            <MenuItem
-                              {...props}
-                              key={option}
-                              value={option}
-                              sx={{justifyContent: 'space-between'}}
-                            >
-                              {option}
-                              {selected ? <CheckIcon color='info' /> : null}
-                            </MenuItem>
-                          )}
-                        />
-                      </Box>
-                    </Grid>
-
                     {/* Tercer Grid - Contiene el box image */}
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={6}>
                       <Box
                         sx={{
                           display: 'flex',
@@ -728,18 +1077,12 @@ const Create = (props) => {
                       </Box>
                     </Grid>
                   </Grid>
-                  {/*Mensaje de campaña */}
-                  {/* <Grid item xs={12} md={12}>
-                    <AppTextField
-                      label='Contenido de la Campaña *'
-                      name='campaignContent'
-                      variant='outlined'
-                      multiline
-                      rows={4}
-                      sx={{width: '100%', my: 2}}
-                    />
-                  </Grid> */}
-                  {campaignContents.map((contentData) => (
+                  <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                      Total de clientes: {totaldeClientes()}
+                    </Typography>
+                  </Box>
+                  {/* {campaignContents.map((contentData) => (
                     <Grid item xs={12} md={12} key={contentData.id}>
                       <Accordion
                         expanded={expanded === contentData.id}
@@ -752,7 +1095,7 @@ const Create = (props) => {
                           <Grid item xs={12} md={12}>
                             <TextField
                               label='Contenido de la Campaña *'
-                              name={`campaignContent${contentData.id}`}
+                              name={`campaignContents.contents`}
                               variant='outlined'
                               multiline
                               rows={4}
@@ -769,20 +1112,147 @@ const Create = (props) => {
                         </AccordionDetails>
                       </Accordion>
                     </Grid>
-                  ))}
-
-                  {/* Botón "Más" para agregar un nuevo acordeón */}
-                  <Grid container item xs={12} justifyContent='center'>
-                    <Button
+                  ))} */}
+                  <Grid item xs={12} md={12}>
+                    <AppTextField
+                      label='Contenido de la Campaña *'
+                      name='campaignContent'
+                      value={campaignContent}
+                      onChange={handleCampaignContentChange}
                       variant='outlined'
-                      color='primary'
-                      onClick={handleAddAccordion}
-                      startIcon={<AddCircleOutlineOutlinedIcon />}
-                    >
-                      Más
-                    </Button>
+                      multiline
+                      rows={4}
+                      sx={{width: '100%', my: 2}}
+                    />
                   </Grid>
                 </Grid>
+
+                <Grid container item xs={12} justifyContent='center'>
+                  <Button
+                    variant='outlined'
+                    color='primary'
+                    startIcon={<AddCircleOutlineOutlinedIcon />}
+                    onClick={() => setOpenDialog(true)}
+                  >
+                    Generar Variación
+                  </Button>
+                </Grid>
+
+                <Dialog
+                  open={openDialog}
+                  onClose={() => setOpenDialog(false)}
+                  maxWidth='md'
+                  fullWidth
+                >
+                  <DialogTitle>
+                    <Box
+                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                    >
+                      <Button variant='outlined' onClick={handleDummy}>
+                        ¡Necesito Ayuda!
+                      </Button>
+                    </Box>
+                  </DialogTitle>
+                  {sameData()};
+                  {totaldeClientes() > levelEnter.clientsAmount ? (
+                    <Box
+                      sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
+                    >
+                      <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                        Cantidad de variaciones obligatorias:
+                        {verificationVariations()}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Typography></Typography>
+                  )}
+                  ;
+                  <DialogContent>
+                    {variations.map((variation, index) => (
+                      <Accordion
+                        key={index}
+                        expanded={expandedAccordion === index}
+                        onChange={handleAccordionChange(index)}
+                      >
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          {variation}
+                          <Box sx={{ml: 'auto'}}>
+                            <Button
+                              onClick={() => handleDeleteAccordion(index)}
+                            >
+                              <DeleteOutlineOutlinedIcon />
+                            </Button>
+                          </Box>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Grid item xs={12} md={12}>
+                            <TextField
+                              label='Contenido de la Variación Campaña *'
+                              variant='outlined'
+                              multiline
+                              rows={4}
+                              value={variationsData[index]} // Use the updated variationsData
+                              onChange={(e) =>
+                                handleVariationContentChange(
+                                  index,
+                                  e.target.value,
+                                )
+                              }
+                              sx={{width: '100%', my: 2}}
+                            />
+                          </Grid>
+                        </AccordionDetails>
+                      </Accordion>
+                    ))}
+                    <Box
+                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                    >
+                      <Button variant='outlined' onClick={handleAddVariation}>
+                        Más
+                      </Button>
+                    </Box>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      color='primary'
+                      sx={{mx: 'auto', width: '15%'}}
+                      type='submit'
+                      variant='contained'
+                      startIcon={<SaveAltOutlinedIcon />}
+                      disabled={validateVariations}
+                      onClick={() => {
+                        // Save the variationsData when clicking "Guardar"
+                        console.log('Saving variations:', variationsData);
+                        // ... (Add your saving logic here)
+                        verificationVariations();
+                        setOpenDialog(false);
+                      }}
+                    >
+                      Guardar
+                    </Button>
+                    <Button
+                      variant='outlined'
+                      startIcon={<ArrowCircleLeftOutlinedIcon />}
+                      onClick={handleAccordionVariationsClose}
+                    >
+                      Cerrar
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+
+                {totaldeClientes() > levelEnter.clientsAmount ? (
+                  <Box
+                    sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
+                  >
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                      Cantidad de variaciones obligatorias:
+                      {verificationVariations()}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography></Typography>
+                )}
+
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -795,7 +1265,13 @@ const Create = (props) => {
                     type='submit'
                     variant='contained'
                     form='principal-form'
-                    disabled={isSubmitting}
+                    disabled={
+                      isSubmitting ||
+                      (totaldeClientes() <= levelEnter.clientsAmount &&
+                        totaldeClientes() > 0)
+                        ? false
+                        : verification
+                    }
                     startIcon={<SaveAltOutlinedIcon />}
                   >
                     Finalizar
@@ -876,23 +1352,163 @@ const Create = (props) => {
         sx={{textAlign: 'center'}}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
+        maxWidth='lg'
       >
-        <DialogTitle id='alert-dialog-title'>Seleccionar Clientes</DialogTitle>
-        <DialogContent dividers>
-          <div style={{height: 400, width: '560px'}}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              checkboxSelection
-              pageSize={5}
-              rowsPerPageOptions={[5, 10, 20]}
-              onSelectionModelChange={handleClientSelect}
-              selectionModel={selectedClients}
+        <DialogTitle id='alert-dialog-title'>
+          <Typography
+            sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
+          >
+            {'Seleccionar Clientes'}
+            <CancelOutlinedIcon
+              onClick={handleCloseClientsDialog}
+              className={classes.closeButton}
             />
+          </Typography>
+        </DialogTitle>
+        <DialogContent dividers>
+          <div style={{height: 400, width: 1000}}>
+            <Stack
+              sx={{m: 2}}
+              direction={isMobile ? 'column' : 'row'}
+              spacing={2}
+              className={classes.stack}
+            >
+              <TextField
+                label='Nombre / Razón social'
+                variant='outlined'
+                name='nameToSearch'
+                size='small'
+                value={searchDialogValue}
+                onChange={(e) => setSearchDialogValue(e.target.value)}
+                sx={{flex: 1}}
+              />
+
+              <Grid item xs={12} md={3}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <Autocomplete
+                    value={selectedTags}
+                    onChange={(event, newValue) => {
+                      console.log('Nuevo Tag seleccionado:', newValue);
+                      handleTagSelect(newValue);
+                    }}
+                    disabled={selectedClientCount === listClients.length}
+                    sx={{
+                      m: 1,
+                      width: '100%', // Establece el ancho al 100% por defecto
+                      [(theme) => theme.breakpoints.down('sm')]: {
+                        width: '80%', // Ancho del 80% en pantallas pequeñas
+                      },
+                      [(theme) => theme.breakpoints.up('md')]: {
+                        width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                      },
+                    }}
+                    multiple
+                    options={namesTags}
+                    getOptionLabel={(option) => option}
+                    disableCloseOnSelect
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Selecciona Etiquetas'
+                        placeholder='etiquetas...'
+                      />
+                    )}
+                    renderOption={(props, option, {selected}) => (
+                      <MenuItem
+                        {...props}
+                        key={option}
+                        value={option}
+                        sx={{justifyContent: 'space-between'}}
+                      >
+                        {option}
+                        {selected ? <CheckIcon color='info' /> : null}
+                      </MenuItem>
+                    )}
+                  />
+                </Box>
+              </Grid>
+
+              <Button
+                startIcon={<ManageSearchOutlinedIcon />}
+                variant='contained'
+                color='primary'
+                onClick={searchClients}
+                sx={{height: '100%'}}
+              >
+                Buscar
+              </Button>
+            </Stack>
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding='checkbox'>
+                      <Checkbox
+                        color='primary'
+                        checked={isAllSelected}
+                        indeterminate={isSomeSelected}
+                        onChange={handleHeaderCheckboxChange}
+                      />
+                    </TableCell>
+                    <TableCell>Identificador</TableCell>
+                    <TableCell>Nombre / Razón social</TableCell>
+                    <TableCell>Contacto</TableCell>
+                    <TableCell>Etiquetas</TableCell>
+                    {/* Agrega más TableCell para las columnas que necesites */}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {searchDialogResults.map((row) => (
+                    <TableRow key={row.clientId}>
+                      <TableCell padding='checkbox'>
+                        <Checkbox
+                          color='primary'
+                          checked={isClientSelected(row.clientId)}
+                          onChange={() => handleRowCheckboxChange(row.clientId)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {row.clientId.split('-')[0] +
+                          ' ' +
+                          row.clientId.split('-')[1]}
+                      </TableCell>
+                      <TableCell>{row.denominationClient}</TableCell>
+                      <TableCell>{row.numberContact}</TableCell>
+                      <TableCell>{verTags(row, businessParameter)}</TableCell>
+                      {/* Agrega más TableCell para las columnas que necesites */}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         </DialogContent>
+        <Typography>Total seleccionados {totaldeClientes()}</Typography>
         <DialogActions>
-          <Button onClick={handleCloseClientsDialog}>Cerrar</Button>
+          <Button
+            color='primary'
+            sx={{mr: '35%', width: '10%'}}
+            variant='contained'
+            startIcon={<SaveAltOutlinedIcon />}
+            onClick={handleCloseClientsDialog}
+          >
+            Guardar
+          </Button>
+          <Button
+            onClick={handleCloseClientsDialogReload}
+            startIcon={<ArrowCircleLeftOutlinedIcon />}
+            variant='outlined'
+          >
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
     </Card>

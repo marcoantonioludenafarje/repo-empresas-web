@@ -90,6 +90,7 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_BILLS,
   BILLS_BATCH_CONSULT,
   ADD_CREDIT_NOTE,
+  BILL_BATCH_CONSULT,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -232,6 +233,7 @@ const BillsTable = (props) => {
   //GET APIS RES
   const {billItems_pageListBill, billLastEvalutedKey_pageListBill} =
     useSelector(({movements}) => movements);
+  const {billBatchConsultRes} = useSelector(({general}) => general);
   //const {getMovementsRes} = useSelector(({movements}) => movements);
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
@@ -608,10 +610,10 @@ const BillsTable = (props) => {
   };
 
   const compare = (a, b) => {
-    if (a.createdDate < b.createdDate) {
+    if (a.createdAt < b.createdAt) {
       return 1;
     }
-    if (a.createdDate > b.createdDate) {
+    if (a.createdAt > b.createdAt) {
       return -1;
     }
     return 0;
@@ -960,7 +962,7 @@ const BillsTable = (props) => {
         <Button
           variant='outlined'
           startIcon={<FindReplaceIcon />}
-          onClick={batchConsultReferralGuide}
+          onClick={batchConsultBill}
           disabled={isLoading}
           color='success'
         >

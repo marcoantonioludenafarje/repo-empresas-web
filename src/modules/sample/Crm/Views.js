@@ -35,6 +35,11 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import DehazeIcon from '@mui/icons-material/Dehaze';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import BlockSharpIcon from '@mui/icons-material/BlockSharp';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import {getCampaigns, deleteCampaigns} from '../../../redux/actions/Campaign';
 import {convertToDate} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
@@ -45,6 +50,8 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import Router from 'next/router';
 import {red} from '@mui/material/colors';
+import axios from 'axios';
+import IntlMessages from '@crema/utility/IntlMessages';
 
 function createData(name, fecha, containt, receipt) {
   return {name, fecha, containt, receipt};
@@ -82,6 +89,9 @@ export default function Views(props) {
   const [open2, setOpen2] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
 
+  const [searchValue, setSearchValue] = useState('');
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
+
   let popUp = false;
 
   const getCampaign = (payload) => {
@@ -93,6 +103,11 @@ export default function Views(props) {
   };
 
   const {userDataRes} = useSelector(({user}) => user);
+
+  const {successMessage} = useSelector(({clients}) => clients);
+  console.log('successMessage', successMessage);
+  const {errorMessage} = useSelector(({clients}) => clients);
+  console.log('errorMessage', errorMessage);
 
   const {listCampaigns, campaignsLastEvaluatedKey_pageListCampaigns} =
     useSelector(({campaigns}) => campaigns);
@@ -128,6 +143,7 @@ export default function Views(props) {
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [cancelDisabled, setCancelDisabled] = useState(false);
   /* let anchorEl = null; */
   const openMenu = Boolean(anchorEl);
   const handleClick = (codPro, event) => {
@@ -138,6 +154,18 @@ export default function Views(props) {
     selectedCampaign =
       listCampaigns[codPro]; /* .find((obj) => obj.client == codPro); */
     console.log('Select Campaña', selectedCampaign);
+    if (
+      selectedCampaign.processes &&
+      selectedCampaign.processes[0] &&
+      !selectedCampaign.processes[0].active
+    ) {
+      console.log(
+        'Select Campaña >',
+        !selectedCampaign.processes[0].active,
+        cancelDisabled,
+      );
+      setCancelDisabled(true);
+    }
   };
 
   const handleClose = () => {
@@ -165,13 +193,136 @@ export default function Views(props) {
     deletePayload.request.payload.campaignId = selectedCampaign.campaignId;
     console.log('deletePayload', deletePayload);
     deleteCampaign(deletePayload);
-    setOpen2(false);
     setOpenStatus(true);
+    setOpen2(false);
   };
 
-  const newClient = () => {
+  const newCamp = () => {
     console.log('Para redireccionar a nuevo cliente');
     Router.push('/sample/crm/create');
+  };
+
+  // Paso 2: Función para filtrar las campañas por el nombre de la campaña
+  const filterCampaigns = (searchText) => {
+    if (!searchText) {
+      setFilteredCampaigns(listCampaigns); // Si el valor del TextField está vacío, mostrar todas las campañas.
+    } else {
+      const filtered = listCampaigns.filter((campaign) =>
+        campaign.campaignName.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      setFilteredCampaigns(filtered);
+    }
+  };
+
+  useEffect(() => {
+    // Update filteredCampaigns when listCampaigns changes
+    setFilteredCampaigns(listCampaigns);
+  }, [listCampaigns, filteredCampaigns]);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectCampaign, setSelectCampaign] = useState(null);
+
+  // Función para abrir el diálogo y guardar la información de la campaña seleccionada
+  const handleClickOpenDialog = (campaign) => {
+    console.log('CAMPAÑA INFO SELECT', campaign);
+    setOpenDialog(true);
+    setSelectCampaign(campaign);
+  };
+
+  const [dialogDetalleOpen, setDialogDetalleOpen] = useState(false);
+
+  const [receiversCloud, setReceiversCloud] = useState([]);
+
+  const handleVerDetalleClick = (url, order, number, arrayproccess) => {
+    console.log('LA URL', url);
+    console.log('Hace la petición', order, number, arrayproccess);
+    axios
+      .get(url)
+      .then((response) => {
+        // Aquí tienes los datos obtenidos de la URL en response.data.
+        console.log('Datos obtenidos:', response.data);
+
+        const arregloFiltrado = response.data.receivers.filter(
+          (objeto) => objeto.type !== 'tag',
+        );
+
+        let startIndex = 0;
+
+        for (let i = 0; i < arrayproccess.length; i++) {
+          if (arrayproccess[i].order < order) {
+            startIndex += arrayproccess[i].amount;
+          }
+        }
+
+        console.log('hace', startIndex, number);
+        const procesosSeleccionados = arregloFiltrado.slice(
+          startIndex,
+          startIndex + number,
+        );
+
+        setReceiversCloud(procesosSeleccionados);
+        // Finalmente, abre el diálogo.
+        setDialogDetalleOpen(true);
+      })
+      .catch((error) => {
+        // Si ocurre un error durante la llamada a la URL, puedes manejarlo aquí.
+        console.error('Error al obtener datos:', error);
+      });
+
+    console.log('ReceiversCloud', receiversCloud);
+  };
+
+  const showMessage = () => {
+    if (successMessage != '') {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha eliminado correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al cancelar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
+  };
+
+  const sendStatus = () => {
+    setOpenStatus(false);
+    setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      // listPayload.request.payload.LastEvaluatedKey = null;
+      // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+      getCampaign(listPayload);
+    }, 2000);
   };
 
   return (
@@ -187,7 +338,8 @@ export default function Views(props) {
           variant='outlined'
           name='nameToSearch'
           size='small'
-          onChange={''}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
@@ -196,13 +348,13 @@ export default function Views(props) {
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          onClick={''}
+          onClick={() => filterCampaigns(searchValue)}
         >
           Buscar
         </Button>
       </Stack>
       <span>{`Items: ${
-        listCampaigns ? listCampaigns.length : 'Cargando...'
+        filteredCampaigns ? filteredCampaigns.length : 'Cargando...'
       }`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
@@ -218,25 +370,95 @@ export default function Views(props) {
               <TableCell>Contenido</TableCell>
               <TableCell>Fecha/Hora de envío</TableCell>
               <TableCell>Imagen</TableCell>
-              <TableCell>Receptores</TableCell>
+              <TableCell>Total de receptores</TableCell>
+              <TableCell>Plan de ejecución</TableCell>
+              <TableCell>Activo</TableCell>
+              <TableCell>Estado</TableCell>
+              <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {listCampaigns?.map((row, index) => (
+            {filteredCampaigns?.map((row, index) => (
               <TableRow
                 key={index}
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
               >
                 <TableCell>{convertToDate(row.createdAt)}</TableCell>
-                <TableCell component='th' scope='row'>
+                <TableCell
+                  component='th'
+                  scope='row'
+                  style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                >
                   {row.campaignName}
                 </TableCell>
-                <TableCell>{row.messages[0].text}</TableCell>
+                <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
+                  {row.messages
+                    .map((text) => text.text)
+                    .join(' | ')
+                    .slice(0, 300)}
+                  {row.messages
+                    .map((text) => {
+                      // console.log('Tamaño', text.text.length);
+                      return text.text;
+                    })
+                    .join(' | ').length > 300 && '...'}
+                </TableCell>
                 <TableCell>{convertToDate(row.scheduledAt)}</TableCell>
                 <TableCell>
-                  <img src={row.messages[0].img_url} alt='Imagen' width='100' />
+                  {row.messages[0].img_url ? (
+                    <img
+                      src={row.messages[0].img_url}
+                      alt='Imagen'
+                      width='100'
+                      onError={(e) => {
+                        e.target.style.display = 'none'; // Ocultar la etiqueta img en caso de error
+                      }}
+                    />
+                  ) : null}
                 </TableCell>
-                <TableCell>{row.receivers.length}</TableCell>
+                <TableCell>
+                  {Array.isArray(row.targetSummary)
+                    ? row.targetSummary.find((item) => typeof item === 'number')
+                    : row.targetSummary}
+                </TableCell>
+                <TableCell>
+                  <Button
+                    id='plan-button'
+                    onClick={() => handleClickOpenDialog(row)}
+                  >
+                    <DehazeIcon />
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  {row.processes && row.processes.length > 0 ? (
+                    row.processes[0].active ? (
+                      <CheckCircleOutlineOutlinedIcon
+                        color='success'
+                        sx={{fontSize: '2em', mx: 2}}
+                      />
+                    ) : (
+                      <CancelOutlinedIcon
+                        sx={{fontSize: '2em', mx: 2, color: red[500]}}
+                      />
+                    )
+                  ) : row.active ? (
+                    <CheckCircleOutlineOutlinedIcon
+                      color='success'
+                      sx={{fontSize: '2em', mx: 2}}
+                    />
+                  ) : (
+                    <CancelOutlinedIcon
+                      sx={{fontSize: '2em', mx: 2, color: red[500]}}
+                    />
+                  )}
+                </TableCell>
+                <TableCell>
+                  {row.status == 'PENDING' ? (
+                    <IntlMessages id='sidebar.sample.crm.pending' />
+                  ) : (
+                    <IntlMessages id='sidebar.sample.crm.finalized' />
+                  )}
+                </TableCell>
                 <TableCell>
                   <Button
                     id='basic-button'
@@ -264,7 +486,7 @@ export default function Views(props) {
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={newClient}
+            onClick={newCamp}
           >
             Nuevo
           </Button>
@@ -286,6 +508,67 @@ export default function Views(props) {
       </ButtonGroup>
 
       <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          Información de la campaña
+        </DialogTitle>
+        <DialogContent>
+          {/* Mostrar la información de la campaña seleccionada en el diálogo */}
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Orden</TableCell>
+                <TableCell>Fecha/Hora</TableCell>
+                <TableCell>Receptores</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {selectCampaign?.processes.map((process) => {
+                console.log('PROCESO INFO >>', process);
+                return (
+                  <TableRow key={process.processId}>
+                    <TableCell>{process.order}</TableCell>
+                    <TableCell>
+                      {convertToDate(selectCampaign.scheduledAt)}
+                    </TableCell>
+                    <TableCell>
+                      {selectCampaign?.urlTargetClients ? (
+                        <a
+                          href='#'
+                          onClick={() =>
+                            handleVerDetalleClick(
+                              selectCampaign.urlTargetClients,
+                              process.order,
+                              process.amount,
+                              selectCampaign.processes,
+                            )
+                          }
+                        >
+                          Ver Detalle
+                        </a>
+                      ) : (
+                        'Ver Detalle'
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={() => setOpenDialog(false)}>
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
         open={open2}
         onClose={handleClose2}
         sx={{textAlign: 'center'}}
@@ -293,7 +576,7 @@ export default function Views(props) {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar campaña'}
+          {'Cancelar campaña'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -301,7 +584,7 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            ¿Desea eliminar realmente la información seleccionada?
+            ¿Desea cancelar realmente la camapaña seleccionada?
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
@@ -310,6 +593,93 @@ export default function Views(props) {
           </Button>
           <Button variant='outlined' onClick={handleClose2}>
             No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Dialog DEtalle */}
+
+      {/*Respuesta */}
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Cancelar Campaña'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={dialogDetalleOpen}
+        onClose={() => setDialogDetalleOpen(false)}
+        maxWidth='xl'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='detail-dialog-title'>
+          {'Detalle de Clientes'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {/* Mostrar la información de la campaña seleccionada en el diálogo */}
+          <Table
+            sx={{minWidth: 800}}
+            stickyHeader
+            size='small'
+            aria-label='sticky table'
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>Orden</TableCell>
+                <TableCell>Nombre</TableCell>
+                <TableCell>Apellido Paterno</TableCell>
+                <TableCell>Apellido Materno</TableCell>
+                <TableCell>Cumpleaños</TableCell>
+                <TableCell>Número de Contacto</TableCell>
+                <TableCell>Correo</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {receiversCloud.map((row) => (
+                <TableRow
+                  key={row.id}
+                  sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                >
+                  <TableCell>{row.id ? row.id + 1 : 1}</TableCell>
+                  <TableCell>
+                    {row.clientId
+                      ? row.clientId.startsWith('DNI-')
+                        ? row.givenName
+                          ? row.givenName
+                          : row.denominationClient
+                        : row.denominationClient
+                      : 'XD'}
+                  </TableCell>
+                  <TableCell>{row.lastName}</TableCell>
+                  <TableCell>{row.secondLastName}</TableCell>
+                  <TableCell>{row.birthDay}</TableCell>
+                  <TableCell>
+                    {row.numberCountryCode + '-' + row.numberContact}
+                  </TableCell>
+                  <TableCell>{row.emailContact}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            variant='outlined'
+            onClick={() => setDialogDetalleOpen(false)}
+          >
+            Cerrar
           </Button>
         </DialogActions>
       </Dialog>
@@ -327,15 +697,15 @@ export default function Views(props) {
           .includes('/inventory/campaigns/update') === true ? (
           <MenuItem onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
-            Actualizar
+            Clonar
           </MenuItem>
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/campaigns/delete') === true ? (
-          <MenuItem onClick={setDeleteState}>
+          .includes('/inventory/campaigns/cancel') === true ? (
+          <MenuItem onClick={setDeleteState} disabled={cancelDisabled}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
-            Eliminar
+            Cancelar
           </MenuItem>
         ) : null}
       </Menu>

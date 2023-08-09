@@ -26,6 +26,7 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
   UPDATE_CATALOGS,
   GET_CLIENTS_PRESIGNED,
+  GET_IMAGE_PRESIGNED,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -90,6 +91,32 @@ export const createPresigned = (payload, file) => {
       });
   };
 };
+export const createImagePresigned = (payload, file) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    const key = payload?.request?.payload.name;
+    console.log('newImage', key);
+    API.post('tunexo', '/utility/preSignAnyPathMerchant', {body: payload})
+      .then(async (data) => {
+        data.response.payload.response.payload.name = key;
+        console.log('createImagePresigned resultado', data);
+        dispatch({
+          type: GET_IMAGE_PRESIGNED,
+          payload: data.response.payload.response.payload,
+        });
+        let newPresigned = {...data?.response?.payload.response.payload};
+        newPresigned.name = key;
+        console.log('newImagePresigned json', newPresigned);
+        // dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        console.log('newImagePresigned', file);
+        await dispatch(uploadFileByPresign(newPresigned?.presignedS3Url, file));
+      })
+      .catch((error) => {
+        console.log('createImagePresigned error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
 export const createClientsPresigned = (payload, file) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -97,19 +124,19 @@ export const createClientsPresigned = (payload, file) => {
     API.post('tunexo', '/utility/getPresignedUrl', {body: payload})
       .then(async (data) => {
         data.response.payload.response.payload.name = key;
-        console.log('createPresigned resultado', data);
+        console.log('createClientsPresigned resultado', data);
         dispatch({
           type: GET_CLIENTS_PRESIGNED,
           payload: data.response.payload.response.payload,
         });
         let newPresigned = {...data?.response?.payload.response.payload};
         newPresigned.name = key;
-        console.log('newPresigned json', newPresigned);
+        console.log('newClientsPresigned json', newPresigned);
         // dispatch({type: FETCH_SUCCESS, payload: data.response.status});
         await dispatch(uploadFileByPresign(newPresigned?.presignedS3Url, file));
       })
       .catch((error) => {
-        console.log('createPresigned error', error);
+        console.log('createClientsPresigned error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
@@ -171,7 +198,7 @@ export const uploadFile = (payload, url) => {
 export const uploadFileByPresign = (url, file) => {
   return async (dispatch) => {
     dispatch({type: FETCH_START});
-
+    console.log('image', url, 'filesImages', file);
     await fetch(url, {
       method: 'PUT',
       body: file.image,
