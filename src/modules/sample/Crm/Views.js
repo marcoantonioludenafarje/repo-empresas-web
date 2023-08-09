@@ -104,6 +104,11 @@ export default function Views(props) {
 
   const {userDataRes} = useSelector(({user}) => user);
 
+  const {successMessage} = useSelector(({clients}) => clients);
+  console.log('successMessage', successMessage);
+  const {errorMessage} = useSelector(({clients}) => clients);
+  console.log('errorMessage', errorMessage);
+
   const {listCampaigns, campaignsLastEvaluatedKey_pageListCampaigns} =
     useSelector(({campaigns}) => campaigns);
 
@@ -138,6 +143,7 @@ export default function Views(props) {
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [cancelDisabled, setCancelDisabled] = useState(false);
   /* let anchorEl = null; */
   const openMenu = Boolean(anchorEl);
   const handleClick = (codPro, event) => {
@@ -148,6 +154,18 @@ export default function Views(props) {
     selectedCampaign =
       listCampaigns[codPro]; /* .find((obj) => obj.client == codPro); */
     console.log('Select Campaña', selectedCampaign);
+    if (
+      selectedCampaign.processes &&
+      selectedCampaign.processes[0] &&
+      !selectedCampaign.processes[0].active
+    ) {
+      console.log(
+        'Select Campaña >',
+        !selectedCampaign.processes[0].active,
+        cancelDisabled,
+      );
+      setCancelDisabled(true);
+    }
   };
 
   const handleClose = () => {
@@ -175,13 +193,11 @@ export default function Views(props) {
     deletePayload.request.payload.campaignId = selectedCampaign.campaignId;
     console.log('deletePayload', deletePayload);
     deleteCampaign(deletePayload);
-    setOpen2(false);
     setOpenStatus(true);
-
-    setFilteredCampaigns(listCampaigns);
+    setOpen2(false);
   };
 
-  const newClient = () => {
+  const newCamp = () => {
     console.log('Para redireccionar a nuevo cliente');
     Router.push('/sample/crm/create');
   };
@@ -201,13 +217,14 @@ export default function Views(props) {
   useEffect(() => {
     // Update filteredCampaigns when listCampaigns changes
     setFilteredCampaigns(listCampaigns);
-  }, [listCampaigns]);
+  }, [listCampaigns, filteredCampaigns]);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectCampaign, setSelectCampaign] = useState(null);
 
   // Función para abrir el diálogo y guardar la información de la campaña seleccionada
   const handleClickOpenDialog = (campaign) => {
+    console.log('CAMPAÑA INFO SELECT', campaign);
     setOpenDialog(true);
     setSelectCampaign(campaign);
   };
@@ -216,9 +233,9 @@ export default function Views(props) {
 
   const [receiversCloud, setReceiversCloud] = useState([]);
 
-  const handleVerDetalleClick = (url) => {
+  const handleVerDetalleClick = (url, order, number, arrayproccess) => {
     console.log('LA URL', url);
-
+    console.log('Hace la petición', order, number, arrayproccess);
     axios
       .get(url)
       .then((response) => {
@@ -228,7 +245,22 @@ export default function Views(props) {
         const arregloFiltrado = response.data.receivers.filter(
           (objeto) => objeto.type !== 'tag',
         );
-        setReceiversCloud(arregloFiltrado);
+
+        let startIndex = 0;
+
+        for (let i = 0; i < arrayproccess.length; i++) {
+          if (arrayproccess[i].order < order) {
+            startIndex += arrayproccess[i].amount;
+          }
+        }
+
+        console.log('hace', startIndex, number);
+        const procesosSeleccionados = arregloFiltrado.slice(
+          startIndex,
+          startIndex + number,
+        );
+
+        setReceiversCloud(procesosSeleccionados);
         // Finalmente, abre el diálogo.
         setDialogDetalleOpen(true);
       })
@@ -240,18 +272,58 @@ export default function Views(props) {
     console.log('ReceiversCloud', receiversCloud);
   };
 
-  const [cancelDisabled, setCancelDisabled] = useState(false);
+  const showMessage = () => {
+    if (successMessage != '') {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha eliminado correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al cancelar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
+  };
 
-  // useEffect(() => {
-  //   let isCancelDisabled = false;
-  //   for (const campaign of listCampaigns) {
-  //     if (campaign.processes && campaign.processes[0] && !campaign.processes[0].active) {
-  //       isCancelDisabled = true;
-  //       break;
-  //     }
-  //   }
-  //   setCancelDisabled(isCancelDisabled);
-  // }, [listCampaigns]);
+  const sendStatus = () => {
+    setOpenStatus(false);
+    setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      // listPayload.request.payload.LastEvaluatedKey = null;
+      // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+      getCampaign(listPayload);
+    }, 2000);
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -344,7 +416,11 @@ export default function Views(props) {
                     />
                   ) : null}
                 </TableCell>
-                <TableCell>{row.receivers?.length}</TableCell>
+                <TableCell>
+                  {Array.isArray(row.targetSummary)
+                    ? row.targetSummary.find((item) => typeof item === 'number')
+                    : row.targetSummary}
+                </TableCell>
                 <TableCell>
                   <Button
                     id='plan-button'
@@ -410,7 +486,7 @@ export default function Views(props) {
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={newClient}
+            onClick={newCamp}
           >
             Nuevo
           </Button>
@@ -452,26 +528,36 @@ export default function Views(props) {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <TableCell>1</TableCell>
-                <TableCell>
-                  {convertToDate(selectCampaign?.scheduledAt)}
-                </TableCell>
-                <TableCell>
-                  {selectCampaign?.urlTargetClients ? (
-                    <a
-                      href='#'
-                      onClick={() =>
-                        handleVerDetalleClick(selectCampaign.urlTargetClients)
-                      }
-                    >
-                      Ver Detalle
-                    </a>
-                  ) : (
-                    'Ver Detalle'
-                  )}
-                </TableCell>
-              </TableRow>
+              {selectCampaign?.processes.map((process) => {
+                console.log('PROCESO INFO >>', process);
+                return (
+                  <TableRow key={process.processId}>
+                    <TableCell>{process.order}</TableCell>
+                    <TableCell>
+                      {convertToDate(selectCampaign.scheduledAt)}
+                    </TableCell>
+                    <TableCell>
+                      {selectCampaign?.urlTargetClients ? (
+                        <a
+                          href='#'
+                          onClick={() =>
+                            handleVerDetalleClick(
+                              selectCampaign.urlTargetClients,
+                              process.order,
+                              process.amount,
+                              selectCampaign.processes,
+                            )
+                          }
+                        >
+                          Ver Detalle
+                        </a>
+                      ) : (
+                        'Ver Detalle'
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </DialogContent>
@@ -490,7 +576,7 @@ export default function Views(props) {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar campaña'}
+          {'Cancelar campaña'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -512,16 +598,43 @@ export default function Views(props) {
       </Dialog>
       {/* Dialog DEtalle */}
 
+      {/*Respuesta */}
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Cancelar Campaña'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Dialog
         open={dialogDetalleOpen}
         onClose={() => setDialogDetalleOpen(false)}
+        maxWidth='xl'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='detail-dialog-title'>
           {'Detalle de Clientes'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {/* Mostrar la información de la campaña seleccionada en el diálogo */}
-          <Table>
+          <Table
+            sx={{minWidth: 800}}
+            stickyHeader
+            size='small'
+            aria-label='sticky table'
+          >
             <TableHead>
               <TableRow>
                 <TableCell>Orden</TableCell>
@@ -535,9 +648,20 @@ export default function Views(props) {
             </TableHead>
             <TableBody>
               {receiversCloud.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                >
                   <TableCell>{row.id ? row.id + 1 : 1}</TableCell>
-                  <TableCell>{row.givenName}</TableCell>
+                  <TableCell>
+                    {row.clientId
+                      ? row.clientId.startsWith('DNI-')
+                        ? row.givenName
+                          ? row.givenName
+                          : row.denominationClient
+                        : row.denominationClient
+                      : 'XD'}
+                  </TableCell>
                   <TableCell>{row.lastName}</TableCell>
                   <TableCell>{row.secondLastName}</TableCell>
                   <TableCell>{row.birthDay}</TableCell>

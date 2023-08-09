@@ -42,6 +42,6 @@ const reducers = combineReducers({
   orders: Orders,
   campaigns: Campaign,
   sale: Sales,
-  agents:Agent,
+  agents: Agent,
 });
 export default reducers;
