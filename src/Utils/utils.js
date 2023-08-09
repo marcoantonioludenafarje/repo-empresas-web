@@ -482,7 +482,7 @@ export const completeWithZeros = (num, size) => {
 export const verTags = (obj, listBussinesParameteres) => {
   let descripcion = '';
   let listTagsClient = null;
-  console.log('Que viene en obj', obj);
+
   if (listBussinesParameteres)
     listTagsClient = listBussinesParameteres.find(
       (obj) => obj.abreParametro == 'CLIENT_TAGS',

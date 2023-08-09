@@ -102,6 +102,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Create = (props) => {
   let toSubmitting;
+  let changeValueField;
+  let getValueField;
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const dispatch = useDispatch();
@@ -131,6 +133,7 @@ const Create = (props) => {
   const [campaignContentVariations, setCampaignContentsVariations] = useState([
     {id: 1, content: ''},
   ]);
+  const [campaignContent, setCampaignContent] = useState('');
   const [openReviewPop, setopenReviewPop] = React.useState(false);
   const textRef = useRef(null);
 
@@ -144,12 +147,13 @@ const Create = (props) => {
     console.log(textarea);
     const cursorPosition = textarea.selectionStart;
     if (cursorPosition !== undefined) {
-      const currentText = textMessage;
+      const currentText = getValueField('campaignContent').value;
       const newText =
         currentText.slice(0, cursorPosition) +
         updatedTextMessage +
         currentText.slice(cursorPosition);
-      setTextMessage(newText);
+      //setTextMessage(newText);
+      changeValueField('campaignContent', newText);
       handleCampaignContentChange(newText);
     }
   };
@@ -161,12 +165,12 @@ const Create = (props) => {
     console.log(textarea);
     const cursorPosition = textarea.selectionStart;
     if (cursorPosition !== undefined) {
-      const currentText = textMessage;
+      const currentText = getValueField('campaignContent').value;
       const newText =
         currentText.slice(0, cursorPosition) +
         updatedTextMessage +
         currentText.slice(cursorPosition);
-      setTextMessage(newText);
+      changeValueField('campaignContent', newText);
       handleCampaignContentChange(newText);
     }
   };
@@ -178,12 +182,12 @@ const Create = (props) => {
     console.log(textarea);
     const cursorPosition = textarea.selectionStart;
     if (cursorPosition !== undefined) {
-      const currentText = textMessage;
+      const currentText = getValueField('campaignContent').value;
       const newText =
         currentText.slice(0, cursorPosition) +
         updatedTextMessage +
         currentText.slice(cursorPosition);
-      setTextMessage(newText);
+      changeValueField('campaignContent', newText);
       handleCampaignContentChange(newText);
     }
   };
@@ -195,12 +199,12 @@ const Create = (props) => {
     console.log(textarea);
     const cursorPosition = textarea.selectionStart;
     if (cursorPosition !== undefined) {
-      const currentText = textMessage;
+      const currentText = getValueField('campaignContent').value;
       const newText =
         currentText.slice(0, cursorPosition) +
         updatedTextMessage +
         currentText.slice(cursorPosition);
-      setTextMessage(newText);
+      changeValueField('campaignContent', newText);
       handleCampaignContentChange(newText);
     }
   };
@@ -212,12 +216,12 @@ const Create = (props) => {
     console.log(textarea);
     const cursorPosition = textarea.selectionStart;
     if (cursorPosition !== undefined) {
-      const currentText = textMessage;
+      const currentText = getValueField('campaignContent').value;
       const newText =
         currentText.slice(0, cursorPosition) +
         updatedTextMessage +
         currentText.slice(cursorPosition);
-      setTextMessage(newText);
+      changeValueField('campaignContent', newText);
       handleCampaignContentChange(newText);
     }
   };
@@ -229,12 +233,12 @@ const Create = (props) => {
     console.log(textarea);
     const cursorPosition = textarea.selectionStart;
     if (cursorPosition !== undefined) {
-      const currentText = textMessage;
+      const currentText = getValueField('campaignContent').value;
       const newText =
         currentText.slice(0, cursorPosition) +
         updatedTextMessage +
         currentText.slice(cursorPosition);
-      setTextMessage(newText);
+      changeValueField('campaignContent', newText);
       handleCampaignContentChange(newText);
     }
   };
@@ -246,12 +250,12 @@ const Create = (props) => {
     console.log(textarea);
     const cursorPosition = textarea.selectionStart;
     if (cursorPosition !== undefined) {
-      const currentText = textMessage;
+      const currentText = getValueField('campaignContent').value;
       const newText =
         currentText.slice(0, cursorPosition) +
         updatedTextMessage +
         currentText.slice(cursorPosition);
-      setTextMessage(newText);
+      changeValueField('campaignContent', newText);
       handleCampaignContentChange(newText);
     }
   };
@@ -262,28 +266,28 @@ const Create = (props) => {
     console.log(textarea);
     const cursorPosition = textarea.selectionStart;
     if (cursorPosition !== undefined) {
-      const currentText = textMessage;
+      const currentText = getValueField('campaignContent').value;
       const newText =
         currentText.slice(0, cursorPosition) +
         updatedTextMessage +
         currentText.slice(cursorPosition);
-      setTextMessage(newText);
+      changeValueField('campaignContent', newText);
       handleCampaignContentChange(newText);
     }
   };
   const handleBirthDateMessage = () => {
     const updatedTextMessage = ` {{birtDay}}`;
-    console.log(textRef);
+    console.log('textRef', textRef);
     const textarea = textRef.current;
     console.log(textarea);
     const cursorPosition = textarea.selectionStart;
     if (cursorPosition !== undefined) {
-      const currentText = textMessage;
+      const currentText = getValueField('campaignContent').value;
       const newText =
         currentText.slice(0, cursorPosition) +
         updatedTextMessage +
         currentText.slice(cursorPosition);
-      setTextMessage(newText);
+      changeValueField('campaignContent', newText);
       handleCampaignContentChange(newText);
     }
   };
@@ -298,7 +302,7 @@ const Create = (props) => {
       {id: newIdVariation, content: ''},
     ]);
   };
-  const [campaignContent, setCampaignContent] = useState(textMessage);
+
   const setEnablePopReview = () => {
     setopenReviewPop(true);
   };
@@ -329,7 +333,9 @@ const Create = (props) => {
   const transformText = () => {
     console.log('content Hola desde tranforText');
     let updatedContents = '';
-    updatedContents += tranformMessageReview(campaignContent);
+    updatedContents += tranformMessageReview(
+      getValueField('campaignContent').value,
+    );
     console.log('Este es el updateContents', updatedContents);
     return <div dangerouslySetInnerHTML={{__html: updatedContents}}></div>;
   };
@@ -1059,10 +1065,11 @@ const Create = (props) => {
   };
 
   const handleCampaignContentChange = (event) => {
-    const updateContentMessage = event;
-    console.log('Este es el updateContentMessage', updateContentMessage);
-    setCampaignContent(updateContentMessage);
-    console.log('index camp antiguo', campaignContent);
+    // const updateContentMessage = event;
+    // console.log('Este es el updateContentMessage', updateContentMessage);
+    // setCampaignContent(updateContentMessage);
+    changeValueField('campaignContent', event);
+    // console.log('index camp antiguo', campaignContent);
   };
   useEffect(() => {
     console.log('index camp', campaignContent);
@@ -1093,8 +1100,17 @@ const Create = (props) => {
           onSubmit={handleData}
           //enableReinitialize={true}
         >
-          {({values, errors, isSubmitting, setFieldValue, setSubmitting}) => {
+          {({
+            values,
+            errors,
+            isSubmitting,
+            setFieldValue,
+            setSubmitting,
+            getFieldProps,
+          }) => {
             toSubmitting = setSubmitting;
+            changeValueField = setFieldValue;
+            getValueField = getFieldProps;
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -1358,16 +1374,14 @@ const Create = (props) => {
                     <Grid item xs={12} md={12}>
                       <TextField
                         label='Contenido de la Campaña *'
-                        name={`campaignContent`}
+                        name='campaignContent'
                         variant='outlined'
                         multiline
                         rows={4}
+                        value={getValueField('campaignContent').value}
                         inputRef={textRef}
-                        value={campaignContent}
                         onInput={(event) => {
-                          setTextMessage(event.target.value);
                           handleCampaignContentChange(event.target.value);
-                          console.log('Values', values);
                         }}
                         sx={{width: '100%', my: 2}}
                       />
@@ -1414,7 +1428,7 @@ const Create = (props) => {
                       justifyContent: 'center',
                     }}
                   >
-                    {textMessage ? (
+                    {getValueField('campaignContent').value ? (
                       <>
                         <p>{transformText()}</p>
                       </>
@@ -1544,7 +1558,6 @@ const Create = (props) => {
                     <Button
                       color='primary'
                       sx={{mx: 'auto', width: '15%'}}
-                      type='submit'
                       variant='contained'
                       startIcon={<SaveAltOutlinedIcon />}
                       disabled={validateVariations}
