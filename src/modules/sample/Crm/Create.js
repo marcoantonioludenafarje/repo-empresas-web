@@ -842,7 +842,28 @@ const Create = (props) => {
     newData[0] = dummy;
     setVariationsData(newData);
     console.log('index campaña', campaignContent);
-    console.log('index dummy>', variationsData);
+    console.log('index dummy>', variationsData.length);
+
+    try {
+      const api_url = "http://localhost:5000/generar-variaciones"
+      const req_body = {
+        textCampaign: campaignContent,
+        cant_variaciones: variationsData.length
+      }
+
+      const response = await axios.post(api_url + '/generar-variaciones', req_body);
+      if (response.status === 200) {
+        const responseData = response.data;
+        console.log('Index Respuesta exitosa:', responseData);
+        // Aquí puedes acceder a la data generada, por ejemplo: responseData.data
+      } else {
+        console.log('index Error en la respuesta:', response.data);
+      }
+
+    } catch (error) {
+      console.log('index en la solicitud:', error);
+    }
+
   };
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
@@ -874,9 +895,9 @@ const Create = (props) => {
     }
   };
 
-  const handleCampaignContentChange = (event) => {
-    setCampaignContent(event.target.value);
-    console.log('index camp', campaignContent);
+  const handleCampaignContentChange = (campaignx) => {
+    console.log('index camp', campaignx);
+    setCampaignContent(campaignx);
   };
 
   return (
@@ -1117,14 +1138,13 @@ const Create = (props) => {
                     <AppTextField
                       label='Contenido de la Campaña *'
                       name='campaignContent'
-                      value={campaignContent}
-                      onChange={handleCampaignContentChange}
                       variant='outlined'
                       multiline
                       rows={4}
                       sx={{width: '100%', my: 2}}
                     />
                   </Grid>
+                  {handleCampaignContentChange(values.campaignContent)}
                 </Grid>
 
                 <Grid container item xs={12} justifyContent='center'>

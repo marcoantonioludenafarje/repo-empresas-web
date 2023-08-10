@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 let selectedCampaign = {};
-let deletePayload = {
+let cancelPayload = {
   request: {
     payload: {
       campaignId: '',
@@ -183,16 +183,16 @@ export default function Views(props) {
     setOpen2(false);
   };
 
-  const setDeleteState = () => {
+  const setCancelState = () => {
     setOpen2(true);
     handleClose();
   };
-  const confirmDelete = () => {
+  const confirmCancel = () => {
     console.log('selected camapaña', selectedCampaign);
     console.log('id de selected', selectedCampaign.campaignId);
-    deletePayload.request.payload.campaignId = selectedCampaign.campaignId;
-    console.log('deletePayload', deletePayload);
-    deleteCampaign(deletePayload);
+    cancelPayload.request.payload.campaignId = selectedCampaign.campaignId;
+    console.log('cancelPayload', cancelPayload);
+    deleteCampaign(cancelPayload);
     setOpenStatus(true);
     setOpen2(false);
   };
@@ -284,7 +284,7 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha eliminado correctamente
+            Se ha cancelado correctamente
           </DialogContentText>
         </>
       );
@@ -322,6 +322,7 @@ export default function Views(props) {
       // listPayload.request.payload.LastEvaluatedKey = null;
       // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
       getCampaign(listPayload);
+      setFilteredCampaigns(listCampaigns)
     }, 2000);
   };
 
@@ -588,7 +589,7 @@ export default function Views(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={confirmDelete}>
+          <Button variant='outlined' onClick={confirmCancel}>
             Sí
           </Button>
           <Button variant='outlined' onClick={handleClose2}>
@@ -703,7 +704,7 @@ export default function Views(props) {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/campaigns/cancel') === true ? (
-          <MenuItem onClick={setDeleteState} disabled={cancelDisabled}>
+          <MenuItem onClick={setCancelState} disabled={cancelDisabled}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Cancelar
           </MenuItem>
