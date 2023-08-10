@@ -72,6 +72,12 @@ const BusinessInfo = () => {
   const [docType, setDocType] = React.useState(
     userAttributes['custom:businessDocumentType'],
   );
+  const [businessLine, setBusinessLine] = React.useState(
+    userDataRes ? userDataRes.merchantSelected.businessLine : '',
+  );
+  const [principalClient, setPrincipalClient] = React.useState(
+    userDataRes ? userDataRes.merchantSelected.typeClient : '',
+  );
   const [ubigeo, setUbigeo] = React.useState(
     userDataRes ? userDataRes.merchantSelected.ubigeo : '',
   );
@@ -108,9 +114,15 @@ const BusinessInfo = () => {
     dispatch({type: FETCH_ERROR, payload: undefined});
   }, []);
 
-  const getDocumentType = (value) => {
+  const getDocumentType = (type, value) => {
     console.log('tipo desde index', value);
-    setDocType(value);
+    if (type == 'documentType') {
+      setDocType(value);
+    } else if (type == 'businessLine') {
+      setBusinessLine(value);
+    } else if (type == 'principalClient') {
+      setPrincipalClient(value);
+    }
   };
   const getLogo = (value) => {
     console.log('logo desde index', value);
@@ -187,6 +199,8 @@ const BusinessInfo = () => {
           documentType:
             docType /* userAttributes['custom:businessDocumentType'] */,
           eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
+          principalClient: userDataRes.merchantSelected.typeClient,
+          businessLine: userDataRes.merchantSelected.businessLine,
           facebook: userDataRes.merchantSelected.facebookUrl,
           instagram: userDataRes.merchantSelected.instagramUrl,
           twitter: userDataRes.merchantSelected.twitterUrl,
@@ -210,6 +224,8 @@ const BusinessInfo = () => {
                 numberDocumentMerchant: data.documentNumber,
                 addressMerchant: data.direction,
                 ecommerceMerchantSlug: data.eMerchantSlugName,
+                businessLine: businessLine,
+                principalClient: principalClient,
                 facebookUrl: data.facebook,
                 twitterUrl: data.twitter,
                 instagramUrl: data.instagram,
@@ -236,6 +252,8 @@ const BusinessInfo = () => {
                 numberDocumentMerchant: data.documentNumber,
                 addressMerchant: data.direction,
                 ecommerceMerchantSlug: data.eMerchantSlugName,
+                principalClient: principalClient,
+                businessLine: businessLine,
                 facebookUrl: data.facebook,
                 twitterUrl: data.twitter,
                 instagramUrl: data.instagram,

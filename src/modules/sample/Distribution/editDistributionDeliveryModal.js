@@ -393,7 +393,7 @@ const EditDistributionDeliveryModal = ({
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-              label={<IntlMessages id='common.busines.startingDirection' />}
+              label={<IntlMessages id='common.business.startingDirection' />}
               defaultValue={temporaryDelivery.startingAddress}
               name='startingAddress'
               variant='outlined'
@@ -407,7 +407,7 @@ const EditDistributionDeliveryModal = ({
           </Grid>
           <Grid item xs={12} sm={2}>
             <TextField
-              label={<IntlMessages id='common.busines.startingInternalCode' />}
+              label={<IntlMessages id='common.business.startingInternalCode' />}
               defaultValue={temporaryDelivery.startingInternalCode}
               name='startingInternalCode'
               variant='outlined'
@@ -459,7 +459,7 @@ const EditDistributionDeliveryModal = ({
           </Grid>
           <Grid item xs={12} sm={4}>
             <TextField
-              label={<IntlMessages id='common.busines.arrivalDirection' />}
+              label={<IntlMessages id='common.business.arrivalDirection' />}
               defaultValue={temporaryDelivery.arrivalAddress}
               name='arrivalAddress'
               variant='outlined'
@@ -473,7 +473,7 @@ const EditDistributionDeliveryModal = ({
           </Grid>
           <Grid item xs={12} sm={2}>
             <TextField
-              label={<IntlMessages id='common.busines.arrivalInternalCode' />}
+              label={<IntlMessages id='common.business.arrivalInternalCode' />}
               defaultValue={temporaryDelivery.arrivalInternalCode}
               name='arrivalInternalCode'
               variant='outlined'
@@ -536,7 +536,7 @@ const EditDistributionDeliveryModal = ({
 
           <Grid item xs={12} sm={3}>
             <TextField
-              label={<IntlMessages id='common.busines.driver.name' />}
+              label={<IntlMessages id='common.business.driver.name' />}
               defaultValue={temporaryDelivery.driverName}
               name='driverName'
               variant='outlined'
@@ -551,7 +551,7 @@ const EditDistributionDeliveryModal = ({
 
           <Grid item xs={12} sm={3}>
             <TextField
-              label={<IntlMessages id='common.busines.driver.lastName' />}
+              label={<IntlMessages id='common.business.driver.lastName' />}
               defaultValue={temporaryDelivery.driverLastName}
               name='driverLastName'
               variant='outlined'
@@ -567,12 +567,12 @@ const EditDistributionDeliveryModal = ({
           <Grid item xs={12} sm={3}>
             <FormControl fullWidth>
               <InputLabel id='documentType-label' style={{fontWeight: 200}}>
-                <IntlMessages id='common.busines.documentType' />
+                <IntlMessages id='common.business.documentType' />
               </InputLabel>
               <Select
                 name='documentType'
                 labelId='documentType-label'
-                label={<IntlMessages id='common.busines.documentType' />}
+                label={<IntlMessages id='common.business.documentType' />}
                 displayEmpty
                 onChange={handleDriverDocumentField}
                 value={temporaryDelivery.driverDocumentType.toUpperCase()}
@@ -595,7 +595,7 @@ const EditDistributionDeliveryModal = ({
           <Grid item xs={12} sm={3}>
             <TextField
               label={
-                <IntlMessages id='common.busines.driver.document.number' />
+                <IntlMessages id='common.business.driver.document.number' />
               }
               name='driverDocumentNumber'
               defaultValue={temporaryDelivery.driverDocumentNumber}
@@ -611,7 +611,7 @@ const EditDistributionDeliveryModal = ({
 
           <Grid item xs={12} sm={3}>
             <TextField
-              label={<IntlMessages id='common.busines.driver.licenseNumber' />}
+              label={<IntlMessages id='common.business.driver.licenseNumber' />}
               name='driverLicenseNumber'
               defaultValue={temporaryDelivery.driverLicenseNumber}
               variant='outlined'
@@ -626,7 +626,7 @@ const EditDistributionDeliveryModal = ({
 
           <Grid item xs={12} sm={3}>
             <TextField
-              label={<IntlMessages id='common.busines.plate' />}
+              label={<IntlMessages id='common.business.plate' />}
               name='plate'
               variant='outlined'
               defaultValue={temporaryDelivery.plate}
@@ -650,7 +650,7 @@ const EditDistributionDeliveryModal = ({
 
           <Grid item xs={12} sm={3}>
             <TextField
-              label={<IntlMessages id='common.busines.weigth' />}
+              label={<IntlMessages id='common.business.weigth' />}
               //defaultValue={temporaryDelivery.totalWeight}
               disabled
               value={temporaryDelivery.totalWeight.toFixed(2)}
@@ -666,7 +666,7 @@ const EditDistributionDeliveryModal = ({
           </Grid>
           <Grid item xs={12} sm={3}>
             <TextField
-              label={<IntlMessages id='common.busines.packages.number' />}
+              label={<IntlMessages id='common.business.packages.number' />}
               name='numberPackages'
               defaultValue={temporaryDelivery.numberPackages}
               variant='outlined'
@@ -696,10 +696,10 @@ const EditDistributionDeliveryModal = ({
                     <IntlMessages id='common.amount' />
                   </TableCell>
                   <TableCell align='center'>
-                    <IntlMessages id='common.busines.weigth' />
+                    <IntlMessages id='common.business.weigth' />
                   </TableCell>
                   <TableCell align='center'>
-                    <IntlMessages id='common.busines.total.weigth' />
+                    <IntlMessages id='common.business.total.weigth' />
                   </TableCell>
                   <TableCell align='center'>
                     <IntlMessages id='product.type.transform.rawMaterial' />
