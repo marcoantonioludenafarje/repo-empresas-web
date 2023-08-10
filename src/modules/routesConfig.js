@@ -82,15 +82,7 @@ const rolesRoutesConfig = {
           type: 'item',
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/crm/views',
-        },
-        {
-          id: 'campaignsTable',
-          title: 'Tabla de agentes',
-          messageId: 'sidebar.sample.viewAgents',
-          type: 'item',
-          icon: <TableRowsOutlinedIcon fontSize='small' />,
-          url: '/sample/agents/table',
-        },
+        }
       ],
     },
     {
@@ -320,6 +312,22 @@ const rolesRoutesConfig = {
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/bulkLoad',
         },
+        {
+          id: 'campaignsTable',
+          title: 'Tabla de agentes',
+          messageId: 'sidebar.sample.viewAgents',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/agents/table',
+        },
+        {
+          id:'campaignsTable',
+          title: 'Notification Table',
+          messageId: 'sidebar.sample.viewNotifications',
+          type:'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/notifications/table',
+        }
       ],
     },
     {
