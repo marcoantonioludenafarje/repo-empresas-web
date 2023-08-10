@@ -41,7 +41,7 @@ import {makeStyles} from '@mui/styles';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {newAgent} from '../../../../redux/actions/Agent';
+import {updateAgents} from '../../../../redux/actions/Agent';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -52,20 +52,16 @@ import {useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check';
 
 const validationSchema = yup.object({
-  givenName: yup
+  robotName: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required('Es un campo obligatorio'),
 
-  extraInformationClient: yup
+  description: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required('Es un campo obligatorio'),
 });
-const defaultValues = {
-  givenName: '',
-  extraInformationClient: '',
-};
 
 const useStyles = makeStyles((theme) => ({
   fixPosition: {
@@ -86,13 +82,14 @@ const formatSentence = (phrase) => {
   );
 };
 
-const NewAgent = (props) => {
+const UpdateAgent = (props) => {
+  const router = useRouter();
+  let {query} = router;
+  console.log('query', query);
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const dispatch = useDispatch();
-  const router = useRouter();
-
   const [reload, setReload] = React.useState(0); // integer state
 
   const classes = useStyles(props);
@@ -101,8 +98,8 @@ const NewAgent = (props) => {
   };
 
   //APIS
-  const toNewAgent = (payload) => {
-    dispatch(newAgent(payload));
+  const toUpdateAgent = (payload) => {
+    dispatch(updateAgents(payload));
   };
   const [dateRegister, setDateRegister] = React.useState(Date.now());
   //GET_VALUES_APIS
@@ -165,34 +162,35 @@ const NewAgent = (props) => {
     setOpen(false);
   };
 
+  const defaultValues = {
+    robotName: query.robotName || '',
+    description: query.description || '',
+  };
+
+  let newAgentPayload = {
+    request: {
+      payload: {
+        robotId: query.robotId,
+        robotName: query.robotName,
+        description: query.description,
+      },
+    },
+  };
+
   const handleData = (data, {setSubmitting}) => {
+    console.log('Data1', data);
     setSubmitting(true);
     //delete data.documentType;
     console.log('Data', data);
     console.log('objSelects', objSelects);
 
-    let extraTrama;
-    extraTrama = {
-      robotName: data.givenName,
-    };
-
-    let newAgentPayload = {
-      request: {
-        payload: {
-          robots: [
-            {
-              description: data.extraInformationClient,
-              ...extraTrama,
-            },
-          ],
-          merchantId: userDataRes.merchantSelected.merchantId,
-        },
-      },
-    };
-
-    toNewAgent(newAgentPayload);
-    console.log('newAgentPayload', newAgentPayload);
+    newAgentPayload.request.payload.robotName = data.robotName;
+    newAgentPayload.request.payload.description = data.description;
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    toUpdateAgent(newAgentPayload);
     setSubmitting(false);
+    setOpenStatus(true);
   };
 
   const showMessage = () => {
@@ -248,7 +246,7 @@ const NewAgent = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          REGISTRO DE AGENTE
+          ACTUALIZACIÓN DE AGENTE
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -266,35 +264,21 @@ const NewAgent = (props) => {
           validationSchema={validationSchema}
           initialValues={{...defaultValues}}
           onSubmit={handleData}
-          enableReinitialize={true}
         >
-          {({values, errors, isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue}) => {
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
                 noValidate
                 autoComplete='on'
                 /* onChange={handleActualData} */
-                onChange={(value) => {
-                  console.log('Los values', values);
-                  if (['givenName'].includes(value.target.name)) {
-                    console.log('Aca es value', value);
-                    console.log('Esto es el nuevo name', value.target.name);
-                    console.log('Esto es el nuevo value', value.target.value);
-                    let givenName = formatSentence(
-                      value.target.name == 'givenName'
-                        ? value.target.value
-                        : values['givenName'],
-                    );
-                  }
-                }}
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <>
                     <Grid item xs={12}>
                       <AppUpperCaseTextField
                         label='Nombre'
-                        name='givenName'
+                        name='robotName'
                         variant='outlined'
                         sx={{
                           width: '100%',
@@ -312,7 +296,7 @@ const NewAgent = (props) => {
                         label='Descripción'
                         multiline
                         rows={4}
-                        name='extraInformationClient'
+                        name='description'
                         variant='outlined'
                         sx={{
                           width: '100%',
@@ -459,7 +443,7 @@ const NewAgent = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro del Agente'}
+          {'Actualización del Agente'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -495,7 +479,7 @@ const NewAgent = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro del agente'}
+          {'Actualización del agente'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -530,4 +514,4 @@ const NewAgent = (props) => {
   );
 };
 
-export default NewAgent;
+export default UpdateAgent;

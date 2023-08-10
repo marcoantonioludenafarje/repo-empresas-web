@@ -333,7 +333,7 @@ const SignupAwsCognito = () => {
 
               <Box sx={{mb: {xs: 4, xl: 5}}}>
                 <AppUpperCaseTextField
-                  label={<IntlMessages id='common.busines.socialReason' />}
+                  label={<IntlMessages id='common.business.socialReason' />}
                   name='businessSocialReason'
                   variant='outlined'
                   sx={{
@@ -346,7 +346,7 @@ const SignupAwsCognito = () => {
               </Box>
               {/* <Box sx={{mb: {xs: 4, xl: 5}}}>
                 <AppTextField
-                  label={<IntlMessages id='common.busines.documentType' />}
+                  label={<IntlMessages id='common.business.documentType' />}
                   name='businessDocumentType'
                   variant='outlined'
                   sx={{
@@ -369,7 +369,7 @@ const SignupAwsCognito = () => {
                     defaultValue='RUC'
                     name='businessDocumentType'
                     labelId='businessDocumentType-label'
-                    label={<IntlMessages id='common.busines.documentType' />}
+                    label={<IntlMessages id='common.business.documentType' />}
                     onChange={handleField}
                   >
                     <MenuItem value='RUC' style={{fontWeight: 200}}>
@@ -383,7 +383,7 @@ const SignupAwsCognito = () => {
               </Box>
               <Box sx={{mb: {xs: 4, xl: 5}}}>
                 <AppTextField
-                  label={<IntlMessages id='common.busines.documentNumber' />}
+                  label={<IntlMessages id='common.business.documentNumber' />}
                   name='businessDocumentNumber'
                   variant='outlined'
                   sx={{
@@ -396,7 +396,7 @@ const SignupAwsCognito = () => {
               </Box>
               <Box sx={{mb: {xs: 4, xl: 5}}}>
                 <AppUpperCaseTextField
-                  label={<IntlMessages id='common.busines.direction' />}
+                  label={<IntlMessages id='common.business.direction' />}
                   name='businessDirection'
                   variant='outlined'
                   sx={{
@@ -463,13 +463,13 @@ const SignupAwsCognito = () => {
               <Box sx={{mb: {xs: 4, xl: 5}}}>
                 <FormControl fullWidth sx={{my: 2}}>
                   <InputLabel id='typClient-label' style={{fontWeight: 200}}>
-                    {<IntlMessages id='common.busines.typeClient' />}
+                    {<IntlMessages id='common.business.typeClient' />}
                   </InputLabel>
                   <Select
                     defaultValue='PJ'
                     name='typeClient'
                     labelId='typeClient-label'
-                    label={<IntlMessages id='common.busines.typeClient' />}
+                    label={<IntlMessages id='common.business.typeClient' />}
                     onChange={handleFieldTC}
                   >
                     <MenuItem value='PJ' style={{fontWeight: 200}}>

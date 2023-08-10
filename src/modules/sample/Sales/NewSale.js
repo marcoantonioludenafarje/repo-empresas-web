@@ -157,7 +157,8 @@ const NewSale = (props) => {
   let weight_unit;
   let changeValueField;
   let getValueField;
-
+  let isFormikSubmitting;
+  let setFormikSubmitting;
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState('ticket');
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [sendEmail, setSendEmail] = React.useState(true);
@@ -183,6 +184,11 @@ const NewSale = (props) => {
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [selectedClient, setSelectedClient] = React.useState('');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
+
+  const [openClientComprobation, setOpenClientComprobation] =
+    React.useState(false);
+  const [isClientValidated, setIsClientValidated] = React.useState(false);
+
   //CALENDARIO
   const [value, setValue] = React.useState(Date.now());
   const [value2, setValue2] = React.useState(
@@ -216,10 +222,10 @@ const NewSale = (props) => {
     issueDate: Date.now(),
     wayToPay: Date.now(),
     methodToPay: 'Efectivo',
-    totalField: Number(query.totalPriceWithoutIgv),
-    totalFieldIgv: Number(query.totalPriceWithIgv),
+    totalField: 0,
+    totalFieldIgv: 0,
     money_unit: money_unit,
-    clientEmail: query.clientEmail,
+    clientEmail: '',
     transactionNumber: '',
   };
   const actualValues = {
@@ -276,19 +282,6 @@ const NewSale = (props) => {
   useEffect(() => {
     console.log('selectedProducts change', selectedProducts);
   }, [selectedProducts]);
-
-  useEffect(() => {
-    if (prevExchangeRate !== exchangeRate) {
-      console.log('exchangerate cambiaso', exchangeRate);
-      changeValueField('totalField', Number(total));
-      changeValueField(
-        'totalFieldIgv',
-        Number(igvDefault) > 0 && isIgvChecked
-          ? fixDecimals(total + fixDecimals(total * fixDecimals(igvDefault)))
-          : Number(total.toFixed(2)),
-      );
-    }
-  }, [exchangeRate]);
 
   useEffect(() => {
     if (businessParameter) {
@@ -421,6 +414,7 @@ const NewSale = (props) => {
     setIsIgvChecked(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
+
   const handleSendEmail = (event, isInputChecked) => {
     setSendEmail(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
@@ -555,110 +549,130 @@ const NewSale = (props) => {
     changeValueField('totalFieldIgv', Number(calculatedtotalIgv.toFixed(2)));
     forceUpdate();
   };
-  const handleData = (data, {setSubmitting}) => {
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: NEW_SALE, payload: undefined});
-    console.log('listDocuments', listDocuments);
-    let parsedDocuments = listDocuments.map((obj) => {
-      return {
-        issueDate: obj.dateDocument,
-        serialDocument: obj.document,
+  const handleData = (data, client) => {
+    let localIsClientValidated = isClientValidated;
+    if (Object.keys(selectedClient).length != 0) {
+      setIsClientValidated(true);
+      localIsClientValidated = true;
+    } else {
+      setOpenClientComprobation(true);
+      setFormikSubmitting(false);
+    }
+
+    if (localIsClientValidated || client == 'enabled') {
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      dispatch({type: NEW_SALE, payload: undefined});
+      console.log('listDocuments', listDocuments);
+      let parsedDocuments = listDocuments.map((obj) => {
+        return {
+          issueDate: obj.dateDocument,
+          serialDocument: obj.document,
+        };
+      });
+      console.log('parsedDocuments', parsedDocuments);
+      let finalPayload;
+      const listTypeIgvCode = {
+        1000: 10,
+        9997: 20,
+        9998: 30,
       };
-    });
-    console.log('parsedDocuments', parsedDocuments);
-    let finalPayload;
-    const listTypeIgvCode = {
-      1000: 10,
-      9997: 20,
-      9998: 30,
-    };
-    // Validar si hay al menos un producto
-    if (selectedProducts && selectedProducts.length >= 1) {
-      setSubmitting(true);
-      try {
-        finalPayload = {
-          request: {
-            payload: {
-              merchantId: userDataRes.merchantSelected.merchantId,
-              contableMovementId: query.contableMovementId || '',
-              contableMovements: [],
-              exchangeRate: exchangeRate,
-              moneyUnit: moneyToConvert,
-              clientId:
-                selectedClient && selectedClient.clientId
-                  ? selectedClient.clientId
+      // Validar si hay al menos un producto
+      if (selectedProducts && selectedProducts.length >= 1) {
+        setFormikSubmitting(true);
+        try {
+          finalPayload = {
+            request: {
+              payload: {
+                merchantId: userDataRes.merchantSelected.merchantId,
+                contableMovementId: query.contableMovementId || '',
+                contableMovements: [],
+                exchangeRate: exchangeRate,
+                moneyUnit: moneyToConvert,
+                clientId:
+                  selectedClient && selectedClient.clientId
+                    ? selectedClient.clientId
+                    : '',
+                client: {
+                  id: selectedClient.clientId || '',
+                  denomination:
+                    selectedClient.denominationClient || 'Cliente No Definido',
+                  address: selectedClient.addressClient || '',
+                  email: selectedClient.emailClient || '',
+                  type: selectedClient.typeDocumentClient || '',
+                },
+                totalPriceWithIgv: Number(
+                  getValueField('totalFieldIgv').value.toFixed(2),
+                ),
+                issueDate: specialFormatToSunat(value),
+                outputGeneration: true,
+                serial: serial,
+                documentIntern: '',
+                documentsMovement: [],
+                clientEmail: getValueField('clientEmail').value,
+                transactionNumber:
+                  getValueField('transactionNumber').value || '',
+                /* numberBill: 3, */
+                automaticSendSunat: true,
+                automaticSendClient: true,
+                referralGuide: getValueField('referralGuide').value
+                  ? true
+                  : false,
+                creditSale: paymentWay == 'credit',
+                methodToPay: paymentMethod,
+                earningGeneration: earningGeneration,
+                proofOfPaymentGeneration: proofOfPaymentGeneration,
+                referralGuideSerial: getValueField('referralGuide').value
+                  ? getValueField('referralGuide').value
                   : '',
-              client: {
-                id: selectedClient.clientId || '',
-                denomination:
-                  selectedClient.denominationClient || 'Cliente No Definido',
-                address: selectedClient.addressClient || '',
-                email: selectedClient.emailClient || '',
-                type: selectedClient.typeDocumentClient || '',
-              },
-              totalPriceWithIgv: Number(data.totalFieldIgv.toFixed(2)),
-              issueDate: specialFormatToSunat(value),
-              outputGeneration: true,
-              serial: serial,
-              documentIntern: '',
-              documentsMovement: [],
-              clientEmail: data.clientEmail,
-              transactionNumber: data.transactionNumber || '',
-              /* numberBill: 3, */
-              automaticSendSunat: true,
-              automaticSendClient: true,
-              referralGuide: data.guide ? true : false,
-              creditSale: paymentWay == 'credit',
-              methodToPay: paymentMethod,
-              earningGeneration: earningGeneration,
-              proofOfPaymentGeneration: proofOfPaymentGeneration,
-              referralGuideSerial: data.guide ? data.guide : '',
-              dueDate: specialFormatToSunat(value),
-              observation: data.observation ? data.observation : '',
-              igv: isIgvChecked ? Number(igvDefault) : 0,
-              productsInfo: selectedProducts.map((obj) => {
-                return {
-                  product: obj.product,
-                  quantityMovement: Number(obj.quantityMovement),
-                  unitPrice: Number(obj.unitPrice),
-                  stockChange: obj.stockChange,
-                  category: obj.category || '',
-                  customCodeProduct: obj.customCodeProduct,
-                  description: obj.description,
-                  unitMeasure: obj.unitMeasure,
-                  businessProductCode: obj.businessProductCode,
-                  taxCode: obj.taxCode,
-                  igvCode: listTypeIgvCode[`${obj.taxCode}`],
-                };
-              }),
-              proofOfPaymentType: proofOfPaymentType,
-              referralGuides: parsedDocuments,
-              typePDF: userDataRes.merchantSelected.typeMerchant,
-              denominationMerchant:
-                userDataRes.merchantSelected.denominationMerchant,
-              sendEmail: sendEmail,
-              userCreated: userDataRes.userId,
-              userCreatedMetadata: {
-                nombreCompleto: userDataRes.nombreCompleto,
-                email: userDataRes.email,
+                dueDate: specialFormatToSunat(value),
+                observation: getValueField('observation').value
+                  ? getValueField('observation').value
+                  : '',
+                igv: isIgvChecked ? Number(igvDefault) : 0,
+                productsInfo: selectedProducts.map((obj) => {
+                  return {
+                    product: obj.product,
+                    quantityMovement: Number(obj.quantityMovement),
+                    unitPrice: Number(obj.unitPrice),
+                    stockChange: obj.stockChange,
+                    category: obj.category || '',
+                    customCodeProduct: obj.customCodeProduct,
+                    description: obj.description,
+                    unitMeasure: obj.unitMeasure,
+                    businessProductCode: obj.businessProductCode,
+                    taxCode: obj.taxCode,
+                    igvCode: listTypeIgvCode[`${obj.taxCode}`],
+                  };
+                }),
+                proofOfPaymentType: proofOfPaymentType,
+                referralGuides: parsedDocuments,
+                typePDF: userDataRes.merchantSelected.typeMerchant,
+                denominationMerchant:
+                  userDataRes.merchantSelected.denominationMerchant,
+                sendEmail: sendEmail,
+                userCreated: userDataRes.userId,
+                userCreatedMetadata: {
+                  nombreCompleto: userDataRes.nombreCompleto,
+                  email: userDataRes.email,
+                },
               },
             },
-          },
-        };
-      } catch (error) {
-        console.log('Este es el error al generar el payload', error);
-        throw new Error('Algo pasa al crear el payload de boleta');
+          };
+        } catch (error) {
+          console.log('Este es el error al generar el payload', error);
+          throw new Error('Algo pasa al crear el payload de Venta');
+        }
+        console.log('finalPayload', finalPayload);
+        getAddSale(finalPayload);
+        console.log('Data formulario principal', finalPayload);
+        setOpenStatus(true);
+        setFormikSubmitting(false);
+      } else {
+        typeAlert = 'product';
+        setShowAlert(true);
+        setFormikSubmitting(false);
       }
-      console.log('finalPayload', finalPayload);
-      getAddSale(finalPayload);
-      console.log('Data formulario principal', finalPayload);
-      setOpenStatus(true);
-      setSubmitting(false);
-    } else {
-      typeAlert = 'product';
-      setShowAlert(true);
-      setSubmitting(false);
     }
   };
 
@@ -870,9 +884,11 @@ const NewSale = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue, getFieldProps}) => {
+          {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
             changeValueField = setFieldValue;
             getValueField = getFieldProps;
+            setFormikSubmitting = setSubmitting;
+            isFormikSubmitting = isSubmitting;
             return (
               <Form
                 noValidate
@@ -1600,6 +1616,47 @@ const NewSale = (props) => {
             Sí
           </Button>
           <Button variant='outlined' onClick={closeDelete}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openClientComprobation}
+        onClose={() => setOpenClientComprobation(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Cliente No Identificado'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea continuar con el registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            disabled={isFormikSubmitting}
+            variant='outlined'
+            onClick={() => {
+              setFormikSubmitting(true);
+              setIsClientValidated(true);
+              handleData({data1: 'a'}, 'enabled');
+            }}
+          >
+            Sí
+          </Button>
+          <Button
+            variant='outlined'
+            onClick={() => {
+              setOpenClientComprobation(false);
+            }}
+          >
             No
           </Button>
         </DialogActions>

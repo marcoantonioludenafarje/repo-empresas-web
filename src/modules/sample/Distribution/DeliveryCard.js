@@ -697,7 +697,7 @@ const DeliveryCard = ({
                       <Grid item xs={4}>
                         <AppTextField
                           label={
-                            <IntlMessages id='common.busines.startingDirection' />
+                            <IntlMessages id='common.business.startingDirection' />
                           }
                           name='startingAddress'
                           variant='outlined'
@@ -764,7 +764,7 @@ const DeliveryCard = ({
                       <Grid item xs={4}>
                         <AppTextField
                           label={
-                            <IntlMessages id='common.busines.arrivalDirection' />
+                            <IntlMessages id='common.business.arrivalDirection' />
                           }
                           name='arrivalAddress'
                           variant='outlined'
@@ -839,7 +839,7 @@ const DeliveryCard = ({
 
                   <Grid item xs={3}>
                     <AppTextField
-                      label={<IntlMessages id='common.busines.driver.name' />}
+                      label={<IntlMessages id='common.business.driver.name' />}
                       name='driverName'
                       variant='outlined'
                       sx={{
@@ -854,7 +854,7 @@ const DeliveryCard = ({
                   <Grid item xs={3}>
                     <AppTextField
                       label={
-                        <IntlMessages id='common.busines.driver.lastName' />
+                        <IntlMessages id='common.business.driver.lastName' />
                       }
                       name='driverLastName'
                       variant='outlined'
@@ -873,13 +873,13 @@ const DeliveryCard = ({
                         id='documentType-label'
                         style={{fontWeight: 200}}
                       >
-                        <IntlMessages id='common.busines.documentType' />
+                        <IntlMessages id='common.business.documentType' />
                       </InputLabel>
                       <Select
                         name='documentType'
                         labelId='documentType-label'
                         label={
-                          <IntlMessages id='common.busines.documentType' />
+                          <IntlMessages id='common.business.documentType' />
                         }
                         displayEmpty
                         onChange={handleField}
@@ -903,7 +903,7 @@ const DeliveryCard = ({
                   <Grid item xs={3}>
                     <AppTextField
                       label={
-                        <IntlMessages id='common.busines.driver.document.number' />
+                        <IntlMessages id='common.business.driver.document.number' />
                       }
                       name='driverDocumentNumber'
                       variant='outlined'
@@ -919,7 +919,7 @@ const DeliveryCard = ({
                   <Grid item xs={3}>
                     <AppTextField
                       label={
-                        <IntlMessages id='common.busines.driver.licenseNumber' />
+                        <IntlMessages id='common.business.driver.licenseNumber' />
                       }
                       name='driverLicenseNumber'
                       variant='outlined'
@@ -934,7 +934,7 @@ const DeliveryCard = ({
 
                   <Grid item xs={3}>
                     <AppTextField
-                      label={<IntlMessages id='common.busines.plate' />}
+                      label={<IntlMessages id='common.business.plate' />}
                       name='plate'
                       variant='outlined'
                       placeholder='ABC-123'
@@ -957,7 +957,7 @@ const DeliveryCard = ({
 
                   <Grid item xs={3}>
                     <AppTextField
-                      label={<IntlMessages id='common.busines.weigth' />}
+                      label={<IntlMessages id='common.business.weigth' />}
                       name='totalWeight'
                       variant='outlined'
                       sx={{
@@ -971,7 +971,7 @@ const DeliveryCard = ({
                   <Grid item xs={3}>
                     <AppTextField
                       label={
-                        <IntlMessages id='common.busines.packages.number' />
+                        <IntlMessages id='common.business.packages.number' />
                       }
                       name='numberPackages'
                       variant='outlined'
@@ -1001,10 +1001,10 @@ const DeliveryCard = ({
                             <IntlMessages id='common.amount' />
                           </TableCell>
                           <TableCell align='center'>
-                            <IntlMessages id='common.busines.weigth' />
+                            <IntlMessages id='common.business.weigth' />
                           </TableCell>
                           <TableCell align='center'>
-                            <IntlMessages id='common.busines.total.weigth' />
+                            <IntlMessages id='common.business.total.weigth' />
                           </TableCell>
                           <TableCell align='center'>
                             <IntlMessages id='product.type.transform.rawMaterial' />

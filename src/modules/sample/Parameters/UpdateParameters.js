@@ -82,7 +82,7 @@ import {
 import SchoolIcon from '@mui/icons-material/School';
 const XLSX = require('xlsx');
 
-const Distribution = () => {
+const UpdateParameters = () => {
   let changeValue;
   let listPayload = {
     request: {
@@ -1856,4 +1856,4 @@ const Distribution = () => {
   );
 };
 
-export default Distribution;
+export default UpdateParameters;

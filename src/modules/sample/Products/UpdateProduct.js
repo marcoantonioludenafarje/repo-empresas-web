@@ -256,8 +256,12 @@ const UpdateProduct = (props) => {
   const [secondaryUnitMeasure, setSecondaryUnitMeasure] = React.useState(
     query.secondaryUnitMeasure || 'ML',
   );
-  const [isStockNeeded, setIsStockNeeded] = React.useState(true);
-
+  const [isStockNeeded, setIsStockNeeded] = React.useState(
+    query.isStockNeeded == 'false' ? false : true,
+  );
+  console.log('abcd', query.isStockNeeded);
+  console.log('abcde', isStockNeeded);
+  console.log('abcdf', query.isStockNeeded == 'false');
   useEffect(() => {
     prevSelectedCategoryRef.current = selectedCategory;
   });
@@ -366,7 +370,7 @@ const UpdateProduct = (props) => {
     title: query.title,
     commercialDescription: query.commercialDescription,
     selectedFilters: originalProduct.tags,
-    isStockNeeded: (query.isStockNeeded ? query.isStockNeeded : false),
+    isStockNeeded: query.isStockNeeded ? query.isStockNeeded : false,
   };
 
   useEffect(() => {
@@ -869,7 +873,7 @@ const UpdateProduct = (props) => {
       return <>VER TUTORIAL</>;
     }
   };
-  
+
   const handleStock = (event, isInputChecked) => {
     setIsStockNeeded(isInputChecked);
   };
