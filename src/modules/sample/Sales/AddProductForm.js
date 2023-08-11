@@ -217,7 +217,7 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
   const [proSearch, setProSearch] = React.useState();
   const [nameChanged, setNameChanged] = React.useState(false);
   const [stockChange, setStockChange] = React.useState(
-    userDataRes.merchantSelected.businessLine == 'services' ? false : true,
+    false,
   );
   const [openAddedProduct, setOpenAddedProduct] = React.useState(false);
   const handleClose = () => {
@@ -572,8 +572,14 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
                       name='productSearch'
                       htmlFor='filled-adornment-password'
                       variant='outlined'
-                      onChange={() => {
+                      onChange={(event) => {
                         setNameChanged(true);
+                        let finalStockChange = false;
+                        if(selectedProduct && selectedProduct.description == event.target.value && selectedProduct.isStockNeeded){
+                          finalStockChange = true;
+                        }
+                        setStockChange(finalStockChange)
+                        
                       }}
                       sx={{
                         width: '100%',
