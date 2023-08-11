@@ -82,7 +82,15 @@ const rolesRoutesConfig = {
           type: 'item',
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/crm/views',
-        }
+        },
+        {
+          id: 'campaignsTable',
+          title: 'Tabla de citas',
+          messageId: 'sidebar.sample.viewAppoinment',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/appointment/views',
+        },
       ],
     },
     {
@@ -321,13 +329,13 @@ const rolesRoutesConfig = {
           url: '/sample/agents/table',
         },
         {
-          id:'campaignsTable',
+          id: 'campaignsTable',
           title: 'Notification Table',
           messageId: 'sidebar.sample.viewNotifications',
-          type:'item',
+          type: 'item',
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/notifications/table',
-        }
+        },
       ],
     },
     {

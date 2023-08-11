@@ -364,6 +364,7 @@ export const CREATE_CAMPAIGN = 'create_campaign';
 export const LIST_CAMPAIGN = 'list_campaign';
 export const DELETE_CAMPAIGN = 'delete_campaign';
 export const UPDATE_CAMPAIGN = 'update_capaign';
+export const GENERATE_VARIATIONS = 'generate_variations';
 
 //SALE
 export const LIST_SALES = 'list_sales';

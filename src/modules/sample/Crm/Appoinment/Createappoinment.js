@@ -23,7 +23,7 @@ import {
   Typography,
   IconButton,
   FormControlLabel,
-  Checkbox
+  Checkbox,
 } from '@mui/material';
 
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
@@ -31,7 +31,7 @@ import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutl
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
+import AppUpperCaseTextField from '../../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import {red} from '@mui/material/colors';
 import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -39,16 +39,16 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
-} from '../../../shared/constants/ActionTypes';
-import {getUserData} from '../../../redux/actions/User';
-import IntlMessages from '../../../@crema/utility/IntlMessages';
-import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+} from '../../../../shared/constants/ActionTypes';
+import {getUserData} from '../../../../redux/actions/User';
+import IntlMessages from '../../../../@crema/utility/IntlMessages';
+import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField';
 import SchoolIcon from '@mui/icons-material/School';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {newDriver} from '../../../redux/actions/Drivers';
+import {newDriver} from '../../../../redux/actions/Drivers';
 
-import AddClientForm from '../ClientSelection/AddClientForm';
+import AddClientForm from '../../ClientSelection/AddClientForm';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -101,49 +101,48 @@ let newDriverPayload = {
 };
 
 const useStyles = makeStyles((theme) => ({
-    container: {
-      textAlign: 'center',
-    },
-    btnGroup: {
-      marginTop: '1em',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-    btn: {
-      margin: '3px 0',
-      width: '260px',
-    },
-    noSub: {
-      textDecoration: 'none',
-    },
-    field: {
-      marginTop: '10px',
-    },
-    imgPreview: {
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    img: {
-      width: '80%',
-    },
-    fixPosition: {
-      position: 'relative',
-      bottom: '-8px',
-    },
-    searchIcon: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    buttonAddProduct: {},
-    closeButton: {
-      cursor: 'pointer',
-      float: 'right',
-      marginTop: '5px',
-      width: '20px',
-    },
-  }));
+  container: {
+    textAlign: 'center',
+  },
+  btnGroup: {
+    marginTop: '1em',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  btn: {
+    margin: '3px 0',
+    width: '260px',
+  },
+  noSub: {
+    textDecoration: 'none',
+  },
+  field: {
+    marginTop: '10px',
+  },
+  imgPreview: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  img: {
+    width: '80%',
+  },
+  fixPosition: {
+    position: 'relative',
+    bottom: '-8px',
+  },
+  searchIcon: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  buttonAddProduct: {},
+  closeButton: {
+    cursor: 'pointer',
+    float: 'right',
+    marginTop: '5px',
+    width: '20px',
+  },
+}));
 const Createappoinment = (props) => {
-    
   const classes = useStyles(props);
   const [open, setOpen] = React.useState(false);
   const [openDialogClient, setOpenDialogClient] = React.useState(false);
@@ -152,11 +151,13 @@ const Createappoinment = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
-  const [notifyClientByWhatsapp, setNotifyClientByWhatsapp] = React.useState(false);
+  const [notifyClientByWhatsapp, setNotifyClientByWhatsapp] =
+    React.useState(false);
   const [countryCode, setCountryCode] = React.useState('+51');
 
-  const [recordingClientByWhatsapp, setRecordingClientByWhatsapp] = React.useState(false);
-  
+  const [recordingClientByWhatsapp, setRecordingClientByWhatsapp] =
+    React.useState(false);
+
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -315,7 +316,6 @@ const Createappoinment = (props) => {
     setShowAlert(false);
   };
 
-
   const getClient = (client) => {
     console.log('Estoy en el getClient');
     if (client.typeDocumentClient == 'RUC') {
@@ -333,7 +333,6 @@ const Createappoinment = (props) => {
     forceUpdate();
     setOpen(false);
   };
-
 
   return (
     <Card sx={{p: 4}}>
@@ -369,7 +368,6 @@ const Createappoinment = (props) => {
                 /* onChange={handleActualData} */
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-
                   <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Título *'
@@ -387,12 +385,12 @@ const Createappoinment = (props) => {
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <Button
-                        sx={{width: 1}}
-                        variant='outlined'
-                        onClick={handleClickOpen.bind(this, 'client')}
-                        >
-                        Añadir Cliente
-                        </Button>
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={handleClickOpen.bind(this, 'client')}
+                    >
+                      Añadir Cliente
+                    </Button>
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
@@ -409,7 +407,7 @@ const Createappoinment = (props) => {
                         onChange={handleField}
                       >
                         <MenuItem value='DNI' style={{fontWeight: 200}}>
-                          Doctor caso de la vida real 
+                          Doctor caso de la vida real
                         </MenuItem>
                         <MenuItem value='CE' style={{fontWeight: 200}}>
                           Doctor House
@@ -483,113 +481,119 @@ const Createappoinment = (props) => {
                       }}
                     />
                   </Grid>
-                <Grid item xs={8} sm={12}>
+                  <Grid item xs={8} sm={12}>
                     <FormControlLabel
-                        control={
+                      control={
                         <Checkbox
-                            checked={notifyClientByEmail}
-                            onChange={(e) => setNotifyClientByEmail(e.target.checked)}
-                            name='notifyClientByEmail'
-                            color='primary'
+                          checked={notifyClientByEmail}
+                          onChange={(e) =>
+                            setNotifyClientByEmail(e.target.checked)
+                          }
+                          name='notifyClientByEmail'
+                          color='primary'
                         />
-                        }
-                        label='Notificar a cliente por correo'
+                      }
+                      label='Notificar a cliente por correo'
                     />
-                </Grid>
-                {notifyClientByEmail && (
+                  </Grid>
+                  {notifyClientByEmail && (
                     <Grid item xs={8} sm={12}>
-                        <AppUpperCaseTextField
+                      <AppUpperCaseTextField
                         label='Correo de cliente'
                         name='clientEmail'
                         variant='outlined'
                         sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                          mx: 0,
+                        }}
+                      />
+                    </Grid>
+                  )}
+                  <Grid item xs={8} sm={12}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={notifyClientByWhatsapp}
+                          onChange={(e) =>
+                            setNotifyClientByWhatsapp(e.target.checked)
+                          }
+                          name='notifyClientByWhatsapp'
+                          color='primary'
+                        />
+                      }
+                      label='Notificar a cliente por Whatsapp'
+                    />
+                  </Grid>
+                  {notifyClientByWhatsapp && (
+                    <Grid container spacing={2}>
+                      <Grid item xs={2}>
+                        <AppUpperCaseTextField
+                          label='+51'
+                          name='countryCode'
+                          variant='outlined'
+                          sx={{
                             width: '100%',
                             '& .MuiInputBase-input': {
-                            fontSize: 14,
+                              fontSize: 14,
                             },
                             my: 2,
                             mx: 0,
-                        }}
+                          }}
                         />
-                    </Grid>
-                )}
-                                <Grid item xs={8} sm={12}>
-                    <FormControlLabel
-                        control={
-                        <Checkbox
-                            checked={notifyClientByWhatsapp}
-                            onChange={(e) => setNotifyClientByWhatsapp(e.target.checked)}
-                            name='notifyClientByWhatsapp'
-                            color='primary'
-                        />
-                        }
-                        label='Notificar a cliente por Whatsapp'
-                    />
-                </Grid>
-                {notifyClientByWhatsapp && (
-                    <Grid container spacing={2}>
-                        <Grid item xs={2}>
-                            <AppUpperCaseTextField
-                                label='+51'
-                                name='countryCode'
-                                variant='outlined'
-                                sx={{
-                                    width: '100%',
-                                    '& .MuiInputBase-input': {
-                                    fontSize: 14,
-                                    },
-                                    my: 2,
-                                    mx: 0,
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={10} sm={12}>
-                            <AppUpperCaseTextField
-                            label='Número de cliente'
-                            name='clientWhatsapp'
-                            variant='outlined'
-                            sx={{
-                                width: '100%',
-                                '& .MuiInputBase-input': {
-                                fontSize: 14,
-                                },
-                                my: 2,
-                                mx: 0,
-                            }}
-                            />
-                        </Grid>
-                    </Grid>
-                )}
-                                <Grid item xs={8} sm={12}>
-                    <FormControlLabel
-                        control={
-                        <Checkbox
-                            checked={recordingClientByWhatsapp}
-                            onChange={(e) => setRecordingClientByWhatsapp(e.target.checked)}
-                            name='recordingClientByWhatsapp'
-                            color='primary'
-                        />
-                        }
-                        label='Recordatorio a cliente por Whatsapp'
-                    />
-                </Grid>
-                {recordingClientByWhatsapp && (
-                    <Grid item xs={8} sm={12}>
+                      </Grid>
+                      <Grid item xs={10} sm={12}>
                         <AppUpperCaseTextField
-                        label="Horas antes"
+                          label='Número de cliente'
+                          name='clientWhatsapp'
+                          variant='outlined'
+                          sx={{
+                            width: '100%',
+                            '& .MuiInputBase-input': {
+                              fontSize: 14,
+                            },
+                            my: 2,
+                            mx: 0,
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                  )}
+                  <Grid item xs={8} sm={12}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={recordingClientByWhatsapp}
+                          onChange={(e) =>
+                            setRecordingClientByWhatsapp(e.target.checked)
+                          }
+                          name='recordingClientByWhatsapp'
+                          color='primary'
+                        />
+                      }
+                      label='Recordatorio a cliente por Whatsapp'
+                    />
+                  </Grid>
+                  {recordingClientByWhatsapp && (
+                    <Grid item xs={8} sm={12}>
+                      <AppUpperCaseTextField
+                        label='Horas antes'
                         name='clientHours'
                         variant='outlined'
                         sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
+                          width: '100%',
+                          '& .MuiInputBase-input': {
                             fontSize: 14,
-                            },
-                            my: 2,
-                            mx: 0,
+                          },
+                          my: 2,
+                          mx: 0,
                         }}
-                        />
+                      />
                     </Grid>
-                )}
+                  )}
                 </Grid>
 
                 <ButtonGroup
@@ -733,44 +737,6 @@ const Createappoinment = (props) => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        {typeDialog == 'product' ? (
-          <>
-            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-              {'Selecciona los productos'}
-              <CancelOutlinedIcon
-                onClick={setOpenDialogClient.bind(this, false)}
-                className={classes.closeButton}
-              />
-            </DialogTitle>
-            <DialogContent>
-              <AddProductForm
-                type='sale'
-                igvDefault={Number(igvDefault)}
-                sendData={getNewProduct}
-                igvEnabled={
-                  Number(igvDefault) > 0 && isIgvChecked ? true : false
-                }
-              />
-            </DialogContent>
-          </>
-        ) : null}
-        {typeDialog == 'document' ? (
-          <>
-            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-              {'Ingresa los datos de documento'}
-              <CancelOutlinedIcon
-                onClick={setOpenDialogClient.bind(this, false)}
-                className={classes.closeButton}
-              />
-            </DialogTitle>
-            <DialogContent>
-              <AddDocumentForm
-                sendData={getDocument}
-                acceptedType={['referralGuide']}
-              />
-            </DialogContent>
-          </>
-        ) : null}
         {typeDialog == 'client' ? (
           <>
             <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
@@ -788,7 +754,6 @@ const Createappoinment = (props) => {
           <></>
         )}
       </Dialog>
-
 
       <Dialog
         open={open}

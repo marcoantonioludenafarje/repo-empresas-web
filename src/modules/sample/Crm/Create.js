@@ -58,7 +58,7 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
-import {newCampaign} from '../../../redux/actions/Campaign';
+import {newCampaign, generateVariations} from '../../../redux/actions/Campaign';
 import {
   createPresigned,
   createClientsPresigned,
@@ -71,12 +71,12 @@ import {
   FETCH_ERROR,
   RESET_CAMPAIGNS,
   GET_CLIENTS_PRESIGNED,
+  GENERATE_VARIATIONS,
 } from '../../../shared/constants/ActionTypes';
 import {DataGrid} from '@mui/x-data-grid';
 import {verTags} from '../../../Utils/utils';
 import {useRef} from 'react';
 import EditorMessage from './EditorMessage';
-
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -136,7 +136,7 @@ const Create = (props) => {
     {id: 1, content: ''},
   ]);
   const [campaignContent, setCampaignContent] = useState('');
- 
+
   // Function to add more variations
   const handleAddVariation = () => {
     const newVariation = `Variación ${numVariations + 1}`;
@@ -869,13 +869,38 @@ const Create = (props) => {
   //   }
   // };
 
+  const [geneVariations, setGenerateVariations] = useState(null);
+
   const handleDummy = async () => {
     let dummy = 'hola amigos';
     const newData = [...variationsData];
     newData[0] = dummy;
     setVariationsData(newData);
-    
+    let text = getValueField('campaignContent').value;
+    console.log('index dum', text);
     console.log('index dummy>', variationsData);
+    console.log('index variations', variationsData.length);
+
+    const payloadVariations = {
+      request: {
+        payload: {
+          cant_variaciones: variationsData.length,
+          textCampaign: text,
+        },
+      },
+    };
+
+    console.log('index payload', payloadVariations);
+    const response = await dispatch(generateVariations(payloadVariations));
+
+    setGenerateVariations(response);
+    console.log('index numVariations', numVariations);
+    console.log('index response', geneVariations.data);
+    const newDatatt = [...variationsData];
+    for (let i = 0; i < numVariations; i++) {
+      newDatatt[i] = geneVariations.data[i];
+      setVariationsData(newDatatt);
+    }
   };
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
@@ -1122,8 +1147,11 @@ const Create = (props) => {
                       Total de clientes: {totaldeClientes()}
                     </Typography>
                   </Box>
-                  <EditorMessage previewImages={previewImages} getValueField={getValueField} 
-                   changeValueField={changeValueField}/>
+                  <EditorMessage
+                    previewImages={previewImages}
+                    getValueField={getValueField}
+                    changeValueField={changeValueField}
+                  />
                 </Grid>
 
                 <Grid container item xs={12} justifyContent='center'>

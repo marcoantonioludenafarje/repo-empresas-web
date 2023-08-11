@@ -7,6 +7,7 @@ import {
   DELETE_CAMPAIGN,
   UPDATE_CAMPAIGN,
   RESET_CAMPAIGNS,
+  GENERATE_VARIATIONS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -15,6 +16,7 @@ const INIT_STATE = {
   successMessage: '',
   errorMessage: '',
 
+  listVariations: [],
   listCampaigns: [],
   campaignsLastEvaluatedKey_pageListCampaigns: null,
 };
@@ -88,6 +90,12 @@ const campaignsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         errorMessage: action.payload,
+      };
+    case GENERATE_VARIATIONS:
+      console.log('Reducer variations', action.payload);
+      return {
+        ...state,
+        listVariations: action.payload,
       };
     case RESET_CAMPAIGNS:
       return {
