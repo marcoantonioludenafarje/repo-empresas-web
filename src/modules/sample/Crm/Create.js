@@ -75,6 +75,8 @@ import {
 import {DataGrid} from '@mui/x-data-grid';
 import {verTags} from '../../../Utils/utils';
 import {useRef} from 'react';
+import EditorMessage from './EditorMessage';
+
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -134,163 +136,7 @@ const Create = (props) => {
     {id: 1, content: ''},
   ]);
   const [campaignContent, setCampaignContent] = useState('');
-  const [openReviewPop, setopenReviewPop] = React.useState(false);
-  const textRef = useRef(null);
-
-  const handleCloseReview = () => {
-    setopenReviewPop(false);
-  };
-  const handleBoldMessage = () => {
-    const updatedTextMessage = ` *Text*`;
-    console.log(textRef);
-    const textarea = textRef.current;
-    console.log(textarea);
-    const cursorPosition = textarea.selectionStart;
-    if (cursorPosition !== undefined) {
-      const currentText = getValueField('campaignContent').value;
-      const newText =
-        currentText.slice(0, cursorPosition) +
-        updatedTextMessage +
-        currentText.slice(cursorPosition);
-      //setTextMessage(newText);
-      changeValueField('campaignContent', newText);
-      handleCampaignContentChange(newText);
-    }
-  };
-
-  const handleItalicsMessage = () => {
-    const updatedTextMessage = ` _Text_`;
-    console.log(textRef);
-    const textarea = textRef.current;
-    console.log(textarea);
-    const cursorPosition = textarea.selectionStart;
-    if (cursorPosition !== undefined) {
-      const currentText = getValueField('campaignContent').value;
-      const newText =
-        currentText.slice(0, cursorPosition) +
-        updatedTextMessage +
-        currentText.slice(cursorPosition);
-      changeValueField('campaignContent', newText);
-      handleCampaignContentChange(newText);
-    }
-  };
-
-  const handleStrikethrough = () => {
-    const updatedTextMessage = ` ~Text~`;
-    console.log(textRef);
-    const textarea = textRef.current;
-    console.log(textarea);
-    const cursorPosition = textarea.selectionStart;
-    if (cursorPosition !== undefined) {
-      const currentText = getValueField('campaignContent').value;
-      const newText =
-        currentText.slice(0, cursorPosition) +
-        updatedTextMessage +
-        currentText.slice(cursorPosition);
-      changeValueField('campaignContent', newText);
-      handleCampaignContentChange(newText);
-    }
-  };
-
-  const handleFullName = () => {
-    const updatedTextMessage = ` {{denominationClient}}`;
-    console.log(textRef);
-    const textarea = textRef.current;
-    console.log(textarea);
-    const cursorPosition = textarea.selectionStart;
-    if (cursorPosition !== undefined) {
-      const currentText = getValueField('campaignContent').value;
-      const newText =
-        currentText.slice(0, cursorPosition) +
-        updatedTextMessage +
-        currentText.slice(cursorPosition);
-      changeValueField('campaignContent', newText);
-      handleCampaignContentChange(newText);
-    }
-  };
-
-  const handleNameMessage = () => {
-    const updatedTextMessage = ` {{givenName}}`;
-    console.log(textRef);
-    const textarea = textRef.current;
-    console.log(textarea);
-    const cursorPosition = textarea.selectionStart;
-    if (cursorPosition !== undefined) {
-      const currentText = getValueField('campaignContent').value;
-      const newText =
-        currentText.slice(0, cursorPosition) +
-        updatedTextMessage +
-        currentText.slice(cursorPosition);
-      changeValueField('campaignContent', newText);
-      handleCampaignContentChange(newText);
-    }
-  };
-
-  const handlePaternalLastNameMessage = () => {
-    const updatedTextMessage = ` {{lastName}}`;
-    console.log(textRef);
-    const textarea = textRef.current;
-    console.log(textarea);
-    const cursorPosition = textarea.selectionStart;
-    if (cursorPosition !== undefined) {
-      const currentText = getValueField('campaignContent').value;
-      const newText =
-        currentText.slice(0, cursorPosition) +
-        updatedTextMessage +
-        currentText.slice(cursorPosition);
-      changeValueField('campaignContent', newText);
-      handleCampaignContentChange(newText);
-    }
-  };
-
-  const handleMaternalLastNameMessage = () => {
-    const updatedTextMessage = ` {{secondLastName}}`;
-    console.log(textRef);
-    const textarea = textRef.current;
-    console.log(textarea);
-    const cursorPosition = textarea.selectionStart;
-    if (cursorPosition !== undefined) {
-      const currentText = getValueField('campaignContent').value;
-      const newText =
-        currentText.slice(0, cursorPosition) +
-        updatedTextMessage +
-        currentText.slice(cursorPosition);
-      changeValueField('campaignContent', newText);
-      handleCampaignContentChange(newText);
-    }
-  };
-  const handleEmailMessage = () => {
-    const updatedTextMessage = ` {{emailClient}}`;
-    console.log(textRef);
-    const textarea = textRef.current;
-    console.log(textarea);
-    const cursorPosition = textarea.selectionStart;
-    if (cursorPosition !== undefined) {
-      const currentText = getValueField('campaignContent').value;
-      const newText =
-        currentText.slice(0, cursorPosition) +
-        updatedTextMessage +
-        currentText.slice(cursorPosition);
-      changeValueField('campaignContent', newText);
-      handleCampaignContentChange(newText);
-    }
-  };
-  const handleBirthDateMessage = () => {
-    const updatedTextMessage = ` {{birtDay}}`;
-    console.log('textRef', textRef);
-    const textarea = textRef.current;
-    console.log(textarea);
-    const cursorPosition = textarea.selectionStart;
-    if (cursorPosition !== undefined) {
-      const currentText = getValueField('campaignContent').value;
-      const newText =
-        currentText.slice(0, cursorPosition) +
-        updatedTextMessage +
-        currentText.slice(cursorPosition);
-      changeValueField('campaignContent', newText);
-      handleCampaignContentChange(newText);
-    }
-  };
+ 
   // Function to add more variations
   const handleAddVariation = () => {
     const newVariation = `Variación ${numVariations + 1}`;
@@ -303,9 +149,9 @@ const Create = (props) => {
     ]);
   };
 
-  const setEnablePopReview = () => {
-    setopenReviewPop(true);
-  };
+  // const setEnablePopReview = () => {
+  //   setopenReviewPop(true);
+  // };
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
   const [actualImage, setActualImage] = React.useState('');
@@ -318,27 +164,27 @@ const Create = (props) => {
     campaignContent: '',
     campaignImages: null,
   };
-  const tranformMessageReview = (text) => {
-    const boldRegex = /\*(.*?)\*/g;
-    const italicRegex = /_(.*?)_/g;
-    const strikethroughRegex = /~(.*?)~/g;
+  // const tranformMessageReview = (text) => {
+  //   const boldRegex = /\*(.*?)\*/g;
+  //   const italicRegex = /_(.*?)_/g;
+  //   const strikethroughRegex = /~(.*?)~/g;
 
-    const boldText = text.replace(boldRegex, '<b>$1</b>');
-    const italicText = boldText.replace(italicRegex, '<i>$1</i>');
-    const transformedText = italicText.replace(strikethroughRegex, '<s>$1</s>');
+  //   const boldText = text.replace(boldRegex, '<b>$1</b>');
+  //   const italicText = boldText.replace(italicRegex, '<i>$1</i>');
+  //   const transformedText = italicText.replace(strikethroughRegex, '<s>$1</s>');
 
-    console.log('Hola desde tranformMessageReview', transformedText);
-    return transformedText;
-  };
-  const transformText = () => {
-    console.log('content Hola desde tranforText');
-    let updatedContents = '';
-    updatedContents += tranformMessageReview(
-      getValueField('campaignContent').value,
-    );
-    console.log('Este es el updateContents', updatedContents);
-    return <div dangerouslySetInnerHTML={{__html: updatedContents}}></div>;
-  };
+  //   console.log('Hola desde tranformMessageReview', transformedText);
+  //   return transformedText;
+  // };
+  // const transformText = () => {
+  //   console.log('content Hola desde tranforText');
+  //   let updatedContents = '';
+  //   updatedContents += tranformMessageReview(
+  //     getValueField('campaignContent').value,
+  //   );
+  //   console.log('Este es el updateContents', updatedContents);
+  //   return <div dangerouslySetInnerHTML={{__html: updatedContents}}></div>;
+  // };
 
   // Estado para controlar el acordeón abierto
   const [expanded, setExpanded] = useState(1);
@@ -1064,16 +910,6 @@ const Create = (props) => {
     }
   };
 
-  const handleCampaignContentChange = (event) => {
-    // const updateContentMessage = event;
-    // console.log('Este es el updateContentMessage', updateContentMessage);
-    // setCampaignContent(updateContentMessage);
-    changeValueField('campaignContent', event);
-    // console.log('index camp antiguo', campaignContent);
-  };
-  useEffect(() => {
-    console.log('index camp', campaignContent);
-  }, [campaignContent]);
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -1286,189 +1122,10 @@ const Create = (props) => {
                       Total de clientes: {totaldeClientes()}
                     </Typography>
                   </Box>
-
-                  <Grid item xs={12} md={12} sx={{mb: '1rem'}}>
-                    <Box
-                      sx={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        padding: '.5rem',
-                        gap: '.5rem',
-                      }}
-                    >
-                      <ButtonGroup
-                        variant='outlined'
-                        aria-label='outlined button group'
-                      >
-                        <Button
-                          variant='contained'
-                          onClick={handleBoldMessage}
-                          sx={{fontWeight: 'bold', fontSize: '.8rem'}}
-                        >
-                          Negrita
-                        </Button>
-                        <Button
-                          variant='contained'
-                          onClick={handleItalicsMessage}
-                          sx={{fontStyle: 'italic', fontSize: '.8rem'}}
-                        >
-                          Cursiva
-                        </Button>
-                        <Button
-                          variant='contained'
-                          onClick={handleStrikethrough}
-                          sx={{
-                            textDecoration: 'line-through',
-                            fontSize: '.8rem',
-                          }}
-                        >
-                          Tachado
-                        </Button>
-                        <Button
-                          variant='outlined'
-                          onClick={handleFullName}
-                          sx={{fontSize: '.8rem'}}
-                        >
-                          Nombre Completo
-                        </Button>
-                        <Button
-                          variant='outlined'
-                          onClick={handleNameMessage}
-                          sx={{fontSize: '.8rem'}}
-                        >
-                          Nombre
-                        </Button>
-                        <Button
-                          variant='outlined'
-                          onClick={handlePaternalLastNameMessage}
-                          sx={{fontSize: '.8rem'}}
-                        >
-                          Apellido Paterno
-                        </Button>
-                        <Button
-                          variant='outlined'
-                          onClick={handleMaternalLastNameMessage}
-                          sx={{fontSize: '.8rem'}}
-                        >
-                          Apellido Materno
-                        </Button>
-                        <Button
-                          variant='outlined'
-                          onClick={handleEmailMessage}
-                          sx={{fontSize: '.8rem'}}
-                        >
-                          Correo
-                        </Button>
-                        <Button
-                          variant='outlined'
-                          onClick={handleBirthDateMessage}
-                          sx={{fontSize: '.8rem'}}
-                        >
-                          Fecha Nacimiento
-                        </Button>
-                      </ButtonGroup>
-                    </Box>
-
-                    <Grid item xs={12} md={12}>
-                      <TextField
-                        label='Contenido de la Campaña *'
-                        name='campaignContent'
-                        variant='outlined'
-                        multiline
-                        rows={4}
-                        value={getValueField('campaignContent').value}
-                        inputRef={textRef}
-                        onInput={(event) => {
-                          handleCampaignContentChange(event.target.value);
-                        }}
-                        sx={{width: '100%', my: 2}}
-                      />
-                    </Grid>
-                    <Box
-                      sx={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'end',
-                      }}
-                    >
-                      <Button
-                        variant='contained'
-                        sx={{fontSize: '.7rem'}}
-                        onClick={setEnablePopReview}
-                      >
-                        Previsualizar Mensaje
-                      </Button>
-                    </Box>
-                  </Grid>
+                  <EditorMessage previewImages={previewImages} getValueField={getValueField} 
+                   changeValueField={changeValueField}/>
                 </Grid>
-                <Dialog
-                  open={openReviewPop}
-                  onClose={handleCloseReview}
-                  sx={{textAlign: 'center'}}
-                  aria-labelledby='alert-dialog-title'
-                  aria-describedby='alert-dialog-description'
-                >
-                  <DialogTitle
-                    sx={{
-                      fontSize: '1.3em',
-                      background: '#1976d2',
-                      color: 'white',
-                      marginBottom: '1rem',
-                    }}
-                    id='alert-dialog-title'
-                  >
-                    {'MENSAJE'}
-                  </DialogTitle>
-                  <DialogContent
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    {getValueField('campaignContent').value ? (
-                      <>
-                        <p>{transformText()}</p>
-                      </>
-                    ) : null}
-                    {previewImages.map((image, index) => (
-                      <Box
-                        key={index}
-                        sx={{
-                          position: 'relative',
-                          mx: 1,
-                          my: 1,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}
-                      >
-                        <img
-                          src={image}
-                          alt='Preview'
-                          style={{
-                            width: 200,
-                            height: 200,
-                            objectFit: 'cover',
-                            borderRadius: '8px',
-                          }}
-                        />
-                      </Box>
-                    ))}
-                  </DialogContent>
-                  <DialogActions sx={{justifyContent: 'center'}}>
-                    <Button
-                      variant='outlined'
-                      startIcon={<SaveAltIcon />}
-                      sx={{width: '100%'}}
-                      onClick={handleCloseReview}
-                    >
-                      Cerrar
-                    </Button>
-                  </DialogActions>
-                </Dialog>
+
                 <Grid container item xs={12} justifyContent='center'>
                   <Button
                     variant='outlined'
