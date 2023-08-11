@@ -380,3 +380,7 @@ export const UPDATE_AGENT = 'update_agent';
 export const ONCHANGE_QR_AGENT = 'onchange_agent';
 
 export const NEW_SALE_PROOF_OF_PAYMENT = 'new_sale_proof_of_payment';
+
+//APOINTMENT
+export const LIST_APPOINTMENT = 'list_appointment';
+export const CREATE_APPOINTMENT = 'create_appointment'

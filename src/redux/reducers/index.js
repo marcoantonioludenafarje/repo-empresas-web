@@ -20,6 +20,7 @@ import Orders from './Orders';
 import Campaign from './Campaign';
 import Sales from './Sales';
 import Agent from './Agent';
+import Appointment from './Appointment';
 
 const reducers = combineReducers({
   settings: Settings,
@@ -43,5 +44,6 @@ const reducers = combineReducers({
   campaigns: Campaign,
   sale: Sales,
   agents: Agent,
+  appoinments: Appointment
 });
 export default reducers;

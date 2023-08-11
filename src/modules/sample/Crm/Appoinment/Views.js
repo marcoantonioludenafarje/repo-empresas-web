@@ -43,7 +43,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
-import {getAgents, deleteAgents} from '../../../../redux/actions/Agent';
+import { getAppointment } from 'redux/actions/Appointment';
 import {convertToDate} from '../../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -99,8 +99,8 @@ export default function Views(props) {
 
   let popUp = false;
 
-  const getAgent = (payload) => {
-    dispatch(getAgents(payload));
+  const getAppointments = (payload) => {
+    dispatch(getAppointment(payload));
   };
 
   const deleteAgent = (payload) => {
@@ -142,34 +142,11 @@ export default function Views(props) {
   const {userDataRes} = useSelector(({user}) => user);
 
   const {
-    listAgents,
-    agentsLastEvaluatedKey_pageListAgents,
-    onChangeQRAgentRes,
-  } = useSelector(({agents}) => agents);
+    listAppointments,
+  } = useSelector(({appoinments}) => appoinments);
 
-  console.log('confeti los agentes', listAgents);
 
-  useEffect(() => {
-    if (onChangeQRAgentRes && onChangeQRAgentRes.urlQR) {
-      console.log('onChangeQRAgentRes', onChangeQRAgentRes);
-      if (onChangeQRAgentRes.urlQR != imgQR) {
-        setimgQR(onChangeQRAgentRes.urlQR);
-      }
-      if (onChangeQRAgentRes.type == 'failureAgentQR') {
-        setopenLimitQR(true);
-        setopenQRSuccess(false);
-        setopenErrorQR(false);
-      } else if (onChangeQRAgentRes.type == 'successAgentQR') {
-        setopenQRSuccess(true);
-        setopenErrorQR(false);
-        setopenLimitQR(false);
-      } else {
-        setopenQRSuccess(false);
-        setopenErrorQR(false);
-        setopenLimitQR(false); //Quitar en caso de que Marco decida que el stop sea un tipo
-      }
-    }
-  }, [onChangeQRAgentRes]);
+  console.log('confeti los agentes', listAppointments);
 
   const showMessage = () => {
     console.log('Mensaje QR');
@@ -197,7 +174,7 @@ export default function Views(props) {
           },
         },
       };
-      getAgent(listPayload);
+      getAppointments(listPayload);
       // setFirstload(true);
     }
   }, [userDataRes]);
@@ -215,7 +192,7 @@ export default function Views(props) {
     handleCloseQR(event.currentTarget);
     codProdSelected = codPro;
     selectedAgent =
-      listAgents[codPro]; /* .find((obj) => obj.client == codPro); */
+      listAppointments[codPro]; /* .find((obj) => obj.client == codPro); */
     console.log('Select Agente', selectedAgent);
   };
 
@@ -262,17 +239,17 @@ export default function Views(props) {
     setOpenStatus(true);
   };
 
-  const newAgent = () => {
-    console.log('Para redireccionar a nuevo cliente');
-    Router.push('/sample/agents/create');
+  const newAppointment = () => {
+    console.log('Para redireccionar a nueva cita');
+    Router.push('/sample/appointment/create');
   };
 
   // Paso 2: Función para filtrar las campañas por el nombre de la campaña
   const filterAgents = (searchText) => {
     if (!searchText) {
-      setFilteredAgents(listAgents); // Si el valor del TextField está vacío, mostrar todas las campañas.
+      setFilteredAgents(listAppointments); // Si el valor del TextField está vacío, mostrar todas las campañas.
     } else {
-      const filtered = listAgents.filter((agent) =>
+      const filtered = listAppointments.filter((agent) =>
         agent.robotName.toLowerCase().includes(searchText.toLowerCase()),
       );
       setFilteredAgents(filtered);
@@ -285,7 +262,7 @@ export default function Views(props) {
 
   useEffect(() => {
     filterAgents(searchValue);
-  }, [searchValue, listAgents]);
+  }, [searchValue, listAppointments]);
 
   return (
     <Card sx={{p: 4}}>
@@ -315,7 +292,7 @@ export default function Views(props) {
           Buscar
         </Button>
       </Stack>
-      <span>{`Items: ${listAgents ? listAgents.length : 'Cargando...'}`}</span>
+      <span>{`Items: ${listAppointments ? listAppointments.length : 'Cargando...'}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -326,10 +303,8 @@ export default function Views(props) {
           <TableHead>
             <TableRow>
               <TableCell>Fecha de creación</TableCell>
-              <TableCell>Nombre del agente</TableCell>
+              <TableCell>Nombre del Especialista</TableCell>
               <TableCell>Descripción</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -349,24 +324,7 @@ export default function Views(props) {
                 <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
                   {row.description}
                 </TableCell>
-                <TableCell>
-                  {row.status == 'OFF' ? (
-                    <IntlMessages id='common.disableAgent' />
-                  ) : (
-                    <IntlMessages id='common.enableAgent' />
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    id='basic-button'
-                    aria-controls={openMenu ? 'basic-menu' : undefined}
-                    aria-haspopup='true'
-                    aria-expanded={openMenu ? 'true' : undefined}
-                    onClick={handleClick.bind(this, index)}
-                  >
-                    <KeyboardArrowDownIcon />
-                  </Button>
-                </TableCell>
+                
               </TableRow>
             ))}
           </TableBody>
@@ -383,7 +341,7 @@ export default function Views(props) {
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={newAgent}
+            onClick={newAppointment}
           >
             Nuevo
           </Button>
@@ -429,103 +387,6 @@ export default function Views(props) {
           </Button>
           <Button variant='outlined' onClick={handleClose2}>
             No
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={openQRPop}
-        onClose={handleCloseQR2}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'ACTIVAR AGENTE WHATSAPP'}
-        </DialogTitle>
-        <DialogContent
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-          }}
-        >
-          {/* <div sx={{display:'flex', flexDirection:'row',justifyContent:'space-around',alignItems:'center', gap:'10px'}}>
-        <Button variant='contained'  onClick={openLimitQRPop}>
-            Error    
-        </Button>
-        <Button  variant='contained'  onClick={openQRSuccessPop}>
-            Exito QR   
-        </Button>
-        <Button  variant='contained'  onClick={reset}>
-            Reiniciar   
-        </Button>
-        </div> */}
-          {openErrorQR == false &&
-          openLimitQR == false &&
-          openQRSuccess == false ? (
-            <img
-              src={onChangeQRAgentRes?.urlQR}
-              alt='ImagenQR'
-              width='400'
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
-            />
-          ) : null}
-          {openLimitQR === true ? (
-            <>
-              <DialogContentText
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginBottom: '1rem',
-                }}
-              >
-                <ErrorIcon color='error' sx={{fontSize: '4em', mx: 2}} />
-                <p>Lo siento, se ha excedido el limite de intentos </p>
-              </DialogContentText>
-              <Button variant='contained' startIcon={<QrCodeIcon />}>
-                Generar QR
-              </Button>
-            </>
-          ) : null}
-          {openQRSuccess === true ? (
-            <>
-              <DialogContentText
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                  alignItems: 'center',
-                }}
-              >
-                <CheckCircleSharpIcon
-                  color='success'
-                  sx={{fontSize: '4em', mx: 2}}
-                />
-                <p> Felicidades, se ha activado correctamente </p>
-              </DialogContentText>
-            </>
-          ) : null}
-
-          {/* <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
-            id='alert-dialog-description'
-          >
-            ¿Desea eliminar realmente la información seleccionada?
-          </DialogContentText> */}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button
-            variant='outlined'
-            startIcon={<SaveAltIcon />}
-            sx={{width: '100%'}}
-            onClick={handleCloseQR2}
-          >
-            Finalizar
           </Button>
         </DialogActions>
       </Dialog>

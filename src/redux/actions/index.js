@@ -19,3 +19,4 @@ export * from './User';
 export * from './Campaign';
 export * from './Sales';
 export * from './Agent';
+export * from './Appointment';
