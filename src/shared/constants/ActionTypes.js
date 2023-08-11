@@ -383,4 +383,9 @@ export const NEW_SALE_PROOF_OF_PAYMENT = 'new_sale_proof_of_payment';
 
 //APOINTMENT
 export const LIST_APPOINTMENT = 'list_appointment';
-export const CREATE_APPOINTMENT = 'create_appointment'
+export const CREATE_APPOINTMENT = 'create_appointment';
+//SPECIALIST
+export const CREATE_SPECIALIST = 'create_specialist';
+export const LIST_SPECIALIST = 'list_specialist';
+export const DELETE_SPECIALIST = 'delete_specialist';
+export const UPDATE_SPECIALIST = 'update_specialist';

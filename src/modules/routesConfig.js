@@ -336,6 +336,14 @@ const rolesRoutesConfig = {
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/notifications/table',
         },
+        {
+          id: 'campaignsTable',
+          title: 'Specialist Table',
+          messageId: 'sidebar.sample.viewSpecialists',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/specialists/table',
+        },
       ],
     },
     {
