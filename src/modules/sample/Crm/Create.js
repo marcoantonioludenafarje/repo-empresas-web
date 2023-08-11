@@ -1028,7 +1028,7 @@ const Create = (props) => {
     const newData = [...variationsData];
     newData[0] = dummy;
     setVariationsData(newData);
-    console.log('index campaña', campaignContent);
+    
     console.log('index dummy>', variationsData);
   };
 
