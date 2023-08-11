@@ -379,3 +379,9 @@ export const UPDATE_AGENT = 'update_agent';
 export const ONCHANGE_QR_AGENT = 'onchange_agent';
 
 export const NEW_SALE_PROOF_OF_PAYMENT = 'new_sale_proof_of_payment';
+
+//SPECIALIST
+export const CREATE_SPECIALIST = 'create_specialist';
+export const LIST_SPECIALIST = 'list_specialist';
+export const DELETE_SPECIALIST = 'delete_specialist';
+export const UPDATE_SPECIALIST = 'update_specialist';
