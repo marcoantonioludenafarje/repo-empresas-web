@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {makeStyles} from '@mui/styles';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
-import {Form, Formik} from 'formik';
+import {Form, Formik, isInputEvent} from 'formik';
 import * as yup from 'yup';
 import {
   Divider,
@@ -419,6 +419,10 @@ const NewSale = (props) => {
     setSendEmail(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
+  const handleWhatsappMessage = (event, isInputChecked) => {
+    setWhatsappMessage(isInputChecked);
+    console.log('Activar Mensaje de Whatsapp', isInputChecked);
+  }
   const handleEarningGeneration = (event, isInputChecked) => {
     setEarningGeneration(isInputChecked);
     console.log('Evento de earningGeneration', isInputChecked);
@@ -610,6 +614,7 @@ const NewSale = (props) => {
                 documentIntern: '',
                 documentsMovement: [],
                 clientEmail: getValueField('clientEmail').value,
+                whatsappMessage: getValueField('whatsappMessage').value,
                 transactionNumber:
                   getValueField('transactionNumber').value || '',
                 /* numberBill: 3, */
@@ -1252,6 +1257,34 @@ const NewSale = (props) => {
                         control={
                           <Checkbox
                             onChange={handleSendEmail}
+                            defaultChecked={true}
+                          />
+                        }
+                      />
+                    </Grid>
+                    <Grid sx={{px: 1}} xs={8}>
+                      <AppTextField
+                        label='Número de whatsapp'
+                        name='whatsappMessage'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
+                    </Grid>
+                    <Grid
+                      xs={3}
+                      sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
+                    >
+                      <FormControlLabel
+                        label='Enviar Whatsapp'
+                        control={
+                          <Checkbox
+                            onChange={handleWhatsappMessage}
                             defaultChecked={true}
                           />
                         }
