@@ -13,6 +13,7 @@ import {
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import {useRef} from 'react';
 import React, {useEffect, useState} from 'react';
+import PropTypes from 'prop-types';
 
 const EditorMessage = (props) => {
   const [openReviewPop, setopenReviewPop] = React.useState(false);

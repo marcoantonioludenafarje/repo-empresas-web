@@ -877,10 +877,7 @@ const Create = (props) => {
   const [geneVariations, setGenerateVariations] = useState(null);
 
   const handleDummy = async () => {
-    let dummy = 'hola amigos';
-    const newData = [...variationsData];
-    newData[0] = dummy;
-    setVariationsData(newData);
+
     let text = getValueField('campaignContent').value;
     console.log('index dum', text);
     console.log('index dummy>', variationsData);
