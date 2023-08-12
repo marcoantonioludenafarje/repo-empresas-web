@@ -162,7 +162,8 @@ const NewSale = (props) => {
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState('ticket');
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [sendEmail, setSendEmail] = React.useState(true);
-  const [whatsappMessage, setWhatsappMessage] = React.useState(true);
+  const [sendWhatsapp, setSendWhatsapp] = React.useState(true);
+  const [whatsappNumber, setWhatsappNumber] = React.useState('');
   const [isIgvChecked, setIsIgvChecked] = React.useState(false);
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -420,8 +421,8 @@ const NewSale = (props) => {
     setSendEmail(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
-  const handleWhatsappMessage = (event, isInputChecked) => {
-    setWhatsappMessage(isInputChecked);
+  const handleSendWhatsapp = (event, isInputChecked) => {
+    setSendWhatsapp(isInputChecked);
     console.log('Activar Mensaje de Whatsapp', isInputChecked);
   };
   const handleEarningGeneration = (event, isInputChecked) => {
@@ -615,7 +616,8 @@ const NewSale = (props) => {
                 documentIntern: '',
                 documentsMovement: [],
                 clientEmail: getValueField('clientEmail').value,
-                whatsappMessage: getValueField('whatsappMessage').value,
+                sendWhatsapp: sendWhatsapp,
+                whatsappNumber: getValueField('whatsappNumber').value,
                 transactionNumber:
                   getValueField('transactionNumber').value || '',
                 /* numberBill: 3, */
@@ -657,7 +659,6 @@ const NewSale = (props) => {
                 denominationMerchant:
                   userDataRes.merchantSelected.denominationMerchant,
                 sendEmail: sendEmail,
-                whatsappMessage: whatsappMessage,
                 userCreated: userDataRes.userId,
                 userCreatedMetadata: {
                   nombreCompleto: userDataRes.nombreCompleto,
@@ -1267,7 +1268,7 @@ const NewSale = (props) => {
                     <Grid sx={{px: 1}} xs={8}>
                       <AppTextField
                         label='Número de whatsapp'
-                        name='whatsappMessage'
+                        name='whatsappNumber'
                         variant='outlined'
                         sx={{
                           width: '100%',
@@ -1286,7 +1287,7 @@ const NewSale = (props) => {
                         label='Enviar Whatsapp'
                         control={
                           <Checkbox
-                            onChange={handleWhatsappMessage}
+                            onChange={handleSendWhatsapp}
                             defaultChecked={true}
                           />
                         }
