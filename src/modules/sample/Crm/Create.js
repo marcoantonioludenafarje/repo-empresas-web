@@ -270,8 +270,7 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
       userDataRes.merchantSelected.merchantId
     ) {
       console.log('Estamos entrando al getClients');
-      dispatch({type: FETCH_SUCCESS, payload: ''});
-      dispatch({type: FETCH_ERROR, payload: ''});
+
       //dispatch({type: GET_CLIENTS, payload: undefined});
       let listPayload = {
         request: {
@@ -481,6 +480,8 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
   };
   useEffect(() => {
     if (clientsPresigned) {
+      dispatch({type: FETCH_SUCCESS, payload: ''});
+      dispatch({type: FETCH_ERROR, payload: ''});
       const payload = payloadToCreateCampaign;
       console.log('Payload creates', payload);
       payload.request.payload.campaign[0].receivers.urlClients =
