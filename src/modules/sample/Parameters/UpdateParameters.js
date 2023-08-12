@@ -64,6 +64,7 @@ import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {getUserData} from '../../../redux/actions/User';
 import {completeWithZeros} from '../../../Utils/utils';
+import {onGetClients} from '../../../redux/actions/Clients';
 import {
   onGetBusinessParameter,
   updateAllBusinessParameter,
@@ -151,7 +152,9 @@ const UpdateParameters = () => {
   const [selectedProduct, setSelectedProduct] = React.useState({});
   const [listProductsState, setListProductsState] = React.useState({});
   const [listClientsState, setListClientState] = React.useState({});
-  const {listClients} = useSelector(({clients}) => clients);
+  const {listClients, clientsLastEvalutedKey_pageListClients} = useSelector(
+    ({clients}) => clients,
+  );
   const {listProducts} = useSelector(({products}) => products);
   console.log('listProducts', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -189,6 +192,9 @@ const UpdateParameters = () => {
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
+  };
+  const getClients = (payload) => {
+    dispatch(onGetClients(payload));
   };
   const updateParameters = (payload) => {
     dispatch(updateAllBusinessParameter(payload));
@@ -343,6 +349,21 @@ const UpdateParameters = () => {
       console.log('listProducts2', listProducts);
       if (!listProducts || listProducts.length === 0) {
         getProducts(listPayload);
+      }
+      if (!listClients) {
+        let listClientsPayload = {
+          request: {
+            payload: {
+              typeDocumentClient: '',
+              numberDocumentClient: '',
+              denominationClient: '',
+              merchantId: userDataRes.merchantSelected.merchantId,
+              LastEvaluatedKey: null,
+            },
+          },
+        };
+        console.log('listPayload111:handleNextPage:', listClientsPayload);
+        getClients(listClientsPayload);
       }
     }
   }, [userDataRes]);

@@ -28,7 +28,7 @@ import {
   FormControlLabel,
   CircularProgress,
 } from '@mui/material';
-import { ClickAwayListener } from '@mui/base';
+import {ClickAwayListener} from '@mui/base';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import SchoolIcon from '@mui/icons-material/School';

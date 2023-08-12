@@ -44,7 +44,6 @@ const commonReducer = (state = INIT_STATE, action) => {
       };
     }
     case FETCH_ERROR: {
-      console.log('action', action);
       return {
         ...state,
         loading: false,

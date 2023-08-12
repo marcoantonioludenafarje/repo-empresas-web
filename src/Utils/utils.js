@@ -509,12 +509,11 @@ export const verTags = (obj, listBussinesParameteres) => {
   return descripcion;
 };
 
-
 export const verNotificaciones = (listBussinesParameteres) => {
   let listNotificationClient = null;
-  console.log("listBussinesParameteres este es",listBussinesParameteres)
+  console.log('listBussinesParameteres este es', listBussinesParameteres);
   if (listBussinesParameteres)
-      listNotificationClient = listBussinesParameteres.find(
+    listNotificationClient = listBussinesParameteres.find(
       (obj) => obj.abreParametro == 'NOTIFICATION_CLIENTS',
     ).value;
 

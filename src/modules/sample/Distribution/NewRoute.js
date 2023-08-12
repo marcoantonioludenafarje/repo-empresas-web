@@ -36,7 +36,7 @@ import {
   InputLabel,
   Select,
 } from '@mui/material';
-import { ClickAwayListener } from '@mui/base';
+import {ClickAwayListener} from '@mui/base';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import {orange} from '@mui/material/colors';
@@ -184,12 +184,24 @@ const Distribution = (props) => {
   const [summaryRowNumber, setSummaryRowNumber] = React.useState(0);
   const [openSummaryProducts, setOpenSummaryProducts] = React.useState(false);
   const [openSummaryPoints, setOpenSummaryPoints] = React.useState(false);
-    // Ejemplo de datos de la tabla (puedes reemplazar esto con tus datos reales)
-    const tablaDatos = [
-      { producto: 'Producto 1', cantidad: 5, puntos: 'Punto A - Punto B', chofer: 'Juan', placa: 'ABC123' },
-      { producto: 'Producto 2', cantidad: 10, puntos: 'Punto C - Punto D', chofer: 'María', placa: 'XYZ789' },
-      // Agrega más filas de datos si es necesario
-    ];
+  // Ejemplo de datos de la tabla (puedes reemplazar esto con tus datos reales)
+  const tablaDatos = [
+    {
+      producto: 'Producto 1',
+      cantidad: 5,
+      puntos: 'Punto A - Punto B',
+      chofer: 'Juan',
+      placa: 'ABC123',
+    },
+    {
+      producto: 'Producto 2',
+      cantidad: 10,
+      puntos: 'Punto C - Punto D',
+      chofer: 'María',
+      placa: 'XYZ789',
+    },
+    // Agrega más filas de datos si es necesario
+  ];
   const [openSummary, setOpenSummary] = React.useState(false);
   const [deliveriesData, setDeliveriesData] = React.useState([]);
   const [driversData, setDriversData] = React.useState([]);
@@ -534,20 +546,22 @@ const Distribution = (props) => {
       }
 
       let existeError = false;
-      let productsSelected = item['PRODUCTOS'].split('|').map((product) => {
-        let tempprod = product.split('-');
-        if (tempprod.length != 2) {
-          msjError =
-            msjError +
-            'PRODUCTOS(fila ' +
-            fila +
-            "): Error con el producto: '" +
-            tempprod +
-            "' Debe de tener la estructura: PRODUCTO - CANTIDAD.  ";
-          existeError = true;
-          return;
-        } else {
-          // if (parseInt(product.split('-')[1].trim()) <= 0) {
+      let productsSelected = item['PRODUCTOS']
+        .split('|')
+        .map((product) => {
+          let tempprod = product.split('-');
+          if (tempprod.length != 2) {
+            msjError =
+              msjError +
+              'PRODUCTOS(fila ' +
+              fila +
+              "): Error con el producto: '" +
+              tempprod +
+              "' Debe de tener la estructura: PRODUCTO - CANTIDAD.  ";
+            existeError = true;
+            return;
+          } else {
+            // if (parseInt(product.split('-')[1].trim()) <= 0) {
             // msjError =
             //   msjError +
             //   'PRODUCTOS(fila ' +
@@ -557,14 +571,15 @@ const Distribution = (props) => {
             //   "' La cantidad debe de ser mayor a CERO.  ";
             // existeError = true;
             // return;
-          // } else {
+            // } else {
             return {
               alias: product.split('-')[0].trim(),
               quantity: parseInt(product.split('-')[1].trim()),
             };
-          // }
-        }
-      }).filter(obj => obj.quantity > 0);
+            // }
+          }
+        })
+        .filter((obj) => obj.quantity > 0);
 
       let totalWeight = 0;
       let productsInfo = [];
@@ -579,8 +594,8 @@ const Distribution = (props) => {
             //   msjError = msjError + "PRODUCTO: Error con el producto: '"+item2['DESCRIPCION']+"' tiene el símbolo | o el - en su descripción, debe de retirarlos.  ";
             //   return;
             // }
-            console.log("producto no encontrado", item2)
-            console.log("producto no encontrado", product)
+            console.log('producto no encontrado', item2);
+            console.log('producto no encontrado', product);
 
             if (
               item2['ALIAS'].trim().replace(/ /g, '').toUpperCase() ===
@@ -649,11 +664,12 @@ const Distribution = (props) => {
                 if (existingProduct) {
                   existingProduct.count += product.quantity;
                 } else {
-                  console.log("productInfo problema", productInfo);
+                  console.log('productInfo problema', productInfo);
                   productsInfo.push({
-                    productId: `${String(productInfo['CODIGO']).padStart(32, '0')}-${
-                      userDataRes.merchantSelected.merchantId
-                    }`,
+                    productId: `${String(productInfo['CODIGO']).padStart(
+                      32,
+                      '0',
+                    )}-${userDataRes.merchantSelected.merchantId}`,
                     product: String(productInfo['CODIGO']),
                     description: productInfo['DESCRIPCION'].trim(),
                     unitMeasure: productInfo['UNIDAD DE MEDIDA'],
@@ -674,7 +690,7 @@ const Distribution = (props) => {
               }
             }
           } else {
-            console.log("llega aquí", product);
+            console.log('llega aquí', product);
             msjError =
               msjError +
               'PRODUCTO(fila ' +
@@ -1032,8 +1048,8 @@ const Distribution = (props) => {
               arrivalInternalCode: entrega.arrivalInternalCode,
               startingInternalCode: entrega.startingInternalCode,
               startingAddress: entrega.startingAddress,
-              startingPointUbigeo: entrega.startingPointUbigeo
-            }
+              startingPointUbigeo: entrega.startingPointUbigeo,
+            },
           ],
           products: [],
         };
@@ -1041,7 +1057,7 @@ const Distribution = (props) => {
 
       entrega.products.forEach((producto) => {
         const conductorProducto = acumulador[conductorKey].products.find(
-          (item) => item.product === producto.product
+          (item) => item.product === producto.product,
         );
 
         if (conductorProducto) {
@@ -1052,13 +1068,15 @@ const Distribution = (props) => {
             count: producto.count,
             description: producto.description,
             weight: producto.weight,
-            unitMeasure: producto.unitMeasure
+            unitMeasure: producto.unitMeasure,
           });
         }
       });
 
       const conductorPuntos = acumulador[conductorKey].points.find(
-        (item) => (item.arrivalInternalCode === entrega.arrivalInternalCode && item.startingInternalCode === entrega.startingInternalCode)
+        (item) =>
+          item.arrivalInternalCode === entrega.arrivalInternalCode &&
+          item.startingInternalCode === entrega.startingInternalCode,
       );
 
       if (!conductorPuntos) {
@@ -1068,7 +1086,7 @@ const Distribution = (props) => {
           arrivalInternalCode: entrega.arrivalInternalCode,
           startingInternalCode: entrega.startingInternalCode,
           startingAddress: entrega.startingAddress,
-          startingPointUbigeo: entrega.startingPointUbigeo
+          startingPointUbigeo: entrega.startingPointUbigeo,
         });
       }
     });
@@ -1078,11 +1096,11 @@ const Distribution = (props) => {
   // Creamos una función para acumular los productos por conductor (driver)
   const acumularProductos = (entregas) => {
     const acumulador = {};
-  
+
     entregas.forEach((entrega) => {
       entrega.products.forEach((producto) => {
         const productoKey = producto.product;
-  
+
         if (!acumulador[productoKey]) {
           acumulador[productoKey] = {
             product: producto.product,
@@ -1096,9 +1114,9 @@ const Distribution = (props) => {
         }
       });
     });
-  
+
     return Object.values(acumulador);
-  };  
+  };
   const handleExport = () => {
     exportToExcel(products, deliveries);
   };
@@ -1308,7 +1326,7 @@ const Distribution = (props) => {
               {routes && routes.length !== 0
                 ? routes.map((route, index2) => {
                     const products = route.products;
-                    console.log("routes de newRoute", routes)
+                    console.log('routes de newRoute', routes);
                     return (
                       <>
                         <TableRow key={index2}>
@@ -1462,13 +1480,13 @@ const Distribution = (props) => {
           color='secondary'
           variant='outlined'
           onClick={() => {
-            const productosPorConductor = acumularProductosPorConductor(routes)
-            const productosResumen = acumularProductos(routes)
-            console.log("routesSummary", productosPorConductor)
-            console.log("productsSummary", productosResumen)
-            setRoutesSummary(productosPorConductor)
-            setProductsSummary(productosResumen)
-            setOpenSummary(true)
+            const productosPorConductor = acumularProductosPorConductor(routes);
+            const productosResumen = acumularProductos(routes);
+            console.log('routesSummary', productosPorConductor);
+            console.log('productsSummary', productosResumen);
+            setRoutesSummary(productosPorConductor);
+            setProductsSummary(productosResumen);
+            setOpenSummary(true);
           }}
         >
           Ver Resumen
@@ -1600,240 +1618,250 @@ const Distribution = (props) => {
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle sx={{ fontSize: '1.5em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Stack
-          sx={{m: 2, justifyContent: 'center', marginBottom: '10px'}}
-          direction={isSmallScreen ? 'column' : 'row'}
-          spacing={2}
+        <DialogTitle
+          sx={{
+            fontSize: '1.5em',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
         >
-          <FormControl sx={{my: 0, mx:'auto', width: 160}}>
-            <InputLabel id='summary-label' style={{fontWeight: 200}}>
-              Tipo Resumen
-            </InputLabel>
-            <Select
-              name='summary'
-              labelId='summary-label'
-              label='Tipo Resumen'
-              onChange={(event) => {
-                console.log(event.target.value);
-                setSummaryType(event.target.value);
-              }}
-              value={summaryType}
-            >
-              <MenuItem
-                value="driver"
-                style={{fontWeight: 200}}
+          <Stack
+            sx={{m: 2, justifyContent: 'center', marginBottom: '10px'}}
+            direction={isSmallScreen ? 'column' : 'row'}
+            spacing={2}
+          >
+            <FormControl sx={{my: 0, mx: 'auto', width: 160}}>
+              <InputLabel id='summary-label' style={{fontWeight: 200}}>
+                Tipo Resumen
+              </InputLabel>
+              <Select
+                name='summary'
+                labelId='summary-label'
+                label='Tipo Resumen'
+                onChange={(event) => {
+                  console.log(event.target.value);
+                  setSummaryType(event.target.value);
+                }}
+                value={summaryType}
               >
-                Chofer
-              </MenuItem>
-              <MenuItem
-                value="all"
-                style={{fontWeight: 200}}
-              >
-                Todo
-              </MenuItem>
-            </Select>
-          </FormControl>
+                <MenuItem value='driver' style={{fontWeight: 200}}>
+                  Chofer
+                </MenuItem>
+                <MenuItem value='all' style={{fontWeight: 200}}>
+                  Todo
+                </MenuItem>
+              </Select>
+            </FormControl>
 
-          <TextField
-            label='Nombre de Agrupador'
-            value={nombreAgrupador}
-            onChange={(e) => setNombreAgrupador(e.target.value)}
-            variant='outlined'
-          />
-          <TextField
-            label='Cantidad de Agrupación'
-            value={cantidadAgrupacion}
-            onChange={(e) => setCantidadAgrupacion(e.target.value)}
-            variant='outlined'
-          /> 
-        </Stack>
-          
-          <IconButton edge='end' onClick={() => setOpenSummary(false)} aria-label='close'>
+            <TextField
+              label='Nombre de Agrupador'
+              value={nombreAgrupador}
+              onChange={(e) => setNombreAgrupador(e.target.value)}
+              variant='outlined'
+            />
+            <TextField
+              label='Cantidad de Agrupación'
+              value={cantidadAgrupacion}
+              onChange={(e) => setCantidadAgrupacion(e.target.value)}
+              variant='outlined'
+            />
+          </Stack>
+
+          <IconButton
+            edge='end'
+            onClick={() => setOpenSummary(false)}
+            aria-label='close'
+          >
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         {summaryType == 'driver' ? (
           <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Chofer</TableCell>
-              <TableCell>Placa</TableCell>
-              <TableCell>Productos</TableCell>
-              <TableCell>Puntos de Partida - Llegada</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {routesSummary.map((fila, indexSummary) => 
-              {
+            <TableHead>
+              <TableRow>
+                <TableCell>Chofer</TableCell>
+                <TableCell>Placa</TableCell>
+                <TableCell>Productos</TableCell>
+                <TableCell>Puntos de Partida - Llegada</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {routesSummary.map((fila, indexSummary) => {
                 const summaryProducts = fila.products;
                 const summaryPoints = fila.points;
                 return (
-                <>
-                  <TableRow key={indexSummary}>
-                    <TableCell>{fila.driverName + " " + fila.driverLastName}</TableCell>
-                    <TableCell>{fila.plate}</TableCell>
-                    <TableCell>
-                      {fila.products && fila.products.length !== 0 ? (
-                        <IconButton
-                          onClick={() => checkSummaryProducts(fila, indexSummary)}
-                          size='small'
-                        >
-                          <FormatListBulletedIcon fontSize='small' />
-                        </IconButton>
-                      ) : null}
-                    </TableCell>
-                    <TableCell>
+                  <>
+                    <TableRow key={indexSummary}>
+                      <TableCell>
+                        {fila.driverName + ' ' + fila.driverLastName}
+                      </TableCell>
+                      <TableCell>{fila.plate}</TableCell>
+                      <TableCell>
+                        {fila.products && fila.products.length !== 0 ? (
+                          <IconButton
+                            onClick={() =>
+                              checkSummaryProducts(fila, indexSummary)
+                            }
+                            size='small'
+                          >
+                            <FormatListBulletedIcon fontSize='small' />
+                          </IconButton>
+                        ) : null}
+                      </TableCell>
+                      <TableCell>
                         <IconButton
                           onClick={() => checkSummaryPoints(fila, indexSummary)}
                           size='small'
                         >
                           <FormatListBulletedIcon fontSize='small' />
                         </IconButton>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow key={`sub-${indexSummary}`}>
-                    <TableCell sx={{p: 0}} colSpan={10}>
-                      <Collapse
-                        in={openSummaryProducts && indexSummary === summaryRowNumber}
-                        timeout='auto'
-                        unmountOnExit
-                      >
-                        <Box sx={{margin: 0}}>
-                          <Table size='small' aria-label='purchases'>
-                            <TableHead
-                              sx={{
-                                backgroundColor: '#ededed',
-                              }}
-                            >
-                              <TableRow>
-                                <TableCell>Código</TableCell>
-                                <TableCell>Descripción</TableCell>
-                                <TableCell>Cantidad</TableCell>
-                                <TableCell>Peso Unitario</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {summaryProducts && summaryProducts.length !== 0
-                                ? summaryProducts.map((product, indexSummaryProducts) => {
-                                    return (
-                                      <TableRow
-                                        key={`${indexSummaryProducts}-${indexSummaryProducts}`}
-                                      >
-                                        <TableCell>
-                                          {product.product}
-                                        </TableCell>
-                                        <TableCell>
-                                          {product.description}
-                                        </TableCell>
-                                        <TableCell>
-                                          {product.count}
-                                        </TableCell>
-                                        <TableCell>
-                                          {product.weight}
-                                        </TableCell>
-                                      </TableRow>
-                                    );
-                                  })
-                                : null}
-                            </TableBody>
-                          </Table>
-                        </Box>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow key={`sub-${indexSummary}-2`}>
-                    <TableCell sx={{p: 0}} colSpan={10}>
-                      <Collapse
-                        in={openSummaryPoints && indexSummary === summaryRowNumber}
-                        timeout='auto'
-                        unmountOnExit
-                      >
-                        <Box sx={{margin: 0}}>
-                          <Table size='small' aria-label='purchases'>
-                            <TableHead
-                              sx={{
-                                backgroundColor: '#ededed',
-                              }}
-                            >
-                              <TableRow>
-                                <TableCell>Punto Partida</TableCell>
-                                <TableCell>Direccion Partida</TableCell>
-                                <TableCell>Punto Llegada</TableCell>
-                                <TableCell>Direccion Llegada</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {summaryPoints && summaryPoints.length !== 0
-                                ? summaryPoints.map((point, indexSummaryPoints) => {
-                                    return (
-                                      <TableRow
-                                        key={`${indexSummaryPoints}-${indexSummaryPoints}`}
-                                      >
-                                        <TableCell>
-                                          {point.startingInternalCode}
-                                        </TableCell>
-                                        <TableCell>
-                                          {point.startingAddress}
-                                        </TableCell>
-                                        <TableCell>
-                                          {point.arrivalInternalCode}
-                                        </TableCell>
-                                        <TableCell>
-                                          {point.arrivalAddress}
-                                        </TableCell>
-                                      </TableRow>
-                                    );
-                                  })
-                                : null}
-                            </TableBody>
-                          </Table>
-                        </Box>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
-                </>)
-                }
-            )}
-          </TableBody>
-        </Table>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow key={`sub-${indexSummary}`}>
+                      <TableCell sx={{p: 0}} colSpan={10}>
+                        <Collapse
+                          in={
+                            openSummaryProducts &&
+                            indexSummary === summaryRowNumber
+                          }
+                          timeout='auto'
+                          unmountOnExit
+                        >
+                          <Box sx={{margin: 0}}>
+                            <Table size='small' aria-label='purchases'>
+                              <TableHead
+                                sx={{
+                                  backgroundColor: '#ededed',
+                                }}
+                              >
+                                <TableRow>
+                                  <TableCell>Código</TableCell>
+                                  <TableCell>Descripción</TableCell>
+                                  <TableCell>Cantidad</TableCell>
+                                  <TableCell>Peso Unitario</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {summaryProducts && summaryProducts.length !== 0
+                                  ? summaryProducts.map(
+                                      (product, indexSummaryProducts) => {
+                                        return (
+                                          <TableRow
+                                            key={`${indexSummaryProducts}-${indexSummaryProducts}`}
+                                          >
+                                            <TableCell>
+                                              {product.product}
+                                            </TableCell>
+                                            <TableCell>
+                                              {product.description}
+                                            </TableCell>
+                                            <TableCell>
+                                              {product.count}
+                                            </TableCell>
+                                            <TableCell>
+                                              {product.weight}
+                                            </TableCell>
+                                          </TableRow>
+                                        );
+                                      },
+                                    )
+                                  : null}
+                              </TableBody>
+                            </Table>
+                          </Box>
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow key={`sub-${indexSummary}-2`}>
+                      <TableCell sx={{p: 0}} colSpan={10}>
+                        <Collapse
+                          in={
+                            openSummaryPoints &&
+                            indexSummary === summaryRowNumber
+                          }
+                          timeout='auto'
+                          unmountOnExit
+                        >
+                          <Box sx={{margin: 0}}>
+                            <Table size='small' aria-label='purchases'>
+                              <TableHead
+                                sx={{
+                                  backgroundColor: '#ededed',
+                                }}
+                              >
+                                <TableRow>
+                                  <TableCell>Punto Partida</TableCell>
+                                  <TableCell>Direccion Partida</TableCell>
+                                  <TableCell>Punto Llegada</TableCell>
+                                  <TableCell>Direccion Llegada</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {summaryPoints && summaryPoints.length !== 0
+                                  ? summaryPoints.map(
+                                      (point, indexSummaryPoints) => {
+                                        return (
+                                          <TableRow
+                                            key={`${indexSummaryPoints}-${indexSummaryPoints}`}
+                                          >
+                                            <TableCell>
+                                              {point.startingInternalCode}
+                                            </TableCell>
+                                            <TableCell>
+                                              {point.startingAddress}
+                                            </TableCell>
+                                            <TableCell>
+                                              {point.arrivalInternalCode}
+                                            </TableCell>
+                                            <TableCell>
+                                              {point.arrivalAddress}
+                                            </TableCell>
+                                          </TableRow>
+                                        );
+                                      },
+                                    )
+                                  : null}
+                              </TableBody>
+                            </Table>
+                          </Box>
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
+                  </>
+                );
+              })}
+            </TableBody>
+          </Table>
         ) : null}
         {summaryType == 'all' ? (
           <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Producto</TableCell>
-              <TableCell>Descripcion</TableCell>
-              <TableCell>Cantidad</TableCell>
-              <TableCell>Peso</TableCell>
-              <TableCell>Peso Total</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {productsSummary.map((fila, indexSummary) => 
-              {
+            <TableHead>
+              <TableRow>
+                <TableCell>Producto</TableCell>
+                <TableCell>Descripcion</TableCell>
+                <TableCell>Cantidad</TableCell>
+                <TableCell>Peso</TableCell>
+                <TableCell>Peso Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {productsSummary.map((fila, indexSummary) => {
                 return (
-                <>
-                  <TableRow key={indexSummary}>
-                    <TableCell>{fila.product}</TableCell>
-                    <TableCell>{fila.description}</TableCell>
-                    <TableCell>
-                      {fila.count}
-                    </TableCell>
-                    <TableCell>
-                        {fila.weight}
-                    </TableCell>
-                    <TableCell>
-                        {fila.count*fila.weight}
-                    </TableCell>
-                  </TableRow>
-                </>)
-                }
-            )}
-          </TableBody>
-        </Table>
+                  <>
+                    <TableRow key={indexSummary}>
+                      <TableCell>{fila.product}</TableCell>
+                      <TableCell>{fila.description}</TableCell>
+                      <TableCell>{fila.count}</TableCell>
+                      <TableCell>{fila.weight}</TableCell>
+                      <TableCell>{fila.count * fila.weight}</TableCell>
+                    </TableRow>
+                  </>
+                );
+              })}
+            </TableBody>
+          </Table>
         ) : null}
-        
       </Dialog>
       {/* <Dialog
         open={openDelivery}
@@ -1884,7 +1912,7 @@ const Distribution = (props) => {
           </Box>
         </Fade>
       </Modal>
-      
+
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

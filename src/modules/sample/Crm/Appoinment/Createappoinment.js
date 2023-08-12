@@ -154,7 +154,7 @@ const Createappoinment = (props) => {
   const [notifyClientByWhatsapp, setNotifyClientByWhatsapp] =
     React.useState(false);
   const [countryCode, setCountryCode] = React.useState('+51');
-  const [selectedClient, setSelectedClient] = React.useState([])
+  const [selectedClient, setSelectedClient] = React.useState([]);
 
   const [recordingClientByWhatsapp, setRecordingClientByWhatsapp] =
     React.useState(false);

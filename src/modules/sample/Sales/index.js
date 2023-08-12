@@ -1398,10 +1398,10 @@ const SalesTable = (props) => {
     return Number(saleTotalIgv).toFixed(2);
   }
   const sendSaleByMail = (data) => {
-    console.log("enviando correo de la venta por correo")
+    console.log('enviando correo de la venta por correo');
   };
   const sendSaleByWhatsapp = (data) => {
-    console.log("enviando correo de la venta por whatsapp")
+    console.log('enviando correo de la venta por whatsapp');
   };
   return typeClient ? (
     <Card sx={{p: 4}}>
@@ -1930,10 +1930,8 @@ const SalesTable = (props) => {
           true && selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() => {
-
-              setOpenSendEmail(true)
-              }
-            }
+              setOpenSendEmail(true);
+            }}
           >
             <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
             Enviar Correo
@@ -1945,9 +1943,8 @@ const SalesTable = (props) => {
           true && selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() => {
-              setOpenSendWhatsapp(true)
-              }
-            }
+              setOpenSendWhatsapp(true);
+            }}
           >
             <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
             Enviar Whatsapp
@@ -2183,65 +2180,63 @@ const SalesTable = (props) => {
           {'Envío de Venta por Correo'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            <Formik
-             // validateOnChange={false}
-              validationSchema={yup.object({
-                receiverEmail: yup.string(),
-              })}
-              initialValues={ {
-                receiverEmail: '',
-              }}
-              onSubmit={sendSaleByMail}
-            >
-              {({isSubmitting, setFieldValue}) => {
-                //changeValueField = setFieldValue;
-                return (
-                  <Form
-                    style={{textAlign: 'left', justifyContent: 'center'}}
-                    noValidate
-                    autoComplete='on'
-                  >
-                    <Grid container spacing={2} sx={{width: 1}}>
-                      <Grid item xs={12}>
-                        <AppTextField
-                          label='Correo Del Receptor'
-                          name='receiverEmail'
-                          variant='outlined'
-                          sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              fontSize: 14,
-                            },
-                            my: 2,
-                          }}
-                        />
-                      </Grid>
+          <Formik
+            // validateOnChange={false}
+            validationSchema={yup.object({
+              receiverEmail: yup.string(),
+            })}
+            initialValues={{
+              receiverEmail: '',
+            }}
+            onSubmit={sendSaleByMail}
+          >
+            {({isSubmitting, setFieldValue}) => {
+              //changeValueField = setFieldValue;
+              return (
+                <Form
+                  style={{textAlign: 'left', justifyContent: 'center'}}
+                  noValidate
+                  autoComplete='on'
+                >
+                  <Grid container spacing={2} sx={{width: 1}}>
+                    <Grid item xs={12}>
+                      <AppTextField
+                        label='Correo Del Receptor'
+                        name='receiverEmail'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
                     </Grid>
+                  </Grid>
 
-                    <ButtonGroup
-                      orientation='vertical'
-                      variant='outlined'
-                      sx={{width: 1, my: '10px'}}
-                      aria-label='outlined button group'
+                  <ButtonGroup
+                    orientation='vertical'
+                    variant='outlined'
+                    sx={{width: 1, my: '10px'}}
+                    aria-label='outlined button group'
+                  >
+                    <Button
+                      color='primary'
+                      sx={{mx: 'auto', width: '50%', py: 3}}
+                      type='submit'
+                      variant='contained'
+                      disabled={isSubmitting}
                     >
-                      <Button
-                        color='primary'
-                        sx={{mx: 'auto', width: '50%', py: 3}}
-                        type='submit'
-                        variant='contained'
-                        disabled={isSubmitting}
-                      >
-                        Enviar
-                      </Button>
-                    </ButtonGroup>
-                  </Form>
-                );
-              }}
-            </Formik>
+                      Enviar
+                    </Button>
+                  </ButtonGroup>
+                </Form>
+              );
+            }}
+          </Formik>
         </DialogContent>
       </Dialog>
-
-
 
       <Dialog
         open={openSendWhatsapp}
@@ -2267,61 +2262,63 @@ const SalesTable = (props) => {
           {'Envío de Venta por Whatsapp'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            <Formik
-             // validateOnChange={false}
-              validationSchema={yup.object({
-                receiverWhatsapp: yup.number().typeError(<IntlMessages id='validation.number' />),
-              })}
-              initialValues={ {
-                receiverWhatsapp: '',
-              }}
-              onSubmit={sendSaleByWhatsapp}
-            >
-              {({isSubmitting, setFieldValue}) => {
-                //changeValueField = setFieldValue;
-                return (
-                  <Form
-                    style={{textAlign: 'left', justifyContent: 'center'}}
-                    noValidate
-                    autoComplete='on'
-                  >
-                    <Grid container spacing={2} sx={{width: 1}}>
-                      <Grid item xs={12}>
-                        <AppTextField
-                          label='Número de Whatsapp'
-                          name='receiverWhatsapp'
-                          variant='outlined'
-                          sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              fontSize: 14,
-                            },
-                            my: 2,
-                          }}
-                        />
-                      </Grid>
+          <Formik
+            // validateOnChange={false}
+            validationSchema={yup.object({
+              receiverWhatsapp: yup
+                .number()
+                .typeError(<IntlMessages id='validation.number' />),
+            })}
+            initialValues={{
+              receiverWhatsapp: '',
+            }}
+            onSubmit={sendSaleByWhatsapp}
+          >
+            {({isSubmitting, setFieldValue}) => {
+              //changeValueField = setFieldValue;
+              return (
+                <Form
+                  style={{textAlign: 'left', justifyContent: 'center'}}
+                  noValidate
+                  autoComplete='on'
+                >
+                  <Grid container spacing={2} sx={{width: 1}}>
+                    <Grid item xs={12}>
+                      <AppTextField
+                        label='Número de Whatsapp'
+                        name='receiverWhatsapp'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
                     </Grid>
+                  </Grid>
 
-                    <ButtonGroup
-                      orientation='vertical'
-                      variant='outlined'
-                      sx={{width: 1, my: '10px'}}
-                      aria-label='outlined button group'
+                  <ButtonGroup
+                    orientation='vertical'
+                    variant='outlined'
+                    sx={{width: 1, my: '10px'}}
+                    aria-label='outlined button group'
+                  >
+                    <Button
+                      color='primary'
+                      sx={{mx: 'auto', width: '50%', py: 3}}
+                      type='submit'
+                      variant='contained'
+                      disabled={isSubmitting}
                     >
-                      <Button
-                        color='primary'
-                        sx={{mx: 'auto', width: '50%', py: 3}}
-                        type='submit'
-                        variant='contained'
-                        disabled={isSubmitting}
-                      >
-                        Enviar
-                      </Button>
-                    </ButtonGroup>
-                  </Form>
-                );
-              }}
-            </Formik>
+                      Enviar
+                    </Button>
+                  </ButtonGroup>
+                </Form>
+              );
+            }}
+          </Formik>
         </DialogContent>
       </Dialog>
 

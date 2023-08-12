@@ -322,7 +322,7 @@ export default function Views(props) {
       // listPayload.request.payload.LastEvaluatedKey = null;
       // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
       getCampaign(listPayload);
-      setFilteredCampaigns(listCampaigns)
+      setFilteredCampaigns(listCampaigns);
     }, 2000);
   };
 

@@ -53,7 +53,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import Router from 'next/router';
 import {red} from '@mui/material/colors';
-import { verNotificaciones } from '../../../Utils/utils';
+import {verNotificaciones} from '../../../Utils/utils';
 
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -93,16 +93,16 @@ export default function Views(props) {
   const [searchValue, setSearchValue] = useState('');
   const [filteredNotifications, setFilteredNotifications] = useState([]);
   const {businessParameter} = useSelector(({general}) => general);
-    console.log("businessParameter ",businessParameter)
+  console.log('businessParameter ', businessParameter);
   let popUp = false;
 
-//   const getNotification = (payload) => {
-//     dispatch(getNotifications(payload));
-//   };
+  //   const getNotification = (payload) => {
+  //     dispatch(getNotifications(payload));
+  //   };
 
-//   const deleteNotification = (payload) => {
-//     dispatch(deleteNotifications(payload));
-//   };
+  //   const deleteNotification = (payload) => {
+  //     dispatch(deleteNotifications(payload));
+  //   };
 
   const handleCloseQR2 = () => {
     setopenQRPop(false);
@@ -110,12 +110,12 @@ export default function Views(props) {
 
   const {userDataRes} = useSelector(({user}) => user);
 
-/*  const {
+  /*  const {
     listNotifications,
     agentsLastEvaluatedKey_pageListAgents,
   } = useSelector(({notifications}) => notifications);*/
 
-  const listNotifications=verNotificaciones(businessParameter);
+  const listNotifications = verNotificaciones(businessParameter);
 
   console.log('confeti los agentes', listNotifications);
 
@@ -163,7 +163,7 @@ export default function Views(props) {
     handleCloseQR(event.currentTarget);
     codProdSelected = codPro;
     selectedNotification =
-    listNotifications[codPro]; /* .find((obj) => obj.client == codPro); */
+      listNotifications[codPro]; /* .find((obj) => obj.client == codPro); */
     console.log('Select Agente', selectedNotification);
   };
 
@@ -192,7 +192,8 @@ export default function Views(props) {
   const confirmDelete = () => {
     console.log('selected agente', selectedNotification);
     console.log('id de selected', selectedNotification.notificationId);
-    deletePayload.request.payload.notificationId = selectedNotification.notificationId;
+    deletePayload.request.payload.notificationId =
+      selectedNotification.notificationId;
     console.log('deletePayload', deletePayload);
     //deleteNotification(deletePayload);
     setOpen2(false);
@@ -207,7 +208,7 @@ export default function Views(props) {
   // Paso 2: Función para filtrar las campañas por el nombre de la campaña
   const filterNotifications = (searchText) => {
     if (!searchText) {
-        setFilteredNotifications(listNotifications); // Si el valor del TextField está vacío, mostrar todas las campañas.
+      setFilteredNotifications(listNotifications); // Si el valor del TextField está vacío, mostrar todas las campañas.
     } else {
       const filtered = listNotifications.filter((agent) =>
         agent.robotName.toLowerCase().includes(searchText.toLowerCase()),
@@ -215,7 +216,6 @@ export default function Views(props) {
       setFilteredNotifications(filtered);
     }
   };
-
 
   useEffect(() => {
     filterNotifications(searchValue);
@@ -249,7 +249,9 @@ export default function Views(props) {
           Buscar
         </Button>
       </Stack>
-      <span>{`Items: ${listNotifications ? listNotifications.length : 'Cargando...'}`}</span>
+      <span>{`Items: ${
+        listNotifications ? listNotifications.length : 'Cargando...'
+      }`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -269,44 +271,54 @@ export default function Views(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/*filteredNotifications*/listNotifications.map((row, index) => (
-              <TableRow
-                key={index}
-                sx={{'&:last-child td, &:last-child th': {border: 0}}}
-              >
-                <TableCell>{convertToDate(row.createdAt)}</TableCell>
-                <TableCell
-                  component='th'
-                  scope='row'
-                  style={{maxWidth: '200px', wordWrap: 'break-word'}}
+            {
+              /*filteredNotifications*/ listNotifications.map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{'&:last-child td, &:last-child th': {border: 0}}}
                 >
-                  {row.notificationName}
-                </TableCell>
-                <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
-                  {row.eventType}
-                </TableCell>
-                <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
-                  {row.message}
-                </TableCell>
-                <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
-                  {`${row.periodicityAction.time} ${row.periodicityAction.unit}`}
-                </TableCell>
-                <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
-                  {row.agentName}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    id='basic-button'
-                    aria-controls={openMenu ? 'basic-menu' : undefined}
-                    aria-haspopup='true'
-                    aria-expanded={openMenu ? 'true' : undefined}
-                    onClick={handleClick.bind(this, index)}
+                  <TableCell>{convertToDate(row.createdAt)}</TableCell>
+                  <TableCell
+                    component='th'
+                    scope='row'
+                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    <KeyboardArrowDownIcon />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+                    {row.notificationName}
+                  </TableCell>
+                  <TableCell
+                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                  >
+                    {row.eventType}
+                  </TableCell>
+                  <TableCell
+                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                  >
+                    {row.message}
+                  </TableCell>
+                  <TableCell
+                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                  >
+                    {`${row.periodicityAction.time} ${row.periodicityAction.unit}`}
+                  </TableCell>
+                  <TableCell
+                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                  >
+                    {row.agentName}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      id='basic-button'
+                      aria-controls={openMenu ? 'basic-menu' : undefined}
+                      aria-haspopup='true'
+                      aria-expanded={openMenu ? 'true' : undefined}
+                      onClick={handleClick.bind(this, index)}
+                    >
+                      <KeyboardArrowDownIcon />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            }
           </TableBody>
         </Table>
       </TableContainer>

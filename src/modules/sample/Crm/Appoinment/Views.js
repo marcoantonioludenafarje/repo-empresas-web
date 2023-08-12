@@ -43,7 +43,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
-import { getAppointment } from 'redux/actions/Appointment';
+import {getAppointment} from 'redux/actions/Appointment';
 import {convertToDate} from '../../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -141,10 +141,7 @@ export default function Views(props) {
 
   const {userDataRes} = useSelector(({user}) => user);
 
-  const {
-    listAppointments,
-  } = useSelector(({appoinments}) => appoinments);
-
+  const {listAppointments} = useSelector(({appoinments}) => appoinments);
 
   console.log('confeti los agentes', listAppointments);
 
@@ -292,7 +289,9 @@ export default function Views(props) {
           Buscar
         </Button>
       </Stack>
-      <span>{`Items: ${listAppointments ? listAppointments.length : 'Cargando...'}`}</span>
+      <span>{`Items: ${
+        listAppointments ? listAppointments.length : 'Cargando...'
+      }`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -324,7 +323,6 @@ export default function Views(props) {
                 <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
                   {row.description}
                 </TableCell>
-                
               </TableRow>
             ))}
           </TableBody>

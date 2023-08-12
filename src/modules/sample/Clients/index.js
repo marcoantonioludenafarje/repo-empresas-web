@@ -632,7 +632,7 @@ const ClientTable = (arrayObjs, props) => {
           Buscar
         </Button>
       </Stack>
-      <span>{`Items: ${listClients.length}`}</span>
+      <span>{`Items: ${listClients?.length || 0}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
