@@ -204,7 +204,7 @@ const Account = () => {
                     userDataRes 
                     &&
                     userDataRes.merchantSelected.typeMerchant !== 'PROD'
-                  ) || userDataRes.merchantSelected.merchantId == '2303d20e08534377bd2c053ecf9d281c')
+                  ) && userDataRes.merchantSelected.merchantId !== '2303d20e08534377bd2c053ecf9d281c')
                     ) ? (
                   <></>
                 ) : (
