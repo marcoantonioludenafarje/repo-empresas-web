@@ -57,7 +57,8 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
-import {newCampaign, getCampaigns} from '../../../redux/actions/Campaign';
+import {newCampaign, getCampaigns, generateVariations} from '../../../redux/actions/Campaign';
+import {getAgents } from '../../../redux/actions/Agent'
 import {
   createPresigned,
   createClientsPresigned,
@@ -857,14 +858,42 @@ const Update = (props) => {
   //   }
   // };
 
+  const [geneVariations, setGenerateVariations] = useState(null);
+
   const handleDummy = async () => {
-    let dummy = 'hola amigos';
-    const newData = [...variationsData];
-    newData[0] = dummy;
-    setVariationsData(newData);
-    console.log('index campaña', campaignContent);
+
+    let text = getValueField('campaignContent').value;
+    console.log('index dum', text);
     console.log('index dummy>', variationsData);
+    console.log('index variations', variationsData.length);
+
+    const payloadVariations = {
+      request: {
+        payload: {
+          cant_variaciones: variationsData.length,
+          textCampaign: text,
+        },
+      },
+    };
+
+    console.log('index payload', payloadVariations);
+    const response = await dispatch(generateVariations(payloadVariations));
+
+    setGenerateVariations(response);
+    console.log('index numVariations', numVariations);
+    console.log('index response', geneVariations?.data);
+    
+    
+    const newDatatt = [...variationsData];
+    if(geneVariations!==null){
+      for (let i = 0; i < numVariations; i++) {
+        newDatatt[i] = geneVariations.data[i];
+        setVariationsData(newDatatt);
+      }
+    }
+
   };
+
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
 

@@ -59,6 +59,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {newCampaign, generateVariations} from '../../../redux/actions/Campaign';
+import {getAgents } from '../../../redux/actions/Agent'
 import {
   createPresigned,
   createClientsPresigned,
@@ -208,6 +209,10 @@ const Create = (props) => {
   const getClients = (payload) => {
     dispatch(onGetClients(payload));
   };
+
+  const getAgent = (payload) =>{
+    dispatch(getAgents(payload));
+  }
   const {userDataRes} = useSelector(({user}) => user);
 
   const {businessParameter} = useSelector(({general}) => general);
@@ -229,6 +234,12 @@ const Create = (props) => {
   const {clientsPresigned, imagePresigned} = useSelector(
     ({general}) => general,
   );
+
+  const {
+    listAgents,
+    agentsLastEvaluatedKey_pageListAgents,
+  } = useSelector(({agents}) => agents);
+console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
 
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
@@ -282,6 +293,7 @@ const Create = (props) => {
           },
         },
       };
+      getAgent(listPayload);
       getClients(listPayload);
       getGlobalParameter(globalParameterPayload);
       // setFirstload(true);
@@ -406,6 +418,7 @@ const Create = (props) => {
 
     console.log('Contenidodecamapañas', campaignContent);
     console.log('ACTUAL IMAGE', imagePresigned);
+    console.log('confeti agente', getValueField('agent').value);
     const payload = {
       request: {
         payload: {
@@ -419,6 +432,7 @@ const Create = (props) => {
               },
               targetSummary: [...selectedTags, totaldeClientes()],
               robotId: 'ID_BOT_CUENTA_SOPORTE',
+              robotName: 'Robot Name',
               messages: [
                 {
                   order: 0,
@@ -897,12 +911,17 @@ const Create = (props) => {
 
     setGenerateVariations(response);
     console.log('index numVariations', numVariations);
-    console.log('index response', geneVariations.data);
+    console.log('index response', geneVariations?.data);
+    
+    
     const newDatatt = [...variationsData];
-    for (let i = 0; i < numVariations; i++) {
-      newDatatt[i] = geneVariations.data[i];
-      setVariationsData(newDatatt);
+    if(geneVariations!==null){
+      for (let i = 0; i < numVariations; i++) {
+        newDatatt[i] = geneVariations.data[i];
+        setVariationsData(newDatatt);
+      }
     }
+
   };
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
@@ -1183,7 +1202,19 @@ const Create = (props) => {
                       </Button>
                     </Box>
                   </DialogTitle>
+                    <Box
+                      sx={{width: 1, textAlign: 'center', mt: 2}}
+                    >
+                    <Typography sx={{fontSize: 18, fontWeight: 600}} >
+                      El proceso de generar Variaciones demora unos segundos
+                    </Typography>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}} >
+                      Sí demora, vuelva a darle click en "Necesito Ayuda!"
+                    </Typography>
+                    </Box>
+
                   {sameData()};
+                  
                   {totaldeClientes() > levelEnter.clientsAmount ? (
                     <Box
                       sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
@@ -1281,6 +1312,34 @@ const Create = (props) => {
                 ) : (
                   <Typography></Typography>
                 )}
+
+                  <Grid item xs={12}>
+                    <FormControl sx={{width: '20%' ,my: 2, marginLeft:110}}>
+                      <InputLabel
+                        id='agent-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Seleccionar Agente
+                      </InputLabel>
+                      {/* {inicializaIdentidad()} */}
+                      <Select
+                        name='agent'
+                        labelId='agent-label'
+                        label='Agent'
+                        //onChange={handleField}
+                        onChange={(option, value) => {
+                          setFieldValue('agent', value.props.value);
+                          // setIdentidad(value.props.value);
+                        }}
+                      >
+                        {listAgents.map((agent)=>(
+                          <MenuItem value={agent.robotId} style={{fontWeight: 200}}>
+                            {agent.robotName}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>                
 
                 <ButtonGroup
                   orientation='vertical'

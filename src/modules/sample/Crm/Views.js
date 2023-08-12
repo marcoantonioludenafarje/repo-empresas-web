@@ -147,6 +147,7 @@ export default function Views(props) {
   /* let anchorEl = null; */
   const openMenu = Boolean(anchorEl);
   const handleClick = (codPro, event) => {
+    setCancelDisabled(false);
     console.log('evento', event);
     console.log('index del map', codPro);
     setAnchorEl(event.currentTarget);
