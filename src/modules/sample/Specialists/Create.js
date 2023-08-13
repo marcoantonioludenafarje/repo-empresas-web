@@ -50,21 +50,19 @@ import {
 import {getUserData} from '../../../redux/actions/User';
 import {useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check';
-
+import {listUser} from '../../../redux/actions/User';
 const validationSchema = yup.object({
-  givenName: yup
+  specialistName: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required('Es un campo obligatorio'),
 
-  extraInformationClient: yup
-    .string()
-    .typeError(<IntlMessages id='validation.string' />)
-    .required('Es un campo obligatorio'),
+  user: yup.object().shape({
+    inputValue: yup.string().required('Este campo no puede estar vacío')})
 });
 const defaultValues = {
-  givenName: '',
-  extraInformationClient: '',
+    specialistName: '',
+  user: {},
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -87,6 +85,7 @@ const formatSentence = (phrase) => {
 };
 
 const NewSpecialist = (props) => {
+    let toSubmitting
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
@@ -106,12 +105,59 @@ const NewSpecialist = (props) => {
   };
   const [dateRegister, setDateRegister] = React.useState(Date.now());
   //GET_VALUES_APIS
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedNameSpecialist, setSelectedNameSpecialist] = React.useState('');
   const {newSpecialistRes, successMessage, errorMessage, process, loading} =
     useSelector(({specialists}) => specialists);
   console.log('newSpecialistRes', newSpecialistRes);
-
+  console.log('newSpecialistRes', selectedOption);
+ 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const [listUsersModal,setListUsersModal]=useState([]);
+  /******************************************** */
+    const {listUserRes} = useSelector(({user}) => user);
+  
+    const toListUser = (payload) => {
+      dispatch(listUser(payload));
+    };
+    const handleOptionChange = (event, newValue) => {
+        setSelectedOption(newValue);
+      };
+    const handleSpecialistNameChange = (event) => {
+        const updatedName=event.target.value;
+        console.log("newValue",updatedName);
+        setSelectedNameSpecialist(updatedName);
+      };
+    useEffect(() => {
+        console.log("Este userDataRes",userDataRes, userDataRes.merchantSelected.merchantId);
+      let listUserPayload = {
+        request: {
+          payload: {
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
+      toListUser(listUserPayload);
+      console.log('listUserRes: ', listUserRes);
+    }, []);
+    useEffect(() => {
+      if (listUserRes) {
+        console.log('listUserRes desde useeffect', listUserRes);
+        const listUserAutoCompleteV1=listUserRes.map((user)=>{
+            return {...user,label:user.email}
+        });
+        
+        console.log("listUserAutoCompleteV1",listUserAutoCompleteV1);
+        setListUsersModal(listUserAutoCompleteV1);
+      
+        console.log('Este es el listUsersModal',listUsersModal);
+        
+      }
+    }, [listUserRes]);
+
+
+  /**/////////////////////////////////////////// */
 
   useEffect(() => {
     if (!userDataRes) {
@@ -165,16 +211,15 @@ const NewSpecialist = (props) => {
     setOpen(false);
   };
 
-  const handleData = (data, {setSubmitting}) => {
-    setSubmitting(true);
+  const handleData = (data) => {
+    // setSubmitting(true);
     //delete data.documentType;
     console.log('Data', data);
     console.log('objSelects', objSelects);
-
+    console.log(selectedNameSpecialist,"specialistName");
     let extraTrama;
     extraTrama = {
-      specialistName: data.givenName,
-      position: data.position,
+      specialistName: selectedNameSpecialist,
     };
 
     let newSpecialistPayload = {
@@ -182,7 +227,7 @@ const NewSpecialist = (props) => {
         payload: {
           specialists: [
             {
-              user: data.user,
+              user: selectedOption,
               ...extraTrama,
             },
           ],
@@ -193,7 +238,7 @@ const NewSpecialist = (props) => {
 
     toNewSpecialist(newSpecialistPayload);
     console.log('newSpecialistPayload', newSpecialistPayload);
-    setSubmitting(false);
+    // setSubmitting(false);
   };
 
   const showMessage = () => {
@@ -270,25 +315,14 @@ const NewSpecialist = (props) => {
           enableReinitialize={true}
         >
           {({values, errors, isSubmitting, setFieldValue}) => {
+
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
                 noValidate
                 autoComplete='on'
                 /* onChange={handleActualData} */
-                onChange={(value) => {
-                  console.log('Los values', values);
-                  if (['givenName'].includes(value.target.name)) {
-                    console.log('Aca es value', value);
-                    console.log('Esto es el nuevo name', value.target.name);
-                    console.log('Esto es el nuevo value', value.target.value);
-                    let givenName = formatSentence(
-                      value.target.name == 'givenName'
-                        ? value.target.value
-                        : values['givenName'],
-                    );
-                  }
-                }}
+                
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <>
@@ -312,8 +346,11 @@ const NewSpecialist = (props) => {
                             },
                           }}
                           disablePortal
+                          name='user'
                           id='combo-box-demo'
-                          options={[{label: userDataRes.nombreCompleto}]}
+                          options={listUserRes}
+                          getOptionLabel={(option)=>option.email}
+                          onChange={handleOptionChange}
                           renderInput={(params) => (
                             <TextField {...params} label='Usuario' />
                           )}
@@ -324,8 +361,10 @@ const NewSpecialist = (props) => {
                     <Grid item xs={12}>
                       <AppUpperCaseTextField
                         label='Puesto o Especialidad'
-                        name='givenName'
+                        value={selectedNameSpecialist}
                         variant='outlined'
+                        name='specialistName'
+                        onInput={handleSpecialistNameChange}
                         sx={{
                           width: '100%',
                           '& .MuiInputBase-input': {
@@ -350,6 +389,7 @@ const NewSpecialist = (props) => {
                     type='submit'
                     variant='contained'
                     disabled={isSubmitting}
+                    onClick={handleData}
                     startIcon={<SaveAltOutlinedIcon />}
                   >
                     Finalizar

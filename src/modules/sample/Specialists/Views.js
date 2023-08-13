@@ -292,7 +292,7 @@ export default function Views(props) {
                     scope='row'
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.user.nombreCompleto}
+                    {row.user.email}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
