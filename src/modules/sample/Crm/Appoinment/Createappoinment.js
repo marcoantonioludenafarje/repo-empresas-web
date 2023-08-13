@@ -24,6 +24,7 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
+  TextField
 } from '@mui/material';
 
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
@@ -47,6 +48,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newDriver} from '../../../../redux/actions/Drivers';
+import { getSpecialists } from 'redux/actions/Specialist';
 
 import AddClientForm from '../../ClientSelection/AddClientForm';
 
@@ -154,7 +156,7 @@ const Createappoinment = (props) => {
   const [notifyClientByWhatsapp, setNotifyClientByWhatsapp] =
     React.useState(false);
   const [countryCode, setCountryCode] = React.useState('+51');
-  const [selectedClient, setSelectedClient] = React.useState([])
+  const [selectedClient, setSelectedClient] = React.useState('');
 
   const [recordingClientByWhatsapp, setRecordingClientByWhatsapp] =
     React.useState(false);
@@ -170,6 +172,9 @@ const Createappoinment = (props) => {
   const toNewDriver = (payload) => {
     dispatch(newDriver(payload));
   };
+  const toGetSpecialist = (payload) =>{
+    dispatch(getSpecialists(payload))
+  }
   //GET_VALUES_APIS
   const {newDriverRes} = useSelector(({drivers}) => drivers);
   console.log('newDriverRes', newDriverRes);
@@ -179,6 +184,9 @@ const Createappoinment = (props) => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+
+  const {listSpecialists} = useSelector(({specialists})=>specialists)
+  console.log("confeti especialistas", listSpecialists);
 
   useEffect(() => {
     if (!userDataRes) {
@@ -210,6 +218,44 @@ const Createappoinment = (props) => {
     }
   }, [userDataRes]);
 
+ 
+  useEffect(() => {
+    console.log('Estamos userDataResINCampaign', userDataRes);
+    if (
+      userDataRes &&
+      userDataRes.merchantSelected &&
+      userDataRes.merchantSelected.merchantId
+    ) {
+      console.log('Estamos entrando al getClients');
+      dispatch({type: FETCH_SUCCESS, payload: ''});
+      dispatch({type: FETCH_ERROR, payload: ''});
+      //dispatch({type: GET_CLIENTS, payload: undefined});
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      let globalParameterPayload = {
+        request: {
+          payload: {
+            abreParametro: null,
+            codTipoparametro: null,
+            country: 'peru',
+          },
+        },
+      };
+      toGetSpecialist(listPayload);
+      // setFirstload(true);
+    }
+  }, [userDataRes]);
+ 
+ 
   const cancel = () => {
     setOpen(true);
   };
@@ -319,19 +365,19 @@ const Createappoinment = (props) => {
 
   const getClient = (client) => {
     console.log('Estoy en el getClient');
-    if (client.typeDocumentClient == 'RUC') {
-      let serieParameter = businessParameter.find(
-        (obj) => obj.abreParametro == 'SERIES_BILL',
-      );
-      setSerial(serieParameter.metadata ? serieParameter.metadata : '');
-      setProofOfPaymentType('bill');
-    } else {
-      setSerial('S');
-      setProofOfPaymentType('ticket');
-    }
+    // if (client.typeDocumentClient == 'RUC') {
+    //   let serieParameter = businessParameter.find(
+    //     (obj) => obj.abreParametro == 'SERIES_BILL',
+    //   );
+    //   setSerial(serieParameter.metadata ? serieParameter.metadata : '');
+    //   setProofOfPaymentType('bill');
+    // } else {
+    //   setSerial('S');
+    //   setProofOfPaymentType('ticket');
+    // }
     setSelectedClient(client);
     console.log('Cliente seleccionado', client);
-    forceUpdate();
+    //forceUpdate();
     setOpen(false);
   };
 
@@ -393,6 +439,14 @@ const Createappoinment = (props) => {
                       Añadir Cliente
                     </Button>
                   </Grid>
+                  <Grid sx={{px: 1, mt: 2}} xs={12}>
+                    <Typography sx={{mx: 'auto', my: '10px'}}>
+                      Cliente:{' '}
+                      {selectedClient && selectedClient.denominationClient
+                        ? selectedClient.denominationClient
+                        : 'No Definido'}
+                    </Typography>
+                  </Grid>
                   <Grid item xs={8} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
@@ -407,18 +461,11 @@ const Createappoinment = (props) => {
                         label='Identificador'
                         onChange={handleField}
                       >
-                        <MenuItem value='DNI' style={{fontWeight: 200}}>
-                          Doctor caso de la vida real
-                        </MenuItem>
-                        <MenuItem value='CE' style={{fontWeight: 200}}>
-                          Doctor House
-                        </MenuItem>
-                        <MenuItem value='CE' style={{fontWeight: 200}}>
-                          Doctor Sin licencia XD
-                        </MenuItem>
-                        <MenuItem value='CE' style={{fontWeight: 200}}>
-                          Doctor Ateo
-                        </MenuItem>
+                        {listSpecialists.map((specialist)=>
+                          <MenuItem value={specialist.specialistId} style={{fontWeight:200}}>
+                            {specialist.specialistName}
+                          </MenuItem>
+                        )}
                       </Select>
                     </FormControl>
                   </Grid>
@@ -530,37 +577,38 @@ const Createappoinment = (props) => {
                     />
                   </Grid>
                   {notifyClientByWhatsapp && (
-                    <Grid container spacing={2}>
-                      <Grid item xs={2}>
-                        <AppUpperCaseTextField
-                          label='+51'
-                          name='countryCode'
-                          variant='outlined'
-                          sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              fontSize: 14,
-                            },
-                            my: 2,
-                            mx: 0,
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={10} sm={12}>
-                        <AppUpperCaseTextField
-                          label='Número de cliente'
-                          name='clientWhatsapp'
-                          variant='outlined'
-                          sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              fontSize: 14,
-                            },
-                            my: 2,
-                            mx: 0,
-                          }}
-                        />
-                      </Grid>
+                    <Grid item xs={2} md={2}>
+                      <TextField
+                        disabled
+                        defaultValue={'+51'}
+                        label={
+                          <IntlMessages id='common.cellphoneCountryCod' />
+                        }
+                        variant='filled'
+                        sx={{
+                          my: 2,
+                          mx: 0,
+                        }}
+                        color='success'
+                        focused
+                      />
+                    </Grid>
+                  )}
+                  {notifyClientByWhatsapp && (
+                      <Grid item xs={10}>
+                      <AppTextField
+                        label='Telefono fijo o celular de contacto'
+                        name='numberContact'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                          mx: 0,
+                        }}
+                      />
                     </Grid>
                   )}
                   <Grid item xs={8} sm={12}>
@@ -578,23 +626,7 @@ const Createappoinment = (props) => {
                       label='Recordatorio a cliente por Whatsapp'
                     />
                   </Grid>
-                  {recordingClientByWhatsapp && (
-                    <Grid item xs={8} sm={12}>
-                      <AppUpperCaseTextField
-                        label='Horas antes'
-                        name='clientHours'
-                        variant='outlined'
-                        sx={{
-                          width: '100%',
-                          '& .MuiInputBase-input': {
-                            fontSize: 14,
-                          },
-                          my: 2,
-                          mx: 0,
-                        }}
-                      />
-                    </Grid>
-                  )}
+
                 </Grid>
 
                 <ButtonGroup

@@ -147,6 +147,7 @@ export default function Views(props) {
   /* let anchorEl = null; */
   const openMenu = Boolean(anchorEl);
   const handleClick = (codPro, event) => {
+    setCancelDisabled(false);
     console.log('evento', event);
     console.log('index del map', codPro);
     setAnchorEl(event.currentTarget);
@@ -322,7 +323,7 @@ export default function Views(props) {
       // listPayload.request.payload.LastEvaluatedKey = null;
       // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
       getCampaign(listPayload);
-      setFilteredCampaigns(listCampaigns)
+      setFilteredCampaigns(listCampaigns);
     }, 2000);
   };
 

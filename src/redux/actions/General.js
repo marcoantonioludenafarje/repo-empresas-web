@@ -209,7 +209,7 @@ export const uploadFileByPresign = (url, file) => {
         dispatch({type: FETCH_SUCCESS});
       })
       .catch((err) => {
-        dispatch({type: FETCH_ERROR, payload: err.message});
+        //dispatch({type: FETCH_ERROR, payload: err.message || err});
         console.log('uploadImage error', err);
       });
   };

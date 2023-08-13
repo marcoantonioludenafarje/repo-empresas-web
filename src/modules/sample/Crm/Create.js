@@ -59,6 +59,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {newCampaign, generateVariations} from '../../../redux/actions/Campaign';
+import {getAgents } from '../../../redux/actions/Agent'
 import {
   createPresigned,
   createClientsPresigned,
@@ -110,7 +111,12 @@ const Create = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
-
+  const inputFileRef = useRef(null);
+  const resetInput = () => {
+    if (inputFileRef.current) {
+      inputFileRef.current.value = ''; // Restablece el valor del input a una cadena vacía
+    }
+  };
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -203,6 +209,10 @@ const Create = (props) => {
   const getClients = (payload) => {
     dispatch(onGetClients(payload));
   };
+
+  const getAgent = (payload) =>{
+    dispatch(getAgents(payload));
+  }
   const {userDataRes} = useSelector(({user}) => user);
 
   const {businessParameter} = useSelector(({general}) => general);
@@ -225,6 +235,12 @@ const Create = (props) => {
     ({general}) => general,
   );
 
+  const {
+    listAgents,
+    agentsLastEvaluatedKey_pageListAgents,
+  } = useSelector(({agents}) => agents);
+console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
+
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
@@ -243,7 +259,6 @@ const Create = (props) => {
   };
   const {newCampaignRes, successMessage, errorMessage, process, loading} =
     useSelector(({campaigns}) => campaigns);
-  console.log('Respuesta de campañas : ', errorMessage);
 
   console.log('Confeti los clientes', listClients);
 
@@ -255,8 +270,7 @@ const Create = (props) => {
       userDataRes.merchantSelected.merchantId
     ) {
       console.log('Estamos entrando al getClients');
-      dispatch({type: FETCH_SUCCESS, payload: undefined});
-      dispatch({type: FETCH_ERROR, payload: undefined});
+
       //dispatch({type: GET_CLIENTS, payload: undefined});
       let listPayload = {
         request: {
@@ -278,6 +292,7 @@ const Create = (props) => {
           },
         },
       };
+      getAgent(listPayload);
       getClients(listPayload);
       getGlobalParameter(globalParameterPayload);
       // setFirstload(true);
@@ -402,6 +417,7 @@ const Create = (props) => {
 
     console.log('Contenidodecamapañas', campaignContent);
     console.log('ACTUAL IMAGE', imagePresigned);
+    console.log('confeti agente', getValueField('agent').value);
     const payload = {
       request: {
         payload: {
@@ -415,6 +431,7 @@ const Create = (props) => {
               },
               targetSummary: [...selectedTags, totaldeClientes()],
               robotId: 'ID_BOT_CUENTA_SOPORTE',
+              robotName: 'Robot Name',
               messages: [
                 {
                   order: 0,
@@ -463,6 +480,8 @@ const Create = (props) => {
   };
   useEffect(() => {
     if (clientsPresigned) {
+      dispatch({type: FETCH_SUCCESS, payload: ''});
+      dispatch({type: FETCH_ERROR, payload: ''});
       const payload = payloadToCreateCampaign;
       console.log('Payload creates', payload);
       payload.request.payload.campaign[0].receivers.urlClients =
@@ -546,27 +565,28 @@ const Create = (props) => {
     Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
   };
 
-  const removeImagePreview = (index, setFieldValue) => {
-    const updatedImages = [...previewImages];
-    updatedImages.splice(index, 1);
-    setPreviewImages(updatedImages);
-
-    let newImagesJson = selectedJsonImages;
-    delete newImagesJson[index];
-    setSelectedJsonImages(newImagesJson);
-    const updatedFiles = previewImages.map((image) => {
-      const file = imageToBlob(image);
-      return file;
-    });
-    setFieldValue('campaignImages', updatedFiles);
-  };
-
   const imageToBlob = (imageUrl) => {
     return fetch(imageUrl)
       .then((response) => response.blob())
       .then((blob) => new File([blob], 'image.jpg', {type: 'image/jpeg'}));
   };
 
+  const removeImagePreview = (index, setFieldValue) => {
+    const updatedImages = [...previewImages];
+    updatedImages.splice(index, 1);
+    setPreviewImages(updatedImages);
+
+    let newImagesJson = [...selectedJsonImages];
+    newImagesJson.splice(index, 1);
+    setSelectedJsonImages(newImagesJson);
+
+    const updatedFiles = previewImages.map((image) => {
+      const file = imageToBlob(image);
+      return file;
+    });
+    setFieldValue('campaignImages', updatedFiles);
+    resetInput();
+  };
   const handleOpenClientsDialog = () => {
     setOpenClientsDialog(true);
   };
@@ -600,7 +620,7 @@ const Create = (props) => {
     if (selectedTags.includes('ALL')) {
       console.log('CUANDO SE MARCA EL TAG ALL');
       setSelectedTagsCount(namesTags.length);
-      setSelectedClientCount(listClients.length);
+      setSelectedClientCount(listClients?.length || 0);
       setClientSelection('Todos');
       setSelectedClientsByTag(listClients.map((client) => client.clientId));
     } else {
@@ -627,7 +647,7 @@ const Create = (props) => {
     if (name === 'Todos' && checked) {
       console.log('ENTRA EN TODOS Y CHECK');
       setClientSelection('Todos');
-      setSelectedClientCount(listClients.length);
+      setSelectedClientCount(listClients?.length || 0);
       setSelectedClientIds(listClients.map((client) => client.clientId));
       setSelectedClientsByTag(listClients.map((client) => client.clientId));
     } else if (name === 'Algunos' && checked) {
@@ -643,7 +663,7 @@ const Create = (props) => {
   const totaldeClientes = () => {
     console.log('VALOR DE TOTAL DE CLIENTES SELECT', clientSelection);
     if (clientSelection === 'Todos') {
-      return listClients.length;
+      return listClients?.length || 0;
     }
     if (clientSelection === 'Algunos') {
       return selectedClients.length;
@@ -680,7 +700,7 @@ const Create = (props) => {
   };
 
   // Calcula si todos los clientes están seleccionados
-  const isAllSelected = selectedClients.length === listClients.length;
+  const isAllSelected = selectedClients.length === (listClients?.length || 0);
   const isSomeSelected = selectedClients.length > 0 && !isAllSelected;
 
   const [searchDialogResults, setSearchDialogResults] = useState([]);
@@ -872,10 +892,7 @@ const Create = (props) => {
   const [geneVariations, setGenerateVariations] = useState(null);
 
   const handleDummy = async () => {
-    let dummy = 'hola amigos';
-    const newData = [...variationsData];
-    newData[0] = dummy;
-    setVariationsData(newData);
+
     let text = getValueField('campaignContent').value;
     console.log('index dum', text);
     console.log('index dummy>', variationsData);
@@ -895,12 +912,17 @@ const Create = (props) => {
 
     setGenerateVariations(response);
     console.log('index numVariations', numVariations);
-    console.log('index response', geneVariations.data);
+    console.log('index response', geneVariations?.data);
+    
+    
     const newDatatt = [...variationsData];
-    for (let i = 0; i < numVariations; i++) {
-      newDatatt[i] = geneVariations.data[i];
-      setVariationsData(newDatatt);
+    if(geneVariations!==null){
+      for (let i = 0; i < numVariations; i++) {
+        newDatatt[i] = geneVariations.data[i];
+        setVariationsData(newDatatt);
+      }
     }
+
   };
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
@@ -1087,7 +1109,8 @@ const Create = (props) => {
                           <input
                             type='file'
                             hidden
-                            onChange={(event) =>
+                            ref={inputFileRef}
+                            onInput={(event) =>
                               handleImageChange(event, setFieldValue)
                             }
                             accept='.png, .jpeg, .jpg'
@@ -1130,9 +1153,9 @@ const Create = (props) => {
                                   right: 0,
                                   p: '2px',
                                 }}
-                                onClick={() =>
-                                  removeImagePreview(index, setFieldValue)
-                                }
+                                onClick={() => {
+                                  removeImagePreview(index, setFieldValue);
+                                }}
                               >
                                 <CancelOutlinedIcon fontSize='small' />
                               </IconButton>
@@ -1180,7 +1203,19 @@ const Create = (props) => {
                       </Button>
                     </Box>
                   </DialogTitle>
+                    <Box
+                      sx={{width: 1, textAlign: 'center', mt: 2}}
+                    >
+                    <Typography sx={{fontSize: 18, fontWeight: 600}} >
+                      El proceso de generar Variaciones demora unos segundos
+                    </Typography>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}} >
+                      Sí demora, vuelva a darle click en "Necesito Ayuda!"
+                    </Typography>
+                    </Box>
+
                   {sameData()};
+                  
                   {totaldeClientes() > levelEnter.clientsAmount ? (
                     <Box
                       sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
@@ -1278,6 +1313,34 @@ const Create = (props) => {
                 ) : (
                   <Typography></Typography>
                 )}
+
+                  <Grid item xs={12}>
+                    <FormControl sx={{width: '20%' ,my: 2, marginLeft:110}}>
+                      <InputLabel
+                        id='agent-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Seleccionar Agente
+                      </InputLabel>
+                      {/* {inicializaIdentidad()} */}
+                      <Select
+                        name='agent'
+                        labelId='agent-label'
+                        label='Agent'
+                        //onChange={handleField}
+                        onChange={(option, value) => {
+                          setFieldValue('agent', value.props.value);
+                          // setIdentidad(value.props.value);
+                        }}
+                      >
+                        {listAgents.map((agent)=>(
+                          <MenuItem value={agent.robotId} style={{fontWeight: 200}}>
+                            {agent.robotName}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>                
 
                 <ButtonGroup
                   orientation='vertical'
@@ -1424,7 +1487,9 @@ const Create = (props) => {
                       console.log('Nuevo Tag seleccionado:', newValue);
                       handleTagSelect(newValue);
                     }}
-                    disabled={selectedClientCount === listClients.length}
+                    disabled={
+                      selectedClientCount === (listClients?.length || 0)
+                    }
                     sx={{
                       m: 1,
                       width: '100%', // Establece el ancho al 100% por defecto
@@ -1492,7 +1557,7 @@ const Create = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {searchDialogResults.map((row) => (
+                  {searchDialogResults?.map((row) => (
                     <TableRow key={row.clientId}>
                       <TableCell padding='checkbox'>
                         <Checkbox

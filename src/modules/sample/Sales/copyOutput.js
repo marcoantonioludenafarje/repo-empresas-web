@@ -225,7 +225,7 @@ const SalesTable = (props) => {
   //UseStates
   const [openStatus, setOpenStatus] = React.useState(false);
   const [ticketResponseDialog, setTicketResponseDialog] = React.useState(false);
-  const [proofOfPaymentType, setProofOfPaymentType] = React.useState("all");
+  const [proofOfPaymentType, setProofOfPaymentType] = React.useState('all');
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [open2valida, setOpen2valida] = React.useState(false);
@@ -247,7 +247,9 @@ const SalesTable = (props) => {
   const [deliverySelected, setDeliverySelected] = React.useState(false);
   //FECHAS
   //SELECCIÓN CALENDARIO
-  const [initialTimeValue, setInitialTimeValue] = React.useState(Date.now() - 2678400000);
+  const [initialTimeValue, setInitialTimeValue] = React.useState(
+    Date.now() - 2678400000,
+  );
   const [finalTimeValue, setFinalTimeValue] = React.useState(Date.now());
   const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);

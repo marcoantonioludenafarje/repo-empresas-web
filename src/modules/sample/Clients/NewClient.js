@@ -249,9 +249,9 @@ const NewClient = (props) => {
           (obj) => obj.abreParametro == 'CLIENT_TAGS',
         ).value;
 
-        listTags1.forEach (item => {
+        listTags1.forEach((item) => {
           listTags.push([item.tagName, item.id, true]);
-        }); 
+        });
       }
 
       //  setIdentidad('DNI' )
@@ -312,9 +312,9 @@ const NewClient = (props) => {
 
     if (tagSelected.length > 0) {
       let listTagsSelected = [];
-      tagSelected.forEach (item => {
+      tagSelected.forEach((item) => {
         listTagsSelected.push(item[1]);
-      }); 
+      });
       newClientPayload.request.payload.clients[0].tags = listTagsSelected;
     }
 
@@ -376,11 +376,11 @@ const NewClient = (props) => {
     setIdentidad(objSelects.documentType);
   };
 
-  const  handlerTags = (event, values)=>{
-    console.log("Cambiando tags")
-    console.log("evento tag", event)
-    console.log("values tag", values)
-    console.log("tag seleccionado", event.target.attributes.value)
+  const handlerTags = (event, values) => {
+    console.log('Cambiando tags');
+    console.log('evento tag', event);
+    console.log('values tag', values);
+    console.log('tag seleccionado', event.target.attributes.value);
     setTagSelected(values);
     reloadPage();
   };
@@ -593,7 +593,9 @@ const NewClient = (props) => {
                         <TextField
                           disabled
                           defaultValue={'+51'}
-                          label={<IntlMessages id='common.cellphoneCountryCod' />}
+                          label={
+                            <IntlMessages id='common.cellphoneCountryCod' />
+                          }
                           variant='filled'
                           sx={{
                             my: 2,
@@ -799,7 +801,9 @@ const NewClient = (props) => {
                         <TextField
                           disabled
                           defaultValue={'+51'}
-                          label={<IntlMessages id='common.cellphoneCountryCod' />}
+                          label={
+                            <IntlMessages id='common.cellphoneCountryCod' />
+                          }
                           variant='filled'
                           sx={{
                             my: 2,
