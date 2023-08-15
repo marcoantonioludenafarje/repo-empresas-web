@@ -124,7 +124,7 @@ const Views = (props) => {
         aria-label='outlined button group'
         className={classes.btnGroup}
       >
-        {localStorage
+        {/* {localStorage
           .getItem('pathsBack')
           .includes('/inventory/campaigns/register') === true ? (
           <Button
@@ -134,9 +134,23 @@ const Views = (props) => {
           >
             Nuevo
           </Button>
-        ) : null}
+        ) : null} */}
+          <Button
+            variant='outlined'
+            startIcon={<AddCircleOutlineOutlinedIcon />}
+            onClick={newCamp}
+          >
+            Nuevo
+          </Button>
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={''}
+          >
+            Exportar todo
+          </Button>
 
-        {localStorage
+        {/* {localStorage
           .getItem('pathsBack')
           .includes('/inventory/exportClients/*') === true ? (
           <Button
@@ -146,7 +160,7 @@ const Views = (props) => {
           >
             Exportar todo
           </Button>
-        ) : null}
+        ) : null} */}
 
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>

@@ -78,6 +78,8 @@ import {DataGrid} from '@mui/x-data-grid';
 import {verTags} from '../../../Utils/utils';
 import {useRef} from 'react';
 import EditorMessage from './EditorMessage';
+import IntlMessages from '@crema/utility/IntlMessages';
+
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -139,7 +141,7 @@ const Create = (props) => {
   const [textMessage, setTextMessage] = useState('');
   const [idTextMessage, setIdTextMessage] = useState(0);
   const [campaignContentVariations, setCampaignContentsVariations] = useState([
-    {id: 1, content: ''},
+    {id: 1 },
   ]);
   const [campaignContent, setCampaignContent] = useState('');
 
@@ -151,13 +153,11 @@ const Create = (props) => {
     const newIdVariation = campaignContentVariations.length + 1;
     setCampaignContentsVariations([
       ...campaignContentVariations,
-      {id: newIdVariation, content: ''},
+      {id: newIdVariation},
     ]);
   };
 
-  // const setEnablePopReview = () => {
-  //   setopenReviewPop(true);
-  // };
+
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
   const [actualImage, setActualImage] = React.useState('');
@@ -170,42 +170,6 @@ const Create = (props) => {
     campaignContent: '',
     campaignImages: null,
   };
-  // const tranformMessageReview = (text) => {
-  //   const boldRegex = /\*(.*?)\*/g;
-  //   const italicRegex = /_(.*?)_/g;
-  //   const strikethroughRegex = /~(.*?)~/g;
-
-  //   const boldText = text.replace(boldRegex, '<b>$1</b>');
-  //   const italicText = boldText.replace(italicRegex, '<i>$1</i>');
-  //   const transformedText = italicText.replace(strikethroughRegex, '<s>$1</s>');
-
-  //   console.log('Hola desde tranformMessageReview', transformedText);
-  //   return transformedText;
-  // };
-  // const transformText = () => {
-  //   console.log('content Hola desde tranforText');
-  //   let updatedContents = '';
-  //   updatedContents += tranformMessageReview(
-  //     getValueField('campaignContent').value,
-  //   );
-  //   console.log('Este es el updateContents', updatedContents);
-  //   return <div dangerouslySetInnerHTML={{__html: updatedContents}}></div>;
-  // };
-
-  // Estado para controlar el acordeón abierto
-  const [expanded, setExpanded] = useState(1);
-  // const [campaignContents, setCampaignContents] = useState([
-  //   {id: 1, content: ''}, // Primer acordeón desplegado
-  // ]);
-
-  // const handleContentChange = (id, content) => {
-  //   console.log('content Mensaje', content);
-  //   const updatedContents = campaignContents.map((contentData) =>
-  //     contentData.id === id ? {...contentData, content} : contentData,
-  //   );
-  //   setCampaignContents(updatedContents);
-  // };
-
   const getClients = (payload) => {
     dispatch(onGetClients(payload));
   };
@@ -301,13 +265,14 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
 
   useEffect(() => {
     switch (process) {
-      case 'CREATE_NEW_CAMPAIGN':
+      case 'CREATE_CAMPAIGN':
         if (!loading && (successMessage || errorMessage)) {
           setOpenStatus(true);
         }
 
         break;
       default:
+        console.log("cargando proceso,", process);
         console.log('Se supone que pasa por aquí XD');
     }
   }, [loading]);
@@ -418,6 +383,11 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
     console.log('Contenidodecamapañas', campaignContent);
     console.log('ACTUAL IMAGE', imagePresigned);
     console.log('confeti agente', getValueField('agent').value);
+
+    const idRobot = getValueField('agent').value
+    const name = listAgents.filter((agent)=> agent.robotId === idRobot)
+
+
     const payload = {
       request: {
         payload: {
@@ -430,8 +400,8 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
                 urlClients: '',
               },
               targetSummary: [...selectedTags, totaldeClientes()],
-              robotId: 'ID_BOT_CUENTA_SOPORTE',
-              robotName: 'Robot Name',
+              robotId: idRobot?idRobot:'',
+              robotName: name[0].robotName?name[0].robotName:'',
               messages: [
                 {
                   order: 0,
@@ -454,7 +424,7 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
                       extensions[actualImage.type]
                     : '',
                   text: data.campaignContent,
-                  variations: variationsData ? variationsData : [''],
+                  variations: variationsDataContent ? variationsDataContent : [''],
                 },
               ],
             },
@@ -797,9 +767,9 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
     if (mayorPosible - 1 == 1) {
       console.log('DATA-VARIATIONS', variationsData[0]);
       if (
-        variationsData &&
-        variationsData[0] !== '' &&
-        variationsData[0] !== undefined
+        variationsDataContent &&
+        variationsDataContent[0] !== '' &&
+        variationsDataContent[0] !== undefined
       ) {
         setVerification(false);
       }
@@ -809,11 +779,11 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
     console.log('TOTAL DE DATA', parametro);
     if (
       totaldeClientes() > levelEnter.clientsAmount &&
-      parametro === variationsData.length
+      parametro === variationsDataContent.length
     ) {
       // 11>5 && ===0
       console.log('VARIATONSDATA ', variationsData.length, parametro);
-      if (variationsData.filter((vari) => vari !== '' && vari !== undefined)) {
+      if (variationsDataContent.filter((vari) => vari !== '' && vari !== undefined)) {
         setVerification(false);
         console.log('TOTAL DE DATA PARA');
         return parametro;
@@ -853,55 +823,58 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
   };
 
   const handleAccordionVariationsClose = () => {
-    setVariations(['Variación']);
-    setNumVariations(1);
-    setCampaignContentsVariations([{id: 1, content: ''}]);
-    setVariationsData(variations.map((v) => v.content));
-    console.log('SAVE >>', variationsData);
 
-    // if (variationsData && variationsData.length > 0 && variationsData[0] != '' ) {
-    //   setVariations(['Variación 1']);
-    //   setNumVariations(1);
-    //   setCampaignContentsVariations([{id: 1, content: ''}]);
-    //   setVariationsData(variations.map((v) => v.content));
-    // }
-
-    // Close the dialog
-    setOpenDialog(false);
-    //Corregir XD
-    if (variationsData.length > 0 && variationsData[0] != '') {
+    if (variationsDataContent.length===0) {
+      setVariations(['Variación 1']);
+      setNumVariations(1);
+      setCampaignContentsVariations([{ id: 1, content: '' }]);
+      setVariationsData([]);
+      setOpenDialog(false);
+    }else if(variationsDataContent.length>0){
+      const nuevasVariaciones = [];
+      const nuevosContenidos = [];
+      
+      for (let i = 0; i < variationsDataContent.length; i++) {
+        nuevasVariaciones.push(`Variación ${i + 1}`);
+        nuevosContenidos.push({ id: i + 1 });
+      }
+      
+      setVariations(nuevasVariaciones);
+      setNumVariations(variationsDataContent.length);
+      setCampaignContentsVariations(nuevosContenidos);
+      setVariationsData(variationsDataContent);
+      setOpenDialog(false);
     }
+
   };
 
-  const handleSaveVariations = () => {
-    setVariationsData(variations.map((v) => v.content));
+  const [variationsDataContent, setVariationsDataContent] = useState([])
+  
+  const handleSaveVariations = (data) => {
+    console.log("DATA DE VARIATIONS >>", data);
+    const nonEmptyValues = data.filter(value => value !== "");
+
+    setVariationsDataContent(nonEmptyValues);
+    //setVariationsDataContent(data);
+
     setOpenDialog(false);
   };
 
-  // const handleCloseClientsDialogReload = () => {
-  //   console.log('CLIENTES DATA', clientsDataset);
-  //   if (clientsDataset.length > 0) {
-  //     setSelectedClients(clientsDataset);
-  //     setOpenClientsDialog(false);
-  //   } else {
-  //     setSelectedClients([]);
-  //     setOpenClientsDialog(false);
-  //   }
-  // };
+  useEffect(()=>{
+    console.log("DATA DE VARIATIONS<<", variationsDataContent);
+
+  }, [variationsDataContent])
 
   const [geneVariations, setGenerateVariations] = useState(null);
 
-  const handleDummy = async () => {
+  const handleGenerateVariations = async () => {
 
     let text = getValueField('campaignContent').value;
-    console.log('index dum', text);
-    console.log('index dummy>', variationsData);
-    console.log('index variations', variationsData.length);
 
     const payloadVariations = {
       request: {
         payload: {
-          cant_variaciones: variationsData.length,
+          cant_variaciones: variations.length>8?8:variations.length,
           textCampaign: text,
         },
       },
@@ -910,20 +883,33 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
     console.log('index payload', payloadVariations);
     const response = await dispatch(generateVariations(payloadVariations));
 
+
+    await new Promise(resolve => setTimeout(resolve, 7000));
+
     setGenerateVariations(response);
-    console.log('index numVariations', numVariations);
-    console.log('index response', geneVariations?.data);
     
-    
-    const newDatatt = [...variationsData];
-    if(geneVariations!==null){
-      for (let i = 0; i < numVariations; i++) {
-        newDatatt[i] = geneVariations.data[i];
-        setVariationsData(newDatatt);
+    if (geneVariations !== null) {
+      if (geneVariations.data.length<variations.length && variations.length>8) {
+        const diff = variations.length - geneVariations.data.length;
+
+        for (let i = 0; i < diff; i++) {
+          geneVariations.data.push('');
+        }
       }
+      const newDatatt = [];
+      for (let i = 0; i < variations.length; i++) {
+        newDatatt[i] = geneVariations.data[i];
+      }
+      console.log("IA DATA <<<", newDatatt);
+      setVariationsData(newDatatt);
     }
 
   };
+
+  useEffect(()=>{
+    console.log("IA DATA >>>", geneVariations);
+  },[geneVariations])
+
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
 
@@ -1196,11 +1182,15 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
                 >
                   <DialogTitle>
                     <Box
-                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                      sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}
                     >
-                      <Button variant='outlined' onClick={handleDummy}>
+                      <Button variant='outlined' onClick={handleGenerateVariations} sx={{ flexGrow: 0, textAlign: 'center'}}>
                         ¡Necesito Ayuda!
                       </Button>
+                    <CancelOutlinedIcon
+                      onClick={handleAccordionVariationsClose}
+                      className={classes.closeButton}
+                    />
                     </Box>
                   </DialogTitle>
                     <Box
@@ -1220,10 +1210,10 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
                     <Box
                       sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
                     >
-                      <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                      {verification && <Typography sx={{fontSize: 18, fontWeight: 600}}>
                         Cantidad de variaciones obligatorias:
-                        {verificationVariations()}
-                      </Typography>
+                        {verificationVariations()-variationsDataContent.length}
+                      </Typography>}
                     </Box>
                   ) : (
                     <Typography></Typography>
@@ -1249,7 +1239,7 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
                         <AccordionDetails>
                           <Grid item xs={12} md={12}>
                             <TextField
-                              label='Contenido de la Variación Campaña *'
+                              label=''
                               variant='outlined'
                               multiline
                               rows={4}
@@ -1285,19 +1275,14 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
                         // Save the variationsData when clicking "Guardar"
                         console.log('Saving variations:', variationsData);
                         // ... (Add your saving logic here)
+                        handleSaveVariations(variationsData);
                         verificationVariations();
                         setOpenDialog(false);
                       }}
                     >
                       Guardar
                     </Button>
-                    <Button
-                      variant='outlined'
-                      startIcon={<ArrowCircleLeftOutlinedIcon />}
-                      onClick={handleAccordionVariationsClose}
-                    >
-                      Cerrar
-                    </Button>
+
                   </DialogActions>
                 </Dialog>
 
@@ -1305,17 +1290,17 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
                   <Box
                     sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
                   >
-                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                  {verification && <Typography sx={{fontSize: 18, fontWeight: 600}}>
                       Cantidad de variaciones obligatorias:
-                      {verificationVariations()}
-                    </Typography>
+                      {verificationVariations() - variationsDataContent.length}
+                    </Typography>}
                   </Box>
                 ) : (
                   <Typography></Typography>
                 )}
 
                   <Grid item xs={12}>
-                    <FormControl sx={{width: '20%' ,my: 2, marginLeft:110}}>
+                    <FormControl sx={{width: '20%' ,my: 2, marginLeft: "40%"}}>
                       <InputLabel
                         id='agent-label'
                         style={{fontWeight: 200}}
@@ -1602,6 +1587,26 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog
+        open={loading}
+        // onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        {/* <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Registro de cliente'}
+        </DialogTitle> */}
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <CircularProgress disableShrink />
+        </DialogContent>
+        {/* <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions> */}
+      </Dialog>
+    
     </Card>
   );
 };

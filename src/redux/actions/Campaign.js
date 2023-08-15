@@ -102,6 +102,7 @@ export const updateCampaigns = (payload) => {
 export const generateVariations = (payload) => {
   return async (dispatch) => {
     dispatch({type: FETCH_START, payload: {process: 'GENERATE_VARIATIONS'}});
+    console.log("variations payload", payload);
     try {
       const data = await API.post('tunexo', '/inventory/generate', {
         body: payload,
