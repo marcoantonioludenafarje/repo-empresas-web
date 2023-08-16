@@ -6,6 +6,7 @@ import {
   FETCH_START,
   FETCH_SUCCESS,
   FETCH_ERROR,
+  GENERATE_VARIATIONS,
 } from '../../shared/constants/ActionTypes';
 
 import API from '@aws-amplify/api';
@@ -93,6 +94,25 @@ export const updateCampaigns = (payload) => {
       dispatch({type: FETCH_SUCCESS, payload: 'success'});
     } catch (error) {
       console.log('Update error campaña', data);
+      dispatch({type: FETCH_ERROR, payload: 'error'});
+    }
+  };
+};
+
+export const generateVariations = (payload) => {
+  return async (dispatch) => {
+    dispatch({type: FETCH_START, payload: {process: 'GENERATE_VARIATIONS'}});
+    console.log("variations payload", payload);
+    try {
+      const data = await API.post('tunexo', '/inventory/generate', {
+        body: payload,
+      });
+      console.log('Variations>>', data);
+      dispatch({type: GENERATE_VARIATIONS, payload: data.response.payload});
+      dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      return data.response.payload;
+    } catch (error) {
+      console.log('ERROR ACTION VARIATION', error);
       dispatch({type: FETCH_ERROR, payload: 'error'});
     }
   };

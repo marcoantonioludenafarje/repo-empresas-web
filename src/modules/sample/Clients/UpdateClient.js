@@ -343,7 +343,7 @@ const UpdateClient = (props) => {
       },
     };
 
-    if (tagSelected.length > 0) {
+    if (tagSelected && tagSelected.length > 0) {
       let listTagsSelected = [];
       tagSelected.forEach((item) => {
         listTagsSelected.push(item[1]);
@@ -355,8 +355,8 @@ const UpdateClient = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     toUpdateClient(newClientPayload);
-    setSubmitting(false);
     setOpenStatus(true);
+    setSubmitting(false);
   };
 
   const cancel = () => {

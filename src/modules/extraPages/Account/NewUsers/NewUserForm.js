@@ -120,14 +120,14 @@ const NewUserForm = ({values, moveData}) => {
         <Grid item xs={5} md={5}>
           <FormControl fullWidth sx={{my: 0}}>
             <InputLabel id='profileType-label' style={{fontWeight: 200}}>
-              <IntlMessages id='common.busines.profileType' />
+              <IntlMessages id='common.business.profileType' />
             </InputLabel>
             <Select
               value={profileType}
               name='profileType'
               labelId='profileType-label'
               displayEmpty
-              label={<IntlMessages id='common.busines.profileType' />}
+              label={<IntlMessages id='common.business.profileType' />}
               onChange={handleFieldRol}
             >
               {listRolRes && typeof listRolRes !== 'string' ? (

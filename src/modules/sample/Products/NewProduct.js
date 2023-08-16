@@ -136,11 +136,8 @@ const validationSchema = yup.object({
         return !/\||\-/.test(value);
       },
     ),
-  alias: yup
-    .string()
-    .typeError(<IntlMessages id='validation.string' />)
-    //.required(<IntlMessages id='validation.required' />)
-    ,
+  alias: yup.string().typeError(<IntlMessages id='validation.string' />),
+  //.required(<IntlMessages id='validation.required' />)
   title: yup.string().typeError(<IntlMessages id='validation.string' />),
   commercialDescription: yup
     .string()
@@ -196,8 +193,8 @@ const validationSchema = yup.object({
     .max(maxLengthNumber, <IntlMessages id='validation.maxLength' />)
     /*.when("stockNeeded", {
       is: true,
-      then: yup.string()*/.required(<IntlMessages id='validation.required' />)
-    /*})*/
+      then: yup.string()*/ .required(<IntlMessages id='validation.required' />),
+  /*})*/
 });
 
 const defaultValues = {
@@ -541,10 +538,10 @@ const NewProduct = (props) => {
   const handleUnitMeasure = (event) => {
     console.log('evento', event);
     objSelects[event.target.name] = event.target.value;
-    if(event.target.value == 'ZZ'){
-      setIsStockNeeded(false)
+    if (event.target.value == 'ZZ') {
+      setIsStockNeeded(false);
     } else {
-      setIsStockNeeded(true)
+      setIsStockNeeded(true);
     }
     setUnitMeasure(event.target.value);
     console.log('ocjSelects', objSelects);
@@ -725,7 +722,7 @@ const NewProduct = (props) => {
                   {
                     businessProductCode: data.businessProductCode,
                     description: data.description,
-                    alias: unitMeasure == "ZZ" ? data.description : data.alias,
+                    alias: unitMeasure == 'ZZ' ? data.description : data.alias,
                     costPriceUnit: Number(data.costPriceUnit),
                     sellPriceUnit: Number(data.referecialPriceSell),
                     weight: Number(data.weight),
@@ -739,7 +736,8 @@ const NewProduct = (props) => {
                     unitMeasureMoney: money_unit,
                     category: selectedCategory,
                     tags: selectedFilters,
-                    typeProduct: unitMeasure == 'ZZ' ? 'service' : objSelects.typeProduct,
+                    typeProduct:
+                      unitMeasure == 'ZZ' ? 'service' : objSelects.typeProduct,
                     imgKeys: selectedJsonImages,
                     unitMeasure: unitMeasure,
                     unitsToProduce: 1,
@@ -964,11 +962,9 @@ const NewProduct = (props) => {
   };
 
   return (
-    <Card sx={{p: 4, mx:'auto'}}>
+    <Card sx={{p: 4, mx: 'auto'}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
-        <Typography
-          sx={{my: '10px', fontWeight: 600, fontSize: 25}}
-        >
+        <Typography sx={{my: '10px', fontWeight: 600, fontSize: 25}}>
           Nuevo Producto/Servicio
         </Typography>
       </Box>
@@ -993,14 +989,12 @@ const NewProduct = (props) => {
 
             return (
               <Form style={{textAlign: 'left'}} noValidate autoComplete='on'>
-                <Grid
-                  container
-                  spacing={2}
-                  sx={{maxWidth: 500, mb: 4}}
-                >
-                  <Grid container justify="center" alignItems="center">
-                    <Grid item xs={12} sm={12}> {/* Puedes ajustar el tamaño del Grid según tus necesidades */}
-                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Grid container spacing={2} sx={{maxWidth: 500, mb: 4}}>
+                  <Grid container justify='center' alignItems='center'>
+                    <Grid item xs={12} sm={12}>
+                      {' '}
+                      {/* Puedes ajustar el tamaño del Grid según tus necesidades */}
+                      <div style={{display: 'flex', justifyContent: 'center'}}>
                         <ToggleButtonGroup
                           value={unitMeasure}
                           exclusive
@@ -1062,7 +1056,7 @@ const NewProduct = (props) => {
                       }}
                     />
                   </Grid>
-                  { unitMeasure !== 'ZZ' ? (
+                  {unitMeasure !== 'ZZ' ? (
                     <>
                       <Grid item xs={12}>
                         <AppUpperCaseTextField
@@ -1175,7 +1169,7 @@ const NewProduct = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  { unitMeasure !== 'ZZ' ? (
+                  {unitMeasure !== 'ZZ' ? (
                     <>
                       <Grid item xs={12}>
                         <AppTextField
@@ -1239,9 +1233,8 @@ const NewProduct = (props) => {
                         />
                       </Grid>
                     </>
-                  ) : null
-                  }
-                  
+                  ) : null}
+
                   <Grid item xs={12}>
                     <AppTextField
                       label={`Precio costo sugerido (${money_unit}) *`}
@@ -1270,8 +1263,8 @@ const NewProduct = (props) => {
                       }}
                     />
                   </Grid>
-                  
-                  { unitMeasure !== 'ZZ' ? (
+
+                  {unitMeasure !== 'ZZ' ? (
                     <>
                       <Grid
                         item
@@ -1279,7 +1272,7 @@ const NewProduct = (props) => {
                         sx={{display: 'flex', alignItems: 'center', px: 2}}
                       >
                         <FormControlLabel
-                          disabled={unitMeasure=='ZZ'}
+                          disabled={unitMeasure == 'ZZ'}
                           checked={isStockNeeded}
                           control={<Checkbox onChange={handleStock} />}
                           label='Necesita Stock?'
@@ -1315,7 +1308,10 @@ const NewProduct = (props) => {
                             label='Tipo de producto'
                             onChange={handleFieldType}
                           >
-                            <MenuItem value='rawMaterial' style={{fontWeight: 200}}>
+                            <MenuItem
+                              value='rawMaterial'
+                              style={{fontWeight: 200}}
+                            >
                               <IntlMessages id='product.type.rawMaterial' />
                             </MenuItem>
                             <MenuItem
@@ -1324,7 +1320,10 @@ const NewProduct = (props) => {
                             >
                               <IntlMessages id='product.type.intermediateProduct' />
                             </MenuItem>
-                            <MenuItem value='endProduct' style={{fontWeight: 200}}>
+                            <MenuItem
+                              value='endProduct'
+                              style={{fontWeight: 200}}
+                            >
                               <IntlMessages id='product.type.endProduct' />
                             </MenuItem>
                           </Select>
@@ -1383,9 +1382,8 @@ const NewProduct = (props) => {
                         </Collapse>
                       </Grid>
                     </>
-                  ) : null
-                  }
-                  
+                  ) : null}
+
                   {sectionEcommerce === true ? (
                     <>
                       <Grid item xs={12} md={12}>

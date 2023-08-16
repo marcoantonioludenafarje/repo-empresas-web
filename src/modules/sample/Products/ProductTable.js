@@ -707,8 +707,7 @@ const ProductTable = (arrayObjs, props) => {
       return <IntlMessages id='product.type.intermediateProduct' />;
     if (type == 'endProduct')
       return <IntlMessages id='product.type.endProduct' />;
-    if (type == 'service')
-      return <IntlMessages id='product.type.service' />;
+    if (type == 'service') return <IntlMessages id='product.type.service' />;
   };
 
   const showTypeText = (type) => {
@@ -914,7 +913,8 @@ const ProductTable = (arrayObjs, props) => {
                         }}
                       >
                         {obj.description}
-                        {obj.typeProduct == 'endProduct' || obj.typeProduct == 'intermediateProduct' ? (
+                        {obj.typeProduct == 'endProduct' ||
+                        obj.typeProduct == 'intermediateProduct' ? (
                           <IconButton
                             onClick={() => {
                               setOpenDetails(false);

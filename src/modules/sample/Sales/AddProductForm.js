@@ -36,9 +36,8 @@ import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import MuiAlert from '@mui/material/Alert';
 
-
 const Alert2 = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
 });
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -145,7 +144,6 @@ const validationSchema = yup.object({
     ),
 });
 
-
 const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
   const useStyles = {
     container: {
@@ -210,18 +208,20 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
   const [selectedProduct, setSelectedProduct] = React.useState([]);
   const [typeAlert, setTypeAlert] = React.useState('faltaProduct');
   const [showAlert, setShowAlert] = React.useState(false);
-  const [typeElement, setTypeElement] = React.useState(userDataRes.merchantSelected.businessLine == 'services' ? 'ZZ' : 'NIU');
+  const [typeElement, setTypeElement] = React.useState(
+    userDataRes.merchantSelected.businessLine == 'services' ? 'ZZ' : 'NIU',
+  );
   const [typeTaxCode, setTypeTaxCode] = React.useState(
     igvEnabled ? '1000' : '9998',
   );
   const [proSearch, setProSearch] = React.useState();
   const [nameChanged, setNameChanged] = React.useState(false);
-  const [stockChange, setStockChange] = React.useState(userDataRes.merchantSelected.businessLine == 'services' ? false : true);
+  const [stockChange, setStockChange] = React.useState(false);
   const [openAddedProduct, setOpenAddedProduct] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
   };
-  
+
   const handleCloseAddedProduct = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -446,7 +446,7 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
           description: data.productSearch,
           unitMeasure: typeElement,
           customCodeProduct:
-          newSelectedProduct.customCodeProduct !== undefined
+            newSelectedProduct.customCodeProduct !== undefined
               ? newSelectedProduct.customCodeProduct
               : '',
           quantityMovement: Number(data.count),
@@ -570,8 +570,17 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
                       name='productSearch'
                       htmlFor='filled-adornment-password'
                       variant='outlined'
-                      onChange={() => {
+                      onChange={(event) => {
                         setNameChanged(true);
+                        let finalStockChange = false;
+                        if (
+                          selectedProduct &&
+                          selectedProduct.description == event.target.value &&
+                          selectedProduct.isStockNeeded
+                        ) {
+                          finalStockChange = true;
+                        }
+                        setStockChange(finalStockChange);
                       }}
                       sx={{
                         width: '100%',
@@ -776,12 +785,14 @@ const AddProductForm = ({sendData, type, igvEnabled, igvDefault}) => {
           );
         }}
       </Formik>
-      
-      <Snackbar open={openAddedProduct} autoHideDuration={4000} onClose={handleCloseAddedProduct}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-        <Alert2 >
-          Producto añadido correctamente!
-        </Alert2>
+
+      <Snackbar
+        open={openAddedProduct}
+        autoHideDuration={4000}
+        onClose={handleCloseAddedProduct}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+      >
+        <Alert2>Producto añadido correctamente!</Alert2>
       </Snackbar>
       <Collapse in={showAlert}>
         <Alert

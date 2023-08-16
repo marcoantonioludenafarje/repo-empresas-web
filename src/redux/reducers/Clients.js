@@ -16,7 +16,6 @@ const INIT_STATE = {
   errorMessage: '',
 
   list: [],
-  listClients: [],
   clientsLastEvalutedKey_pageListClients: null,
 };
 const clientsReducer = (state = INIT_STATE, action) => {

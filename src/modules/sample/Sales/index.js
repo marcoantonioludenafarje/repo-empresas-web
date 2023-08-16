@@ -213,6 +213,8 @@ const SalesTable = (props) => {
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState('all');
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [openSendEmail, setOpenSendEmail] = React.useState(false);
+  const [openSendWhatsapp, setOpenSendWhatsapp] = React.useState(false);
   const [open2valida, setOpen2valida] = React.useState(false);
   // const [open3, setOpen3] = React.useState(false);
   const [openDetails, setOpenDetails] = React.useState(false);
@@ -1395,6 +1397,12 @@ const SalesTable = (props) => {
     });
     return Number(saleTotalIgv).toFixed(2);
   }
+  const sendSaleByMail = (data) => {
+    console.log('enviando correo de la venta por correo');
+  };
+  const sendSaleByWhatsapp = (data) => {
+    console.log('enviando correo de la venta por whatsapp');
+  };
   return typeClient ? (
     <Card sx={{p: 4}}>
       <Stack
@@ -1642,7 +1650,11 @@ const SalesTable = (props) => {
                           ? obj.totalPriceWithIgv - obj.totalIgv
                           : showSubtotal(obj.products)}
                       </TableCell>
-                      <TableCell>{obj.totalIgv ? Number(obj.totalIgv).toFixed(2) : showTotalIgv(obj.products)}</TableCell>
+                      <TableCell>
+                        {obj.totalIgv
+                          ? Number(obj.totalIgv).toFixed(2)
+                          : showTotalIgv(obj.products)}
+                      </TableCell>
                       <TableCell>{obj.totalPriceWithIgv}</TableCell>
                       <TableCell>
                         <Button
@@ -1915,6 +1927,32 @@ const SalesTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/movementProducts/update?path=/output/*') ===
+          true && selectedSale.proofOfPaymentPdf ? (
+          <MenuItem
+            onClick={() => {
+              setOpenSendEmail(true);
+            }}
+          >
+            <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
+            Enviar Correo
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          true && selectedSale.proofOfPaymentPdf ? (
+          <MenuItem
+            onClick={() => {
+              setOpenSendWhatsapp(true);
+            }}
+          >
+            <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
+            Enviar Whatsapp
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/movementProducts/update?path=/output/*') ===
         true ? (
           <MenuItem disabled onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
@@ -2116,6 +2154,172 @@ const SalesTable = (props) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openSendEmail}
+        onClose={() => setOpenSendEmail(false)}
+        maxWidth='sm'
+        fullWidth
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          <IconButton
+            aria-label='close'
+            onClick={() => setOpenSendEmail(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          {'Envío de Venta por Correo'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <Formik
+            // validateOnChange={false}
+            validationSchema={yup.object({
+              receiverEmail: yup.string(),
+            })}
+            initialValues={{
+              receiverEmail: '',
+            }}
+            onSubmit={sendSaleByMail}
+          >
+            {({isSubmitting, setFieldValue}) => {
+              //changeValueField = setFieldValue;
+              return (
+                <Form
+                  style={{textAlign: 'left', justifyContent: 'center'}}
+                  noValidate
+                  autoComplete='on'
+                >
+                  <Grid container spacing={2} sx={{width: 1}}>
+                    <Grid item xs={12}>
+                      <AppTextField
+                        label='Correo Del Receptor'
+                        name='receiverEmail'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <ButtonGroup
+                    orientation='vertical'
+                    variant='outlined'
+                    sx={{width: 1, my: '10px'}}
+                    aria-label='outlined button group'
+                  >
+                    <Button
+                      color='primary'
+                      sx={{mx: 'auto', width: '50%', py: 3}}
+                      type='submit'
+                      variant='contained'
+                      disabled={isSubmitting}
+                    >
+                      Enviar
+                    </Button>
+                  </ButtonGroup>
+                </Form>
+              );
+            }}
+          </Formik>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={openSendWhatsapp}
+        onClose={() => setOpenSendWhatsapp(false)}
+        maxWidth='sm'
+        fullWidth
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          <IconButton
+            aria-label='close'
+            onClick={() => setOpenSendWhatsapp(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          {'Envío de Venta por Whatsapp'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <Formik
+            // validateOnChange={false}
+            validationSchema={yup.object({
+              receiverWhatsapp: yup
+                .number()
+                .typeError(<IntlMessages id='validation.number' />),
+            })}
+            initialValues={{
+              receiverWhatsapp: '',
+            }}
+            onSubmit={sendSaleByWhatsapp}
+          >
+            {({isSubmitting, setFieldValue}) => {
+              //changeValueField = setFieldValue;
+              return (
+                <Form
+                  style={{textAlign: 'left', justifyContent: 'center'}}
+                  noValidate
+                  autoComplete='on'
+                >
+                  <Grid container spacing={2} sx={{width: 1}}>
+                    <Grid item xs={12}>
+                      <AppTextField
+                        label='Número de Whatsapp'
+                        name='receiverWhatsapp'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <ButtonGroup
+                    orientation='vertical'
+                    variant='outlined'
+                    sx={{width: 1, my: '10px'}}
+                    aria-label='outlined button group'
+                  >
+                    <Button
+                      color='primary'
+                      sx={{mx: 'auto', width: '50%', py: 3}}
+                      type='submit'
+                      variant='contained'
+                      disabled={isSubmitting}
+                    >
+                      Enviar
+                    </Button>
+                  </ButtonGroup>
+                </Form>
+              );
+            }}
+          </Formik>
+        </DialogContent>
       </Dialog>
 
       <Dialog

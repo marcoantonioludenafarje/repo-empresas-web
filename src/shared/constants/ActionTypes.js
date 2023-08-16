@@ -364,6 +364,7 @@ export const CREATE_CAMPAIGN = 'create_campaign';
 export const LIST_CAMPAIGN = 'list_campaign';
 export const DELETE_CAMPAIGN = 'delete_campaign';
 export const UPDATE_CAMPAIGN = 'update_capaign';
+export const GENERATE_VARIATIONS = 'generate_variations';
 
 //SALE
 export const LIST_SALES = 'list_sales';
@@ -379,3 +380,12 @@ export const UPDATE_AGENT = 'update_agent';
 export const ONCHANGE_QR_AGENT = 'onchange_agent';
 
 export const NEW_SALE_PROOF_OF_PAYMENT = 'new_sale_proof_of_payment';
+
+//APOINTMENT
+export const LIST_APPOINTMENT = 'list_appointment';
+export const CREATE_APPOINTMENT = 'create_appointment';
+//SPECIALIST
+export const CREATE_SPECIALIST = 'create_specialist';
+export const LIST_SPECIALIST = 'list_specialist';
+export const DELETE_SPECIALIST = 'delete_specialist';
+export const UPDATE_SPECIALIST = 'update_specialist';

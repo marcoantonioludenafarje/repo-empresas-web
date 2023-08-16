@@ -35,7 +35,7 @@ import {
   Modal,
   Menu,
 } from '@mui/material';
-import { ClickAwayListener } from '@mui/base';
+import {ClickAwayListener} from '@mui/base';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';

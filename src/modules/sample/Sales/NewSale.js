@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {makeStyles} from '@mui/styles';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
-import {Form, Formik} from 'formik';
+import {Form, Formik, isInputEvent} from 'formik';
 import * as yup from 'yup';
 import {
   Divider,
@@ -38,6 +38,7 @@ import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AddClientForm from '../ClientSelection/AddClientForm';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import SchoolIcon from '@mui/icons-material/School';
+import DeleteIcon from '@mui/icons-material/Delete';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
@@ -162,6 +163,8 @@ const NewSale = (props) => {
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState('ticket');
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [sendEmail, setSendEmail] = React.useState(true);
+  const [sendWhatsapp, setSendWhatsapp] = React.useState(true);
+  const [whatsappNumber, setWhatsappNumber] = React.useState('');
   const [isIgvChecked, setIsIgvChecked] = React.useState(false);
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -184,12 +187,11 @@ const NewSale = (props) => {
   const [paymentWay, setPaymentWay] = React.useState('credit');
   const [selectedClient, setSelectedClient] = React.useState('');
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
-  
+
   const [openClientComprobation, setOpenClientComprobation] =
     React.useState(false);
   const [isClientValidated, setIsClientValidated] = React.useState(false);
 
-  
   //CALENDARIO
   const [value, setValue] = React.useState(Date.now());
   const [value2, setValue2] = React.useState(
@@ -420,6 +422,10 @@ const NewSale = (props) => {
     setSendEmail(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
+  const handleSendWhatsapp = (event, isInputChecked) => {
+    setSendWhatsapp(isInputChecked);
+    console.log('Activar Mensaje de Whatsapp', isInputChecked);
+  };
   const handleEarningGeneration = (event, isInputChecked) => {
     setEarningGeneration(isInputChecked);
     console.log('Evento de earningGeneration', isInputChecked);
@@ -559,7 +565,7 @@ const NewSale = (props) => {
       setOpenClientComprobation(true);
       setFormikSubmitting(false);
     }
-    
+
     if (localIsClientValidated || client == 'enabled') {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
@@ -602,25 +608,36 @@ const NewSale = (props) => {
                   email: selectedClient.emailClient || '',
                   type: selectedClient.typeDocumentClient || '',
                 },
-                totalPriceWithIgv: Number(getValueField('totalFieldIgv').value.toFixed(2)),
+                totalPriceWithIgv: Number(
+                  getValueField('totalFieldIgv').value.toFixed(2),
+                ),
                 issueDate: specialFormatToSunat(value),
                 outputGeneration: true,
                 serial: serial,
                 documentIntern: '',
                 documentsMovement: [],
                 clientEmail: getValueField('clientEmail').value,
-                transactionNumber: getValueField('transactionNumber').value || '',
+                sendWhatsapp: sendWhatsapp,
+                whatsappNumber: getValueField('whatsappNumber').value,
+                transactionNumber:
+                  getValueField('transactionNumber').value || '',
                 /* numberBill: 3, */
                 automaticSendSunat: true,
                 automaticSendClient: true,
-                referralGuide: getValueField('referralGuide').value ? true : false,
+                referralGuide: getValueField('referralGuide').value
+                  ? true
+                  : false,
                 creditSale: paymentWay == 'credit',
                 methodToPay: paymentMethod,
                 earningGeneration: earningGeneration,
                 proofOfPaymentGeneration: proofOfPaymentGeneration,
-                referralGuideSerial: getValueField('referralGuide').value ? getValueField('referralGuide').value : '',
+                referralGuideSerial: getValueField('referralGuide').value
+                  ? getValueField('referralGuide').value
+                  : '',
                 dueDate: specialFormatToSunat(value),
-                observation: getValueField('observation').value ? getValueField('observation').value : '',
+                observation: getValueField('observation').value
+                  ? getValueField('observation').value
+                  : '',
                 igv: isIgvChecked ? Number(igvDefault) : 0,
                 productsInfo: selectedProducts.map((obj) => {
                   return {
@@ -897,7 +914,7 @@ const NewSale = (props) => {
                       Selecciona un cliente
                     </Button>
                   </Grid>
-                  <Grid sx={{px: 1, mt: 2}} xs={12}>
+                  <Grid sx={{px: 1, mt: 2}} xs={11}>
                     <Typography sx={{mx: 'auto', my: '10px'}}>
                       Cliente:{' '}
                       {selectedClient && selectedClient.denominationClient
@@ -905,6 +922,17 @@ const NewSale = (props) => {
                         : 'No Definido'}
                     </Typography>
                   </Grid>
+                  {selectedClient && selectedClient.denominationClient ? (
+                    <Grid sx={{px: 1, mt: 2}} xs={1}>
+                      <IconButton sx={{width:1}} onClick={() => {
+                            setSerial('S');
+                            setProofOfPaymentType('ticket');
+                            setSelectedClient('Cliente No Definido');
+                          }}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                  ):null}
                   {/* <Grid xs={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Cliente'
@@ -920,22 +948,6 @@ const NewSale = (props) => {
                       }}
                     />
                   </Grid> */}
-                  {selectedClient && selectedClient.denominationClient ? (
-                    <Grid sx={{px: 1, mt: 2}} xs={12}>
-                      <Button
-                        color='secondary'
-                        sx={{width: 1}}
-                        variant='outlined'
-                        onClick={() => {
-                          setSerial('S');
-                          setProofOfPaymentType('ticket');
-                          setSelectedClient('Cliente No Definido');
-                        }}
-                      >
-                        Quitar Cliente
-                      </Button>
-                    </Grid>
-                  ) : null}
                 </Grid>
 
                 <Grid
@@ -1244,6 +1256,34 @@ const NewSale = (props) => {
                         control={
                           <Checkbox
                             onChange={handleSendEmail}
+                            defaultChecked={true}
+                          />
+                        }
+                      />
+                    </Grid>
+                    <Grid sx={{px: 1}} xs={8}>
+                      <AppTextField
+                        label='Número de whatsapp'
+                        name='whatsappNumber'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
+                    </Grid>
+                    <Grid
+                      xs={3}
+                      sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
+                    >
+                      <FormControlLabel
+                        label='Enviar Whatsapp'
+                        control={
+                          <Checkbox
+                            onChange={handleSendWhatsapp}
                             defaultChecked={true}
                           />
                         }

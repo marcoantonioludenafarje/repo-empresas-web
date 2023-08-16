@@ -144,6 +144,12 @@ const BusinessInfoForm = ({
 
   console.log('valores', values);
   const [typeDocument, setTypeDocument] = React.useState(values.documentType);
+
+  const [principalClient, setPrincipalClient] = React.useState(
+    values.principalClient,
+  );
+  const [businessLine, setBusinessLine] = React.useState(values.businessLine);
+
   const [selectedImages, setSelectedImages] = React.useState(logoImage);
   const [selectedJsonImages, setSelectedJsonImages] = React.useState(logoImage);
   const [typeFile, setTypeFile] = React.useState('');
@@ -238,8 +244,12 @@ const BusinessInfoForm = ({
     console.log('valor', event.target.value);
     if (event.target.name == 'documentType') {
       setTypeDocument(event.target.value);
+    } else if (event.target.name == 'principalClient') {
+      setPrincipalClient(event.target.value);
+    } else if (event.target.name == 'businessLine') {
+      setBusinessLine(event.target.value);
     }
-    moveData(event.target.value);
+    moveData(event.target.name, event.target.value);
   };
   const onLoad = (fileString) => {
     console.log('llega aquí?');
@@ -364,12 +374,12 @@ const BusinessInfoForm = ({
         <Grid item xs={12}>
           <FormControl fullWidth sx={{my: 2}}>
             <InputLabel id='documentType-label' style={{fontWeight: 200}}>
-              <IntlMessages id='common.busines.documentType' />
+              <IntlMessages id='common.business.documentType' />
             </InputLabel>
             <Select
               name='documentType'
               labelId='documentType-label'
-              label={<IntlMessages id='common.busines.documentType' />}
+              label={<IntlMessages id='common.business.documentType' />}
               displayEmpty
               onChange={handleField}
               value={typeDocument}
@@ -390,7 +400,7 @@ const BusinessInfoForm = ({
           <AppTextField
             name='documentNumber'
             fullWidth
-            label={<IntlMessages id='common.busines.documentNumber' />}
+            label={<IntlMessages id='common.business.documentNumber' />}
           />
         </Grid>
         <Grid item xs={12} md={12}>
@@ -434,8 +444,54 @@ const BusinessInfoForm = ({
           <AppUpperCaseTextField
             name='direction'
             fullWidth
-            label={<IntlMessages id='common.busines.direction' />}
+            label={<IntlMessages id='common.business.direction' />}
           />
+        </Grid>
+
+        <Grid item xs={12}>
+          <FormControl fullWidth sx={{my: 2}}>
+            <InputLabel id='principalClient-label' style={{fontWeight: 200}}>
+              <IntlMessages id='common.business.principalClient' />
+            </InputLabel>
+            <Select
+              name='principalClient'
+              labelId='principalClient-label'
+              label={<IntlMessages id='common.business.principalClient' />}
+              displayEmpty
+              onChange={handleField}
+              value={principalClient}
+            >
+              <MenuItem value='PJ' style={{fontWeight: 200}}>
+                Persona Jurídica
+              </MenuItem>
+              <MenuItem value='PN' style={{fontWeight: 200}}>
+                Persona Natural
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
+        <Grid item xs={12}>
+          <FormControl fullWidth sx={{my: 2}}>
+            <InputLabel id='businessLine-label' style={{fontWeight: 200}}>
+              <IntlMessages id='common.business.businessLine' />
+            </InputLabel>
+            <Select
+              name='businessLine'
+              labelId='businessLine-label'
+              label={<IntlMessages id='common.business.businessLine' />}
+              displayEmpty
+              onChange={handleField}
+              value={businessLine}
+            >
+              <MenuItem value='products' style={{fontWeight: 200}}>
+                Productos
+              </MenuItem>
+              <MenuItem value='services' style={{fontWeight: 200}}>
+                Servicios
+              </MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
         <Grid item xs={7} md={7}>
           <Box sx={{textAlign: 'left'}}>

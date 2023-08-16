@@ -28,7 +28,7 @@ import {
   FormControlLabel,
   CircularProgress,
 } from '@mui/material';
-import { ClickAwayListener } from '@mui/base';
+import {ClickAwayListener} from '@mui/base';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import SchoolIcon from '@mui/icons-material/School';
@@ -512,127 +512,127 @@ const NewOutput = (props) => {
     setShowAlert(false);
   };
 
-  // const handleClickOpenPrevisualizer = () => {
-  //   //loadCanvas()
-  //   setOpenPrevisualizer(true);
-  //   let parsedDocuments = listDocuments
-  //     .filter((obj) => obj.isSelected)
-  //     .map((obj) => ({
-  //       issueDate: obj.dateDocument,
-  //       serialDocument: obj.document,
-  //     }));
-  //   console.log('parsedDocuments', parsedDocuments);
-  //   const listTypeIgvCode = {
-  //     1000: 10,
-  //     9997: 20,
-  //     9998: 30,
-  //   };
-  //   let previsualizePayload = {
-  //     request: {
-  //       payload: {
-  //         merchantId: userDataRes.merchantSelected.merchantId,
-  //         denominationMerchant:
-  //           userDataRes.merchantSelected.denominationMerchant,
-  //         typePDF: userDataRes.merchantSelected.typeMerchant,
-  //         folderMovement: query.folderMovement,
-  //         movementTypeMerchantId: query.movementTypeMerchantId,
-  //         contableMovementId: query.contableMovementId || '',
-  //         contableMovements: selectedOutput.contableMovements || [],
-  //         movementHeaderId: query.movementHeaderId,
-  //         createdAt: Number(query.createdAt),
-  //         clientId: query.clientId,
-  //         totalPriceWithIgv: Number(
-  //           getValueField('totalFieldIgv').value.toFixed(2),
-  //         ), //
-  //         //issueDate: specialFormatToSunat(),
-  //         issueDate: dateWithHyphen(value),
-  //         serial: serial,
-  //         documentIntern: query.documentIntern,
-  //         clientEmail: getValueField('clientEmail').value,
-  //         transactionNumber: getValueField('transactionNumber').value || '',
-  //         /* numberBill: 3, */
-  //         automaticSendSunat: /* sendSunat */ true,
-  //         automaticSendClient: /* sendClient */ true,
-  //         referralGuide: getValueField('guide').value ? true : false,
-  //         creditSale: paymentWay == 'credit',
-  //         methodToPay: paymentMethod,
-  //         earningGeneration: earningGeneration,
-  //         referralGuideSerial: getValueField('guide').value
-  //           ? getValueField('guide').value
-  //           : '',
-  //         dueDate: dateWithHyphen(expirationDate),
-  //         observation: getValueField('observation').value
-  //           ? getValueField('observation').value
-  //           : '',
-  //         igv: Number(query.igv),
-  //         productsInfo: selectedProducts.map((obj) => {
-  //           console.log('facturabusinessProductCode', obj.businessProductCode);
-  //           return {
-  //             product: obj.product,
-  //             quantityMovement: Number(obj.quantityMovement),
-  //             priceBusinessMoneyWithIgv: Number(obj.priceBusinessMoneyWithIgv),
-  //             category: obj.category || '',
-  //             customCodeProduct: obj.customCodeProduct,
-  //             description: obj.description,
-  //             unitMeasure: obj.unitMeasure,
-  //             businessProductCode: obj.businessProductCode,
-  //             taxCode: obj.taxCode,
-  //             igvCode: listTypeIgvCode[`${obj.taxCode}`],
-  //           };
-  //         }),
-  //         documentsMovement: selectedOutput.documentsMovement,
-  //         referralGuides: parsedDocuments,
-  //         sendEmail: sendEmail,
-  //         userCreated: userDataRes.userId,
-  //         userCreatedMetadata: {
-  //           nombreCompleto: userDataRes.nombreCompleto,
-  //           email: userDataRes.email,
-  //         },
-  //         outputUserCreated: selectedOutput.userCreated,
-  //         outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
-  //       },
-  //     },
-  //   };
-  //   toPrevisualizeBill(previsualizePayload);
-  //   setShowAlert(false);
-  // };
+  const handleClickOpenPrevisualizer = () => {
+    //loadCanvas()
+    setOpenPrevisualizer(true);
+    let parsedDocuments = listDocuments
+      .filter((obj) => obj.isSelected)
+      .map((obj) => ({
+        issueDate: obj.dateDocument,
+        serialDocument: obj.document,
+      }));
+    console.log('parsedDocuments', parsedDocuments);
+    const listTypeIgvCode = {
+      1000: 10,
+      9997: 20,
+      9998: 30,
+    };
+    let previsualizePayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          denominationMerchant:
+            userDataRes.merchantSelected.denominationMerchant,
+          typePDF: userDataRes.merchantSelected.typeMerchant,
+          folderMovement: query.folderMovement,
+          movementTypeMerchantId: query.movementTypeMerchantId,
+          contableMovementId: query.contableMovementId || '',
+          contableMovements: selectedOutput.contableMovements || [],
+          movementHeaderId: query.movementHeaderId,
+          createdAt: Number(query.createdAt),
+          clientId: query.clientId,
+          totalPriceWithIgv: Number(
+            getValueField('totalFieldIgv').value.toFixed(2),
+          ), //
+          //issueDate: specialFormatToSunat(),
+          issueDate: dateWithHyphen(value),
+          serial: serial,
+          documentIntern: query.documentIntern,
+          clientEmail: getValueField('clientEmail').value,
+          transactionNumber: getValueField('transactionNumber').value || '',
+          /* numberBill: 3, */
+          automaticSendSunat: /* sendSunat */ true,
+          automaticSendClient: /* sendClient */ true,
+          referralGuide: getValueField('guide').value ? true : false,
+          creditSale: paymentWay == 'credit',
+          methodToPay: paymentMethod,
+          earningGeneration: earningGeneration,
+          referralGuideSerial: getValueField('guide').value
+            ? getValueField('guide').value
+            : '',
+          dueDate: dateWithHyphen(expirationDate),
+          observation: getValueField('observation').value
+            ? getValueField('observation').value
+            : '',
+          igv: Number(query.igv),
+          productsInfo: selectedProducts.map((obj) => {
+            console.log('facturabusinessProductCode', obj.businessProductCode);
+            return {
+              product: obj.product,
+              quantityMovement: Number(obj.quantityMovement),
+              priceBusinessMoneyWithIgv: Number(obj.priceBusinessMoneyWithIgv),
+              category: obj.category || '',
+              customCodeProduct: obj.customCodeProduct,
+              description: obj.description,
+              unitMeasure: obj.unitMeasure,
+              businessProductCode: obj.businessProductCode,
+              taxCode: obj.taxCode,
+              igvCode: listTypeIgvCode[`${obj.taxCode}`],
+            };
+          }),
+          documentsMovement: selectedOutput.documentsMovement,
+          referralGuides: parsedDocuments,
+          sendEmail: sendEmail,
+          userCreated: userDataRes.userId,
+          userCreatedMetadata: {
+            nombreCompleto: userDataRes.nombreCompleto,
+            email: userDataRes.email,
+          },
+          outputUserCreated: selectedOutput.userCreated,
+          outputUserCreatedMetadata: selectedOutput.userCreatedMetadata,
+        },
+      },
+    };
+    toPrevisualizeBill(previsualizePayload);
+    setShowAlert(false);
+  };
 
-  // useEffect(() => {
-  //   if (previsualizeBillRes && previsualizeBillRes.url) {
-  //     setUrlPdf(previsualizeBillRes.url);
-  //   }
-  // }, [previsualizeBillRes]);
-  // useEffect(() => {
-  //   console.log('openPrevisualizer', openPrevisualizer);
-  //   console.log('urlPdf', urlPdf);
-  //   console.log('canvasRef', canvasRef);
-  //   setTimeout(() => {
-  //     if (openPrevisualizer && urlPdf && canvasRef.current) {
-  //       console.log('hola urlPdf');
-  //       const canvas = canvasRef.current;
-  //       const canvasContext = canvas.getContext('2d');
+  useEffect(() => {
+    if (previsualizeBillRes && previsualizeBillRes.url) {
+      setUrlPdf(previsualizeBillRes.url);
+    }
+  }, [previsualizeBillRes]);
+  useEffect(() => {
+    console.log('openPrevisualizer', openPrevisualizer);
+    console.log('urlPdf', urlPdf);
+    console.log('canvasRef', canvasRef);
+    setTimeout(() => {
+      if (openPrevisualizer && urlPdf && canvasRef.current) {
+        console.log('hola urlPdf');
+        const canvas = canvasRef.current;
+        const canvasContext = canvas.getContext('2d');
 
-  //       const renderCanvas = async () => {
-  //         const pdfJS = await import('pdfjs-dist/build/pdf');
-  //         pdfJS.GlobalWorkerOptions.workerSrc =
-  //           window.location.origin + '/pdf.worker.min.js';
-  //         // const buffer = Uint8Array.from(atob(pdfBase64), (c) => c.charCodeAt(0));
-  //         // const pdf = await pdfJS.getDocument(buffer).promise;
-  //         const pdf = await pdfJS.getDocument(urlPdf).promise;
-  //         const page = await pdf.getPage(1);
-  //         const viewport = page.getViewport({scale});
+        const renderCanvas = async () => {
+          const pdfJS = await import('pdfjs-dist/build/pdf');
+          pdfJS.GlobalWorkerOptions.workerSrc =
+            window.location.origin + '/pdf.worker.min.js';
+          // const buffer = Uint8Array.from(atob(pdfBase64), (c) => c.charCodeAt(0));
+          // const pdf = await pdfJS.getDocument(buffer).promise;
+          const pdf = await pdfJS.getDocument(urlPdf).promise;
+          const page = await pdf.getPage(1);
+          const viewport = page.getViewport({scale});
 
-  //         canvas.height = viewport.height;
-  //         canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
 
-  //         const renderContext = {canvasContext, viewport};
-  //         page.render(renderContext);
-  //       };
+          const renderContext = {canvasContext, viewport};
+          page.render(renderContext);
+        };
 
-  //       renderCanvas();
-  //     }
-  //   }, 500);
-  // }, [urlPdf, canvasRef, openPrevisualizer]);
+        renderCanvas();
+      }
+    }, 500);
+  }, [urlPdf, canvasRef, openPrevisualizer]);
 
   const valueWithIGV = (value) => {
     const IGV = igvDefault;
@@ -857,7 +857,7 @@ const NewOutput = (props) => {
       throw new Error('Algo pasa al crear el payload facturar');
     }
     console.log('finalPayload', finalPayload);
-    
+
     setTimeout(() => {
       setSubmitting(false);
     }, 2000);
@@ -1513,7 +1513,7 @@ const NewOutput = (props) => {
                 ></OutputProducts>
                 <Divider sx={{my: 3}} />
 
-                {/* <Grid
+                <Grid
                   container
                   spacing={2}
                   sx={{width: 500, margin: 'auto', mb: 2}}
@@ -1528,7 +1528,7 @@ const NewOutput = (props) => {
                       Previsualizar PDF
                     </Button>
                   </Grid>
-                </Grid> */}
+                </Grid>
 
                 <ButtonGroup
                   orientation='vertical'
@@ -1781,7 +1781,7 @@ const NewOutput = (props) => {
           </Box>
         </DialogContent>
       </Dialog>
-      {/* <Dialog
+      <Dialog
         open={openPrevisualizer}
         onClose={handleClosePrevisualizer}
         sx={{textAlign: 'center'}}
@@ -1814,7 +1814,7 @@ const NewOutput = (props) => {
             </IconButton>
           </Box>
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
       <Dialog
         open={showDelete}
         onClose={closeDelete}

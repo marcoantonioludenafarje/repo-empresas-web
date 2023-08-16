@@ -86,7 +86,7 @@ const formatSentence = (phrase) => {
   );
 };
 
-const NewClient = (props) => {
+const NewAgent = (props) => {
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
@@ -530,4 +530,4 @@ const NewClient = (props) => {
   );
 };
 
-export default NewClient;
+export default NewAgent;

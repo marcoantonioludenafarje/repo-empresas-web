@@ -482,7 +482,7 @@ export const completeWithZeros = (num, size) => {
 export const verTags = (obj, listBussinesParameteres) => {
   let descripcion = '';
   let listTagsClient = null;
-  console.log('Que viene en obj', obj);
+
   if (listBussinesParameteres)
     listTagsClient = listBussinesParameteres.find(
       (obj) => obj.abreParametro == 'CLIENT_TAGS',
@@ -508,3 +508,30 @@ export const verTags = (obj, listBussinesParameteres) => {
 
   return descripcion;
 };
+
+export const verNotificaciones = (listBussinesParameteres) => {
+  let listNotificationClient = null;
+  console.log('listBussinesParameteres este es', listBussinesParameteres);
+  if (listBussinesParameteres)
+    listNotificationClient = listBussinesParameteres.find(
+      (obj) => obj.abreParametro == 'NOTIFICATION_CLIENTS',
+    ).value;
+
+  return listNotificationClient;
+};
+
+export const verTiposEventos=(listBussinesParameteres)=>{
+  let listNotificationClient = null;
+  let listNotificationBusiness=null;
+  console.log("listBussinesParameteres este es",listBussinesParameteres)
+  if (listBussinesParameteres)
+      listNotificationClient = listBussinesParameteres.find(
+      (obj) => obj.abreParametro == 'NOTIFICATION_CATALOG',
+    ).value;
+    if (listBussinesParameteres)
+    listNotificationBusiness = listBussinesParameteres.find(
+    (obj) => obj.abreParametro == 'NOTIFICATION_CATALOG',
+  );  
+    const arrayListNotification=Object.keys(listNotificationClient).map((obj)=>listNotificationClient[obj]);
+  return [arrayListNotification,listNotificationClient,listNotificationBusiness];
+}
