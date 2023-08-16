@@ -216,9 +216,7 @@ export default function Views(props) {
       setFilteredSpecialists(listSpecialists); // Si el valor del TextField está vacío, mostrar todas las campañas.
     } else {
       const filtered = listSpecialists.filter((specilist) =>
-        specilist.specialistName
-          .toLowerCase()
-          .includes(searchText.toLowerCase()),
+        specilist.user.email.toLowerCase().includes(searchText.toLowerCase()),
       );
       setFilteredSpecialists(filtered);
     }

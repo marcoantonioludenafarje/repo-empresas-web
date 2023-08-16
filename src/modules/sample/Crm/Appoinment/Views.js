@@ -1,11 +1,8 @@
 import React, {useEffect} from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import {Calendar, momentLocalizer} from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Card,
-  ButtonGroup,
-  Button
-} from '@mui/material';
+import {Card, ButtonGroup, Button} from '@mui/material';
 
 import {makeStyles} from '@mui/styles';
 import 'moment/locale/es';
@@ -25,8 +22,8 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import {
   FETCH_SUCCESS,
-  FETCH_ERROR
-} from '../../../../shared/constants/ActionTypes'
+  FETCH_ERROR,
+} from '../../../../shared/constants/ActionTypes';
 
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -68,7 +65,6 @@ const events = [
 const Views = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
-  
 
   const {userDataRes} = useSelector(({user}) => user);
 
@@ -99,17 +95,16 @@ const Views = (props) => {
     }
   }, [userDataRes]);
 
-  
   let popUp = false;
   return (
     <Card>
       <Calendar
         localizer={localizer}
         events={events}
-        startAccessor="start"
-        endAccessor="end"
+        startAccessor='start'
+        endAccessor='end'
         messages={{
-          today: 'Hoy', 
+          today: 'Hoy',
           next: 'Después',
           month: 'Mes',
           week: 'Semana',
@@ -117,9 +112,9 @@ const Views = (props) => {
           agenda: 'Agenda',
           date: 'Fecha', // Ejemplo de etiqueta personalizada
         }}
-        style={{ margin: 20 }}
+        style={{margin: 20}}
       />
-        <ButtonGroup
+      <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'
         className={classes.btnGroup}
@@ -150,7 +145,6 @@ const Views = (props) => {
 
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
-
     </Card>
   );
 };

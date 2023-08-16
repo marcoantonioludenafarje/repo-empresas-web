@@ -13,6 +13,7 @@ import {
   GET_ROL_USER,
   UPGRADE_TO_NEW_PLAN,
   UPDATE_ALL_BUSINESS_PARAMETER,
+  UPDATE_NOTIFICATION_BUSINESS_PARAMETER,
   UPDATE_ROL_USER_FIRST_PLAN,
   UPDATE_DATA_BUSINESS,
   ACTUAL_DATE,
@@ -341,6 +342,25 @@ export const updateAllBusinessParameter = (payload) => {
       })
       .catch((error) => {
         console.log('updateAllBusinessParameter error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const updateNotificationBusinessParameter = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/notifications/update', {body: payload})
+      .then((data) => {
+        console.log('updateNotificationBusinessParameter resultado', data);
+        dispatch({
+          type: UPDATE_NOTIFICATION_BUSINESS_PARAMETER,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('updateNotificationBusinessParameter error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

@@ -54,7 +54,7 @@ import {
 import Router from 'next/router';
 import {red} from '@mui/material/colors';
 import {verNotificaciones} from '../../../Utils/utils';
-
+import {verTiposEventos} from '../../../Utils/utils';
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
     marginTop: '2rem',
@@ -93,6 +93,8 @@ export default function Views(props) {
   const [searchValue, setSearchValue] = useState('');
   const [filteredNotifications, setFilteredNotifications] = useState([]);
   const {businessParameter} = useSelector(({general}) => general);
+  const [nelem, setNelem] = React.useState(0);
+  const [listValidNotification, setListValidNotification] = React.useState([]);
   console.log('businessParameter ', businessParameter);
   let popUp = false;
 
@@ -115,14 +117,53 @@ export default function Views(props) {
     agentsLastEvaluatedKey_pageListAgents,
   } = useSelector(({notifications}) => notifications);*/
 
-  const listNotifications = verNotificaciones(businessParameter);
+  const listNotifications = verTiposEventos(businessParameter)[0];
 
   console.log('confeti los agentes', listNotifications);
 
   const showMessage = () => {
     console.log('Mensaje QR');
   };
+  useEffect(() => {
+    let cont = 0;
+    let listNotificacionModific = [];
+    for (let item of listNotifications) {
+      if (Object.keys(item).length !== 0) {
+        console.log(
+          'Estre es el item',
+          Object.keys(item).map((key) => console.log(item[key])),
+        );
+        const uuidPattern =
+          /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+        let validNotification = Object.keys(item)
+          .filter(
+            (key) => typeof item[key] === 'object' && uuidPattern.test(key),
+          )
+          .map((key) => item[key]);
+        if (validNotification.length > 0) {
+          listNotificacionModific.push(validNotification);
+        }
+        console.log('Validation Notification', Object.keys(item));
+        console.log('Validation Notification', validNotification);
 
+        cont += Object.keys(item).filter(
+          (key) => typeof item[key] === 'object' && uuidPattern.test(key),
+        ).length;
+      }
+      setNelem(cont);
+      console.log('Este es el valid', listNotificacionModific);
+      setListValidNotification(listNotificacionModific);
+    }
+  }, []);
+  console.log(
+    'PRUEBA 3:',
+    listNotifications,
+    listNotifications.filter((item) =>
+      Object.keys(item).filter(
+        (notification) => typeof item[notification] === 'object',
+      ),
+    ).length,
+  );
   useEffect(() => {
     console.log('Estamos userDataRes', userDataRes);
     if (
@@ -210,16 +251,22 @@ export default function Views(props) {
     if (!searchText) {
       setFilteredNotifications(listNotifications); // Si el valor del TextField está vacío, mostrar todas las campañas.
     } else {
-      const filtered = listNotifications.filter((agent) =>
-        agent.robotName.toLowerCase().includes(searchText.toLowerCase()),
-      );
+      const filtered = listNotifications.filter((notification) => {
+        if (Object.keys(notification).length > 0) {
+          return Object.keys(notification).filter((notificationComponent) =>
+            notificationComponent.notificationName
+              .toLowerCase()
+              .includes(searchText.toLowerCase()),
+          );
+        }
+      });
       setFilteredNotifications(filtered);
     }
   };
 
   useEffect(() => {
     filterNotifications(searchValue);
-  }, [searchValue, listNotifications]);
+  }, [searchValue]);
 
   return (
     <Card sx={{p: 4}}>
@@ -249,9 +296,7 @@ export default function Views(props) {
           Buscar
         </Button>
       </Stack>
-      <span>{`Items: ${
-        listNotifications ? listNotifications.length : 'Cargando...'
-      }`}</span>
+      <span>{`Items: ${nelem != 0 ? nelem : 'Cargando...'}`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -271,54 +316,61 @@ export default function Views(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {
-              /*filteredNotifications*/ listNotifications.map((row, index) => (
-                <TableRow
-                  key={index}
-                  sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                >
-                  <TableCell>{convertToDate(row.createdAt)}</TableCell>
-                  <TableCell
-                    component='th'
-                    scope='row'
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
+            {listValidNotification.flatMap((component, index) =>
+              component.map((row, rowIndex) => {
+                let selectedChannel = row.channelSelected;
+
+                console.log('Este es el row', row, selectedChannel);
+                return (
+                  <TableRow
+                    key={`${index}-${rowIndex}`}
+                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   >
-                    {row.notificationName}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
-                  >
-                    {row.eventType}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
-                  >
-                    {row.message}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
-                  >
-                    {`${row.periodicityAction.time} ${row.periodicityAction.unit}`}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
-                  >
-                    {row.agentName}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      id='basic-button'
-                      aria-controls={openMenu ? 'basic-menu' : undefined}
-                      aria-haspopup='true'
-                      aria-expanded={openMenu ? 'true' : undefined}
-                      onClick={handleClick.bind(this, index)}
+                    <TableCell>{convertToDate(row.createdAt)}</TableCell>
+                    <TableCell
+                      component='th'
+                      scope='row'
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
                     >
-                      <KeyboardArrowDownIcon />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            }
+                      {row.notificationName}
+                    </TableCell>
+                    <TableCell
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.eventType}
+                    </TableCell>
+                    <TableCell
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.notificationsChannel[selectedChannel]?.template}
+                    </TableCell>
+                    <TableCell
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.eventType === 'SCHEDULED'
+                        ? `${row.notificationsChannel[selectedChannel]?.periodicityAction.time} ${row.notificationsChannel[selectedChannel]?.periodicityAction.unit}`
+                        : null}
+                    </TableCell>
+                    <TableCell
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.agentName}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        id='basic-button'
+                        aria-controls={openMenu ? 'basic-menu' : undefined}
+                        aria-haspopup='true'
+                        aria-expanded={openMenu ? 'true' : undefined}
+                        onClick={handleClick.bind(this, index)}
+                      >
+                        <KeyboardArrowDownIcon />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              }),
+            )}
           </TableBody>
         </Table>
       </TableContainer>

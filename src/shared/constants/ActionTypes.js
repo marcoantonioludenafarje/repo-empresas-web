@@ -174,6 +174,8 @@ export const WEIGHT_BUSINESS = 'weight_business';
 export const MONEY_UNIT_BUSINESS = 'money_unit_business';
 export const MONEY_SYMBOL = 'money_symbol';
 export const UPDATE_CATALOGS = 'update_catalogs';
+export const UPDATE_NOTIFICATION_BUSINESS_PARAMETER =
+  'update_notification_business_parameter';
 
 //IMAGE
 export const GET_PRESIGNED = 'get_presigned';

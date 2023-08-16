@@ -24,7 +24,7 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
-  TextField
+  TextField,
 } from '@mui/material';
 
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
@@ -48,7 +48,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newDriver} from '../../../../redux/actions/Drivers';
-import { getSpecialists } from 'redux/actions/Specialist';
+import {getSpecialists} from 'redux/actions/Specialist';
 
 import AddClientForm from '../../ClientSelection/AddClientForm';
 
@@ -172,9 +172,9 @@ const Createappoinment = (props) => {
   const toNewDriver = (payload) => {
     dispatch(newDriver(payload));
   };
-  const toGetSpecialist = (payload) =>{
-    dispatch(getSpecialists(payload))
-  }
+  const toGetSpecialist = (payload) => {
+    dispatch(getSpecialists(payload));
+  };
   //GET_VALUES_APIS
   const {newDriverRes} = useSelector(({drivers}) => drivers);
   console.log('newDriverRes', newDriverRes);
@@ -185,8 +185,8 @@ const Createappoinment = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
-  const {listSpecialists} = useSelector(({specialists})=>specialists)
-  console.log("confeti especialistas", listSpecialists);
+  const {listSpecialists} = useSelector(({specialists}) => specialists);
+  console.log('confeti especialistas', listSpecialists);
 
   useEffect(() => {
     if (!userDataRes) {
@@ -218,7 +218,6 @@ const Createappoinment = (props) => {
     }
   }, [userDataRes]);
 
- 
   useEffect(() => {
     console.log('Estamos userDataResINCampaign', userDataRes);
     if (
@@ -254,8 +253,7 @@ const Createappoinment = (props) => {
       // setFirstload(true);
     }
   }, [userDataRes]);
- 
- 
+
   const cancel = () => {
     setOpen(true);
   };
@@ -461,11 +459,14 @@ const Createappoinment = (props) => {
                         label='Identificador'
                         onChange={handleField}
                       >
-                        {listSpecialists.map((specialist)=>
-                          <MenuItem value={specialist.specialistId} style={{fontWeight:200}}>
+                        {listSpecialists.map((specialist) => (
+                          <MenuItem
+                            value={specialist.specialistId}
+                            style={{fontWeight: 200}}
+                          >
                             {specialist.specialistName}
                           </MenuItem>
-                        )}
+                        ))}
                       </Select>
                     </FormControl>
                   </Grid>
@@ -581,9 +582,7 @@ const Createappoinment = (props) => {
                       <TextField
                         disabled
                         defaultValue={'+51'}
-                        label={
-                          <IntlMessages id='common.cellphoneCountryCod' />
-                        }
+                        label={<IntlMessages id='common.cellphoneCountryCod' />}
                         variant='filled'
                         sx={{
                           my: 2,
@@ -595,7 +594,7 @@ const Createappoinment = (props) => {
                     </Grid>
                   )}
                   {notifyClientByWhatsapp && (
-                      <Grid item xs={10}>
+                    <Grid item xs={10}>
                       <AppTextField
                         label='Telefono fijo o celular de contacto'
                         name='numberContact'
@@ -626,7 +625,6 @@ const Createappoinment = (props) => {
                       label='Recordatorio a cliente por Whatsapp'
                     />
                   </Grid>
-
                 </Grid>
 
                 <ButtonGroup

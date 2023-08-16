@@ -59,7 +59,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
 import {newCampaign, generateVariations} from '../../../redux/actions/Campaign';
-import {getAgents } from '../../../redux/actions/Agent'
+import {getAgents} from '../../../redux/actions/Agent';
 import {
   createPresigned,
   createClientsPresigned,
@@ -210,9 +210,9 @@ const Create = (props) => {
     dispatch(onGetClients(payload));
   };
 
-  const getAgent = (payload) =>{
+  const getAgent = (payload) => {
     dispatch(getAgents(payload));
-  }
+  };
   const {userDataRes} = useSelector(({user}) => user);
 
   const {businessParameter} = useSelector(({general}) => general);
@@ -235,11 +235,10 @@ const Create = (props) => {
     ({general}) => general,
   );
 
-  const {
-    listAgents,
-    agentsLastEvaluatedKey_pageListAgents,
-  } = useSelector(({agents}) => agents);
-console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
+  const {listAgents, agentsLastEvaluatedKey_pageListAgents} = useSelector(
+    ({agents}) => agents,
+  );
+  console.log('LISTA DE AGENTES CAMPAÑA', listAgents);
 
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
@@ -892,7 +891,6 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
   const [geneVariations, setGenerateVariations] = useState(null);
 
   const handleDummy = async () => {
-
     let text = getValueField('campaignContent').value;
     console.log('index dum', text);
     console.log('index dummy>', variationsData);
@@ -913,16 +911,14 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
     setGenerateVariations(response);
     console.log('index numVariations', numVariations);
     console.log('index response', geneVariations?.data);
-    
-    
+
     const newDatatt = [...variationsData];
-    if(geneVariations!==null){
+    if (geneVariations !== null) {
       for (let i = 0; i < numVariations; i++) {
         newDatatt[i] = geneVariations.data[i];
         setVariationsData(newDatatt);
       }
     }
-
   };
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
@@ -1203,19 +1199,15 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
                       </Button>
                     </Box>
                   </DialogTitle>
-                    <Box
-                      sx={{width: 1, textAlign: 'center', mt: 2}}
-                    >
-                    <Typography sx={{fontSize: 18, fontWeight: 600}} >
+                  <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
                       El proceso de generar Variaciones demora unos segundos
                     </Typography>
-                    <Typography sx={{fontSize: 18, fontWeight: 600}} >
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
                       Sí demora, vuelva a darle click en "Necesito Ayuda!"
                     </Typography>
-                    </Box>
-
+                  </Box>
                   {sameData()};
-                  
                   {totaldeClientes() > levelEnter.clientsAmount ? (
                     <Box
                       sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
@@ -1314,33 +1306,33 @@ console.log("LISTA DE AGENTES CAMPAÑA", listAgents);
                   <Typography></Typography>
                 )}
 
-                  <Grid item xs={12}>
-                    <FormControl sx={{width: '20%' ,my: 2, marginLeft:110}}>
-                      <InputLabel
-                        id='agent-label'
-                        style={{fontWeight: 200}}
-                      >
-                        Seleccionar Agente
-                      </InputLabel>
-                      {/* {inicializaIdentidad()} */}
-                      <Select
-                        name='agent'
-                        labelId='agent-label'
-                        label='Agent'
-                        //onChange={handleField}
-                        onChange={(option, value) => {
-                          setFieldValue('agent', value.props.value);
-                          // setIdentidad(value.props.value);
-                        }}
-                      >
-                        {listAgents.map((agent)=>(
-                          <MenuItem value={agent.robotId} style={{fontWeight: 200}}>
-                            {agent.robotName}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>                
+                <Grid item xs={12}>
+                  <FormControl sx={{width: '20%', my: 2, marginLeft: 110}}>
+                    <InputLabel id='agent-label' style={{fontWeight: 200}}>
+                      Seleccionar Agente
+                    </InputLabel>
+                    {/* {inicializaIdentidad()} */}
+                    <Select
+                      name='agent'
+                      labelId='agent-label'
+                      label='Agent'
+                      //onChange={handleField}
+                      onChange={(option, value) => {
+                        setFieldValue('agent', value.props.value);
+                        // setIdentidad(value.props.value);
+                      }}
+                    >
+                      {listAgents.map((agent) => (
+                        <MenuItem
+                          value={agent.robotId}
+                          style={{fontWeight: 200}}
+                        >
+                          {agent.robotName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
 
                 <ButtonGroup
                   orientation='vertical'
