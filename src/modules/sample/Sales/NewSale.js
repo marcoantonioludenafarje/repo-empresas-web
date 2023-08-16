@@ -38,6 +38,7 @@ import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AddClientForm from '../ClientSelection/AddClientForm';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import SchoolIcon from '@mui/icons-material/School';
+import DeleteIcon from '@mui/icons-material/Delete';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
@@ -913,7 +914,7 @@ const NewSale = (props) => {
                       Selecciona un cliente
                     </Button>
                   </Grid>
-                  <Grid sx={{px: 1, mt: 2}} xs={12}>
+                  <Grid sx={{px: 1, mt: 2}} xs={11}>
                     <Typography sx={{mx: 'auto', my: '10px'}}>
                       Cliente:{' '}
                       {selectedClient && selectedClient.denominationClient
@@ -921,6 +922,17 @@ const NewSale = (props) => {
                         : 'No Definido'}
                     </Typography>
                   </Grid>
+                  {selectedClient && selectedClient.denominationClient ? (
+                    <Grid sx={{px: 1, mt: 2}} xs={1}>
+                      <IconButton sx={{width:1}} onClick={() => {
+                            setSerial('S');
+                            setProofOfPaymentType('ticket');
+                            setSelectedClient('Cliente No Definido');
+                          }}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+                  ):null}
                   {/* <Grid xs={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Cliente'
@@ -936,22 +948,6 @@ const NewSale = (props) => {
                       }}
                     />
                   </Grid> */}
-                  {selectedClient && selectedClient.denominationClient ? (
-                    <Grid sx={{px: 1, mt: 2}} xs={12}>
-                      <Button
-                        color='secondary'
-                        sx={{width: 1}}
-                        variant='outlined'
-                        onClick={() => {
-                          setSerial('S');
-                          setProofOfPaymentType('ticket');
-                          setSelectedClient('Cliente No Definido');
-                        }}
-                      >
-                        Quitar Cliente
-                      </Button>
-                    </Grid>
-                  ) : null}
                 </Grid>
 
                 <Grid
