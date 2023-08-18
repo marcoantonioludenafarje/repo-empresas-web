@@ -43,6 +43,7 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import CachedIcon from '@mui/icons-material/Cached';
 import SchoolIcon from '@mui/icons-material/School';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import {
@@ -56,6 +57,7 @@ import {
 import SelectedProducts from './SelectedProducts';
 import SelectCarrier from './SelectCarrier';
 import {getCarriers} from '../../../redux/actions/Carriers';
+import {getLocations} from '../../../redux/actions/Locations';
 import {getUbigeos} from '../../../redux/actions/General';
 import {
   getMovements,
@@ -181,6 +183,13 @@ const GetReferralGuide = () => {
   const [selectedStartingUbigeo, setSelectedStartingUbigeo] = React.useState(
     {},
   );
+  const [selectedStartingLocation, setSelectedStartingLocation] = React.useState(
+    {},
+  );
+  const [selectedArrivalLocation, setSelectedArrivalLocation] = React.useState(
+    {},
+  );
+  const [internalLocations, setInternalLocations] = React.useState([]);
   const [ubigeoArrivalPoint, setUbigeoArrivalPoint] = React.useState(0);
   const [existArrivalUbigeo, setExistArrivalUbigeo] = React.useState(true);
   const [selectedArrivalUbigeo, setSelectedArrivalUbigeo] = React.useState({});
@@ -192,6 +201,7 @@ const GetReferralGuide = () => {
   const [changeGenerateRG, setChangeGenerateRG] = React.useState(false);
   const [dataFinal, setDataFinal] = React.useState({});
   const [minTutorial, setMinTutorial] = React.useState(false);
+  const [basicUrl,setBasicUrl] = React.useState('');
   let changeValueField;
 
   const {userAttributes} = useSelector(({user}) => user);
@@ -216,9 +226,13 @@ const GetReferralGuide = () => {
   console.log('updateGenerateReferralGuideRes', updateGenerateReferralGuideRes);
   const {jwtToken} = useSelector(({general}) => general);
   console.log('jwtToken', jwtToken);
+  const {getLocationsRes} = useSelector(({locations}) => locations)
 
   const toGetCarriers = (payload, token) => {
     dispatch(getCarriers(payload, token));
+  };
+  const toGetLocations = (payload, jwtToken) => {
+    dispatch(getLocations(payload, jwtToken));
   };
   const toAddReferrealGuide = (payload) => {
     dispatch(addReferrealGuide(payload));
@@ -287,6 +301,20 @@ const GetReferralGuide = () => {
       },
     };
     toGetCarriers(listCarriersPayload, jwtToken);
+    let listLocationsPayload = {
+      request: {
+        payload: {
+          locationName: '',
+          type: '',
+          ubigeo: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          modularCode: '',
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
+    toGetLocations(listLocationsPayload, jwtToken);
     originalUbigeos.map((obj, index) => {
       parsedUbigeos[index] = {
         label: `${obj.descripcion} - ${obj.ubigeo}`,
@@ -299,11 +327,50 @@ const GetReferralGuide = () => {
     setSelectedStartingUbigeo(parsedUbigeos[0]);
     setUbigeoArrivalPoint(parsedUbigeos[0].ubigeo);
     console.log('parsedUbigeos[0]', parsedUbigeos[0]);
-
+    let domain = new URL(window.location.href);
+    setBasicUrl(domain.origin);
+    const selfCarrier = {
+      "nameContact": userDataRes.merchantSelected.denominationMerchant,
+      "typeDocumentCarrier": userDataRes.merchantSelected.typeDocumentMerchant,
+      "extraInformationCarrier": "Info para Guía",
+      "emailContact": userDataRes.merchantSelected.emailAdminUserId,
+      "carrierId": `${userDataRes.merchantSelected.typeDocumentMerchant}-${userDataRes.merchantSelected.numberDocumentMerchant}-${String(userDataRes.merchantSelected.denominationMerchant).toLowerCase().trim().replace(/\s+/g, "")}-${userDataRes.merchantSelected.merchantId}`,
+      "addressCarrier": userDataRes.merchantSelected.addressMerchant,
+      "numberContact": "51994683152",
+      "emailCarrier": userDataRes.merchantSelected.emailAdminUserId,
+      "numberDocumentCarrier": userDataRes.merchantSelected.numberDocumentMerchant,
+      "denominationCarrier": userDataRes.merchantSelected.denominationMerchant,
+      "merchantId": userDataRes.merchantSelected.merchantId
+    }
+    setSelectedCarrier(selfCarrier);
+    setExistCarrier(true);
     setTimeout(() => {
       setMinTutorial(true);
     }, 2000);
   }, []);
+
+  useEffect(()=>{
+    if(getLocationsRes && getLocationsRes.length > 0){
+      console.log("locaciones internas",getLocationsRes)
+      const internalLocationsMin = getLocationsRes.map((obj) => {
+        obj.label = obj.locationName
+        return obj
+      })
+      setInternalLocations(internalLocationsMin)
+      setSelectedStartingLocation({
+        locationId: '',
+        label: '',
+        ubigeo: '',
+        value: ''
+      })
+      setSelectedArrivalLocation({
+        locationId: '',
+        label: '',
+        ubigeo: '',
+        value: ''
+      })
+    }
+  },[getLocationsRes])
 
   useEffect(() => {
     if (businessParameter != undefined) {
@@ -876,6 +943,28 @@ const GetReferralGuide = () => {
       parsedUbigeos && Array.isArray(parsedUbigeos) && parsedUbigeos.length >= 1
     );
   };
+  const availableLocations = () => {
+    return (
+      internalLocations && Array.isArray(internalLocations) && internalLocations.length >= 1
+    );
+  };
+  const handleClickUpdateCarrierList = () => {
+    //setShowAlert(false);
+    let listCarriersPayload = {
+      request: {
+        payload: {
+          typeDocumentCarrier: '',
+          numberDocumentCarrier: '',
+          denominationCarrier: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
+    toGetCarriers(listCarriersPayload, jwtToken);
+    //setOpen(true);
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -1001,6 +1090,27 @@ const GetReferralGuide = () => {
                         sx={{textAlign: 'left'}}
                         onChange={(event) => {
                           setTransportModeVal(event.target.value);
+                          
+                          if(event.target.value == 'privateTransportation'){
+                            const selfCarrier = {
+                              "nameContact": userDataRes.merchantSelected.denominationMerchant,
+                              "typeDocumentCarrier": userDataRes.merchantSelected.typeDocumentMerchant,
+                              "extraInformationCarrier": "Info para Guía",
+                              "emailContact": userDataRes.merchantSelected.emailAdminUserId,
+                              "carrierId": `${userDataRes.merchantSelected.typeDocumentMerchant}-${userDataRes.merchantSelected.numberDocumentMerchant}-${String(userDataRes.merchantSelected.denominationMerchant).toLowerCase().trim().replace(/\s+/g, "")}-${userDataRes.merchantSelected.merchantId}`,
+                              "addressCarrier": userDataRes.merchantSelected.addressMerchant,
+                              "numberContact": "51994683152",
+                              "emailCarrier": userDataRes.merchantSelected.emailAdminUserId,
+                              "numberDocumentCarrier": userDataRes.merchantSelected.numberDocumentMerchant,
+                              "denominationCarrier": userDataRes.merchantSelected.denominationMerchant,
+                              "merchantId": userDataRes.merchantSelected.merchantId
+                            }
+                            setSelectedCarrier(selfCarrier);
+                            setExistCarrier(true);
+                          } else {
+                            setSelectedCarrier({});
+                            setExistCarrier(false);
+                          }
                           console.log('modo de transporte', event.target.value);
                         }}
                         name='transportMode'
@@ -1135,8 +1245,55 @@ const GetReferralGuide = () => {
                 <Divider sx={{mt: 2, mb: 4}} />
 
                 <Grid container sx={{width: 500, margin: 'auto'}}>
-                  {availableUbigeos() ? (
+                  {availableLocations() ? (
                     <>
+                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                        <Autocomplete
+                          disablePortal
+                          id='combo-box-location'
+                          value={selectedStartingLocation}
+                          isOptionEqualToValue={(option, value) =>
+                            option.locationId === value.locationId
+                          }
+                          onChange={(option, value) => {
+                            if (
+                              typeof value === 'object' &&
+                              value != null &&
+                              value !== ''
+                            ) {
+                              console.log(
+                                'option location',
+                                option,
+                              );
+                              console.log(
+                                'valor location inicial',
+                                value,
+                              );
+                              setUbigeoStartingPoint(value.ubigeo);
+                              let selectedLocationValue = internalLocations.find(
+                                (obj) => obj.locationId == value.locationId,
+                              );
+                              let selectedUbigeoValue = parsedUbigeos.find(
+                                (ubigeo) => ubigeo.ubigeo == selectedLocationValue.ubigeo,
+                              );
+                              setSelectedStartingLocation(value)
+                              changeValueField('startingPoint', selectedLocationValue.locationDetail);
+                              setSelectedStartingUbigeo(selectedUbigeoValue);
+                              setExistStartingUbigeo(true);
+                            }
+                          }}
+                          options={internalLocations}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label='Locación Interna de Partida'
+                              onChange={(event) => {
+                                console.log('location field', event.target.value);
+                              }}
+                            />
+                          )}
+                        />
+                      </Grid>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                         <Autocomplete
                           disablePortal
@@ -1223,7 +1380,55 @@ const GetReferralGuide = () => {
                       ) : null}
                     </>
                   ) : null}
-
+                  {availableLocations() ? (
+                    <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                    <Autocomplete
+                      disablePortal
+                      id='combo-box-location'
+                      value={selectedArrivalLocation}
+                      isOptionEqualToValue={(option, value) =>
+                        option.locationId === value.locationId
+                      }
+                      onChange={(option, value) => {
+                        if (
+                          typeof value === 'object' &&
+                          value != null &&
+                          value !== ''
+                        ) {
+                          console.log(
+                            'option location',
+                            option,
+                          );
+                          console.log(
+                            'valor location inicial',
+                            value,
+                          );
+                          setUbigeoArrivalPoint(value.ubigeo);
+                          let selectedLocationValue = internalLocations.find(
+                            (obj) => obj.locationId == value.locationId,
+                          );
+                          let selectedUbigeoValue = parsedUbigeos.find(
+                            (ubigeo) => ubigeo.ubigeo == selectedLocationValue.ubigeo,
+                          );
+                          setSelectedArrivalLocation(value)
+                          changeValueField('arrivalPoint', selectedLocationValue.locationDetail);
+                          setSelectedArrivalUbigeo(selectedUbigeoValue);
+                          setExistArrivalUbigeo(true);
+                        }
+                      }}
+                      options={internalLocations}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label='Locación Interna de Llegada'
+                          onChange={(event) => {
+                            console.log('location field', event.target.value);
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  ): null}
                   {availableUbigeos() ? (
                     <>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
@@ -1339,6 +1544,7 @@ const GetReferralGuide = () => {
                       sx={{width: 1}}
                       variant='outlined'
                       onClick={() => openSelectCarrier()}
+                      disabled={transportModeVal=='privateTransportation'}
                     >
                       Seleccionar transportista
                     </Button>
@@ -1637,9 +1843,32 @@ const GetReferralGuide = () => {
                 ? 'Registro de Guía de Remisión'
                 : null}
               {typeDialog == 'selectCarrier'
-                ? 'Selecciona un transportista'
+                ? (
+                  <>
+                      <div>{`Listado de Transportistas`}</div>
+                      <Button
+                        sx={{mx: 'auto', mx: 1, my: 1, py: 3}}
+                        variant='outlined'
+                        startIcon={<CachedIcon sx={{m: 1, my: 'auto'}} />}
+                        onClick={() => handleClickUpdateCarrierList()}
+                      >
+                        {'Actualizar'}
+                      </Button>
+                      <Button
+                        sx={{mx: 'auto', py: 3, mx: 1, my: 1}}
+                        variant='outlined'
+                        startIcon={<ArrowCircleLeftOutlinedIcon />}
+                        onClick={() =>
+                          window.open(`${basicUrl}/sample/carriers/new`)
+                        }
+                      >
+                        Agregar nuevo Transportista
+                      </Button>
+                    </>
+                  )
                 : null}
             </Box>
+            
             <IconButton
               aria-label='close'
               onClick={sendStatus}
