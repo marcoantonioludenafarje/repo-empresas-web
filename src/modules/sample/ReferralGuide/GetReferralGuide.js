@@ -1280,6 +1280,9 @@ const GetReferralGuide = () => {
                               changeValueField('startingPoint', selectedLocationValue.locationDetail);
                               setSelectedStartingUbigeo(selectedUbigeoValue);
                               setExistStartingUbigeo(true);
+                              if(value.sunatEstablishmentCode){
+                                changeValueField('startingSunatCode', value.sunatEstablishmentCode)
+                              }
                             }
                           }}
                           options={internalLocations}
@@ -1414,6 +1417,10 @@ const GetReferralGuide = () => {
                           changeValueField('arrivalPoint', selectedLocationValue.locationDetail);
                           setSelectedArrivalUbigeo(selectedUbigeoValue);
                           setExistArrivalUbigeo(true);
+                          
+                          if(value.sunatEstablishmentCode){
+                            changeValueField('arrivalSunatCode', value.sunatEstablishmentCode)
+                          }
                         }
                       }}
                       options={internalLocations}
