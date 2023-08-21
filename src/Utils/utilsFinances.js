@@ -76,7 +76,7 @@ export const unitMeasureOptions = [
     "label": "DOCENA"
   },
   {
-    "value": "MLL",
+    "value": "MIL",
     "label": "MILLARES"
   },
   {
