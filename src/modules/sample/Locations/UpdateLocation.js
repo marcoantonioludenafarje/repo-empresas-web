@@ -205,8 +205,10 @@ const UpdateLocation = (props) => {
     newLocationPayload.request.payload.modularCode = data.modularCode;
     newLocationPayload.request.payload.locationName = data.locationName;
     newLocationPayload.request.payload.locationDetail = data.locationDetail;
-    newLocationPayload.request.payload.sunatEstablishmentCode = String(data.sunatEstablishmentCode),
-    newLocationPayload.request.payload.ubigeo = objUbigeo.ubigeo;
+    (newLocationPayload.request.payload.sunatEstablishmentCode = String(
+      data.sunatEstablishmentCode,
+    )),
+      (newLocationPayload.request.payload.ubigeo = objUbigeo.ubigeo);
     newLocationPayload.request.payload.type = typeLocation;
     newLocationPayload.request.payload.coordenates = {
       lat: {S: ''},

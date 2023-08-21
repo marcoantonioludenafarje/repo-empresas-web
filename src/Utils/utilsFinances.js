@@ -36,63 +36,63 @@ export const showStatus = (status, typeFinance) => {
 
 export const unitMeasureOptions = [
   {
-    "value": "NIU",
-    "label": "BIEN"
+    value: 'NIU',
+    label: 'BIEN',
   },
   {
-    "value": "ZZ",
-    "label": "SERVICIO"
+    value: 'ZZ',
+    label: 'SERVICIO',
   },
   {
-    "value": "BX",
-    "label": "CAJA"
+    value: 'BX',
+    label: 'CAJA',
   },
   {
-    "value": "PK",
-    "label": "PAQUETE"
+    value: 'PK',
+    label: 'PAQUETE',
   },
   {
-    "value": "BE",
-    "label": "FARDO"
+    value: 'BE',
+    label: 'FARDO',
   },
   {
-    "value": "SA",
-    "label": "SACO"
+    value: 'SA',
+    label: 'SACO',
   },
   {
-    "value": "BG",
-    "label": "BOLSA"
+    value: 'BG',
+    label: 'BOLSA',
   },
   {
-    "value": "BO",
-    "label": "BOTELLAS"
+    value: 'BO',
+    label: 'BOTELLAS',
   },
   {
-    "value": "CA",
-    "label": "LATAS"
+    value: 'CA',
+    label: 'LATAS',
   },
   {
-    "value": "DZN",
-    "label": "DOCENA"
+    value: 'DZN',
+    label: 'DOCENA',
   },
   {
-    "value": "MIL",
-    "label": "MILLARES"
+    value: 'MIL',
+    label: 'MILLARES',
   },
   {
-    "value": "GRM",
-    "label": "GRAMO"
+    value: 'GRM',
+    label: 'GRAMO',
   },
   {
-    "value": "KGM",
-    "label": "KILOGRAMO"
+    value: 'KGM',
+    label: 'KILOGRAMO',
   },
   {
-    "value": "TNE",
-    "label": "TONELADAS"
+    value: 'TNE',
+    label: 'TONELADAS',
   },
   {
-    "value": "MLT",
-    "label": "MILILITRO"
-  }
+    value: 'MLT',
+    label: 'MILILITRO',
+  },
 ];

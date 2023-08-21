@@ -924,15 +924,18 @@ const NewSale = (props) => {
                   </Grid>
                   {selectedClient && selectedClient.denominationClient ? (
                     <Grid sx={{px: 1, mt: 2}} xs={1}>
-                      <IconButton sx={{width:1}} onClick={() => {
-                            setSerial('S');
-                            setProofOfPaymentType('ticket');
-                            setSelectedClient('Cliente No Definido');
-                          }}>
+                      <IconButton
+                        sx={{width: 1}}
+                        onClick={() => {
+                          setSerial('S');
+                          setProofOfPaymentType('ticket');
+                          setSelectedClient('Cliente No Definido');
+                        }}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </Grid>
-                  ):null}
+                  ) : null}
                   {/* <Grid xs={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Cliente'

@@ -180,8 +180,10 @@ const NewLocation = () => {
       data.locationName;
     newLocationPayload.request.payload.locations[0].locationDetail =
       data.locationDetail;
-    newLocationPayload.request.payload.locations[0].sunatEstablishmentCode = String(data.sunatEstablishmentCode),
-    newLocationPayload.request.payload.locations[0].ubigeo = objUbigeo.ubigeo;
+    (newLocationPayload.request.payload.locations[0].sunatEstablishmentCode =
+      String(data.sunatEstablishmentCode)),
+      (newLocationPayload.request.payload.locations[0].ubigeo =
+        objUbigeo.ubigeo);
     newLocationPayload.request.payload.locations[0].type = objSelectsT.type;
     newLocationPayload.request.payload.locations[0].coordenates = {
       lat: {S: ''},
@@ -443,7 +445,6 @@ const NewLocation = () => {
                       }}
                     />
                   </Grid>
-
                 </Grid>
 
                 <ButtonGroup

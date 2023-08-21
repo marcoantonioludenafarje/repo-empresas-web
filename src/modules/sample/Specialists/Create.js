@@ -58,10 +58,11 @@ const validationSchema = yup.object({
     .required('Es un campo obligatorio'),
 
   user: yup.object().shape({
-    inputValue: yup.string().required('Este campo no puede estar vacío')})
+    inputValue: yup.string().required('Este campo no puede estar vacío'),
+  }),
 });
 const defaultValues = {
-    specialistName: '',
+  specialistName: '',
   user: {},
 };
 
@@ -85,7 +86,7 @@ const formatSentence = (phrase) => {
 };
 
 const NewSpecialist = (props) => {
-    let toSubmitting
+  let toSubmitting;
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
@@ -106,58 +107,61 @@ const NewSpecialist = (props) => {
   const [dateRegister, setDateRegister] = React.useState(Date.now());
   //GET_VALUES_APIS
   const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedNameSpecialist, setSelectedNameSpecialist] = React.useState('');
+  const [selectedNameSpecialist, setSelectedNameSpecialist] =
+    React.useState('');
   const {newSpecialistRes, successMessage, errorMessage, process, loading} =
     useSelector(({specialists}) => specialists);
   console.log('newSpecialistRes', newSpecialistRes);
   console.log('newSpecialistRes', selectedOption);
- 
+
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  const [listUsersModal,setListUsersModal]=useState([]);
+  const [listUsersModal, setListUsersModal] = useState([]);
   /******************************************** */
-    const {listUserRes} = useSelector(({user}) => user);
-  
-    const toListUser = (payload) => {
-      dispatch(listUser(payload));
-    };
-    const handleOptionChange = (event, newValue) => {
-        setSelectedOption(newValue);
-      };
-    const handleSpecialistNameChange = (event) => {
-        const updatedName=event.target.value;
-        console.log("newValue",updatedName);
-        setSelectedNameSpecialist(updatedName);
-      };
-    useEffect(() => {
-        console.log("Este userDataRes",userDataRes, userDataRes.merchantSelected.merchantId);
-      let listUserPayload = {
-        request: {
-          payload: {
-            merchantId: userDataRes.merchantSelected.merchantId,
-          },
+  const {listUserRes} = useSelector(({user}) => user);
+
+  const toListUser = (payload) => {
+    dispatch(listUser(payload));
+  };
+  const handleOptionChange = (event, newValue) => {
+    setSelectedOption(newValue);
+  };
+  const handleSpecialistNameChange = (event) => {
+    const updatedName = event.target.value;
+    console.log('newValue', updatedName);
+    setSelectedNameSpecialist(updatedName);
+  };
+  useEffect(() => {
+    console.log(
+      'Este userDataRes',
+      userDataRes,
+      userDataRes.merchantSelected.merchantId,
+    );
+    let listUserPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
         },
-      };
-      toListUser(listUserPayload);
-      console.log('listUserRes: ', listUserRes);
-    }, []);
-    useEffect(() => {
-      if (listUserRes) {
-        console.log('listUserRes desde useeffect', listUserRes);
-        const listUserAutoCompleteV1=listUserRes.map((user)=>{
-            return {...user,label:user.email}
-        });
-        
-        console.log("listUserAutoCompleteV1",listUserAutoCompleteV1);
-        setListUsersModal(listUserAutoCompleteV1);
-      
-        console.log('Este es el listUsersModal',listUsersModal);
-        
-      }
-    }, [listUserRes]);
+      },
+    };
+    toListUser(listUserPayload);
+    console.log('listUserRes: ', listUserRes);
+  }, []);
+  useEffect(() => {
+    if (listUserRes) {
+      console.log('listUserRes desde useeffect', listUserRes);
+      const listUserAutoCompleteV1 = listUserRes.map((user) => {
+        return {...user, label: user.email};
+      });
 
+      console.log('listUserAutoCompleteV1', listUserAutoCompleteV1);
+      setListUsersModal(listUserAutoCompleteV1);
 
-  /**/////////////////////////////////////////// */
+      console.log('Este es el listUsersModal', listUsersModal);
+    }
+  }, [listUserRes]);
+
+  /**/ ////////////////////////////////////////// */
 
   useEffect(() => {
     if (!userDataRes) {
@@ -216,7 +220,7 @@ const NewSpecialist = (props) => {
     //delete data.documentType;
     console.log('Data', data);
     console.log('objSelects', objSelects);
-    console.log(selectedNameSpecialist,"specialistName");
+    console.log(selectedNameSpecialist, 'specialistName');
     let extraTrama;
     extraTrama = {
       specialistName: selectedNameSpecialist,
@@ -315,14 +319,12 @@ const NewSpecialist = (props) => {
           enableReinitialize={true}
         >
           {({values, errors, isSubmitting, setFieldValue}) => {
-
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
                 noValidate
                 autoComplete='on'
                 /* onChange={handleActualData} */
-                
               >
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <>
@@ -349,7 +351,7 @@ const NewSpecialist = (props) => {
                           name='user'
                           id='combo-box-demo'
                           options={listUserRes}
-                          getOptionLabel={(option)=>option.email}
+                          getOptionLabel={(option) => option.email}
                           onChange={handleOptionChange}
                           renderInput={(params) => (
                             <TextField {...params} label='Usuario' />
