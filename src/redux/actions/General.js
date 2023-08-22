@@ -357,7 +357,7 @@ export const updateNotificationBusinessParameter = (payload) => {
           type: UPDATE_NOTIFICATION_BUSINESS_PARAMETER,
           payload: data.response.payload,
         });
-        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+        dispatch({type: FETCH_SUCCESS, payload: data.status.success});
       })
       .catch((error) => {
         console.log('updateNotificationBusinessParameter error', error);

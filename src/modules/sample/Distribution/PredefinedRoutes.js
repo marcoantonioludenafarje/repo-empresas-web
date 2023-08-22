@@ -24,6 +24,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  useTheme,
+  TextField,
+  useMediaQuery,
 } from '@mui/material';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -33,7 +36,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import {makeStyles} from '@mui/styles';
 import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import CachedIcon from '@mui/icons-material/Cached';
+import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 
 import {
   FETCH_SUCCESS,
@@ -115,7 +120,21 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '5px',
     width: '20px',
   },
+  detailRoutes:{
+    maxWidth:'90vw'
+  },
+  stack: {
+    justifyContent: 'center',
+    marginBottom: '10px',
+  }
 }));
+
+const useStylesByDialog=makeStyles((theme)=>({
+  div:{
+    maxWidth:'90vw'
+  }
+}));
+
 
 const PredefinedRoutes = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -125,25 +144,26 @@ const PredefinedRoutes = () => {
   const [openRoutes, setOpenRoutes] = React.useState(false);
   const [openProducts, setOpenProducts] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [rowNumber2, setRowNumber2] = React.useState(0);
-
   const [loading, setLoading] = React.useState(true);
-
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
-
+  
   const {
     predefinedRoutes_PageListPredefinedRoutes,
     lastEvaluatedKeys_PageListPredefinedRoutes,
     selectedRoute_PageListPredefinedRoutes,
   } = useSelector(({movements}) => movements);
   // console.log('listRoute', listRoute);
-
+  const [listRouteBySelectedRoutes,setListRouteBySelectedRoutes]=React.useState(selectedRoute_PageListPredefinedRoutes);
+  console.log("Este es el listROutes",listRouteBySelectedRoutes)
   const {deliveries} = useSelector(({movements}) => movements);
-
+  const [valueObservationInput,setValueObservationInput]=React.useState('');
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
@@ -250,6 +270,43 @@ const PredefinedRoutes = () => {
     }
   };
 
+
+  const handleSearchValues = (event) => {
+    if (event.target.name == 'codeToSearch') {
+      if (event.target.value == '') {
+        setValueObservationInput(null);
+        setListRouteBySelectedRoutes(selectedRoute_PageListPredefinedRoutes);
+      } else {
+        event.target.value = event.target.value.toLowerCase();
+        setValueObservationInput(event.target.value);
+      }
+    }
+  };
+
+  const searchValuesInForm=()=>{
+      if (valueObservationInput == null) {
+        console.log("Aqui estan todas las rutas",selectedRoute_PageListPredefinedRoutes);
+        setListRouteBySelectedRoutes(selectedRoute_PageListPredefinedRoutes);
+      } else {
+        console.log("Aqui estan todas las rutas",selectedRoute_PageListPredefinedRoutes);
+        let newRoutes=[];
+        console.log("Buscando Observacion que contengan",valueObservationInput);
+        console.log("Este es el selectedRoute predefinido del search",selectedRoute_PageListPredefinedRoutes.deliveries)
+        for(let delivery of selectedRoute_PageListPredefinedRoutes.deliveries){
+          if(delivery.observationDelivery?.toLowerCase().includes(valueObservationInput)){
+            newRoutes.push(delivery);
+          }
+        }
+        let {deliveries,...otherFields}=selectedRoute_PageListPredefinedRoutes;
+        let newData={
+          ...otherFields,
+          deliveries:newRoutes
+        }
+        setListRouteBySelectedRoutes(newData);
+      }
+  }
+
+
   const checkProducts = (delivery, index) => {
     selectedDelivery = delivery;
     console.log('selectedDelivery', selectedDelivery);
@@ -290,6 +347,11 @@ const PredefinedRoutes = () => {
     );
   };
 
+  const setDeleteState = () => {
+    setOpen2(true);
+    handleClose();
+  };
+
   const handleClick = (routeId, event) => {
     console.log('event.currentTarget', event.currentTarget);
     console.log('event', event);
@@ -302,6 +364,7 @@ const PredefinedRoutes = () => {
   const [typeDialog, setTypeDialog] = React.useState('');
   const [showAlert, setShowAlert] = React.useState(false);
   const classes = useStyles();
+  const classesDialog=useStylesByDialog();
   const handleClose = () => {
     setOpen(false);
   };
@@ -334,7 +397,7 @@ const PredefinedRoutes = () => {
       ) : (
         <Card sx={{p: 4}}>
           <TableContainer component={Paper} sx={{maxHeight: 440}}>
-            <Table stickyHeader size='small' aria-label='simple table'>
+            <Table stickyHeader size='small' sx={{ maxWidth: '90vw' }} aria-label='simple table'>
               <TableHead>
                 <TableRow>
                   <TableCell>Fecha de creación</TableCell>
@@ -465,6 +528,11 @@ const PredefinedRoutes = () => {
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Descargar archivo de rutas
             </MenuItem>
+
+            <MenuItem onClick={setDeleteState}>
+            <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            Eliminar ruta
+          </MenuItem>
           </Menu>
 
           <Dialog
@@ -475,7 +543,17 @@ const PredefinedRoutes = () => {
             aria-describedby='alert-dialog-description'
           >
             {typeDialog == 'detailRoute' ? (
+              
               <>
+                <style>
+                  {
+                    `
+                    .css-hz1bth-MuiDialog-container > div {
+                      max-width: 90vw !important;
+                    }
+                    `
+                  }
+                </style>
                 <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
                   {`Rutas(${
                     selectedRoute_PageListPredefinedRoutes
@@ -484,13 +562,37 @@ const PredefinedRoutes = () => {
                   } puntos)`}
                   {/* { selectedRoute_PageListPredefinedRoutes && selectedRoute_PageListPredefinedRoutes.deliveries
                    && selectedRoute_PageListPredefinedRoutes.deliveries.length >0  ? 
-                   `Rutas (${selectedRoute_PageListPredefinedRoutes.deliveries.length} puntos)` : `Rutas (Cargando ... ${selectedRoute_PageListPredefinedRoutes.deliveries.length} puntos)`} */}
+                  `Rutas (${selectedRoute_PageListPredefinedRoutes.deliveries.length} puntos)` : `Rutas (Cargando ... ${selectedRoute_PageListPredefinedRoutes.deliveries.length} puntos)`} */}
                   <CancelOutlinedIcon
                     onClick={setOpen.bind(this, false)}
                     className={classes.closeButton}
                   />
                 </DialogTitle>
-                <DialogContent>
+
+                
+                <DialogContent >
+                <Stack
+                    sx={{m: 2}}
+                    direction={isMobile ? 'column' : 'row'}
+                    spacing={2}
+                    className={classes.stack}
+                  >
+                    <TextField
+                      label='Observación'
+                      variant='outlined'
+                      name='codeToSearch'
+                      size='small'
+                      onChange={handleSearchValues}
+                    />
+                    <Button
+                      startIcon={<ManageSearchOutlinedIcon />}
+                      variant='contained'
+                      color='primary'
+                      onClick={searchValuesInForm}
+                    >
+                      Buscar
+                    </Button>
+                  </Stack>
                   <Table size='small' aria-label='purchases'>
                     <TableHead sx={{backgroundColor: '#ededed'}}>
                       <TableRow>
@@ -510,10 +612,10 @@ const PredefinedRoutes = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {selectedRoute_PageListPredefinedRoutes &&
-                      selectedRoute_PageListPredefinedRoutes.deliveries.length >
+                      {listRouteBySelectedRoutes &&
+                      listRouteBySelectedRoutes.deliveries.length >
                         0
-                        ? selectedRoute_PageListPredefinedRoutes.deliveries.map(
+                        ? listRouteBySelectedRoutes.deliveries.map(
                             (route, index2) => {
                               const products = route.productsInfo;
                               return (
@@ -645,8 +747,11 @@ const PredefinedRoutes = () => {
                     </TableBody>
                   </Table>
                 </DialogContent>
+                
               </>
+              
             ) : null}
+
           </Dialog>
         </Card>
       )}

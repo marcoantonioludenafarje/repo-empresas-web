@@ -866,12 +866,8 @@ const Create = (props) => {
 
   const [geneVariations, setGenerateVariations] = useState(null);
 
-<<<<<<< HEAD
-  const handleDummy = async () => {
-=======
   const handleGenerateVariations = async () => {
 
->>>>>>> 9e46f52
     let text = getValueField('campaignContent').value;
 
     const payloadVariations = {
@@ -890,16 +886,6 @@ const Create = (props) => {
     await new Promise(resolve => setTimeout(resolve, 7000));
 
     setGenerateVariations(response);
-<<<<<<< HEAD
-    console.log('index numVariations', numVariations);
-    console.log('index response', geneVariations?.data);
-
-    const newDatatt = [...variationsData];
-    if (geneVariations !== null) {
-      for (let i = 0; i < numVariations; i++) {
-        newDatatt[i] = geneVariations.data[i];
-        setVariationsData(newDatatt);
-=======
     
     if (geneVariations !== null) {
       if (geneVariations.data.length<variations.length && variations.length>8) {
@@ -908,7 +894,6 @@ const Create = (props) => {
         for (let i = 0; i < diff; i++) {
           geneVariations.data.push('');
         }
->>>>>>> 9e46f52
       }
       const newDatatt = [];
       for (let i = 0; i < variations.length; i++) {
@@ -1308,35 +1293,6 @@ const Create = (props) => {
                   <Typography></Typography>
                 )}
 
-<<<<<<< HEAD
-                <Grid item xs={12}>
-                  <FormControl sx={{width: '20%', my: 2, marginLeft: 110}}>
-                    <InputLabel id='agent-label' style={{fontWeight: 200}}>
-                      Seleccionar Agente
-                    </InputLabel>
-                    {/* {inicializaIdentidad()} */}
-                    <Select
-                      name='agent'
-                      labelId='agent-label'
-                      label='Agent'
-                      //onChange={handleField}
-                      onChange={(option, value) => {
-                        setFieldValue('agent', value.props.value);
-                        // setIdentidad(value.props.value);
-                      }}
-                    >
-                      {listAgents.map((agent) => (
-                        <MenuItem
-                          value={agent.robotId}
-                          style={{fontWeight: 200}}
-                        >
-                          {agent.robotName}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-=======
                   <Grid item xs={12}>
                     <FormControl sx={{width: '20%' ,my: 2, marginLeft: "40%"}}>
                       <InputLabel
@@ -1364,7 +1320,6 @@ const Create = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>                
->>>>>>> 9e46f52
 
                 <ButtonGroup
                   orientation='vertical'

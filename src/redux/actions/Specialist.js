@@ -93,10 +93,10 @@ export const updateSpecialists = (payload) => {
       });
       console.log('Especialista data update', data);
       dispatch({type: UPDATE_SPECIALIST, payload: data.response.payload});
-      dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      dispatch({type: FETCH_SUCCESS, payload: 'Especialista actualizado exitosamente'});
     } catch (error) {
       console.log('Update error especialista', data);
-      dispatch({type: FETCH_ERROR, payload: 'error'});
+      dispatch({type: FETCH_ERROR, payload: 'Error al actualizar especialista'});
     }
   };
 };

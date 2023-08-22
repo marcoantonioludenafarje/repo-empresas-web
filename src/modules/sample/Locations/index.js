@@ -124,6 +124,7 @@ const LocationTable = (arrayObjs, props) => {
   const [open2, setOpen2] = React.useState(false);
   const [ubigeo, setUbigeo] = React.useState('');
   const [locationName, setLocationName] = React.useState('');
+  const [locationCode,setLocationCode]=React.useState('');
   const [type, setType] = React.useState('');
   const [existUbigeo, setExistUbigeo] = React.useState(true);
   const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
@@ -243,7 +244,7 @@ const LocationTable = (arrayObjs, props) => {
           type: type == 'TODOS' ? '' : type,
           ubigeo: ubigeo,
           merchantId: userDataRes.merchantSelected.merchantId,
-          modularCode: '',
+          modularCode: locationCode,
           LastEvaluatedKey: locationsLastEvaluatedKey_pageListLocations,
           needItems: true,
         },
@@ -312,12 +313,20 @@ const LocationTable = (arrayObjs, props) => {
           type: type,
           ubigeo: ubigeo,
           merchantId: userDataRes.merchantSelected.merchantId,
-          modularCode: '',
+          modularCode: locationCode,
           LastEvaluatedKey: null,
           needItems: true,
         },
       },
     };
+    if (event.target.name == 'codeToSearch') {
+      console.log('codeToSearch:' + event.target.value);
+      if (event.target.value == '') {
+        listPayload.request.payload.modularCode = '';
+      } else {
+        listPayload.request.payload.modularCode = event.target.value;
+      }
+    }
     if (event.target.name == 'nameToSearch') {
       console.log('nameToSearch:' + event.target.value);
       if (event.target.value == '') {
@@ -354,12 +363,13 @@ const LocationTable = (arrayObjs, props) => {
           type: type == 'TODOS' ? '' : type,
           ubigeo: ubigeo,
           merchantId: userDataRes.merchantSelected.merchantId,
-          modularCode: '',
+          modularCode: locationCode,
           LastEvaluatedKey: null,
           needItems: true,
         },
       },
     };
+    console.log("Buscando con este payload",listPayload);
     toGetLocations(listPayload, jwtToken);
   };
   const newLocation = () => {
@@ -557,6 +567,18 @@ const LocationTable = (arrayObjs, props) => {
         spacing={2}
         className={classes.stack}
       >
+
+        <TextField
+          label='Codigo'
+          variant='outlined'
+          name='codeToSearch'
+          size='big'
+          onChange={(event) => {
+            console.log("Este es el event del code",event.target.value);
+            //listPayload.request.payload.locationName = event.target.value;
+            setLocationCode(event.target.value);
+          }}
+        />
         <TextField
           label='Nombre'
           variant='outlined'
@@ -632,9 +654,9 @@ const LocationTable = (arrayObjs, props) => {
             )}
           />
         </Grid>
-        <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
+        {/* <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
-        </Button>
+        </Button> */}
         <Button
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'

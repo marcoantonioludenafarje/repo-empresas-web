@@ -96,7 +96,7 @@ export default function Views(props) {
 
   const [openQRPop, setopenQRPop] = React.useState(false);
   const [openQR, setopenQR] = React.useState(false);
-
+  const [reload, setReload] = React.useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [filteredSpecialists, setFilteredSpecialists] = useState([]);
 
@@ -109,7 +109,9 @@ export default function Views(props) {
   const deleteASpecialist = (payload) => {
     dispatch(deleteSpecialists(payload));
   };
-
+  const reloadPage = () => {
+    setReload(!reload);
+  };
   const {userDataRes} = useSelector(({user}) => user);
 
   const {listSpecialists, agentsLastEvaluatedKey_pageListAgents} = useSelector(
@@ -143,7 +145,7 @@ export default function Views(props) {
       getSpecialist(listPayload);
       // setFirstload(true);
     }
-  }, [userDataRes]);
+  }, [userDataRes,reload]);
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -169,9 +171,11 @@ export default function Views(props) {
     setAnchorElQR(null);
   };
   const goToUpdate = () => {
+    let userId=selectedSpecialist.user.userId;
+    selectedSpecialist.user=userId;
     console.log('Actualizando', selectedSpecialist);
     Router.push({
-      pathname: '/sample/agents/update',
+      pathname: '/sample/specialists/update',
       query: selectedSpecialist,
     });
   };
@@ -197,12 +201,13 @@ export default function Views(props) {
 
   const confirmDelete = () => {
     console.log('selected agente', selectedSpecialist);
-    console.log('id de selected', selectedSpecialist.robotId);
-    deletePayload.request.payload.robotId = selectedSpecialist.robotId;
+    console.log('id de selected', selectedSpecialist.specialistId);
+    deletePayload.request.payload.specialistId = selectedSpecialist.specialistId;
     console.log('deletePayload', deletePayload);
     deleteASpecialist(deletePayload);
     setOpen2(false);
     setOpenStatus(true);
+    reloadPage();
   };
 
   const newSpecialist = () => {
@@ -290,7 +295,7 @@ export default function Views(props) {
                     scope='row'
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.user.email}
+                    {row.user?.email}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
@@ -354,7 +359,7 @@ export default function Views(props) {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar agente'}
+          {'Eliminar Especialista'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
