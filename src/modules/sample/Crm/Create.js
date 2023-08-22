@@ -80,7 +80,6 @@ import {useRef} from 'react';
 import EditorMessage from './EditorMessage';
 import IntlMessages from '@crema/utility/IntlMessages';
 
-
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
   campaignContent: yup
@@ -141,7 +140,7 @@ const Create = (props) => {
   const [textMessage, setTextMessage] = useState('');
   const [idTextMessage, setIdTextMessage] = useState(0);
   const [campaignContentVariations, setCampaignContentsVariations] = useState([
-    {id: 1 },
+    {id: 1},
   ]);
   const [campaignContent, setCampaignContent] = useState('');
 
@@ -156,7 +155,6 @@ const Create = (props) => {
       {id: newIdVariation},
     ]);
   };
-
 
   const [selectedJsonImages, setSelectedJsonImages] = React.useState([]);
   const [nameLastFile, setNameLastFile] = React.useState('');
@@ -271,7 +269,7 @@ const Create = (props) => {
 
         break;
       default:
-        console.log("cargando proceso,", process);
+        console.log('cargando proceso,', process);
         console.log('Se supone que pasa por aquí XD');
     }
   }, [loading]);
@@ -383,9 +381,8 @@ const Create = (props) => {
     console.log('ACTUAL IMAGE', imagePresigned);
     console.log('confeti agente', getValueField('agent').value);
 
-    const idRobot = getValueField('agent').value
-    const name = listAgents.filter((agent)=> agent.robotId === idRobot)
-
+    const idRobot = getValueField('agent').value;
+    const name = listAgents.filter((agent) => agent.robotId === idRobot);
 
     const payload = {
       request: {
@@ -399,8 +396,8 @@ const Create = (props) => {
                 urlClients: '',
               },
               targetSummary: [...selectedTags, totaldeClientes()],
-              robotId: idRobot?idRobot:'',
-              robotName: name[0].robotName?name[0].robotName:'',
+              robotId: idRobot ? idRobot : '',
+              robotName: name[0].robotName ? name[0].robotName : '',
               messages: [
                 {
                   order: 0,
@@ -423,7 +420,9 @@ const Create = (props) => {
                       extensions[actualImage.type]
                     : '',
                   text: data.campaignContent,
-                  variations: variationsDataContent ? variationsDataContent : [''],
+                  variations: variationsDataContent
+                    ? variationsDataContent
+                    : [''],
                 },
               ],
             },
@@ -782,7 +781,11 @@ const Create = (props) => {
     ) {
       // 11>5 && ===0
       console.log('VARIATONSDATA ', variationsData.length, parametro);
-      if (variationsDataContent.filter((vari) => vari !== '' && vari !== undefined)) {
+      if (
+        variationsDataContent.filter(
+          (vari) => vari !== '' && vari !== undefined,
+        )
+      ) {
         setVerification(false);
         console.log('TOTAL DE DATA PARA');
         return parametro;
@@ -822,36 +825,34 @@ const Create = (props) => {
   };
 
   const handleAccordionVariationsClose = () => {
-
-    if (variationsDataContent.length===0) {
+    if (variationsDataContent.length === 0) {
       setVariations(['Variación 1']);
       setNumVariations(1);
-      setCampaignContentsVariations([{ id: 1, content: '' }]);
+      setCampaignContentsVariations([{id: 1, content: ''}]);
       setVariationsData([]);
       setOpenDialog(false);
-    }else if(variationsDataContent.length>0){
+    } else if (variationsDataContent.length > 0) {
       const nuevasVariaciones = [];
       const nuevosContenidos = [];
-      
+
       for (let i = 0; i < variationsDataContent.length; i++) {
         nuevasVariaciones.push(`Variación ${i + 1}`);
-        nuevosContenidos.push({ id: i + 1 });
+        nuevosContenidos.push({id: i + 1});
       }
-      
+
       setVariations(nuevasVariaciones);
       setNumVariations(variationsDataContent.length);
       setCampaignContentsVariations(nuevosContenidos);
       setVariationsData(variationsDataContent);
       setOpenDialog(false);
     }
-
   };
 
-  const [variationsDataContent, setVariationsDataContent] = useState([])
-  
+  const [variationsDataContent, setVariationsDataContent] = useState([]);
+
   const handleSaveVariations = (data) => {
-    console.log("DATA DE VARIATIONS >>", data);
-    const nonEmptyValues = data.filter(value => value !== "");
+    console.log('DATA DE VARIATIONS >>', data);
+    const nonEmptyValues = data.filter((value) => value !== '');
 
     setVariationsDataContent(nonEmptyValues);
     //setVariationsDataContent(data);
@@ -859,21 +860,19 @@ const Create = (props) => {
     setOpenDialog(false);
   };
 
-  useEffect(()=>{
-    console.log("DATA DE VARIATIONS<<", variationsDataContent);
-
-  }, [variationsDataContent])
+  useEffect(() => {
+    console.log('DATA DE VARIATIONS<<', variationsDataContent);
+  }, [variationsDataContent]);
 
   const [geneVariations, setGenerateVariations] = useState(null);
 
   const handleGenerateVariations = async () => {
-
     let text = getValueField('campaignContent').value;
 
     const payloadVariations = {
       request: {
         payload: {
-          cant_variaciones: variations.length>8?8:variations.length,
+          cant_variaciones: variations.length > 8 ? 8 : variations.length,
           textCampaign: text,
         },
       },
@@ -882,13 +881,15 @@ const Create = (props) => {
     console.log('index payload', payloadVariations);
     const response = await dispatch(generateVariations(payloadVariations));
 
-
-    await new Promise(resolve => setTimeout(resolve, 7000));
+    await new Promise((resolve) => setTimeout(resolve, 7000));
 
     setGenerateVariations(response);
-    
+
     if (geneVariations !== null) {
-      if (geneVariations.data.length<variations.length && variations.length>8) {
+      if (
+        geneVariations.data.length < variations.length &&
+        variations.length > 8
+      ) {
         const diff = variations.length - geneVariations.data.length;
 
         for (let i = 0; i < diff; i++) {
@@ -899,15 +900,14 @@ const Create = (props) => {
       for (let i = 0; i < variations.length; i++) {
         newDatatt[i] = geneVariations.data[i];
       }
-      console.log("IA DATA <<<", newDatatt);
+      console.log('IA DATA <<<', newDatatt);
       setVariationsData(newDatatt);
     }
   };
 
-  useEffect(()=>{
-    console.log("IA DATA >>>", geneVariations);
-  },[geneVariations])
-
+  useEffect(() => {
+    console.log('IA DATA >>>', geneVariations);
+  }, [geneVariations]);
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
 
@@ -1180,15 +1180,23 @@ const Create = (props) => {
                 >
                   <DialogTitle>
                     <Box
-                      sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
                     >
-                      <Button variant='outlined' onClick={handleGenerateVariations} sx={{ flexGrow: 0, textAlign: 'center'}}>
+                      <Button
+                        variant='outlined'
+                        onClick={handleGenerateVariations}
+                        sx={{flexGrow: 0, textAlign: 'center'}}
+                      >
                         ¡Necesito Ayuda!
                       </Button>
-                    <CancelOutlinedIcon
-                      onClick={handleAccordionVariationsClose}
-                      className={classes.closeButton}
-                    />
+                      <CancelOutlinedIcon
+                        onClick={handleAccordionVariationsClose}
+                        className={classes.closeButton}
+                      />
                     </Box>
                   </DialogTitle>
                   <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
@@ -1204,10 +1212,13 @@ const Create = (props) => {
                     <Box
                       sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
                     >
-                      {verification && <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                        Cantidad de variaciones obligatorias:
-                        {verificationVariations()-variationsDataContent.length}
-                      </Typography>}
+                      {verification && (
+                        <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                          Cantidad de variaciones obligatorias:
+                          {verificationVariations() -
+                            variationsDataContent.length}
+                        </Typography>
+                      )}
                     </Box>
                   ) : (
                     <Typography></Typography>
@@ -1276,7 +1287,6 @@ const Create = (props) => {
                     >
                       Guardar
                     </Button>
-
                   </DialogActions>
                 </Dialog>
 
@@ -1284,42 +1294,45 @@ const Create = (props) => {
                   <Box
                     sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
                   >
-                  {verification && <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                      Cantidad de variaciones obligatorias:
-                      {verificationVariations() - variationsDataContent.length}
-                    </Typography>}
+                    {verification && (
+                      <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                        Cantidad de variaciones obligatorias:
+                        {verificationVariations() -
+                          variationsDataContent.length}
+                      </Typography>
+                    )}
                   </Box>
                 ) : (
                   <Typography></Typography>
                 )}
 
-                  <Grid item xs={12}>
-                    <FormControl sx={{width: '20%' ,my: 2, marginLeft: "40%"}}>
-                      <InputLabel
-                        id='agent-label'
-                        style={{fontWeight: 200}}
-                      >
-                        Seleccionar Agente
-                      </InputLabel>
-                      {/* {inicializaIdentidad()} */}
-                      <Select
-                        name='agent'
-                        labelId='agent-label'
-                        label='Agent'
-                        //onChange={handleField}
-                        onChange={(option, value) => {
-                          setFieldValue('agent', value.props.value);
-                          // setIdentidad(value.props.value);
-                        }}
-                      >
-                        {listAgents.map((agent)=>(
-                          <MenuItem value={agent.robotId} style={{fontWeight: 200}}>
-                            {agent.robotName}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>                
+                <Grid item xs={12}>
+                  <FormControl sx={{width: '20%', my: 2, marginLeft: '40%'}}>
+                    <InputLabel id='agent-label' style={{fontWeight: 200}}>
+                      Seleccionar Agente
+                    </InputLabel>
+                    {/* {inicializaIdentidad()} */}
+                    <Select
+                      name='agent'
+                      labelId='agent-label'
+                      label='Agent'
+                      //onChange={handleField}
+                      onChange={(option, value) => {
+                        setFieldValue('agent', value.props.value);
+                        // setIdentidad(value.props.value);
+                      }}
+                    >
+                      {listAgents.map((agent) => (
+                        <MenuItem
+                          value={agent.robotId}
+                          style={{fontWeight: 200}}
+                        >
+                          {agent.robotName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
 
                 <ButtonGroup
                   orientation='vertical'
@@ -1600,7 +1613,6 @@ const Create = (props) => {
           </Button>
         </DialogActions> */}
       </Dialog>
-    
     </Card>
   );
 };

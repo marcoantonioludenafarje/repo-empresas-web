@@ -130,20 +130,20 @@ const Views = (props) => {
             Nuevo
           </Button>
         ) : null} */}
-          <Button
-            variant='outlined'
-            startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={newCamp}
-          >
-            Nuevo
-          </Button>
-          <Button
-            variant='outlined'
-            startIcon={<GridOnOutlinedIcon />}
-            onClick={''}
-          >
-            Exportar todo
-          </Button>
+        <Button
+          variant='outlined'
+          startIcon={<AddCircleOutlineOutlinedIcon />}
+          onClick={newCamp}
+        >
+          Nuevo
+        </Button>
+        <Button
+          variant='outlined'
+          startIcon={<GridOnOutlinedIcon />}
+          onClick={''}
+        >
+          Exportar todo
+        </Button>
 
         {/* {localStorage
           .getItem('pathsBack')

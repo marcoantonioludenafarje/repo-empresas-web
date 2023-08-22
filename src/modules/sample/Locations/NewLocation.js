@@ -61,6 +61,9 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
+  sunatEstablishmentCode: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />),
   ubigeo: yup.string(),
   type: yup.string(),
 });
@@ -68,6 +71,7 @@ const defaultValues = {
   modularCode: '',
   locationName: '',
   locationDetail: '',
+  sunatEstablishmentCode: '',
   ubigeo: '',
   type: '',
 };
@@ -79,6 +83,7 @@ let newLocationPayload = {
           modularCode: '',
           coordenates: '',
           locationDetail: '',
+          sunatEstablishmentCode: '',
           locationName: '',
           type: '',
           ubigeo: '',
@@ -175,7 +180,10 @@ const NewLocation = () => {
       data.locationName;
     newLocationPayload.request.payload.locations[0].locationDetail =
       data.locationDetail;
-    newLocationPayload.request.payload.locations[0].ubigeo = objUbigeo.ubigeo;
+    (newLocationPayload.request.payload.locations[0].sunatEstablishmentCode =
+      String(data.sunatEstablishmentCode)),
+      (newLocationPayload.request.payload.locations[0].ubigeo =
+        objUbigeo.ubigeo);
     newLocationPayload.request.payload.locations[0].type = objSelectsT.type;
     newLocationPayload.request.payload.locations[0].coordenates = {
       lat: {S: ''},
@@ -421,6 +429,21 @@ const NewLocation = () => {
                         </MenuItem>
                       </Select>
                     </FormControl>
+                  </Grid>
+                  <Grid item xs={8} sm={12}>
+                    <AppUpperCaseTextField
+                      label='Código de Establecimiento Sunat (Domicilio Fiscal = 0000)'
+                      name='sunatEstablishmentCode'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
                   </Grid>
                 </Grid>
 

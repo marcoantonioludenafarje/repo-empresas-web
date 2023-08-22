@@ -1,7 +1,7 @@
 [
     {
       "value": "NIU",
-      "label": "UNIDAD"
+      "label": "BIEN"
     },
     {
       "value": "ZZ",
@@ -12,11 +12,51 @@
       "label": "CAJA"
     },
     {
+      "value": "PK",
+      "label": "PAQUETE"
+    },
+    {
+      "value": "BE",
+      "label": "FARDO"
+    },
+    {
+      "value": "SA",
+      "label": "SACO"
+    },
+    {
+      "value": "BG",
+      "label": "BOLSA"
+    },
+    {
+      "value": "BO",
+      "label": "BOTELLAS"
+    },
+    {
+      "value": "CA",
+      "label": "LATAS"
+    },
+    {
+      "value": "DZN",
+      "label": "DOCENA"
+    },
+    {
+      "value": "MIL",
+      "label": "MILLARES"
+    },
+    {
+      "value": "GRM",
+      "label": "GRAMO"
+    },
+    {
       "value": "KGM",
       "label": "KILOGRAMO"
     },
     {
-      "value": "MIL",
-      "label": "MILLAR"
+      "value": "TNE",
+      "label": "TONELADAS"
+    },
+    {
+      "value": "MLT",
+      "label": "MILILITRO"
     }
 ]
