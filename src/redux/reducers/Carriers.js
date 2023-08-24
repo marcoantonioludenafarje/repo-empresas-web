@@ -30,7 +30,7 @@ const carriersReducer = (state = INIT_STATE, action) => {
           getCarriersRes: action.payload,
         };
       } else {
-        let request = action.request.request.payload;
+        let request = action.request?.request.payload;
         let lastEvaluatedKeyRequest = null;
         let items = [];
         let lastEvaluatedKey = '';
@@ -43,8 +43,8 @@ const carriersReducer = (state = INIT_STATE, action) => {
             : null;
         } else {
           // En estos casos hay que setear con lo que venga
-          items = action.payload.Items;
-          lastEvaluatedKey = action.payload.LastEvaluatedKey
+          items = action.payload?.Items;
+          lastEvaluatedKey = action.payload?.LastEvaluatedKey
             ? action.payload.LastEvaluatedKey
             : null;
         }

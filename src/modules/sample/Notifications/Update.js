@@ -81,16 +81,6 @@ const validationSchema = yup.object({
   durationNotification: yup.string().required('Campo requerido'),
   unitNotification: yup.string().required('Campo requerido'),
 });
-const defaultValues = {
-  notificationName: '',
-  campaignContent: '',
-  channelNotification: '',
-  periodicityDescription: '',
-  durationNotification: '',
-  unitNotification: '',
-  tipoEvento: '',
-  agentName: '',
-};
 
 const useStyles = makeStyles((theme) => ({
   fixPosition: {
@@ -111,7 +101,7 @@ const formatSentence = (phrase) => {
   );
 };
 
-const NewClient = (props) => {
+const UpdateNotification = (props) => {
   let changeValueField;
   let getValueField;
   const {businessParameter} = useSelector(({general}) => general);
@@ -135,8 +125,9 @@ const NewClient = (props) => {
     React.useState('');
   const [listTypeEventNotification, setListTypeEventNotification] =
     React.useState(verTiposEventos(globalParameter)[0]);
-  const [listFilteredTypeNotification, setListFilteredTypeNotification] =
-    React.useState([]);
+  let listFilteredTypeNotification =[];
+  let {query} = router;
+  console.log('query', query);
   const updateNotificationParameter = (payload) => {
     dispatch(updateNotificationBusinessParameter(payload));
   };
@@ -149,6 +140,7 @@ const NewClient = (props) => {
     console.log('evento tag', event);
     console.log('values tag', values);
     console.log('Agent seleccionado', event.target.attributes.value);
+    changeValueField('agentName',values);
     setAgentSelected(values);
     reloadPage();
   };
@@ -163,14 +155,48 @@ const NewClient = (props) => {
   };
   const {listAgents} = useSelector(({agents}) => agents);
 
+  /**/ 
+  if (businessParameter) {
+    let list = tipoEventosNotificaciones[0];
+    console.log('Este es el arreglo de notificaciones:', list);
+    let listNotificacionModific=[];
+    for (let item of list) {
+      if (Object.keys(item).length !== 0) {
+        console.log(
+          'Estre es el item',
+          Object.keys(item).map((key) => console.log(item[key])),
+        );
+        const uuidPattern =
+          /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+        let validNotification = Object.keys(item)
+          .filter(
+            (key) => typeof item[key] === 'object' && uuidPattern.test(key) && key==query.eventId,
+          )
+          .map((key) => item[key]);
+        if (validNotification.length > 0) {
+          listNotificacionModific.push(validNotification);
+        }
+        console.log('Validation Notification', Object.keys(item));
+        console.log('Validation Notification', validNotification);
+      }
+    } 
+    /*********************************************************/
+    console.log("LIST MODIFIC",listNotificacionModific[0][0])
+    listFilteredTypeNotification.push(listNotificacionModific[0][0]);
+  }
+  /**/ 
+  console.log("FILTRADO UPP",listFilteredTypeNotification)
   console.log('listAgents', listAgents);
   const agentsParsed = listAgents.filter((agent) => agent.active == true);
+  let defaultAgent=agentsParsed.filter((agent)=>agent.robotId==listFilteredTypeNotification[0].agentId);
+  defaultAgent=defaultAgent.map(agent=>{
+    return {...agent,label:agent.robotName}
+  })
   const agentParsedFinally = agentsParsed.map((agent) => {
     return {...agent, label: agent.robotName};
   });
-
+  console.log("DEFAULTAGENT",defaultAgent);
   console.log('agentsParsed', agentParsedFinally);
-  const listChannel = [{label: 'WHATSAPP'}, {label: 'EMAIL'}, {label: 'SMS'}];
   //APIS
   const toNewAgent = (payload) => {
     dispatch(newAgent(payload));
@@ -178,30 +204,64 @@ const NewClient = (props) => {
 
   useEffect(() => {
     if (businessParameter) {
-      let list = listTypeEventNotification;
+      let list = tipoEventosNotificaciones[0];
       console.log('Este es el arreglo de notificaciones:', list);
-      list = list.filter((obj) => {
-        return obj.eventName && obj.eventName != '';
-      });
-      list = list.map((obj) => {
-        return {...obj, label: obj.eventName};
-      });
-      console.log('Este es el arreglo de notificaciones:V2', list);
-      setListFilteredTypeNotification(list);
+      let listNotificacionModific=[];
+      for (let item of list) {
+        if (Object.keys(item).length !== 0) {
+          console.log(
+            'Estre es el item',
+            Object.keys(item).map((key) => console.log(item[key])),
+          );
+          const uuidPattern =
+            /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+          let validNotification = Object.keys(item)
+            .filter(
+              (key) => typeof item[key] === 'object' && uuidPattern.test(key) && key==query.eventId,
+            )
+            .map((key) => item[key]);
+          if (validNotification.length > 0) {
+            listNotificacionModific.push(validNotification);
+          }
+          console.log('Validation Notification', Object.keys(item));
+          console.log('Validation Notification', validNotification);
+        }
+      } 
+      /*********************************************************/
+      console.log("LIST MODIFIC",listNotificacionModific[0][0])
+      listFilteredTypeNotification.push(listNotificacionModific[0][0]);
+      setSelectedNotification(listFilteredTypeNotification);
     }
   }, []);
+
+  //console.log("LIST NOTIFICATION FILTERED",listFilteredTypeNotification);
+  console.log("LIST NOTIFICATION FILTERED",selectedNotification);
+  console.log("LIST TYPE NOTIFICATION",selectedNotification);
+  const defaultValues = {
+    notificationName:listFilteredTypeNotification[0].notificationName || '',
+    campaignContent:listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].template || '',
+    channelNotification:listFilteredTypeNotification[0].channelSelected || '',
+    periodicityDescription:listFilteredTypeNotification[0].description ||'',
+    durationNotification:listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.time || '',
+    unitNotification:listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.unit || '',
+    tipoEvento:listFilteredTypeNotification[0]|| '',
+    agentName:defaultAgent[0] || '',
+    tipoEventoNombre:listFilteredTypeNotification[0].eventName
+  };
   useEffect(()=>{
-    changeValueField('tipoEvento',selectedNotification);
-    changeValueField('notificationName',selectedNotificationName);
-    changeValueField('periodicityDescription',selectedNotification.description);
-    changeValueField('channelNotification',ChannelSelected.label);
-    console.log("Este es el evento seleccionado",getValueField('tipoEvento').value);
-    if(getValueField('tipoEvento').value!='' && getValueField('tipoEvento').value.eventType=='SCHEDULED' && getValueField('channelNotification').value && getValueField('channelNotification').value!=''){
-      console.log("Este es el CANAL seleccionado",getValueField('channelNotification').value);
-        changeValueField('unitNotification',getValueField('tipoEvento').value[getValueField('channelNotification').value].periodicityAction.unit);
-        changeValueField('durationNotification',getValueField('tipoEvento').value[getValueField('channelNotification').value].periodicityAction.time);
+    if (selectedNotification && selectedNotification!=''){
+      console.log("ESTAMOS DENTRO DEL USEEFFECT NOTIFICATION SELECTED",selectedNotification);
+      changeValueField('tipoEvento',selectedNotification);
+      changeValueField('notificationName',selectedNotification.notificationName);
+      changeValueField('periodicityDescription',selectedNotification.description);
+      changeValueField('channelNotification',selectedNotification.channelNotification);
+      console.log("Este es el evento seleccionado",getValueField('tipoEvento').value);
+      if(listFilteredTypeNotification[0]!='' && listFilteredTypeNotification[0].eventType=='SCHEDULED' && getValueField('channelNotification').value && getValueField('channelNotification').value!=''){
+          changeValueField('unitNotification',listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.unit);
+          changeValueField('durationNotification',listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.time);
+      }
+      changeValueField('agentName',AgentSelected);
     }
-    changeValueField('agentName',AgentSelected);
   },[selectedNotification])
   const handleFieldNotification = (event) => {
     console.log('evento tipoNotificion', event);
@@ -362,19 +422,20 @@ const NewClient = (props) => {
       ChannelSelected,
       template: getValueField('campaignContent').value,
     });
+    let agentSelected;
+    if(AgentSelected.length==0){
+      agentSelected=defaultAgent[0];
+    }
     let tramaNotification = selectedNotification;
-    let uuidNotification = uuid();
-    tramaNotification.channelSelected = ChannelSelected;
-    tramaNotification.eventId = uuidNotification;
-    tramaNotification.createdAt = Date.now();
+    tramaNotification.updatedAt = Date.now();
     if (tramaNotification.eventType != 'SCHEDULED') {
-      tramaNotification.notificationName = selectedNotificationName;
-      tramaNotification.agentName = AgentSelected.robotName;
-      tramaNotification.agentId = AgentSelected.robotId;
-      if (ChannelSelected == 'WHATSAPP') {
+      tramaNotification.notificationName = selectedNotificationName?selectedNotificationName:listFilteredTypeNotification[0].notificationName;
+      tramaNotification.agentName = AgentSelected.robotName?AgentSelected.robotName:agentSelected.robotName;
+      tramaNotification.agentId = AgentSelected.robotId?AgentSelected.robotId:agentSelected.robotId;
+      if (tramaNotification.channelSelected == 'WHATSAPP') {
         tramaNotification.notificationsChannel.WHATSAPP.template =
           getValueField('campaignContent').value;
-      } else if (ChannelSelected == 'EMAIL') {
+      } else if (tramaNotification.channelSelected == 'EMAIL') {
         tramaNotification.notificationsChannel.EMAIL.template =
           getValueField('campaignContent').value;
       } else {
@@ -382,32 +443,41 @@ const NewClient = (props) => {
           getValueField('campaignContent').value;
       }
     } else {
-      tramaNotification.notificationName = selectedNotificationName;
-      tramaNotification.agentName = AgentSelected.robotName;
-      tramaNotification.agentId = AgentSelected.robotId;
-      if (ChannelSelected == 'WHATSAPP') {
+      tramaNotification.notificationName = selectedNotificationName?selectedNotificationName:listFilteredTypeNotification[0].notificationName;
+      tramaNotification.agentName = AgentSelected.robotName?AgentSelected.robotName:agentSelected.robotName;;
+      tramaNotification.agentId = AgentSelected.robotId?AgentSelected.robotId:agentSelected.robotId;
+      if (tramaNotification.channelSelected == 'WHATSAPP') {
         tramaNotification.notificationsChannel.WHATSAPP.template =
           getValueField('campaignContent').value;
         tramaNotification.notificationsChannel.WHATSAPP.periodicityAction.time =
-          selectedDuration;
+          selectedDuration!=""?selectedDuration:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.time;
         tramaNotification.notificationsChannel.WHATSAPP.periodicityAction.unit =
-          selectedUnit;
-      } else if (ChannelSelected == 'EMAIL') {
+          selectedUnit!=""?selectedUnit:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.unit;
+      } else if (tramaNotification.channelSelected == 'EMAIL') {
         tramaNotification.notificationsChannel.EMAIL.template =
           getValueField('campaignContent').value;
+          tramaNotification.notificationsChannel.EMAIL.periodicityAction.time =
+          selectedDuration!=""?selectedDuration:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.time;
+        tramaNotification.notificationsChannel.EMAIL.periodicityAction.unit =
+          selectedUnit!=""?selectedUnit:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.unit;
       } else {
         tramaNotification.notificationsChannel.SMS.template =
           getValueField('campaignContent').value;
+          tramaNotification.notificationsChannel.SMS.periodicityAction.time =
+          selectedDuration!=""?selectedDuration:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.time;
+        tramaNotification.notificationsChannel.SMS.periodicityAction.unit =
+          selectedUnit!=""?selectedUnit:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.unit;
       }
     }
+    console.log("TRAMA NOTIFICACION",tramaNotification);
     let tramaGlobal = tipoEventosNotificaciones[1];
     console.log('TRAMA GLOBAL', tramaGlobal);
     let tramaBusiness = tipoEventosNotificaciones[2];
     console.log('llaves', Object.keys(tramaGlobal));
     let llavesGlobal = Object.keys(tramaGlobal);
     llavesGlobal.forEach((llave) => {
-      if (tramaGlobal[llave].eventType == tramaNotification.eventType) {
-        tramaGlobal[llave][uuidNotification] = tramaNotification;
+      if (tramaGlobal[llave][selectedNotification.eventId]==selectedNotification) {
+        tramaGlobal[llave][listFilteredTypeNotification[0].eventId] = tramaNotification;
       }
     });
     console.log('TRAMA GLOBAL MODIFICADA', tramaGlobal);
@@ -427,10 +497,11 @@ const NewClient = (props) => {
     updateNotificationParameter(nupdateNotificationPayload);
     console.log('nupdateNotificationPayload', nupdateNotificationPayload);
     setOpenStatus(true);
-    //setSubmitting(false);
+   // setSubmitting(false);
   };
 
   const showMessage = () => {
+    console.log("Revisando estados de respuesta:success-errorMessage",successMessage,errorMessage);
     if (updateNotificationBusinessParameterRes != undefined) {
       return (
         <>
@@ -444,7 +515,7 @@ const NewClient = (props) => {
           >
             {/* Se ha registrado la información <br />
 correctamente */}
-            {<p>Se ha registrado la notificación correctamente</p>}
+            {<p>Se ha actualizado la información correctamente</p>}
           </DialogContentText>
         </>
       );
@@ -483,7 +554,7 @@ correctamente */}
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          Crear Notificación
+          Actualizar Notificación
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -599,87 +670,43 @@ correctamente */}
                         }}
                       />
                     </Grid>
+                    
                     <Grid item xs={12}>
-                      <Box
+                      <AppUpperCaseTextField
+                        label='Tipo Evento'
+                        name='tipoEventoNombre'
+                        disabled
+                        variant='outlined'
                         sx={{
-                          width: '100%', // Establece el ancho al 100% por defecto
-                          [(theme) => theme.breakpoints.down('sm')]: {
-                            width: '80%', // Ancho del 80% en pantallas pequeñas
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
                           },
-                          [(theme) => theme.breakpoints.up('md')]: {
-                            width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
-                          },
+                          my: 2,
+                          mx: 0,
                         }}
-                      >
-                        <FormControl fullWidth>
-                          <InputLabel
-                            id='evento-label'
-                            style={{fontWeight: 200}}
-                          >
-                            Tipo Evento
-                          </InputLabel>
-                          <Select
-                            value={selectedNotification}
-                            name='tipoEvento'
-                            labelId='evento-label'
-                            label='Tipo Evento'
-                            onChange={handleFieldNotification}
-                            getOptionLabel={(option) => option.eventType}
-                          >
-                            {listFilteredTypeNotification &&
-                            Array.isArray(listFilteredTypeNotification) &&
-                            listFilteredTypeNotification.length >= 1
-                              ? listFilteredTypeNotification.map(
-                                  (obj, index) => {
-                                    return (
-                                      <MenuItem
-                                        key={`eventype-${index}`}
-                                        value={obj}
-                                        style={{fontWeight: 200}}
-                                      >
-                                        {obj.label}
-                                      </MenuItem>
-                                    );
-                                  },
-                                )
-                              : null}
-                          </Select>
-                        </FormControl>
-                      </Box>
+                      />
                     </Grid>
                     
                     <Grid item xs={12}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      <Autocomplete
-                        sx={{
-                          width: '100%', // Establece el ancho al 100% por defecto
-                          [(theme) => theme.breakpoints.down('sm')]: {
-                            width: '80%', // Ancho del 80% en pantallas pequeñas
-                          },
-                          [(theme) => theme.breakpoints.up('md')]: {
-                            width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
-                          },
-                        }}
-                        disablePortal
+                      <AppUpperCaseTextField
+                        label='Canal'
                         name='channelNotification'
-                        id='combo-box-demo'
-                        options={listChannel}
-                        onChange={handlerChannel}
-                        renderInput={(params) => (
-                          <TextField {...params} label='Canal' />
-                        )}
+                        variant='outlined'
+                        disabled
+                        onInput={handlerChannel}
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                          mx: 0,
+                        }}
                       />
-                    </Box>
-                  </Grid>
+                    </Grid>
 
-                    {(selectedNotification != ''&& ChannelSelected!='' &&
+                    {(selectedNotification != '' &&
                     selectedNotification.eventType == 'SCHEDULED') ? (
                       <>
                         <Grid item xs={12}>
@@ -705,6 +732,7 @@ correctamente */}
                             variant='outlined'
                             inputProps={{ min: 1 }}
                             type='number'
+                            defaultValue={listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.time.toString()}
                             onInput={handleFieldDuration}
                             sx={{
                               width: '100%',
@@ -728,8 +756,8 @@ correctamente */}
                               name='unitNotification'
                               labelId='documentType-label'
                               label='Unidad'
-                              onChange={handleFieldDurationUnit}
-                              defaultValue={getValueField('unitNotification').value}
+                              onInput={handleFieldDurationUnit}
+                              defaultValue={selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.unit}
                             >
                               <MenuItem value='horas' style={{fontWeight: 200}}>
                                 horas
@@ -772,6 +800,7 @@ correctamente */}
                           name='agentName'
                           id='combo-box-demo'
                           options={agentParsedFinally}
+                          defaultValue={listFilteredTypeNotification[0].agentName}
                           onChange={handlerAgents}
                           renderInput={(params) => (
                             <TextField {...params} label='Agente' />
@@ -781,7 +810,7 @@ correctamente */}
                     </Grid>
                   </>
                   {
-                    (selectedNotification != ''&& ChannelSelected!='')?
+                    (selectedNotification != '')?
                     <EditorMessage
                     getValueField={getValueField}
                     changeValueField={changeValueField}
@@ -923,7 +952,7 @@ correctamente */}
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de la Notificación'}
+          {'Actualizacion de la Notificación'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -959,7 +988,7 @@ correctamente */}
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de la Notificación'}
+          {'Actualizacion de la Notificación'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -994,4 +1023,4 @@ correctamente */}
   );
 };
 
-export default NewClient;
+export default UpdateNotification;

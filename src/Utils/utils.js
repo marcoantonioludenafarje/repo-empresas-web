@@ -520,18 +520,24 @@ export const verNotificaciones = (listBussinesParameteres) => {
   return listNotificationClient;
 };
 
-export const verTiposEventos=(listBussinesParameteres)=>{
+export const verTiposEventos = (listBussinesParameteres) => {
   let listNotificationClient = null;
-  let listNotificationBusiness=null;
-  console.log("listBussinesParameteres este es",listBussinesParameteres)
+  let listNotificationBusiness = null;
+  console.log('listBussinesParameteres este es', listBussinesParameteres);
   if (listBussinesParameteres)
-      listNotificationClient = listBussinesParameteres.find(
+    listNotificationClient = listBussinesParameteres.find(
       (obj) => obj.abreParametro == 'NOTIFICATION_CATALOG',
     ).value;
-    if (listBussinesParameteres)
+  if (listBussinesParameteres)
     listNotificationBusiness = listBussinesParameteres.find(
-    (obj) => obj.abreParametro == 'NOTIFICATION_CATALOG',
-  );  
-    const arrayListNotification=Object.keys(listNotificationClient).map((obj)=>listNotificationClient[obj]);
-  return [arrayListNotification,listNotificationClient,listNotificationBusiness];
-}
+      (obj) => obj.abreParametro == 'NOTIFICATION_CATALOG',
+    );
+  const arrayListNotification = Object.keys(listNotificationClient).map(
+    (obj) => listNotificationClient[obj],
+  );
+  return [
+    arrayListNotification,
+    listNotificationClient,
+    listNotificationBusiness,
+  ];
+};

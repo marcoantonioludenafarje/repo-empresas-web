@@ -23,6 +23,7 @@ import {
   LIST_DISTRIBUTION,
   TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION,
   UPDATE_ROUTE,
+  DELETE_ROUTE,
   ROUTE_TO_REFERRAL_GUIDE,
   UPDATE_GENERATE_REFERRAL_GUIDE_VALUE,
   GET_CHILD_ROUTES,
@@ -436,6 +437,12 @@ const movementsReducer = (state = INIT_STATE, action) => {
         ...state,
         updateRouteRes: action.payload,
       };
+    case DELETE_ROUTE:
+      console.log('data de reducer DELETE_ROUTE', action.payload);
+      return {
+        ...state,
+        deleteRouteRes: action.payload,
+      };
     case LIST_ROUTE:
       console.log('data de reducer LIST_ROUTE', action.payload);
 
@@ -444,6 +451,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
       if (action.request && action.request.request.payload.LastEvaluatedKey) {
         newListRoute = [...state.listRoute, ...newListRoute];
       }
+      
       return {
         ...state,
         listRoute: newListRoute,

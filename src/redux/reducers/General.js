@@ -17,6 +17,7 @@ import {
   MONEY_SYMBOL,
   UPGRADE_TO_NEW_PLAN,
   UPDATE_ALL_BUSINESS_PARAMETER,
+  UPDATE_NOTIFICATION_BUSINESS_PARAMETER,
   UPDATE_ROL_USER_FIRST_PLAN,
   UPDATE_DATA_BUSINESS,
   ACTUAL_DATE,
@@ -180,6 +181,15 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         updateAllBusinessParameterRes: action.payload,
+      };
+    case UPDATE_NOTIFICATION_BUSINESS_PARAMETER:
+      console.log(
+        'data de reducer UPDATE_NOTIFICATION_BUSINESS_PARAMETER',
+        action.payload,
+      );
+      return {
+        ...state,
+        updateNotificationBusinessParameterRes: action.payload,
       };
     case GENERATE_EXCEL_TEMPLATE_TO_ROUTES:
       console.log(

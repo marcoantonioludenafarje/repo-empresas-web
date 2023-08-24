@@ -173,9 +173,9 @@ const Createappoinment = (props) => {
   const toNewAppointment = (payload) => {
     dispatch(newAppointment(payload));
   };
-  const toGetSpecialist = (payload) =>{
-    dispatch(getSpecialists(payload))
-  }
+  const toGetSpecialist = (payload) => {
+    dispatch(getSpecialists(payload));
+  };
   //GET_VALUES_APIS
   const state = useSelector((state)=>state)
   console.log("estado", state);
@@ -185,8 +185,8 @@ const Createappoinment = (props) => {
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
 
-  const {listSpecialists} = useSelector(({specialists})=>specialists)
-  console.log("confeti especialistas", listSpecialists);
+  const {listSpecialists} = useSelector(({specialists}) => specialists);
+  console.log('confeti especialistas', listSpecialists);
 
   useEffect(() => {
     if (!userDataRes) {
@@ -215,7 +215,6 @@ const Createappoinment = (props) => {
     }
   }, [userDataRes]);
 
- 
   useEffect(() => {
     console.log('Estamos userDataResINCampaign', userDataRes);
     if (
@@ -251,8 +250,7 @@ const Createappoinment = (props) => {
       // setFirstload(true);
     }
   }, [userDataRes]);
- 
- 
+
   const cancel = () => {
     setOpen(true);
   };
@@ -479,11 +477,14 @@ const Createappoinment = (props) => {
                           // setIdentidad(value.props.value);
                         }}
                       >
-                        {listSpecialists.map((specialist)=>
-                          <MenuItem value={specialist.specialistId} style={{fontWeight:200}}>
+                        {listSpecialists.map((specialist) => (
+                          <MenuItem
+                            value={specialist.specialistId}
+                            style={{fontWeight: 200}}
+                          >
                             {specialist.specialistName}
                           </MenuItem>
-                        )}
+                        ))}
                       </Select>
                     </FormControl>
                   </Grid>
@@ -620,9 +621,7 @@ const Createappoinment = (props) => {
                       <TextField
                         disabled
                         defaultValue={'+51'}
-                        label={
-                          <IntlMessages id='common.cellphoneCountryCod' />
-                        }
+                        label={<IntlMessages id='common.cellphoneCountryCod' />}
                         variant='filled'
                         sx={{
                           my: 2,
@@ -634,7 +633,7 @@ const Createappoinment = (props) => {
                     </Grid>
                   )}
                   {notifyClientByWhatsapp && (
-                      <Grid item xs={10}>
+                    <Grid item xs={10}>
                       <AppTextField
                         label='Telefono fijo o celular de contacto'
                         name='numberContact'
@@ -665,7 +664,6 @@ const Createappoinment = (props) => {
                       label='Recordatorio a cliente por Whatsapp'
                     />
                   </Grid>
-
                 </Grid>
 
                 <ButtonGroup

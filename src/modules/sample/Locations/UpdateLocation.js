@@ -160,6 +160,7 @@ const UpdateLocation = (props) => {
     modularCode: query.modularCode || '',
     locationName: query.locationName || '',
     locationDetail: query.locationDetail || '',
+    sunatEstablishmentCode: query.sunatEstablishmentCode || '',
     ubigeo: query.ubigeo || '',
     type: query.type || '',
   };
@@ -179,6 +180,7 @@ const UpdateLocation = (props) => {
         modularCode: '',
         coordenates: '',
         locationDetail: '',
+        sunatEstablishmentCode: '',
         locationName: '',
         type: '',
         ubigeo: '',
@@ -203,7 +205,10 @@ const UpdateLocation = (props) => {
     newLocationPayload.request.payload.modularCode = data.modularCode;
     newLocationPayload.request.payload.locationName = data.locationName;
     newLocationPayload.request.payload.locationDetail = data.locationDetail;
-    newLocationPayload.request.payload.ubigeo = objUbigeo.ubigeo;
+    (newLocationPayload.request.payload.sunatEstablishmentCode = String(
+      data.sunatEstablishmentCode,
+    )),
+      (newLocationPayload.request.payload.ubigeo = objUbigeo.ubigeo);
     newLocationPayload.request.payload.type = typeLocation;
     newLocationPayload.request.payload.coordenates = {
       lat: {S: ''},
@@ -343,7 +348,6 @@ const UpdateLocation = (props) => {
                   <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                     <Grid item xs={12}>
                       <AppUpperCaseTextField
-                        disabled
                         label='Código *'
                         name='modularCode'
                         variant='outlined'
@@ -454,6 +458,21 @@ const UpdateLocation = (props) => {
                           </MenuItem>
                         </Select>
                       </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <AppUpperCaseTextField
+                        label='Código de Establecimiento Sunat (Domicilio Fiscal = 0000)'
+                        name='sunatEstablishmentCode'
+                        variant='outlined'
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                          mx: 0,
+                        }}
+                      />
                     </Grid>
                   </Grid>
 

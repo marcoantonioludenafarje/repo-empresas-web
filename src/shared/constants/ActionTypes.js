@@ -174,6 +174,8 @@ export const WEIGHT_BUSINESS = 'weight_business';
 export const MONEY_UNIT_BUSINESS = 'money_unit_business';
 export const MONEY_SYMBOL = 'money_symbol';
 export const UPDATE_CATALOGS = 'update_catalogs';
+export const UPDATE_NOTIFICATION_BUSINESS_PARAMETER =
+  'update_notification_business_parameter';
 
 //IMAGE
 export const GET_PRESIGNED = 'get_presigned';
@@ -222,6 +224,7 @@ export const UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST =
 //ROUTES
 export const GENERATE_ROUTE = 'generate_route';
 export const UPDATE_ROUTE = 'update_route';
+export const DELETE_ROUTE = 'delete_route';
 export const LIST_ROUTE = 'list_route';
 export const SET_DELIVERIES_SIMPLE = 'set_deliveries_simple';
 

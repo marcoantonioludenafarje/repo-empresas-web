@@ -17,6 +17,7 @@ import {
   ADD_RECEIPT,
   GENERATE_ROUTE,
   LIST_ROUTE,
+  DELETE_ROUTE,
   GENERATE_DISTRIBUTION,
   LIST_DISTRIBUTION,
   TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION,
@@ -612,6 +613,27 @@ export const listPredefinedRoutes_____PageListPredefinedRoutes = (payload) => {
           'listPredefinedRoutes_____PageNewDistribution error',
           error,
         );
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const deletePredefinedRoute = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/routePredefined/delete', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('deletePredefinedRoute resultado', data);
+        dispatch({
+          type: DELETE_ROUTE,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('deletePredefinedRoute error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

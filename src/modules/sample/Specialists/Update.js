@@ -41,7 +41,7 @@ import {makeStyles} from '@mui/styles';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {newSpecialist} from '../../../redux/actions/Specialist';
+import {updateSpecialists} from '../../../redux/actions/Specialist';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -61,10 +61,6 @@ const validationSchema = yup.object({
     inputValue: yup.string().required('Este campo no puede estar vacío'),
   }),
 });
-const defaultValues = {
-  specialistName: '',
-  user: {},
-};
 
 const useStyles = makeStyles((theme) => ({
   fixPosition: {
@@ -87,79 +83,93 @@ const formatSentence = (phrase) => {
 
 const NewSpecialist = (props) => {
   let toSubmitting;
+  let selectedUserQuery;
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
-
   const [reload, setReload] = React.useState(0); // integer state
-
+  
   const classes = useStyles(props);
   let objSelects = {
-    documentType: '',
-  };
-
-  //APIS
-  const toNewSpecialist = (payload) => {
-    dispatch(newSpecialist(payload));
-  };
-  const [dateRegister, setDateRegister] = React.useState(Date.now());
-  //GET_VALUES_APIS
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedNameSpecialist, setSelectedNameSpecialist] =
-    React.useState('');
-  const {newSpecialistRes, successMessage, errorMessage, process, loading} =
+      documentType: '',
+    };
+    
+    //APIS
+    const toUpdatedSpecialist = (payload) => {
+        dispatch(updateSpecialists(payload));
+    };
+    const [dateRegister, setDateRegister] = React.useState(Date.now());
+    //GET_VALUES_APIS
+    const [selectedOption, setSelectedOption] = useState(null);
+    let {query} = router;
+    const [selectedNameSpecialist, setSelectedNameSpecialist] =
+    React.useState(query.specialistName);
+    const {newSpecialistRes, successMessage, errorMessage, process, loading} =
     useSelector(({specialists}) => specialists);
-  console.log('newSpecialistRes', newSpecialistRes);
-  console.log('newSpecialistRes', selectedOption);
-
-  const {userAttributes} = useSelector(({user}) => user);
-  const {userDataRes} = useSelector(({user}) => user);
-  const [listUsersModal, setListUsersModal] = useState([]);
-  /******************************************** */
-  const {listUserRes} = useSelector(({user}) => user);
-
-  const toListUser = (payload) => {
-    dispatch(listUser(payload));
-  };
-  const handleOptionChange = (event, newValue) => {
-    setSelectedOption(newValue);
-  };
-  const handleSpecialistNameChange = (event) => {
-    const updatedName = event.target.value;
-    console.log('newValue', updatedName);
-    setSelectedNameSpecialist(updatedName);
-  };
-  useEffect(() => {
-    console.log(
-      'Este userDataRes',
-      userDataRes,
-      userDataRes.merchantSelected.merchantId,
-    );
-    let listUserPayload = {
-      request: {
+    console.log('newSpecialistRes', newSpecialistRes);
+    console.log('newSpecialistRes', selectedOption);
+    const {listUserRes} = useSelector(({user}) => user);
+    
+    const {userAttributes} = useSelector(({user}) => user);
+    const {userDataRes} = useSelector(({user}) => user);
+    const [listUsersModal, setListUsersModal] = useState([]);
+    console.log('query', query);
+    /******************************************** */
+    console.log("Este es el listUserRes",listUserRes);
+    
+    selectedUserQuery=listUserRes.filter(user=>{
+        return user.userId==query.user
+    });
+    const defaultValues = {
+        specialistName:query.specialistName || '',
+        user: selectedUserQuery || {},
+    };
+    const toListUser = (payload) => {
+        dispatch(listUser(payload));
+    };
+    
+    const handleOptionChange = (event, newValue) => {
+        console.log("valores",event,newValue)
+        setSelectedOption(newValue);
+    };
+    const handleSpecialistNameChange = (event) => {
+        const updatedName = event.target.value;
+        console.log('newValue', updatedName);
+        setSelectedNameSpecialist(updatedName);
+    };
+    useEffect(() => {
+        console.log(
+            'Este userDataRes',
+            userDataRes,
+            userDataRes.merchantSelected.merchantId,
+            );
+            let listUserPayload = {
+                request: {
         payload: {
-          merchantId: userDataRes.merchantSelected.merchantId,
+            merchantId: userDataRes.merchantSelected.merchantId,
         },
-      },
+    },
     };
     toListUser(listUserPayload);
     console.log('listUserRes: ', listUserRes);
-  }, []);
-  useEffect(() => {
+}, []);
+
+useEffect(() => {
     if (listUserRes) {
-      console.log('listUserRes desde useeffect', listUserRes);
-      const listUserAutoCompleteV1 = listUserRes.map((user) => {
-        return {...user, label: user.email};
-      });
-
-      console.log('listUserAutoCompleteV1', listUserAutoCompleteV1);
-      setListUsersModal(listUserAutoCompleteV1);
-
-      console.log('Este es el listUsersModal', listUsersModal);
+        console.log('listUserRes desde useeffect', listUserRes);
+        const listUserAutoCompleteV1 = listUserRes.map((user) => {
+            return {...user, label: user.email};
+        });
+        
+        console.log('listUserAutoCompleteV1', listUserAutoCompleteV1);
+        setListUsersModal(listUserAutoCompleteV1);
+        
+        console.log('Este es el listUsersModal', listUsersModal);
     }
-  }, [listUserRes]);
+}, [listUserRes]);
+
 
   /**/ ////////////////////////////////////////// */
 
@@ -188,7 +198,7 @@ const NewSpecialist = (props) => {
 
   useEffect(() => {
     switch (process) {
-      case 'CREATE_SPECIALIST':
+      case 'UPDATE_SPECIALIST':
         if (!loading && (successMessage || errorMessage)) {
           setOpenStatus(true);
         }
@@ -223,24 +233,21 @@ const NewSpecialist = (props) => {
     console.log(selectedNameSpecialist, 'specialistName');
     let extraTrama;
     extraTrama = {
-      specialistName: selectedNameSpecialist,
+      specialistName: (selectedNameSpecialist==null || selectedNameSpecialist=='')?query.specialistName:selectedNameSpecialist,
+      specialistId:query.specialistId,
+      merchantId:query.merchantId
     };
 
     let newSpecialistPayload = {
       request: {
         payload: {
-          specialists: [
-            {
-              user: selectedOption,
-              ...extraTrama,
-            },
-          ],
-          merchantId: userDataRes.merchantSelected.merchantId,
+            user: selectedOption==null?selectedUserQuery[0]:selectedOption,
+            ...extraTrama,
         },
       },
     };
 
-    toNewSpecialist(newSpecialistPayload);
+    toUpdatedSpecialist(newSpecialistPayload);
     console.log('newSpecialistPayload', newSpecialistPayload);
     // setSubmitting(false);
   };
@@ -298,7 +305,7 @@ const NewSpecialist = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          Crear Especialista
+          Actualizar Especialista
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -351,6 +358,7 @@ const NewSpecialist = (props) => {
                           name='user'
                           id='combo-box-demo'
                           options={listUserRes}
+                          value={selectedOption==null?selectedUserQuery[0]:selectedOption}
                           getOptionLabel={(option) => option.email}
                           onChange={handleOptionChange}
                           renderInput={(params) => (
