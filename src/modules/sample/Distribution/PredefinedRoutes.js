@@ -39,6 +39,7 @@ import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import CachedIcon from '@mui/icons-material/Cached';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
 import {
   FETCH_SUCCESS,
@@ -53,12 +54,13 @@ import {
   listNewRoutes,
   listPredefinedRoutes_____PageListPredefinedRoutes,
   getPredefinedRoute_____PageListPredefinedRoutes,
+  deletePredefinedRoute
 } from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {getYear, justDate, justTime} from '../../../Utils/utils';
 import AppLoader from '@crema/core/AppLoader';
-
+import {red} from '@mui/material/colors';
 // let listRoutesPayload = {
 //   request: {
 //     payload: {
@@ -135,7 +137,13 @@ const useStylesByDialog=makeStyles((theme)=>({
   }
 }));
 
-
+let deletePayload = {
+  request: {
+    payload: {
+      routePredefinedId: '',
+    },
+  },
+};
 const PredefinedRoutes = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open2, setOpen2] = React.useState(false);
@@ -150,6 +158,7 @@ const PredefinedRoutes = () => {
   const [loading, setLoading] = React.useState(true);
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
+  const [reload, setReload] = React.useState(true);
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -161,6 +170,8 @@ const PredefinedRoutes = () => {
   } = useSelector(({movements}) => movements);
   // console.log('listRoute', listRoute);
   const [listRouteBySelectedRoutes,setListRouteBySelectedRoutes]=React.useState(selectedRoute_PageListPredefinedRoutes);
+  console.log("Este es el listado que se renderiza RoutesPredefined",predefinedRoutes_PageListPredefinedRoutes);
+  console.log("Este es el selectedRouted",selectedRoute_PageListPredefinedRoutes)
   console.log("Este es el listROutes",listRouteBySelectedRoutes)
   const {deliveries} = useSelector(({movements}) => movements);
   const [valueObservationInput,setValueObservationInput]=React.useState('');
@@ -172,9 +183,23 @@ const PredefinedRoutes = () => {
   const {userDataRes} = useSelector(({user}) => user);
   // listRoutesPayload.request.payload.merchantId =
   //   userDataRes.merchantSelected.merchantId;
-
+  useEffect(()=>{
+    console.log("Alterando el valor de nuestro arreglo de puntos de rutas....");
+    setListRouteBySelectedRoutes(selectedRoute_PageListPredefinedRoutes);
+  },[selectedRoute_PageListPredefinedRoutes])
   const [page, setPage] = React.useState(1);
+ 
+  const deleteRoutePredefined = (payload) => {
+    dispatch(deletePredefinedRoute(payload));
+  };
 
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+
+  const reloadPage = () => {
+    setReload(!reload);
+  };
   //APIS
   const toListRoutes = (payload) => {
     dispatch(listPredefinedRoutes_____PageListPredefinedRoutes(payload));
@@ -306,6 +331,23 @@ const PredefinedRoutes = () => {
       }
   }
 
+  
+
+  const confirmDelete = () => {
+    console.log('selected Route Predefined', selectedRoute);
+    console.log('id de selected', selectedRoute.routePredefinedId);
+    deletePayload.request.payload.routePredefinedId = selectedRoute.routePredefinedId;
+    console.log('deletePayload', deletePayload);
+    deleteRoutePredefined(deletePayload);
+    setOpen2(false);
+    setOpenStatus(true);
+    let payload = {
+      merchantId: userDataRes.merchantSelected.merchantId,
+      LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
+    };
+    dispatch(listPredefinedRoutes_____PageListPredefinedRoutes(payload));
+    //reloadPage();
+  };
 
   const checkProducts = (delivery, index) => {
     selectedDelivery = delivery;
@@ -335,10 +377,10 @@ const PredefinedRoutes = () => {
 
   const goToUpdate = () => {
     console.log('En mantenimiento');
-    // Router.push({
-    //   pathname: '/sample/distribution/update-routes',
-    //   query: {routeId: selectedRoute.routePredefinedId},
-    // });
+    Router.push({
+      pathname: '/sample/distribution/update-routes',
+      query: {routeId: selectedRoute.routePredefinedId},
+    });
   };
 
   const findRoute = (routeId) => {
@@ -492,6 +534,35 @@ const PredefinedRoutes = () => {
               <IntlMessages id='common.new2' />
             </Button>
           </ButtonGroup>
+
+          <Dialog
+        open={open2}
+        onClose={handleClose2}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar Especialista'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea eliminar realmente la información seleccionada?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={confirmDelete}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
 
           <Menu
             id='basic-menu'

@@ -32,7 +32,7 @@ import Router, {useRouter} from 'next/router';
 import DeliveryCard from './DeliveryCard';
 import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useDispatch, useSelector} from 'react-redux';
-import {updatePredefinedRoute} from '../../../redux/actions/Movements';
+import {updatePredefinedRoute,getPredefinedRoute_____PageListPredefinedRoutes,} from '../../../redux/actions/Movements';
 import {onGetProducts} from '../../../redux/actions/Products';
 import {getCarriers} from '../../../redux/actions/Carriers';
 import {red} from '@mui/material/colors';
@@ -42,7 +42,9 @@ import {
   FETCH_ERROR,
   GET_PRODUCTS,
   GET_CARRIERS,
+  LIST_ROUTE,
   GENERATE_ROUTE,
+  SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
 } from '../../../shared/constants/ActionTypes';
 
 const Distribution = () => {
@@ -78,7 +80,6 @@ const Distribution = () => {
     products: [],
   };
   const dispatch = useDispatch();
-  const [routes, setRoutes] = React.useState([]);
   const [routesReady, setRoutesReady] = React.useState(false);
   const [reload, setReload] = React.useState(false);
   const [execAll, setExecAll] = React.useState(false);
@@ -104,10 +105,17 @@ const Distribution = () => {
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
   const {jwtToken} = useSelector(({general}) => general);
-
+  
+  const {
+    predefinedRoutes_PageListPredefinedRoutes,
+    selectedRoute_PageListPredefinedRoutes
+  } = useSelector(({movements}) => movements);
+  console.log("Este es el selectedRoutes",selectedRoute_PageListPredefinedRoutes)
+  const [routes, setRoutes] = React.useState(selectedRoute_PageListPredefinedRoutes);
+  
   listPayload.request.payload.merchantId =
-    userDataRes.merchantSelected.merchantId;
-
+  userDataRes.merchantSelected.merchantId;
+console.log('Ver en donde esta el error',listPayload);
   const toGetCarriers = (payload, token) => {
     dispatch(getCarriers(payload, token));
   };
@@ -118,11 +126,18 @@ const Distribution = () => {
     dispatch(onGetProducts(payload));
   };
 
+  const toGetPredefinedRoute = (payload) => {
+    dispatch(getPredefinedRoute_____PageListPredefinedRoutes(payload));
+  };
+
+console.log("Fase previa al abismo");
   useEffect(() => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GET_PRODUCTS, payload: undefined});
+    console.log("Todo apunta a que el error es despues de esta linea");
     dispatch({type: GET_CARRIERS, payload: undefined});
+    dispatch({type: LIST_ROUTE, payload: undefined});
     getProducts(listPayload);
     let listCarriersPayload = {
       request: {
@@ -136,20 +151,31 @@ const Distribution = () => {
         },
       },
     };
+    console.log('Esto se ejcuta??, is very important xd')
     toGetCarriers(listCarriersPayload, jwtToken);
   }, []);
 
   useEffect(() => {
-    if (listRoute) {
-      let selectedRoute = listRoute.find(
+    if (predefinedRoutes_PageListPredefinedRoutes.length>0) {
+      console.log("Este es el listRoute",predefinedRoutes_PageListPredefinedRoutes);
+      let selectedRoute = predefinedRoutes_PageListPredefinedRoutes.find(
         (route) => route.routePredefinedId == query.routeId,
       );
+      dispatch({
+        type: SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
+        payload: null,
+      });
+      let id=selectedRoute.routePredefinedId;
+      toGetPredefinedRoute({
+        id,
+        merchantId: userDataRes.merchantSelected.merchantId,
+      });
       console.log('selectedRoute', selectedRoute);
       setRoutes(selectedRoute.deliveries);
       changeValueField('routeName', selectedRoute.routeName);
     }
     setRoutesReady(true);
-  }, [listRoute]);
+  }, [predefinedRoutes_PageListPredefinedRoutes]);
 
   const setRouteIndex = (index, obj) => {
     let changedRoutes = routes;

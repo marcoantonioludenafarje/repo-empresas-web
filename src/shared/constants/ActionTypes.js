@@ -224,6 +224,7 @@ export const UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST =
 //ROUTES
 export const GENERATE_ROUTE = 'generate_route';
 export const UPDATE_ROUTE = 'update_route';
+export const DELETE_ROUTE = 'delete_route';
 export const LIST_ROUTE = 'list_route';
 export const SET_DELIVERIES_SIMPLE = 'set_deliveries_simple';
 

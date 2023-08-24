@@ -172,7 +172,7 @@ const ReferralGuidesTable = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
-
+  const [valueObservationInput,setValueObservationInput]=React.useState('');
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -255,6 +255,8 @@ const ReferralGuidesTable = (props) => {
     'referralGuideItems_pageListGuide',
     referralGuideItems_pageListGuide,
   );
+  const [listFilteredGuideItems,setListFilteredGuideItems]=React.useState(referralGuideItems_pageListGuide);
+  console.log("Valor del listFilteredGuideItems",listFilteredGuideItems);
   let listToUse = referralGuideItems_pageListGuide;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
@@ -271,6 +273,7 @@ const ReferralGuidesTable = (props) => {
     if (loading) {
       setLoading(false);
     }
+    setListFilteredGuideItems(referralGuideItems_pageListGuide)
   }, [referralGuideItems_pageListGuide]);
 
   let money_unit;
@@ -406,6 +409,26 @@ const ReferralGuidesTable = (props) => {
     dispatch({type: CANCEL_REFERRAL_GUIDE, payload: undefined});
     toCancelReferralGuide(cancelReferralGuidePayload);
     setOpenStatus(true);
+  };
+
+  const handleSearchValues = (event) => {
+    if (event.target.name == 'codeToSearch') {
+      if (event.target.value == '') {
+        console.log("Aqui estan todas las rutas",listFilteredGuideItems);
+        setListFilteredGuideItems(referralGuideItems_pageListGuide);
+      } else {
+        console.log("Aqui estan todas las rutas",referralGuideItems_pageListGuide);
+        let newRoutes=[];
+        event.target.value=event.target.value.toLowerCase();
+        console.log("Buscando Observacion que contengan",event.target.value);
+        for(let guideReference of referralGuideItems_pageListGuide){
+          if(guideReference.observation?.toLowerCase().includes(event.target.value)){
+            newRoutes.push(guideReference);
+          }
+        }
+        setListFilteredGuideItems(newRoutes);
+      }
+    }
   };
 
   //BUTTONS BAR FUNCTIONS
@@ -810,6 +833,13 @@ const ReferralGuidesTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
+        <TextField
+          label='Observación'
+          variant='outlined'
+          name='codeToSearch'
+          size='small'
+          onChange={handleSearchValues}
+        />
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -894,9 +924,9 @@ const ReferralGuidesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {referralGuideItems_pageListGuide &&
-            Array.isArray(referralGuideItems_pageListGuide) ? (
-              referralGuideItems_pageListGuide.map((obj, index) => (
+            {listFilteredGuideItems &&
+            Array.isArray(listFilteredGuideItems) ? (
+              listFilteredGuideItems.map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
