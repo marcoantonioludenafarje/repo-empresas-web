@@ -4,6 +4,8 @@ import {
   FETCH_ERROR,
   LIST_APPOINTMENT,
   CREATE_APPOINTMENT,
+  EDIT_APPOINTMENT,
+  DELETE_APPOINTMENT,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -41,16 +43,28 @@ const appointmentsReducer = (state = INIT_STATE, action) => {
 
       return {
         ...state,
-        listCampaigns: items,
+        listAppointments: items,
         campaignsLastEvaluatedKey_pageListCampaigns: lastEvaluatedKey,
       };
     case CREATE_APPOINTMENT:
       console.log('data de reducer crear nueva cita', action.payload);
       return {
         ...state,
-        newCampaignRes: action.payload,
+        newAppointmentsRes: action.payload,
       };
-
+    case EDIT_APPOINTMENT:
+      console.log("data reducer cita", action.payload);
+      return {
+        ...state,
+        updateAppointmentRes: action.payload,
+      }
+    case DELETE_APPOINTMENT:
+      console.log("data reducer cita delete", action.payload);
+      return {
+        ...state,
+        deleteClientRes: action.payload
+      }
+    
     case FETCH_START:
       if (!action.payload || !action.payload.process) {
         action.payload = {process: 'LIST_APPOINTMENT'};

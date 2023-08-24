@@ -47,7 +47,7 @@ import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField
 import SchoolIcon from '@mui/icons-material/School';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import { newAppointment } from 'redux/actions';
+import { getAppointment, newAppointment, updateAppointment } from 'redux/actions';
 import { getSpecialists } from 'redux/actions/Specialist';
 
 import AddClientForm from '../../ClientSelection/AddClientForm';
@@ -73,11 +73,7 @@ const validationSchema = yup.object({
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
 });
-const defaultValues = {
-  title: '',
-  description: '',
-  duration: 0,
-};
+
 let newAppointmentPayload = {
   request: {
     payload: {
@@ -139,7 +135,19 @@ const useStyles = makeStyles((theme) => ({
     width: '20px',
   },
 }));
-const Createappoinment = (props) => {
+
+let editappointment = {}
+
+const Edit = (props) => {
+  const router = useRouter();
+
+  let {query} = router;
+  console.log("CITA A EDITAR", query);
+  const defaultValues = {
+    title: query.title,
+    description: query.desc,
+    duration: parseInt(query.duration),
+  };
   let changeValueField;
   let getValueField;
   let isFormikSubmitting;
@@ -158,21 +166,22 @@ const Createappoinment = (props) => {
 
   const [recordingClientByWhatsapp, setRecordingClientByWhatsapp] =
     React.useState(false);
-
-  const [publishDate, setPublishDate] = React.useState(
-    Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
-  );    
-  const [timelord, setTimelord] = useState(0)
-
-  const [finalDate, setFinalDate] = useState(publishDate)
-
   const dispatch = useDispatch();
-  const router = useRouter();
 
   //APIS
+
+  const toGetAppointments = (payload) =>{
+    dispatch(getAppointment(payload))
+  }
+
   const toNewAppointment = (payload) => {
     dispatch(newAppointment(payload));
   };
+
+  const toEditAppointment = (payload) =>{
+    distpatch(updateAppointment(payload))
+  }
+
   const toGetSpecialist = (payload) =>{
     dispatch(getSpecialists(payload))
   }
@@ -187,6 +196,24 @@ const Createappoinment = (props) => {
 
   const {listSpecialists} = useSelector(({specialists})=>specialists)
   console.log("confeti especialistas", listSpecialists);
+
+  const {listAppointments} = useSelector(({appointment}) => appointment)
+  console.log("confeti citas", listAppointments);
+
+
+  if (listAppointments != undefined) {
+    editappointment = listAppointments.find(
+      (input) => input.appointmentId == query.id,
+    );
+    console.log('CITA SELECTA', editappointment);
+  }
+
+  const [publishDate, setPublishDate] = React.useState(
+    new Date(editappointment?.scheduledStartedAt) /* Number(query.createdAt) */,
+  );    
+
+  const [finalDate, setFinalDate] = useState(new Date(editappointment?.scheduledFinishedAt))
+
 
   useEffect(() => {
     if (!userDataRes) {
@@ -207,6 +234,12 @@ const Createappoinment = (props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
+
+
+  useEffect(()=>{
+    console.log("cita actual", editappointment);
+  },[editappointment])
+
 
   useEffect(() => {
     if (userDataRes) {
@@ -247,6 +280,7 @@ const Createappoinment = (props) => {
           },
         },
       };
+      toGetAppointments(listPayload);
       toGetSpecialist(listPayload);
       // setFirstload(true);
     }
@@ -291,8 +325,9 @@ const Createappoinment = (props) => {
     let starter = publishDate.getTime()
     let end = finalDate.getTime()
 
-    newAppointmentPayload.request.payload.appointments = [
+    newAppointmentPayload.request.payload = 
       {
+        appointmentId: editappointment.appointmentId,
         clientId: selectedClient.clientId,
         clientName: selectedClient.denominationClient,
         specialistId: specialistF[0].specialistId?specialistF[0].specialistId:'',
@@ -310,7 +345,7 @@ const Createappoinment = (props) => {
           checkWhatsappReminder: recordingClientByWhatsapp,
         }
       }
-    ]
+    
 
 
 
@@ -319,7 +354,7 @@ const Createappoinment = (props) => {
 
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
-    toNewAppointment(newAppointmentPayload);
+    toEditAppointment(newAppointmentPayload);
     setSubmitting(false);
     setOpenStatus(true);
   };
@@ -392,7 +427,7 @@ const Createappoinment = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          NUEVA CITA
+          Editar CITA
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -419,7 +454,6 @@ const Createappoinment = (props) => {
 
                         const durationInMilliseconds = parseInt(getValueField('duration').value) * 60000;
                         console.log("data", getValueField('date').value);
-                        //const calculatedFinalDate = new Date(publishDate.getTime() + durationInMilliseconds);
                                         
             return (
               <Form
@@ -474,13 +508,16 @@ const Createappoinment = (props) => {
                         name='specialist'
                         labelId='specialist-label'
                         label='Especialista'
-                        onChange={(option, value) => {
-                          setFieldValue('specialist', value.props.value);
-                          // setIdentidad(value.props.value);
+                        value={editappointment?.specialistId}
+                        onChange={(event) => {
+                          const selectedSpecialistId = event.target.value;
+                          const selectedSpecialist = listSpecialists.find(specialist => specialist.specialistId === selectedSpecialistId);
+                          setFieldValue('specialist', selectedSpecialistId);
+                          // Otras acciones que necesites realizar con el especialista seleccionado
                         }}
                       >
-                        {listSpecialists.map((specialist)=>
-                          <MenuItem value={specialist.specialistId} style={{fontWeight:200}}>
+                        {listSpecialists.map((specialist) =>
+                          <MenuItem key={specialist.specialistId} value={specialist.specialistId} style={{fontWeight: 200}}>
                             {specialist.specialistName}
                           </MenuItem>
                         )}
@@ -735,7 +772,7 @@ const Createappoinment = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Citas'}
+          {'Edición de la Citas'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -786,4 +823,4 @@ const Createappoinment = (props) => {
   );
 };
 
-export default Createappoinment;
+export default Edit;
