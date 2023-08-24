@@ -612,19 +612,12 @@ const PredefinedRoutes = () => {
             sx={{textAlign: 'center'}}
             aria-labelledby='alert-dialog-title'
             aria-describedby='alert-dialog-description'
+            fullWidth
+            maxWidth='x1'
           >
             {typeDialog == 'detailRoute' ? (
               
               <>
-                <style>
-                  {
-                    `
-                    .css-hz1bth-MuiDialog-container > div {
-                      max-width: 90vw !important;
-                    }
-                    `
-                  }
-                </style>
                 <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
                   {`Rutas(${
                     selectedRoute_PageListPredefinedRoutes
