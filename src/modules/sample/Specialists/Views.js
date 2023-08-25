@@ -43,6 +43,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import {
   getSpecialists,
   deleteSpecialists,
@@ -93,7 +94,9 @@ export default function Views(props) {
   const [openLimitQR, setopenLimitQR] = React.useState(false);
   const [openQRSuccess, setopenQRSuccess] = React.useState(false);
   const [imgQR, setimgQR] = React.useState('');
-
+  const {successMessage} = useSelector(({specialists}) => specialists);
+  console.log('successMessage', successMessage);
+  const {errorMessage} = useSelector(({specialists}) => specialists);
   const [openQRPop, setopenQRPop] = React.useState(false);
   const [openQR, setopenQR] = React.useState(false);
   const [reload, setReload] = React.useState(0);
@@ -197,6 +200,57 @@ export default function Views(props) {
     setopenLimitQR(false);
     setopenQRSuccess(false);
     handleCloseQR();
+  };
+
+  const showMessage = () => {
+    if (successMessage != undefined) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha eliminado correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al eliminar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
+  };
+
+  const sendStatus = () => {
+    setOpenStatus(false);
+    setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentClient: '',
+            numberDocumentClient: '',
+            denominationClient: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      getSpecialist(listPayload);
+    }, 2000);
   };
 
   const confirmDelete = () => {
@@ -351,6 +405,27 @@ export default function Views(props) {
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
 
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar proveedor'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      
       <Dialog
         open={open2}
         onClose={handleClose2}

@@ -34,6 +34,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import {makeStyles} from '@mui/styles';
 import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -257,6 +258,40 @@ const PredefinedRoutes = () => {
     }
   }, []);
 
+
+  const showMessage = () => {
+    if (successMessage != undefined) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha eliminado correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al eliminar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
+  };
+
   const compare = (a, b) => {
     if (a.createdAt < b.createdAt) {
       return 1;
@@ -331,7 +366,19 @@ const PredefinedRoutes = () => {
       }
   }
 
-  
+  const sendStatus = () => {
+    setOpenStatus(false);
+      console.log('Reseteando todo');
+    if (userDataRes && userDataRes.merchantSelected) {
+      let payload = {
+        merchantId: userDataRes.merchantSelected.merchantId,
+        LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
+      };
+
+      toListRoutes(payload);
+    }
+
+  };
 
   const confirmDelete = () => {
     console.log('selected Route Predefined', selectedRoute);
@@ -426,6 +473,7 @@ const PredefinedRoutes = () => {
       merchantId: userDataRes.merchantSelected.merchantId,
     });
 
+    console.log("Verificando servicio child deliveries Routes",selectedRoute_PageListPredefinedRoutes);
     setOpen(true);
     // toGetPredefinedRoute()
     setTypeDialog(type);
@@ -534,6 +582,28 @@ const PredefinedRoutes = () => {
               <IntlMessages id='common.new2' />
             </Button>
           </ButtonGroup>
+        
+          <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar ruta'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
 
           <Dialog
         open={open2}

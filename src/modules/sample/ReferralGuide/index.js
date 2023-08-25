@@ -197,6 +197,7 @@ const ReferralGuidesTable = (props) => {
   const [moreFilters, setMoreFilters] = React.useState(false);
   const documentSunat = 'referralGuide';
 
+  const [valueObservation,setValueObservation]=React.useState('');
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getReferralGuides_PageListGuide(payload));
@@ -231,6 +232,7 @@ const ReferralGuidesTable = (props) => {
           movementType: 'REFERRAL_GUIDE',
           merchantId: userDataRes.merchantSelected.merchantId,
           createdAt: null,
+          observation:valueObservation,
           searchByBill: null,
           movementHeaderId: query.referralGuideId || '',
           outputId: query.movementHeaderId || '',
@@ -255,8 +257,7 @@ const ReferralGuidesTable = (props) => {
     'referralGuideItems_pageListGuide',
     referralGuideItems_pageListGuide,
   );
-  const [listFilteredGuideItems,setListFilteredGuideItems]=React.useState(referralGuideItems_pageListGuide);
-  console.log("Valor del listFilteredGuideItems",listFilteredGuideItems);
+  
   let listToUse = referralGuideItems_pageListGuide;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
@@ -273,7 +274,7 @@ const ReferralGuidesTable = (props) => {
     if (loading) {
       setLoading(false);
     }
-    setListFilteredGuideItems(referralGuideItems_pageListGuide)
+    //setListFilteredGuideItems(referralGuideItems_pageListGuide)
   }, [referralGuideItems_pageListGuide]);
 
   let money_unit;
@@ -364,6 +365,7 @@ const ReferralGuidesTable = (props) => {
           movementType: 'REFERRAL_GUIDE',
           merchantId: userDataRes.merchantSelected.merchantId,
           createdAt: null,
+          observation:valueObservation,
           searchByBill: null,
           movementHeaderId: null,
           outputId: null,
@@ -413,21 +415,21 @@ const ReferralGuidesTable = (props) => {
 
   const handleSearchValues = (event) => {
     if (event.target.name == 'codeToSearch') {
-      if (event.target.value == '') {
-        console.log("Aqui estan todas las rutas",listFilteredGuideItems);
-        setListFilteredGuideItems(referralGuideItems_pageListGuide);
-      } else {
-        console.log("Aqui estan todas las rutas",referralGuideItems_pageListGuide);
-        let newRoutes=[];
-        event.target.value=event.target.value.toLowerCase();
-        console.log("Buscando Observacion que contengan",event.target.value);
-        for(let guideReference of referralGuideItems_pageListGuide){
-          if(guideReference.observation?.toLowerCase().includes(event.target.value)){
-            newRoutes.push(guideReference);
-          }
-        }
-        setListFilteredGuideItems(newRoutes);
-      }
+      // if (event.target.value == '') {
+      //   console.log("Aqui estan todas las rutas",listFilteredGuideItems);
+      //   setListFilteredGuideItems(referralGuideItems_pageListGuide);
+      // } else {
+      //   console.log("Aqui estan todas las rutas",referralGuideItems_pageListGuide);
+      //   let newRoutes=[];
+      //   event.target.value=event.target.value.toLowerCase();
+      //   console.log("Buscando Observacion que contengan",event.target.value);
+      //   for(let guideReference of referralGuideItems_pageListGuide){
+      //     if(guideReference.observation?.toLowerCase().includes(event.target.value)){
+      //       newRoutes.push(guideReference);
+      //     }
+      //   }
+      //  }
+      setValueObservation(event.target.value);
     }
   };
 
@@ -441,6 +443,7 @@ const ReferralGuidesTable = (props) => {
           businessProductCode: null,
           movementType: 'REFERRAL_GUIDE',
           merchantId: userDataRes.merchantSelected.merchantId,
+          observation:valueObservation,
           createdAt: null,
           searchByBill: null,
           movementHeaderId: null,
@@ -496,6 +499,7 @@ const ReferralGuidesTable = (props) => {
             businessProductCode: null,
             movementType: 'REFERRAL_GUIDE',
             merchantId: userDataRes.merchantSelected.merchantId,
+            observation:valueObservation,
             createdAt: null,
             searchByBill: null,
             movementHeaderId: null,
@@ -611,6 +615,7 @@ const ReferralGuidesTable = (props) => {
             movementType: 'REFERRAL_GUIDE',
             merchantId: userDataRes.merchantSelected.merchantId,
             createdAt: null,
+            observation:valueObservation,
             searchByBill: null,
             movementHeaderId: null,
             outputId: null,
@@ -924,9 +929,9 @@ const ReferralGuidesTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listFilteredGuideItems &&
-            Array.isArray(listFilteredGuideItems) ? (
-              listFilteredGuideItems.map((obj, index) => (
+            {referralGuideItems_pageListGuide &&
+            Array.isArray(referralGuideItems_pageListGuide) ? (
+              referralGuideItems_pageListGuide.map((obj, index) => (
                 <TableRow
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}

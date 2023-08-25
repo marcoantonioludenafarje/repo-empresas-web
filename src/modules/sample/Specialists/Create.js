@@ -127,7 +127,7 @@ const NewSpecialist = (props) => {
     setSelectedOption(newValue);
   };
   const handleSpecialistNameChange = (event) => {
-    const updatedName = event.target.value;
+    const updatedName = event.target.value.toUpperCase();
     console.log('newValue', updatedName);
     setSelectedNameSpecialist(updatedName);
   };
