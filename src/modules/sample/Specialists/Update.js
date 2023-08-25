@@ -90,86 +90,89 @@ const NewSpecialist = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const [reload, setReload] = React.useState(0); // integer state
-  
+
   const classes = useStyles(props);
   let objSelects = {
-      documentType: '',
-    };
-    
-    //APIS
-    const toUpdatedSpecialist = (payload) => {
-        dispatch(updateSpecialists(payload));
-    };
-    const [dateRegister, setDateRegister] = React.useState(Date.now());
-    //GET_VALUES_APIS
-    const [selectedOption, setSelectedOption] = useState(null);
-    let {query} = router;
-    const [selectedNameSpecialist, setSelectedNameSpecialist] =
-    React.useState(query.specialistName);
-    const {newSpecialistRes, successMessage, errorMessage, process, loading} =
+    documentType: '',
+  };
+
+  //APIS
+  const toUpdatedSpecialist = (payload) => {
+    dispatch(updateSpecialists(payload));
+  };
+  const [dateRegister, setDateRegister] = React.useState(Date.now());
+  //GET_VALUES_APIS
+  const [selectedOption, setSelectedOption] = useState(null);
+  let {query} = router;
+  const [selectedNameSpecialist, setSelectedNameSpecialist] = React.useState(
+    query.specialistName,
+  );
+  const {newSpecialistRes, successMessage, errorMessage, process, loading} =
     useSelector(({specialists}) => specialists);
-    console.log('newSpecialistRes', newSpecialistRes);
-    console.log('newSpecialistRes', selectedOption);
-    const {listUserRes} = useSelector(({user}) => user);
-    
-    const {userAttributes} = useSelector(({user}) => user);
-    const {userDataRes} = useSelector(({user}) => user);
-    const [listUsersModal, setListUsersModal] = useState([]);
-    console.log('query', query);
-    /******************************************** */
-    console.log("Este es el listUserRes",listUserRes);
-    
-    selectedUserQuery=listUserRes.filter(user=>{
-        return user.userId==query.user
-    });
-    const defaultValues = {
-        specialistName:query.specialistName || '',
-        user: selectedUserQuery || {},
-    };
-    const toListUser = (payload) => {
-        dispatch(listUser(payload));
-    };
-    
-    const handleOptionChange = (event, newValue) => {
-        console.log("valores",event,newValue)
-        setSelectedOption(newValue);
-    };
-    const handleSpecialistNameChange = (event) => {
-        const updatedName = event.target.value;
-        console.log('newValue', updatedName);
-        setSelectedNameSpecialist(updatedName);
-    };
-    useEffect(() => {
-        console.log(
-            'Este userDataRes',
-            userDataRes,
-            userDataRes.merchantSelected.merchantId,
-            );
-            let listUserPayload = {
-                request: {
+  console.log('newSpecialistRes', newSpecialistRes);
+  console.log('newSpecialistRes', selectedOption);
+  const {listUserRes} = useSelector(({user}) => user);
+
+  const {userAttributes} = useSelector(({user}) => user);
+  const {userDataRes} = useSelector(({user}) => user);
+  const [listUsersModal, setListUsersModal] = useState([]);
+  console.log('query', query);
+  /******************************************** */
+  console.log('Este es el listUserRes', listUserRes);
+
+  selectedUserQuery = listUserRes.filter((user) => {
+    return user.userId == query.user;
+  });
+  const defaultValues = {
+    specialistName: query.specialistName || '',
+    user: selectedUserQuery || {},
+  };
+  const toListUser = (payload) => {
+    dispatch(listUser(payload));
+  };
+
+  const handleOptionChange = (event, newValue) => {
+    console.log('valores', event, newValue);
+    setSelectedOption(newValue);
+  };
+  const handleSpecialistNameChange = (event) => {
+    const updatedName = event.target.value;
+    console.log('newValue', updatedName);
+    setSelectedNameSpecialist(updatedName.toUpperCase());
+  };
+  useEffect(() => {
+    console.log(
+      'Este userDataRes',
+      userDataRes,
+      userDataRes.merchantSelected.merchantId,
+    );
+    let listUserPayload = {
+      request: {
         payload: {
-            merchantId: userDataRes.merchantSelected.merchantId,
+          merchantId: userDataRes.merchantSelected.merchantId,
         },
-    },
+      },
     };
     toListUser(listUserPayload);
     console.log('listUserRes: ', listUserRes);
-}, []);
+  }, []);
 
-useEffect(() => {
+  useEffect(() => {
     if (listUserRes) {
-        console.log('listUserRes desde useeffect', listUserRes);
-        const listUserAutoCompleteV1 = listUserRes.map((user) => {
-            return {...user, label: user.email};
-        });
-        
-        console.log('listUserAutoCompleteV1', listUserAutoCompleteV1);
-        setListUsersModal(listUserAutoCompleteV1);
-        
-        console.log('Este es el listUsersModal', listUsersModal);
-    }
-}, [listUserRes]);
+      console.log('listUserRes desde useeffect', listUserRes);
+      const listUserAutoCompleteV1 = listUserRes.map((user) => {
+        return {
+          ...user,
+          label: user.nombreCompleto ? user.nombreCompleto : user.email,
+        };
+      });
 
+      console.log('listUserAutoCompleteV1', listUserAutoCompleteV1);
+      setListUsersModal(listUserAutoCompleteV1);
+
+      console.log('Este es el listUsersModal', listUsersModal);
+    }
+  }, [listUserRes]);
 
   /**/ ////////////////////////////////////////// */
 
@@ -233,16 +236,19 @@ useEffect(() => {
     console.log(selectedNameSpecialist, 'specialistName');
     let extraTrama;
     extraTrama = {
-      specialistName: (selectedNameSpecialist==null || selectedNameSpecialist=='')?query.specialistName:selectedNameSpecialist,
-      specialistId:query.specialistId,
-      merchantId:query.merchantId
+      specialistName:
+        selectedNameSpecialist == null || selectedNameSpecialist == ''
+          ? query.specialistName
+          : selectedNameSpecialist,
+      specialistId: query.specialistId,
+      merchantId: query.merchantId,
     };
 
     let newSpecialistPayload = {
       request: {
         payload: {
-            user: selectedOption==null?selectedUserQuery[0]:selectedOption,
-            ...extraTrama,
+          user: selectedOption == null ? selectedUserQuery[0] : selectedOption,
+          ...extraTrama,
         },
       },
     };
@@ -358,8 +364,16 @@ useEffect(() => {
                           name='user'
                           id='combo-box-demo'
                           options={listUserRes}
-                          value={selectedOption==null?selectedUserQuery[0]:selectedOption}
-                          getOptionLabel={(option) => option.email}
+                          value={
+                            selectedOption == null
+                              ? selectedUserQuery[0]
+                              : selectedOption
+                          }
+                          getOptionLabel={(option) =>
+                            option.nombreCompleto
+                              ? option.nombreCompleto
+                              : option.email
+                          }
                           onChange={handleOptionChange}
                           renderInput={(params) => (
                             <TextField {...params} label='Usuario' />
