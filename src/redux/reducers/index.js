@@ -45,7 +45,7 @@ const reducers = combineReducers({
   campaigns: Campaign,
   sale: Sales,
   agents: Agent,
-  appoinments: Appointment,
+  appointment: Appointment,
   specialists: Specialist,
 });
 export default reducers;

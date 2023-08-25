@@ -177,6 +177,7 @@ const Create = (props) => {
   };
   const {userDataRes} = useSelector(({user}) => user);
 
+  const {listVariations} = useSelector(({campaigns}) => campaigns);
   const {businessParameter} = useSelector(({general}) => general);
 
   console.log('Businees: ', businessParameter);
@@ -453,19 +454,18 @@ const Create = (props) => {
       const payload = payloadToCreateCampaign;
       console.log('Payload creates', payload);
       payload.request.payload.campaign[0].receivers.urlClients =
-        clientsPresigned.keymaster;
-      setTimeout(() => {
-        // Show success message
-        dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
-        console.log('newCampaignPayload', payload);
-        createCampaign(payload);
-
-        setOpenStatus(true);
-
-        // Reset form
-        toSubmitting(false);
-        dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
-      }, 1000);
+      clientsPresigned.keymaster;
+      // Show success message
+      dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
+      console.log('newCampaignPayload', payload);
+      createCampaign(payload);
+      // Reset form
+      toSubmitting(false);
+      
+      setOpenStatus(true);
+      
+      dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
+      
     }
   }, [clientsPresigned]);
 
@@ -879,35 +879,32 @@ const Create = (props) => {
     };
 
     console.log('index payload', payloadVariations);
-    const response = await dispatch(generateVariations(payloadVariations));
+    dispatch(generateVariations(payloadVariations));
 
-    await new Promise((resolve) => setTimeout(resolve, 7000));
+  };
 
-    setGenerateVariations(response);
-
-    if (geneVariations !== null) {
-      if (
-        geneVariations.data.length < variations.length &&
-        variations.length > 8
-      ) {
-        const diff = variations.length - geneVariations.data.length;
+  useEffect(()=>{
+    if (listVariations && listVariations.data) {
+      setGenerateVariations(listVariations);
+      if (listVariations.data.length<variations.length && variations.length>8) {
+        const diff = variations.length - listVariations.data.length;
 
         for (let i = 0; i < diff; i++) {
-          geneVariations.data.push('');
+          listVariations.data.push('');
         }
       }
       const newDatatt = [];
       for (let i = 0; i < variations.length; i++) {
-        newDatatt[i] = geneVariations.data[i];
+        newDatatt[i] = listVariations.data[i];
       }
       console.log('IA DATA <<<', newDatatt);
       setVariationsData(newDatatt);
     }
-  };
+  },[listVariations])
+  useEffect(()=>{
+    console.log("IA DATA >>>", geneVariations);
+  },[geneVariations])
 
-  useEffect(() => {
-    console.log('IA DATA >>>', geneVariations);
-  }, [geneVariations]);
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
 
