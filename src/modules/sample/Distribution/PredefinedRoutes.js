@@ -727,7 +727,7 @@ const PredefinedRoutes = () => {
                       Buscar
                     </Button>
                   </Stack>
-                  <Table size='small' aria-label='purchases'>
+                  <Table size='small' aria-label='purchases' >
                     <TableHead sx={{backgroundColor: '#ededed'}}>
                       <TableRow>
                         <TableCell>Dirección de punto de partida</TableCell>

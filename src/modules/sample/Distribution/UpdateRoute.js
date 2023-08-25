@@ -1,7 +1,11 @@
 import React, {useEffect} from 'react';
 import {
   Card,
+  Table,
+  TableCell,
+  TableRow,
   Box,
+  TableHead,
   Button,
   Dialog,
   DialogActions,
@@ -11,11 +15,13 @@ import {
   CircularProgress,
   Collapse,
   Typography,
+  TableBody,
   Divider,
   Grid,
   Stack,
   IconButton,
   ButtonGroup,
+  TableContainer,
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
@@ -25,14 +31,15 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
-
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import Router, {useRouter} from 'next/router';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import DeliveryCard from './DeliveryCard';
 import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useDispatch, useSelector} from 'react-redux';
-import {updatePredefinedRoute,getPredefinedRoute_____PageListPredefinedRoutes,} from '../../../redux/actions/Movements';
+import {updatePredefinedRoute,getPredefinedRoute_____PageListPredefinedRoutes,getChildRoutes} from '../../../redux/actions/Movements';
 import {onGetProducts} from '../../../redux/actions/Products';
 import {getCarriers} from '../../../redux/actions/Carriers';
 import {red} from '@mui/material/colors';
@@ -46,6 +53,16 @@ import {
   GENERATE_ROUTE,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
 } from '../../../shared/constants/ActionTypes';
+
+
+let getChildRoutesPayload = {
+  request: {
+    payload: {
+      deliveryFatherId: '',
+    },
+  },
+};
+let selectedRoute = '';
 
 const Distribution = () => {
   let listPayload = {
@@ -84,7 +101,7 @@ const Distribution = () => {
   const [reload, setReload] = React.useState(false);
   const [execAll, setExecAll] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
-
+  const [openProducts, setOpenProducts] = React.useState(false);
   let changeValueField;
   const router = useRouter();
   const {query} = router;
@@ -105,7 +122,7 @@ const Distribution = () => {
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
   const {jwtToken} = useSelector(({general}) => general);
-  
+  const {deliveries} = useSelector(({movements}) => movements);
   const {
     predefinedRoutes_PageListPredefinedRoutes,
     selectedRoute_PageListPredefinedRoutes
@@ -113,6 +130,10 @@ const Distribution = () => {
   console.log("Este es el predefinedRoutes del comienzo",predefinedRoutes_PageListPredefinedRoutes);
   console.log("Este es el selectedRoutes",selectedRoute_PageListPredefinedRoutes)
   const [routes, setRoutes] = React.useState(selectedRoute_PageListPredefinedRoutes);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openMenu = Boolean(anchorEl);
+  const [selectedDeliveryState, setSelectedDeliveryState] = React.useState({});
+  const [rowNumber2, setRowNumber2] = React.useState(0);
   console.log("Este es el routes variable guardar",routes);
   listPayload.request.payload.merchantId =
   userDataRes.merchantSelected.merchantId;
@@ -129,6 +150,15 @@ console.log('Ver en donde esta el error',listPayload);
 
   const toGetPredefinedRoute = (payload) => {
     dispatch(getPredefinedRoute_____PageListPredefinedRoutes(payload));
+  };
+
+
+  const handleClick = (route, event) => {
+    setAnchorEl(event.currentTarget);
+    setRowNumber2(route.localRouteId);
+    selectedRoute = route;
+    setSelectedDeliveryState(selectedRoute);
+    console.log('selectedRoute', selectedRoute);
   };
 
 console.log("Fase previa al abismo");
@@ -162,17 +192,18 @@ console.log("Fase previa al abismo");
       let selectedRoute = predefinedRoutes_PageListPredefinedRoutes.find(
         (route) => route.routePredefinedId == query.routeId,
       );
+      let routePredefinedId=selectedRoute.routePredefinedId;
       dispatch({
         type: SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
         payload: null,
       });
-      let id=selectedRoute.routePredefinedId;
       toGetPredefinedRoute({
-        id,
+        routePredefinedId,
         merchantId: userDataRes.merchantSelected.merchantId,
       });
       console.log('selectedRoute', selectedRoute);
-      setRoutes(selectedRoute.deliveries);
+      console.log("Verificando servicio child deliveries Routes",selectedRoute_PageListPredefinedRoutes);
+      setRoutes(selectedRoute_PageListPredefinedRoutes);
       changeValueField('routeName', selectedRoute.routeName);
     }
     setRoutesReady(true);
@@ -184,6 +215,17 @@ console.log("Fase previa al abismo");
     setRoutes(changedRoutes);
     console.log('changedRoutes', changedRoutes);
     console.log('routes', routes);
+  };
+
+  const checkProducts = (delivery, index) => {
+    selectedDelivery = delivery;
+    console.log('selectedDelivery', selectedDelivery);
+    setOpenProducts(false);
+    setOpenProducts(true);
+    if (openProducts == true && rowNumber2 == index) {
+      setOpenProducts(false);
+    }
+    setRowNumber2(index);
   };
 
   const validationSchema = yup.object({
@@ -199,14 +241,14 @@ console.log("Fase previa al abismo");
     setSubmitting(true);
     setExecAll(true);
     setExecAll(false);
-    console.log('data final', {...data, routes: routes.deliveries});
+    console.log('data final', {...data, routes: routes});
     const finalPayload = {
       request: {
         payload: {
           userActor: userAttributes['sub'],
           routePredefinedId: query.routeId,
           routeName: data.routeName,
-          deliveries: routes.deliveries.map((obj) => {
+          deliveries: routes.map((obj) => {
             if (obj !== undefined) {
               return {
                 carrierDocumentType: obj.carrierDocumentType,
@@ -450,7 +492,7 @@ console.log("Fase previa al abismo");
         </Stack>
       </Box>
 
-      <Box
+      {/* <Box
         sx={{
           m: 'auto',
           border: '1px solid grey',
@@ -458,8 +500,9 @@ console.log("Fase previa al abismo");
           width: '95  %',
         }}
       >
-        {(routes!=null && routes!=undefined)
-          ? routes.map((route, index) => (
+        {(selectedRoute_PageListPredefinedRoutes!=null && selectedRoute_PageListPredefinedRoutes!=undefined && 
+        selectedRoute_PageListPredefinedRoutes.deliveries.length>0)
+          ? selectedRoute_PageListPredefinedRoutes.deliveries.map((route, index) => (
               <DeliveryCard
                 key={index}
                 order={index}
@@ -469,8 +512,177 @@ console.log("Fase previa al abismo");
               />
             ))
           : null}
-      </Box>
-
+      </Box> */}
+      <TableContainer style={{ overflowX: 'auto', overflowY: 'auto', maxHeight:'30rem' }}>
+      <Table size='small' aria-label='purchases'>
+                    <TableHead sx={{backgroundColor: '#ededed'}}>
+                      <TableRow>
+                        <TableCell>Dirección de punto de partida</TableCell>
+                        <TableCell>Ubigeo de punto de partida</TableCell>
+                        <TableCell>Dirección de punto de llegada</TableCell>
+                        <TableCell>Ubigeo de punto de llegada</TableCell>
+                        <TableCell>Documento de conductor</TableCell>
+                        <TableCell>Nombre de conductor</TableCell>
+                        <TableCell>Apellidos de conductor</TableCell>
+                        <TableCell>Licencia de conductor</TableCell>
+                        <TableCell>Placa</TableCell>
+                        <TableCell>Productos</TableCell>
+                        <TableCell>Observaciones</TableCell>
+                        <TableCell>Peso total</TableCell>
+                        <TableCell>Número de paquetes</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {selectedRoute_PageListPredefinedRoutes &&
+                      selectedRoute_PageListPredefinedRoutes.deliveries.length > 0
+                        ? selectedRoute_PageListPredefinedRoutes.deliveries.map(
+                            (route, index2) => {
+                              const products = route.productsInfo;
+                              return (
+                                <>
+                                  <TableRow key={index2}>
+                                    <TableCell>
+                                      {route.arrivalPointAddress}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.arrivalPointUbigeo}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.startingPointAddress}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.startingPointUbigeo}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.driverDocumentType &&
+                                      route.driverDocumentNumber
+                                        ? `${route.driverDocumentType.toUpperCase()} - ${
+                                            route.driverDocumentNumber
+                                          }`
+                                        : null}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.driverDenomination}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.driverLastName}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.driverLicenseNumber}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.carrierPlateNumber}
+                                    </TableCell>
+                                    <TableCell>
+                                      {products && products.length !== 0 ? (
+                                        <IconButton
+                                          onClick={() =>
+                                            checkProducts(route, index2)
+                                          }
+                                          size='small'
+                                        >
+                                          <FormatListBulletedIcon fontSize='small' />
+                                        </IconButton>
+                                      ) : null}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.observationDelivery}
+                                    </TableCell>
+                                    <TableCell>
+                                      {Number.parseFloat(
+                                        route.totalGrossWeight,
+                                      ).toFixed(3)}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.numberOfPackages}
+                                    </TableCell>
+                                    <TableCell>
+                                    <Button
+                                      id='basic-button'
+                                      aria-controls={
+                                        openMenu ? 'basic-menu' : undefined
+                                      }
+                                      aria-haspopup='true'
+                                      aria-expanded={openMenu ? 'true' : undefined}
+                                      onClick={handleClick.bind(this, {
+                                        ...route,
+                                        localRouteId: index2,
+                                      })}
+                                    >
+                                      <KeyboardArrowDownIcon />
+                                    </Button>
+                          </TableCell>
+                                  </TableRow>
+                                  <TableRow key={`sub-${index2}`}>
+                                    <TableCell sx={{p: 0}} colSpan={10}>
+                                      <Collapse
+                                        in={
+                                          openProducts && index2 === rowNumber2
+                                        }
+                                        timeout='auto'
+                                        unmountOnExit
+                                      >
+                                        <Box sx={{margin: 0}}>
+                                          <Table
+                                            size='small'
+                                            aria-label='purchases'
+                                          >
+                                            <TableHead
+                                              sx={{
+                                                backgroundColor: '#ededed',
+                                              }}
+                                            >
+                                              <TableRow>
+                                                <TableCell>Código</TableCell>
+                                                <TableCell>
+                                                  Descripción
+                                                </TableCell>
+                                                <TableCell>Cantidad</TableCell>
+                                              </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                              {products && products.length !== 0
+                                                ? products.map(
+                                                    (product, index3) => {
+                                                      return (
+                                                        <TableRow
+                                                          key={`${index3}-${index3}`}
+                                                        >
+                                                          <TableCell>
+                                                            {product.businessProductCode !=
+                                                            null
+                                                              ? product.businessProductCode
+                                                              : product.product}
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {
+                                                              product.description
+                                                            }
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {
+                                                              product.quantityMovement
+                                                            }
+                                                          </TableCell>
+                                                        </TableRow>
+                                                      );
+                                                    },
+                                                  )
+                                                : null}
+                                            </TableBody>
+                                          </Table>
+                                        </Box>
+                                      </Collapse>
+                                    </TableCell>
+                                  </TableRow>
+                                </>
+                              );
+                            },
+                          )
+                        : null}
+                    </TableBody>
+                  </Table>
+         </TableContainer>                     
       <ButtonGroup
         orientation='vertical'
         variant='outlined'
