@@ -110,9 +110,10 @@ const Distribution = () => {
     predefinedRoutes_PageListPredefinedRoutes,
     selectedRoute_PageListPredefinedRoutes
   } = useSelector(({movements}) => movements);
+  console.log("Este es el predefinedRoutes del comienzo",predefinedRoutes_PageListPredefinedRoutes);
   console.log("Este es el selectedRoutes",selectedRoute_PageListPredefinedRoutes)
   const [routes, setRoutes] = React.useState(selectedRoute_PageListPredefinedRoutes);
-  
+  console.log("Este es el routes variable guardar",routes);
   listPayload.request.payload.merchantId =
   userDataRes.merchantSelected.merchantId;
 console.log('Ver en donde esta el error',listPayload);
@@ -137,7 +138,7 @@ console.log("Fase previa al abismo");
     dispatch({type: GET_PRODUCTS, payload: undefined});
     console.log("Todo apunta a que el error es despues de esta linea");
     dispatch({type: GET_CARRIERS, payload: undefined});
-    dispatch({type: LIST_ROUTE, payload: undefined});
+    //dispatch({type: LIST_ROUTE, payload: undefined});
     getProducts(listPayload);
     let listCarriersPayload = {
       request: {
@@ -153,7 +154,7 @@ console.log("Fase previa al abismo");
     };
     console.log('Esto se ejcuta??, is very important xd')
     toGetCarriers(listCarriersPayload, jwtToken);
-  }, []);
+  }, [predefinedRoutes_PageListPredefinedRoutes]);
 
   useEffect(() => {
     if (predefinedRoutes_PageListPredefinedRoutes.length>0) {
@@ -198,14 +199,14 @@ console.log("Fase previa al abismo");
     setSubmitting(true);
     setExecAll(true);
     setExecAll(false);
-    console.log('data final', {...data, routes: routes});
+    console.log('data final', {...data, routes: routes.deliveries});
     const finalPayload = {
       request: {
         payload: {
           userActor: userAttributes['sub'],
           routePredefinedId: query.routeId,
           routeName: data.routeName,
-          deliveries: routes.map((obj) => {
+          deliveries: routes.deliveries.map((obj) => {
             if (obj !== undefined) {
               return {
                 carrierDocumentType: obj.carrierDocumentType,
@@ -457,7 +458,7 @@ console.log("Fase previa al abismo");
           width: '95  %',
         }}
       >
-        {routes
+        {(routes!=null && routes!=undefined)
           ? routes.map((route, index) => (
               <DeliveryCard
                 key={index}

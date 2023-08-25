@@ -33,7 +33,7 @@ import {
 } from '@mui/material';
 
 import {SET_JWT_TOKEN} from '../../../shared/constants/ActionTypes';
-
+import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
@@ -573,10 +573,11 @@ const LocationTable = (arrayObjs, props) => {
           variant='outlined'
           name='codeToSearch'
           size='big'
+          value={locationCode}
           onChange={(event) => {
             console.log("Este es el event del code",event.target.value);
             //listPayload.request.payload.locationName = event.target.value;
-            setLocationCode(event.target.value);
+            setLocationCode(event.target.value.toUpperCase());
           }}
         />
         <TextField
