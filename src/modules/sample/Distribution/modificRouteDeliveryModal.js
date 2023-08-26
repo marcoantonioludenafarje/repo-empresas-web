@@ -45,7 +45,7 @@ import SelectProduct from '../AddExisingProduct/SelectProduct';
 
 import {fixDecimals, isEmpty, dateWithHyphen} from '../../../Utils/utils';
 import {FETCH_ERROR} from '../../../shared/constants/ActionTypes';
-const EditRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
+const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
   const dispatch = useDispatch();
   console.log("Esto es lo que se recibe del deliverySWtate",selectedDeliveryState)
   const router = useRouter();
@@ -383,7 +383,7 @@ const EditRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
           <Grid item xs={12} sm={4}>
             <TextField
               label={<IntlMessages id='common.business.startingDirection' />}
-              defaultValue={temporaryDelivery.startingAddress}
+              defaultValue={temporaryDelivery.startingPointAddress}
               name='startingAddress'
               variant='outlined'
               sx={{
@@ -449,7 +449,7 @@ const EditRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
           <Grid item xs={12} sm={4}>
             <TextField
               label={<IntlMessages id='common.business.arrivalDirection' />}
-              defaultValue={temporaryDelivery.arrivalAddress}
+              defaultValue={temporaryDelivery.arrivalPointAddress}
               name='arrivalAddress'
               variant='outlined'
               sx={{
@@ -484,7 +484,7 @@ const EditRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
           <Grid item xs={12} sm={3}>
             <TextField
               label={<IntlMessages id='common.business.driver.name' />}
-              defaultValue={temporaryDelivery.driverName}
+              defaultValue={temporaryDelivery.driverDenomination}
               name='driverName'
               variant='outlined'
               sx={{
@@ -576,7 +576,7 @@ const EditRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
               label={<IntlMessages id='common.business.plate' />}
               name='plate'
               variant='outlined'
-              defaultValue={temporaryDelivery.plate}
+              defaultValue={temporaryDelivery.carrierPlateNumber}
               placeholder='ABC-123'
               sx={{
                 width: '100%',
@@ -600,7 +600,7 @@ const EditRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
               label={<IntlMessages id='common.business.weigth' />}
               //defaultValue={temporaryDelivery.totalWeight}
               disabled
-              value={temporaryDelivery.totalWeight.toFixed(2)}
+              value={temporaryDelivery.totalGrossWeight.toFixed(2)}
               name='totalWeight'
               variant='outlined'
               sx={{
@@ -615,7 +615,7 @@ const EditRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
             <TextField
               label={<IntlMessages id='common.business.packages.number' />}
               name='numberPackages'
-              defaultValue={temporaryDelivery.numberPackages}
+              defaultValue={temporaryDelivery?.numberOfPackages}
               variant='outlined'
               sx={{
                 width: '100%',
@@ -879,11 +879,11 @@ const EditRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
   ) : null;
 };
 
-export default EditRouteDeliveryModal;
+export default ModificRouteDeliveryModal;
 
-EditRouteDeliveryModal.defaultProps = {};
+ModificRouteDeliveryModal.defaultProps = {};
 
-EditRouteDeliveryModal.propTypes = {
+ModificRouteDeliveryModal.propTypes = {
   selectedDeliveryState: PropTypes.object,
   editFunction: PropTypes.func,
 };
