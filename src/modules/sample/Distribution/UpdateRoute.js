@@ -237,7 +237,7 @@ console.log('Ver en donde esta el error',listPayload);
   };
 
   function swapRowsUp() {
-    let newRoutes = selectedRoute_PageListPredefinedRoutes.deliveries.deliveries;
+    let newRoutes = routes;
     const temp = newRoutes[rowNumber2];
     newRoutes[rowNumber2] = newRoutes[rowNumber2 - 1];
     newRoutes[rowNumber2 - 1] = temp;
@@ -249,7 +249,7 @@ console.log('Ver en donde esta el error',listPayload);
     if (event.target.name == 'codeToSearch') {
       if (event.target.value == '') {
         setValueObservationInput(null);
-        selectedRoute_PageListPredefinedRoutes.deliveries=valueRestRoute;
+        setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
       } else {
         event.target.value = event.target.value.toLowerCase();
         setValueObservationInput(event.target.value);
@@ -260,7 +260,7 @@ console.log('Ver en donde esta el error',listPayload);
   const searchValuesInForm=()=>{
       if (valueObservationInput == null) {
         console.log("Aqui estan todas las rutas",selectedRoute_PageListPredefinedRoutes);
-        
+        setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
       } else {
         console.log("Aqui estan todas las rutas",selectedRoute_PageListPredefinedRoutes);
         let newRoutes=[];
@@ -276,7 +276,7 @@ console.log('Ver en donde esta el error',listPayload);
           ...otherFields,
           deliveries:newRoutes
         }
-        selectedRoute_PageListPredefinedRoutes.deliveries=newRoutes;
+        setRoutes(newRoutes);
       }
   }
 
@@ -305,66 +305,50 @@ console.log('Ver en donde esta el error',listPayload);
   };
 
 console.log("Fase previa al abismo");
-  useEffect(() => {
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GET_PRODUCTS, payload: undefined});
-    console.log("Todo apunta a que el error es despues de esta linea");
-    dispatch({type: GET_CARRIERS, payload: undefined});
-    dispatch({type: LIST_ROUTE, payload: undefined});
-    getProducts(listPayload);
-    let listCarriersPayload = {
-      request: {
-        payload: {
-          typeDocumentCarrier: '',
-          numberDocumentCarrier: '',
-          denominationCarrier: '',
-          merchantId: userDataRes.merchantSelected.merchantId,
-          LastEvaluatedKey: null,
-          needItems: true,
-        },
+useEffect(() => {
+  dispatch({type: FETCH_SUCCESS, payload: undefined});
+  dispatch({type: FETCH_ERROR, payload: undefined});
+  dispatch({type: GET_PRODUCTS, payload: undefined});
+  console.log("Todo apunta a que el error es despues de esta linea");
+  dispatch({type: GET_CARRIERS, payload: undefined});
+  dispatch({type: LIST_ROUTE, payload: undefined});
+  getProducts(listPayload);
+  let listCarriersPayload = {
+    request: {
+      payload: {
+        typeDocumentCarrier: '',
+        numberDocumentCarrier: '',
+        denominationCarrier: '',
+        merchantId: userDataRes.merchantSelected.merchantId,
+        LastEvaluatedKey: null,
+        needItems: true,
       },
-    };
-    console.log('Esto se ejcuta??, is very important xd')
-    toGetCarriers(listCarriersPayload, jwtToken);
-  }, [predefinedRoutes_PageListPredefinedRoutes]);
+    },
+  };
+  console.log('Esto se ejcuta??, is very important xd')
+  toGetCarriers(listCarriersPayload, jwtToken);
+  toGetPredefinedRoute({
+    routePredefinedId: query.routeId,
+    merchantId: userDataRes.merchantSelected.merchantId,
+  });
+}, [predefinedRoutes_PageListPredefinedRoutes]);
 
- 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (predefinedRoutes_PageListPredefinedRoutes.length > 0) {
-        console.log("Este es el listRoute", predefinedRoutes_PageListPredefinedRoutes);
-        console.log("Verificar el id del route", query.routeId);
-        let selectedRoute = predefinedRoutes_PageListPredefinedRoutes.find(
-          (route) => route.routePredefinedId == query.routeId,
-        );
-        let routePredefinedId = selectedRoute.routePredefinedId;
-        dispatch({
-          type: SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
-          payload: null,
-        });
-        toGetPredefinedRoute({
-          routePredefinedId,
-          merchantId: userDataRes.merchantSelected.merchantId,
-        });
-        console.log('selectedRoute', selectedRoute);
-        console.log("Verificando servicio child deliveries Routes", selectedRoute_PageListPredefinedRoutes);
-        if(selectedRoute_PageListPredefinedRoutes){
-          if(selectedRoute_PageListPredefinedRoutes.routePredefinedId==query.routeId){
-            setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
-          }
-        }
-  
-        changeValueField('routeName', selectedRoute.routeName);
-        setRoutesReady(true);
-      }
-    };
-  
-    if (!routesReady) {
-      fetchData();
+
+useEffect(() => {
+  if (selectedRoute_PageListPredefinedRoutes && selectedRoute_PageListPredefinedRoutes.deliveries && selectedRoute_PageListPredefinedRoutes.deliveries.length > 0) {
+    console.log("Este es el listRoute", predefinedRoutes_PageListPredefinedRoutes);
+    console.log("Verificar el id del route", query.routeId);
+
+    console.log('selectedRoute', selectedRoute);
+    console.log("Verificando servicio child deliveries Routes", selectedRoute_PageListPredefinedRoutes);
+    if(selectedRoute_PageListPredefinedRoutes.routePredefinedId==query.routeId){
+      setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
+      changeValueField('routeName', selectedRoute_PageListPredefinedRoutes.routeName);
+      setRoutesReady(true);
     }
-  }, [predefinedRoutes_PageListPredefinedRoutes]);
+  }
+}, [selectedRoute_PageListPredefinedRoutes]);
 
 
   const handleClose = () => {
@@ -374,11 +358,11 @@ console.log("Fase previa al abismo");
   };
 
   const setRouteIndex = (index, obj) => {
-    let changedRoutes = selectedRoute_PageListPredefinedRoutes.deliveries;
+    let changedRoutes = routes;
     changedRoutes[index] = obj;
     setRoutes(changedRoutes);
     console.log('changedRoutes', changedRoutes);
-    console.log('routes', selectedRoute_PageListPredefinedRoutes.deliveries);
+    console.log('routes', routes);
   };
 
   const checkProducts = (delivery, index) => {
@@ -403,8 +387,8 @@ console.log("Fase previa al abismo");
     handleClose();
     console.log('newDelivery', newDelivery);
     console.log("Este es el selectedDelivery",selectedDeliveryState["ORDEN ENTREGA"]);
-    console.log("Este es el selectedRouted junto al delivery",selectedRoute_PageListPredefinedRoutes)
-    const updatedDeliveries = selectedRoute_PageListPredefinedRoutes.deliveries.map((route) => {
+    console.log("Este es el selectedRouted junto al delivery",routes)
+    const updatedDeliveries = routes.map((route) => {
       if (route['ORDEN ENTREGA'] === selectedDeliveryState['ORDEN ENTREGA']) {
         return {
           ...newDelivery,
@@ -412,22 +396,22 @@ console.log("Fase previa al abismo");
       }
       return route;
     });
-    selectedRoute_PageListPredefinedRoutes.deliveries=updatedDeliveries;
+    routes=updatedDeliveries;
     setRoutes(updatedDeliveries);
   };
 
   function swapRowsDown() {
-    let newRoutes = selectedRoute_PageListPredefinedRoutes.deliveries;
+    let newRoutes = routes;
     const temp = newRoutes[rowNumber2];
     newRoutes[rowNumber2] = newRoutes[rowNumber2 + 1];
     newRoutes[rowNumber2 + 1] = temp;
-    selectedRoute_PageListPredefinedRoutes.deliveries=newRoutes;
+    routes=newRoutes;
     setRoutes(newRoutes);
     reloadPage();
   }
   const deleteRoute = () => {
-    let newRoutes = selectedRoute_PageListPredefinedRoutes.deliveries.filter((item, index) => index !== rowNumber2);
-    selectedRoute_PageListPredefinedRoutes.deliveries=newRoutes;
+    let newRoutes = routes.filter((item, index) => index !== rowNumber2);
+    routes=newRoutes;
     setRoutes(newRoutes);
     reloadPage();
   };
@@ -456,14 +440,14 @@ console.log("Fase previa al abismo");
     setSubmitting(true);
     setExecAll(true);
     setExecAll(false);
-    console.log('data final', {...data, routes: selectedRoute_PageListPredefinedRoutes.deliveries});
+    console.log('data final', {...data, routes: routes});
     const finalPayload = {
       request: {
         payload: {
           userActor: userAttributes['sub'],
           routePredefinedId: query.routeId,
           routeName: data.routeName,
-          deliveries: selectedRoute_PageListPredefinedRoutes.deliveries.map((obj) => {
+          deliveries: routes.map((obj) => {
             if (obj !== undefined) {
               return {
                 carrierDocumentType: obj.carrierDocumentType,
@@ -515,7 +499,7 @@ console.log("Fase previa al abismo");
   };
 
   const setFunction = (index, func) => {
-    let changedRoutes = selectedRoute_PageListPredefinedRoutes.deliveries;
+    let changedRoutes = routes;
     changedRoutes[index].submit = func;
     console.log('function', changedRoutes[index].submit);
     setRoutes(changedRoutes);
@@ -802,8 +786,8 @@ console.log("Fase previa al abismo");
           </Typography>
           <IconButton
             onClick={() => {
-              console.log('rutas', selectedRoute_PageListPredefinedRoutes);
-              let newRoutes = selectedRoute_PageListPredefinedRoutes.deliveries;
+              console.log('rutas', routes);
+              let newRoutes = routes;
               newRoutes.push(emptyRoute);
               setRoutes(newRoutes);
               reloadPage();
@@ -815,8 +799,8 @@ console.log("Fase previa al abismo");
           </IconButton>
           <IconButton
             onClick={() => {
-              console.log('rutas', selectedRoute_PageListPredefinedRoutes);
-              let newRoutes = selectedRoute_PageListPredefinedRoutes.deliveries;
+              console.log('rutas', routes);
+              let newRoutes = routes;
               newRoutes.pop();
               setRoutes(newRoutes);
               reloadPage();
@@ -858,10 +842,10 @@ console.log("Fase previa al abismo");
               </TableRow>
             </TableHead>
             <TableBody>
-              {selectedRoute_PageListPredefinedRoutes && selectedRoute_PageListPredefinedRoutes.deliveries.length !== 0 && Array.isArray(selectedRoute_PageListPredefinedRoutes.deliveries)
-                ? selectedRoute_PageListPredefinedRoutes.deliveries.map((route, index2) => {
+              {routes && Array.isArray(routes) && routes.length > 0
+                ? routes.map((route, index2) => {
                     const products = route.productsInfo;
-                    console.log('routes de newRoute', selectedRoute_PageListPredefinedRoutes);
+                    console.log('routes de newRoute', routes);
                     return (
                       <>
                         <TableRow key={index2}>
@@ -996,8 +980,8 @@ console.log("Fase previa al abismo");
           color='secondary'
           variant='outlined'
           onClick={() => {
-            const productosPorConductor = acumularProductosPorConductor(selectedRoute_PageListPredefinedRoutes.deliveries);
-            const productosResumen = acumularProductos(selectedRoute_PageListPredefinedRoutes.deliveries);
+            const productosPorConductor = acumularProductosPorConductor(routes);
+            const productosResumen = acumularProductos(routes);
             console.log('routesSummary', productosPorConductor);
             console.log('productsSummary', productosResumen);
             setRoutesSummary(productosPorConductor);
@@ -1388,7 +1372,7 @@ console.log("Fase previa al abismo");
           Subir
         </MenuItem>
         <MenuItem
-          disabled={selectedRoute_PageListPredefinedRoutes?.deliveries ? !(rowNumber2 != selectedRoute_PageListPredefinedRoutes.deliveries.length - 1) : false}
+          disabled={routes ? !(rowNumber2 != routes.length - 1) : false}
           onClick={swapRowsDown}
         >
           <ArrowDownwardOutlinedIcon sx={{mr: 1, my: 'auto'}} />
