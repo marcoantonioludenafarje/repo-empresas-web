@@ -519,6 +519,7 @@ const Distribution = (props) => {
                       description: prod.description,
                       unitMeasure: prod.unitMeasure,
                       quantityMovement: prod.count,
+                      weight: prod.weight,
                       businessProductCode: prod.product,
                     };
                   }

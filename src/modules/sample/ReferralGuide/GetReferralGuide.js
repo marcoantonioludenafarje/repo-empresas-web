@@ -729,6 +729,7 @@ const GetReferralGuide = (props) => {
           description: prod.description,
           unitMeasure: prod.unitMeasure,
           quantityMovement: prod.quantityMovement,
+          weight: prod.weight,
           businessProductCode: prod.businessProductCode,
         };
       });
@@ -820,6 +821,7 @@ const GetReferralGuide = (props) => {
           parsedProducts.push({
             product: obj.product,
             quantityMovement: obj.quantityMovement,
+            weight: obj.weight,
             customCodeProduct: obj.customCodeProduct,
             description: obj.description,
             unitMeasure: obj.unitMeasure,
@@ -1280,6 +1282,7 @@ const GetReferralGuide = (props) => {
         parsedProducts.push({
           product: obj.product,
           quantityMovement: obj.quantityMovement,
+          weight: obj.weight,
           customCodeProduct: obj.customCodeProduct,
           description: obj.description,
           unitMeasure: obj.unitMeasure,
