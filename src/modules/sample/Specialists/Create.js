@@ -127,9 +127,9 @@ const NewSpecialist = (props) => {
     setSelectedOption(newValue);
   };
   const handleSpecialistNameChange = (event) => {
-    const updatedName = event.target.value;
+    const updatedName = event.target.value.toUpperCase();
     console.log('newValue', updatedName);
-    setSelectedNameSpecialist(updatedName);
+    setSelectedNameSpecialist(updatedName.toUpperCase());
   };
   useEffect(() => {
     console.log(
@@ -151,7 +151,10 @@ const NewSpecialist = (props) => {
     if (listUserRes) {
       console.log('listUserRes desde useeffect', listUserRes);
       const listUserAutoCompleteV1 = listUserRes.map((user) => {
-        return {...user, label: user.email};
+        return {
+          ...user,
+          label: user.nombreCompleto ? user.nombreCompleto : user.email,
+        };
       });
 
       console.log('listUserAutoCompleteV1', listUserAutoCompleteV1);
@@ -351,7 +354,11 @@ const NewSpecialist = (props) => {
                           name='user'
                           id='combo-box-demo'
                           options={listUserRes}
-                          getOptionLabel={(option) => option.email}
+                          getOptionLabel={(option) =>
+                            option.nombreCompleto
+                              ? option.nombreCompleto
+                              : option.email
+                          }
                           onChange={handleOptionChange}
                           renderInput={(params) => (
                             <TextField {...params} label='Usuario' />

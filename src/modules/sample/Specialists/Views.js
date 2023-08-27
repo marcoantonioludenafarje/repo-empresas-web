@@ -43,6 +43,8 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import {
   getSpecialists,
   deleteSpecialists,
@@ -99,6 +101,8 @@ export default function Views(props) {
   const [reload, setReload] = React.useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [filteredSpecialists, setFilteredSpecialists] = useState([]);
+  const {successMessage} = useSelector(({specialists}) => specialists);
+  const {errorMessage} = useSelector(({specialists}) => specialists);
 
   let popUp = false;
 
@@ -134,10 +138,8 @@ export default function Views(props) {
       let listPayload = {
         request: {
           payload: {
-            typeDocumentClient: '',
-            numberDocumentClient: '',
-            denominationClient: '',
             merchantId: userDataRes.merchantSelected.merchantId,
+            nameSpecialist: searchValue,
             LastEvaluatedKey: null,
           },
         },
@@ -145,7 +147,7 @@ export default function Views(props) {
       getSpecialist(listPayload);
       // setFirstload(true);
     }
-  }, [userDataRes,reload]);
+  }, [userDataRes, reload]);
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -171,8 +173,8 @@ export default function Views(props) {
     setAnchorElQR(null);
   };
   const goToUpdate = () => {
-    let userId=selectedSpecialist.user.userId;
-    selectedSpecialist.user=userId;
+    let userId = selectedSpecialist.user.userId;
+    selectedSpecialist.user = userId;
     console.log('Actualizando', selectedSpecialist);
     Router.push({
       pathname: '/sample/specialists/update',
@@ -202,7 +204,8 @@ export default function Views(props) {
   const confirmDelete = () => {
     console.log('selected agente', selectedSpecialist);
     console.log('id de selected', selectedSpecialist.specialistId);
-    deletePayload.request.payload.specialistId = selectedSpecialist.specialistId;
+    deletePayload.request.payload.specialistId =
+      selectedSpecialist.specialistId;
     console.log('deletePayload', deletePayload);
     deleteASpecialist(deletePayload);
     setOpen2(false);
@@ -216,7 +219,7 @@ export default function Views(props) {
   };
 
   // Paso 2: Función para filtrar las campañas por el nombre de la campaña
-  const filterSpecialists = (searchText) => {
+  /*const filterSpecialists = (searchText) => {
     if (!searchText) {
       setFilteredSpecialists(listSpecialists); // Si el valor del TextField está vacío, mostrar todas las campañas.
     } else {
@@ -225,17 +228,84 @@ export default function Views(props) {
       );
       setFilteredSpecialists(filtered);
     }
-  };
+  };*/
 
-  const buscarAgente = () => {
-    console.log('prueba boton ');
-  };
-
-  useEffect(() => {
+  /*useEffect(() => {
     filterSpecialists(searchValue);
 
     console.log('filteredSpecialists', filteredSpecialists);
-  }, [searchValue, listSpecialists]);
+  }, [searchValue, listSpecialists]);*/
+
+  const searchSpecialist = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          nameSpecialist: searchValue,
+          LastEvaluatedKey: null,
+        },
+      },
+    };
+    getSpecialist(listPayload);
+  };
+
+  const handleSearchValues = (event) => {
+    console.log('Evento', event);
+    //event.target.value=event.target.value.toUpperCase();
+    setSearchValue(event.target.value);
+  };
+
+  const showMessage = () => {
+    if (successMessage != undefined) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha eliminado correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al eliminar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
+  };
+
+  const sendStatus = () => {
+    console.log('sendStatus', '');
+    setOpenStatus(false);
+    setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            merchantId: userDataRes.merchantSelected.merchantId,
+            nameSpecialist: searchValue,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      //listPayload.request.payload.LastEvaluatedKey = null;
+      //dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
+      getSpecialist(listPayload);
+    }, 2000);
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -250,8 +320,7 @@ export default function Views(props) {
           variant='outlined'
           name='nameToSearch'
           size='small'
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={handleSearchValues}
         />
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
@@ -260,7 +329,7 @@ export default function Views(props) {
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          // onClick={/*buscarAgente()*/}
+          onClick={searchSpecialist}
         >
           Buscar
         </Button>
@@ -283,8 +352,8 @@ export default function Views(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredSpecialists?.map((row, index) => {
-              console.log('filterSpecialists:-->', filteredSpecialists);
+            {listSpecialists?.map((row, index) => {
+              console.log('listSpecialists:-->', listSpecialists);
               return (
                 <TableRow
                   key={index}
@@ -295,7 +364,11 @@ export default function Views(props) {
                     scope='row'
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.user?.email}
+                    {row.user
+                      ? row.user.nombreCompleto
+                        ? row.user.nombreCompleto
+                        : row.user.email
+                      : null}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
@@ -350,6 +423,26 @@ export default function Views(props) {
 
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
+
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar especialista'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog
         open={open2}

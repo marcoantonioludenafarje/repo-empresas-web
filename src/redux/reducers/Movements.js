@@ -432,7 +432,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
         generateRouteRes: action.payload,
       };
     case UPDATE_ROUTE:
-      console.log('data de reducer UPDATE_ROUTE', action.payload);
+      console.log('data de reducer UPDATE_ROUTE',action, action.payload);
       return {
         ...state,
         updateRouteRes: action.payload,
