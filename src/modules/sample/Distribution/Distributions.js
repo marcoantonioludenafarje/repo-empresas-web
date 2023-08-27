@@ -22,7 +22,7 @@ import {
   DialogTitle,
   Typography,
 } from '@mui/material';
-
+import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
 import EditLocationOutlinedIcon from '@mui/icons-material/EditLocationOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -70,6 +70,7 @@ const FinancesTable = (props) => {
   const [open2, setOpen2] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [resultState, setResultState] = React.useState(false);
+  const [openSummaryGuide, setOpenSummaryGuide] = React.useState(false);
   const [openRoutes, setOpenRoutes] = React.useState(false);
   const [openProducts, setOpenProducts] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
@@ -198,6 +199,24 @@ const FinancesTable = (props) => {
         console.log('Se reutilizara el metodo');
       }
       setOpen(true);
+    } else if (type == 'generateSummaryGuide'){
+      console.log('Selected Distribution', selectedDistribution);
+      setTypeDialog(type);
+      if (
+        listDistribution[indexDistributionSelected] &&
+        listDistribution[indexDistributionSelected].deliveries.length == 0
+      ) {
+        console.log('Obtendra el listDistribution');
+        toGetDistribution({
+          deliveryDistributionId: distributionSelected,
+          indexDistributionSelected: indexDistributionSelected,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        });
+      } else {
+        console.log('Se reutilizara el metodo');
+      }
+      setOpenSummaryGuide(true);
+      
     }
     // console.log('Veamos el total', selectedRoute);
     // let routePredefinedId = selectedRoute.routePredefinedId;
@@ -211,6 +230,16 @@ const FinancesTable = (props) => {
     // toListNewRoutes()
     // setTypeDialog(type);
     // setShowAlert(false);
+  };
+  const sendQuerySummaryGuide = () => {
+    const querySummaryGuide = {
+      "type": "summaryGuideSinceDistribution",
+      "deliveryDistributionId": listDistribution[indexDistributionSelected].deliveryDistributionId,
+    }
+    Router.push({
+        pathname: '/sample/referral-guide/get',
+        query: querySummaryGuide,
+      });
   };
 
   const toGetDistribution = (payload) => {
@@ -331,7 +360,9 @@ const FinancesTable = (props) => {
   const handleClose = () => {
     setOpen(false);
   };
-
+  const handleCloseSummaryGuide = () => {
+    setOpenSummaryGuide(false);
+  };
   return (
     <Card sx={{p: 4}}>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
@@ -416,8 +447,36 @@ const FinancesTable = (props) => {
           <CachedIcon sx={{mr: 1, my: 'auto'}} />
           Ver detalle
         </MenuItem>
+        <MenuItem onClick={handleClickOpen.bind(this, 'generateSummaryGuide')}>
+          <DirectionsBusFilledIcon sx={{mr: 1, my: 'auto'}} />
+          Generar Guía Conglomerada
+        </MenuItem>
       </Menu>
+      <Dialog
+        open={openSummaryGuide}
+        onClose={handleCloseSummaryGuide}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Guía de Remisión Conglomerada'}
+        </DialogTitle>
+        {listDistribution && listDistribution.length > 0 && listDistribution[indexDistributionSelected] &&
+                    listDistribution[indexDistributionSelected].deliveries
+                      .length > 0 ? (
+                          <DialogActions sx={{justifyContent: 'center'}}>
+                            <Button variant='outlined' onClick={sendQuerySummaryGuide}>
+                              Dirigirse
+                            </Button>
+                          </DialogActions>
+                      ) : (
 
+                        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+                          <CircularProgress disableShrink />
+                        </DialogContent>
+                      )}
+      </Dialog>
       <Dialog
         open={open}
         onClose={handleClose}

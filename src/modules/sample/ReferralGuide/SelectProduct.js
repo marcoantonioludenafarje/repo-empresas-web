@@ -74,10 +74,10 @@ const SelectProduct = ({fcData}) => {
           <TableRow>
             <TableCell>Código</TableCell>
             <TableCell>Descripción</TableCell>
-            <TableCell>Cantidad</TableCell>
+            {/* <TableCell>Cantidad</TableCell> */}
             <TableCell>Peso</TableCell>
-            <TableCell>Precio compra sugerido</TableCell>
-            <TableCell>Precio venta sugerido</TableCell>
+            {/* <TableCell>Precio compra sugerido</TableCell>
+            <TableCell>Precio venta sugerido</TableCell> */}
             {/* <TableCell></TableCell> */}
           </TableRow>
         </TableHead>
@@ -99,9 +99,9 @@ const SelectProduct = ({fcData}) => {
                 >
                   <TableCell>{obj.businessProductCode}</TableCell>
                   <TableCell>{obj.description}</TableCell>
-                  <TableCell>{obj.stock}</TableCell>
+                  {/* <TableCell>{obj.stock}</TableCell> */}
                   <TableCell>{obj.weight}</TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     {`${parseTo3Decimals(Number(obj.costPriceUnit)).toFixed(
                       3,
                     )} ${moneyUnit}`}
@@ -110,7 +110,7 @@ const SelectProduct = ({fcData}) => {
                     {`${parseTo3Decimals(
                       Number(obj.priceBusinessMoneyWithIgv),
                     ).toFixed(3)} ${moneyUnit}`}
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               );
             })

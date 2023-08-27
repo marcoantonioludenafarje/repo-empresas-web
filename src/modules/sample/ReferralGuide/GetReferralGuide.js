@@ -2,6 +2,7 @@ import React, {useEffect, useRef} from 'react';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import originalUbigeos from '../../../Utils/ubigeo.json';
+import {makeStyles} from '@mui/styles';
 
 import {
   ButtonGroup,
@@ -31,6 +32,9 @@ import {
 import Router, {useRouter} from 'next/router';
 import {ClickAwayListener} from '@mui/base';
 
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppLowerCaseTextField from '../../../@crema/core/AppFormComponents/AppLowerCaseTextField';
@@ -56,14 +60,18 @@ import {
 } from '../../../Utils/utils';
 import SelectedProducts from './SelectedProducts';
 import SelectCarrier from './SelectCarrier';
+import SelectDriver from './SelectDriver';
+import SelectLocation from './SelectLocation';
 import {getCarriers} from '../../../redux/actions/Carriers';
 import {getLocations} from '../../../redux/actions/Locations';
+import {getDrivers} from '../../../redux/actions/Drivers';
 import {getUbigeos} from '../../../redux/actions/General';
 import {
   getMovements,
   getOutputItems_pageListOutput,
   updateReferralGuideValue,
   addReferrealGuide,
+  previsualizeReferralGuide,
 } from '../../../redux/actions/Movements';
 import {onGetBusinessParameter} from '../../../redux/actions/General';
 import {red} from '@mui/material/colors';
@@ -79,7 +87,50 @@ import {
   UPDATE_GENERATE_REFERRAL_GUIDE_VALUE,
 } from '../../../shared/constants/ActionTypes';
 import AddProductForm from './AddProductForm';
+import AddClientForm from '../ClientSelection/AddClientForm';
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    textAlign: 'center',
+  },
+  btnGroup: {
+    marginTop: '1em',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  btn: {
+    margin: '3px 0',
+    width: '260px',
+  },
+  noSub: {
+    textDecoration: 'none',
+  },
+  field: {
+    marginTop: '10px',
+  },
+  imgPreview: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  img: {
+    width: '80%',
+  },
+  fixPosition: {
+    position: 'relative',
+    bottom: '-8px',
+  },
+  searchIcon: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  buttonAddProduct: {},
+  closeButton: {
+    cursor: 'pointer',
+    float: 'right',
+    marginTop: '5px',
+    width: '20px',
+  },
+}));
 const validationSchema = yup.object({
   startingPoint: yup
     .string()
@@ -157,11 +208,14 @@ const useForceUpdate = () => {
   return () => setReload((value) => value + 1); // update the state to force render
 };
 let parsedUbigeos = [];
-
-const GetReferralGuide = () => {
+let getValueField;
+const GetReferralGuide = (props) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const {query} = router;
+  
+  const classes = useStyles(props);
+  let canvasRef = useRef(null);
   console.log('query', query);
   const forceUpdate = useForceUpdate();
   const [issueDate, setIssueDate] = React.useState(Date.now());
@@ -174,6 +228,9 @@ const GetReferralGuide = () => {
   const [transportModeVal, setTransportModeVal] = React.useState(
     'privateTransportation',
   );
+  
+  const [scale, setScale] = React.useState(1.0);
+  const [urlPdf, setUrlPdf] = React.useState('');
   const [reasonVal, setReasonVal] = React.useState('sale');
   const [sendClient, setSendClient] = React.useState(false);
   const [sendSunat, setSendSunat] = React.useState(false);
@@ -189,10 +246,13 @@ const GetReferralGuide = () => {
     {},
   );
   const [internalLocations, setInternalLocations] = React.useState([]);
+  const [selectedDeliveryState, setSelectedDeliveryState] = React.useState('');
   const [ubigeoArrivalPoint, setUbigeoArrivalPoint] = React.useState(0);
   const [existArrivalUbigeo, setExistArrivalUbigeo] = React.useState(true);
   const [selectedArrivalUbigeo, setSelectedArrivalUbigeo] = React.useState({});
   const [selectedCarrier, setSelectedCarrier] = React.useState({});
+  const [selectedDriver, setSelectedDriver] = React.useState({});
+  const [selectedAddressee, setSelectedAddressee] = React.useState('');
   const [existCarrier, setExistCarrier] = React.useState(false);
   const [showForms, setShowForms] = React.useState(false);
   const [openAddProduct, setOpenAddProduct] = React.useState(false);
@@ -201,8 +261,12 @@ const GetReferralGuide = () => {
   const [dataFinal, setDataFinal] = React.useState({});
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [basicUrl, setBasicUrl] = React.useState('');
+  const [openPrevisualizer, setOpenPrevisualizer] = React.useState(false);
   let changeValueField;
 
+  
+  const {listDistribution} = useSelector(({movements}) => movements);
+  console.log('listDistribution', listDistribution);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   const {addReferralGuideRes} = useSelector(({movements}) => movements);
@@ -227,14 +291,21 @@ const GetReferralGuide = () => {
   console.log('jwtToken', jwtToken);
   const {getLocationsRes} = useSelector(({locations}) => locations);
 
+  const {previsualizeReferralGuideRes} = useSelector(({movements}) => movements);
   const toGetCarriers = (payload, token) => {
     dispatch(getCarriers(payload, token));
   };
   const toGetLocations = (payload, jwtToken) => {
     dispatch(getLocations(payload, jwtToken));
   };
+  const toGetDrivers = (payload, jwtToken) => {
+    dispatch(getDrivers(payload, jwtToken));
+  };
   const toAddReferrealGuide = (payload) => {
     dispatch(addReferrealGuide(payload));
+  };
+  const toPrevisualizeReferralGuide = (payload) => {
+    dispatch(previsualizeReferralGuide(payload));
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
@@ -314,6 +385,19 @@ const GetReferralGuide = () => {
       },
     };
     toGetLocations(listLocationsPayload, jwtToken);
+    let listDriversPayload = {
+      request: {
+        payload: {
+          typeDocumentDriver: '',
+          numberDocumentDriver: '',
+          fullName: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
+      },
+    };
+    toGetDrivers(listDriversPayload,jwtToken);
     originalUbigeos.map((obj, index) => {
       parsedUbigeos[index] = {
         label: `${obj.descripcion} - ${obj.ubigeo}`,
@@ -353,13 +437,57 @@ const GetReferralGuide = () => {
       setMinTutorial(true);
     }, 2000);
   }, []);
+  useEffect(() => {
+    if (previsualizeReferralGuideRes && previsualizeReferralGuideRes.url) {
+      setUrlPdf(previsualizeReferralGuideRes.url);
+    }
+  }, [previsualizeReferralGuideRes]);
+  
+  useEffect(() => {
+    console.log('openPrevisualizer', openPrevisualizer);
+    console.log('urlPdf', urlPdf);
+    console.log('canvasRef', canvasRef);
+    setTimeout(() => {
+      if (openPrevisualizer && urlPdf && canvasRef.current) {
+        console.log('hola urlPdf');
+        const canvas = canvasRef.current;
+        const canvasContext = canvas.getContext('2d');
 
+        const renderCanvas = async () => {
+          const pdfJS = await import('pdfjs-dist/build/pdf');
+          pdfJS.GlobalWorkerOptions.workerSrc =
+            window.location.origin + '/pdf.worker.min.js';
+          // const buffer = Uint8Array.from(atob(pdfBase64), (c) => c.charCodeAt(0));
+          // const pdf = await pdfJS.getDocument(buffer).promise;
+          const pdf = await pdfJS.getDocument(urlPdf).promise;
+          const page = await pdf.getPage(1);
+          const viewport = page.getViewport({scale});
+
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+
+          const renderContext = {canvasContext, viewport};
+          page.render(renderContext);
+        };
+
+        renderCanvas();
+      }
+    }, 500);
+  }, [urlPdf, canvasRef, openPrevisualizer]);
   useEffect(() => {
     if (getLocationsRes && getLocationsRes.length > 0) {
       console.log('locaciones internas', getLocationsRes);
       const internalLocationsMin = getLocationsRes.map((obj) => {
         obj.label = obj.locationName;
         return obj;
+      }).sort((a, b) => {
+        if (a.locationName > b.locationName) {
+          return -1;
+        }
+        if (a.locationName < b.locationName) {
+          return 1;
+        }
+        return 0;
       });
       setInternalLocations(internalLocationsMin);
       setSelectedStartingLocation({
@@ -395,7 +523,89 @@ const GetReferralGuide = () => {
       routeToReferralGuide
     );
   };
+  useEffect(()=>{
+    if(query.type == 'summaryGuideSinceDistribution'){
+      const selectedDistribution = listDistribution.find((obj) => obj.deliveryDistributionId == query.deliveryDistributionId);
+      const selectedDelivery = selectedDistribution.deliveries[0];
+      setSelectedDeliveryState(selectedDelivery);
+      const date = selectedDelivery.transferStartDate;
+      const dateTranslate = strDateToDateObject(date);
+      console.log('date', dateTranslate);
+      setDateStartTransfer(dateTranslate);
 
+      let startingUbigeo = parsedUbigeos.find(
+        (ubigeo) => ubigeo.ubigeo == selectedDelivery.startingPointUbigeo,
+      );
+      let arrivalUbigeo = parsedUbigeos.find(
+        (ubigeo) => ubigeo.ubigeo == selectedDelivery.arrivalPointUbigeo,
+      );
+      setUbigeoStartingPoint(startingUbigeo.ubigeo);
+      setUbigeoArrivalPoint(arrivalUbigeo.ubigeo);
+      setExistArrivalUbigeo(true);
+      setSelectedStartingUbigeo(startingUbigeo);
+      setSelectedArrivalUbigeo(arrivalUbigeo);
+      setExistStartingUbigeo(true);
+      changeValueField(
+        'startingPoint',
+        selectedDelivery.startingPointAddress,
+      );
+      changeValueField(
+        'arrivalPoint',
+        selectedDelivery.arrivalPointAddress,
+      );
+
+      changeValueField(
+        'numberPackages',
+        selectedDelivery.numberOfPackages,
+      );
+      setTransportModeVal(selectedDelivery.typeOfTransport);
+      setReasonVal(selectedDelivery.reasonForTransfer);
+
+      setSelectedProducts(selectedDelivery.productsInfo);
+      console.log('productos a pasar', selectedDelivery.productsInfo);
+      let weight = selectedDelivery.totalGrossWeight;
+      console.log('weight', weight);
+
+      const carrier = {
+        typeDocumentCarrier: selectedDelivery.carrierDocumentType,
+        carrierDocumentNumber: selectedDelivery.carrierDocumentNumber,
+        denominationCarrier: selectedDelivery.carrierDenomination,
+      };
+      setSelectedCarrier(carrier);
+      setExistCarrier(true);
+      changeValueField('addressee', selectedDelivery.carrierDenomination);
+      changeValueField(
+        'licensePlate',
+        selectedDelivery.carrierPlateNumber,
+      );
+      changeValueField('driverName', selectedDelivery.driverDenomination);
+      changeValueField(
+        'driverLastName',
+        selectedDelivery.driverLastName
+          ? selectedDelivery.driverLastName
+          : '',
+      );
+      if (
+        selectedDelivery.carrierDocumentType &&
+        typeof selectedDelivery.carrierDocumentType === 'string'
+      ) {
+        setDriverDocumentType(
+          selectedDelivery.driverDocumentType.toString().toUpperCase(),
+        );
+      }
+      changeValueField(
+        'driverDocumentNumber',
+        selectedDelivery.driverDocumentNumber,
+      );
+      changeValueField(
+        'driverLicenseNumber',
+        selectedDelivery.driverLicenseNumber
+          ? selectedDelivery.driverLicenseNumber
+          : '',
+      );
+      changeValueField('observation', selectedDelivery.observation);
+    }
+  },[query])
   useEffect(() => {
     if (
       outputItems_pageListOutput === undefined ||
@@ -582,6 +792,7 @@ const GetReferralGuide = () => {
     nroReferralGuide: 'Autogenerado',
     addressee: '',
     totalWeight: totalWeight,
+    reasonDescription: '',
     numberPackages: 1,
     startingPoint: '',
     startingSunatCode: '',
@@ -659,6 +870,9 @@ const GetReferralGuide = () => {
             automaticSendClient: /* sendSunat */ true,
             reasonForTransfer: reasonVal,
             totalGrossWeight: data.totalWeight,
+            addressee: selectedAddressee,
+            type: query.type || '',
+            reasonDescription: data.reasonDescription || '',
             numberOfPackages: data.numberPackages,
             typeOfTransport: transportModeVal,
             transferStartDate: dateWithHyphen(dateStartTransfer),
@@ -712,6 +926,17 @@ const GetReferralGuide = () => {
     setOpenDialog(true);
   };
 
+  const handleZoomIn = () => {
+    setScale((prevScale) => prevScale + 0.1);
+  };
+
+  const handleZoomOut = () => {
+    setScale((prevScale) => prevScale - 0.1);
+  };
+
+  const handleResetZoom = () => {
+    setScale(1.0);
+  };
   const closeDialog = () => {
     if (typeDialog === 'add') {
       /* if (
@@ -851,7 +1076,18 @@ const GetReferralGuide = () => {
   const showSelectCarrier = () => {
     return <SelectCarrier fcData={saveCarrier} />;
   };
-
+  const showSelectDriver = () => {
+    return <SelectDriver fcData={saveDriver} />;
+  };
+  const showSelectStartingLocation = () => {
+    return <SelectLocation fcData={saveStartingLocation} typeLocation='starting' />;
+  };
+  const showSelectArrivalLocation = () => {
+    return <SelectLocation fcData={saveArrivalLocation} typeLocation='arrival' />;
+  };
+  const showSelectAddressee = () => {
+    return <AddClientForm sendData={saveAddressee} />;
+  }
   const handleSendClient = (event, isInputChecked) => {
     setSendClient(isInputChecked);
     console.log('Enviar a cliente', isInputChecked);
@@ -864,6 +1100,9 @@ const GetReferralGuide = () => {
     setDriverDocumentType(event.target.value);
     console.log('Tipo de documento conductor', event.target.value);
   };
+  const handleClosePrevisualizer = () => {
+    setOpenPrevisualizer(false);
+  };
   const handleClickAway = () => {
     // Evita que se cierre el diálogo haciendo clic fuera del contenido
     // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
@@ -872,7 +1111,22 @@ const GetReferralGuide = () => {
     setTypeDialog('selectCarrier');
     setOpenDialog(true);
   };
-
+  const openSelectDriver = () => {
+    setTypeDialog('selectDriver');
+    setOpenDialog(true);
+  };
+  const openSelectStartingLocation = () => {
+    setTypeDialog('selectStartingLocation');
+    setOpenDialog(true);
+  };
+  const openSelectArrivalLocation = () => {
+    setTypeDialog('selectArrivalLocation');
+    setOpenDialog(true);
+  };
+  const openSelectAddressee = () => {
+    setTypeDialog('selectAddressee');
+    setOpenDialog(true);
+  };
   const saveCarrier = (carrier) => {
     setSelectedCarrier(carrier);
     setExistCarrier(true);
@@ -880,6 +1134,65 @@ const GetReferralGuide = () => {
     setOpenDialog(false);
   };
 
+  const saveDriver = (driver) => {
+    setSelectedDriver(driver);
+    changeValueField('driverName', driver.firstName);
+    changeValueField('driverLastName', driver.lastName);
+    setDriverDocumentType(driver.driverId.split('-')[0]);
+    changeValueField('driverDocumentNumber', driver.driverId.split('-')[1]);
+    changeValueField('driverLicenseNumber', driver.license);
+    console.log('Conductor', driver);
+    setOpenDialog(false);
+  };
+  const saveAddressee = (addressee) => {
+    setSelectedAddressee(addressee);
+    changeValueField('addressee', addressee.denominationClient)
+    setOpenDialog(false);
+  }
+  const saveStartingLocation = (location) => {
+    setSelectedStartingLocation(location);
+    setUbigeoStartingPoint(location.ubigeo);
+    let selectedUbigeoValue = parsedUbigeos.find(
+      (ubigeo) =>
+        ubigeo.ubigeo == location.ubigeo,
+    );
+    changeValueField(
+      'startingPoint',
+      location.locationDetail,
+    );
+    setSelectedStartingUbigeo(selectedUbigeoValue);
+    setExistStartingUbigeo(true);
+    if (location.sunatEstablishmentCode) {
+      changeValueField(
+        'startingSunatCode',
+        location.sunatEstablishmentCode,
+      );
+    }
+    console.log('Locación de partida interna', location);
+    setOpenDialog(false);
+  };
+  const saveArrivalLocation = (location) => {
+    setSelectedArrivalLocation(location);
+    setUbigeoArrivalPoint(location.ubigeo);
+    let selectedUbigeoValue = parsedUbigeos.find(
+      (ubigeo) =>
+        ubigeo.ubigeo == location.ubigeo,
+    );
+    changeValueField(
+      'arrivalPoint',
+      location.locationDetail,
+    );
+    setSelectedArrivalUbigeo(selectedUbigeoValue);
+    setExistArrivalUbigeo(true);
+    if (location.sunatEstablishmentCode) {
+      changeValueField(
+        'arrivalSunatCode',
+        location.sunatEstablishmentCode,
+      );
+    }
+    console.log('Locación de llegada interna', location);
+    setOpenDialog(false);
+  };
   const searchAProduct = () => {
     setOpenAddProduct(true);
   };
@@ -972,6 +1285,100 @@ const GetReferralGuide = () => {
     toGetCarriers(listCarriersPayload, jwtToken);
     //setOpen(true);
   };
+  const handleClickOpenPrevisualizer = () => {
+    setOpenPrevisualizer(true);
+    console.log(
+      'existArrivalUbigeo && existStartingUbigeo && existCarrier',
+      existArrivalUbigeo,
+      existStartingUbigeo,
+      existCarrier,
+    );
+    let parsedProducts = [];
+    if (selectedProducts.length !== 0) {
+      selectedProducts.map((obj) => {
+        parsedProducts.push({
+          product: obj.product,
+          quantityMovement: obj.quantityMovement,
+          customCodeProduct: obj.customCodeProduct,
+          description: obj.description,
+          unitMeasure: obj.unitMeasure,
+          businessProductCode: obj.businessProductCode,
+        });
+      });
+    }
+
+    let docMoves = [];
+    if (
+      selectedOutput &&
+      selectedOutput.documentsMovement &&
+      selectedOutput.documentsMovement.length !== 0
+    ) {
+      selectedOutput.documentsMovement.map((obj) => {
+        docMoves.push({
+          issueDate: obj.issueDate,
+          typeDocument: obj.typeDocument,
+          serialDocument: obj.serialDocument,
+        });
+      });
+    }
+
+    let previsualizePayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          deliveryDistributionId: routeToReferralGuide
+            ? routeToReferralGuide.deliveryDistributionId
+            : '',
+          movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
+          movementHeaderId: selectedOutput.movementHeaderId,
+          contableMovementId: selectedOutput.contableMovementId || '',
+          createdAt: selectedOutput.createdAt,
+          clientId: selectedOutput.clientId,
+          issueDate: specialFormatToSunat(),
+          serial: serial,
+          automaticSendSunat: /* sendClient */ true,
+          automaticSendClient: /* sendSunat */ true,
+          reasonForTransfer: reasonVal,
+          totalGrossWeight: getValueField('totalWeight').value,
+          addressee: selectedAddressee,
+          type: query.type || '',
+          reasonDescription: getValueField('reasonDescription').value || '',
+          numberOfPackages: getValueField('numberPackages').value,
+          typeOfTransport: transportModeVal,
+          transferStartDate: dateWithHyphen(dateStartTransfer),
+          carrierDocumentType: selectedCarrier.typeDocumentCarrier,
+          carrierDocumentNumber: selectedCarrier.carrierId
+            ? selectedCarrier.carrierId.split('-')[1]
+            : selectedCarrier.carrierDocumentNumber,
+          carrierDenomination: selectedCarrier.denominationCarrier,
+          carrierId: selectedCarrier.carrierId,
+          carrierPlateNumber:
+            /* selectedCarrier.plateNumberCarrier */ getValueField('licensePlate').value,
+          driverDocumentType: driverDocumentType.toLowerCase(),
+          driverDocumentNumber: getValueField('driverDocumentNumber').value,
+          driverLicenseNumber: getValueField('driverLicenseNumber').value,
+          driverDenomination: getValueField('driverName').value,
+          driverLastName: getValueField('driverLastName').value,
+          startingPointUbigeo: ubigeoStartingPoint.toString(),
+          startingPointAddress: getValueField('startingPoint').value,
+          startingSunatCode: getValueField('startingSunatCode').value,
+          arrivalPointUbigeo: ubigeoArrivalPoint.toString(),
+          arrivalPointAddress: getValueField('arrivalPoint').value,
+          arrivalSunatCode: getValueField('arrivalSunatCode').value,
+          observation: getValueField('observation').value,
+          productsInfo: parsedProducts,
+          documentsMovement: selectedOutput.documentsMovement,
+          clientEmail: selectedOutput.clientEmail,
+          typePDF: userDataRes.merchantSelected.typeMerchant,
+          folderMovement: selectedOutput.folderMovement,
+          denominationMerchant:
+            userDataRes.merchantSelected.denominationMerchant,
+        },
+      },
+    };
+    console.log("previsualizePayload", previsualizePayload)
+    toPrevisualizeReferralGuide(previsualizePayload);
+  };
 
   return (
     <Card sx={{p: 4}}>
@@ -998,8 +1405,9 @@ const GetReferralGuide = () => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue, values}) => {
+          {({isSubmitting, setFieldValue, values, getFieldProps}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
             {
               console.log('values', values);
             }
@@ -1166,7 +1574,18 @@ const GetReferralGuide = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid xs={12} sm={10} sx={{px: 1, mt: 2}}>
+                  
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                    <Button
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={() => openSelectAddressee()}
+                      disabled={!selectedDeliveryState}
+                    >
+                      Seleccionar Destinatario (Cliente)
+                    </Button>
+                  </Grid>
+                  <Grid xs={12} sm={8} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='reason-label' style={{fontWeight: 200}}>
                         Motivo
@@ -1175,6 +1594,11 @@ const GetReferralGuide = () => {
                         sx={{textAlign: 'left'}}
                         onChange={(event) => {
                           setReasonVal(event.target.value);
+                          if(event.target.value == 'buy' || event.target.value == 'transferBetweenEstablishmentsOfTheSameCompany'){
+                            changeValueField('addressee', userDataRes.merchantSelected.denominationMerchant);
+                          } else {
+                            changeValueField('addressee', selectedOutput?.clientName || selectedDeliveryState?.carrierDenomination || routeToReferralGuide?.carrierDenomination);
+                          }
                           console.log('Motivo', event.target.value);
                         }}
                         name='reason'
@@ -1227,38 +1651,7 @@ const GetReferralGuide = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
-                    <AppTextField
-                      label='Peso bruto total'
-                      name='totalWeight'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
-                    <AppTextField
-                      label='Número de bultos'
-                      name='numberPackages'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid xs={12} sm={10} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={4} sx={{px: 1, mt: 2}}>
                     <AppLowerCaseTextField
                       label='Correo de cliente'
                       name='clientEmail'
@@ -1273,6 +1666,25 @@ const GetReferralGuide = () => {
                       }}
                     />
                   </Grid>
+                  {reasonVal == 'others' ? (
+                    <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
+                    <AppLowerCaseTextField
+                      label='Descripción de Motivo de Traslado'
+                      name='reasonDescription'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                    </Grid>
+                  )
+                  : null}
+                  
                 </Grid>
 
                 <Divider sx={{mt: 2, mb: 4}} />
@@ -1320,6 +1732,7 @@ const GetReferralGuide = () => {
                               }
                             }
                           }}
+                          disabled
                           options={internalLocations}
                           renderInput={(params) => (
                             <TextField
@@ -1334,6 +1747,16 @@ const GetReferralGuide = () => {
                             />
                           )}
                         />
+                      </Grid>
+                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                        <Button
+                          sx={{width: 1}}
+                          variant='outlined'
+                          onClick={() => openSelectStartingLocation()}
+                          disabled={!availableLocations()}
+                        >
+                          Seleccionar Locación Interna de Partida (Opcional)
+                        </Button>
                       </Grid>
                     </>
                   ) : null}
@@ -1427,6 +1850,7 @@ const GetReferralGuide = () => {
                     </>
                   ) : null}
                   {availableLocations() ? (
+                    <>
                     <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                       <Autocomplete
                         disablePortal
@@ -1467,6 +1891,7 @@ const GetReferralGuide = () => {
                             }
                           }
                         }}
+                        disabled
                         options={internalLocations}
                         renderInput={(params) => (
                           <TextField
@@ -1479,6 +1904,17 @@ const GetReferralGuide = () => {
                         )}
                       />
                     </Grid>
+                    <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                      <Button
+                        sx={{width: 1}}
+                        variant='outlined'
+                        onClick={() => openSelectArrivalLocation()}
+                        disabled={!availableLocations()}
+                      >
+                        Seleccionar Locación Interna de Llegada (Opcional)
+                      </Button>
+                    </Grid>
+                    </>
                   ) : null}
                   {availableUbigeos() ? (
                     <>
@@ -1632,6 +2068,15 @@ const GetReferralGuide = () => {
                     />
                   </Grid>
                   <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                    <Button
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={() => openSelectDriver()}
+                    >
+                      Seleccionar conductor (Opcional)
+                    </Button>
+                  </Grid>
+                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Nombre del conductor'
                       name='driverName'
@@ -1752,6 +2197,55 @@ const GetReferralGuide = () => {
                     toChangeUnitMeasure={changeUnitMeasure}
                   />
                 </Box>
+                <Grid container sx={{width: 500, margin: 'auto'}}>
+                  <Grid xs={6} sm={6} sx={{px: 1, mt: 2}}>
+                    <AppTextField
+                      label='Peso bruto total'
+                      name='totalWeight'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid xs={6} sm={6} sx={{px: 1, mt: 2}}>
+                    <AppTextField
+                      label='Número de bultos'
+                      name='numberPackages'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{width: 500, margin: 'auto', mb: 2}}
+                >
+                  <Grid item xs={8} sm={12} sx={{mt: 2}}>
+                    <Button
+                      sx={{width: 1}}
+                      color='secondary'
+                      variant='outlined'
+                      onClick={() => handleClickOpenPrevisualizer()}
+                    >
+                      Previsualizar PDF
+                    </Button>
+                  </Grid>
+                </Grid>
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -1916,6 +2410,29 @@ const GetReferralGuide = () => {
                   </Button>
                 </>
               ) : null}
+              {/* {typeDialog == 'selectStartingLocation' ? (
+                <>
+                  <div>{`Listado de Locaciones`}</div>
+                  <Button
+                    sx={{mx: 'auto', mx: 1, my: 1, py: 3}}
+                    variant='outlined'
+                    startIcon={<CachedIcon sx={{m: 1, my: 'auto'}} />}
+                    onClick={() => handleClickUpdateCarrierList()}
+                  >
+                    {'Actualizar'}
+                  </Button>
+                  <Button
+                    sx={{mx: 'auto', py: 3, mx: 1, my: 1}}
+                    variant='outlined'
+                    startIcon={<ArrowCircleLeftOutlinedIcon />}
+                    onClick={() =>
+                      window.open(`${basicUrl}/sample/carriers/new`)
+                    }
+                  >
+                    Agregar nuevo Transportista
+                  </Button>
+                </>
+              ) : null} */}
             </Box>
 
             <IconButton
@@ -1938,6 +2455,10 @@ const GetReferralGuide = () => {
             <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
               {typeDialog == 'confirmCancel' ? showCancelMessage() : null}
               {typeDialog == 'selectCarrier' ? showSelectCarrier() : null}
+              {typeDialog == 'selectDriver' ? showSelectDriver() : null}
+              {typeDialog == 'selectStartingLocation' ? showSelectStartingLocation() : null}
+              {typeDialog == 'selectArrivalLocation' ? showSelectArrivalLocation() : null}
+              {typeDialog == 'selectAddressee' ? showSelectAddressee() : null}
             </DialogContent>
           )}
 
@@ -1966,98 +2487,139 @@ const GetReferralGuide = () => {
           </DialogActions>
         </Dialog>
       </ClickAwayListener>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={showForms}
+          onClose={() => Router.push('/sample/outputs/table')}
+          sx={{textAlign: 'center'}}
+          fullWidth
+          maxWidth='xs'
+          disableEscapeKeyDown
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            <DialogContentText
+              sx={{fontSize: '1.2em', m: 'auto'}}
+              id='alert-dialog-description'
+            >
+              {outputItems_pageListOutput &&
+              Array.isArray(outputItems_pageListOutput) ? (
+                <>
+                  {!selectedOutput.existBill ? (
+                    <Button
+                      color='primary'
+                      sx={{width: 1, px: 7, my: 2}}
+                      variant='contained'
+                      onClick={() => {
+                        Router.push({
+                          pathname: '/sample/bills/get',
+                          query: outputItems_pageListOutput.find(
+                            (obj) =>
+                              obj.movementHeaderId ==
+                              selectedOutput.movementHeaderId,
+                          ),
+                        });
+                      }}
+                    >
+                      Generar Factura
+                    </Button>
+                  ) : null}
+                  {selectedOutput.existBill ? (
+                    <Button
+                      color='primary'
+                      sx={{width: 1, px: 7, my: 2}}
+                      variant='contained'
+                      onClick={() => {
+                        Router.push({
+                          pathname: '/sample/finances/new-earning',
+                          query: outputItems_pageListOutput.find(
+                            (obj) =>
+                              obj.movementHeaderId ==
+                              selectedOutput.movementHeaderId,
+                          ),
+                        });
+                      }}
+                    >
+                      Generar Ingreso
+                    </Button>
+                  ) : null}
+                  <Button
+                    color='primary'
+                    sx={{width: 1, px: 7, my: 2}}
+                    variant='outlined'
+                    onClick={() => Router.push('/sample/outputs/table')}
+                  >
+                    Ir a Listado
+                  </Button>
+                </>
+              ) : (
+                <CircularProgress />
+              )}
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
+      </ClickAwayListener>
+      
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          disableEscapeKeyDown
+          open={openAddProduct}
+          onClose={() => setOpenAddProduct(false)}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Selecciona los productos'}
+            <CancelOutlinedIcon
+              onClick={() => setOpenAddProduct(false)}
+              sx={{
+                cursor: 'pointer',
+                float: 'right',
+                marginTop: '5px',
+                width: '20px',
+              }}
+            />
+          </DialogTitle>
+          <DialogContent>
+            <AddProductForm type='input' sendData={getNewProduct} />
+          </DialogContent>
+        </Dialog>
+      </ClickAwayListener>
 
       <Dialog
-        open={showForms}
-        onClose={() => Router.push('/sample/outputs/table')}
-        sx={{textAlign: 'center'}}
-        fullWidth
-        maxWidth='xs'
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
-            id='alert-dialog-description'
-          >
-            {outputItems_pageListOutput &&
-            Array.isArray(outputItems_pageListOutput) ? (
-              <>
-                {!selectedOutput.existBill ? (
-                  <Button
-                    color='primary'
-                    sx={{width: 1, px: 7, my: 2}}
-                    variant='contained'
-                    onClick={() => {
-                      Router.push({
-                        pathname: '/sample/bills/get',
-                        query: outputItems_pageListOutput.find(
-                          (obj) =>
-                            obj.movementHeaderId ==
-                            selectedOutput.movementHeaderId,
-                        ),
-                      });
-                    }}
-                  >
-                    Generar Factura
-                  </Button>
-                ) : null}
-                {selectedOutput.existBill ? (
-                  <Button
-                    color='primary'
-                    sx={{width: 1, px: 7, my: 2}}
-                    variant='contained'
-                    onClick={() => {
-                      Router.push({
-                        pathname: '/sample/finances/new-earning',
-                        query: outputItems_pageListOutput.find(
-                          (obj) =>
-                            obj.movementHeaderId ==
-                            selectedOutput.movementHeaderId,
-                        ),
-                      });
-                    }}
-                  >
-                    Generar Ingreso
-                  </Button>
-                ) : null}
-                <Button
-                  color='primary'
-                  sx={{width: 1, px: 7, my: 2}}
-                  variant='outlined'
-                  onClick={() => Router.push('/sample/outputs/table')}
-                >
-                  Ir a Listado
-                </Button>
-              </>
-            ) : (
-              <CircularProgress />
-            )}
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
-      <Dialog
-        open={openAddProduct}
-        onClose={() => setOpenAddProduct(false)}
+        open={openPrevisualizer}
+        onClose={handleClosePrevisualizer}
         sx={{textAlign: 'center'}}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Selecciona los productos'}
+          {'GUÍA DE REMISIÓN PDF'}
           <CancelOutlinedIcon
-            onClick={() => setOpenAddProduct(false)}
-            sx={{
-              cursor: 'pointer',
-              float: 'right',
-              marginTop: '5px',
-              width: '20px',
-            }}
+            onClick={setOpenPrevisualizer.bind(this, false)}
+            className={classes.closeButton}
           />
         </DialogTitle>
         <DialogContent>
-          <AddProductForm type='input' sendData={getNewProduct} />
+          <Box sx={{width: 1, textAlign: 'center'}}>
+            <canvas ref={canvasRef} style={{height: '100vh'}} />
+          </Box>
+
+          <Box
+            sx={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}
+          >
+            <IconButton onClick={handleZoomIn}>
+              <ZoomInIcon />
+            </IconButton>
+            <IconButton onClick={handleZoomOut}>
+              <ZoomOutIcon />
+            </IconButton>
+            <IconButton onClick={handleResetZoom}>
+              <ZoomOutMapIcon />
+            </IconButton>
+          </Box>
         </DialogContent>
       </Dialog>
     </Card>

@@ -40,6 +40,7 @@ import {
   GET_OUTPUT_PAGE_LISTGUIDE,
   RESET_MOVEMENTS,
   PREVISUALIZE_BILL,
+  PREVISUALIZE_REFERRAL_GUIDE,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -621,6 +622,12 @@ const movementsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         previsualizeBillRes: action.payload,
+      };
+
+    case PREVISUALIZE_REFERRAL_GUIDE:
+      return {
+        ...state,
+        previsualizeReferralGuideRes: action.payload,
       };
     // case SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
     //   console.log(
