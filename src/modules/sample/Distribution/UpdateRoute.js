@@ -444,6 +444,7 @@ useEffect(() => {
     const finalPayload = {
       request: {
         payload: {
+          merchantId:userDataRes.merchantSelected.merchantId,
           userActor: userAttributes['sub'],
           routePredefinedId: query.routeId,
           routeName: data.routeName,
