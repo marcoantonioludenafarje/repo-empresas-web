@@ -59,7 +59,7 @@ import {
 } from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
-import {getYear, justDate, justTime} from '../../../Utils/utils';
+import {getYear, justDate, justTime, showReferralGuideReason} from '../../../Utils/utils';
 import AppLoader from '@crema/core/AppLoader';
 import {red} from '@mui/material/colors';
 // let listRoutesPayload = {
@@ -812,7 +812,7 @@ const PredefinedRoutes = () => {
                                       {route.numberOfPackages}
                                     </TableCell>
                                     <TableCell>
-                                      {route.reasonForTransfer?route.reasonForTransfer:"venta"}
+                                      {route.reasonForTransfer?showReferralGuideReason('english',route.reasonForTransfer):"Venta"}
                                     </TableCell>
                                   </TableRow>
                                   <TableRow key={`sub-${index2}`}>

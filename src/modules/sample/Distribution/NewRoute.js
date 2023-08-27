@@ -77,7 +77,7 @@ import {onGetProducts} from '../../../redux/actions/Products';
 import {getCarriers} from '../../../redux/actions/Carriers';
 import {exportExcelTemplateToGenerateRoute} from '../../../redux/actions/General';
 import {red} from '@mui/material/colors';
-import {completeWithZeros} from '../../../Utils/utils';
+import {completeWithZeros, showReferralGuideReason} from '../../../Utils/utils';
 import SchoolIcon from '@mui/icons-material/School';
 const Excel = require('exceljs');
 const XLSX = require('xlsx');
@@ -90,6 +90,7 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
 } from '../../../shared/constants/ActionTypes';
 import {Download} from '@mui/icons-material';
+
 const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
@@ -344,6 +345,7 @@ const Distribution = (props) => {
                 driverId: '',
                 driverLicenseNumber: obj.driverLicenseNumber,
                 carrierPlateNumber: obj.plate,
+                reasonForTransfer: showReferralGuideReason('noentra',obj['MOTIVO TRASLADO']),
                 productsInfo: obj.products.map((prod) => {
                   return {
                     ...prod,
@@ -480,6 +482,7 @@ const Distribution = (props) => {
       const {CHOFER: driver} = item;
       const {'EMPRESA TRANSPORTISTA': carrier} = item;
       const {'ORDEN ENTREGA': fila} = item;
+      const {'MOTIVO TRASLADO': motivo} = item;
 
       const matchOriginal = originalPoints.find(
         (d) => completarCeros(d.COD_INTERNO) == completarCeros(originalPoint),
@@ -727,6 +730,7 @@ const Distribution = (props) => {
           carrierDenomination: matchCarrier['NOMBRE/RAZON SOCIAL'],
           carrierDocumentType: matchCarrier['IDENTIFICADOR'],
           carrierDocumentNumber: matchCarrier['NRO IDENTIFICADOR'],
+          reasonForTransfer: motivo,
           products: productsInfo,
           numberPackages: '1',
           totalWeight: totalWeight,
@@ -1323,6 +1327,7 @@ const Distribution = (props) => {
                 <TableCell>Observaciones</TableCell>
                 <TableCell>Peso total</TableCell>
                 <TableCell>Número de paquetes</TableCell>
+                <TableCell>Motivo</TableCell>
                 {/* <TableCell>
                   Guía de Remisión Generada
                 </TableCell> */}
@@ -1380,6 +1385,9 @@ const Distribution = (props) => {
                             route
                           )}
                         </TableCell> */}
+                          <TableCell>
+                            {showReferralGuideReason('spanish',route.reasonForTransfer?route.reasonForTransfer:'Venta')}
+                          </TableCell>
                           <TableCell>
                             <Button
                               id='basic-button'
