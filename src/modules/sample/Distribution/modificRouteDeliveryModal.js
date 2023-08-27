@@ -173,19 +173,21 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
     event.preventDefault();
     let newTemporaryDelivery = {
       ...temporaryDelivery,
-      startingAddress: event.target.startingAddress.value,
+      startingPointAddress: event.target.startingAddress.value,
       startingInternalCode: event.target.startingInternalCode.value,
-      arrivalAddress: event.target.arrivalAddress.value,
+      arrivalPointAddress: event.target.arrivalAddress.value,
       arrivalInternalCode: event.target.arrivalInternalCode.value,
       driverDocumentNumber: event.target.driverDocumentNumber.value,
-      driverName: event.target.driverName.value,
+      driverDenomination: event.target.driverName.value,
       driverLastName: event.target.driverLastName.value,
       driverLicenseNumber: event.target.driverLicenseNumber.value,
-      plate: event.target.plate.value,
-      products: productsList,
+      carrierPlateNumber: event.target.plate.value,
+      productsInfo: productsList,
       numberPackages: event.target.numberPackages.value,
       observationDelivery: event.target.observationDelivery.value,
     };
+
+    console.log("Esto es lo que se actualiza",newTemporaryDelivery);
     setTemporaryDelivery(newTemporaryDelivery);
     editFunction(newTemporaryDelivery);
   };

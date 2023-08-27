@@ -73,7 +73,7 @@ import {
   GET_PRODUCTS,
   GET_CARRIERS,
   LIST_ROUTE,
-  GENERATE_ROUTE,
+  UPDATE_ROUTE,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
 } from '../../../shared/constants/ActionTypes';
 
@@ -388,15 +388,16 @@ useEffect(() => {
     console.log('newDelivery', newDelivery);
     console.log("Este es el selectedDelivery",selectedDeliveryState["ORDEN ENTREGA"]);
     console.log("Este es el selectedRouted junto al delivery",routes)
-    const updatedDeliveries = routes.map((route) => {
-      if (route['ORDEN ENTREGA'] === selectedDeliveryState['ORDEN ENTREGA']) {
+    const updatedDeliveries = routes.map((route,index) => {
+      console.log("Esto es para comparar entre los elementos del routesMap",route);
+      if (index === newDelivery.localRouteId) {
         return {
           ...newDelivery,
         };
       }
       return route;
     });
-    routes=updatedDeliveries;
+    console.log("Este es el nuevo arreglo",updatedDeliveries);
     setRoutes(updatedDeliveries);
   };
 
@@ -405,13 +406,11 @@ useEffect(() => {
     const temp = newRoutes[rowNumber2];
     newRoutes[rowNumber2] = newRoutes[rowNumber2 + 1];
     newRoutes[rowNumber2 + 1] = temp;
-    routes=newRoutes;
     setRoutes(newRoutes);
     reloadPage();
   }
   const deleteRoute = () => {
     let newRoutes = routes.filter((item, index) => index !== rowNumber2);
-    routes=newRoutes;
     setRoutes(newRoutes);
     reloadPage();
   };
@@ -441,15 +440,18 @@ useEffect(() => {
     setExecAll(true);
     setExecAll(false);
     console.log('data final', {...data, routes: routes});
+    console.log("Que es esto",userAttributes['sub']);
     const finalPayload = {
       request: {
         payload: {
           userActor: userAttributes['sub'],
           routePredefinedId: query.routeId,
           routeName: data.routeName,
-          deliveries: routes.map((obj) => {
-            if (obj !== undefined) {
+          deliveries: routes.map((obj,index) => {
+            if (obj !== undefined ) {
+              let deliveryValue = Math.floor((index) / 40);
               return {
+                childGroupOrder: deliveryValue,
                 carrierDocumentType: obj.carrierDocumentType,
                 carrierDocumentNumber: obj.carrierDocumentNumber,
                 carrierDenomination: obj.carrierDenomination,
@@ -473,15 +475,17 @@ useEffect(() => {
                 driverDocumentNumber: obj.driverDocumentNumber,
                 driverId: '',
                 carrierPlateNumber: obj.plate,
-                productsInfo: obj.products.map((prod) => {
-                  return {
-                    productId: prod.productId,
-                    product: prod.product,
-                    description: prod.description,
-                    unitMeasure: prod.unitMeasure,
-                    quantityMovement: prod.count,
-                    businessProductCode: prod.businessProductCode,
-                  };
+                productsInfo: obj.productsInfo.map((prod) => {
+                  if(prod!=null || prod!=undefined){
+                    return {
+                      productId: prod.productId,
+                      product: prod.product,
+                      description: prod.description,
+                      unitMeasure: prod.unitMeasure,
+                      quantityMovement: prod.count,
+                      businessProductCode: prod.product,
+                    };
+                  }
                 }),
               };
             }
@@ -492,7 +496,7 @@ useEffect(() => {
     console.log('finalPayload', finalPayload);
     //dispatch({type: FETCH_SUCCESS, payload: undefined});
     //dispatch({type: FETCH_ERROR, payload: undefined});
-   //dispatch({type: GENERATE_ROUTE, payload: undefined});
+    //dispatch({type: UPDATE_ROUTE, payload: undefined});
     updateRoute(finalPayload);
     setOpenStatus(true);
     setSubmitting(false);
@@ -513,7 +517,7 @@ useEffect(() => {
     return (
       successMessage != undefined &&
       updateRouteRes != undefined &&
-      !('error' in updateRouteRes)
+      !('error' in generateRouteRes)
     );
   };
   const registerError = () => {
@@ -521,11 +525,14 @@ useEffect(() => {
   };
   const sendStatus = () => {
     if (registerSuccess()) {
+      console.log("Vamos al listado de rutas");
       Router.push('/sample/distribution/table');
       setOpenStatus(false);
     } else if (registerError()) {
+      console.log("Error al actualizar")
       setOpenStatus(false);
     } else {
+      console.log("No se para que es esto")
       setOpenStatus(false);
     }
   };
@@ -628,6 +635,7 @@ useEffect(() => {
 
   const showMessage = () => {
     if (registerSuccess()) {
+      console.log("Actulizacion exitosa");
       return (
         <>
           <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
@@ -645,6 +653,7 @@ useEffect(() => {
         </>
       );
     } else if (registerError()) {
+      console.log("Error al actualizar las rutas");
       return (
         <>
           <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
@@ -657,14 +666,15 @@ useEffect(() => {
             >
               <IntlMessages id='message.update.data.error' />
               <br />
-              {updateRouteRes && 'error' in updateRouteRes
+              {/* {updateRouteRes && 'error' in updateRouteRes
                 ? updateRouteRes.error
-                : null}
+                : null} */}
             </DialogContentText>
           </DialogContent>
         </>
       );
     } else {
+      console.log("Actualizacion sin respuesta");
       return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
     }
   };
@@ -1306,7 +1316,7 @@ useEffect(() => {
           disableEscapeKeyDown
         >
           <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {<IntlMessages id='message.register.newRoute' />}
+            {<IntlMessages id='message.update.newRoute' />}
           </DialogTitle>
           {showMessage()}
           <DialogActions sx={{justifyContent: 'center'}}>
@@ -1325,7 +1335,7 @@ useEffect(() => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de rutas'}
+          {'Actualizacion de rutas'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
