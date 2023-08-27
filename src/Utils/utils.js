@@ -542,9 +542,9 @@ export const verTiposEventos = (listBussinesParameteres) => {
   ];
 };
 
-
 export const showReferralGuideReason = (text, reason) => {
-  if (text === 'spanish') { //newRoute
+  if (text === 'spanish') {
+    //newRoute
     switch (reason) {
       case 'compra':
         return <IntlMessages id='referralGuide.reason.buys' />;
@@ -553,13 +553,19 @@ export const showReferralGuideReason = (text, reason) => {
         return <IntlMessages id='referralGuide.reason.sales' />;
         break;
       case 'venta_sujeta_a_confirmación_del_comprador':
-        return <IntlMessages id='referralGuide.reason.saleSubjectToBuyerConfirmation' />;
+        return (
+          <IntlMessages id='referralGuide.reason.saleSubjectToBuyerConfirmation' />
+        );
         break;
       case 'traslado_entre_establecimientos_de_la_misma_empresa':
-        return <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany.' />;
+        return (
+          <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany.' />
+        );
         break;
       case 'traslado_emisor_itinerante_CP':
-        return <IntlMessages id='referralGuide.reason.itinerantSenderTransferCP' />;
+        return (
+          <IntlMessages id='referralGuide.reason.itinerantSenderTransferCP' />
+        );
         break;
       case 'importación':
         return <IntlMessages id='referralGuide.reason.import' />;
@@ -574,12 +580,13 @@ export const showReferralGuideReason = (text, reason) => {
         return <IntlMessages id='referralGuide.reason.return' />;
         break;
       case 'otros':
-        return <IntlMessages id='referralGuide.reason.others' />
-        break;        
+        return <IntlMessages id='referralGuide.reason.others' />;
+        break;
       default:
         return <IntlMessages id='referralGuide.reason.sales' />;
-    }  
-  }else if(text=== 'english'){//predefined
+    }
+  } else if (text === 'english') {
+    //predefined
     switch (reason) {
       case 'buy':
         return <IntlMessages id='referralGuide.reason.buys' />;
@@ -588,13 +595,19 @@ export const showReferralGuideReason = (text, reason) => {
         return <IntlMessages id='referralGuide.reason.sales' />;
         break;
       case 'saleSubjectToBuyersConfirmation':
-        return <IntlMessages id='referralGuide.reason.saleSubjectToBuyerConfirmation' />;
+        return (
+          <IntlMessages id='referralGuide.reason.saleSubjectToBuyerConfirmation' />
+        );
         break;
       case 'transferBetweenEstablishmentsOfTheSameCompany':
-        return <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany.' />;
+        return (
+          <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany.' />
+        );
         break;
       case 'transferItinerantIssuerCP':
-        return <IntlMessages id='referralGuide.reason.itinerantSenderTransferCP' />;
+        return (
+          <IntlMessages id='referralGuide.reason.itinerantSenderTransferCP' />
+        );
         break;
       case 'import':
         return <IntlMessages id='referralGuide.reason.import' />;
@@ -609,11 +622,11 @@ export const showReferralGuideReason = (text, reason) => {
         return <IntlMessages id='referralGuide.reason.return' />;
         break;
       case 'others':
-        return <IntlMessages id='referralGuide.reason.others' />
-        break;        
+        return <IntlMessages id='referralGuide.reason.others' />;
+        break;
       default:
         return <IntlMessages id='referralGuide.reason.sales' />;
-    }  
+    }
   } else {
     switch (reason) {
       case 'compra':
@@ -645,10 +658,9 @@ export const showReferralGuideReason = (text, reason) => {
         break;
       case 'otros':
         return 'others';
-        break;        
+        break;
       default:
         return null;
     }
   }
-  
 };

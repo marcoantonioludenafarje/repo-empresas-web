@@ -71,7 +71,6 @@ export const updateAppointment = (payload) => {
   };
 };
 
-
 export const deleteAppointment = (payload) => {
   return async (dispatch, getState) => {
     dispatch({type: FETCH_START, payload: {process: 'DELETE_APPOINTMENT'}});

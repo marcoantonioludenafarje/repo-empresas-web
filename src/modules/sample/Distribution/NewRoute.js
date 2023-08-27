@@ -345,7 +345,10 @@ const Distribution = (props) => {
                 driverId: '',
                 driverLicenseNumber: obj.driverLicenseNumber,
                 carrierPlateNumber: obj.plate,
-                reasonForTransfer: showReferralGuideReason('noentra',obj['MOTIVO TRASLADO']),
+                reasonForTransfer: showReferralGuideReason(
+                  'noentra',
+                  obj['MOTIVO TRASLADO'],
+                ),
                 productsInfo: obj.products.map((prod) => {
                   return {
                     ...prod,
@@ -801,7 +804,7 @@ const Distribution = (props) => {
         const carriersDataV2 = processData(carriersData);
 
         const stateSheet = wb.Sheets['ESTADOS DE PRODUCTOS'];
-        const stateData = XLSX.utils.sheet_to_json(stateSheet,{
+        const stateData = XLSX.utils.sheet_to_json(stateSheet, {
           header: 1,
         });
         const stateDataV2 = processData(stateData);
@@ -1386,7 +1389,12 @@ const Distribution = (props) => {
                           )}
                         </TableCell> */}
                           <TableCell>
-                            {showReferralGuideReason('spanish',route.reasonForTransfer?route.reasonForTransfer:'Venta')}
+                            {showReferralGuideReason(
+                              'spanish',
+                              route.reasonForTransfer
+                                ? route.reasonForTransfer
+                                : 'Venta',
+                            )}
                           </TableCell>
                           <TableCell>
                             <Button

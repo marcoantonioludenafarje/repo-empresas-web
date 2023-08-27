@@ -46,14 +46,12 @@ import PropTypes from 'prop-types';
 import unitMeasureOptions from '../../../Utils/unitMeasureOptions.json';
 const defaultValues = {
   productSearch: '',
-  priceProduct: '',
   count: '',
   unitMeasure: '',
   weight: 0,
 };
 const actualValues = {
   productSearch: '',
-  priceProduct: '',
   count: '',
   subTotal: '',
   unitMeasure: '',
@@ -79,11 +77,6 @@ const AddProductForm = ({sendData, type}) => {
       .string()
       .typeError(<IntlMessages id='validation.string' />)
       .required(<IntlMessages id='validation.required' />),
-    priceProduct: yup
-      .number()
-      .typeError(<IntlMessages id='validation.number' />)
-      .required(<IntlMessages id='validation.required' />)
-      .positive(<IntlMessages id='validation.positive' />),
     count: yup
       .number()
       .typeError(<IntlMessages id='validation.number' />)
@@ -182,7 +175,6 @@ const AddProductForm = ({sendData, type}) => {
   const addProduct = (obj) => {
     selectedProduct = obj;
     console.log('Producto seleccionado', selectedProduct);
-    changeValueField('priceProduct', selectedProduct.costPriceUnit);
     changeValueField('productSearch', selectedProduct.description);
     changeValueField('weight', selectedProduct.weight);
     setOpen(false);
@@ -235,13 +227,12 @@ const AddProductForm = ({sendData, type}) => {
               ? selectedProduct.customCodeProduct
               : '',
           quantityMovement: Number(data.count),
-          priceBusinessMoneyWithIgv: Number(data.priceProduct),
+          priceBusinessMoneyWithIgv: 0,
           weight: data.weight,
-          subtotal: Number(data.count) * Number(data.priceProduct),
+          subtotal: Number(data.count) * 0,
           businessProductCode: selectedProduct.businessProductCode,
         });
         actualValues.productSearch = '';
-        actualValues.priceProduct = '';
         actualValues.count = '';
         actualValues.subTotal = '';
       } else {
@@ -332,21 +323,6 @@ const AddProductForm = ({sendData, type}) => {
                       <ManageSearchIcon />
                     </IconButton>
                   </Grid>
-
-                  <Grid item xs={4}>
-                    <AppTextField
-                      label='Precio venta sugerido'
-                      name='priceProduct'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
                   <Grid item xs={4}>
                     <AppTextField
                       label='Cantidad'
@@ -363,7 +339,7 @@ const AddProductForm = ({sendData, type}) => {
                   </Grid>
                   <Grid item xs={4}>
                     <AppTextField
-                      label='Peso'
+                      label='Peso Unitario (kg)'
                       name='weight'
                       variant='outlined'
                       sx={{

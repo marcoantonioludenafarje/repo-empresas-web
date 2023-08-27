@@ -88,8 +88,9 @@ const SelectedProducts = ({
             <TableCell>Descripción</TableCell>
             <TableCell>Unidad</TableCell>
             <TableCell>Cantidad</TableCell>
-            <TableCell>Peso</TableCell>
-            <TableCell></TableCell>
+            <TableCell>Peso Unitario (Kg)</TableCell>
+            <TableCell>Peso SubTotal (Kg)</TableCell>
+            <TableCell>Eliminar</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -149,6 +150,9 @@ const SelectedProducts = ({
                     />
                   </TableCell>
                   <TableCell>{obj.weight}</TableCell>
+                  <TableCell>
+                    {Number(obj.weight * obj.quantityMovement).toFixed(2)}
+                  </TableCell>
                   <TableCell>
                     <IconButton onClick={deleteProduct.bind(this, index)}>
                       <DeleteIcon />

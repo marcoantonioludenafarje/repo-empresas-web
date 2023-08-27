@@ -248,7 +248,7 @@ export const TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION =
 
 export const GENERATE_DISTRIBUTION = 'generate_distribution';
 export const PREVISUALIZE_BILL = 'previsualize_bill';
-
+export const PREVISUALIZE_REFERRAL_GUIDE = 'previsualize_referral_guide';
 //PROVIDERS
 export const GET_PROVIDERS = 'get_providers';
 export const NEW_PROVIDER = 'new_provider';
