@@ -673,6 +673,7 @@ const PredefinedRoutes = () => {
                         <TableCell>Observaciones</TableCell>
                         <TableCell>Peso total</TableCell>
                         <TableCell>Número de paquetes</TableCell>
+                        <TableCell>Motivo</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -739,6 +740,9 @@ const PredefinedRoutes = () => {
                                     </TableCell>
                                     <TableCell>
                                       {route.numberOfPackages}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.reasonForTransfer?route.reasonForTransfer:"venta"}
                                     </TableCell>
                                   </TableRow>
                                   <TableRow key={`sub-${index2}`}>

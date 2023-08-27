@@ -796,12 +796,19 @@ const Distribution = (props) => {
         });
         const carriersDataV2 = processData(carriersData);
 
+        const stateSheet = wb.Sheets['ESTADOS DE PRODUCTOS'];
+        const stateData = XLSX.utils.sheet_to_json(stateSheet,{
+          header: 1,
+        });
+        const stateDataV2 = processData(stateData);
+
         console.log('productsDataV2', productsDataV2);
         console.log('routesDataV2', routesDataV2);
         console.log('carriersDataV2', carriersDataV2);
         console.log('driversDataV2', driversDataV2);
         console.log('originalPointsDataV2', originalPointsDataV2);
         console.log('arrivalPointsDataV2', arrivalPointsDataV2);
+        console.log('statePointsDataV2', stateDataV2);
         msjError = '';
 
         let existAlias = true;
