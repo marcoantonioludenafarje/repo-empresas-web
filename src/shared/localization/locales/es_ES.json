@@ -899,6 +899,7 @@
   "common.productTags": "Filtros de producto",
   "common.productCategories": "Categorías de producto",
   "common.filterName": "Nombre del Filtro",
+  "common.extraInformationForPdf": "Información Extra para PDF (Opcional)",
   "common.business.ubigeo": "Ubigeo",
   "common.business.necessity": "Necesidad",
   "common.business.businessLine": "Línea de negocio(Productos, Servicios)",

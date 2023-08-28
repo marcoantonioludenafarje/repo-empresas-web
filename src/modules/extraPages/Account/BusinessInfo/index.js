@@ -199,6 +199,7 @@ const BusinessInfo = () => {
           documentType:
             docType /* userAttributes['custom:businessDocumentType'] */,
           eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
+          extraInformationForPdf: userDataRes.merchantSelected.extraInformationForPdf,
           principalClient: userDataRes.merchantSelected.typeClient,
           businessLine: userDataRes.merchantSelected.businessLine,
           facebook: userDataRes.merchantSelected.facebookUrl,
@@ -230,6 +231,7 @@ const BusinessInfo = () => {
                 twitterUrl: data.twitter,
                 instagramUrl: data.instagram,
                 youtubeUrl: data.youtube,
+                extraInformationForPdf: data.extraInformationForPdf,
                 logo: selectedJsonImages[0],
                 comercialName: data.comercialName,
                 digitalCertified: certified,
@@ -252,6 +254,7 @@ const BusinessInfo = () => {
                 numberDocumentMerchant: data.documentNumber,
                 addressMerchant: data.direction,
                 ecommerceMerchantSlug: data.eMerchantSlugName,
+                extraInformationForPdf: data.extraInformationForPdf,
                 principalClient: principalClient,
                 businessLine: businessLine,
                 facebookUrl: data.facebook,

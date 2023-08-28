@@ -447,7 +447,13 @@ const BusinessInfoForm = ({
             label={<IntlMessages id='common.business.direction' />}
           />
         </Grid>
-
+        <Grid item xs={12} md={12}>
+          <AppTextField
+            name='extraInformationForPdf'
+            fullWidth
+            label={<IntlMessages id='common.extraInformationForPdf' />}
+          />
+        </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth sx={{my: 2}}>
             <InputLabel id='principalClient-label' style={{fontWeight: 200}}>
