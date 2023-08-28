@@ -151,7 +151,6 @@ const Distribution = (props) => {
     carrierPlateNumber: 'Vacío',
     totalGrossWeight: 0,
     numberOfPackages: 'Vacío',
-    totalWeight: 0,
     products: [],
   };
   const dispatch = useDispatch();
@@ -456,26 +455,28 @@ useEffect(() => {
                 carrierDocumentType: obj.carrierDocumentType,
                 carrierDocumentNumber: obj.carrierDocumentNumber,
                 carrierDenomination: obj.carrierDenomination,
-                totalGrossWeight: obj.totalWeight,
-                numberOfPackages: obj.numberPackages,
+                totalGrossWeight: obj.totalGrossWeight,
+                numberOfPackages: obj.numberOfPackages,
                 observationDelivery: obj.observationDelivery,
-                startingPointAddress: obj.startingAddress,
+                startingPointAddress: obj.startingPointAddress,
+                startingInternalCode: obj.startingInternalCode,
                 startingPointUbigeo: completeWithZeros(
                   obj.startingPointUbigeo,
                   6,
                 ),
-                arrivalPointAddress: obj.arrivalAddress,
+                arrivalPointAddress: obj.arrivalPointAddress,
+                arrivalInternalCode: obj.arrivalInternalCode,
                 arrivalPointUbigeo: completeWithZeros(
                   obj.arrivalPointUbigeo,
                   6,
                 ),
-                driverDenomination: obj.driverName,
+                driverDenomination: obj.driverDenomination,
                 driverLastName: obj.driverLastName,
                 driverLicenseNumber: obj.driverLicenseNumber,
                 driverDocumentType: obj.driverDocumentType,
                 driverDocumentNumber: obj.driverDocumentNumber,
                 driverId: '',
-                carrierPlateNumber: obj.plate,
+                carrierPlateNumber: obj.carrierPlateNumber,
                 productsInfo: obj.productsInfo.map((prod) => {
                   if(prod!=null || prod!=undefined){
                     return {
@@ -483,7 +484,8 @@ useEffect(() => {
                       product: prod.product,
                       description: prod.description,
                       unitMeasure: prod.unitMeasure,
-                      quantityMovement: prod.count,
+                      unitWeight: prod.weight,
+                      quantityMovement: prod.quantityMovement,
                       businessProductCode: prod.product,
                     };
                   }
@@ -518,7 +520,7 @@ useEffect(() => {
     return (
       successMessage != undefined &&
       updateRouteRes != undefined &&
-      !('error' in generateRouteRes)
+      !('error' in updateRouteRes)
     );
   };
   const registerError = () => {
@@ -527,7 +529,7 @@ useEffect(() => {
   const sendStatus = () => {
     if (registerSuccess()) {
       console.log("Vamos al listado de rutas");
-      Router.push('/sample/distribution/table');
+      Router.push('/sample/distribution/predefined-routes');
       setOpenStatus(false);
     } else if (registerError()) {
       console.log("Error al actualizar")
@@ -553,13 +555,13 @@ useEffect(() => {
         if (!acumulador[productoKey]) {
           acumulador[productoKey] = {
             product: producto.product,
-            count: producto.count,
+            quantityMovement: producto.quantityMovement,
             description: producto.description,
             weight: producto.weight,
             unitMeasure: producto.unitMeasure,
           };
         } else {
-          acumulador[productoKey].count += producto.count;
+          acumulador[productoKey].quantityMovement += producto.quantityMovement;
         }
       });
     });
@@ -578,16 +580,16 @@ useEffect(() => {
         acumulador[conductorKey] = {
           driverDocumentType: entrega.driverDocumentType,
           driverDocumentNumber: entrega.driverDocumentNumber,
-          driverName: entrega.driverDenomination,
+          driverDenomination: entrega.driverDenomination,
           driverLastName: entrega.driverLastName,
-          plate: entrega.carrierPlateNumber,
+          carrierPlateNumber: entrega.carrierPlateNumber,
           points: [
             {
               arrivalPointUbigeo: entrega.arrivalPointUbigeo,
-              arrivalAddress: entrega.arrivalPointAddress,
+              arrivalPointAddress: entrega.arrivalPointAddress,
               arrivalInternalCode: entrega.arrivalInternalCode,
               startingInternalCode: entrega.startingInternalCode,
-              startingAddress: entrega.startingPointAddress,
+              startingPointAddress: entrega.startingPointAddress,
               startingPointUbigeo: entrega.startingPointUbigeo,
             },
           ],
@@ -601,11 +603,11 @@ useEffect(() => {
         );
 
         if (conductorProducto) {
-          conductorProducto.count += producto.count;
+          conductorProducto.quantityMovement += producto.quantityMovement;
         } else {
           acumulador[conductorKey].products.push({
             product: producto.product,
-            count: producto.count,
+            quantityMovement: producto.quantityMovement,
             description: producto.description,
             weight: producto.weight,
             unitMeasure: producto.unitMeasure,
@@ -622,7 +624,7 @@ useEffect(() => {
       if (!conductorPuntos) {
         acumulador[conductorKey].points.push({
           arrivalPointUbigeo: entrega.arrivalPointUbigeo,
-          arrivalAddress: entrega.arrivalPonitAddress,
+          arrivalPointAddress: entrega.arrivalPointAddress,
           arrivalInternalCode: entrega.arrivalInternalCode,
           startingInternalCode: entrega.startingInternalCode,
           startingAddress: entrega.startingPointAddress,
@@ -958,7 +960,7 @@ useEffect(() => {
                                                 {product.description}
                                               </TableCell>
                                               <TableCell>
-                                                {product.count}
+                                                {product.quantityMovement}
                                               </TableCell>
                                               <TableCell>
                                                 {product.weight}
@@ -1115,9 +1117,9 @@ useEffect(() => {
                   <>
                     <TableRow key={indexSummary}>
                       <TableCell>
-                        {fila.driverName + ' ' + fila.driverLastName}
+                        {fila.driverDenomination + ' ' + fila.driverLastName}
                       </TableCell>
-                      <TableCell>{fila.plate}</TableCell>
+                      <TableCell>{fila.carrierPlateNumber}</TableCell>
                       <TableCell>
                         {fila.products && fila.products.length !== 0 ? (
                           <IconButton
@@ -1178,7 +1180,7 @@ useEffect(() => {
                                               {product.description}
                                             </TableCell>
                                             <TableCell>
-                                              {product.count}
+                                              {product.quantityMovement}
                                             </TableCell>
                                             <TableCell>
                                               {product.weight}
@@ -1230,13 +1232,13 @@ useEffect(() => {
                                               {point.startingInternalCode}
                                             </TableCell>
                                             <TableCell>
-                                              {point.startingAddress}
+                                              {point.startingPointAddress}
                                             </TableCell>
                                             <TableCell>
                                               {point.arrivalInternalCode}
                                             </TableCell>
                                             <TableCell>
-                                              {point.arrivalAddress}
+                                              {point.arrivalPointAddress}
                                             </TableCell>
                                           </TableRow>
                                         );
@@ -1273,9 +1275,9 @@ useEffect(() => {
                     <TableRow key={indexSummary}>
                       <TableCell>{fila.product}</TableCell>
                       <TableCell>{fila.description}</TableCell>
-                      <TableCell>{fila.count}</TableCell>
+                      <TableCell>{fila.quantityMovement}</TableCell>
                       <TableCell>{fila.weight}</TableCell>
-                      <TableCell>{fila.count * fila.weight}</TableCell>
+                      <TableCell>{fila.quantityMovement * fila.weight}</TableCell>
                     </TableRow>
                   </>
                 );
