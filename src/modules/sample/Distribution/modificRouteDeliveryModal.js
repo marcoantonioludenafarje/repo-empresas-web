@@ -47,7 +47,10 @@ import {fixDecimals, isEmpty, dateWithHyphen} from '../../../Utils/utils';
 import {FETCH_ERROR} from '../../../shared/constants/ActionTypes';
 const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
   const dispatch = useDispatch();
-  console.log("Esto es lo que se recibe del deliverySWtate",selectedDeliveryState)
+  console.log(
+    'Esto es lo que se recibe del deliverySWtate',
+    selectedDeliveryState,
+  );
   const router = useRouter();
   const {messages} = useIntl();
   const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
@@ -64,7 +67,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
 
   const {listProducts} = useSelector(({products}) => products);
   const [reload, setReload] = React.useState(false);
-  
+
   const emptyProduct = {
     description: '',
     count: 0,
@@ -188,7 +191,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
       observationDelivery: event.target.observationDelivery.value,
     };
 
-    console.log("Esto es lo que se actualiza",newTemporaryDelivery);
+    console.log('Esto es lo que se actualiza', newTemporaryDelivery);
     setTemporaryDelivery(newTemporaryDelivery);
     editFunction(newTemporaryDelivery);
   };
@@ -281,7 +284,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
           ...prod,
           rowId: internCounter,
           count: fixDecimals(valToMultiply * Number(prod.quantity)),
-          quantityMovement:fixDecimals(valToMultiply * Number(prod.quantity)),
+          quantityMovement: fixDecimals(valToMultiply * Number(prod.quantity)),
           weight: 'weight' in prod ? Number(prod.weight) : 0.1,
           inputProduct: true,
           invalidate: false,
@@ -320,7 +323,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
       setCountOfProduct(rowId, event.target.value);
     }
   };
-  console.log("Este es el temporalyDelivery",temporaryDelivery);
+  console.log('Este es el temporalyDelivery', temporaryDelivery);
   return temporaryDelivery ? (
     <>
       <form onSubmit={updateDelivery} onChange={handleChange}>

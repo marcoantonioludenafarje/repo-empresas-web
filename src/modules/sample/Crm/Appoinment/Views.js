@@ -48,13 +48,13 @@ import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutl
 import ArrowDropDownOutlinedIcon from '@mui/icons-material/ArrowDropDownOutlined';
 import {
   FETCH_SUCCESS,
-  FETCH_ERROR
-} from '../../../../shared/constants/ActionTypes'
-import Router, { useRouter } from 'next/router';
+  FETCH_ERROR,
+} from '../../../../shared/constants/ActionTypes';
+import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import { getAppointment } from 'redux/actions';
-import { useState } from 'react';
-import { convertToDate } from 'Utils/utils';
+import {getAppointment} from 'redux/actions';
+import {useState} from 'react';
+import {convertToDate} from 'Utils/utils';
 
 const localizer = momentLocalizer(moment);
 
@@ -80,49 +80,57 @@ const newCamp = () => {
 const Views = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
-  const router = useRouter()
-  
+  const router = useRouter();
+
   const toGetAppointments = (payload) => {
     dispatch(getAppointment(payload));
   };
 
   const {userDataRes} = useSelector(({user}) => user);
-  const {listAppointments} = useSelector(({appointment}) => appointment)
+  const {listAppointments} = useSelector(({appointment}) => appointment);
 
   const [anchorElect, setAnchorElect] = useState(null);
 
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [evently, setEvenly] = useState(null)
-  const [listEvents, setListEvents] = useState(null)
-  console.log("Estado cita", listAppointments);
+  const [evently, setEvenly] = useState(null);
+  const [listEvents, setListEvents] = useState(null);
+  console.log('Estado cita', listAppointments);
 
-  const eventsadd = listAppointments.map(cita => ({
+  const eventsadd = listAppointments.map((cita) => ({
     id: cita.appointmentId,
-    title: cita.appointmentDescription?cita.appointmentDescription:'',
-    start: cita.scheduledStartedAt?convertToDate(cita.scheduledStartedAt) :new Date(2023, 7, 22, 6, 0),
-    end:  cita.scheduledFinishedAt?convertToDate(cita.scheduledFinishedAt) :new Date((new Date(2023, 7, 22, 10, 0)).getTime() + cita.duration * 60000),
-    desc: cita.appointmentDescription?cita.appointmentDescription:'description',
-    clientName: cita.clientName?cita.clientName:'Client',
-    duration: cita.duration
-  }))
+    title: cita.appointmentDescription ? cita.appointmentDescription : '',
+    start: cita.scheduledStartedAt
+      ? convertToDate(cita.scheduledStartedAt)
+      : new Date(2023, 7, 22, 6, 0),
+    end: cita.scheduledFinishedAt
+      ? convertToDate(cita.scheduledFinishedAt)
+      : new Date(
+          new Date(2023, 7, 22, 10, 0).getTime() + cita.duration * 60000,
+        ),
+    desc: cita.appointmentDescription
+      ? cita.appointmentDescription
+      : 'description',
+    clientName: cita.clientName ? cita.clientName : 'Client',
+    duration: cita.duration,
+  }));
 
   function convertStringToDate(dateString) {
-    const [datePart, timePart] = dateString.split(" - ");
-    const [day, month, year] = datePart.split("/");
-    const [hours, minutes, seconds] = timePart.split(":");
+    const [datePart, timePart] = dateString.split(' - ');
+    const [day, month, year] = datePart.split('/');
+    const [hours, minutes, seconds] = timePart.split(':');
     return new Date(year, month - 1, day, hours, minutes, seconds);
   }
 
-  const datetocalendar = eventsadd.map((cita)=> ({
+  const datetocalendar = eventsadd.map((cita) => ({
     ...cita,
     start: convertStringToDate(cita.start),
-    end: convertStringToDate(cita.end)
-  }))
+    end: convertStringToDate(cita.end),
+  }));
 
-  useEffect(()=>{
-    setListEvents(datetocalendar)
-    console.log("estado cita>>", datetocalendar);
-  }, [listAppointments])
+  useEffect(() => {
+    setListEvents(datetocalendar);
+    console.log('estado cita>>', datetocalendar);
+  }, [listAppointments]);
 
   // const events = [
   //   {
@@ -173,11 +181,10 @@ const Views = (props) => {
     setAnchorElect(null);
   };
 
-
   const handleMenuItemClick = (action, event) => {
     // Implement logic here based on the selected action (e.g., edit, delete, etc.)
     // You can use the selectedEvent to identify and perform actions on the event
-    console.log("Selected action:", action, event);
+    console.log('Selected action:', action, event);
     switch (action) {
       case 'edit':
         Router.push({
@@ -186,15 +193,15 @@ const Views = (props) => {
         });
         break;
       case 'delete':
-        console.log("delete", action, event);
-        break
+        console.log('delete', action, event);
+        break;
       default:
         break;
     }
 
     handleClose();
   };
-  
+
   useEffect(() => {
     console.log('Estamos userDataRes', userDataRes);
     if (
@@ -218,7 +225,7 @@ const Views = (props) => {
         },
       };
       console.log('getlist', listPayload);
-      toGetAppointments(listPayload)
+      toGetAppointments(listPayload);
       // setFirstload(true);
     }
   }, [userDataRes]);
@@ -228,105 +235,118 @@ const Views = (props) => {
   //   event.title.toLowerCase().includes(filterTitle.toLowerCase())
   // );
 
-  const handleFilterNameDescription = (title) =>{
-      if (title === '') {
-        setListEvents(datetocalendar)
-      }else{
-        const filteredEvents = listEvents.filter(event=>
-          event.title.toLowerCase().includes(title.toLowerCase()) || event.desc.toLowerCase().includes(title.toLowerCase() )  
-        )
-        if (filteredEvents.length>0) {
-          setListEvents(filteredEvents)
-        }else{
-          setListEvents([])
-        }
+  const handleFilterNameDescription = (title) => {
+    if (title === '') {
+      setListEvents(datetocalendar);
+    } else {
+      const filteredEvents = listEvents.filter(
+        (event) =>
+          event.title.toLowerCase().includes(title.toLowerCase()) ||
+          event.desc.toLowerCase().includes(title.toLowerCase()),
+      );
+      if (filteredEvents.length > 0) {
+        setListEvents(filteredEvents);
+      } else {
+        setListEvents([]);
       }
-  }
-
-
+    }
+  };
 
   return (
     <Card>
       <TextField
-        label="Filtrar por título"
+        label='Filtrar por título'
         value={filterTitle}
         onChange={(e) => setFilterTitle(e.target.value)}
-        variant="outlined"
-        margin="dense"
-        size="small"
+        variant='outlined'
+        margin='dense'
+        size='small'
       />
       <Button
-        variant="contained"
+        variant='contained'
         onClick={() => handleFilterNameDescription(filterTitle)}
       >
         Aplicar Filtro
       </Button>
-        {
-          listEvents?.length?(
-            <Calendar
-            localizer={localizer}
-            events={listEvents.map((event)=>({
-              ...event,
-              title:(
-                <Box sx={{ position: 'relative' }}>
-                <Typography variant="subtitle1">{event.title}</Typography>
+      {listEvents?.length ? (
+        <Calendar
+          localizer={localizer}
+          events={listEvents.map((event) => ({
+            ...event,
+            title: (
+              <Box sx={{position: 'relative'}}>
+                <Typography variant='subtitle1'>{event.title}</Typography>
                 <Button
-                  aria-controls="event-menu"
-                  aria-haspopup="true"
+                  aria-controls='event-menu'
+                  aria-haspopup='true'
                   onClick={(e) => handleClick(event, e.currentTarget)}
-                  sx={{ position: 'absolute', top: 0, right: 0 }}
+                  sx={{position: 'absolute', top: 0, right: 0}}
                 >
                   <ArrowCircleLeftOutlinedIcon />
                 </Button>
-                <Typography variant="body2">{event.clientName}</Typography>
-                <Typography variant="body2">
+                <Typography variant='body2'>{event.clientName}</Typography>
+                <Typography variant='body2'>
                   Inicio: {moment(event.start).format('HH:mm')}
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant='body2'>
                   Duración: {event.duration} minutos
                 </Typography>
                 <Menu
-                  id="event-menu"
+                  id='event-menu'
                   anchorEl={anchorElect}
                   open={Boolean(anchorElect)}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={() => handleMenuItemClick('generate_attention')}>Generar Atención</MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick('send_reminder')}>Envíar Recordatorio</MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick('attended')}>Atendido</MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick('edit', event)}>Editar</MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick('delete', event)}>Eliminar</MenuItem>
+                  <MenuItem
+                    onClick={() => handleMenuItemClick('generate_attention')}
+                  >
+                    Generar Atención
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => handleMenuItemClick('send_reminder')}
+                  >
+                    Envíar Recordatorio
+                  </MenuItem>
+                  <MenuItem onClick={() => handleMenuItemClick('attended')}>
+                    Atendido
+                  </MenuItem>
+                  <MenuItem onClick={() => handleMenuItemClick('edit', event)}>
+                    Editar
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => handleMenuItemClick('delete', event)}
+                  >
+                    Eliminar
+                  </MenuItem>
                 </Menu>
               </Box>
-              )
-            }))}
-            startAccessor="start"
-            endAccessor="end"
-            messages={{
-              today: 'Hoy',
-              previous: 'Antes',
-              next: 'Después',
-              month: 'Mes',
-              week: 'Semana',
-              day: 'Día',
-              agenda: 'Agenda',
-              date: 'Fecha', // Ejemplo de etiqueta personalizada
-              time: 'Tiempo',
-              event: 'Evento',
-              noEventsInRange: 'No hay eventos en este rango.'
-            }}
-            // components={{
-            //   month: {
-            //     event: EventMonthViews,
-            //   },
-            // }}
-            style={{ width: '95%', height: '80%', marginTop: 20, marginLeft: 25 }}
-          />
+            ),
+          }))}
+          startAccessor='start'
+          endAccessor='end'
+          messages={{
+            today: 'Hoy',
+            previous: 'Antes',
+            next: 'Después',
+            month: 'Mes',
+            week: 'Semana',
+            day: 'Día',
+            agenda: 'Agenda',
+            date: 'Fecha', // Ejemplo de etiqueta personalizada
+            time: 'Tiempo',
+            event: 'Evento',
+            noEventsInRange: 'No hay eventos en este rango.',
+          }}
+          // components={{
+          //   month: {
+          //     event: EventMonthViews,
+          //   },
+          // }}
+          style={{width: '95%', height: '80%', marginTop: 20, marginLeft: 25}}
+        />
+      ) : null}
 
-          ): (null)
-        }
-
-        <ButtonGroup
+      <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'
         className={classes.btnGroup}
@@ -342,7 +362,6 @@ const Views = (props) => {
             Nuevo
           </Button>
         ) : null}
-
 
         {localStorage
           .getItem('pathsBack')

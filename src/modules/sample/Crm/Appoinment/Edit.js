@@ -47,11 +47,11 @@ import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField
 import SchoolIcon from '@mui/icons-material/School';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import { getAppointment, newAppointment, updateAppointment } from 'redux/actions';
-import { getSpecialists } from 'redux/actions/Specialist';
+import {getAppointment, newAppointment, updateAppointment} from 'redux/actions';
+import {getSpecialists} from 'redux/actions/Specialist';
 
 import AddClientForm from '../../ClientSelection/AddClientForm';
-import { useState } from 'react';
+import {useState} from 'react';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -79,13 +79,13 @@ let newAppointmentPayload = {
     payload: {
       appointments: [
         {
-          clientId:"",
-          clientName:"",
-          specialistId:"",
-          specialistName:"",
-          appointmentDescription:"",
-          duration: "",
-          durationUnited: "",
+          clientId: '',
+          clientName: '',
+          specialistId: '',
+          specialistName: '',
+          appointmentDescription: '',
+          duration: '',
+          durationUnited: '',
         },
       ],
       merchantId: '',
@@ -136,13 +136,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let editappointment = {}
+let editappointment = {};
 
 const Edit = (props) => {
   const router = useRouter();
 
   let {query} = router;
-  console.log("CITA A EDITAR", query);
+  console.log('CITA A EDITAR', query);
   const defaultValues = {
     title: query.title,
     description: query.desc,
@@ -170,36 +170,35 @@ const Edit = (props) => {
 
   //APIS
 
-  const toGetAppointments = (payload) =>{
-    dispatch(getAppointment(payload))
-  }
+  const toGetAppointments = (payload) => {
+    dispatch(getAppointment(payload));
+  };
 
   const toNewAppointment = (payload) => {
     dispatch(newAppointment(payload));
   };
 
-  const toEditAppointment = (payload) =>{
-    distpatch(updateAppointment(payload))
-  }
+  const toEditAppointment = (payload) => {
+    distpatch(updateAppointment(payload));
+  };
 
-  const toGetSpecialist = (payload) =>{
-    dispatch(getSpecialists(payload))
-  }
+  const toGetSpecialist = (payload) => {
+    dispatch(getSpecialists(payload));
+  };
   //GET_VALUES_APIS
-  const state = useSelector((state)=>state)
-  console.log("estado", state);
+  const state = useSelector((state) => state);
+  console.log('estado', state);
   const {successMessage} = useSelector(({appointment}) => appointment);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({appointment}) => appointment);
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
 
-  const {listSpecialists} = useSelector(({specialists})=>specialists)
-  console.log("confeti especialistas", listSpecialists);
+  const {listSpecialists} = useSelector(({specialists}) => specialists);
+  console.log('confeti especialistas', listSpecialists);
 
-  const {listAppointments} = useSelector(({appointment}) => appointment)
-  console.log("confeti citas", listAppointments);
-
+  const {listAppointments} = useSelector(({appointment}) => appointment);
+  console.log('confeti citas', listAppointments);
 
   if (listAppointments != undefined) {
     editappointment = listAppointments.find(
@@ -210,10 +209,11 @@ const Edit = (props) => {
 
   const [publishDate, setPublishDate] = React.useState(
     new Date(editappointment?.scheduledStartedAt) /* Number(query.createdAt) */,
-  );    
+  );
 
-  const [finalDate, setFinalDate] = useState(new Date(editappointment?.scheduledFinishedAt))
-
+  const [finalDate, setFinalDate] = useState(
+    new Date(editappointment?.scheduledFinishedAt),
+  );
 
   useEffect(() => {
     if (!userDataRes) {
@@ -235,11 +235,9 @@ const Edit = (props) => {
     }
   }, []);
 
-
-  useEffect(()=>{
-    console.log("cita actual", editappointment);
-  },[editappointment])
-
+  useEffect(() => {
+    console.log('cita actual', editappointment);
+  }, [editappointment]);
 
   useEffect(() => {
     if (userDataRes) {
@@ -248,7 +246,6 @@ const Edit = (props) => {
     }
   }, [userDataRes]);
 
- 
   useEffect(() => {
     console.log('Estamos userDataResINCampaign', userDataRes);
     if (
@@ -285,8 +282,7 @@ const Edit = (props) => {
       // setFirstload(true);
     }
   }, [userDataRes]);
- 
- 
+
   const cancel = () => {
     setOpen(true);
   };
@@ -295,62 +291,73 @@ const Edit = (props) => {
     setOpen(false);
   };
 
-
   //let durationXD = getValueField('duration').value
 
   const handleDatas = (data, {setSubmitting}) => {
     setSubmitting(true);
-    console.log('CONFETI DATA', data, publishDate.getTime(), finalDate.getTime());
+    console.log(
+      'CONFETI DATA',
+      data,
+      publishDate.getTime(),
+      finalDate.getTime(),
+    );
     console.log('objSelects DATA', getValueField('specialist').value);
     console.log('objClients DATA', selectedClient);
-    console.log('objtrue', notifyClientByEmail, notifyClientByWhatsapp, recordingClientByWhatsapp);
+    console.log(
+      'objtrue',
+      notifyClientByEmail,
+      notifyClientByWhatsapp,
+      recordingClientByWhatsapp,
+    );
 
-    let specialistF = listSpecialists.filter((specialist)=>specialist.specialistId === getValueField('specialist').value)
+    let specialistF = listSpecialists.filter(
+      (specialist) =>
+        specialist.specialistId === getValueField('specialist').value,
+    );
     const durationInMilliseconds = parseInt(data.duration) * 60000; // Convert duration to milliseconds
     const calculatedFinalDate = new Date(publishDate + durationInMilliseconds);
-  
-    let email
+
+    let email;
     if (notifyClientByEmail) {
-      email = getValueField('clientEmail').value     
-    }else{
-      email = null
+      email = getValueField('clientEmail').value;
+    } else {
+      email = null;
     }
-    let whatsapp
+    let whatsapp;
     if (notifyClientByWhatsapp) {
-      whatsapp = getValueField('numberContact').value     
-    }else{
-      whatsapp = null
+      whatsapp = getValueField('numberContact').value;
+    } else {
+      whatsapp = null;
     }
-    
-    let starter = publishDate.getTime()
-    let end = finalDate.getTime()
 
-    newAppointmentPayload.request.payload = 
-      {
-        appointmentId: editappointment.appointmentId,
-        clientId: selectedClient.clientId,
-        clientName: selectedClient.denominationClient,
-        specialistId: specialistF[0].specialistId?specialistF[0].specialistId:'',
-        specialistName: specialistF[0].specialistName?specialistF[0].specialistName:'',
-        appointmentDescription: data.description,
-        scheduledStartedAt: starter,
-        scheduledFinishedAt: end,
-        duration: data.duration,
-        durationUnited: "Min",
-        notifications: {
-          email: email,
-          whatsapp: whatsapp,
-          checkEmailNotify: notifyClientByEmail,
-          checkWhatsappNotify: notifyClientByWhatsapp,
-          checkWhatsappReminder: recordingClientByWhatsapp,
-        }
-      }
-    
+    let starter = publishDate.getTime();
+    let end = finalDate.getTime();
 
-
+    newAppointmentPayload.request.payload = {
+      appointmentId: editappointment.appointmentId,
+      clientId: selectedClient.clientId,
+      clientName: selectedClient.denominationClient,
+      specialistId: specialistF[0].specialistId
+        ? specialistF[0].specialistId
+        : '',
+      specialistName: specialistF[0].specialistName
+        ? specialistF[0].specialistName
+        : '',
+      appointmentDescription: data.description,
+      scheduledStartedAt: starter,
+      scheduledFinishedAt: end,
+      duration: data.duration,
+      durationUnited: 'Min',
+      notifications: {
+        email: email,
+        whatsapp: whatsapp,
+        checkEmailNotify: notifyClientByEmail,
+        checkWhatsappNotify: notifyClientByWhatsapp,
+        checkWhatsappReminder: recordingClientByWhatsapp,
+      },
+    };
 
     console.log('objfinaly', newAppointmentPayload);
-
 
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
@@ -358,7 +365,6 @@ const Edit = (props) => {
     setSubmitting(false);
     setOpenStatus(true);
   };
-
 
   const showMessage = () => {
     if (successMessage != '') {
@@ -414,7 +420,7 @@ const Edit = (props) => {
 
   const getClient = (client) => {
     console.log('Estoy en el getClient');
- 
+
     setSelectedClient(client);
     console.log('Cliente seleccionado', client);
     //forceUpdate();
@@ -447,14 +453,15 @@ const Edit = (props) => {
           onSubmit={handleDatas}
         >
           {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
-                        changeValueField = setFieldValue;
-                        getValueField = getFieldProps;
-                        setFormikSubmitting = setSubmitting;
-                        isFormikSubmitting = isSubmitting;
+            changeValueField = setFieldValue;
+            getValueField = getFieldProps;
+            setFormikSubmitting = setSubmitting;
+            isFormikSubmitting = isSubmitting;
 
-                        const durationInMilliseconds = parseInt(getValueField('duration').value) * 60000;
-                        console.log("data", getValueField('date').value);
-                                        
+            const durationInMilliseconds =
+              parseInt(getValueField('duration').value) * 60000;
+            console.log('data', getValueField('date').value);
+
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -511,16 +518,23 @@ const Edit = (props) => {
                         value={editappointment?.specialistId}
                         onChange={(event) => {
                           const selectedSpecialistId = event.target.value;
-                          const selectedSpecialist = listSpecialists.find(specialist => specialist.specialistId === selectedSpecialistId);
+                          const selectedSpecialist = listSpecialists.find(
+                            (specialist) =>
+                              specialist.specialistId === selectedSpecialistId,
+                          );
                           setFieldValue('specialist', selectedSpecialistId);
                           // Otras acciones que necesites realizar con el especialista seleccionado
                         }}
                       >
-                        {listSpecialists.map((specialist) =>
-                          <MenuItem key={specialist.specialistId} value={specialist.specialistId} style={{fontWeight: 200}}>
+                        {listSpecialists.map((specialist) => (
+                          <MenuItem
+                            key={specialist.specialistId}
+                            value={specialist.specialistId}
+                            style={{fontWeight: 200}}
+                          >
                             {specialist.specialistName}
                           </MenuItem>
-                        )}
+                        ))}
                       </Select>
                     </FormControl>
                   </Grid>
@@ -536,36 +550,37 @@ const Edit = (props) => {
                         '& .MuiInputBase-input': {
                           height: '150px',
                           fontSize: 14,
-                          textAlign: 'start'
+                          textAlign: 'start',
                         },
                         my: 2,
                         mx: 0,
-                        
                       }}
                     />
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <DateTimePicker
-                        minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
-                        value={publishDate}
-                        onChange={(e) => {
-                          console.log('tipo', e);
-                          setPublishDate(e);
-                          const updatedFinalDate = new Date(e.getTime()+getValueField('duration').value*60000)
-                          console.log("final fecha>>",updatedFinalDate);
-                          setFinalDate(updatedFinalDate);
-                        }}
-                        label='Fecha hora de Inicio *'
-                        name='date'
-                        inputFormat='dd/MM/yyyy hh:mm a'
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            sx={{width: '100%', my: 2}}
-                          />
-                        )}
-                      />
+                      minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
+                      value={publishDate}
+                      onChange={(e) => {
+                        console.log('tipo', e);
+                        setPublishDate(e);
+                        const updatedFinalDate = new Date(
+                          e.getTime() + getValueField('duration').value * 60000,
+                        );
+                        console.log('final fecha>>', updatedFinalDate);
+                        setFinalDate(updatedFinalDate);
+                      }}
+                      label='Fecha hora de Inicio *'
+                      name='date'
+                      inputFormat='dd/MM/yyyy hh:mm a'
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          sx={{width: '100%', my: 2}}
+                        />
+                      )}
+                    />
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <AppUpperCaseTextField
@@ -573,10 +588,13 @@ const Edit = (props) => {
                       name='duration'
                       variant='outlined'
                       type='number'
-                      onChange={(e)=>{
-                        console.log("timelord", e);
-                        const filldate = new Date(publishDate.getTime()+getValueField('duration').value*60000)
-                        setFinalDate(filldate)
+                      onChange={(e) => {
+                        console.log('timelord', e);
+                        const filldate = new Date(
+                          publishDate.getTime() +
+                            getValueField('duration').value * 60000,
+                        );
+                        setFinalDate(filldate);
                       }}
                       sx={{
                         width: '100%',
@@ -590,20 +608,20 @@ const Edit = (props) => {
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <DateTimePicker
-                          minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
-                          value={finalDate}
-                          label='Fecha hora de Final *'
-                          name='dateFinal'
-                          inputFormat='dd/MM/yyyy hh:mm a'
-                          readOnly
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant='outlined'
-                              sx={{width: '100%', my: 2}}
-                            />
-                          )}
+                      minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
+                      value={finalDate}
+                      label='Fecha hora de Final *'
+                      name='dateFinal'
+                      inputFormat='dd/MM/yyyy hh:mm a'
+                      readOnly
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          sx={{width: '100%', my: 2}}
                         />
+                      )}
+                    />
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <FormControlLabel
@@ -657,9 +675,7 @@ const Edit = (props) => {
                       <TextField
                         disabled
                         defaultValue={'+51'}
-                        label={
-                          <IntlMessages id='common.cellphoneCountryCod' />
-                        }
+                        label={<IntlMessages id='common.cellphoneCountryCod' />}
                         variant='filled'
                         sx={{
                           my: 2,
@@ -671,7 +687,7 @@ const Edit = (props) => {
                     </Grid>
                   )}
                   {notifyClientByWhatsapp && (
-                      <Grid item xs={10}>
+                    <Grid item xs={10}>
                       <AppTextField
                         label='Telefono fijo o celular de contacto'
                         name='numberContact'
@@ -702,7 +718,6 @@ const Edit = (props) => {
                       label='Recordatorio a cliente por Whatsapp'
                     />
                   </Grid>
-
                 </Grid>
 
                 <ButtonGroup
@@ -722,7 +737,7 @@ const Edit = (props) => {
                   >
                     Finalizar
                   </Button>
-              
+
                   <Button
                     sx={{mx: 'auto', width: '40%', py: 2}}
                     variant='outlined'
@@ -732,7 +747,6 @@ const Edit = (props) => {
                     Cancelar
                   </Button>
                 </ButtonGroup>
-                
               </Form>
             );
           }}

@@ -172,7 +172,7 @@ const ReferralGuidesTable = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
-  const [valueObservationInput,setValueObservationInput]=React.useState('');
+  const [valueObservationInput, setValueObservationInput] = React.useState('');
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -197,7 +197,7 @@ const ReferralGuidesTable = (props) => {
   const [moreFilters, setMoreFilters] = React.useState(false);
   const documentSunat = 'referralGuide';
 
-  const [valueObservation,setValueObservation]=React.useState('');
+  const [valueObservation, setValueObservation] = React.useState('');
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getReferralGuides_PageListGuide(payload));
@@ -232,7 +232,7 @@ const ReferralGuidesTable = (props) => {
           movementType: 'REFERRAL_GUIDE',
           merchantId: userDataRes.merchantSelected.merchantId,
           createdAt: null,
-          observation:valueObservation,
+          observation: valueObservation,
           searchByBill: null,
           movementHeaderId: query.referralGuideId || '',
           outputId: query.movementHeaderId || '',
@@ -257,7 +257,7 @@ const ReferralGuidesTable = (props) => {
     'referralGuideItems_pageListGuide',
     referralGuideItems_pageListGuide,
   );
-  
+
   let listToUse = referralGuideItems_pageListGuide;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
@@ -365,7 +365,7 @@ const ReferralGuidesTable = (props) => {
           movementType: 'REFERRAL_GUIDE',
           merchantId: userDataRes.merchantSelected.merchantId,
           createdAt: null,
-          observation:valueObservation,
+          observation: valueObservation,
           searchByBill: null,
           movementHeaderId: null,
           outputId: null,
@@ -443,7 +443,7 @@ const ReferralGuidesTable = (props) => {
           businessProductCode: null,
           movementType: 'REFERRAL_GUIDE',
           merchantId: userDataRes.merchantSelected.merchantId,
-          observation:valueObservation,
+          observation: valueObservation,
           createdAt: null,
           searchByBill: null,
           movementHeaderId: null,
@@ -499,7 +499,7 @@ const ReferralGuidesTable = (props) => {
             businessProductCode: null,
             movementType: 'REFERRAL_GUIDE',
             merchantId: userDataRes.merchantSelected.merchantId,
-            observation:valueObservation,
+            observation: valueObservation,
             createdAt: null,
             searchByBill: null,
             movementHeaderId: null,
@@ -615,7 +615,7 @@ const ReferralGuidesTable = (props) => {
             movementType: 'REFERRAL_GUIDE',
             merchantId: userDataRes.merchantSelected.merchantId,
             createdAt: null,
-            observation:valueObservation,
+            observation: valueObservation,
             searchByBill: null,
             movementHeaderId: null,
             outputId: null,

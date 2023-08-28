@@ -47,11 +47,11 @@ import AppTextField from '../../../../@crema/core/AppFormComponents/AppTextField
 import SchoolIcon from '@mui/icons-material/School';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import { newAppointment } from 'redux/actions';
-import { getSpecialists } from 'redux/actions/Specialist';
+import {newAppointment} from 'redux/actions';
+import {getSpecialists} from 'redux/actions/Specialist';
 
 import AddClientForm from '../../ClientSelection/AddClientForm';
-import { useState } from 'react';
+import {useState} from 'react';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -83,13 +83,13 @@ let newAppointmentPayload = {
     payload: {
       appointments: [
         {
-          clientId:"",
-          clientName:"",
-          specialistId:"",
-          specialistName:"",
-          appointmentDescription:"",
-          duration: "",
-          durationUnited: "",
+          clientId: '',
+          clientName: '',
+          specialistId: '',
+          specialistName: '',
+          appointmentDescription: '',
+          duration: '',
+          durationUnited: '',
         },
       ],
       merchantId: '',
@@ -161,10 +161,10 @@ const Createappoinment = (props) => {
 
   const [publishDate, setPublishDate] = React.useState(
     Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
-  );    
-  const [timelord, setTimelord] = useState(0)
+  );
+  const [timelord, setTimelord] = useState(0);
 
-  const [finalDate, setFinalDate] = useState(publishDate)
+  const [finalDate, setFinalDate] = useState(publishDate);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -177,8 +177,8 @@ const Createappoinment = (props) => {
     dispatch(getSpecialists(payload));
   };
   //GET_VALUES_APIS
-  const state = useSelector((state)=>state)
-  console.log("estado", state);
+  const state = useSelector((state) => state);
+  console.log('estado', state);
   const {successMessage} = useSelector(({appointment}) => appointment);
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({appointment}) => appointment);
@@ -259,61 +259,74 @@ const Createappoinment = (props) => {
     setOpen(false);
   };
 
-
   //let durationXD = getValueField('duration').value
 
   const handleDatas = (data, {setSubmitting}) => {
     setSubmitting(true);
-    console.log('CONFETI DATA', data, publishDate.getTime(), finalDate.getTime());
+    console.log(
+      'CONFETI DATA',
+      data,
+      publishDate.getTime(),
+      finalDate.getTime(),
+    );
     console.log('objSelects DATA', getValueField('specialist').value);
     console.log('objClients DATA', selectedClient);
-    console.log('objtrue', notifyClientByEmail, notifyClientByWhatsapp, recordingClientByWhatsapp);
+    console.log(
+      'objtrue',
+      notifyClientByEmail,
+      notifyClientByWhatsapp,
+      recordingClientByWhatsapp,
+    );
 
-    let specialistF = listSpecialists.filter((specialist)=>specialist.specialistId === getValueField('specialist').value)
+    let specialistF = listSpecialists.filter(
+      (specialist) =>
+        specialist.specialistId === getValueField('specialist').value,
+    );
     const durationInMilliseconds = parseInt(data.duration) * 60000; // Convert duration to milliseconds
     const calculatedFinalDate = new Date(publishDate + durationInMilliseconds);
-  
-    let email
+
+    let email;
     if (notifyClientByEmail) {
-      email = getValueField('clientEmail').value     
-    }else{
-      email = null
+      email = getValueField('clientEmail').value;
+    } else {
+      email = null;
     }
-    let whatsapp
+    let whatsapp;
     if (notifyClientByWhatsapp) {
-      whatsapp = getValueField('numberContact').value     
-    }else{
-      whatsapp = null
+      whatsapp = getValueField('numberContact').value;
+    } else {
+      whatsapp = null;
     }
-    
-    let starter = publishDate.getTime()
-    let end = finalDate.getTime()
+
+    let starter = publishDate.getTime();
+    let end = finalDate.getTime();
 
     newAppointmentPayload.request.payload.appointments = [
       {
         clientId: selectedClient.clientId,
         clientName: selectedClient.denominationClient,
-        specialistId: specialistF[0].specialistId?specialistF[0].specialistId:'',
-        specialistName: specialistF[0].specialistName?specialistF[0].specialistName:'',
+        specialistId: specialistF[0].specialistId
+          ? specialistF[0].specialistId
+          : '',
+        specialistName: specialistF[0].specialistName
+          ? specialistF[0].specialistName
+          : '',
         appointmentDescription: data.description,
         scheduledStartedAt: starter,
         scheduledFinishedAt: end,
         duration: data.duration,
-        durationUnited: "Min",
+        durationUnited: 'Min',
         notifications: {
           email: email,
           whatsapp: whatsapp,
           checkEmailNotify: notifyClientByEmail,
           checkWhatsappNotify: notifyClientByWhatsapp,
           checkWhatsappReminder: recordingClientByWhatsapp,
-        }
-      }
-    ]
-
-
+        },
+      },
+    ];
 
     console.log('objfinaly', newAppointmentPayload);
-
 
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
@@ -321,7 +334,6 @@ const Createappoinment = (props) => {
     setSubmitting(false);
     setOpenStatus(true);
   };
-
 
   const showMessage = () => {
     if (successMessage != '') {
@@ -377,7 +389,7 @@ const Createappoinment = (props) => {
 
   const getClient = (client) => {
     console.log('Estoy en el getClient');
- 
+
     setSelectedClient(client);
     console.log('Cliente seleccionado', client);
     //forceUpdate();
@@ -410,15 +422,16 @@ const Createappoinment = (props) => {
           onSubmit={handleDatas}
         >
           {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
-                        changeValueField = setFieldValue;
-                        getValueField = getFieldProps;
-                        setFormikSubmitting = setSubmitting;
-                        isFormikSubmitting = isSubmitting;
+            changeValueField = setFieldValue;
+            getValueField = getFieldProps;
+            setFormikSubmitting = setSubmitting;
+            isFormikSubmitting = isSubmitting;
 
-                        const durationInMilliseconds = parseInt(getValueField('duration').value) * 60000;
-                        console.log("data", getValueField('date').value);
-                        //const calculatedFinalDate = new Date(publishDate.getTime() + durationInMilliseconds);
-                                        
+            const durationInMilliseconds =
+              parseInt(getValueField('duration').value) * 60000;
+            console.log('data', getValueField('date').value);
+            //const calculatedFinalDate = new Date(publishDate.getTime() + durationInMilliseconds);
+
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -477,8 +490,9 @@ const Createappoinment = (props) => {
                           // setIdentidad(value.props.value);
                         }}
                       >
-                        {listSpecialists.map((specialist) => (
+                        {listSpecialists.map((specialist, index) => (
                           <MenuItem
+                            key={`specialist-${index}`}
                             value={specialist.specialistId}
                             style={{fontWeight: 200}}
                           >
@@ -500,36 +514,37 @@ const Createappoinment = (props) => {
                         '& .MuiInputBase-input': {
                           height: '150px',
                           fontSize: 14,
-                          textAlign: 'start'
+                          textAlign: 'start',
                         },
                         my: 2,
                         mx: 0,
-                        
                       }}
                     />
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <DateTimePicker
-                        minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
-                        value={publishDate}
-                        onChange={(e) => {
-                          console.log('tipo', e);
-                          setPublishDate(e);
-                          const updatedFinalDate = new Date(e.getTime()+getValueField('duration').value*60000)
-                          console.log("final fecha>>",updatedFinalDate);
-                          setFinalDate(updatedFinalDate);
-                        }}
-                        label='Fecha hora de Inicio *'
-                        name='date'
-                        inputFormat='dd/MM/yyyy hh:mm a'
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant='outlined'
-                            sx={{width: '100%', my: 2}}
-                          />
-                        )}
-                      />
+                      minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
+                      value={publishDate}
+                      onChange={(e) => {
+                        console.log('tipo', e);
+                        setPublishDate(e);
+                        const updatedFinalDate = new Date(
+                          e.getTime() + getValueField('duration').value * 60000,
+                        );
+                        console.log('final fecha>>', updatedFinalDate);
+                        setFinalDate(updatedFinalDate);
+                      }}
+                      label='Fecha hora de Inicio *'
+                      name='date'
+                      inputFormat='dd/MM/yyyy hh:mm a'
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          sx={{width: '100%', my: 2}}
+                        />
+                      )}
+                    />
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <AppUpperCaseTextField
@@ -537,10 +552,13 @@ const Createappoinment = (props) => {
                       name='duration'
                       variant='outlined'
                       type='number'
-                      onChange={(e)=>{
-                        console.log("timelord", e);
-                        const filldate = new Date(publishDate.getTime()+getValueField('duration').value*60000)
-                        setFinalDate(filldate)
+                      onChange={(e) => {
+                        console.log('timelord', e);
+                        const filldate = new Date(
+                          publishDate.getTime() +
+                            getValueField('duration').value * 60000,
+                        );
+                        setFinalDate(filldate);
                       }}
                       sx={{
                         width: '100%',
@@ -554,20 +572,20 @@ const Createappoinment = (props) => {
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <DateTimePicker
-                          minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
-                          value={finalDate}
-                          label='Fecha hora de Final *'
-                          name='dateFinal'
-                          inputFormat='dd/MM/yyyy hh:mm a'
-                          readOnly
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant='outlined'
-                              sx={{width: '100%', my: 2}}
-                            />
-                          )}
+                      minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
+                      value={finalDate}
+                      label='Fecha hora de Final *'
+                      name='dateFinal'
+                      inputFormat='dd/MM/yyyy hh:mm a'
+                      readOnly
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          sx={{width: '100%', my: 2}}
                         />
+                      )}
+                    />
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <FormControlLabel
@@ -683,7 +701,7 @@ const Createappoinment = (props) => {
                   >
                     Finalizar
                   </Button>
-              
+
                   <Button
                     sx={{mx: 'auto', width: '40%', py: 2}}
                     variant='outlined'
@@ -693,7 +711,6 @@ const Createappoinment = (props) => {
                     Cancelar
                   </Button>
                 </ButtonGroup>
-                
               </Form>
             );
           }}

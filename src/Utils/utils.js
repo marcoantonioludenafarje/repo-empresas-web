@@ -541,3 +541,126 @@ export const verTiposEventos = (listBussinesParameteres) => {
     listNotificationBusiness,
   ];
 };
+
+export const showReferralGuideReason = (text, reason) => {
+  if (text === 'spanish') {
+    //newRoute
+    switch (reason) {
+      case 'compra':
+        return <IntlMessages id='referralGuide.reason.buys' />;
+        break;
+      case 'venta':
+        return <IntlMessages id='referralGuide.reason.sales' />;
+        break;
+      case 'venta_sujeta_a_confirmación_del_comprador':
+        return (
+          <IntlMessages id='referralGuide.reason.saleSubjectToBuyerConfirmation' />
+        );
+        break;
+      case 'traslado_entre_establecimientos_de_la_misma_empresa':
+        return (
+          <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany.' />
+        );
+        break;
+      case 'traslado_emisor_itinerante_CP':
+        return (
+          <IntlMessages id='referralGuide.reason.itinerantSenderTransferCP' />
+        );
+        break;
+      case 'importación':
+        return <IntlMessages id='referralGuide.reason.import' />;
+        break;
+      case 'exportación':
+        return <IntlMessages id='referralGuide.reason.export' />;
+        break;
+      case 'traslado_a_zona_primaria':
+        return <IntlMessages id='referralGuide.reason.transferToPrimaryArea' />;
+        break;
+      case 'devolucion':
+        return <IntlMessages id='referralGuide.reason.return' />;
+        break;
+      case 'otros':
+        return <IntlMessages id='referralGuide.reason.others' />;
+        break;
+      default:
+        return <IntlMessages id='referralGuide.reason.sales' />;
+    }
+  } else if (text === 'english') {
+    //predefined
+    switch (reason) {
+      case 'buy':
+        return <IntlMessages id='referralGuide.reason.buys' />;
+        break;
+      case 'sale':
+        return <IntlMessages id='referralGuide.reason.sales' />;
+        break;
+      case 'saleSubjectToBuyersConfirmation':
+        return (
+          <IntlMessages id='referralGuide.reason.saleSubjectToBuyerConfirmation' />
+        );
+        break;
+      case 'transferBetweenEstablishmentsOfTheSameCompany':
+        return (
+          <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany.' />
+        );
+        break;
+      case 'transferItinerantIssuerCP':
+        return (
+          <IntlMessages id='referralGuide.reason.itinerantSenderTransferCP' />
+        );
+        break;
+      case 'import':
+        return <IntlMessages id='referralGuide.reason.import' />;
+        break;
+      case 'export':
+        return <IntlMessages id='referralGuide.reason.export' />;
+        break;
+      case 'transferToPrimaryZone':
+        return <IntlMessages id='referralGuide.reason.transferToPrimaryArea' />;
+        break;
+      case 'return':
+        return <IntlMessages id='referralGuide.reason.return' />;
+        break;
+      case 'others':
+        return <IntlMessages id='referralGuide.reason.others' />;
+        break;
+      default:
+        return <IntlMessages id='referralGuide.reason.sales' />;
+    }
+  } else {
+    switch (reason) {
+      case 'compra':
+        return 'buy';
+        break;
+      case 'venta':
+        return 'sale';
+        break;
+      case 'venta_sujeta_a_confirmación_del_comprador':
+        return 'saleSubjectToBuyersConfirmation';
+        break;
+      case 'traslado_entre_establecimientos_de_la_misma_empresa':
+        return 'transferBetweenEstablishmentsOfTheSameCompany';
+        break;
+      case 'traslado_emisor_itinerante_CP':
+        return 'transferItinerantIssuerCP';
+        break;
+      case 'importación':
+        return 'import';
+        break;
+      case 'exportación':
+        return 'export';
+        break;
+      case 'traslado_a_zona_primaria':
+        return 'transferToPrimaryZone';
+        break;
+      case 'devolucion':
+        return 'return';
+        break;
+      case 'otros':
+        return 'others';
+        break;
+      default:
+        return null;
+    }
+  }
+};

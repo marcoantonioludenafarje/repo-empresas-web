@@ -129,15 +129,14 @@ export default function Views(props) {
   const listNotifications = verTiposEventos(businessParameter);
   console.log('confeti los agentes', listNotifications[0]);
 
-
   const showMessage = () => {
     console.log('Mensaje QR');
   };
   useEffect(() => {
-    if(!listNotifications || listNotifications.length === 0){
-      return
+    if (!listNotifications || listNotifications.length === 0) {
+      return;
     }
-    if (listNotifications && listNotifications.length > 0){
+    if (listNotifications && listNotifications.length > 0) {
       let cont = 0;
       let listNotificacionModific = [];
       for (let item of listNotifications[0]) {
@@ -163,13 +162,13 @@ export default function Views(props) {
             (key) => typeof item[key] === 'object' && uuidPattern.test(key),
           ).length;
         }
-      } 
+      }
       setNelem(cont);
       console.log('Este es el valid', listNotificacionModific);
       setListValidNotification(listNotificacionModific);
     }
-  }, [businessParameter,reload]);
- 
+  }, [businessParameter, reload]);
+
   useEffect(() => {
     console.log('Estamos userDataRes', userDataRes);
     if (
@@ -195,27 +194,27 @@ export default function Views(props) {
       //getNotification(listPayload);
       // setFirstload(true);
     }
-  }, [userDataRes,reload,businessParameter]);
+  }, [userDataRes, reload, businessParameter]);
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   /* let anchorEl = null; */
   const openMenu = Boolean(anchorEl);
-  console.log("ESTE ES EL OPENMENU",openMenu);
-  const handleClick = (codPro,id, event,rowIndex) => {
+  console.log('ESTE ES EL OPENMENU', openMenu);
+  const handleClick = (codPro, id, event, rowIndex) => {
     console.log('evento', event);
     console.log('index del map', codPro);
-    console.log("ESTE ES EL ID",id)
-    console.log("ESTE ES EL ROWINDEX",rowIndex);
-    console.log("Este es el listNotificationsValid",listValidNotification);
+    console.log('ESTE ES EL ID', id);
+    console.log('ESTE ES EL ROWINDEX', rowIndex);
+    console.log('Este es el listNotificationsValid', listValidNotification);
     setAnchorEl(rowIndex.currentTarget);
     codProdSelected = codPro;
-    selectedNotification =listValidNotification[id].filter((notification=>{
-      return notification.eventId==codPro;
-    }));
-    console.log("selectedNotification",selectedNotification);
-      //listNotifications[codPro]; /* .find((obj) => obj.client == codPro); */
+    selectedNotification = listValidNotification[id].filter((notification) => {
+      return notification.eventId == codPro;
+    });
+    console.log('selectedNotification', selectedNotification);
+    //listNotifications[codPro]; /* .find((obj) => obj.client == codPro); */
     console.log('Select Agente', selectedNotification);
   };
 
@@ -246,21 +245,32 @@ export default function Views(props) {
       selectedNotification.notificationId;
     console.log('deletePayload', deletePayload);
     //deleteNotification(deletePayload);
-    let listUpdateNotifications=listNotifications[2];
-    let listObjectNotification=listNotifications[1];
-    console.log("LISTUPDATE COMPLETE",listUpdateNotifications);
-    console.log("LIST OBJECTNOTIFICATION",listObjectNotification);
+    let listUpdateNotifications = listNotifications[2];
+    let listObjectNotification = listNotifications[1];
+    console.log('LISTUPDATE COMPLETE', listUpdateNotifications);
+    console.log('LIST OBJECTNOTIFICATION', listObjectNotification);
     let llavesGlobal = Object.keys(listObjectNotification);
-    console.log("LLAVES GLOBALES",llavesGlobal);
+    console.log('LLAVES GLOBALES', llavesGlobal);
     llavesGlobal.forEach((llave) => {
-      console.log("Este es el primer nivel",listObjectNotification[llave][selectedNotification[0].eventId]);
-      if(listObjectNotification[llave][selectedNotification[0].eventId]==selectedNotification[0]){
-        console.log("id",selectedNotification[0].eventId);
-        console.log("LIST OBJECT NOTIFICATION",listObjectNotification[llave][selectedNotification[0].eventId]);
-        delete listObjectNotification[llave][selectedNotification[0].eventId.toString()];
+      console.log(
+        'Este es el primer nivel',
+        listObjectNotification[llave][selectedNotification[0].eventId],
+      );
+      if (
+        listObjectNotification[llave][selectedNotification[0].eventId] ==
+        selectedNotification[0]
+      ) {
+        console.log('id', selectedNotification[0].eventId);
+        console.log(
+          'LIST OBJECT NOTIFICATION',
+          listObjectNotification[llave][selectedNotification[0].eventId],
+        );
+        delete listObjectNotification[llave][
+          selectedNotification[0].eventId.toString()
+        ];
       }
     });
-    console.log("EL OBJECT NOTIFICATION MODIFICADO",listObjectNotification);
+    console.log('EL OBJECT NOTIFICATION MODIFICADO', listObjectNotification);
     let {value, ...otherTramaBusiness} = listUpdateNotifications;
     let nupdateNotificationPayload = {
       request: {
@@ -271,8 +281,7 @@ export default function Views(props) {
       },
     };
 
-
-    updateNotificationParameter(nupdateNotificationPayload)
+    updateNotificationParameter(nupdateNotificationPayload);
     setOpen2(false);
     setOpenStatus(true);
     reloadPage();
@@ -284,9 +293,7 @@ export default function Views(props) {
   };
 
   // Paso 2: Función para filtrar las campañas por el nombre de la campaña
-  const filterNotifications = (searchText) => {
-    
-  };
+  const filterNotifications = (searchText) => {};
 
   useEffect(() => {
     filterNotifications(searchValue);
@@ -344,7 +351,7 @@ export default function Views(props) {
             {listValidNotification.flatMap((component, index) =>
               component.map((row, rowIndex) => {
                 let selectedChannel = row.channelSelected;
-                console.log("ESTE ES EL VALID",listValidNotification);
+                console.log('ESTE ES EL VALID', listValidNotification);
                 console.log('Este es el row', row, selectedChannel);
                 return (
                   <TableRow
@@ -392,7 +399,12 @@ export default function Views(props) {
                         aria-controls={openMenu ? 'basic-menu' : undefined}
                         aria-haspopup='true'
                         aria-expanded={openMenu ? 'true' : undefined}
-                        onClick={handleClick.bind(this,row.eventId, index,rowIndex)}
+                        onClick={handleClick.bind(
+                          this,
+                          row.eventId,
+                          index,
+                          rowIndex,
+                        )}
                       >
                         <KeyboardArrowDownIcon />
                       </Button>

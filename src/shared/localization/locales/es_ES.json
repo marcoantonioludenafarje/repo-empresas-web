@@ -1102,5 +1102,15 @@
   "transaction.type.expense.acronym": "EGR",
   "finance.typeIGV.gravado": "Gravado",
   "finance.typeIGV.exonerado": "Exonerado",
-  "finance.typeIGV.inafecto": "Inafecto"
+  "finance.typeIGV.inafecto": "Inafecto",
+  "referralGuide.reason.buys": "Compras",
+  "referralGuide.reason.sales": "Ventas",
+  "referralGuide.reason.saleSubjectToBuyerConfirmation": "Venta sujeta a confirmación del comprador",
+  "referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany": "Traslado entre establecimientos de la misma empresa",
+  "referralGuide.reason.itinerantSenderTransferCP": "Traslado emisor itinerante CP",
+  "referralGuide.reason.import": "Importación",
+  "referralGuide.reason.export": "Exportación",
+  "referralGuide.reason.transferToPrimaryArea": "Traslado a zona primaria",
+  "referralGuide.reason.return": "Devolución",
+  "referralGuide.reason.others": "Otros"
 }

@@ -53,18 +53,18 @@ const appointmentsReducer = (state = INIT_STATE, action) => {
         newAppointmentsRes: action.payload,
       };
     case EDIT_APPOINTMENT:
-      console.log("data reducer cita", action.payload);
+      console.log('data reducer cita', action.payload);
       return {
         ...state,
         updateAppointmentRes: action.payload,
-      }
+      };
     case DELETE_APPOINTMENT:
-      console.log("data reducer cita delete", action.payload);
+      console.log('data reducer cita delete', action.payload);
       return {
         ...state,
-        deleteClientRes: action.payload
-      }
-    
+        deleteClientRes: action.payload,
+      };
+
     case FETCH_START:
       if (!action.payload || !action.payload.process) {
         action.payload = {process: 'LIST_APPOINTMENT'};

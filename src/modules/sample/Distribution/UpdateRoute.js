@@ -52,7 +52,11 @@ import AppInfoView from '../../../@crema/core/AppInfoView';
 import {useDispatch, useSelector} from 'react-redux';
 import {ClickAwayListener} from '@mui/base';
 import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
-import {updatePredefinedRoute,getPredefinedRoute_____PageListPredefinedRoutes,getChildRoutes} from '../../../redux/actions/Movements';
+import {
+  updatePredefinedRoute,
+  getPredefinedRoute_____PageListPredefinedRoutes,
+  getChildRoutes,
+} from '../../../redux/actions/Movements';
 import {onGetProducts} from '../../../redux/actions/Products';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import ArrowDownwardOutlinedIcon from '@mui/icons-material/ArrowDownwardOutlined';
@@ -76,7 +80,6 @@ import {
   UPDATE_ROUTE,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
 } from '../../../shared/constants/ActionTypes';
-
 
 let getChildRoutesPayload = {
   request: {
@@ -133,7 +136,7 @@ const Distribution = (props) => {
       },
     },
   };
- 
+
   const emptyRoute = {
     empty: true,
     carrierDocumentType: 'Vacío',
@@ -186,17 +189,21 @@ const Distribution = (props) => {
   const {deliveries} = useSelector(({movements}) => movements);
   const {
     predefinedRoutes_PageListPredefinedRoutes,
-    selectedRoute_PageListPredefinedRoutes
+    selectedRoute_PageListPredefinedRoutes,
   } = useSelector(({movements}) => movements);
-  console.log("Este es el predefinedRoutes del comienzo",predefinedRoutes_PageListPredefinedRoutes);
-  console.log("Este es el selectedRoutes",selectedRoute_PageListPredefinedRoutes)
+  console.log(
+    'Este es el predefinedRoutes del comienzo',
+    predefinedRoutes_PageListPredefinedRoutes,
+  );
+  console.log(
+    'Este es el selectedRoutes',
+    selectedRoute_PageListPredefinedRoutes,
+  );
   const [routes, setRoutes] = React.useState([]);
-  
-  
-  
+
   const [summaryType, setSummaryType] = React.useState('driver');
   const [nombreAgrupador, setNombreAgrupador] = React.useState('');
-  const [valueObservationInput,setValueObservationInput]=React.useState('');
+  const [valueObservationInput, setValueObservationInput] = React.useState('');
   const [routesSummary, setRoutesSummary] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openSummary, setOpenSummary] = React.useState(false);
@@ -209,10 +216,10 @@ const Distribution = (props) => {
   const [selectedDeliveryState, setSelectedDeliveryState] = React.useState({});
   const [rowNumber2, setRowNumber2] = React.useState(0);
   const [open2, setOpen2] = React.useState(false);
-  console.log("Este es el routes variable guardar",routes);
+  console.log('Este es el routes variable guardar', routes);
   listPayload.request.payload.merchantId =
-  userDataRes.merchantSelected.merchantId;
-console.log('Ver en donde esta el error',listPayload);
+    userDataRes.merchantSelected.merchantId;
+  console.log('Ver en donde esta el error', listPayload);
   const toGetCarriers = (payload, token) => {
     dispatch(getCarriers(payload, token));
   };
@@ -243,7 +250,7 @@ console.log('Ver en donde esta el error',listPayload);
     setRoutes(newRoutes);
     reloadPage();
   }
- 
+
   const handleSearchValues = (event) => {
     if (event.target.name == 'codeToSearch') {
       if (event.target.value == '') {
@@ -256,29 +263,41 @@ console.log('Ver en donde esta el error',listPayload);
     }
   };
 
-  const searchValuesInForm=()=>{
-      if (valueObservationInput == null) {
-        console.log("Aqui estan todas las rutas",selectedRoute_PageListPredefinedRoutes);
-        setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
-      } else {
-        console.log("Aqui estan todas las rutas",selectedRoute_PageListPredefinedRoutes);
-        let newRoutes=[];
-        console.log("Buscando Observacion que contengan",valueObservationInput);
-        console.log("Este es el selectedRoute predefinido del search",selectedRoute_PageListPredefinedRoutes.deliveries)
-        for(let delivery of selectedRoute_PageListPredefinedRoutes.deliveries){
-          if(delivery.observationDelivery?.toLowerCase().includes(valueObservationInput)){
-            newRoutes.push(delivery);
-          }
+  const searchValuesInForm = () => {
+    if (valueObservationInput == null) {
+      console.log(
+        'Aqui estan todas las rutas',
+        selectedRoute_PageListPredefinedRoutes,
+      );
+      setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
+    } else {
+      console.log(
+        'Aqui estan todas las rutas',
+        selectedRoute_PageListPredefinedRoutes,
+      );
+      let newRoutes = [];
+      console.log('Buscando Observacion que contengan', valueObservationInput);
+      console.log(
+        'Este es el selectedRoute predefinido del search',
+        selectedRoute_PageListPredefinedRoutes.deliveries,
+      );
+      for (let delivery of selectedRoute_PageListPredefinedRoutes.deliveries) {
+        if (
+          delivery.observationDelivery
+            ?.toLowerCase()
+            .includes(valueObservationInput)
+        ) {
+          newRoutes.push(delivery);
         }
-        let {deliveries,...otherFields}=selectedRoute_PageListPredefinedRoutes;
-        let newData={
-          ...otherFields,
-          deliveries:newRoutes
-        }
-        setRoutes(newRoutes);
       }
-  }
-
+      let {deliveries, ...otherFields} = selectedRoute_PageListPredefinedRoutes;
+      let newData = {
+        ...otherFields,
+        deliveries: newRoutes,
+      };
+      setRoutes(newRoutes);
+    }
+  };
 
   const checkSummaryProducts = (row, index) => {
     selectedSummaryRow = row;
@@ -303,52 +322,65 @@ console.log('Ver en donde esta el error',listPayload);
     setOpen2(false);
   };
 
-console.log("Fase previa al abismo");
-useEffect(() => {
-  dispatch({type: FETCH_SUCCESS, payload: undefined});
-  dispatch({type: FETCH_ERROR, payload: undefined});
-  dispatch({type: GET_PRODUCTS, payload: undefined});
-  console.log("Todo apunta a que el error es despues de esta linea");
-  dispatch({type: GET_CARRIERS, payload: undefined});
-  dispatch({type: LIST_ROUTE, payload: undefined});
-  getProducts(listPayload);
-  let listCarriersPayload = {
-    request: {
-      payload: {
-        typeDocumentCarrier: '',
-        numberDocumentCarrier: '',
-        denominationCarrier: '',
-        merchantId: userDataRes.merchantSelected.merchantId,
-        LastEvaluatedKey: null,
-        needItems: true,
+  console.log('Fase previa al abismo');
+  useEffect(() => {
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({type: GET_PRODUCTS, payload: undefined});
+    console.log('Todo apunta a que el error es despues de esta linea');
+    dispatch({type: GET_CARRIERS, payload: undefined});
+    dispatch({type: LIST_ROUTE, payload: undefined});
+    getProducts(listPayload);
+    let listCarriersPayload = {
+      request: {
+        payload: {
+          typeDocumentCarrier: '',
+          numberDocumentCarrier: '',
+          denominationCarrier: '',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+          needItems: true,
+        },
       },
-    },
-  };
-  console.log('Esto se ejcuta??, is very important xd')
-  toGetCarriers(listCarriersPayload, jwtToken);
-  toGetPredefinedRoute({
-    routePredefinedId: query.routeId,
-    merchantId: userDataRes.merchantSelected.merchantId,
-  });
-}, [predefinedRoutes_PageListPredefinedRoutes]);
+    };
+    console.log('Esto se ejcuta??, is very important xd');
+    toGetCarriers(listCarriersPayload, jwtToken);
+    toGetPredefinedRoute({
+      routePredefinedId: query.routeId,
+      merchantId: userDataRes.merchantSelected.merchantId,
+    });
+  }, [predefinedRoutes_PageListPredefinedRoutes]);
 
+  useEffect(() => {
+    if (
+      selectedRoute_PageListPredefinedRoutes &&
+      selectedRoute_PageListPredefinedRoutes.deliveries &&
+      selectedRoute_PageListPredefinedRoutes.deliveries.length > 0
+    ) {
+      console.log(
+        'Este es el listRoute',
+        predefinedRoutes_PageListPredefinedRoutes,
+      );
+      console.log('Verificar el id del route', query.routeId);
 
-
-useEffect(() => {
-  if (selectedRoute_PageListPredefinedRoutes && selectedRoute_PageListPredefinedRoutes.deliveries && selectedRoute_PageListPredefinedRoutes.deliveries.length > 0) {
-    console.log("Este es el listRoute", predefinedRoutes_PageListPredefinedRoutes);
-    console.log("Verificar el id del route", query.routeId);
-
-    console.log('selectedRoute', selectedRoute);
-    console.log("Verificando servicio child deliveries Routes", selectedRoute_PageListPredefinedRoutes);
-    if(selectedRoute_PageListPredefinedRoutes.routePredefinedId==query.routeId){
-      setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
-      changeValueField('routeName', selectedRoute_PageListPredefinedRoutes.routeName);
-      setRoutesReady(true);
+      console.log('selectedRoute', selectedRoute);
+      console.log(
+        'Verificando servicio child deliveries Routes',
+        selectedRoute_PageListPredefinedRoutes,
+      );
+      if (
+        selectedRoute_PageListPredefinedRoutes.routePredefinedId ==
+        query.routeId
+      ) {
+        setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
+        changeValueField(
+          'routeName',
+          selectedRoute_PageListPredefinedRoutes.routeName,
+        );
+        setRoutesReady(true);
+      }
     }
-  }
-}, [selectedRoute_PageListPredefinedRoutes]);
-
+  }, [selectedRoute_PageListPredefinedRoutes]);
 
   const handleClose = () => {
     console.log('se está ejecutando?');
@@ -379,16 +411,19 @@ useEffect(() => {
     setOpen2(true);
   };
 
-  
-
-
   const updateDelivery2 = (newDelivery) => {
     handleClose();
     console.log('newDelivery', newDelivery);
-    console.log("Este es el selectedDelivery",selectedDeliveryState["ORDEN ENTREGA"]);
-    console.log("Este es el selectedRouted junto al delivery",routes)
-    const updatedDeliveries = routes.map((route,index) => {
-      console.log("Esto es para comparar entre los elementos del routesMap",route);
+    console.log(
+      'Este es el selectedDelivery',
+      selectedDeliveryState['ORDEN ENTREGA'],
+    );
+    console.log('Este es el selectedRouted junto al delivery', routes);
+    const updatedDeliveries = routes.map((route, index) => {
+      console.log(
+        'Esto es para comparar entre los elementos del routesMap',
+        route,
+      );
       if (index === newDelivery.localRouteId) {
         return {
           ...newDelivery,
@@ -396,7 +431,7 @@ useEffect(() => {
       }
       return route;
     });
-    console.log("Este es el nuevo arreglo",updatedDeliveries);
+    console.log('Este es el nuevo arreglo', updatedDeliveries);
     setRoutes(updatedDeliveries);
   };
 
@@ -439,17 +474,17 @@ useEffect(() => {
     setExecAll(true);
     setExecAll(false);
     console.log('data final', {...data, routes: routes});
-    console.log("Que es esto",userAttributes['sub']);
+    console.log('Que es esto', userAttributes['sub']);
     const finalPayload = {
       request: {
         payload: {
-          merchantId:userDataRes.merchantSelected.merchantId,
+          merchantId: userDataRes.merchantSelected.merchantId,
           userActor: userAttributes['sub'],
           routePredefinedId: query.routeId,
           routeName: data.routeName,
-          deliveries: routes.map((obj,index) => {
-            if (obj !== undefined ) {
-              let deliveryValue = Math.floor((index) / 40);
+          deliveries: routes.map((obj, index) => {
+            if (obj !== undefined) {
+              let deliveryValue = Math.floor(index / 40);
               return {
                 childGroupOrder: deliveryValue,
                 carrierDocumentType: obj.carrierDocumentType,
@@ -478,7 +513,7 @@ useEffect(() => {
                 driverId: '',
                 carrierPlateNumber: obj.carrierPlateNumber,
                 productsInfo: obj.productsInfo.map((prod) => {
-                  if(prod!=null || prod!=undefined){
+                  if (prod != null || prod != undefined) {
                     return {
                       productId: prod.productId,
                       product: prod.product,
@@ -528,14 +563,14 @@ useEffect(() => {
   };
   const sendStatus = () => {
     if (registerSuccess()) {
-      console.log("Vamos al listado de rutas");
+      console.log('Vamos al listado de rutas');
       Router.push('/sample/distribution/predefined-routes');
       setOpenStatus(false);
     } else if (registerError()) {
-      console.log("Error al actualizar")
+      console.log('Error al actualizar');
       setOpenStatus(false);
     } else {
-      console.log("No se para que es esto")
+      console.log('No se para que es esto');
       setOpenStatus(false);
     }
   };
@@ -547,7 +582,7 @@ useEffect(() => {
 
   const acumularProductos = (entregas) => {
     const acumulador = {};
-    console.log("Estas son las entregas",entregas);
+    console.log('Estas son las entregas', entregas);
     entregas.forEach((entrega) => {
       entrega.productsInfo.forEach((producto) => {
         const productoKey = producto.product;
@@ -569,10 +604,9 @@ useEffect(() => {
     return Object.values(acumulador);
   };
 
-
   const acumularProductosPorConductor = (entregas) => {
     const acumulador = {};
-    console.log("Estas son las entregas",entregas);
+    console.log('Estas son las entregas', entregas);
     entregas.forEach((entrega) => {
       const conductorKey = `${entrega.driverDocumentType}_${entrega.driverDocumentNumber}`;
 
@@ -638,7 +672,7 @@ useEffect(() => {
 
   const showMessage = () => {
     if (registerSuccess()) {
-      console.log("Actulizacion exitosa");
+      console.log('Actulizacion exitosa');
       return (
         <>
           <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
@@ -656,7 +690,7 @@ useEffect(() => {
         </>
       );
     } else if (registerError()) {
-      console.log("Error al actualizar las rutas");
+      console.log('Error al actualizar las rutas');
       return (
         <>
           <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
@@ -677,7 +711,7 @@ useEffect(() => {
         </>
       );
     } else {
-      console.log("Actualizacion sin respuesta");
+      console.log('Actualizacion sin respuesta');
       return <CircularProgress disableShrink sx={{mx: 'auto', my: '20px'}} />;
     }
   };
@@ -749,7 +783,6 @@ useEffect(() => {
         </Formik>
       </Box>
 
-
       <Stack
         sx={{m: 2}}
         direction={isMobile ? 'column' : 'row'}
@@ -773,7 +806,6 @@ useEffect(() => {
         </Button>
       </Stack>
 
-          
       <Box
         sx={{
           flex: 1,
@@ -824,7 +856,7 @@ useEffect(() => {
             <RemoveIcon fontSize='inherit' />
           </IconButton>
         </Stack>
-      </Box>   
+      </Box>
 
       <Box sx={{margin: 0}}>
         <TableContainer component={Paper} sx={{maxHeight: 440}}>
@@ -895,7 +927,9 @@ useEffect(() => {
                           <TableCell>{route.observationDelivery}</TableCell>
                           <TableCell>
                             {route.totalGrossWeight
-                              ? Number.parseFloat(route.totalGrossWeight).toFixed(3)
+                              ? Number.parseFloat(
+                                  route.totalGrossWeight,
+                                ).toFixed(3)
                               : 0}
                           </TableCell>
                           <TableCell>{route.numberOfPackages}</TableCell>
@@ -982,9 +1016,9 @@ useEffect(() => {
             </TableBody>
           </Table>
         </TableContainer>
-      </Box>                
-      
-        <Stack
+      </Box>
+
+      <Stack
         sx={{m: 2, justifyContent: 'center', marginBottom: '10px'}}
         direction={isSmallScreen ? 'column' : 'row'}
         spacing={2}
@@ -1005,8 +1039,7 @@ useEffect(() => {
           Ver Resumen
         </Button>
       </Stack>
-      
-      
+
       <ButtonGroup
         orientation='vertical'
         variant='outlined'
@@ -1033,7 +1066,7 @@ useEffect(() => {
           Cancelar
         </Button>
       </ButtonGroup>
-      
+
       <Dialog
         open={openSummary}
         onClose={() => setOpenSummary(false)}
@@ -1277,7 +1310,9 @@ useEffect(() => {
                       <TableCell>{fila.description}</TableCell>
                       <TableCell>{fila.quantityMovement}</TableCell>
                       <TableCell>{fila.weight}</TableCell>
-                      <TableCell>{fila.quantityMovement * fila.weight}</TableCell>
+                      <TableCell>
+                        {fila.quantityMovement * fila.weight}
+                      </TableCell>
                     </TableRow>
                   </>
                 );
@@ -1286,7 +1321,7 @@ useEffect(() => {
           </Table>
         ) : null}
       </Dialog>
-      
+
       <Modal
         aria-labelledby='transition-modal-title'
         aria-describedby='transition-modal-description'
@@ -1308,7 +1343,7 @@ useEffect(() => {
           </Box>
         </Fade>
       </Modal>
-      
+
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}
@@ -1365,8 +1400,7 @@ useEffect(() => {
           </Button>
         </DialogActions>
       </Dialog>
-      
-      
+
       <Menu
         id='basic-menu'
         anchorEl={anchorEl}
@@ -1396,7 +1430,6 @@ useEffect(() => {
           Eliminar
         </MenuItem>
       </Menu>
-
     </Card>
   );
 };

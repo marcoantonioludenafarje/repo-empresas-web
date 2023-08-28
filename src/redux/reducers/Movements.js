@@ -40,6 +40,7 @@ import {
   GET_OUTPUT_PAGE_LISTGUIDE,
   RESET_MOVEMENTS,
   PREVISUALIZE_BILL,
+  PREVISUALIZE_REFERRAL_GUIDE,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -432,7 +433,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
         generateRouteRes: action.payload,
       };
     case UPDATE_ROUTE:
-      console.log('data de reducer UPDATE_ROUTE',action, action.payload);
+      console.log('data de reducer UPDATE_ROUTE', action, action.payload);
       return {
         ...state,
         updateRouteRes: action.payload,
@@ -451,7 +452,7 @@ const movementsReducer = (state = INIT_STATE, action) => {
       if (action.request && action.request.request.payload.LastEvaluatedKey) {
         newListRoute = [...state.listRoute, ...newListRoute];
       }
-      
+
       return {
         ...state,
         listRoute: newListRoute,
@@ -621,6 +622,12 @@ const movementsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         previsualizeBillRes: action.payload,
+      };
+
+    case PREVISUALIZE_REFERRAL_GUIDE:
+      return {
+        ...state,
+        previsualizeReferralGuideRes: action.payload,
       };
     // case SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
     //   console.log(
