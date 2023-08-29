@@ -538,63 +538,94 @@ const GetReferralGuide = (props) => {
       console.log('date', dateTranslate);
       setDateStartTransfer(dateTranslate);
 
-      let startingUbigeo = parsedUbigeos.find(
-        (ubigeo) => ubigeo.ubigeo == selectedDelivery.startingPointUbigeo,
-      );
-      let arrivalUbigeo = parsedUbigeos.find(
-        (ubigeo) => ubigeo.ubigeo == selectedDelivery.arrivalPointUbigeo,
-      );
-      setUbigeoStartingPoint(startingUbigeo.ubigeo);
-      setUbigeoArrivalPoint(arrivalUbigeo.ubigeo);
-      setExistArrivalUbigeo(true);
-      setSelectedStartingUbigeo(startingUbigeo);
-      setSelectedArrivalUbigeo(arrivalUbigeo);
-      setExistStartingUbigeo(true);
-      changeValueField('startingPoint', selectedDelivery.startingPointAddress);
-      changeValueField('arrivalPoint', selectedDelivery.arrivalPointAddress);
-
-      changeValueField('numberPackages', selectedDelivery.numberOfPackages);
-      setTransportModeVal(selectedDelivery.typeOfTransport);
-      setReasonVal(selectedDelivery.reasonForTransfer);
-
-      setSelectedProducts(selectedDelivery.productsInfo);
-      console.log('productos a pasar', selectedDelivery.productsInfo);
-      let weight = selectedDelivery.totalGrossWeight;
-      console.log('weight', weight);
-
-      const carrier = {
-        typeDocumentCarrier: selectedDelivery.carrierDocumentType,
-        carrierDocumentNumber: selectedDelivery.carrierDocumentNumber,
-        denominationCarrier: selectedDelivery.carrierDenomination,
+      // let startingUbigeo = parsedUbigeos.find(
+      //   (ubigeo) => ubigeo.ubigeo == selectedDelivery.startingPointUbigeo,
+      // );
+      // let arrivalUbigeo = parsedUbigeos.find(
+      //   (ubigeo) => ubigeo.ubigeo == selectedDelivery.arrivalPointUbigeo,
+      // );
+      // setUbigeoStartingPoint(startingUbigeo.ubigeo);
+      // setUbigeoArrivalPoint(arrivalUbigeo.ubigeo);
+      // setExistArrivalUbigeo(true);
+      // setSelectedStartingUbigeo(startingUbigeo);
+      // setSelectedArrivalUbigeo(arrivalUbigeo);
+      // setExistStartingUbigeo(true);
+      // changeValueField('startingPoint', selectedDelivery.startingPointAddress);
+      // changeValueField('arrivalPoint', selectedDelivery.arrivalPointAddress);
+      const acumularProductos = (entregas) => {
+        const acumulador = {};
+        let totalWeightSummary = 0;
+        let numberOfPackages = 0;
+    
+        entregas.forEach((entrega) => {
+          numberOfPackages+=Number(entrega.numberOfPackages)
+          console.log("entrega2", entrega)
+          entrega.productsInfo.forEach((producto) => {
+            const productoKey = producto.product;
+            totalWeightSummary+=producto.weight*producto.quantityMovement
+            if (!acumulador[productoKey]) {
+              acumulador[productoKey] = {
+                product: producto.product,
+                count: producto.quantityMovement,
+                description: producto.description,
+                weight: producto.weight,
+                unitMeasure: producto.unitMeasure,
+                quantityMovement: producto.quantityMovement,
+              };
+            } else {
+              acumulador[productoKey].count += producto.quantityMovement;
+              acumulador[productoKey].quantityMovement += producto.quantityMovement;
+            }
+          });
+        });
+        return {
+          items: Object.values(acumulador),
+          totalWeightSummary: totalWeightSummary,
+          numberOfPackages: numberOfPackages
+        };
       };
-      setSelectedCarrier(carrier);
-      setExistCarrier(true);
-      changeValueField('addressee', selectedDelivery.carrierDenomination);
-      changeValueField('licensePlate', selectedDelivery.carrierPlateNumber);
-      changeValueField('driverName', selectedDelivery.driverDenomination);
-      changeValueField(
-        'driverLastName',
-        selectedDelivery.driverLastName ? selectedDelivery.driverLastName : '',
-      );
-      if (
-        selectedDelivery.carrierDocumentType &&
-        typeof selectedDelivery.carrierDocumentType === 'string'
-      ) {
-        setDriverDocumentType(
-          selectedDelivery.driverDocumentType.toString().toUpperCase(),
-        );
-      }
-      changeValueField(
-        'driverDocumentNumber',
-        selectedDelivery.driverDocumentNumber,
-      );
-      changeValueField(
-        'driverLicenseNumber',
-        selectedDelivery.driverLicenseNumber
-          ? selectedDelivery.driverLicenseNumber
-          : '',
-      );
-      changeValueField('observation', selectedDelivery.observation);
+      const products = acumularProductos(selectedDistribution.deliveries);
+      changeValueField('totalWeight', Number(products.totalWeightSummary).toFixed(2));
+      changeValueField('numberPackages', products.numberOfPackages);
+      setTransportModeVal(selectedDistribution.typeOfTransport);
+      setReasonVal(selectedDistribution.reasonForTransfer);
+
+      setSelectedProducts(products.items);
+      console.log('productos a pasar', products.items);
+
+      // const carrier = {
+      //   typeDocumentCarrier: selectedDelivery.carrierDocumentType,
+      //   carrierDocumentNumber: selectedDelivery.carrierDocumentNumber,
+      //   denominationCarrier: selectedDelivery.carrierDenomination,
+      // };
+      // setSelectedCarrier(carrier);
+      // setExistCarrier(true);
+      // changeValueField('addressee', selectedDelivery.carrierDenomination);
+      // changeValueField('licensePlate', selectedDelivery.carrierPlateNumber);
+      // changeValueField('driverName', selectedDelivery.driverDenomination);
+      // changeValueField(
+      //   'driverLastName',
+      //   selectedDelivery.driverLastName ? selectedDelivery.driverLastName : '',
+      // );
+      // if (
+      //   selectedDelivery.carrierDocumentType &&
+      //   typeof selectedDelivery.carrierDocumentType === 'string'
+      // ) {
+      //   setDriverDocumentType(
+      //     selectedDelivery.driverDocumentType.toString().toUpperCase(),
+      //   );
+      // }
+      // changeValueField(
+      //   'driverDocumentNumber',
+      //   selectedDelivery.driverDocumentNumber,
+      // );
+      // changeValueField(
+      //   'driverLicenseNumber',
+      //   selectedDelivery.driverLicenseNumber
+      //     ? selectedDelivery.driverLicenseNumber
+      //     : '',
+      // );
+      changeValueField('observation', selectedDistribution.observation);
     }
   }, [query]);
   useEffect(() => {
