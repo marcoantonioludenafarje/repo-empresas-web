@@ -451,6 +451,7 @@ const BusinessInfoForm = ({
           <AppTextField
             name='extraInformationForPdf'
             fullWidth
+            multiline
             label={<IntlMessages id='common.extraInformationForPdf' />}
           />
         </Grid>
