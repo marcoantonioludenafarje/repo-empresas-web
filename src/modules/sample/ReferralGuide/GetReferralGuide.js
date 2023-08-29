@@ -556,13 +556,13 @@ const GetReferralGuide = (props) => {
         const acumulador = {};
         let totalWeightSummary = 0;
         let numberOfPackages = 0;
-    
+
         entregas.forEach((entrega) => {
-          numberOfPackages+=Number(entrega.numberOfPackages)
-          console.log("entrega2", entrega)
+          numberOfPackages += Number(entrega.numberOfPackages);
+          console.log('entrega2', entrega);
           entrega.productsInfo.forEach((producto) => {
             const productoKey = producto.product;
-            totalWeightSummary+=producto.weight*producto.quantityMovement
+            totalWeightSummary += producto.weight * producto.quantityMovement;
             if (!acumulador[productoKey]) {
               acumulador[productoKey] = {
                 product: producto.product,
@@ -574,18 +574,22 @@ const GetReferralGuide = (props) => {
               };
             } else {
               acumulador[productoKey].count += producto.quantityMovement;
-              acumulador[productoKey].quantityMovement += producto.quantityMovement;
+              acumulador[productoKey].quantityMovement +=
+                producto.quantityMovement;
             }
           });
         });
         return {
           items: Object.values(acumulador),
           totalWeightSummary: totalWeightSummary,
-          numberOfPackages: numberOfPackages
+          numberOfPackages: numberOfPackages,
         };
       };
       const products = acumularProductos(selectedDistribution.deliveries);
-      changeValueField('totalWeight', Number(products.totalWeightSummary).toFixed(2));
+      changeValueField(
+        'totalWeight',
+        Number(products.totalWeightSummary).toFixed(2),
+      );
       changeValueField('numberPackages', products.numberOfPackages);
       setTransportModeVal(selectedDistribution.typeOfTransport);
       setReasonVal(selectedDistribution.reasonForTransfer);

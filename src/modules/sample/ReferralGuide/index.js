@@ -487,7 +487,7 @@ const ReferralGuidesTable = (props) => {
     const timerInterval = 1 * 60 * 1000; // 1 minuto en milisegundos
     const activeInterval = 4 * 60 * 1000; // 4 minutos en milisegundos
     //const baseTime = new Date().getTime(); // Hora actual en milisegundos
-    const baseTime = new Date() // -5 UTC
+    const baseTime = new Date(); // -5 UTC
     baseTime.setHours(1);
     baseTime.setMinutes(36);
     baseTime.setSeconds(22);
@@ -497,12 +497,17 @@ const ReferralGuidesTable = (props) => {
 
     baseTime.setUTCMinutes(baseTime.getUTCMinutes() + offsetMinutes); // Ajustar el offset de tiempo
 
-    console.log("baseTime2");
-    console.log("baseTime", baseTime);
+    console.log('baseTime2');
+    console.log('baseTime', baseTime);
     const checkTime = () => {
       const currentTime = new Date().getTime();
       const elapsedTime = currentTime - baseTime;
-      setCountdown(((timerInterval + activeInterval) - elapsedTime % (timerInterval + activeInterval))/1000)
+      setCountdown(
+        (timerInterval +
+          activeInterval -
+          (elapsedTime % (timerInterval + activeInterval))) /
+          1000,
+      );
       if (elapsedTime % (timerInterval + activeInterval) < timerInterval) {
         setBatchConsultIsActive(false);
       } else {
@@ -523,13 +528,13 @@ const ReferralGuidesTable = (props) => {
   // },[batchConsultIsActive])
   useEffect(() => {
     let intervalId;
-  
+
     if (countdown > 0) {
       intervalId = setInterval(() => {
         setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
     }
-  
+
     return () => {
       clearInterval(intervalId);
     };
@@ -751,11 +756,17 @@ const ReferralGuidesTable = (props) => {
   const renderTimer = (countdown) => {
     const remainingTime = Math.floor(countdown);
     if (remainingTime === 0) {
-      return <Typography ml={1} mt={2}>¡Tiempo agotado!</Typography>;
+      return (
+        <Typography ml={1} mt={2}>
+          ¡Tiempo agotado!
+        </Typography>
+      );
     }
-  
+
     return (
-      <Typography ml={1} mt={2}>{remainingTime} segundos restantes</Typography>
+      <Typography ml={1} mt={2}>
+        {remainingTime} segundos restantes
+      </Typography>
     );
   };
   const compare = (a, b) => {
@@ -1097,16 +1108,11 @@ const ReferralGuidesTable = (props) => {
           sx={{cursor: 'default'}}
         >
           Consulta Masiva de Guías en SUNAT
-          {(isLoading || !batchConsultIsActive) && <CircularProgress sx={{ml: 2}} size={24} />}
-          
-          
-          
+          {(isLoading || !batchConsultIsActive) && (
+            <CircularProgress sx={{ml: 2}} size={24} />
+          )}
         </Button>
-        {(!isLoading && batchConsultIsActive) ?
-        (
-          renderTimer(countdown)
-        )
-        : null}
+        {!isLoading && batchConsultIsActive ? renderTimer(countdown) : null}
       </ButtonGroup>
 
       <Dialog

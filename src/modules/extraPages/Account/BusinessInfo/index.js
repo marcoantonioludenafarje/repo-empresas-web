@@ -199,7 +199,8 @@ const BusinessInfo = () => {
           documentType:
             docType /* userAttributes['custom:businessDocumentType'] */,
           eMerchantSlugName: userDataRes.merchantSelected.ecommerceMerchantSlug,
-          extraInformationForPdf: userDataRes.merchantSelected.extraInformationForPdf,
+          extraInformationForPdf:
+            userDataRes.merchantSelected.extraInformationForPdf,
           principalClient: userDataRes.merchantSelected.typeClient,
           businessLine: userDataRes.merchantSelected.businessLine,
           facebook: userDataRes.merchantSelected.facebookUrl,
