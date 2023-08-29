@@ -129,8 +129,7 @@ const NewClient = (props) => {
   const [campaignContent, setCampaignContent] = useState('');
   const [selectedNotification, setSelectedNotification] = useState('');
   const [selectedUnit, setSelectedUnit] = React.useState('');
-  const [selectedDuration, setSelectedDuration] =
-    React.useState('');
+  const [selectedDuration, setSelectedDuration] = React.useState('');
   const [selectedNotificationName, setSelectedNotificationName] =
     React.useState('');
   const [listTypeEventNotification, setListTypeEventNotification] =
@@ -157,7 +156,7 @@ const NewClient = (props) => {
     console.log('evento tag', event);
     console.log('values tag', values);
     console.log('Agent seleccionado', event.target.attributes.value);
-    changeValueField('channelNotification',values.label);
+    changeValueField('channelNotification', values.label);
     setChannelSelected(values.label);
     reloadPage();
   };
@@ -190,22 +189,46 @@ const NewClient = (props) => {
       setListFilteredTypeNotification(list);
     }
   }, []);
-  useEffect(()=>{
-    changeValueField('tipoEvento',selectedNotification);
-    changeValueField('notificationName',selectedNotificationName);
-    changeValueField('periodicityDescription',selectedNotification.description);
-    changeValueField('channelNotification',ChannelSelected.label);
-    console.log("Este es el evento seleccionado",getValueField('tipoEvento').value);
-    if(getValueField('tipoEvento').value!='' && getValueField('tipoEvento').value.eventType=='SCHEDULED' && getValueField('channelNotification').value && getValueField('channelNotification').value!=''){
-      console.log("Este es el CANAL seleccionado",getValueField('channelNotification').value);
-        changeValueField('unitNotification',getValueField('tipoEvento').value[getValueField('channelNotification').value].periodicityAction.unit);
-        changeValueField('durationNotification',getValueField('tipoEvento').value[getValueField('channelNotification').value].periodicityAction.time);
+  useEffect(() => {
+    changeValueField('tipoEvento', selectedNotification);
+    changeValueField('notificationName', selectedNotificationName);
+    changeValueField(
+      'periodicityDescription',
+      selectedNotification.description,
+    );
+    changeValueField('channelNotification', ChannelSelected.label);
+    console.log(
+      'Este es el evento seleccionado',
+      getValueField('tipoEvento').value,
+    );
+    if (
+      getValueField('tipoEvento').value != '' &&
+      getValueField('tipoEvento').value.eventType == 'SCHEDULED' &&
+      getValueField('channelNotification').value &&
+      getValueField('channelNotification').value != ''
+    ) {
+      console.log(
+        'Este es el CANAL seleccionado',
+        getValueField('channelNotification').value,
+      );
+      changeValueField(
+        'unitNotification',
+        getValueField('tipoEvento').value[
+          getValueField('channelNotification').value
+        ].periodicityAction.unit,
+      );
+      changeValueField(
+        'durationNotification',
+        getValueField('tipoEvento').value[
+          getValueField('channelNotification').value
+        ].periodicityAction.time,
+      );
     }
-    changeValueField('agentName',AgentSelected);
-  },[selectedNotification])
+    changeValueField('agentName', AgentSelected);
+  }, [selectedNotification]);
   const handleFieldNotification = (event) => {
     console.log('evento tipoNotificion', event);
-    changeValueField('tipoEvento',event.target.value);
+    changeValueField('tipoEvento', event.target.value);
     setSelectedNotification(event.target.value);
     console.log('ocjSelects', objSelects);
     Object.keys(objSelects).map((key) => {
@@ -217,7 +240,7 @@ const NewClient = (props) => {
   };
   const handleFieldDurationUnit = (event) => {
     console.log('evento duracion', event);
-    changeValueField('unitNotification',event.target.value);
+    changeValueField('unitNotification', event.target.value);
     setSelectedUnit(event.target.value);
     console.log('ocjSelects', objSelects);
     Object.keys(objSelects).map((key) => {
@@ -240,7 +263,7 @@ const NewClient = (props) => {
   };
   const handleFieldDuration = (event) => {
     console.log('evento duracion notificacion', event);
-    changeValueField('durationNotification',event.target.value);
+    changeValueField('durationNotification', event.target.value);
     setSelectedDuration(event.target.value);
     console.log('ocjSelects', objSelects);
     Object.keys(objSelects).map((key) => {
@@ -272,11 +295,14 @@ const NewClient = (props) => {
     process,
     loading,
   } = useSelector(({general}) => general);
-  console.log("POSIBLE ERROR AQUI",updateNotificationBusinessParameterRes,
+  console.log(
+    'POSIBLE ERROR AQUI',
+    updateNotificationBusinessParameterRes,
     successMessage,
     errorMessage,
     process,
-    loading,);
+    loading,
+  );
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
@@ -347,7 +373,7 @@ const NewClient = (props) => {
     setOpen(false);
   };
 
-  const handleData = (data/*, {setSubmitting}*/) => {
+  const handleData = (data /*, {setSubmitting}*/) => {
     //setSubmitting(true);
     //delete data.documentType;
     console.log('Data', data);
@@ -503,13 +529,7 @@ correctamente */}
           onSubmit={handleData}
           //enableReinitialize={true}
         >
-          {({
-            values,
-            errors,
-            isSubmitting,
-            setFieldValue,
-            getFieldProps,
-          }) => {
+          {({values, errors, isSubmitting, setFieldValue, getFieldProps}) => {
             changeValueField = setFieldValue;
             getValueField = getFieldProps;
             return (
@@ -647,45 +667,46 @@ correctamente */}
                         </FormControl>
                       </Box>
                     </Grid>
-                    
-                    <Grid item xs={12}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      <Autocomplete
-                        sx={{
-                          width: '100%', // Establece el ancho al 100% por defecto
-                          [(theme) => theme.breakpoints.down('sm')]: {
-                            width: '80%', // Ancho del 80% en pantallas pequeñas
-                          },
-                          [(theme) => theme.breakpoints.up('md')]: {
-                            width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
-                          },
-                        }}
-                        disablePortal
-                        name='channelNotification'
-                        id='combo-box-demo'
-                        options={listChannel}
-                        onChange={handlerChannel}
-                        renderInput={(params) => (
-                          <TextField {...params} label='Canal' />
-                        )}
-                      />
-                    </Box>
-                  </Grid>
 
-                    {(selectedNotification != ''&& ChannelSelected!='' &&
-                    selectedNotification.eventType == 'SCHEDULED') ? (
+                    <Grid item xs={12}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          flexDirection: 'column',
+                        }}
+                      >
+                        <Autocomplete
+                          sx={{
+                            width: '100%', // Establece el ancho al 100% por defecto
+                            [(theme) => theme.breakpoints.down('sm')]: {
+                              width: '80%', // Ancho del 80% en pantallas pequeñas
+                            },
+                            [(theme) => theme.breakpoints.up('md')]: {
+                              width: 500, // Ancho fijo de 500px en pantallas medianas y grandes
+                            },
+                          }}
+                          disablePortal
+                          name='channelNotification'
+                          id='combo-box-demo'
+                          options={listChannel}
+                          onChange={handlerChannel}
+                          renderInput={(params) => (
+                            <TextField {...params} label='Canal' />
+                          )}
+                        />
+                      </Box>
+                    </Grid>
+
+                    {selectedNotification != '' &&
+                    ChannelSelected != '' &&
+                    selectedNotification.eventType == 'SCHEDULED' ? (
                       <>
                         <Grid item xs={12}>
                           <AppUpperCaseTextField
                             label='Periodicidad'
-                            name="periodicityDescription"
+                            name='periodicityDescription'
                             disabled
                             variant='outlined'
                             sx={{
@@ -703,7 +724,7 @@ correctamente */}
                             label='Duracion'
                             name='durationNotification'
                             variant='outlined'
-                            inputProps={{ min: 1 }}
+                            inputProps={{min: 1}}
                             type='number'
                             onInput={handleFieldDuration}
                             sx={{
@@ -729,7 +750,9 @@ correctamente */}
                               labelId='documentType-label'
                               label='Unidad'
                               onChange={handleFieldDurationUnit}
-                              defaultValue={getValueField('unitNotification').value}
+                              defaultValue={
+                                getValueField('unitNotification').value
+                              }
                             >
                               <MenuItem value='horas' style={{fontWeight: 200}}>
                                 horas
@@ -780,14 +803,12 @@ correctamente */}
                       </Box>
                     </Grid>
                   </>
-                  {
-                    (selectedNotification != ''&& ChannelSelected!='')?
+                  {selectedNotification != '' && ChannelSelected != '' ? (
                     <EditorMessage
-                    getValueField={getValueField}
-                    changeValueField={changeValueField}
-                  />
-                    :null
-                  }
+                      getValueField={getValueField}
+                      changeValueField={changeValueField}
+                    />
+                  ) : null}
                 </Grid>
                 <ButtonGroup
                   orientation='vertical'

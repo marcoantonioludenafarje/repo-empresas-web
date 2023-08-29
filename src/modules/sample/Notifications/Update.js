@@ -119,13 +119,12 @@ const UpdateNotification = (props) => {
   const [campaignContent, setCampaignContent] = useState('');
   const [selectedNotification, setSelectedNotification] = useState('');
   const [selectedUnit, setSelectedUnit] = React.useState('');
-  const [selectedDuration, setSelectedDuration] =
-    React.useState('');
+  const [selectedDuration, setSelectedDuration] = React.useState('');
   const [selectedNotificationName, setSelectedNotificationName] =
     React.useState('');
   const [listTypeEventNotification, setListTypeEventNotification] =
     React.useState(verTiposEventos(globalParameter)[0]);
-  let listFilteredTypeNotification =[];
+  let listFilteredTypeNotification = [];
   let {query} = router;
   console.log('query', query);
   const updateNotificationParameter = (payload) => {
@@ -140,7 +139,7 @@ const UpdateNotification = (props) => {
     console.log('evento tag', event);
     console.log('values tag', values);
     console.log('Agent seleccionado', event.target.attributes.value);
-    changeValueField('agentName',values);
+    changeValueField('agentName', values);
     setAgentSelected(values);
     reloadPage();
   };
@@ -149,17 +148,17 @@ const UpdateNotification = (props) => {
     console.log('evento tag', event);
     console.log('values tag', values);
     console.log('Agent seleccionado', event.target.attributes.value);
-    changeValueField('channelNotification',values.label);
+    changeValueField('channelNotification', values.label);
     setChannelSelected(values.label);
     reloadPage();
   };
   const {listAgents} = useSelector(({agents}) => agents);
 
-  /**/ 
+  /**/
   if (businessParameter) {
     let list = tipoEventosNotificaciones[0];
     console.log('Este es el arreglo de notificaciones:', list);
-    let listNotificacionModific=[];
+    let listNotificacionModific = [];
     for (let item of list) {
       if (Object.keys(item).length !== 0) {
         console.log(
@@ -170,7 +169,10 @@ const UpdateNotification = (props) => {
           /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
         let validNotification = Object.keys(item)
           .filter(
-            (key) => typeof item[key] === 'object' && uuidPattern.test(key) && key==query.eventId,
+            (key) =>
+              typeof item[key] === 'object' &&
+              uuidPattern.test(key) &&
+              key == query.eventId,
           )
           .map((key) => item[key]);
         if (validNotification.length > 0) {
@@ -179,23 +181,25 @@ const UpdateNotification = (props) => {
         console.log('Validation Notification', Object.keys(item));
         console.log('Validation Notification', validNotification);
       }
-    } 
+    }
     /*********************************************************/
-    console.log("LIST MODIFIC",listNotificacionModific[0][0])
+    console.log('LIST MODIFIC', listNotificacionModific[0][0]);
     listFilteredTypeNotification.push(listNotificacionModific[0][0]);
   }
-  /**/ 
-  console.log("FILTRADO UPP",listFilteredTypeNotification)
+  /**/
+  console.log('FILTRADO UPP', listFilteredTypeNotification);
   console.log('listAgents', listAgents);
   const agentsParsed = listAgents.filter((agent) => agent.active == true);
-  let defaultAgent=agentsParsed.filter((agent)=>agent.robotId==listFilteredTypeNotification[0].agentId);
-  defaultAgent=defaultAgent.map(agent=>{
-    return {...agent,label:agent.robotName}
-  })
+  let defaultAgent = agentsParsed.filter(
+    (agent) => agent.robotId == listFilteredTypeNotification[0].agentId,
+  );
+  defaultAgent = defaultAgent.map((agent) => {
+    return {...agent, label: agent.robotName};
+  });
   const agentParsedFinally = agentsParsed.map((agent) => {
     return {...agent, label: agent.robotName};
   });
-  console.log("DEFAULTAGENT",defaultAgent);
+  console.log('DEFAULTAGENT', defaultAgent);
   console.log('agentsParsed', agentParsedFinally);
   //APIS
   const toNewAgent = (payload) => {
@@ -206,7 +210,7 @@ const UpdateNotification = (props) => {
     if (businessParameter) {
       let list = tipoEventosNotificaciones[0];
       console.log('Este es el arreglo de notificaciones:', list);
-      let listNotificacionModific=[];
+      let listNotificacionModific = [];
       for (let item of list) {
         if (Object.keys(item).length !== 0) {
           console.log(
@@ -217,7 +221,10 @@ const UpdateNotification = (props) => {
             /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
           let validNotification = Object.keys(item)
             .filter(
-              (key) => typeof item[key] === 'object' && uuidPattern.test(key) && key==query.eventId,
+              (key) =>
+                typeof item[key] === 'object' &&
+                uuidPattern.test(key) &&
+                key == query.eventId,
             )
             .map((key) => item[key]);
           if (validNotification.length > 0) {
@@ -226,46 +233,85 @@ const UpdateNotification = (props) => {
           console.log('Validation Notification', Object.keys(item));
           console.log('Validation Notification', validNotification);
         }
-      } 
+      }
       /*********************************************************/
-      console.log("LIST MODIFIC",listNotificacionModific[0][0])
+      console.log('LIST MODIFIC', listNotificacionModific[0][0]);
       listFilteredTypeNotification.push(listNotificacionModific[0][0]);
       setSelectedNotification(listFilteredTypeNotification);
     }
   }, []);
 
   //console.log("LIST NOTIFICATION FILTERED",listFilteredTypeNotification);
-  console.log("LIST NOTIFICATION FILTERED",selectedNotification);
-  console.log("LIST TYPE NOTIFICATION",selectedNotification);
+  console.log('LIST NOTIFICATION FILTERED', selectedNotification);
+  console.log('LIST TYPE NOTIFICATION', selectedNotification);
   const defaultValues = {
-    notificationName:listFilteredTypeNotification[0].notificationName || '',
-    campaignContent:listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].template || '',
-    channelNotification:listFilteredTypeNotification[0].channelSelected || '',
-    periodicityDescription:listFilteredTypeNotification[0].description ||'',
-    durationNotification:listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.time || '',
-    unitNotification:listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.unit || '',
-    tipoEvento:listFilteredTypeNotification[0]|| '',
-    agentName:defaultAgent[0] || '',
-    tipoEventoNombre:listFilteredTypeNotification[0].eventName
+    notificationName: listFilteredTypeNotification[0].notificationName || '',
+    campaignContent:
+      listFilteredTypeNotification[0].notificationsChannel[
+        listFilteredTypeNotification[0].channelSelected
+      ].template || '',
+    channelNotification: listFilteredTypeNotification[0].channelSelected || '',
+    periodicityDescription: listFilteredTypeNotification[0].description || '',
+    durationNotification:
+      listFilteredTypeNotification[0].notificationsChannel[
+        listFilteredTypeNotification[0].channelSelected
+      ].periodicityAction.time || '',
+    unitNotification:
+      listFilteredTypeNotification[0].notificationsChannel[
+        listFilteredTypeNotification[0].channelSelected
+      ].periodicityAction.unit || '',
+    tipoEvento: listFilteredTypeNotification[0] || '',
+    agentName: defaultAgent[0] || '',
+    tipoEventoNombre: listFilteredTypeNotification[0].eventName,
   };
-  useEffect(()=>{
-    if (selectedNotification && selectedNotification!=''){
-      console.log("ESTAMOS DENTRO DEL USEEFFECT NOTIFICATION SELECTED",selectedNotification);
-      changeValueField('tipoEvento',selectedNotification);
-      changeValueField('notificationName',selectedNotification.notificationName);
-      changeValueField('periodicityDescription',selectedNotification.description);
-      changeValueField('channelNotification',selectedNotification.channelNotification);
-      console.log("Este es el evento seleccionado",getValueField('tipoEvento').value);
-      if(listFilteredTypeNotification[0]!='' && listFilteredTypeNotification[0].eventType=='SCHEDULED' && getValueField('channelNotification').value && getValueField('channelNotification').value!=''){
-          changeValueField('unitNotification',listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.unit);
-          changeValueField('durationNotification',listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.time);
+  useEffect(() => {
+    if (selectedNotification && selectedNotification != '') {
+      console.log(
+        'ESTAMOS DENTRO DEL USEEFFECT NOTIFICATION SELECTED',
+        selectedNotification,
+      );
+      changeValueField('tipoEvento', selectedNotification);
+      changeValueField(
+        'notificationName',
+        selectedNotification.notificationName,
+      );
+      changeValueField(
+        'periodicityDescription',
+        selectedNotification.description,
+      );
+      changeValueField(
+        'channelNotification',
+        selectedNotification.channelNotification,
+      );
+      console.log(
+        'Este es el evento seleccionado',
+        getValueField('tipoEvento').value,
+      );
+      if (
+        listFilteredTypeNotification[0] != '' &&
+        listFilteredTypeNotification[0].eventType == 'SCHEDULED' &&
+        getValueField('channelNotification').value &&
+        getValueField('channelNotification').value != ''
+      ) {
+        changeValueField(
+          'unitNotification',
+          listFilteredTypeNotification[0].notificationsChannel[
+            listFilteredTypeNotification[0].channelSelected
+          ].periodicityAction.unit,
+        );
+        changeValueField(
+          'durationNotification',
+          listFilteredTypeNotification[0].notificationsChannel[
+            listFilteredTypeNotification[0].channelSelected
+          ].periodicityAction.time,
+        );
       }
-      changeValueField('agentName',AgentSelected);
+      changeValueField('agentName', AgentSelected);
     }
-  },[selectedNotification])
+  }, [selectedNotification]);
   const handleFieldNotification = (event) => {
     console.log('evento tipoNotificion', event);
-    changeValueField('tipoEvento',event.target.value);
+    changeValueField('tipoEvento', event.target.value);
     setSelectedNotification(event.target.value);
     console.log('ocjSelects', objSelects);
     Object.keys(objSelects).map((key) => {
@@ -277,7 +323,7 @@ const UpdateNotification = (props) => {
   };
   const handleFieldDurationUnit = (event) => {
     console.log('evento duracion', event);
-    changeValueField('unitNotification',event.target.value);
+    changeValueField('unitNotification', event.target.value);
     setSelectedUnit(event.target.value);
     console.log('ocjSelects', objSelects);
     Object.keys(objSelects).map((key) => {
@@ -300,7 +346,7 @@ const UpdateNotification = (props) => {
   };
   const handleFieldDuration = (event) => {
     console.log('evento duracion notificacion', event);
-    changeValueField('durationNotification',event.target.value);
+    changeValueField('durationNotification', event.target.value);
     setSelectedDuration(event.target.value);
     console.log('ocjSelects', objSelects);
     Object.keys(objSelects).map((key) => {
@@ -332,11 +378,14 @@ const UpdateNotification = (props) => {
     process,
     loading,
   } = useSelector(({general}) => general);
-  console.log("POSIBLE ERROR AQUI",updateNotificationBusinessParameterRes,
+  console.log(
+    'POSIBLE ERROR AQUI',
+    updateNotificationBusinessParameterRes,
     successMessage,
     errorMessage,
     process,
-    loading,);
+    loading,
+  );
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
@@ -407,7 +456,7 @@ const UpdateNotification = (props) => {
     setOpen(false);
   };
 
-  const handleData = (data/*, {setSubmitting}*/) => {
+  const handleData = (data /*, {setSubmitting}*/) => {
     //setSubmitting(true);
     //delete data.documentType;
     console.log('Data', data);
@@ -423,15 +472,21 @@ const UpdateNotification = (props) => {
       template: getValueField('campaignContent').value,
     });
     let agentSelected;
-    if(AgentSelected.length==0){
-      agentSelected=defaultAgent[0];
+    if (AgentSelected.length == 0) {
+      agentSelected = defaultAgent[0];
     }
     let tramaNotification = selectedNotification;
     tramaNotification.updatedAt = Date.now();
     if (tramaNotification.eventType != 'SCHEDULED') {
-      tramaNotification.notificationName = selectedNotificationName?selectedNotificationName:listFilteredTypeNotification[0].notificationName;
-      tramaNotification.agentName = AgentSelected.robotName?AgentSelected.robotName:agentSelected.robotName;
-      tramaNotification.agentId = AgentSelected.robotId?AgentSelected.robotId:agentSelected.robotId;
+      tramaNotification.notificationName = selectedNotificationName
+        ? selectedNotificationName
+        : listFilteredTypeNotification[0].notificationName;
+      tramaNotification.agentName = AgentSelected.robotName
+        ? AgentSelected.robotName
+        : agentSelected.robotName;
+      tramaNotification.agentId = AgentSelected.robotId
+        ? AgentSelected.robotId
+        : agentSelected.robotId;
       if (tramaNotification.channelSelected == 'WHATSAPP') {
         tramaNotification.notificationsChannel.WHATSAPP.template =
           getValueField('campaignContent').value;
@@ -443,41 +498,74 @@ const UpdateNotification = (props) => {
           getValueField('campaignContent').value;
       }
     } else {
-      tramaNotification.notificationName = selectedNotificationName?selectedNotificationName:listFilteredTypeNotification[0].notificationName;
-      tramaNotification.agentName = AgentSelected.robotName?AgentSelected.robotName:agentSelected.robotName;;
-      tramaNotification.agentId = AgentSelected.robotId?AgentSelected.robotId:agentSelected.robotId;
+      tramaNotification.notificationName = selectedNotificationName
+        ? selectedNotificationName
+        : listFilteredTypeNotification[0].notificationName;
+      tramaNotification.agentName = AgentSelected.robotName
+        ? AgentSelected.robotName
+        : agentSelected.robotName;
+      tramaNotification.agentId = AgentSelected.robotId
+        ? AgentSelected.robotId
+        : agentSelected.robotId;
       if (tramaNotification.channelSelected == 'WHATSAPP') {
         tramaNotification.notificationsChannel.WHATSAPP.template =
           getValueField('campaignContent').value;
         tramaNotification.notificationsChannel.WHATSAPP.periodicityAction.time =
-          selectedDuration!=""?selectedDuration:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.time;
+          selectedDuration != ''
+            ? selectedDuration
+            : selectedNotification.notificationsChannel[
+                selectedNotification.channelSelected
+              ].periodicityAction.time;
         tramaNotification.notificationsChannel.WHATSAPP.periodicityAction.unit =
-          selectedUnit!=""?selectedUnit:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.unit;
+          selectedUnit != ''
+            ? selectedUnit
+            : selectedNotification.notificationsChannel[
+                selectedNotification.channelSelected
+              ].periodicityAction.unit;
       } else if (tramaNotification.channelSelected == 'EMAIL') {
         tramaNotification.notificationsChannel.EMAIL.template =
           getValueField('campaignContent').value;
-          tramaNotification.notificationsChannel.EMAIL.periodicityAction.time =
-          selectedDuration!=""?selectedDuration:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.time;
+        tramaNotification.notificationsChannel.EMAIL.periodicityAction.time =
+          selectedDuration != ''
+            ? selectedDuration
+            : selectedNotification.notificationsChannel[
+                selectedNotification.channelSelected
+              ].periodicityAction.time;
         tramaNotification.notificationsChannel.EMAIL.periodicityAction.unit =
-          selectedUnit!=""?selectedUnit:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.unit;
+          selectedUnit != ''
+            ? selectedUnit
+            : selectedNotification.notificationsChannel[
+                selectedNotification.channelSelected
+              ].periodicityAction.unit;
       } else {
         tramaNotification.notificationsChannel.SMS.template =
           getValueField('campaignContent').value;
-          tramaNotification.notificationsChannel.SMS.periodicityAction.time =
-          selectedDuration!=""?selectedDuration:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.time;
+        tramaNotification.notificationsChannel.SMS.periodicityAction.time =
+          selectedDuration != ''
+            ? selectedDuration
+            : selectedNotification.notificationsChannel[
+                selectedNotification.channelSelected
+              ].periodicityAction.time;
         tramaNotification.notificationsChannel.SMS.periodicityAction.unit =
-          selectedUnit!=""?selectedUnit:selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.unit;
+          selectedUnit != ''
+            ? selectedUnit
+            : selectedNotification.notificationsChannel[
+                selectedNotification.channelSelected
+              ].periodicityAction.unit;
       }
     }
-    console.log("TRAMA NOTIFICACION",tramaNotification);
+    console.log('TRAMA NOTIFICACION', tramaNotification);
     let tramaGlobal = tipoEventosNotificaciones[1];
     console.log('TRAMA GLOBAL', tramaGlobal);
     let tramaBusiness = tipoEventosNotificaciones[2];
     console.log('llaves', Object.keys(tramaGlobal));
     let llavesGlobal = Object.keys(tramaGlobal);
     llavesGlobal.forEach((llave) => {
-      if (tramaGlobal[llave][selectedNotification.eventId]==selectedNotification) {
-        tramaGlobal[llave][listFilteredTypeNotification[0].eventId] = tramaNotification;
+      if (
+        tramaGlobal[llave][selectedNotification.eventId] == selectedNotification
+      ) {
+        tramaGlobal[llave][listFilteredTypeNotification[0].eventId] =
+          tramaNotification;
       }
     });
     console.log('TRAMA GLOBAL MODIFICADA', tramaGlobal);
@@ -497,11 +585,15 @@ const UpdateNotification = (props) => {
     updateNotificationParameter(nupdateNotificationPayload);
     console.log('nupdateNotificationPayload', nupdateNotificationPayload);
     setOpenStatus(true);
-   // setSubmitting(false);
+    // setSubmitting(false);
   };
 
   const showMessage = () => {
-    console.log("Revisando estados de respuesta:success-errorMessage",successMessage,errorMessage);
+    console.log(
+      'Revisando estados de respuesta:success-errorMessage',
+      successMessage,
+      errorMessage,
+    );
     if (updateNotificationBusinessParameterRes != undefined) {
       return (
         <>
@@ -574,13 +666,7 @@ correctamente */}
           onSubmit={handleData}
           //enableReinitialize={true}
         >
-          {({
-            values,
-            errors,
-            isSubmitting,
-            setFieldValue,
-            getFieldProps,
-          }) => {
+          {({values, errors, isSubmitting, setFieldValue, getFieldProps}) => {
             changeValueField = setFieldValue;
             getValueField = getFieldProps;
             return (
@@ -670,7 +756,7 @@ correctamente */}
                         }}
                       />
                     </Grid>
-                    
+
                     <Grid item xs={12}>
                       <AppUpperCaseTextField
                         label='Tipo Evento'
@@ -687,7 +773,7 @@ correctamente */}
                         }}
                       />
                     </Grid>
-                    
+
                     <Grid item xs={12}>
                       <AppUpperCaseTextField
                         label='Canal'
@@ -706,13 +792,13 @@ correctamente */}
                       />
                     </Grid>
 
-                    {(selectedNotification != '' &&
-                    selectedNotification.eventType == 'SCHEDULED') ? (
+                    {selectedNotification != '' &&
+                    selectedNotification.eventType == 'SCHEDULED' ? (
                       <>
                         <Grid item xs={12}>
                           <AppUpperCaseTextField
                             label='Periodicidad'
-                            name="periodicityDescription"
+                            name='periodicityDescription'
                             disabled
                             variant='outlined'
                             sx={{
@@ -730,9 +816,11 @@ correctamente */}
                             label='Duracion'
                             name='durationNotification'
                             variant='outlined'
-                            inputProps={{ min: 1 }}
+                            inputProps={{min: 1}}
                             type='number'
-                            defaultValue={listFilteredTypeNotification[0].notificationsChannel[listFilteredTypeNotification[0].channelSelected].periodicityAction.time.toString()}
+                            defaultValue={listFilteredTypeNotification[0].notificationsChannel[
+                              listFilteredTypeNotification[0].channelSelected
+                            ].periodicityAction.time.toString()}
                             onInput={handleFieldDuration}
                             sx={{
                               width: '100%',
@@ -757,7 +845,11 @@ correctamente */}
                               labelId='documentType-label'
                               label='Unidad'
                               onInput={handleFieldDurationUnit}
-                              defaultValue={selectedNotification.notificationsChannel[selectedNotification.channelSelected].periodicityAction.unit}
+                              defaultValue={
+                                selectedNotification.notificationsChannel[
+                                  selectedNotification.channelSelected
+                                ].periodicityAction.unit
+                              }
                             >
                               <MenuItem value='horas' style={{fontWeight: 200}}>
                                 horas
@@ -800,7 +892,9 @@ correctamente */}
                           name='agentName'
                           id='combo-box-demo'
                           options={agentParsedFinally}
-                          defaultValue={listFilteredTypeNotification[0].agentName}
+                          defaultValue={
+                            listFilteredTypeNotification[0].agentName
+                          }
                           onChange={handlerAgents}
                           renderInput={(params) => (
                             <TextField {...params} label='Agente' />
@@ -809,14 +903,12 @@ correctamente */}
                       </Box>
                     </Grid>
                   </>
-                  {
-                    (selectedNotification != '')?
+                  {selectedNotification != '' ? (
                     <EditorMessage
-                    getValueField={getValueField}
-                    changeValueField={changeValueField}
-                  />
-                    :null
-                  }
+                      getValueField={getValueField}
+                      changeValueField={changeValueField}
+                    />
+                  ) : null}
                 </Grid>
                 <ButtonGroup
                   orientation='vertical'

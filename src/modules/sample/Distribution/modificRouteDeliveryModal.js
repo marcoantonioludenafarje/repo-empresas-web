@@ -47,7 +47,10 @@ import {fixDecimals, isEmpty, dateWithHyphen} from '../../../Utils/utils';
 import {FETCH_ERROR} from '../../../shared/constants/ActionTypes';
 const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
   const dispatch = useDispatch();
-  console.log("Esto es lo que se recibe del deliverySWtate",selectedDeliveryState)
+  console.log(
+    'Esto es lo que se recibe del deliverySWtate',
+    selectedDeliveryState,
+  );
   const router = useRouter();
   const {messages} = useIntl();
   const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
@@ -64,7 +67,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
 
   const {listProducts} = useSelector(({products}) => products);
   const [reload, setReload] = React.useState(false);
-  
+
   const emptyProduct = {
     description: '',
     count: 0,
@@ -105,6 +108,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
           //...originalProduct,
           ...prod,
           count: prod.quantityMovement || prod.count,
+          quantityMovement: prod.quantityMovement || prod.count,
           weight: prod.weight || 0.1,
           invalidate: false,
           inputProduct: false,
@@ -173,21 +177,21 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
     event.preventDefault();
     let newTemporaryDelivery = {
       ...temporaryDelivery,
-      startingPointAddress: event.target.startingAddress.value,
+      startingPointAddress: event.target.startingPointAddress.value,
       startingInternalCode: event.target.startingInternalCode.value,
-      arrivalPointAddress: event.target.arrivalAddress.value,
+      arrivalPointAddress: event.target.arrivalPointAddress.value,
       arrivalInternalCode: event.target.arrivalInternalCode.value,
       driverDocumentNumber: event.target.driverDocumentNumber.value,
-      driverDenomination: event.target.driverName.value,
+      driverDenomination: event.target.driverDenomination.value,
       driverLastName: event.target.driverLastName.value,
       driverLicenseNumber: event.target.driverLicenseNumber.value,
-      carrierPlateNumber: event.target.plate.value,
+      carrierPlateNumber: event.target.carrierPlateNumber.value,
       productsInfo: productsList,
-      numberPackages: event.target.numberPackages.value,
+      numberOfPackages: event.target.numberOfPackages.value,
       observationDelivery: event.target.observationDelivery.value,
     };
 
-    console.log("Esto es lo que se actualiza",newTemporaryDelivery);
+    console.log('Esto es lo que se actualiza', newTemporaryDelivery);
     setTemporaryDelivery(newTemporaryDelivery);
     editFunction(newTemporaryDelivery);
   };
@@ -198,15 +202,15 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
     });
   };
   const setTotalWeight = (products) => {
-    let totalWeight = 0;
+    let totalGrossWeight = 0;
     products.forEach((prod) => {
       if (!prod.invalidate) {
-        totalWeight += fixDecimals(prod.count * prod.weight);
+        totalGrossWeight += fixDecimals(prod.count * prod.weight);
       }
     });
     setTemporaryDelivery({
       ...temporaryDelivery,
-      totalWeight: fixDecimals(totalWeight),
+      totalGrossWeight: fixDecimals(totalGrossWeight),
     });
   };
   const showTotalWeight = (weight, count) => {
@@ -280,6 +284,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
           ...prod,
           rowId: internCounter,
           count: fixDecimals(valToMultiply * Number(prod.quantity)),
+          quantityMovement: fixDecimals(valToMultiply * Number(prod.quantity)),
           weight: 'weight' in prod ? Number(prod.weight) : 0.1,
           inputProduct: true,
           invalidate: false,
@@ -318,7 +323,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
       setCountOfProduct(rowId, event.target.value);
     }
   };
-  console.log("Este es el temporalyDelivery",temporaryDelivery);
+  console.log('Este es el temporalyDelivery', temporaryDelivery);
   return temporaryDelivery ? (
     <>
       <form onSubmit={updateDelivery} onChange={handleChange}>
@@ -386,7 +391,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
             <TextField
               label={<IntlMessages id='common.business.startingDirection' />}
               defaultValue={temporaryDelivery.startingPointAddress}
-              name='startingAddress'
+              name='startingPointAddress'
               variant='outlined'
               sx={{
                 width: '100%',
@@ -452,7 +457,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
             <TextField
               label={<IntlMessages id='common.business.arrivalDirection' />}
               defaultValue={temporaryDelivery.arrivalPointAddress}
-              name='arrivalAddress'
+              name='arrivalPointAddress'
               variant='outlined'
               sx={{
                 width: '100%',
@@ -487,7 +492,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
             <TextField
               label={<IntlMessages id='common.business.driver.name' />}
               defaultValue={temporaryDelivery.driverDenomination}
-              name='driverName'
+              name='driverDenomination'
               variant='outlined'
               sx={{
                 width: '100%',
@@ -576,7 +581,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
           <Grid item xs={12} sm={3}>
             <TextField
               label={<IntlMessages id='common.business.plate' />}
-              name='plate'
+              name='carrierPlateNumber'
               variant='outlined'
               defaultValue={temporaryDelivery.carrierPlateNumber}
               placeholder='ABC-123'
@@ -603,7 +608,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
               //defaultValue={temporaryDelivery.totalWeight}
               disabled
               value={temporaryDelivery.totalGrossWeight.toFixed(2)}
-              name='totalWeight'
+              name='totalGrossWeight'
               variant='outlined'
               sx={{
                 width: '100%',
@@ -616,7 +621,7 @@ const ModificRouteDeliveryModal = ({selectedDeliveryState, editFunction}) => {
           <Grid item xs={12} sm={3}>
             <TextField
               label={<IntlMessages id='common.business.packages.number' />}
-              name='numberPackages'
+              name='numberOfPackages'
               defaultValue={temporaryDelivery?.numberOfPackages}
               variant='outlined'
               sx={{

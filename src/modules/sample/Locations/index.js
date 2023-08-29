@@ -124,7 +124,7 @@ const LocationTable = (arrayObjs, props) => {
   const [open2, setOpen2] = React.useState(false);
   const [ubigeo, setUbigeo] = React.useState('');
   const [locationName, setLocationName] = React.useState('');
-  const [locationCode,setLocationCode]=React.useState('');
+  const [locationCode, setLocationCode] = React.useState('');
   const [type, setType] = React.useState('');
   const [existUbigeo, setExistUbigeo] = React.useState(true);
   const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
@@ -369,7 +369,7 @@ const LocationTable = (arrayObjs, props) => {
         },
       },
     };
-    console.log("Buscando con este payload",listPayload);
+    console.log('Buscando con este payload', listPayload);
     toGetLocations(listPayload, jwtToken);
   };
   const newLocation = () => {
@@ -567,7 +567,6 @@ const LocationTable = (arrayObjs, props) => {
         spacing={2}
         className={classes.stack}
       >
-
         <TextField
           label='Codigo'
           variant='outlined'
@@ -575,7 +574,7 @@ const LocationTable = (arrayObjs, props) => {
           size='big'
           value={locationCode}
           onChange={(event) => {
-            console.log("Este es el event del code",event.target.value);
+            console.log('Este es el event del code', event.target.value);
             //listPayload.request.payload.locationName = event.target.value;
             setLocationCode(event.target.value.toUpperCase());
           }}

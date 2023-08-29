@@ -93,7 +93,10 @@ const EditDistributionDeliveryModal = ({
     setParsedUbigeos(ubigeos);
     if (selectedDeliveryState) {
       console.log('hola, estás?');
-      console.log("Esto es lo que se ecibe en el componenete edit",selectedDeliveryState)
+      console.log(
+        'Esto es lo que se ecibe en el componenete edit',
+        selectedDeliveryState,
+      );
       const startingObjUbigeo = ubigeos.find(
         (ubigeo) => ubigeo.ubigeo == selectedDeliveryState.startingPointUbigeo,
       );
@@ -144,7 +147,7 @@ const EditDistributionDeliveryModal = ({
         ...temporaryDelivery,
         products: productsList,
       });
-      console.log("Evaluando el temporaryDelivery",temporaryDelivery);
+      console.log('Evaluando el temporaryDelivery', temporaryDelivery);
       reloadPage();
     }
   }, [productsList]);

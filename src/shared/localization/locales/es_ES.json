@@ -899,6 +899,7 @@
   "common.productTags": "Filtros de producto",
   "common.productCategories": "Categorías de producto",
   "common.filterName": "Nombre del Filtro",
+  "common.extraInformationForPdf": "Información Extra para PDF (Opcional)",
   "common.business.ubigeo": "Ubigeo",
   "common.business.necessity": "Necesidad",
   "common.business.businessLine": "Línea de negocio(Productos, Servicios)",
@@ -1109,8 +1110,8 @@
   "referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany": "Traslado entre establecimientos de la misma empresa",
   "referralGuide.reason.itinerantSenderTransferCP": "Traslado emisor itinerante CP",
   "referralGuide.reason.import": "Importación",
-  "referralGuide.reason.export":  "Exportación",
+  "referralGuide.reason.export": "Exportación",
   "referralGuide.reason.transferToPrimaryArea": "Traslado a zona primaria",
   "referralGuide.reason.return": "Devolución",
-  "referralGuide.reason.others": "Otros" 
+  "referralGuide.reason.others": "Otros"
 }

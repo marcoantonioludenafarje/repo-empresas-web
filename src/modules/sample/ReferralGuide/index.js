@@ -172,7 +172,7 @@ const ReferralGuidesTable = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [openError, setOpenError] = React.useState(false);
-  const [valueObservationInput,setValueObservationInput]=React.useState('');
+  const [valueObservationInput, setValueObservationInput] = React.useState('');
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [page, setPage] = React.useState(0);
@@ -184,7 +184,8 @@ const ReferralGuidesTable = (props) => {
     toEpoch(Date.now() - 89280000),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
-
+  const [batchConsultIsActive, setBatchConsultIsActive] = React.useState(false);
+  const [countdown, setCountdown] = React.useState('');
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   const router = useRouter();
@@ -197,7 +198,7 @@ const ReferralGuidesTable = (props) => {
   const [moreFilters, setMoreFilters] = React.useState(false);
   const documentSunat = 'referralGuide';
 
-  const [valueObservation,setValueObservation]=React.useState('');
+  const [valueObservation, setValueObservation] = React.useState('');
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getReferralGuides_PageListGuide(payload));
@@ -232,7 +233,7 @@ const ReferralGuidesTable = (props) => {
           movementType: 'REFERRAL_GUIDE',
           merchantId: userDataRes.merchantSelected.merchantId,
           createdAt: null,
-          observation:valueObservation,
+          observation: valueObservation,
           searchByBill: null,
           movementHeaderId: query.referralGuideId || '',
           outputId: query.movementHeaderId || '',
@@ -257,7 +258,7 @@ const ReferralGuidesTable = (props) => {
     'referralGuideItems_pageListGuide',
     referralGuideItems_pageListGuide,
   );
-  
+
   let listToUse = referralGuideItems_pageListGuide;
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
@@ -365,7 +366,7 @@ const ReferralGuidesTable = (props) => {
           movementType: 'REFERRAL_GUIDE',
           merchantId: userDataRes.merchantSelected.merchantId,
           createdAt: null,
-          observation:valueObservation,
+          observation: valueObservation,
           searchByBill: null,
           movementHeaderId: null,
           outputId: null,
@@ -443,7 +444,7 @@ const ReferralGuidesTable = (props) => {
           businessProductCode: null,
           movementType: 'REFERRAL_GUIDE',
           merchantId: userDataRes.merchantSelected.merchantId,
-          observation:valueObservation,
+          observation: valueObservation,
           createdAt: null,
           searchByBill: null,
           movementHeaderId: null,
@@ -483,8 +484,61 @@ const ReferralGuidesTable = (props) => {
 
       toGetUserData(getUserDataPayload);
     }
-  }, []);
+    const timerInterval = 1 * 60 * 1000; // 1 minuto en milisegundos
+    const activeInterval = 4 * 60 * 1000; // 4 minutos en milisegundos
+    //const baseTime = new Date().getTime(); // Hora actual en milisegundos
+    const baseTime = new Date(); // -5 UTC
+    baseTime.setHours(1);
+    baseTime.setMinutes(36);
+    baseTime.setSeconds(22);
+    baseTime.setMilliseconds(921);
+    const offsetMinutes = -300; // Offset de tiempo para GMT-5 (horario estándar del este de los Estados Unidos)
+    const offsetMilliseconds = offsetMinutes * 60 * 1000; // Convertir el offset a milisegundos
 
+    baseTime.setUTCMinutes(baseTime.getUTCMinutes() + offsetMinutes); // Ajustar el offset de tiempo
+
+    console.log('baseTime2');
+    console.log('baseTime', baseTime);
+    const checkTime = () => {
+      const currentTime = new Date().getTime();
+      const elapsedTime = currentTime - baseTime;
+      setCountdown(
+        (timerInterval +
+          activeInterval -
+          (elapsedTime % (timerInterval + activeInterval))) /
+          1000,
+      );
+      if (elapsedTime % (timerInterval + activeInterval) < timerInterval) {
+        setBatchConsultIsActive(false);
+      } else {
+        setBatchConsultIsActive(true);
+      }
+    };
+
+    const intervalId = setInterval(checkTime, 1000); // Verificar el tiempo cada segundo
+
+    return () => {
+      clearInterval(intervalId); // Limpiar el intervalo cuando el componente se desmonte
+    };
+  }, []);
+  // useEffect(()=> {
+  //   if(batchConsultIsActive){
+  //     setCountdown(240)
+  //   }
+  // },[batchConsultIsActive])
+  useEffect(() => {
+    let intervalId;
+
+    if (countdown > 0) {
+      intervalId = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [countdown]);
   useEffect(() => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -499,7 +553,7 @@ const ReferralGuidesTable = (props) => {
             businessProductCode: null,
             movementType: 'REFERRAL_GUIDE',
             merchantId: userDataRes.merchantSelected.merchantId,
-            observation:valueObservation,
+            observation: valueObservation,
             createdAt: null,
             searchByBill: null,
             movementHeaderId: null,
@@ -615,7 +669,7 @@ const ReferralGuidesTable = (props) => {
             movementType: 'REFERRAL_GUIDE',
             merchantId: userDataRes.merchantSelected.merchantId,
             createdAt: null,
-            observation:valueObservation,
+            observation: valueObservation,
             searchByBill: null,
             movementHeaderId: null,
             outputId: null,
@@ -699,7 +753,22 @@ const ReferralGuidesTable = (props) => {
       );
     }
   };
+  const renderTimer = (countdown) => {
+    const remainingTime = Math.floor(countdown);
+    if (remainingTime === 0) {
+      return (
+        <Typography ml={1} mt={2}>
+          ¡Tiempo agotado!
+        </Typography>
+      );
+    }
 
+    return (
+      <Typography ml={1} mt={2}>
+        {remainingTime} segundos restantes
+      </Typography>
+    );
+  };
   const compare = (a, b) => {
     if (a.serialNumber.split('-')[1] < b.serialNumber.split('-')[1]) {
       return 1;
@@ -1030,13 +1099,20 @@ const ReferralGuidesTable = (props) => {
         <Button
           variant='outlined'
           startIcon={<FindReplaceIcon />}
-          onClick={batchConsultReferralGuide}
-          disabled={isLoading}
+          //onClick={batchConsultReferralGuide}
+          disabled={isLoading || !batchConsultIsActive}
           color='success'
+          disableRipple
+          disableFocusRipple
+          disableElevation
+          sx={{cursor: 'default'}}
         >
           Consulta Masiva de Guías en SUNAT
-          {isLoading && <CircularProgress sx={{ml: 2}} size={24} />}
+          {(isLoading || !batchConsultIsActive) && (
+            <CircularProgress sx={{ml: 2}} size={24} />
+          )}
         </Button>
+        {!isLoading && batchConsultIsActive ? renderTimer(countdown) : null}
       </ButtonGroup>
 
       <Dialog

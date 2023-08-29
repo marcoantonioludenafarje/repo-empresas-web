@@ -454,18 +454,17 @@ const Create = (props) => {
       const payload = payloadToCreateCampaign;
       console.log('Payload creates', payload);
       payload.request.payload.campaign[0].receivers.urlClients =
-      clientsPresigned.keymaster;
+        clientsPresigned.keymaster;
       // Show success message
       dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
       console.log('newCampaignPayload', payload);
       createCampaign(payload);
       // Reset form
       toSubmitting(false);
-      
+
       setOpenStatus(true);
-      
+
       dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
-      
     }
   }, [clientsPresigned]);
 
@@ -880,13 +879,15 @@ const Create = (props) => {
 
     console.log('index payload', payloadVariations);
     dispatch(generateVariations(payloadVariations));
-
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     if (listVariations && listVariations.data) {
       setGenerateVariations(listVariations);
-      if (listVariations.data.length<variations.length && variations.length>8) {
+      if (
+        listVariations.data.length < variations.length &&
+        variations.length > 8
+      ) {
         const diff = variations.length - listVariations.data.length;
 
         for (let i = 0; i < diff; i++) {
@@ -900,11 +901,10 @@ const Create = (props) => {
       console.log('IA DATA <<<', newDatatt);
       setVariationsData(newDatatt);
     }
-  },[listVariations])
-  useEffect(()=>{
-    console.log("IA DATA >>>", geneVariations);
-  },[geneVariations])
-
+  }, [listVariations]);
+  useEffect(() => {
+    console.log('IA DATA >>>', geneVariations);
+  }, [geneVariations]);
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
 
@@ -1201,7 +1201,7 @@ const Create = (props) => {
                       El proceso de generar Variaciones demora unos segundos
                     </Typography>
                     <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                      Sí demora, vuelva a darle click en "Necesito Ayuda!"
+                      {`Sí demora, vuelva a darle click en "Necesito Ayuda!"`}
                     </Typography>
                   </Box>
                   {sameData()};
@@ -1319,8 +1319,9 @@ const Create = (props) => {
                         // setIdentidad(value.props.value);
                       }}
                     >
-                      {listAgents.map((agent) => (
+                      {listAgents.map((agent, index) => (
                         <MenuItem
+                          key={`agent-${index}`}
                           value={agent.robotId}
                           style={{fontWeight: 200}}
                         >

@@ -18,13 +18,31 @@ import PropTypes from 'prop-types';
 const EditorMessage = (props) => {
   const [openReviewPop, setopenReviewPop] = React.useState(false);
   const textRef = useRef(null);
-  useEffect(()=>{   
-    if(props.getValueField('tipoEvento').value && props.getValueField('tipoEvento').value!='' && props.getValueField('channelNotification').value){
-      console.log("ESTE ES EL TIPO EVENTO",props.getValueField('tipoEvento').value)
-      console.log("ESTE ES EL CANAL",props.getValueField('channelNotification').value)
-      props.changeValueField('campaignContent',props.getValueField('tipoEvento').value.notificationsChannel[props.getValueField('channelNotification').value].template);
+  useEffect(() => {
+    if (
+      props.getValueField('tipoEvento').value &&
+      props.getValueField('tipoEvento').value != '' &&
+      props.getValueField('channelNotification').value
+    ) {
+      console.log(
+        'ESTE ES EL TIPO EVENTO',
+        props.getValueField('tipoEvento').value,
+      );
+      console.log(
+        'ESTE ES EL CANAL',
+        props.getValueField('channelNotification').value,
+      );
+      props.changeValueField(
+        'campaignContent',
+        props.getValueField('tipoEvento').value.notificationsChannel[
+          props.getValueField('channelNotification').value
+        ].template,
+      );
     }
-  },[props.getValueField('tipoEvento').value,props.getValueField('channelNotification').value]);
+  }, [
+    props.getValueField('tipoEvento').value,
+    props.getValueField('channelNotification').value,
+  ]);
   const handleBoldMessage = () => {
     const updatedTextMessage = ` *Text*`;
     console.log(textRef);
