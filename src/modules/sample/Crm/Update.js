@@ -46,6 +46,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CheckIcon from '@mui/icons-material/Check';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
@@ -57,11 +58,7 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
-import {
-  newCampaign,
-  getCampaigns,
-  generateVariations,
-} from '../../../redux/actions/Campaign';
+import {newCampaign, generateVariations, getCampaigns} from '../../../redux/actions/Campaign';
 import {getAgents} from '../../../redux/actions/Agent';
 import {
   createPresigned,
@@ -75,9 +72,13 @@ import {
   FETCH_ERROR,
   RESET_CAMPAIGNS,
   GET_CLIENTS_PRESIGNED,
+  GENERATE_VARIATIONS,
 } from '../../../shared/constants/ActionTypes';
 import {DataGrid} from '@mui/x-data-grid';
 import {verTags} from '../../../Utils/utils';
+import {useRef} from 'react';
+import EditorMessage from './EditorMessage';
+import IntlMessages from '@crema/utility/IntlMessages';
 
 const validationSchema = yup.object({
   campaignName: yup.string().required('El nombre de la campaña es obligatorio'),
@@ -103,22 +104,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let selectedCampaign = {};
+let selectedCampaign = {}
 
 const Update = (props) => {
   let toSubmitting;
+  let changeValueField;
+  let getValueField;
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const getCampaign = (payload) => {
-    dispatch(getCampaigns(payload));
+  const getCampaign = (payload) =>{
+    dispatch(getCampaigns(payload))
   };
 
   let {query} = router;
   console.log('query', query);
-
   const {listCampaigns, campaignsLastEvaluatedKey_pageListCampaigns} =
     useSelector(({campaigns}) => campaigns);
   console.log('Confeti los campañas', listCampaigns);
@@ -129,7 +131,12 @@ const Update = (props) => {
     );
     console.log('CAMPAÑA SELECTA', selectedCampaign);
   }
-
+  const inputFileRef = useRef(null);
+  const resetInput = () => {
+    if (inputFileRef.current) {
+      inputFileRef.current.value = ''; // Restablece el valor del input a una cadena vacía
+    }
+  };
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -144,15 +151,18 @@ const Update = (props) => {
 
   const [previewImages, setPreviewImages] = useState([]);
   const [publishDate, setPublishDate] = React.useState(
-    Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
+    new Date(selectedCampaign?.scheduledAt) /* Number(query.createdAt) */,
   );
   const [openDialog, setOpenDialog] = useState(false);
   const [variations, setVariations] = useState(['Variación 1']);
   const [numVariations, setNumVariations] = useState(1);
+  const [textMessage, setTextMessage] = useState('');
+  const [idTextMessage, setIdTextMessage] = useState(0);
   const [campaignContentVariations, setCampaignContentsVariations] = useState([
-    {id: 1, content: ''},
+    {id: 1},
   ]);
   const [campaignContent, setCampaignContent] = useState('');
+
   // Function to add more variations
   const handleAddVariation = () => {
     const newVariation = `Variación ${numVariations + 1}`;
@@ -161,7 +171,7 @@ const Update = (props) => {
     const newIdVariation = campaignContentVariations.length + 1;
     setCampaignContentsVariations([
       ...campaignContentVariations,
-      {id: newIdVariation, content: ''},
+      {id: newIdVariation},
     ]);
   };
 
@@ -175,28 +185,18 @@ const Update = (props) => {
     campaignName: query.campaignName,
     date: Date.now() + 60 * 60 * 1000,
     campaignContent: selectedCampaign.messages[0].text,
-    campaignImages: null,
+    campaignImages: selectedCampaign.messages[0].img_url,
   };
-
-  // Estado para controlar el acordeón abierto
-  const [expanded, setExpanded] = useState(1);
-  // const [campaignContents, setCampaignContents] = useState([
-  //   {id: 1, content: ''}, // Primer acordeón desplegado
-  // ]);
-
-  // const handleContentChange = (id, content) => {
-  //   console.log('content Mensaje', content);
-  //   const updatedContents = campaignContents.map((contentData) =>
-  //     contentData.id === id ? {...contentData, content} : contentData,
-  //   );
-  //   setCampaignContents(updatedContents);
-  // };
-
   const getClients = (payload) => {
     dispatch(onGetClients(payload));
   };
+
+  const getAgent = (payload) => {
+    dispatch(getAgents(payload));
+  };
   const {userDataRes} = useSelector(({user}) => user);
 
+  const {listVariations} = useSelector(({campaigns}) => campaigns);
   const {businessParameter} = useSelector(({general}) => general);
 
   console.log('Businees: ', businessParameter);
@@ -217,6 +217,11 @@ const Update = (props) => {
     ({general}) => general,
   );
 
+  const {listAgents, agentsLastEvaluatedKey_pageListAgents} = useSelector(
+    ({agents}) => agents,
+  );
+  console.log('LISTA DE AGENTES CAMPAÑA', listAgents);
+
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
@@ -235,7 +240,6 @@ const Update = (props) => {
   };
   const {newCampaignRes, successMessage, errorMessage, process, loading} =
     useSelector(({campaigns}) => campaigns);
-  console.log('Respuesta de campañas : ', errorMessage);
 
   console.log('Confeti los clientes', listClients);
 
@@ -247,8 +251,7 @@ const Update = (props) => {
       userDataRes.merchantSelected.merchantId
     ) {
       console.log('Estamos entrando al getClients');
-      dispatch({type: FETCH_SUCCESS, payload: undefined});
-      dispatch({type: FETCH_ERROR, payload: undefined});
+
       //dispatch({type: GET_CLIENTS, payload: undefined});
       let listPayload = {
         request: {
@@ -270,22 +273,26 @@ const Update = (props) => {
           },
         },
       };
-      getCampaign(listPayload);
+      getAgent(listPayload);
       getClients(listPayload);
       getGlobalParameter(globalParameterPayload);
       // setFirstload(true);
     }
   }, [userDataRes, listadeTags]);
+  useEffect(()=>{
+    console.log("campaña actual", selectedCampaign);
+  },[selectedCampaign])
 
   useEffect(() => {
     switch (process) {
-      case 'CREATE_NEW_CAMPAIGN':
+      case 'CREATE_CAMPAIGN':
         if (!loading && (successMessage || errorMessage)) {
           setOpenStatus(true);
         }
 
         break;
       default:
+        console.log('cargando proceso,', process);
         console.log('Se supone que pasa por aquí XD');
     }
   }, [loading]);
@@ -395,6 +402,11 @@ const Update = (props) => {
 
     console.log('Contenidodecamapañas', campaignContent);
     console.log('ACTUAL IMAGE', imagePresigned);
+    console.log('confeti agente', getValueField('agent').value);
+
+    const idRobot = getValueField('agent').value;
+    const name = listAgents.filter((agent) => agent.robotId === idRobot);
+
     const payload = {
       request: {
         payload: {
@@ -407,7 +419,8 @@ const Update = (props) => {
                 urlClients: '',
               },
               targetSummary: [...selectedTags, totaldeClientes()],
-              robotId: 'ID_BOT_CUENTA_SOPORTE',
+              robotId: idRobot ? idRobot : '',
+              robotName: name[0].robotName ? name[0].robotName : '',
               messages: [
                 {
                   order: 0,
@@ -430,7 +443,9 @@ const Update = (props) => {
                       extensions[actualImage.type]
                     : '',
                   text: data.campaignContent,
-                  variations: variationsData ? variationsData : [''],
+                  variations: variationsDataContent
+                    ? variationsDataContent
+                    : [''],
                 },
               ],
             },
@@ -456,22 +471,23 @@ const Update = (props) => {
   };
   useEffect(() => {
     if (clientsPresigned) {
+      dispatch({type: FETCH_SUCCESS, payload: ''});
+      dispatch({type: FETCH_ERROR, payload: ''});
       const payload = payloadToCreateCampaign;
       console.log('Payload creates', payload);
       payload.request.payload.campaign[0].receivers.urlClients =
-        clientsPresigned.keymaster;
-      setTimeout(() => {
-        // Show success message
-        dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
-        console.log('newCampaignPayload', payload);
-        createCampaign(payload);
-
-        setOpenStatus(true);
-
-        // Reset form
-        toSubmitting(false);
-        dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
-      }, 1000);
+      clientsPresigned.keymaster;
+      // Show success message
+      dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
+      console.log('newCampaignPayload', payload);
+      createCampaign(payload);
+      // Reset form
+      toSubmitting(false);
+      
+      setOpenStatus(true);
+      
+      dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
+      
     }
   }, [clientsPresigned]);
 
@@ -539,27 +555,28 @@ const Update = (props) => {
     Array.from(event.target.files).map((file) => URL.revokeObjectURL(file));
   };
 
-  const removeImagePreview = (index, setFieldValue) => {
-    const updatedImages = [...previewImages];
-    updatedImages.splice(index, 1);
-    setPreviewImages(updatedImages);
-
-    let newImagesJson = selectedJsonImages;
-    delete newImagesJson[index];
-    setSelectedJsonImages(newImagesJson);
-    const updatedFiles = previewImages.map((image) => {
-      const file = imageToBlob(image);
-      return file;
-    });
-    setFieldValue('campaignImages', updatedFiles);
-  };
-
   const imageToBlob = (imageUrl) => {
     return fetch(imageUrl)
       .then((response) => response.blob())
       .then((blob) => new File([blob], 'image.jpg', {type: 'image/jpeg'}));
   };
 
+  const removeImagePreview = (index, setFieldValue) => {
+    const updatedImages = [...previewImages];
+    updatedImages.splice(index, 1);
+    setPreviewImages(updatedImages);
+
+    let newImagesJson = [...selectedJsonImages];
+    newImagesJson.splice(index, 1);
+    setSelectedJsonImages(newImagesJson);
+
+    const updatedFiles = previewImages.map((image) => {
+      const file = imageToBlob(image);
+      return file;
+    });
+    setFieldValue('campaignImages', updatedFiles);
+    resetInput();
+  };
   const handleOpenClientsDialog = () => {
     setOpenClientsDialog(true);
   };
@@ -593,7 +610,7 @@ const Update = (props) => {
     if (selectedTags.includes('ALL')) {
       console.log('CUANDO SE MARCA EL TAG ALL');
       setSelectedTagsCount(namesTags.length);
-      setSelectedClientCount(listClients.length);
+      setSelectedClientCount(listClients?.length || 0);
       setClientSelection('Todos');
       setSelectedClientsByTag(listClients.map((client) => client.clientId));
     } else {
@@ -620,7 +637,7 @@ const Update = (props) => {
     if (name === 'Todos' && checked) {
       console.log('ENTRA EN TODOS Y CHECK');
       setClientSelection('Todos');
-      setSelectedClientCount(listClients.length);
+      setSelectedClientCount(listClients?.length || 0);
       setSelectedClientIds(listClients.map((client) => client.clientId));
       setSelectedClientsByTag(listClients.map((client) => client.clientId));
     } else if (name === 'Algunos' && checked) {
@@ -636,7 +653,7 @@ const Update = (props) => {
   const totaldeClientes = () => {
     console.log('VALOR DE TOTAL DE CLIENTES SELECT', clientSelection);
     if (clientSelection === 'Todos') {
-      return listClients.length;
+      return listClients?.length || 0;
     }
     if (clientSelection === 'Algunos') {
       return selectedClients.length;
@@ -673,7 +690,7 @@ const Update = (props) => {
   };
 
   // Calcula si todos los clientes están seleccionados
-  const isAllSelected = selectedClients.length === listClients.length;
+  const isAllSelected = selectedClients.length === (listClients?.length || 0);
   const isSomeSelected = selectedClients.length > 0 && !isAllSelected;
 
   const [searchDialogResults, setSearchDialogResults] = useState([]);
@@ -770,9 +787,9 @@ const Update = (props) => {
     if (mayorPosible - 1 == 1) {
       console.log('DATA-VARIATIONS', variationsData[0]);
       if (
-        variationsData &&
-        variationsData[0] !== '' &&
-        variationsData[0] !== undefined
+        variationsDataContent &&
+        variationsDataContent[0] !== '' &&
+        variationsDataContent[0] !== undefined
       ) {
         setVerification(false);
       }
@@ -782,11 +799,15 @@ const Update = (props) => {
     console.log('TOTAL DE DATA', parametro);
     if (
       totaldeClientes() > levelEnter.clientsAmount &&
-      parametro === variationsData.length
+      parametro === variationsDataContent.length
     ) {
       // 11>5 && ===0
       console.log('VARIATONSDATA ', variationsData.length, parametro);
-      if (variationsData.filter((vari) => vari !== '' && vari !== undefined)) {
+      if (
+        variationsDataContent.filter(
+          (vari) => vari !== '' && vari !== undefined,
+        )
+      ) {
         setVerification(false);
         console.log('TOTAL DE DATA PARA');
         return parametro;
@@ -826,85 +847,100 @@ const Update = (props) => {
   };
 
   const handleAccordionVariationsClose = () => {
-    setVariations(['Variación']);
-    setNumVariations(1);
-    setCampaignContentsVariations([{id: 1, content: ''}]);
-    setVariationsData(variations.map((v) => v.content));
-    console.log('SAVE >>', variationsData);
+    if (variationsDataContent.length === 0) {
+      setVariations(['Variación 1']);
+      setNumVariations(1);
+      setCampaignContentsVariations([{id: 1, content: ''}]);
+      setVariationsData([]);
+      setOpenDialog(false);
+    } else if (variationsDataContent.length > 0) {
+      const nuevasVariaciones = [];
+      const nuevosContenidos = [];
 
-    // if (variationsData && variationsData.length > 0 && variationsData[0] != '' ) {
-    //   setVariations(['Variación 1']);
-    //   setNumVariations(1);
-    //   setCampaignContentsVariations([{id: 1, content: ''}]);
-    //   setVariationsData(variations.map((v) => v.content));
-    // }
+      for (let i = 0; i < variationsDataContent.length; i++) {
+        nuevasVariaciones.push(`Variación ${i + 1}`);
+        nuevosContenidos.push({id: i + 1});
+      }
 
-    // Close the dialog
-    setOpenDialog(false);
-    //Corregir XD
-    if (variationsData.length > 0 && variationsData[0] != '') {
+      setVariations(nuevasVariaciones);
+      setNumVariations(variationsDataContent.length);
+      setCampaignContentsVariations(nuevosContenidos);
+      setVariationsData(variationsDataContent);
+      setOpenDialog(false);
     }
   };
 
-  const handleSaveVariations = () => {
-    setVariationsData(variations.map((v) => v.content));
+  const [variationsDataContent, setVariationsDataContent] = useState([]);
+
+  const handleSaveVariations = (data) => {
+    console.log('DATA DE VARIATIONS >>', data);
+    const nonEmptyValues = data.filter((value) => value !== '');
+
+    setVariationsDataContent(nonEmptyValues);
+    //setVariationsDataContent(data);
+
     setOpenDialog(false);
   };
 
-  // const handleCloseClientsDialogReload = () => {
-  //   console.log('CLIENTES DATA', clientsDataset);
-  //   if (clientsDataset.length > 0) {
-  //     setSelectedClients(clientsDataset);
-  //     setOpenClientsDialog(false);
-  //   } else {
-  //     setSelectedClients([]);
-  //     setOpenClientsDialog(false);
-  //   }
-  // };
+  useEffect(() => {
+    console.log('DATA DE VARIATIONS<<', variationsDataContent);
+  }, [variationsDataContent]);
 
   const [geneVariations, setGenerateVariations] = useState(null);
 
-  const handleDummy = async () => {
+  const handleGenerateVariations = async () => {
     let text = getValueField('campaignContent').value;
-    console.log('index dum', text);
-    console.log('index dummy>', variationsData);
-    console.log('index variations', variationsData.length);
 
     const payloadVariations = {
       request: {
         payload: {
-          cant_variaciones: variationsData.length,
+          cant_variaciones: variations.length > 8 ? 8 : variations.length,
           textCampaign: text,
         },
       },
     };
 
     console.log('index payload', payloadVariations);
-    const response = await dispatch(generateVariations(payloadVariations));
+    dispatch(generateVariations(payloadVariations));
 
-    setGenerateVariations(response);
-    console.log('index numVariations', numVariations);
-    console.log('index response', geneVariations?.data);
-
-    const newDatatt = [...variationsData];
-    if (geneVariations !== null) {
-      for (let i = 0; i < numVariations; i++) {
-        newDatatt[i] = geneVariations.data[i];
-        setVariationsData(newDatatt);
-      }
-    }
   };
+
+  useEffect(()=>{
+    if (listVariations && listVariations.data) {
+      setGenerateVariations(listVariations);
+      if (listVariations.data.length<variations.length && variations.length>8) {
+        const diff = variations.length - listVariations.data.length;
+
+        for (let i = 0; i < diff; i++) {
+          listVariations.data.push('');
+        }
+      }
+      const newDatatt = [];
+      for (let i = 0; i < variations.length; i++) {
+        newDatatt[i] = listVariations.data[i];
+      }
+      console.log('IA DATA <<<', newDatatt);
+      setVariationsData(newDatatt);
+    }
+  },[listVariations])
+  useEffect(()=>{
+    console.log("IA DATA >>>", geneVariations);
+  },[geneVariations])
+
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
 
   const sameData = () => {
     const duplicates = {};
     variationsData.forEach((item, index) => {
+      console.log('item-index', item, index);
+      console.log(variationsData.indexOf(item));
       if (variationsData.indexOf(item) !== index) {
         duplicates[item] = true;
       }
     });
-
+    console.log(variationsData);
+    console.log(duplicates);
     const hasTrueValue = Object.values(duplicates).some(
       (value) => value === true,
     );
@@ -930,7 +966,7 @@ const Update = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          Clonar Campaña
+          Crear Campaña
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -950,8 +986,17 @@ const Update = (props) => {
           onSubmit={handleData}
           //enableReinitialize={true}
         >
-          {({values, errors, isSubmitting, setFieldValue, setSubmitting}) => {
+          {({
+            values,
+            errors,
+            isSubmitting,
+            setFieldValue,
+            setSubmitting,
+            getFieldProps,
+          }) => {
             toSubmitting = setSubmitting;
+            changeValueField = setFieldValue;
+            getValueField = getFieldProps;
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -1067,7 +1112,8 @@ const Update = (props) => {
                           <input
                             type='file'
                             hidden
-                            onChange={(event) =>
+                            ref={inputFileRef}
+                            onInput={(event) =>
                               handleImageChange(event, setFieldValue)
                             }
                             accept='.png, .jpeg, .jpg'
@@ -1110,9 +1156,9 @@ const Update = (props) => {
                                   right: 0,
                                   p: '2px',
                                 }}
-                                onClick={() =>
-                                  removeImagePreview(index, setFieldValue)
-                                }
+                                onClick={() => {
+                                  removeImagePreview(index, setFieldValue);
+                                }}
                               >
                                 <CancelOutlinedIcon fontSize='small' />
                               </IconButton>
@@ -1127,48 +1173,11 @@ const Update = (props) => {
                       Total de clientes: {totaldeClientes()}
                     </Typography>
                   </Box>
-                  {/* {campaignContents.map((contentData) => (
-                    <Grid item xs={12} md={12} key={contentData.id}>
-                      <Accordion
-                        expanded={expanded === contentData.id}
-                        onChange={handleAccordionChange(contentData.id)}
-                      >
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          Mensaje N. {contentData.id}
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Grid item xs={12} md={12}>
-                            <TextField
-                              label='Contenido de la Campaña *'
-                              name={`campaignContents.contents`}
-                              variant='outlined'
-                              multiline
-                              rows={4}
-                              value={contentData.content}
-                              onChange={(event) =>
-                                handleContentChange(
-                                  contentData.id,
-                                  event.target.value,
-                                )
-                              }
-                              sx={{width: '100%', my: 2}}
-                            />
-                          </Grid>
-                        </AccordionDetails>
-                      </Accordion>
-                    </Grid>
-                  ))} */}
-                  <Grid item xs={12} md={12}>
-                    <AppTextField
-                      label='Contenido de la Campaña *'
-                      name='campaignContent'
-                      onChange={''}
-                      variant='outlined'
-                      multiline
-                      rows={4}
-                      sx={{width: '100%', my: 2}}
-                    />
-                  </Grid>
+                  <EditorMessage
+                    previewImages={previewImages}
+                    getValueField={getValueField}
+                    changeValueField={changeValueField}
+                  />
                 </Grid>
 
                 <Grid container item xs={12} justifyContent='center'>
@@ -1190,26 +1199,50 @@ const Update = (props) => {
                 >
                   <DialogTitle>
                     <Box
-                      sx={{display: 'flex', justifyContent: 'center', my: 2}}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}
                     >
-                      <Button variant='outlined' onClick={handleDummy}>
+                      <Button
+                        variant='outlined'
+                        onClick={handleGenerateVariations}
+                        sx={{flexGrow: 0, textAlign: 'center'}}
+                      >
                         ¡Necesito Ayuda!
                       </Button>
+                      <CancelOutlinedIcon
+                        onClick={handleAccordionVariationsClose}
+                        className={classes.closeButton}
+                      />
                     </Box>
                   </DialogTitle>
-                  {sameData()}
+                  <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                      El proceso de generar Variaciones demora unos segundos
+                    </Typography>
+                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                      Sí demora, vuelva a darle click en "Necesito Ayuda!"
+                    </Typography>
+                  </Box>
+                  {sameData()};
                   {totaldeClientes() > levelEnter.clientsAmount ? (
                     <Box
                       sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
                     >
-                      <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                        Cantidad de variaciones obligatorias:
-                        {verificationVariations()}
-                      </Typography>
+                      {verification && (
+                        <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                          Cantidad de variaciones obligatorias:
+                          {verificationVariations() -
+                            variationsDataContent.length}
+                        </Typography>
+                      )}
                     </Box>
                   ) : (
                     <Typography></Typography>
                   )}
+                  ;
                   <DialogContent>
                     {variations.map((variation, index) => (
                       <Accordion
@@ -1230,7 +1263,7 @@ const Update = (props) => {
                         <AccordionDetails>
                           <Grid item xs={12} md={12}>
                             <TextField
-                              label='Contenido de la Variación Campaña *'
+                              label=''
                               variant='outlined'
                               multiline
                               rows={4}
@@ -1259,7 +1292,6 @@ const Update = (props) => {
                     <Button
                       color='primary'
                       sx={{mx: 'auto', width: '15%'}}
-                      type='submit'
                       variant='contained'
                       startIcon={<SaveAltOutlinedIcon />}
                       disabled={validateVariations}
@@ -1267,18 +1299,12 @@ const Update = (props) => {
                         // Save the variationsData when clicking "Guardar"
                         console.log('Saving variations:', variationsData);
                         // ... (Add your saving logic here)
+                        handleSaveVariations(variationsData);
                         verificationVariations();
                         setOpenDialog(false);
                       }}
                     >
                       Guardar
-                    </Button>
-                    <Button
-                      variant='outlined'
-                      startIcon={<ArrowCircleLeftOutlinedIcon />}
-                      onClick={handleAccordionVariationsClose}
-                    >
-                      Cerrar
                     </Button>
                   </DialogActions>
                 </Dialog>
@@ -1287,14 +1313,51 @@ const Update = (props) => {
                   <Box
                     sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
                   >
-                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                      Cantidad de variaciones obligatorias:
-                      {verificationVariations()}
-                    </Typography>
+                    {verification && (
+                      <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                        Cantidad de variaciones obligatorias:
+                        {verificationVariations() -
+                          variationsDataContent.length}
+                      </Typography>
+                    )}
                   </Box>
                 ) : (
                   <Typography></Typography>
                 )}
+
+                <Grid item xs={12}>
+                  <FormControl sx={{width: '20%', my: 2, marginLeft: '40%'}}>
+                    <InputLabel id='agent-label' style={{fontWeight: 200}}>
+                      Seleccionar Agente
+                    </InputLabel>
+                    {/* {inicializaIdentidad()} */}
+                    <Select
+                      name='agent'
+                      labelId='agent-label'
+                      label='Agent'
+                      value={selectedCampaign?.robotId}
+                      //onChange={handleField}
+                      // onChange={(option, value) => {
+                      //   setFieldValue('agent', value.props.value);
+                      //   // setIdentidad(value.props.value);
+                      // }}
+                      onChange={(event)=>{
+                        const selectedRobotId = event.target.value;
+                        const selectedRobot = listAgents.find(agen => agen.robotId === selectedrobotId);
+                        setFieldValue('agent', selectedRobotId)
+                      }}
+                    >
+                      {listAgents.map((agent) => (
+                        <MenuItem
+                          value={agent.robotId}
+                          style={{fontWeight: 200}}
+                        >
+                          {agent.robotName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
 
                 <ButtonGroup
                   orientation='vertical'
@@ -1441,7 +1504,9 @@ const Update = (props) => {
                       console.log('Nuevo Tag seleccionado:', newValue);
                       handleTagSelect(newValue);
                     }}
-                    disabled={selectedClientCount === listClients.length}
+                    disabled={
+                      selectedClientCount === (listClients?.length || 0)
+                    }
                     sx={{
                       m: 1,
                       width: '100%', // Establece el ancho al 100% por defecto
@@ -1509,7 +1574,7 @@ const Update = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {searchDialogResults.map((row) => (
+                  {searchDialogResults?.map((row) => (
                     <TableRow key={row.clientId}>
                       <TableCell padding='checkbox'>
                         <Checkbox
@@ -1553,6 +1618,25 @@ const Update = (props) => {
             Cerrar
           </Button>
         </DialogActions>
+      </Dialog>
+      <Dialog
+        open={loading}
+        // onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        {/* <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Registro de cliente'}
+        </DialogTitle> */}
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <CircularProgress disableShrink />
+        </DialogContent>
+        {/* <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions> */}
       </Dialog>
     </Card>
   );
