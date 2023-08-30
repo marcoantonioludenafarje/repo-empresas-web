@@ -1085,10 +1085,11 @@ const ReferralGuidesTable = (props) => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       /> */}
-      <Stack 
-        sx={{mt:2}}
+      <Stack
+        sx={{mt: 2}}
         direction={isMobile ? 'column' : 'row'}
-        className={classes.stack}>
+        className={classes.stack}
+      >
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/exportReferralGuides/*') === true ? (
@@ -1101,20 +1102,20 @@ const ReferralGuidesTable = (props) => {
           </Button>
         ) : null}
         <Button
-            //variant='outlined'
-            //startIcon={<FindReplaceIcon />}
-            //onClick={batchConsultReferralGuide}
-            disabled={isLoading || !batchConsultIsActive}
-            color='success'
-            disableRipple
-            disableFocusRipple
-            disableElevation
-            sx={{cursor: 'default'}}
-          >
-            {renderTimer(countdown)}
-            {(isLoading || !batchConsultIsActive) && (
-              <CircularProgress sx={{ml: 2}} size={24} />
-            )}
+          //variant='outlined'
+          //startIcon={<FindReplaceIcon />}
+          //onClick={batchConsultReferralGuide}
+          disabled={isLoading || !batchConsultIsActive}
+          color='success'
+          disableRipple
+          disableFocusRipple
+          disableElevation
+          sx={{cursor: 'default'}}
+        >
+          {renderTimer(countdown)}
+          {(isLoading || !batchConsultIsActive) && (
+            <CircularProgress sx={{ml: 2}} size={24} />
+          )}
         </Button>
       </Stack>
       <Dialog

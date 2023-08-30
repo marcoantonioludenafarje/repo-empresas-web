@@ -58,7 +58,11 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
-import {newCampaign, generateVariations, getCampaigns} from '../../../redux/actions/Campaign';
+import {
+  newCampaign,
+  generateVariations,
+  getCampaigns,
+} from '../../../redux/actions/Campaign';
 import {getAgents} from '../../../redux/actions/Agent';
 import {
   createPresigned,
@@ -104,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let selectedCampaign = {}
+let selectedCampaign = {};
 
 const Update = (props) => {
   let toSubmitting;
@@ -115,8 +119,8 @@ const Update = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const getCampaign = (payload) =>{
-    dispatch(getCampaigns(payload))
+  const getCampaign = (payload) => {
+    dispatch(getCampaigns(payload));
   };
 
   let {query} = router;
@@ -279,9 +283,9 @@ const Update = (props) => {
       // setFirstload(true);
     }
   }, [userDataRes, listadeTags]);
-  useEffect(()=>{
-    console.log("campaña actual", selectedCampaign);
-  },[selectedCampaign])
+  useEffect(() => {
+    console.log('campaña actual', selectedCampaign);
+  }, [selectedCampaign]);
 
   useEffect(() => {
     switch (process) {
@@ -476,18 +480,17 @@ const Update = (props) => {
       const payload = payloadToCreateCampaign;
       console.log('Payload creates', payload);
       payload.request.payload.campaign[0].receivers.urlClients =
-      clientsPresigned.keymaster;
+        clientsPresigned.keymaster;
       // Show success message
       dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
       console.log('newCampaignPayload', payload);
       createCampaign(payload);
       // Reset form
       toSubmitting(false);
-      
+
       setOpenStatus(true);
-      
+
       dispatch({type: GET_CLIENTS_PRESIGNED, payload: undefined});
-      
     }
   }, [clientsPresigned]);
 
@@ -902,13 +905,15 @@ const Update = (props) => {
 
     console.log('index payload', payloadVariations);
     dispatch(generateVariations(payloadVariations));
-
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     if (listVariations && listVariations.data) {
       setGenerateVariations(listVariations);
-      if (listVariations.data.length<variations.length && variations.length>8) {
+      if (
+        listVariations.data.length < variations.length &&
+        variations.length > 8
+      ) {
         const diff = variations.length - listVariations.data.length;
 
         for (let i = 0; i < diff; i++) {
@@ -922,11 +927,10 @@ const Update = (props) => {
       console.log('IA DATA <<<', newDatatt);
       setVariationsData(newDatatt);
     }
-  },[listVariations])
-  useEffect(()=>{
-    console.log("IA DATA >>>", geneVariations);
-  },[geneVariations])
-
+  }, [listVariations]);
+  useEffect(() => {
+    console.log('IA DATA >>>', geneVariations);
+  }, [geneVariations]);
 
   const [validateVariations, setValidateVariations] = useState(false); //validación de repetición
 
@@ -1223,7 +1227,7 @@ const Update = (props) => {
                       El proceso de generar Variaciones demora unos segundos
                     </Typography>
                     <Typography sx={{fontSize: 18, fontWeight: 600}}>
-                      Sí demora, vuelva a darle click en "Necesito Ayuda!"
+                      {`Sí demora, vuelva a darle click en "Necesito Ayuda!"`}
                     </Typography>
                   </Box>
                   {sameData()};
@@ -1341,14 +1345,17 @@ const Update = (props) => {
                       //   setFieldValue('agent', value.props.value);
                       //   // setIdentidad(value.props.value);
                       // }}
-                      onChange={(event)=>{
+                      onChange={(event) => {
                         const selectedRobotId = event.target.value;
-                        const selectedRobot = listAgents.find(agen => agen.robotId === selectedrobotId);
-                        setFieldValue('agent', selectedRobotId)
+                        const selectedRobot = listAgents.find(
+                          (agen) => agen.robotId === selectedrobotId,
+                        );
+                        setFieldValue('agent', selectedRobotId);
                       }}
                     >
-                      {listAgents.map((agent) => (
+                      {listAgents.map((agent, index) => (
                         <MenuItem
+                          key={`agent-${index}`}
                           value={agent.robotId}
                           style={{fontWeight: 200}}
                         >

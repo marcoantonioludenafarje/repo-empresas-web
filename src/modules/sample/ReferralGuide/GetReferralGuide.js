@@ -371,6 +371,19 @@ const GetReferralGuide = (props) => {
         },
       },
     };
+    let listOutputPayload = {
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          businessProductCode: null,
+          movementType: 'OUTPUT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          movementHeaderId: query.movementHeaderId,
+        },
+      },
+    };
+    toGetMovements(listOutputPayload);
     toGetCarriers(listCarriersPayload, jwtToken);
     let listLocationsPayload = {
       request: {
@@ -562,13 +575,13 @@ const GetReferralGuide = (props) => {
           console.log('entrega2', entrega);
           entrega.productsInfo.forEach((producto) => {
             const productoKey = producto.product;
-            totalWeightSummary += producto.weight * producto.quantityMovement;
+            totalWeightSummary += Number(producto.weight) * producto.quantityMovement;
             if (!acumulador[productoKey]) {
               acumulador[productoKey] = {
                 product: producto.product,
                 count: producto.quantityMovement,
                 description: producto.description,
-                weight: producto.weight,
+                weight: Number(producto.weight),
                 unitMeasure: producto.unitMeasure,
                 quantityMovement: producto.quantityMovement,
               };
@@ -647,7 +660,7 @@ const GetReferralGuide = (props) => {
       );
       console.log('output', output);
       setSelectedOutput(output);
-      if (!('useLocaleRoute' in query)) {
+      if (!('useLocaleRoute' in query) && query.type !== "summaryGuideSinceDistribution") {
         console.log(
           'output.descriptionProductsInfo',
           output.descriptionProductsInfo,
@@ -658,6 +671,8 @@ const GetReferralGuide = (props) => {
         });
         console.log('weight', weight);
 
+        setTotalWeight(Number(weight.toFixed(3)));
+        changeValueField('totalWeight', Number(weight.toFixed(3)));
         changeValueField('addressee', output.clientName);
         changeValueField('clientEmail', output.clientEmail);
       } else if (queryDistribution()) {
@@ -699,6 +714,8 @@ const GetReferralGuide = (props) => {
         weight = routeToReferralGuide.totalGrossWeight;
         console.log('weight', weight);
 
+        setTotalWeight(Number(weight.toFixed(3)));
+        changeValueField('totalWeight', Number(weight.toFixed(3)));
         const carrier = {
           typeDocumentCarrier: routeToReferralGuide.carrierDocumentType,
           carrierDocumentNumber: routeToReferralGuide.carrierDocumentNumber,
@@ -738,8 +755,6 @@ const GetReferralGuide = (props) => {
         );
         changeValueField('observation', routeToReferralGuide.observation);
       }
-      setTotalWeight(Number(weight.toFixed(3)));
-      changeValueField('totalWeight', Number(weight.toFixed(3)));
       /* dispatch({
         type: ROUTE_TO_REFERRAL_GUIDE,
         payload: null,
@@ -1724,7 +1739,7 @@ const GetReferralGuide = (props) => {
                   {availableLocations() ? (
                     <>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
-                        <Typography  sx={{mx: 'auto'}}>
+                        <Typography sx={{mx: 'auto'}}>
                           {selectedStartingLocation.locationDetail || ''}
                         </Typography>
                         {/* <Autocomplete
@@ -1886,7 +1901,7 @@ const GetReferralGuide = (props) => {
                   {availableLocations() ? (
                     <>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
-                        <Typography  sx={{mx: 'auto'}}>
+                        <Typography sx={{mx: 'auto'}}>
                           {selectedArrivalLocation.locationDetail || ''}
                         </Typography>
                         {/* <Autocomplete
@@ -2551,7 +2566,7 @@ const GetReferralGuide = (props) => {
               {outputItems_pageListOutput &&
               Array.isArray(outputItems_pageListOutput) ? (
                 <>
-                  {!selectedOutput.existBill ? (
+                  {selectedOutput && !selectedOutput.existBill ? (
                     <Button
                       color='primary'
                       sx={{width: 1, px: 7, my: 2}}
@@ -2570,7 +2585,7 @@ const GetReferralGuide = (props) => {
                       Generar Factura
                     </Button>
                   ) : null}
-                  {selectedOutput.existBill ? (
+                  {selectedOutput && selectedOutput.existBill ? (
                     <Button
                       color='primary'
                       sx={{width: 1, px: 7, my: 2}}
