@@ -1724,7 +1724,10 @@ const GetReferralGuide = (props) => {
                   {availableLocations() ? (
                     <>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
-                        <Autocomplete
+                        <Typography  sx={{mx: 'auto'}}>
+                          {selectedStartingLocation.locationDetail || ''}
+                        </Typography>
+                        {/* <Autocomplete
                           disablePortal
                           id='combo-box-location'
                           value={selectedStartingLocation}
@@ -1777,7 +1780,7 @@ const GetReferralGuide = (props) => {
                               }}
                             />
                           )}
-                        />
+                        /> */}
                       </Grid>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                         <Button
@@ -1883,7 +1886,10 @@ const GetReferralGuide = (props) => {
                   {availableLocations() ? (
                     <>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
-                        <Autocomplete
+                        <Typography  sx={{mx: 'auto'}}>
+                          {selectedArrivalLocation.locationDetail || ''}
+                        </Typography>
+                        {/* <Autocomplete
                           disablePortal
                           id='combo-box-location'
                           value={selectedArrivalLocation}
@@ -1937,7 +1943,7 @@ const GetReferralGuide = (props) => {
                               }}
                             />
                           )}
-                        />
+                        /> */}
                       </Grid>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                         <Button
