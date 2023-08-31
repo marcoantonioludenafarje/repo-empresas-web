@@ -371,6 +371,19 @@ const GetReferralGuide = (props) => {
         },
       },
     };
+    let listOutputPayload = {
+      request: {
+        payload: {
+          initialTime: null,
+          finalTime: null,
+          businessProductCode: null,
+          movementType: 'OUTPUT',
+          merchantId: userDataRes.merchantSelected.merchantId,
+          movementHeaderId: query.movementHeaderId,
+        },
+      },
+    };
+    toGetMovements(listOutputPayload);
     toGetCarriers(listCarriersPayload, jwtToken);
     let listLocationsPayload = {
       request: {
@@ -538,63 +551,99 @@ const GetReferralGuide = (props) => {
       console.log('date', dateTranslate);
       setDateStartTransfer(dateTranslate);
 
-      let startingUbigeo = parsedUbigeos.find(
-        (ubigeo) => ubigeo.ubigeo == selectedDelivery.startingPointUbigeo,
-      );
-      let arrivalUbigeo = parsedUbigeos.find(
-        (ubigeo) => ubigeo.ubigeo == selectedDelivery.arrivalPointUbigeo,
-      );
-      setUbigeoStartingPoint(startingUbigeo.ubigeo);
-      setUbigeoArrivalPoint(arrivalUbigeo.ubigeo);
-      setExistArrivalUbigeo(true);
-      setSelectedStartingUbigeo(startingUbigeo);
-      setSelectedArrivalUbigeo(arrivalUbigeo);
-      setExistStartingUbigeo(true);
-      changeValueField('startingPoint', selectedDelivery.startingPointAddress);
-      changeValueField('arrivalPoint', selectedDelivery.arrivalPointAddress);
+      // let startingUbigeo = parsedUbigeos.find(
+      //   (ubigeo) => ubigeo.ubigeo == selectedDelivery.startingPointUbigeo,
+      // );
+      // let arrivalUbigeo = parsedUbigeos.find(
+      //   (ubigeo) => ubigeo.ubigeo == selectedDelivery.arrivalPointUbigeo,
+      // );
+      // setUbigeoStartingPoint(startingUbigeo.ubigeo);
+      // setUbigeoArrivalPoint(arrivalUbigeo.ubigeo);
+      // setExistArrivalUbigeo(true);
+      // setSelectedStartingUbigeo(startingUbigeo);
+      // setSelectedArrivalUbigeo(arrivalUbigeo);
+      // setExistStartingUbigeo(true);
+      // changeValueField('startingPoint', selectedDelivery.startingPointAddress);
+      // changeValueField('arrivalPoint', selectedDelivery.arrivalPointAddress);
+      const acumularProductos = (entregas) => {
+        const acumulador = {};
+        let totalWeightSummary = 0;
+        let numberOfPackages = 0;
 
-      changeValueField('numberPackages', selectedDelivery.numberOfPackages);
-      setTransportModeVal(selectedDelivery.typeOfTransport);
-      setReasonVal(selectedDelivery.reasonForTransfer);
-
-      setSelectedProducts(selectedDelivery.productsInfo);
-      console.log('productos a pasar', selectedDelivery.productsInfo);
-      let weight = selectedDelivery.totalGrossWeight;
-      console.log('weight', weight);
-
-      const carrier = {
-        typeDocumentCarrier: selectedDelivery.carrierDocumentType,
-        carrierDocumentNumber: selectedDelivery.carrierDocumentNumber,
-        denominationCarrier: selectedDelivery.carrierDenomination,
+        entregas.forEach((entrega) => {
+          numberOfPackages += Number(entrega.numberOfPackages);
+          console.log('entrega2', entrega);
+          entrega.productsInfo.forEach((producto) => {
+            const productoKey = producto.product;
+            totalWeightSummary +=
+              Number(producto.weight) * producto.quantityMovement;
+            if (!acumulador[productoKey]) {
+              acumulador[productoKey] = {
+                product: producto.product,
+                count: producto.quantityMovement,
+                description: producto.description,
+                weight: Number(producto.weight),
+                unitMeasure: producto.unitMeasure,
+                quantityMovement: producto.quantityMovement,
+              };
+            } else {
+              acumulador[productoKey].count += producto.quantityMovement;
+              acumulador[productoKey].quantityMovement +=
+                producto.quantityMovement;
+            }
+          });
+        });
+        return {
+          items: Object.values(acumulador),
+          totalWeightSummary: totalWeightSummary,
+          numberOfPackages: numberOfPackages,
+        };
       };
-      setSelectedCarrier(carrier);
-      setExistCarrier(true);
-      changeValueField('addressee', selectedDelivery.carrierDenomination);
-      changeValueField('licensePlate', selectedDelivery.carrierPlateNumber);
-      changeValueField('driverName', selectedDelivery.driverDenomination);
+      const products = acumularProductos(selectedDistribution.deliveries);
       changeValueField(
-        'driverLastName',
-        selectedDelivery.driverLastName ? selectedDelivery.driverLastName : '',
+        'totalWeight',
+        Number(products.totalWeightSummary).toFixed(2),
       );
-      if (
-        selectedDelivery.carrierDocumentType &&
-        typeof selectedDelivery.carrierDocumentType === 'string'
-      ) {
-        setDriverDocumentType(
-          selectedDelivery.driverDocumentType.toString().toUpperCase(),
-        );
-      }
-      changeValueField(
-        'driverDocumentNumber',
-        selectedDelivery.driverDocumentNumber,
-      );
-      changeValueField(
-        'driverLicenseNumber',
-        selectedDelivery.driverLicenseNumber
-          ? selectedDelivery.driverLicenseNumber
-          : '',
-      );
-      changeValueField('observation', selectedDelivery.observation);
+      changeValueField('numberPackages', products.numberOfPackages);
+      setTransportModeVal(selectedDistribution.typeOfTransport);
+      setReasonVal(selectedDistribution.reasonForTransfer);
+
+      setSelectedProducts(products.items);
+      console.log('productos a pasar', products.items);
+
+      // const carrier = {
+      //   typeDocumentCarrier: selectedDelivery.carrierDocumentType,
+      //   carrierDocumentNumber: selectedDelivery.carrierDocumentNumber,
+      //   denominationCarrier: selectedDelivery.carrierDenomination,
+      // };
+      // setSelectedCarrier(carrier);
+      // setExistCarrier(true);
+      // changeValueField('addressee', selectedDelivery.carrierDenomination);
+      // changeValueField('licensePlate', selectedDelivery.carrierPlateNumber);
+      // changeValueField('driverName', selectedDelivery.driverDenomination);
+      // changeValueField(
+      //   'driverLastName',
+      //   selectedDelivery.driverLastName ? selectedDelivery.driverLastName : '',
+      // );
+      // if (
+      //   selectedDelivery.carrierDocumentType &&
+      //   typeof selectedDelivery.carrierDocumentType === 'string'
+      // ) {
+      //   setDriverDocumentType(
+      //     selectedDelivery.driverDocumentType.toString().toUpperCase(),
+      //   );
+      // }
+      // changeValueField(
+      //   'driverDocumentNumber',
+      //   selectedDelivery.driverDocumentNumber,
+      // );
+      // changeValueField(
+      //   'driverLicenseNumber',
+      //   selectedDelivery.driverLicenseNumber
+      //     ? selectedDelivery.driverLicenseNumber
+      //     : '',
+      // );
+      changeValueField('observation', selectedDistribution.observation);
     }
   }, [query]);
   useEffect(() => {
@@ -612,7 +661,10 @@ const GetReferralGuide = (props) => {
       );
       console.log('output', output);
       setSelectedOutput(output);
-      if (!('useLocaleRoute' in query)) {
+      if (
+        !('useLocaleRoute' in query) &&
+        query.type !== 'summaryGuideSinceDistribution'
+      ) {
         console.log(
           'output.descriptionProductsInfo',
           output.descriptionProductsInfo,
@@ -623,6 +675,8 @@ const GetReferralGuide = (props) => {
         });
         console.log('weight', weight);
 
+        setTotalWeight(Number(weight.toFixed(3)));
+        changeValueField('totalWeight', Number(weight.toFixed(3)));
         changeValueField('addressee', output.clientName);
         changeValueField('clientEmail', output.clientEmail);
       } else if (queryDistribution()) {
@@ -664,6 +718,8 @@ const GetReferralGuide = (props) => {
         weight = routeToReferralGuide.totalGrossWeight;
         console.log('weight', weight);
 
+        setTotalWeight(Number(weight.toFixed(3)));
+        changeValueField('totalWeight', Number(weight.toFixed(3)));
         const carrier = {
           typeDocumentCarrier: routeToReferralGuide.carrierDocumentType,
           carrierDocumentNumber: routeToReferralGuide.carrierDocumentNumber,
@@ -703,8 +759,6 @@ const GetReferralGuide = (props) => {
         );
         changeValueField('observation', routeToReferralGuide.observation);
       }
-      setTotalWeight(Number(weight.toFixed(3)));
-      changeValueField('totalWeight', Number(weight.toFixed(3)));
       /* dispatch({
         type: ROUTE_TO_REFERRAL_GUIDE,
         payload: null,
@@ -1689,7 +1743,10 @@ const GetReferralGuide = (props) => {
                   {availableLocations() ? (
                     <>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
-                        <Autocomplete
+                        <Typography sx={{mx: 'auto'}}>
+                          {selectedStartingLocation.locationDetail || ''}
+                        </Typography>
+                        {/* <Autocomplete
                           disablePortal
                           id='combo-box-location'
                           value={selectedStartingLocation}
@@ -1742,7 +1799,7 @@ const GetReferralGuide = (props) => {
                               }}
                             />
                           )}
-                        />
+                        /> */}
                       </Grid>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                         <Button
@@ -1848,7 +1905,10 @@ const GetReferralGuide = (props) => {
                   {availableLocations() ? (
                     <>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
-                        <Autocomplete
+                        <Typography sx={{mx: 'auto'}}>
+                          {selectedArrivalLocation.locationDetail || ''}
+                        </Typography>
+                        {/* <Autocomplete
                           disablePortal
                           id='combo-box-location'
                           value={selectedArrivalLocation}
@@ -1902,7 +1962,7 @@ const GetReferralGuide = (props) => {
                               }}
                             />
                           )}
-                        />
+                        /> */}
                       </Grid>
                       <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
                         <Button
@@ -2510,7 +2570,7 @@ const GetReferralGuide = (props) => {
               {outputItems_pageListOutput &&
               Array.isArray(outputItems_pageListOutput) ? (
                 <>
-                  {!selectedOutput.existBill ? (
+                  {selectedOutput && !selectedOutput.existBill ? (
                     <Button
                       color='primary'
                       sx={{width: 1, px: 7, my: 2}}
@@ -2529,7 +2589,7 @@ const GetReferralGuide = (props) => {
                       Generar Factura
                     </Button>
                   ) : null}
-                  {selectedOutput.existBill ? (
+                  {selectedOutput && selectedOutput.existBill ? (
                     <Button
                       color='primary'
                       sx={{width: 1, px: 7, my: 2}}

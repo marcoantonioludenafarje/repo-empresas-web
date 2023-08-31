@@ -78,6 +78,7 @@ import EditLocationOutlinedIcon from '@mui/icons-material/EditLocationOutlined';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import SearchIcon from '@mui/icons-material/Search';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import {CalendarPicker} from '@mui/lab';
 
@@ -555,6 +556,7 @@ const OutputsTable = (props) => {
   const handleToggle = (id) => {
     setOpenDelivery(true);
     if (openDelivery && deliverySelected == id) {
+      console.log('Confeti', deliverySelected);
       setOpenDelivery(false);
     }
     setDeliverySelected(id);
@@ -1494,12 +1496,19 @@ const OutputsTable = (props) => {
       return null;
     }
   };
-  const goToDistribution = (id) => {
+  const goToDistribution = (id, prueba) => {
     // Router.push({
     //   pathname: '/sample/distribution/distributions',
     //   query: {id: id},
     // });
     window.open(`/sample/distribution/distributions?id=${id}`, '_blank');
+  };
+
+  const goToFileDistribution = (id) => {
+    window.open(
+      `/sample/referral-guide/table?deliveryDistributionId=${id}`,
+      '_blank',
+    );
   };
 
   const goToMovements = (contableMovement) => {
@@ -1729,7 +1738,7 @@ const OutputsTable = (props) => {
                   obj.descriptionProductsInfo.length != 0
                     ? 'flex'
                     : null;
-                let groupedDocuments = [];
+                let groupedDocuments = []; //documentos
                 if (obj.documentsMovement && obj.documentsMovement.length > 0) {
                   groupedDocuments = obj.documentsMovement.reduce(
                     (result, document) => {
@@ -2075,7 +2084,7 @@ const OutputsTable = (props) => {
                                             ? `Distribución: ${
                                                 delivery.routeName ||
                                                 delivery.distribution
-                                              }`
+                                              } ${delivery.distribution.length}`
                                             : 'Más comprobantes'}
                                         </TableCell>
                                         {delivery.distribution ? (
@@ -2084,8 +2093,28 @@ const OutputsTable = (props) => {
                                             sx={{cursor: 'pointer'}}
                                             hover
                                             onClick={() =>
+                                              goToFileDistribution(
+                                                delivery.distribution,
+                                              )
+                                            }
+                                          >
+                                            <IconButton
+                                              size='small'
+                                              color='secondary'
+                                            >
+                                              <CloudDownloadIcon />
+                                            </IconButton>
+                                          </TableCell>
+                                        ) : null}
+                                        {delivery.distribution ? (
+                                          <TableCell
+                                            colSpan={4}
+                                            sx={{cursor: 'pointer'}}
+                                            hover
+                                            onClick={() =>
                                               goToDistribution(
                                                 delivery.distribution,
+                                                delivery,
                                               )
                                             }
                                           >

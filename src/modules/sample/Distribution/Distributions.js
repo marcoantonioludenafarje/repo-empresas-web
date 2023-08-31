@@ -233,6 +233,8 @@ const FinancesTable = (props) => {
   const sendQuerySummaryGuide = () => {
     const querySummaryGuide = {
       type: 'summaryGuideSinceDistribution',
+      movementHeaderId:
+        listDistribution[indexDistributionSelected].movementHeaderId,
       deliveryDistributionId:
         listDistribution[indexDistributionSelected].deliveryDistributionId,
     };

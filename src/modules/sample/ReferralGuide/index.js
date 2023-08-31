@@ -184,7 +184,8 @@ const ReferralGuidesTable = (props) => {
     toEpoch(Date.now() - 89280000),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
-
+  const [batchConsultIsActive, setBatchConsultIsActive] = React.useState(false);
+  const [countdown, setCountdown] = React.useState('');
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   const router = useRouter();
@@ -483,8 +484,61 @@ const ReferralGuidesTable = (props) => {
 
       toGetUserData(getUserDataPayload);
     }
-  }, []);
+    const timerInterval = 1 * 60 * 1000; // 1 minuto en milisegundos
+    const activeInterval = 4 * 60 * 1000; // 4 minutos en milisegundos
+    //const baseTime = new Date().getTime(); // Hora actual en milisegundos
+    const baseTime = new Date(); // -5 UTC
+    baseTime.setHours(1);
+    baseTime.setMinutes(36);
+    baseTime.setSeconds(22);
+    baseTime.setMilliseconds(921);
+    const offsetMinutes = -300; // Offset de tiempo para GMT-5 (horario estándar del este de los Estados Unidos)
+    const offsetMilliseconds = offsetMinutes * 60 * 1000; // Convertir el offset a milisegundos
 
+    baseTime.setUTCMinutes(baseTime.getUTCMinutes() + offsetMinutes); // Ajustar el offset de tiempo
+
+    console.log('baseTime2');
+    console.log('baseTime', baseTime);
+    const checkTime = () => {
+      const currentTime = new Date().getTime();
+      const elapsedTime = currentTime - baseTime;
+      setCountdown(
+        (timerInterval +
+          activeInterval -
+          (elapsedTime % (timerInterval + activeInterval))) /
+          1000,
+      );
+      if (elapsedTime % (timerInterval + activeInterval) < timerInterval) {
+        setBatchConsultIsActive(false);
+      } else {
+        setBatchConsultIsActive(true);
+      }
+    };
+
+    const intervalId = setInterval(checkTime, 1000); // Verificar el tiempo cada segundo
+
+    return () => {
+      clearInterval(intervalId); // Limpiar el intervalo cuando el componente se desmonte
+    };
+  }, []);
+  // useEffect(()=> {
+  //   if(batchConsultIsActive){
+  //     setCountdown(240)
+  //   }
+  // },[batchConsultIsActive])
+  useEffect(() => {
+    let intervalId;
+
+    if (countdown > 0) {
+      intervalId = setInterval(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+    }
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [countdown]);
   useEffect(() => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -699,7 +753,28 @@ const ReferralGuidesTable = (props) => {
       );
     }
   };
+  const renderTimer = (countdown) => {
+    const remainingTime = Math.floor(countdown);
+    if (remainingTime === 0) {
+      return (
+        <>
+          <FindReplaceIcon />
+          <Typography ml={1}>
+            <FindReplaceIcon /> Consulta Masiva SUNAT en progreso
+          </Typography>
+        </>
+      );
+    }
 
+    return (
+      <>
+        <FindReplaceIcon />
+        <Typography ml={1}>
+          Consulta Masiva SUNAT en {remainingTime} segundos restantes
+        </Typography>
+      </>
+    );
+  };
   const compare = (a, b) => {
     if (a.serialNumber.split('-')[1] < b.serialNumber.split('-')[1]) {
       return 1;
@@ -1010,11 +1085,10 @@ const ReferralGuidesTable = (props) => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       /> */}
-      <ButtonGroup
-        variant='outlined'
-        aria-label='outlined button group'
-        className={classes.btnGroup}
-        orientation={isMobile ? 'vertical' : 'horizontal'}
+      <Stack
+        sx={{mt: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        className={classes.stack}
       >
         {localStorage
           .getItem('pathsBack')
@@ -1028,17 +1102,22 @@ const ReferralGuidesTable = (props) => {
           </Button>
         ) : null}
         <Button
-          variant='outlined'
-          startIcon={<FindReplaceIcon />}
-          onClick={batchConsultReferralGuide}
-          disabled={isLoading}
+          //variant='outlined'
+          //startIcon={<FindReplaceIcon />}
+          //onClick={batchConsultReferralGuide}
+          disabled={isLoading || !batchConsultIsActive}
           color='success'
+          disableRipple
+          disableFocusRipple
+          disableElevation
+          sx={{cursor: 'default'}}
         >
-          Consulta Masiva de Guías en SUNAT
-          {isLoading && <CircularProgress sx={{ml: 2}} size={24} />}
+          {renderTimer(countdown)}
+          {(isLoading || !batchConsultIsActive) && (
+            <CircularProgress sx={{ml: 2}} size={24} />
+          )}
         </Button>
-      </ButtonGroup>
-
+      </Stack>
       <Dialog
         open={openStatus}
         onClose={() => setOpenStatus(false)}
