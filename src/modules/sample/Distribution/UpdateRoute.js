@@ -148,6 +148,7 @@ const Distribution = (props) => {
     arrivalPointAddress: 'Vacío',
     driverDenomination: 'Vacío',
     driverLastName: 'Vacío',
+    observationDelivery:'',
     driverDocumentType: 'Vacío',
     driverDocumentNumber: 'Vacío',
     driverLicenseNumber: 'Vacío',
@@ -243,89 +244,6 @@ const Distribution = (props) => {
     }
   };
 
-  function swapRowsUp() {
-    let newRoutes = routes;
-    const temp = newRoutes[rowNumber2];
-    newRoutes[rowNumber2] = newRoutes[rowNumber2 - 1];
-    newRoutes[rowNumber2 - 1] = temp;
-    setRoutes(newRoutes);
-    reloadPage();
-  }
-
-  const handleSearchValues = (event) => {
-    if (event.target.name == 'codeToSearch') {
-      if (event.target.value == '') {
-        setValueObservationInput(null);
-        setNewRoutesWithOutSave(routes);
-        //setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
-      } else {
-        event.target.value = event.target.value.toLowerCase();
-        setValueObservationInput(event.target.value);
-      }
-    }
-  };
-  
-  const searchValuesInForm = () => {
-    if (valueObservationInput == null) {
-      let cantDle=selectedRoute_PageListPredefinedRoutes.cantDeliveries;
-      console.log(
-        'Aqui estan todas las rutas',
-        selectedRoute_PageListPredefinedRoutes,
-        );
-        //setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries[selectedRoute_PageListPredefinedRoutes.cantDeliveries-1].concat(newRoutesWithOutSave));
-        setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries.slice(0, cantDle).concat(newRoutesWithOutSave,selectedRoute_PageListPredefinedRoutes.deliveries.slice(cantDle+1)));
-    } else {
-      console.log(
-        'Aqui estan todas las rutas',
-        selectedRoute_PageListPredefinedRoutes,
-      );
-      let newRoutes = [];
-      console.log('Buscando Observacion que contengan', valueObservationInput);
-      console.log(
-        'Este es el selectedRoute predefinido del search',
-        selectedRoute_PageListPredefinedRoutes.deliveries,
-      );
-      for (let delivery of routes) {
-        if (
-          delivery.observationDelivery
-            ?.toLowerCase()
-            .includes(valueObservationInput)
-        ) {
-          newRoutes.push(delivery);
-        }
-      }
-      let {deliveries, ...otherFields} = selectedRoute_PageListPredefinedRoutes;
-      let newData = {
-        ...otherFields,
-        deliveries: newRoutes,
-      };
-      setRoutes(newRoutes);
-    }
-  };
-
-  const checkSummaryProducts = (row, index) => {
-    selectedSummaryRow = row;
-    console.log('selectedSummaryRow', selectedSummaryRow);
-    setOpenSummaryProducts(false);
-    setOpenSummaryProducts(true);
-    if (openSummaryProducts == true && summaryRowNumber == index) {
-      setOpenSummaryProducts(false);
-    }
-    setSummaryRowNumber(index);
-  };
-
-  const handleClick = (route, event) => {
-    setAnchorEl(event.currentTarget);
-    setRowNumber2(route.localRouteId);
-    selectedRoute = route;
-    setSelectedDeliveryState(selectedRoute);
-    console.log('selectedRoute', selectedRoute);
-  };
-
-  const handleClose2 = () => {
-    setOpen2(false);
-  };
-
   console.log('Fase previa al abismo');
   useEffect(() => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -385,6 +303,92 @@ const Distribution = (props) => {
       }
     }
   }, [selectedRoute_PageListPredefinedRoutes]);
+
+  function swapRowsUp() {
+    let newRoutes = routes;
+    const temp = newRoutes[rowNumber2];
+    newRoutes[rowNumber2] = newRoutes[rowNumber2 - 1];
+    newRoutes[rowNumber2 - 1] = temp;
+    setRoutes(newRoutes);
+    reloadPage();
+  }
+
+  const handleSearchValues = (event) => {
+    // if (event.target.name == 'codeToSearch') {
+    //   if (event.target.value == '') {
+    //     setValueObservationInput(null);
+    //     //setNewRoutesWithOutSave(routes);
+    //     //setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
+    //   } else {
+    //     event.target.value = event.target.value.toLowerCase();
+    //     setValueObservationInput(event.target.value);
+    //   }
+    // }
+    event.target.value = event.target.value.toLowerCase();
+        setValueObservationInput(event.target.value);
+  };
+  
+  const searchValuesInForm = () => {
+    if (valueObservationInput == null) {
+      let cantDle=selectedRoute_PageListPredefinedRoutes.cantDeliveries;
+      console.log(
+        'Aqui estan todas las rutas',
+        selectedRoute_PageListPredefinedRoutes,
+        );
+        setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries)
+      } else {
+      console.log(
+        'Aqui estan todas las rutas',
+        selectedRoute_PageListPredefinedRoutes,
+      );
+      let newRoutes = [];
+      console.log('Buscando Observacion que contengan', valueObservationInput);
+      console.log(
+        'Este es el selectedRoute predefinido del search',
+        selectedRoute_PageListPredefinedRoutes.deliveries,
+      );
+      for (let delivery of routes) {
+        if (
+          delivery.observationDelivery.toString()
+            ?.toLowerCase()
+            .includes(valueObservationInput)
+        ) {
+          newRoutes.push(delivery);
+        }
+      }
+      let {deliveries, ...otherFields} = selectedRoute_PageListPredefinedRoutes;
+      let newData = {
+        ...otherFields,
+        deliveries: newRoutes,
+      };
+      setRoutes(newRoutes);
+    }
+  };
+
+  const checkSummaryProducts = (row, index) => {
+    selectedSummaryRow = row;
+    console.log('selectedSummaryRow', selectedSummaryRow);
+    setOpenSummaryProducts(false);
+    setOpenSummaryProducts(true);
+    if (openSummaryProducts == true && summaryRowNumber == index) {
+      setOpenSummaryProducts(false);
+    }
+    setSummaryRowNumber(index);
+  };
+
+  const handleClick = (route, event) => {
+    setAnchorEl(event.currentTarget);
+    setRowNumber2(route.localRouteId);
+    selectedRoute = route;
+    setSelectedDeliveryState(selectedRoute);
+    console.log('selectedRoute', selectedRoute);
+  };
+
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+
+  
 
   const handleClose = () => {
     console.log('se está ejecutando?');
@@ -794,20 +798,21 @@ const Distribution = (props) => {
         className={classes.stack}
       >
         <TextField
-          label='Observación'
+          label='Buscar por observación'
           variant='outlined'
           name='codeToSearch'
           size='small'
+          value={valueObservationInput}
           onChange={handleSearchValues}
         />
-        <Button
+        {/* <Button
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
           onClick={searchValuesInForm}
         >
           Buscar
-        </Button>
+        </Button> */}
       </Stack>
 
       <Box
@@ -892,7 +897,11 @@ const Distribution = (props) => {
             </TableHead>
             <TableBody>
               {routes && Array.isArray(routes) && routes.length > 0
-                ? routes.map((route, index2) => {
+                ? routes.filter((obj) =>
+                  obj.observationDelivery?.toString()
+                  .toLowerCase()
+                  .includes(valueObservationInput.toLowerCase())
+              ).map((route, index2) => {
                     const products = route.productsInfo;
                     console.log('routes de newRoute', routes);
                     return (
