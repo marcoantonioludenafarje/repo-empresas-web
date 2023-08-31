@@ -207,6 +207,7 @@ const Distribution = (props) => {
   const [routesSummary, setRoutesSummary] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openSummary, setOpenSummary] = React.useState(false);
+  const [newRoutesWithOutSave,setNewRoutesWithOutSave]=React.useState([]);
   const [summaryRowNumber, setSummaryRowNumber] = React.useState(0);
   const [cantidadAgrupacion, setCantidadAgrupacion] = React.useState('');
   const [openSummaryProducts, setOpenSummaryProducts] = React.useState(false);
@@ -255,21 +256,24 @@ const Distribution = (props) => {
     if (event.target.name == 'codeToSearch') {
       if (event.target.value == '') {
         setValueObservationInput(null);
-        setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
+        setNewRoutesWithOutSave(routes);
+        //setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
       } else {
         event.target.value = event.target.value.toLowerCase();
         setValueObservationInput(event.target.value);
       }
     }
   };
-
+  
   const searchValuesInForm = () => {
     if (valueObservationInput == null) {
+      let cantDle=selectedRoute_PageListPredefinedRoutes.cantDeliveries;
       console.log(
         'Aqui estan todas las rutas',
         selectedRoute_PageListPredefinedRoutes,
-      );
-      setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries);
+        );
+        //setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries[selectedRoute_PageListPredefinedRoutes.cantDeliveries-1].concat(newRoutesWithOutSave));
+        setRoutes(selectedRoute_PageListPredefinedRoutes.deliveries.slice(0, cantDle).concat(newRoutesWithOutSave,selectedRoute_PageListPredefinedRoutes.deliveries.slice(cantDle+1)));
     } else {
       console.log(
         'Aqui estan todas las rutas',
@@ -281,7 +285,7 @@ const Distribution = (props) => {
         'Este es el selectedRoute predefinido del search',
         selectedRoute_PageListPredefinedRoutes.deliveries,
       );
-      for (let delivery of selectedRoute_PageListPredefinedRoutes.deliveries) {
+      for (let delivery of routes) {
         if (
           delivery.observationDelivery
             ?.toLowerCase()
