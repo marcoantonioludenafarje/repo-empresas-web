@@ -57,6 +57,7 @@ import NotificationEmpty from '../../../../../assets/icon/notificationEmpty.svg'
 import NotificationNonEmpty from '../../../../../assets/icon/notificationNonEmpty.svg';
 import NotificationOFF from '../../../../../assets/icon/notificationOFF.svg';
 import NotificationON from '../../../../../assets/icon/notificationON.svg';
+import ManualIcon from '../../../../../assets/icon/manual.svg';
 
 import {
   SUBSCRIPTION_STATE,
@@ -554,6 +555,22 @@ const AppHeader = () => {
         }}
       >
         <AppLogo />
+        <IconButton
+          sx={{
+            mt: 1,
+            '& svg': {
+              height: 35,
+              width: 35,
+            },
+            color: 'text.secondary',
+          }}
+          edge='end'
+          color='inherit'
+          aria-label='open drawer'
+          onClick={() => window.open('https://drive.google.com/file/d/1bQBsf4o9f9kZjf_vmEFRONodeUBXGk1l/view?usp=sharing')}
+        >
+          <ManualIcon />
+        </IconButton>
 
         <Box display='flex' flexGrow={1}>
           {/* whatever is on the left side */}
