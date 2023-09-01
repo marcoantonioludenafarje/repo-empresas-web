@@ -421,6 +421,7 @@ const Distribution = (props) => {
                 totalGrossWeight: route.totalWeight,
                 numberOfPackages: route.numberPackages,
                 observationDelivery: route.observationDelivery,
+                reasonForTransfer: route.reasonForTransfer || "sale",
                 startingPointAddress: route.startingAddress,
                 startingInternalCode: route.startingInternalCode || '',
                 startingPointUbigeo: completeWithZeros(
