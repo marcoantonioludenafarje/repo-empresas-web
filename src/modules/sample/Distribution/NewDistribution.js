@@ -421,6 +421,7 @@ const Distribution = (props) => {
                 totalGrossWeight: route.totalWeight,
                 numberOfPackages: route.numberPackages,
                 observationDelivery: route.observationDelivery,
+                reasonForTransfer: route.reasonForTransfer || "sale",
                 startingPointAddress: route.startingAddress,
                 startingInternalCode: route.startingInternalCode || '',
                 startingPointUbigeo: completeWithZeros(
@@ -578,6 +579,7 @@ const Distribution = (props) => {
     const newDeliveries = routes.map((delivery) => {
       console.log('holi madafaca');
       delivery.transferStartDate = dateWithHyphen(timestamp);
+      delivery.transferTimeStampDate=timestamp
       return delivery;
     });
     setRoutes(newDeliveries);
@@ -1020,6 +1022,7 @@ const Distribution = (props) => {
             <TableBody>
               {routes && routes.length !== 0
                 ? routes.map((route, index2) => {
+                  console.log("Este es el routes que se renderiza",routes);
                     const products = route.products;
                     return (
                       <>

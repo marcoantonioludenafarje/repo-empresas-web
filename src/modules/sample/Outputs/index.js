@@ -556,7 +556,7 @@ const OutputsTable = (props) => {
   const handleToggle = (id) => {
     setOpenDelivery(true);
     if (openDelivery && deliverySelected == id) {
-      console.log("Confeti", deliverySelected);
+      console.log('Confeti', deliverySelected);
       setOpenDelivery(false);
     }
     setDeliverySelected(id);
@@ -1504,9 +1504,12 @@ const OutputsTable = (props) => {
     window.open(`/sample/distribution/distributions?id=${id}`, '_blank');
   };
 
-  const goToFileDistribution = (id) =>{
-    window.open(`/sample/referral-guide/table?deliveryDistributionId=${id}`, '_blank')
-  }
+  const goToFileDistribution = (id) => {
+    window.open(
+      `/sample/referral-guide/table?deliveryDistributionId=${id}`,
+      '_blank',
+    );
+  };
 
   const goToMovements = (contableMovement) => {
     console.log('1', '');
@@ -2110,7 +2113,8 @@ const OutputsTable = (props) => {
                                             hover
                                             onClick={() =>
                                               goToDistribution(
-                                                delivery.distribution, delivery
+                                                delivery.distribution,
+                                                delivery,
                                               )
                                             }
                                           >

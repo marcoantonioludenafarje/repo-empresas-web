@@ -79,6 +79,7 @@ import {exportExcelTemplateToGenerateRoute} from '../../../redux/actions/General
 import {red} from '@mui/material/colors';
 import {completeWithZeros, showReferralGuideReason} from '../../../Utils/utils';
 import SchoolIcon from '@mui/icons-material/School';
+import MacroIcon from '../../../assets/icon/macro.svg';
 const Excel = require('exceljs');
 const XLSX = require('xlsx');
 import {
@@ -1149,6 +1150,7 @@ const Distribution = (props) => {
           <IntlMessages id='sidebar.sample.new.predefinedRoutes' />
         </Typography>
       </Box>
+
       <Divider sx={{mt: 2, mb: 4}} />
       <Box
         sx={{
@@ -1235,6 +1237,22 @@ const Distribution = (props) => {
         >
           Descargar Plantilla
         </Button>
+        <IconButton
+          sx={{
+            mt: 1,
+            '& svg': {
+              height: 35,
+              width: 35,
+            },
+            color: 'text.secondary',
+          }}
+          edge='end'
+          color='inherit'
+          aria-label='open drawer'
+          onClick={() => window.open('https://drive.google.com/file/d/15jYT7shhNNJ_cfA7WS75FHwLvZZETGGC/view?usp=sharing')}
+        >
+          <MacroIcon />
+        </IconButton>
       </Stack>
       <Collapse in={showAlert}>
         <Alert

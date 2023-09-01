@@ -373,7 +373,7 @@ const PredefinedRoutes = () => {
       );
       for (let delivery of selectedRoute_PageListPredefinedRoutes.deliveries) {
         if (
-          delivery.observationDelivery
+          delivery.observationDelivery.toString()
             ?.toLowerCase()
             .includes(valueObservationInput)
         ) {

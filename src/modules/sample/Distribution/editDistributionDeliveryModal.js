@@ -59,10 +59,10 @@ const EditDistributionDeliveryModal = ({
   const [parsedUbigeos, setParsedUbigeos] = React.useState([]);
 
   const [temporaryDelivery, setTemporaryDelivery] = React.useState('');
-
-  const [dateStartTransfer, setDateStartTransfer] = React.useState(Date.now());
+  console.log("Esta es la fecha del la distribucion",new Date(temporaryDelivery?.transferTimeStampDate));
+  const [dateStartTransfer, setDateStartTransfer] = React.useState(new Date(temporaryDelivery?.transferTimeStampDate));
   const [makeReferralGuide, setMakeReferralGuide] = React.useState(false);
-
+console.log("Este es el dateStartTranfer",dateStartTransfer);
   const [openCarrierDialog, setOpenCarrierDialog] = React.useState(false);
   const [openSelectProductDialog, setOpenSelectProductDialog] =
     React.useState(false);
@@ -489,7 +489,7 @@ const EditDistributionDeliveryModal = ({
               }}
             />
           </Grid>
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <DateTimePicker
               renderInput={(params) => (
                 <TextField
@@ -509,7 +509,31 @@ const EditDistributionDeliveryModal = ({
                 console.log('Fecha de inicio de traslado', dateStartTransfer);
               }}
             />
-          </Grid>
+          </Grid> */}
+          <Grid item xs={12} md={6}>
+                    <DateTimePicker
+                      minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
+                      value={(temporaryDelivery.transferTimeStampDate && dateStartTransfer=='Invalid Date')?new Date(temporaryDelivery?.transferTimeStampDate):dateStartTransfer}
+                      onChange={(newValue) => {
+                        setDateStartTransfer(newValue);
+                        console.log('Nueva fecha', newValue);
+                        console.log('Fecha de inicio de traslado', dateStartTransfer);
+                      }}
+                      required
+                    label='Fecha inicio traslado'
+                    inputFormat='dd/MM/yyyy hh:mm a'
+                    name='dateStartTransfer'
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth
+                          variant='outlined'
+                          sx={{position: 'relative', bottom: '-8px'}}
+                          {...params}
+                        />
+                      )}
+                    />
+                  </Grid>
           <Grid
             item
             xs={6}

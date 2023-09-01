@@ -757,16 +757,22 @@ const ReferralGuidesTable = (props) => {
     const remainingTime = Math.floor(countdown);
     if (remainingTime === 0) {
       return (
-        <Typography ml={1} mt={2}>
-          ¡Tiempo agotado!
-        </Typography>
+        <>
+          <FindReplaceIcon />
+          <Typography ml={1}>
+            <FindReplaceIcon /> Consulta Masiva SUNAT en progreso
+          </Typography>
+        </>
       );
     }
 
     return (
-      <Typography ml={1} mt={2}>
-        {remainingTime} segundos restantes
-      </Typography>
+      <>
+        <FindReplaceIcon />
+        <Typography ml={1}>
+          Consulta Masiva SUNAT en {remainingTime} segundos restantes
+        </Typography>
+      </>
     );
   };
   const compare = (a, b) => {
@@ -1079,11 +1085,10 @@ const ReferralGuidesTable = (props) => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       /> */}
-      <ButtonGroup
-        variant='outlined'
-        aria-label='outlined button group'
-        className={classes.btnGroup}
-        orientation={isMobile ? 'vertical' : 'horizontal'}
+      <Stack
+        sx={{mt: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        className={classes.stack}
       >
         {localStorage
           .getItem('pathsBack')
@@ -1097,8 +1102,8 @@ const ReferralGuidesTable = (props) => {
           </Button>
         ) : null}
         <Button
-          variant='outlined'
-          startIcon={<FindReplaceIcon />}
+          //variant='outlined'
+          //startIcon={<FindReplaceIcon />}
           //onClick={batchConsultReferralGuide}
           disabled={isLoading || !batchConsultIsActive}
           color='success'
@@ -1107,14 +1112,12 @@ const ReferralGuidesTable = (props) => {
           disableElevation
           sx={{cursor: 'default'}}
         >
-          Consulta Masiva de Guías en SUNAT
+          {renderTimer(countdown)}
           {(isLoading || !batchConsultIsActive) && (
             <CircularProgress sx={{ml: 2}} size={24} />
           )}
         </Button>
-        {!isLoading && batchConsultIsActive ? renderTimer(countdown) : null}
-      </ButtonGroup>
-
+      </Stack>
       <Dialog
         open={openStatus}
         onClose={() => setOpenStatus(false)}
