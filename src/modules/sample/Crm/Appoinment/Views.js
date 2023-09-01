@@ -52,7 +52,7 @@ import {
 } from '../../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAppointment} from 'redux/actions';
+import {deleteAppointment, getAppointment} from 'redux/actions';
 import {useState} from 'react';
 import {convertToDate} from 'Utils/utils';
 
@@ -85,6 +85,10 @@ const Views = (props) => {
   const toGetAppointments = (payload) => {
     dispatch(getAppointment(payload));
   };
+
+  const toDeleteAppointments = (payload) =>{
+    dispatch(deleteAppointment(payload))
+  }
 
   const {userDataRes} = useSelector(({user}) => user);
   const {listAppointments} = useSelector(({appointment}) => appointment);
@@ -194,6 +198,16 @@ const Views = (props) => {
         break;
       case 'delete':
         console.log('delete', action, event);
+        let delAppoint = {
+          request:{
+            payload:{
+              appointmentId: event.id,
+              merchantId: userDataRes.merchantSelected.merchantId
+            }
+          }
+        }
+        console.log("delete >>", delAppoint);
+        toDeleteAppointments(delAppoint)        
         break;
       default:
         break;
