@@ -79,6 +79,8 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import SearchIcon from '@mui/icons-material/Search';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import FolderZipIcon from '@mui/icons-material/FolderZip';
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import {CalendarPicker} from '@mui/lab';
 
@@ -1504,10 +1506,16 @@ const OutputsTable = (props) => {
     window.open(`/sample/distribution/distributions?id=${id}`, '_blank');
   };
 
-  const goToFileDistribution = (id) => {
+  const goToFileDistribution = (path, obj) => {
+    console.log("confeti lo que quier", path, obj);
+    let nameRoute = obj.routeName?obj.routeName:obj.distribution
+    const data = {
+      goDirectory: true,
+      path: `${path}/guías/${nameRoute}-${obj.distribution}`,
+    };
+    localStorage.setItem('redirectUrl', JSON.stringify(data));
     window.open(
-      `/sample/referral-guide/table?deliveryDistributionId=${id}`,
-      '_blank',
+      `/sample/explorer`
     );
   };
 
@@ -2084,7 +2092,7 @@ const OutputsTable = (props) => {
                                             ? `Distribución: ${
                                                 delivery.routeName ||
                                                 delivery.distribution
-                                              } ${delivery.distribution.length}`
+                                              } (${delivery.distribution.length})`
                                             : 'Más comprobantes'}
                                         </TableCell>
                                         {delivery.distribution ? (
@@ -2094,7 +2102,7 @@ const OutputsTable = (props) => {
                                             hover
                                             onClick={() =>
                                               goToFileDistribution(
-                                                delivery.distribution,
+                                                obj.folderMovement, delivery
                                               )
                                             }
                                           >
@@ -2102,7 +2110,7 @@ const OutputsTable = (props) => {
                                               size='small'
                                               color='secondary'
                                             >
-                                              <CloudDownloadIcon />
+                                              <FolderOutlinedIcon />
                                             </IconButton>
                                           </TableCell>
                                         ) : null}

@@ -203,7 +203,7 @@ const FileExplorer = (props) => {
   useEffect(() => {
     if (existStorage()) {
       const data = JSON.parse(localStorage.getItem('redirectUrl'));
-      console.log('data', data);
+      console.log('data xd', data);
       getDataPayload.request.payload.path = data.path;
       setActualPath(data.path);
       localStorage.setItem('redirectUrl', null);

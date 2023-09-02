@@ -23,6 +23,7 @@ import {
   Typography,
 } from '@mui/material';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import EditLocationOutlinedIcon from '@mui/icons-material/EditLocationOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
@@ -450,7 +451,7 @@ const FinancesTable = (props) => {
           Ver detalle
         </MenuItem>
         <MenuItem onClick={handleClickOpen.bind(this, 'generateSummaryGuide')}>
-          <DirectionsBusFilledIcon sx={{mr: 1, my: 'auto'}} />
+          <LocalShippingOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Generar Guía Conglomerada
         </MenuItem>
       </Menu>
