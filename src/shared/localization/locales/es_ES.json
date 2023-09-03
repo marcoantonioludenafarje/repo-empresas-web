@@ -719,6 +719,9 @@
   "sidebar.sample.crm.finalized": "Finalizado",
   "sidebar.sample.distribution": "Distribución",
   "sidebar.sample.distributions": "Distribuciones",
+
+  "sidebar.sample.admin": "Administración",
+  "sidebar.sample.adminTable": "Admin",
   "sidebar.sample.ecommerce": "Ecommerce",
   "sidebar.sample.earnings": "Ingresos",
   "sidebar.sample.expenses": "Egresos",

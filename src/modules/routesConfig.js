@@ -69,6 +69,23 @@ const rolesRoutesConfig = {
       ],
     },
     {
+      id: 'ecommerce',
+      title: 'ecommerce',
+      messageId: 'sidebar.sample.admin',
+      type: 'collapse',
+      icon: <StorefrontIcon fontSize='small' />,
+      children: [
+        {
+          id: 'orderTable',
+          title: 'Orders Table',
+          messageId: 'sidebar.sample.adminTable',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/admin/table',
+        },
+      ],
+    },
+    {
       id: 'crm',
       title: 'CRM',
       messageId: 'sidebar.sample.crm',
