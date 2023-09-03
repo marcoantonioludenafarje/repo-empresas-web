@@ -30,6 +30,7 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
   GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
   UPDATE_CATALOGS,
+  DELETE_CATALOGS,
   RESET_GENERAL,
   GET_CLIENTS_PRESIGNED,
   GET_IMAGE_PRESIGNED,
@@ -268,6 +269,12 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         updateCatalogsRes: action.payload,
+      };
+    case DELETE_CATALOGS:
+      console.log('data de reducer DELETE_CATALOGS', action.payload);
+      return {
+        ...state,
+        deleteCatalogsRes: action.payload,
       };
     case RESET_GENERAL:
       return {

@@ -26,6 +26,7 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
   GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
   UPDATE_CATALOGS,
+  DELETE_CATALOGS,
   GET_CLIENTS_PRESIGNED,
   GET_IMAGE_PRESIGNED,
 } from '../../shared/constants/ActionTypes';
@@ -422,6 +423,25 @@ export const updateCatalogs = (payload) => {
       })
       .catch((error) => {
         console.log('updateCatalogs error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const deleteCatalogs = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/parameter/deleteCatalogs', {body: payload})
+      .then((data) => {
+        console.log('deleteCatalog resultado', data);
+        dispatch({
+          type: DELETE_CATALOGS,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('deleteCatalogs error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

@@ -37,6 +37,7 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import ErrorIcon from '@mui/icons-material/Error';
 import DownloadIcon from '@mui/icons-material/Download';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
 import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
@@ -96,6 +97,9 @@ export default function Views(props) {
 
   const [searchValue, setSearchValue] = useState('');
   const [filteredAgents, setFilteredAgents] = useState([]);
+
+  const {successMessage} = useSelector(({agents}) => agents);
+  const {errorMessage} = useSelector(({agents}) => agents);
 
   let popUp = false;
 
@@ -172,7 +176,36 @@ export default function Views(props) {
   }, [onChangeQRAgentRes]);
 
   const showMessage = () => {
-    console.log('Mensaje QR');
+    if (successMessage != undefined) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha eliminado correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al eliminar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
   };
 
   useEffect(() => {
@@ -189,9 +222,7 @@ export default function Views(props) {
       let listPayload = {
         request: {
           payload: {
-            typeDocumentClient: '',
-            numberDocumentClient: '',
-            denominationClient: '',
+            robotName: searchValue,
             merchantId: userDataRes.merchantSelected.merchantId,
             LastEvaluatedKey: null,
           },
@@ -257,7 +288,7 @@ export default function Views(props) {
     console.log('id de selected', selectedAgent.robotId);
     deletePayload.request.payload.robotId = selectedAgent.robotId;
     console.log('deletePayload', deletePayload);
-    deleteAgent(deletePayload);
+    deleteAgent(deletePayload); 
     setOpen2(false);
     setOpenStatus(true);
   };
@@ -267,25 +298,35 @@ export default function Views(props) {
     Router.push('/sample/agents/create');
   };
 
-  // Paso 2: Función para filtrar las campañas por el nombre de la campaña
-  const filterAgents = (searchText) => {
-    if (!searchText) {
-      setFilteredAgents(listAgents); // Si el valor del TextField está vacío, mostrar todas las campañas.
-    } else {
-      const filtered = listAgents.filter((agent) =>
-        agent.robotName.toLowerCase().includes(searchText.toLowerCase()),
-      );
-      setFilteredAgents(filtered);
-    }
+  const searchAgents = () => {
+    let listPayload2 = {
+      request: {
+        payload: {
+          robotName: searchValue,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+        },
+      },
+    };
+    console.log('listPayload2',listPayload2)
+    getAgent(listPayload2);
   };
 
-  const buscarAgente = () => {
-    console.log('prueba boton ');
+  const sendStatus = () => {
+    setOpenStatus(false);
+    setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            robotName: searchValue,
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      getAgent(listPayload);
+    }, 2000);
   };
-
-  useEffect(() => {
-    filterAgents(searchValue);
-  }, [searchValue, listAgents]);
 
   return (
     <Card sx={{p: 4}}>
@@ -301,7 +342,7 @@ export default function Views(props) {
           name='nameToSearch'
           size='small'
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
+          onChange={(e) => setSearchValue(e.target.value.toUpperCase())}
         />
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
@@ -310,7 +351,7 @@ export default function Views(props) {
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          // onClick={/*buscarAgente()*/}
+          onClick={searchAgents}
         >
           Buscar
         </Button>
@@ -333,7 +374,7 @@ export default function Views(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredAgents?.map((row, index) => (
+            {listAgents?.map((row, index) => (
               <TableRow
                 key={index}
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -403,6 +444,26 @@ export default function Views(props) {
 
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
+
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar agente'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog
         open={open2}
