@@ -590,7 +590,7 @@ export const customizePdf = (payload) => {
           type: CUSTOMIZE_PDF,
           payload: data.response.payload,
         });
-        dispatch({type: FETCH_SUCCESS});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
         console.log('customizePdf error', error);

@@ -211,8 +211,6 @@ const Customize = (props) => {
   useEffect(() => {
     if (userDataRes && !businessParameter) {
       console.log('Esto se ejecuta?');
-
-      dispatch({type: GET_BUSINESS_PARAMETER, payload: undefined});
       const getBusinessParameter = (payload) => {
         dispatch(onGetBusinessParameter(payload));
       };
@@ -385,9 +383,11 @@ const Customize = (props) => {
         obj.weightFields = weightFields;
         obj.pdfScale = pdfScale;
       }
+      return obj;
     });
+    console.log('newBUsinessParameter', newBusinessParameter);
     dispatch({
-      type: GET_BUSINESS_PARAMETER,
+      type: 'GET_BUSINESS_PARAMETER',
       payload: newBusinessParameter,
     });
     const finalPayload = {
@@ -523,9 +523,9 @@ const Customize = (props) => {
           }}
         >
           <Formik
-            //validateOnChange={true}
-            //validationSchema={validationSchema}
-            //initialValues={{ ...defaultValues }}
+            validateOnChange={true}
+            validationSchema={validationSchema}
+            initialValues={{...defaultValues}}
             onSubmit={handleData}
           >
             {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
