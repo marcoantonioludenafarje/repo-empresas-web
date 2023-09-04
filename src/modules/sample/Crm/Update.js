@@ -157,7 +157,7 @@ const Update = (props) => {
   const [publishDate, setPublishDate] = React.useState(
     new Date(selectedCampaign?.scheduledAt) /* Number(query.createdAt) */,
   );
-  console.log("Este es el publishDate",publishDate);
+  console.log('Este es el publishDate', publishDate);
   const [openDialog, setOpenDialog] = useState(false);
   const [variations, setVariations] = useState(['Variación 1']);
   const [numVariations, setNumVariations] = useState(1);

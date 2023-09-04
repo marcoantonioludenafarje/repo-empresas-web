@@ -262,6 +262,9 @@ const GetReferralGuide = (props) => {
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [basicUrl, setBasicUrl] = React.useState('');
   const [openPrevisualizer, setOpenPrevisualizer] = React.useState(false);
+  //PDF
+  const [pdfScale, setPdfScale] = React.useState('100');
+  const [weightFields, setWeightFields] = React.useState(true);
   let changeValueField;
 
   const {listDistribution} = useSelector(({movements}) => movements);
@@ -529,6 +532,20 @@ const GetReferralGuide = (props) => {
       console.log('serieParameter', serieParameter);
       console.log('serieParameter.metadata', serieParameter.metadata);
       setSerial(serieParameter.metadata ? serieParameter.metadata : '');
+
+      let referralGuideParameter = businessParameter.find(
+        (obj) => obj.abreParametro == 'SERIES_REFERRAL_GUIDE',
+      );
+      if (referralGuideParameter.weightFields == false) {
+        setWeightFields(false);
+      } else {
+        setWeightFields(true);
+      }
+      if (referralGuideParameter.pdfScale) {
+        setPdfScale(referralGuideParameter.pdfScale);
+      } else {
+        setPdfScale('100');
+      }
     }
   }, [businessParameter]);
 
@@ -950,6 +967,8 @@ const GetReferralGuide = (props) => {
             folderMovement: selectedOutput.folderMovement,
             denominationMerchant:
               userDataRes.merchantSelected.denominationMerchant,
+            weightFields: weightFields,
+            pdfScale: pdfScale,
           },
         },
       };
@@ -1324,6 +1343,7 @@ const GetReferralGuide = (props) => {
   };
   const handleClickOpenPrevisualizer = () => {
     setOpenPrevisualizer(true);
+    setUrlPdf('');
     console.log(
       'existArrivalUbigeo && existStartingUbigeo && existCarrier',
       existArrivalUbigeo,
@@ -1413,6 +1433,8 @@ const GetReferralGuide = (props) => {
           folderMovement: selectedOutput.folderMovement,
           denominationMerchant:
             userDataRes.merchantSelected.denominationMerchant,
+          weightFields: weightFields,
+          pdfScale: pdfScale,
         },
       },
     };
@@ -2667,9 +2689,13 @@ const GetReferralGuide = (props) => {
           />
         </DialogTitle>
         <DialogContent>
-          <Box sx={{width: 1, textAlign: 'center'}}>
-            <canvas ref={canvasRef} style={{height: '100vh'}} />
-          </Box>
+          {urlPdf ? (
+            <Box sx={{width: 1, textAlign: 'center'}}>
+              <canvas ref={canvasRef} style={{height: '100vh'}} />
+            </Box>
+          ) : (
+            <CircularProgress size={16} />
+          )}
 
           <Box
             sx={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}

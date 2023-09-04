@@ -1796,9 +1796,13 @@ const NewOutput = (props) => {
           />
         </DialogTitle>
         <DialogContent>
-          <Box sx={{width: 1, textAlign: 'center'}}>
-            <canvas ref={canvasRef} style={{height: '100vh'}} />
-          </Box>
+          {urlPdf ? (
+            <Box sx={{width: 1, textAlign: 'center'}}>
+              <canvas ref={canvasRef} style={{height: '100vh'}} />
+            </Box>
+          ) : (
+            <CircularProgress size={16} />
+          )}
 
           <Box
             sx={{display: 'flex', justifyContent: 'center', marginTop: '1rem'}}

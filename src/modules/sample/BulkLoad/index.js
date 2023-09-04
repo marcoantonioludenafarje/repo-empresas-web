@@ -914,7 +914,7 @@ const BulkLoad = (props) => {
       document.body.removeChild(link);
     }
   }, [excelTemplateGeneratedToBulkLoadRes, downloadExcel]);
-  
+
   const setDeleteState = (event) => {
     console.log('eventoDelete', event);
     setOpen2(true);
@@ -1100,9 +1100,9 @@ const BulkLoad = (props) => {
           >
             Eliminar todo el catálogo del Negocio
           </Button>
-          </Box>
+        </Box>
       </Card>
-      
+
       <Dialog
         open={openStatus}
         onClose={sendStatus}
@@ -1138,7 +1138,8 @@ const BulkLoad = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            ¿Desea eliminar realmente toda la información del negocio? Esta operación no podrá revertirse
+            ¿Desea eliminar realmente toda la información del negocio? Esta
+            operación no podrá revertirse
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>

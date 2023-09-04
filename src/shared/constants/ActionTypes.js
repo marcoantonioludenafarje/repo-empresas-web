@@ -177,7 +177,7 @@ export const UPDATE_CATALOGS = 'update_catalogs';
 export const DELETE_CATALOGS = 'delete_catalogs';
 export const UPDATE_NOTIFICATION_BUSINESS_PARAMETER =
   'update_notification_business_parameter';
-
+export const CUSTOMIZE_PDF = 'customize_pdf';
 //IMAGE
 export const GET_PRESIGNED = 'get_presigned';
 export const GET_IMAGE_PRESIGNED = 'get_image_presigned';

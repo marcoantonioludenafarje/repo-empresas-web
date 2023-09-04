@@ -567,7 +567,11 @@ const AppHeader = () => {
           edge='end'
           color='inherit'
           aria-label='open drawer'
-          onClick={() => window.open('https://drive.google.com/file/d/1bQBsf4o9f9kZjf_vmEFRONodeUBXGk1l/view?usp=sharing')}
+          onClick={() =>
+            window.open(
+              'https://drive.google.com/file/d/1bQBsf4o9f9kZjf_vmEFRONodeUBXGk1l/view?usp=sharing',
+            )
+          }
         >
           <ManualIcon />
         </IconButton>

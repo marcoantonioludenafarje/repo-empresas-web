@@ -34,6 +34,7 @@ import {
   RESET_GENERAL,
   GET_CLIENTS_PRESIGNED,
   GET_IMAGE_PRESIGNED,
+  CUSTOMIZE_PDF,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -275,6 +276,12 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         deleteCatalogsRes: action.payload,
+      };
+    case CUSTOMIZE_PDF:
+      console.log('data de reducer CUSTOMIZE_PDF', action.payload);
+      return {
+        ...state,
+        customizePdfRes: action.payload,
       };
     case RESET_GENERAL:
       return {

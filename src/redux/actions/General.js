@@ -29,6 +29,7 @@ import {
   DELETE_CATALOGS,
   GET_CLIENTS_PRESIGNED,
   GET_IMAGE_PRESIGNED,
+  CUSTOMIZE_PDF,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -572,6 +573,27 @@ export const exportExcelTemplateToProviders = (payload) => {
       })
       .catch((error) => {
         console.log('exportExcelTemplateToProviders error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const customizePdf = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/customizePdf', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('customizePdf resultado', data);
+        dispatch({
+          type: CUSTOMIZE_PDF,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('customizePdf error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

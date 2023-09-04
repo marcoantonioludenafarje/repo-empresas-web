@@ -36,6 +36,7 @@ import QrCodeIcon from '@mui/icons-material/QrCode';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import ErrorIcon from '@mui/icons-material/Error';
 import DownloadIcon from '@mui/icons-material/Download';
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
@@ -288,7 +289,7 @@ export default function Views(props) {
     console.log('id de selected', selectedAgent.robotId);
     deletePayload.request.payload.robotId = selectedAgent.robotId;
     console.log('deletePayload', deletePayload);
-    deleteAgent(deletePayload); 
+    deleteAgent(deletePayload);
     setOpen2(false);
     setOpenStatus(true);
   };
@@ -308,7 +309,7 @@ export default function Views(props) {
         },
       },
     };
-    console.log('listPayload2',listPayload2)
+    console.log('listPayload2', listPayload2);
     getAgent(listPayload2);
   };
 

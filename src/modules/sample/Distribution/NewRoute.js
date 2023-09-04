@@ -1249,7 +1249,11 @@ const Distribution = (props) => {
           edge='end'
           color='inherit'
           aria-label='open drawer'
-          onClick={() => window.open('https://drive.google.com/file/d/15jYT7shhNNJ_cfA7WS75FHwLvZZETGGC/view?usp=sharing')}
+          onClick={() =>
+            window.open(
+              'https://drive.google.com/file/d/15jYT7shhNNJ_cfA7WS75FHwLvZZETGGC/view?usp=sharing',
+            )
+          }
         >
           <MacroIcon />
         </IconButton>
