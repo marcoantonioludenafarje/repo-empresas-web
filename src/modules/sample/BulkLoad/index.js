@@ -172,9 +172,8 @@ const BulkLoad = (props) => {
   );
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
-  const {successMessage} = useSelector(({general}) => general);
-  const {errorMessage} = useSelector(({general}) => general);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const {deleteCatalogsRes} = useSelector(({general}) => general);
 
   const toUpdateCatalogs = (payload) => {
     dispatch(updateCatalogs(payload));
@@ -933,6 +932,7 @@ const BulkLoad = (props) => {
       request: {
         payload: {
           merchantId: userDataRes.merchantSelected.merchantId,
+          devuelveerror: "S"
         },
       },
     };
@@ -948,7 +948,7 @@ const BulkLoad = (props) => {
   };
 
   const showMessage = () => {
-    if (successMessage != undefined) {
+    if (deleteCatalogsRes != undefined && deleteCatalogsRes.message) {
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -963,7 +963,7 @@ const BulkLoad = (props) => {
           </DialogContentText>
         </>
       );
-    } else if (errorMessage) {
+    } else if (deleteCatalogsRes != undefined && deleteCatalogsRes.name == 'Error') {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -971,26 +971,12 @@ const BulkLoad = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error al eliminar.
+            {deleteCatalogsRes.error}
           </DialogContentText>
         </>
       );
     } else {
-      //return <CircularProgress disableShrink />;
-      return (
-        <>
-          <CheckCircleOutlineOutlinedIcon
-            color='success'
-            sx={{fontSize: '6em', mx: 2}}
-          />
-          <DialogContentText
-            sx={{fontSize: '1.2em', m: 'auto'}}
-            id='alert-dialog-description'
-          >
-            En desarrollo de la funcionalidad
-          </DialogContentText>
-        </>
-      );
+      return <CircularProgress disableShrink />;
     }
   };
 
@@ -1090,17 +1076,23 @@ const BulkLoad = (props) => {
             <></>
           )}
         </Box>
-        <Divider sx={{my: 2}} />
-        <Box>
-          <Button
-            variant='outlined'
-            color='secondary'
-            endIcon={<DeleteForeverIcon />}
-            onClick={setDeleteState}
-          >
-            Eliminar todo el catálogo del Negocio
-          </Button>
-        </Box>
+        {(userDataRes && userDataRes.merchantSelected.typeMerchant !== 'PROD') ? (
+          <>
+          <Divider sx={{my: 2}} />
+          <Box>
+            <Button
+              variant='outlined'
+              color='secondary'
+              endIcon={<DeleteForeverIcon />}
+              onClick={setDeleteState}
+            >
+              Eliminar todo el catálogo del Negocio
+            </Button>
+          </Box>
+          </>
+         ) : (
+          <></>
+        )} 
       </Card>
 
       <Dialog
@@ -1116,11 +1108,14 @@ const BulkLoad = (props) => {
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
         </DialogContent>
+        { (deleteCatalogsRes) ?
+          <>
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button variant='outlined' onClick={sendStatus}>
             Aceptar
           </Button>
         </DialogActions>
+          </> : <></>}
       </Dialog>
       <Dialog
         open={open2}
