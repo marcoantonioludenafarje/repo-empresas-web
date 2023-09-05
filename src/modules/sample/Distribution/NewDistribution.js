@@ -187,6 +187,9 @@ const Distribution = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openDelivery, setOpenDelivery] = React.useState(false);
   const [selectedDeliveryState, setSelectedDeliveryState] = React.useState({});
+  //PDF
+  const [pdfScale, setPdfScale] = React.useState('100');
+  const [weightFields, setWeightFields] = React.useState(true);
 
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
@@ -353,6 +356,20 @@ const Distribution = (props) => {
       console.log('serieParameter', serieParameter);
       console.log('serieParameter.metadata', serieParameter.metadata);
       setSerial(serieParameter.metadata ? serieParameter.metadata : '');
+
+      let referralGuideParameter = businessParameter.find(
+        (obj) => obj.abreParametro == 'SERIES_REFERRAL_GUIDE',
+      );
+      if (referralGuideParameter.weightFields == false) {
+        setWeightFields(false);
+      } else {
+        setWeightFields(true);
+      }
+      if (referralGuideParameter.pdfScale) {
+        setPdfScale(referralGuideParameter.pdfScale);
+      } else {
+        setPdfScale('100');
+      }
     }
   }, [businessParameter]);
 
@@ -412,6 +429,8 @@ const Distribution = (props) => {
           routerId: selectedRoute.routePredefinedId,
           typeOfTransport: transportModeVal,
           observation: data.observation,
+          weightFields: weightFields,
+          pdfScale: pdfScale,
           deliveries: routes.map((route, index) => {
             if (route !== undefined) {
               return {
@@ -421,7 +440,7 @@ const Distribution = (props) => {
                 totalGrossWeight: route.totalWeight,
                 numberOfPackages: route.numberPackages,
                 observationDelivery: route.observationDelivery,
-                reasonForTransfer: route.reasonForTransfer || "sale",
+                reasonForTransfer: route.reasonForTransfer || 'sale',
                 startingPointAddress: route.startingAddress,
                 startingInternalCode: route.startingInternalCode || '',
                 startingPointUbigeo: completeWithZeros(
@@ -579,7 +598,7 @@ const Distribution = (props) => {
     const newDeliveries = routes.map((delivery) => {
       console.log('holi madafaca');
       delivery.transferStartDate = dateWithHyphen(timestamp);
-      delivery.transferTimeStampDate=timestamp
+      delivery.transferTimeStampDate = timestamp;
       return delivery;
     });
     setRoutes(newDeliveries);
@@ -1022,7 +1041,7 @@ const Distribution = (props) => {
             <TableBody>
               {routes && routes.length !== 0
                 ? routes.map((route, index2) => {
-                  console.log("Este es el routes que se renderiza",routes);
+                    console.log('Este es el routes que se renderiza', routes);
                     const products = route.products;
                     return (
                       <>

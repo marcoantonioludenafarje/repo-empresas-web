@@ -26,8 +26,10 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
   GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
   UPDATE_CATALOGS,
+  DELETE_CATALOGS,
   GET_CLIENTS_PRESIGNED,
   GET_IMAGE_PRESIGNED,
+  CUSTOMIZE_PDF,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -427,6 +429,25 @@ export const updateCatalogs = (payload) => {
   };
 };
 
+export const deleteCatalogs = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/parameter/deleteCatalogs', {body: payload})
+      .then((data) => {
+        console.log('deleteCatalog resultado', data);
+        dispatch({
+          type: DELETE_CATALOGS,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('deleteCatalogs error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
 export const actualDate = () => {
   return (dispatch) => dispatch({type: ACTUAL_DATE});
 };
@@ -552,6 +573,27 @@ export const exportExcelTemplateToProviders = (payload) => {
       })
       .catch((error) => {
         console.log('exportExcelTemplateToProviders error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const customizePdf = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/customizePdf', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('customizePdf resultado', data);
+        dispatch({
+          type: CUSTOMIZE_PDF,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('customizePdf error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

@@ -248,6 +248,22 @@ const rolesRoutesConfig = {
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/distribution/distributions',
         },
+        {
+          id: 'referralGuides',
+          title: 'ReferralGuides',
+          messageId: 'sidebar.sample.referralGuides',
+          type: 'item',
+          icon: <ReceiptOutlinedIcon fontSize='small' />,
+          url: '/sample/referral-guide/table',
+        },
+        {
+          id: 'referralGuides',
+          title: 'ReferralGuideCustomize',
+          messageId: 'sidebar.sample.customize',
+          type: 'item',
+          icon: <SettingsIcon fontSize='small' />,
+          url: '/sample/referral-guide/customize',
+        },
         /* {
           id: 'createRoute',
           title: 'createRoute',

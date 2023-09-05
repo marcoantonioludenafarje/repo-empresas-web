@@ -30,9 +30,11 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_CLIENTS,
   GENERATE_EXCEL_TEMPLATE_TO_PROVIDERS,
   UPDATE_CATALOGS,
+  DELETE_CATALOGS,
   RESET_GENERAL,
   GET_CLIENTS_PRESIGNED,
   GET_IMAGE_PRESIGNED,
+  CUSTOMIZE_PDF,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -268,6 +270,18 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         updateCatalogsRes: action.payload,
+      };
+    case DELETE_CATALOGS:
+      console.log('data de reducer DELETE_CATALOGS', action.payload);
+      return {
+        ...state,
+        deleteCatalogsRes: action.payload,
+      };
+    case CUSTOMIZE_PDF:
+      console.log('data de reducer CUSTOMIZE_PDF', action.payload);
+      return {
+        ...state,
+        customizePdfRes: action.payload,
       };
     case RESET_GENERAL:
       return {

@@ -61,6 +61,7 @@ import {array} from 'prop-types';
 import {getUserData} from '../../../redux/actions/User';
 import {getCurrentMovementsDocumentsBusiness} from '../../../redux/actions/MyBilling';
 import {exportExcelTemplateToBulkLoad} from '../../../redux/actions/General';
+import {deleteCatalogs} from '../../../redux/actions/General';
 import originalUbigeos from '../../../Utils/ubigeo.json';
 
 import {
@@ -70,6 +71,7 @@ import {
   fixDecimals,
 } from '../../../Utils/utils';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import SettingsIcon from '@mui/icons-material/Settings';
 const maxLength = 11111111111111111111; //20 caracteres
 const validationSchema = yup.object({
@@ -168,6 +170,11 @@ const BulkLoad = (props) => {
     'excelTemplateGeneratedToBulkLoadRes',
     excelTemplateGeneratedToBulkLoadRes,
   );
+  const [openStatus, setOpenStatus] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
+  const {successMessage} = useSelector(({general}) => general);
+  const {errorMessage} = useSelector(({general}) => general);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const toUpdateCatalogs = (payload) => {
     dispatch(updateCatalogs(payload));
@@ -175,6 +182,10 @@ const BulkLoad = (props) => {
 
   const toExportExcelTemplateToBulkLoad = (payload) => {
     dispatch(exportExcelTemplateToBulkLoad(payload));
+  };
+
+  const toDeleteCatalog = (payload) => {
+    dispatch(deleteCatalogs(payload));
   };
 
   useEffect(() => {
@@ -904,6 +915,85 @@ const BulkLoad = (props) => {
     }
   }, [excelTemplateGeneratedToBulkLoadRes, downloadExcel]);
 
+  const setDeleteState = (event) => {
+    console.log('eventoDelete', event);
+    setOpen2(true);
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+
+  const confirmDelete = () => {
+    let deletePayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    toDeleteCatalog(deletePayload);
+    setOpen2(false);
+    setOpenStatus(true);
+  };
+
+  const sendStatus = () => {
+    setOpenStatus(false);
+  };
+
+  const showMessage = () => {
+    if (successMessage != undefined) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha eliminado correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al eliminar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      //return <CircularProgress disableShrink />;
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            En desarrollo de la funcionalidad
+          </DialogContentText>
+        </>
+      );
+    }
+  };
+
   return userDataRes ? (
     <>
       <Card sx={{p: 4}}>
@@ -1000,7 +1090,67 @@ const BulkLoad = (props) => {
             <></>
           )}
         </Box>
+        <Divider sx={{my: 2}} />
+        <Box>
+          <Button
+            variant='outlined'
+            color='secondary'
+            endIcon={<DeleteForeverIcon />}
+            onClick={setDeleteState}
+          >
+            Eliminar todo el catálogo del Negocio
+          </Button>
+        </Box>
       </Card>
+
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar todo el catálogo del Negocio'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={open2}
+        onClose={handleClose2}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar TODO el catálogo del Negocio'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea eliminar realmente toda la información del negocio? Esta
+            operación no podrá revertirse
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={confirmDelete}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   ) : (
     <></>

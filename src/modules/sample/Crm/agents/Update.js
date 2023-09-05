@@ -205,9 +205,8 @@ const UpdateAgent = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            {/* Se ha registrado la información <br />
-            correctamente */}
-            {successMessage}
+            Se ha registrado la información <br />
+            correctamente
           </DialogContentText>
         </>
       );
