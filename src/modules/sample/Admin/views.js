@@ -182,18 +182,17 @@ export default function Views(props) {
     });
   };
 
-  const goToProduct = () =>{
+  const goToProduct = () => {
     //usuario
     Router.push({
       pathname: '/sample/admin/productive',
-    })
-  }
-  const goToSunat = () =>{
+    });
+  };
+  const goToSunat = () => {
     Router.push({
-      pathname: '/sample/admin/sunat'
-    })
-  }
-
+      pathname: '/sample/admin/sunat',
+    });
+  };
 
   const goToEnable = () => {
     console.log('Activar Agente', selectedSpecialist);
@@ -226,8 +225,6 @@ export default function Views(props) {
   //   setOpenStatus(true);
   //   reloadPage();
   // };
-
-
 
   // Paso 2: Función para filtrar las campañas por el nombre de la campaña
   /*const filterSpecialists = (searchText) => {
@@ -318,15 +315,17 @@ export default function Views(props) {
     }, 2000);
   };
 
-  const listClients = [{
-    id: 1,
-    social: 'Empresa nueva',
-    user: 'Usuario nuevo',
-    state: 'Activo',
-    type: 'UAT',
-    plan: 'plan',
-    sunat: 'No',
-  }]
+  const listClients = [
+    {
+      id: 1,
+      social: 'Empresa nueva',
+      user: 'Usuario nuevo',
+      state: 'Activo',
+      type: 'UAT',
+      plan: 'plan',
+      sunat: 'No',
+    },
+  ];
 
   return (
     <Card sx={{p: 4}}>
@@ -509,7 +508,7 @@ export default function Views(props) {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/robot/update') === true ? (
-          <MenuItem >
+          <MenuItem>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Habilitar Negocio
           </MenuItem>
@@ -522,7 +521,6 @@ export default function Views(props) {
             Deshabilitar Negocio
           </MenuItem>
         ) : null}
-
       </Menu>
     </Card>
   );

@@ -354,6 +354,7 @@ const Customize = (props) => {
           folderMovement: 'salidas/RUC-20606168978/73',
           denominationMerchant: 'DIGISOLUTIONS SRL',
           weightFields: weightFields,
+          pdfScale: pdfScale,
         },
       },
     };
@@ -641,6 +642,14 @@ const Customize = (props) => {
             />
           </DialogTitle>
           <DialogContent>
+            <Button
+              color='primary'
+              sx={{width: 1}}
+              variant='outlined'
+              onClick={() => window.open(urlPdf)}
+            >
+              Redirigir
+            </Button>
             {urlPdf ? (
               <Box sx={{width: 1, textAlign: 'center'}}>
                 <canvas ref={canvasRef} style={{height: '100vh'}} />

@@ -27,6 +27,9 @@ import {
   useTheme,
   TextField,
   useMediaQuery,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -150,6 +153,7 @@ let deletePayload = {
     },
   },
 };
+let selectedSummaryRow = {};
 const PredefinedRoutes = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open2, setOpen2] = React.useState(false);
@@ -158,6 +162,13 @@ const PredefinedRoutes = () => {
   const [openRoutes, setOpenRoutes] = React.useState(false);
   const [openProducts, setOpenProducts] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
+  const [summaryType, setSummaryType] = React.useState('driver');
+  const [nombreAgrupador, setNombreAgrupador] = React.useState('');
+  const [cantidadAgrupacion, setCantidadAgrupacion] = React.useState('');
+  const [openSummary, setOpenSummary] = React.useState(false);
+  const [openSummaryProducts, setOpenSummaryProducts] = React.useState(false);
+  const [openSummaryPoints, setOpenSummaryPoints] = React.useState(false);
+  const [summaryRowNumber, setSummaryRowNumber] = React.useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [rowNumber2, setRowNumber2] = React.useState(0);
@@ -501,12 +512,124 @@ const PredefinedRoutes = () => {
       'Verificando servicio child deliveries Routes',
       selectedRoute_PageListPredefinedRoutes,
     );
-    setOpen(true);
+    if (type == 'detailRoute') {
+      setOpen(true);
+    } else if (type == 'viewSummary') {
+      setOpenSummary(true);
+    }
     // toGetPredefinedRoute()
     setTypeDialog(type);
     // setShowAlert(false);
   };
+  const acumularProductosPorConductor = (entregas) => {
+    const acumulador = {};
 
+    entregas.forEach((entrega) => {
+      const conductorKey = `${entrega.driverDocumentType}_${entrega.driverDocumentNumber}`;
+
+      if (!acumulador[conductorKey]) {
+        acumulador[conductorKey] = {
+          driverDocumentType: entrega.driverDocumentType,
+          driverDocumentNumber: entrega.driverDocumentNumber,
+          driverDenomination: entrega.driverDenomination,
+          driverLastName: entrega.driverLastName,
+          carrierPlateNumber: entrega.carrierPlateNumber,
+          points: [
+            {
+              arrivalPointUbigeo: entrega.arrivalPointUbigeo,
+              arrivalPointAddress: entrega.arrivalPointAddress,
+              arrivalInternalCode: entrega.arrivalInternalCode,
+              startingInternalCode: entrega.startingInternalCode,
+              startingPointAddress: entrega.startingPointAddress,
+              startingPointUbigeo: entrega.startingPointUbigeo,
+            },
+          ],
+          productsInfo: [],
+        };
+      }
+
+      entrega.productsInfo.forEach((producto) => {
+        const conductorProducto = acumulador[conductorKey].productsInfo.find(
+          (item) => item.product === producto.product,
+        );
+
+        if (conductorProducto) {
+          conductorProducto.quantityMovement += producto.quantityMovement;
+        } else {
+          acumulador[conductorKey].productsInfo.push({
+            product: producto.product,
+            quantityMovement: producto.quantityMovement,
+            description: producto.description,
+            weight: Number(producto.weight),
+            unitMeasure: producto.unitMeasure,
+          });
+        }
+      });
+
+      const conductorPuntos = acumulador[conductorKey].points.find(
+        (item) =>
+          item.arrivalInternalCode === entrega.arrivalInternalCode &&
+          item.startingInternalCode === entrega.startingInternalCode,
+      );
+
+      if (!conductorPuntos) {
+        acumulador[conductorKey].points.push({
+          arrivalPointUbigeo: entrega.arrivalPointUbigeo,
+          arrivalPointAddress: entrega.arrivalPointAddress,
+          arrivalInternalCode: entrega.arrivalInternalCode,
+          startingInternalCode: entrega.startingInternalCode,
+          startingPointAddress: entrega.startingPointAddress,
+          startingPointUbigeo: entrega.startingPointUbigeo,
+        });
+      }
+    });
+
+    return Object.values(acumulador);
+  };
+  // Creamos una función para acumular los productos por conductor (driver)
+  const acumularProductos = (entregas) => {
+    const acumulador = {};
+
+    entregas.forEach((entrega) => {
+      entrega.productsInfo.forEach((producto) => {
+        const productoKey = producto.product;
+
+        if (!acumulador[productoKey]) {
+          acumulador[productoKey] = {
+            product: producto.product,
+            quantityMovement: producto.quantityMovement,
+            description: producto.description,
+            weight: Number(producto.weight),
+            unitMeasure: producto.unitMeasure,
+          };
+        } else {
+          acumulador[productoKey].quantityMovement += producto.quantityMovement;
+        }
+      });
+    });
+
+    return Object.values(acumulador);
+  };
+  const checkSummaryProducts = (row, index) => {
+    selectedSummaryRow = row;
+    console.log('selectedSummaryRow', selectedSummaryRow);
+    setOpenSummaryProducts(false);
+    setOpenSummaryProducts(true);
+    if (openSummaryProducts == true && summaryRowNumber == index) {
+      setOpenSummaryProducts(false);
+    }
+    setSummaryRowNumber(index);
+  };
+  const checkSummaryPoints = (row, index) => {
+    selectedSummaryRow = row;
+    console.log('selectedSummaryRow', selectedSummaryRow);
+    setOpenSummaryPoints(false);
+    setOpenSummaryPoints(true);
+    if (openSummaryPoints == true && summaryRowNumber == index) {
+      setOpenSummaryPoints(false);
+    }
+    setSummaryRowNumber(index);
+  };
   return (
     <>
       {loading ? (
@@ -679,7 +802,10 @@ const PredefinedRoutes = () => {
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Ver detalle
             </MenuItem>
-
+            <MenuItem onClick={handleClickOpen.bind(this, 'viewSummary')}>
+              <CachedIcon sx={{mr: 1, my: 'auto'}} />
+              Ver resumen
+            </MenuItem>
             <MenuItem onClick={goToUpdate}>
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Actualizar en mantenimiento
@@ -920,6 +1046,294 @@ const PredefinedRoutes = () => {
                   </Table>
                 </DialogContent>
               </>
+            ) : null}
+          </Dialog>
+          <Dialog
+            open={openSummary}
+            onClose={() => setOpenSummary(false)}
+            sx={{textAlign: 'center'}}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle
+              sx={{
+                fontSize: '1.5em',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <Stack
+                sx={{m: 2, justifyContent: 'center', marginBottom: '10px'}}
+                direction={isMobile ? 'column' : 'row'}
+                spacing={2}
+              >
+                <FormControl sx={{my: 0, mx: 'auto', width: 160}}>
+                  <InputLabel id='summary-label' style={{fontWeight: 200}}>
+                    Tipo Resumen
+                  </InputLabel>
+                  <Select
+                    name='summary'
+                    labelId='summary-label'
+                    label='Tipo Resumen'
+                    onChange={(event) => {
+                      console.log(event.target.value);
+                      setSummaryType(event.target.value);
+                    }}
+                    value={summaryType}
+                  >
+                    <MenuItem value='driver' style={{fontWeight: 200}}>
+                      Chofer
+                    </MenuItem>
+                    <MenuItem value='all' style={{fontWeight: 200}}>
+                      Todo
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+
+                <TextField
+                  label='Nombre de Agrupador'
+                  value={nombreAgrupador}
+                  onChange={(e) => setNombreAgrupador(e.target.value)}
+                  variant='outlined'
+                />
+                <TextField
+                  label='Cantidad de Agrupación'
+                  value={cantidadAgrupacion}
+                  onChange={(e) => setCantidadAgrupacion(e.target.value)}
+                  variant='outlined'
+                />
+              </Stack>
+
+              <IconButton
+                edge='end'
+                onClick={() => setOpenSummary(false)}
+                aria-label='close'
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogTitle>
+            {summaryType == 'driver' ? (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Chofer</TableCell>
+                    <TableCell>Placa</TableCell>
+                    <TableCell>Productos</TableCell>
+                    <TableCell>Puntos de Partida - Llegada</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {listRouteBySelectedRoutes &&
+                  listRouteBySelectedRoutes.deliveries.length > 0
+                    ? acumularProductosPorConductor(
+                        listRouteBySelectedRoutes.deliveries,
+                      ).map((fila, indexSummary) => {
+                        const summaryProducts = fila.productsInfo;
+                        const summaryPoints = fila.points;
+                        return (
+                          <>
+                            <TableRow key={indexSummary}>
+                              <TableCell>
+                                {fila.driverDenomination +
+                                  ' ' +
+                                  fila.driverLastName}
+                              </TableCell>
+                              <TableCell>{fila.carrierPlateNumber}</TableCell>
+                              <TableCell>
+                                {fila.productsInfo &&
+                                fila.productsInfo.length !== 0 ? (
+                                  <IconButton
+                                    onClick={() =>
+                                      checkSummaryProducts(fila, indexSummary)
+                                    }
+                                    size='small'
+                                  >
+                                    <FormatListBulletedIcon fontSize='small' />
+                                  </IconButton>
+                                ) : null}
+                              </TableCell>
+                              <TableCell>
+                                <IconButton
+                                  onClick={() =>
+                                    checkSummaryPoints(fila, indexSummary)
+                                  }
+                                  size='small'
+                                >
+                                  <FormatListBulletedIcon fontSize='small' />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow key={`sub-${indexSummary}`}>
+                              <TableCell sx={{p: 0}} colSpan={10}>
+                                <Collapse
+                                  in={
+                                    openSummaryProducts &&
+                                    indexSummary === summaryRowNumber
+                                  }
+                                  timeout='auto'
+                                  unmountOnExit
+                                >
+                                  <Box sx={{margin: 0}}>
+                                    <Table size='small' aria-label='purchases'>
+                                      <TableHead
+                                        sx={{
+                                          backgroundColor: '#ededed',
+                                        }}
+                                      >
+                                        <TableRow>
+                                          <TableCell>Código</TableCell>
+                                          <TableCell>Descripción</TableCell>
+                                          <TableCell>Cantidad</TableCell>
+                                          <TableCell>Peso Unitario</TableCell>
+                                        </TableRow>
+                                      </TableHead>
+                                      <TableBody>
+                                        {summaryProducts &&
+                                        summaryProducts.length !== 0
+                                          ? summaryProducts.map(
+                                              (
+                                                product,
+                                                indexSummaryProducts,
+                                              ) => {
+                                                return (
+                                                  <TableRow
+                                                    key={`${indexSummaryProducts}-${indexSummaryProducts}`}
+                                                  >
+                                                    <TableCell>
+                                                      {product.product}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {product.description}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {product.quantityMovement}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {product.weight}
+                                                    </TableCell>
+                                                  </TableRow>
+                                                );
+                                              },
+                                            )
+                                          : null}
+                                      </TableBody>
+                                    </Table>
+                                  </Box>
+                                </Collapse>
+                              </TableCell>
+                            </TableRow>
+                            <TableRow key={`sub-${indexSummary}-2`}>
+                              <TableCell sx={{p: 0}} colSpan={10}>
+                                <Collapse
+                                  in={
+                                    openSummaryPoints &&
+                                    indexSummary === summaryRowNumber
+                                  }
+                                  timeout='auto'
+                                  unmountOnExit
+                                >
+                                  <Box sx={{margin: 0}}>
+                                    <Table size='small' aria-label='purchases'>
+                                      <TableHead
+                                        sx={{
+                                          backgroundColor: '#ededed',
+                                        }}
+                                      >
+                                        <TableRow>
+                                          <TableCell>Punto Partida</TableCell>
+                                          <TableCell>
+                                            Direccion Partida
+                                          </TableCell>
+                                          <TableCell>Punto Llegada</TableCell>
+                                          <TableCell>
+                                            Direccion Llegada
+                                          </TableCell>
+                                        </TableRow>
+                                      </TableHead>
+                                      <TableBody>
+                                        {summaryPoints &&
+                                        summaryPoints.length !== 0
+                                          ? summaryPoints.map(
+                                              (point, indexSummaryPoints) => {
+                                                return (
+                                                  <TableRow
+                                                    key={`${indexSummaryPoints}-${indexSummaryPoints}`}
+                                                  >
+                                                    <TableCell>
+                                                      {
+                                                        point.startingInternalCode
+                                                      }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {
+                                                        point.startingPointAddress
+                                                      }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {
+                                                        point.arrivalInternalCode
+                                                      }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {
+                                                        point.arrivalPointAddress
+                                                      }
+                                                    </TableCell>
+                                                  </TableRow>
+                                                );
+                                              },
+                                            )
+                                          : null}
+                                      </TableBody>
+                                    </Table>
+                                  </Box>
+                                </Collapse>
+                              </TableCell>
+                            </TableRow>
+                          </>
+                        );
+                      })
+                    : null}
+                </TableBody>
+              </Table>
+            ) : null}
+            {summaryType == 'all' ? (
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Producto</TableCell>
+                    <TableCell>Descripcion</TableCell>
+                    <TableCell>Cantidad</TableCell>
+                    <TableCell>Peso</TableCell>
+                    <TableCell>Peso Total</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {listRouteBySelectedRoutes &&
+                  listRouteBySelectedRoutes.deliveries.length > 0
+                    ? acumularProductos(
+                        listRouteBySelectedRoutes.deliveries,
+                      ).map((fila, indexSummary) => {
+                        return (
+                          <>
+                            <TableRow key={indexSummary}>
+                              <TableCell>{fila.product}</TableCell>
+                              <TableCell>{fila.description}</TableCell>
+                              <TableCell>{fila.quantityMovement}</TableCell>
+                              <TableCell>{fila.weight}</TableCell>
+                              <TableCell>
+                                {Number(
+                                  fila.quantityMovement * fila.weight,
+                                ).toFixed(2)}
+                              </TableCell>
+                            </TableRow>
+                          </>
+                        );
+                      })
+                    : null}
+                </TableBody>
+              </Table>
             ) : null}
           </Dialog>
         </Card>

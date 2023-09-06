@@ -86,9 +86,9 @@ const Views = (props) => {
     dispatch(getAppointment(payload));
   };
 
-  const toDeleteAppointments = (payload) =>{
-    dispatch(deleteAppointment(payload))
-  }
+  const toDeleteAppointments = (payload) => {
+    dispatch(deleteAppointment(payload));
+  };
 
   const {userDataRes} = useSelector(({user}) => user);
   const {listAppointments} = useSelector(({appointment}) => appointment);
@@ -199,15 +199,15 @@ const Views = (props) => {
       case 'delete':
         console.log('delete', action, event);
         let delAppoint = {
-          request:{
-            payload:{
+          request: {
+            payload: {
               appointmentId: event.id,
-              merchantId: userDataRes.merchantSelected.merchantId
-            }
-          }
-        }
-        console.log("delete >>", delAppoint);
-        toDeleteAppointments(delAppoint)        
+              merchantId: userDataRes.merchantSelected.merchantId,
+            },
+          },
+        };
+        console.log('delete >>', delAppoint);
+        toDeleteAppointments(delAppoint);
         break;
       default:
         break;

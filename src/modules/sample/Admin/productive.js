@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const productive = () => {
-  return (
-    <div>productive</div>
-  )
-}
+  return <div>productive</div>;
+};
 
-export default productive
+export default productive;

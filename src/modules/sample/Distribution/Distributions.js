@@ -21,8 +21,16 @@ import {
   DialogContentText,
   DialogTitle,
   Typography,
+  Stack,
+  useTheme,
+  useMediaQuery,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
+import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import EditLocationOutlinedIcon from '@mui/icons-material/EditLocationOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -33,6 +41,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 import PendingIcon from '@mui/icons-material/Pending';
 import {red, amber} from '@mui/material/colors';
 import {getUserData} from '../../../redux/actions/User';
@@ -54,7 +63,56 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {getYear, justDate, showSubtypeMovement} from '../../../Utils/utils';
-
+import {makeStyles} from '@mui/styles';
+const useStyles = makeStyles((theme) => ({
+  container: {
+    textAlign: 'center',
+  },
+  btnGroup: {
+    marginTop: '1em',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  btn: {
+    margin: '3px 0',
+    width: '260px',
+  },
+  noSub: {
+    textDecoration: 'none',
+  },
+  field: {
+    marginTop: '10px',
+  },
+  imgPreview: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  img: {
+    width: '80%',
+  },
+  fixPosition: {
+    position: 'relative',
+    bottom: '-8px',
+  },
+  searchIcon: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  buttonAddProduct: {},
+  closeButton: {
+    cursor: 'pointer',
+    float: 'right',
+    marginTop: '5px',
+    width: '20px',
+  },
+  detailRoutes: {
+    maxWidth: '90vw',
+  },
+  stack: {
+    justifyContent: 'center',
+    marginBottom: '10px',
+  },
+}));
 let listDistributionsPayload = {
   request: {
     payload: {
@@ -66,6 +124,8 @@ let codFinanceSelected = '';
 let selectedDistribution = '';
 let selectedRoute = '';
 
+let selectedDelivery = {};
+let selectedSummaryRow = {};
 const FinancesTable = (props) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open2, setOpen2] = React.useState(false);
@@ -76,8 +136,20 @@ const FinancesTable = (props) => {
   const [openProducts, setOpenProducts] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
   const [rowNumber2, setRowNumber2] = React.useState(0);
+  const [listDeliveryDetail, setListDeliveryDetail] = React.useState([]);
+  const [searchObservation, setSearchObservation] = React.useState('');
+  const [summaryType, setSummaryType] = React.useState('driver');
+  const [nombreAgrupador, setNombreAgrupador] = React.useState('');
+  const [cantidadAgrupacion, setCantidadAgrupacion] = React.useState('');
+  const [openSummary, setOpenSummary] = React.useState(false);
+  const [openSummaryProducts, setOpenSummaryProducts] = React.useState(false);
+  const [openSummaryPoints, setOpenSummaryPoints] = React.useState(false);
+  const [summaryRowNumber, setSummaryRowNumber] = React.useState(0);
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const classes = useStyles();
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -200,6 +272,22 @@ const FinancesTable = (props) => {
         console.log('Se reutilizara el metodo');
       }
       setOpen(true);
+    } else if (type == 'viewSummary') {
+      setTypeDialog(type);
+      if (
+        listDistribution[indexDistributionSelected] &&
+        listDistribution[indexDistributionSelected].deliveries.length == 0
+      ) {
+        console.log('Obtendra el listDistribution');
+        toGetDistribution({
+          deliveryDistributionId: distributionSelected,
+          indexDistributionSelected: indexDistributionSelected,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        });
+      } else {
+        console.log('Se reutilizara el metodo');
+      }
+      setOpenSummary(true);
     } else if (type == 'generateSummaryGuide') {
       console.log('Selected Distribution', selectedDistribution);
       setTypeDialog(type);
@@ -366,6 +454,136 @@ const FinancesTable = (props) => {
   const handleCloseSummaryGuide = () => {
     setOpenSummaryGuide(false);
   };
+  const handleSearchValues = (event) => {
+    if (event.target.name == 'searchObservation') {
+      if (event.target.value == '') {
+        setSearchObservation('');
+      } else {
+        event.target.value = event.target.value.toLowerCase();
+        setSearchObservation(event.target.value);
+      }
+    }
+  };
+  const acumularProductosPorConductor = (entregas) => {
+    const acumulador = {};
+
+    entregas.forEach((entrega) => {
+      const conductorKey = `${entrega.driverDocumentType}_${entrega.driverDocumentNumber}`;
+
+      if (!acumulador[conductorKey]) {
+        acumulador[conductorKey] = {
+          driverDocumentType: entrega.driverDocumentType,
+          driverDocumentNumber: entrega.driverDocumentNumber,
+          driverDenomination: entrega.driverDenomination,
+          driverLastName: entrega.driverLastName,
+          carrierPlateNumber: entrega.carrierPlateNumber,
+          points: [
+            {
+              arrivalPointUbigeo: entrega.arrivalPointUbigeo,
+              arrivalPointAddress: entrega.arrivalPointAddress,
+              arrivalInternalCode: entrega.arrivalInternalCode,
+              startingInternalCode: entrega.startingInternalCode,
+              startingPointAddress: entrega.startingPointAddress,
+              startingPointUbigeo: entrega.startingPointUbigeo,
+            },
+          ],
+          productsInfo: [],
+        };
+      }
+
+      entrega.productsInfo.forEach((producto) => {
+        const conductorProducto = acumulador[conductorKey].productsInfo.find(
+          (item) => item.product === producto.product,
+        );
+
+        if (conductorProducto) {
+          conductorProducto.quantityMovement += producto.quantityMovement;
+        } else {
+          acumulador[conductorKey].productsInfo.push({
+            product: producto.product,
+            quantityMovement: producto.quantityMovement,
+            description: producto.description,
+            weight: Number(producto.weight),
+            unitMeasure: producto.unitMeasure,
+          });
+        }
+      });
+
+      const conductorPuntos = acumulador[conductorKey].points.find(
+        (item) =>
+          item.arrivalInternalCode === entrega.arrivalInternalCode &&
+          item.startingInternalCode === entrega.startingInternalCode,
+      );
+
+      if (!conductorPuntos) {
+        acumulador[conductorKey].points.push({
+          arrivalPointUbigeo: entrega.arrivalPointUbigeo,
+          arrivalPointAddress: entrega.arrivalPointAddress,
+          arrivalInternalCode: entrega.arrivalInternalCode,
+          startingInternalCode: entrega.startingInternalCode,
+          startingPointAddress: entrega.startingPointAddress,
+          startingPointUbigeo: entrega.startingPointUbigeo,
+        });
+      }
+    });
+
+    return Object.values(acumulador);
+  };
+  // Creamos una función para acumular los productos por conductor (driver)
+  const acumularProductos = (entregas) => {
+    const acumulador = {};
+
+    entregas.forEach((entrega) => {
+      entrega.productsInfo.forEach((producto) => {
+        const productoKey = producto.product;
+
+        if (!acumulador[productoKey]) {
+          acumulador[productoKey] = {
+            product: producto.product,
+            quantityMovement: producto.quantityMovement,
+            description: producto.description,
+            weight: Number(producto.weight),
+            unitMeasure: producto.unitMeasure,
+          };
+        } else {
+          acumulador[productoKey].quantityMovement += producto.quantityMovement;
+        }
+      });
+    });
+
+    return Object.values(acumulador);
+  };
+  const checkSummaryProducts = (row, index) => {
+    selectedSummaryRow = row;
+    console.log('selectedSummaryRow', selectedSummaryRow);
+    setOpenSummaryProducts(false);
+    setOpenSummaryProducts(true);
+    if (openSummaryProducts == true && summaryRowNumber == index) {
+      setOpenSummaryProducts(false);
+    }
+    setSummaryRowNumber(index);
+  };
+  const checkSummaryPoints = (row, index) => {
+    selectedSummaryRow = row;
+    console.log('selectedSummaryRow', selectedSummaryRow);
+    setOpenSummaryPoints(false);
+    setOpenSummaryPoints(true);
+    if (openSummaryPoints == true && summaryRowNumber == index) {
+      setOpenSummaryPoints(false);
+    }
+    setSummaryRowNumber(index);
+  };
+  // useEffect(() => {
+  //   if (open && listDistribution &&
+  //     listDistribution.length > 0 &&
+  //     listDistribution[indexDistributionSelected] &&
+  //     listDistribution[indexDistributionSelected].deliveries.length > 0) {
+  //     const detail = listDistribution[
+  //       indexDistributionSelected
+  //     ].deliveries
+  //     setListDeliveryDetail(detail)
+  //   }
+  // }, [open, listDistribution])
   return (
     <Card sx={{p: 4}}>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
@@ -450,6 +668,10 @@ const FinancesTable = (props) => {
           <CachedIcon sx={{mr: 1, my: 'auto'}} />
           Ver detalle
         </MenuItem>
+        <MenuItem onClick={handleClickOpen.bind(this, 'viewSummary')}>
+          <CachedIcon sx={{mr: 1, my: 'auto'}} />
+          Ver resumen
+        </MenuItem>
         <MenuItem onClick={handleClickOpen.bind(this, 'generateSummaryGuide')}>
           <LocalShippingOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Generar Guía Conglomerada
@@ -519,6 +741,46 @@ const FinancesTable = (props) => {
               <div style={{margin: '0 auto'}}>Puntos de entrega</div>
             </DialogTitle>
             <DialogContent>
+              {/* <Stack
+                sx={{ m: 2 }}
+                direction={isMobile ? 'column' : 'row'}
+                spacing={2}
+                className={classes.stack}
+              >
+                <TextField
+                  label='Observación'
+                  variant='outlined'
+                  name='searchObservation'
+                  size='small'
+                  onChange={handleSearchValues}
+                />
+                <Button
+                  startIcon={<ManageSearchOutlinedIcon />}
+                  variant='contained'
+                  color='primary'
+                  onClick={() => {
+                    const detail = listDistribution[
+                      indexDistributionSelected
+                    ].deliveries.filter((obj) =>
+                      obj.observationDelivery
+                        .toLowerCase()
+                        .includes(searchObservation.toLowerCase()),
+                    )
+                    setListDeliveryDetail(detail)
+                  }
+                  }
+                >
+                  Buscar
+                </Button>
+              </Stack> */}
+              <TextField
+                sx={{m: 2}}
+                label='Observación'
+                variant='outlined'
+                name='searchObservation'
+                size='small'
+                onChange={handleSearchValues}
+              />
               <TableContainer component={Paper} sx={{maxHeight: 440}}>
                 <Table stickyHeader size='small' aria-label='simple table'>
                   <TableHead>
@@ -550,144 +812,159 @@ const FinancesTable = (props) => {
                     {listDistribution[indexDistributionSelected] &&
                     listDistribution[indexDistributionSelected].deliveries
                       .length > 0 ? (
-                      listDistribution[
-                        indexDistributionSelected
-                      ].deliveries.map((deliveryItem, index) => {
-                        const products = deliveryItem.productsInfo;
-                        return (
-                          <>
-                            <TableRow
-                              sx={{
-                                '&:last-child td, &:last-child th': {border: 0},
-                              }}
-                              key={`points-located-${index}`}
-                            >
-                              {/* <TableCell>{deliveryItem.serialNumber}</TableCell> */}
-                              <TableCell>{deliveryItem.serialNumber}</TableCell>
-                              <TableCell align='center'>
-                                {showIconStatus(
-                                  deliveryItem.generateReferralGuide,
-                                  deliveryItem,
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.arrivalPointAddress}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.arrivalPointUbigeo}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.arrivalInternalCode || ''}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.startingPointAddress}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.startingPointUbigeo}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.startingInternalCode || ''}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.driverDocumentType &&
-                                deliveryItem.driverDocumentNumber
-                                  ? `${deliveryItem.driverDocumentType.toUpperCase()} - ${
-                                      deliveryItem.driverDocumentNumber
-                                    }`
-                                  : null}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.driverDenomination}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.driverLastName}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.driverLicenseNumber}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.carrierPlateNumber}
-                              </TableCell>
-                              <TableCell>
-                                {products && products.length !== 0 ? (
-                                  <IconButton
-                                    onClick={() =>
-                                      checkProducts(deliveryItem, index)
-                                    }
-                                    size='small'
-                                  >
-                                    <FormatListBulletedIcon fontSize='small' />
-                                  </IconButton>
-                                ) : null}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.observationDelivery}
-                              </TableCell>
-                              <TableCell>
-                                {Number.parseFloat(
-                                  deliveryItem.totalGrossWeight,
-                                ).toFixed(3)}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.numberOfPackages}
-                              </TableCell>
-                              <TableCell>
-                                {deliveryItem.transferStartDate}
-                              </TableCell>
-                            </TableRow>
+                      listDistribution[indexDistributionSelected].deliveries
+                        .filter((obj) =>
+                          String(obj.observationDelivery || '')
+                            .toLowerCase()
+                            .includes(searchObservation.toLowerCase()),
+                        )
+                        .map((deliveryItem, index) => {
+                          const products = deliveryItem.productsInfo;
+                          return (
+                            <>
+                              <TableRow
+                                sx={{
+                                  '&:last-child td, &:last-child th': {
+                                    border: 0,
+                                  },
+                                }}
+                                key={`points-located-${index}`}
+                              >
+                                {/* <TableCell>{deliveryItem.serialNumber}</TableCell> */}
+                                <TableCell>
+                                  {deliveryItem.serialNumber}
+                                </TableCell>
+                                <TableCell align='center'>
+                                  {showIconStatus(
+                                    deliveryItem.generateReferralGuide,
+                                    deliveryItem,
+                                  )}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.arrivalPointAddress}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.arrivalPointUbigeo}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.arrivalInternalCode || ''}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.startingPointAddress}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.startingPointUbigeo}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.startingInternalCode || ''}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.driverDocumentType &&
+                                  deliveryItem.driverDocumentNumber
+                                    ? `${deliveryItem.driverDocumentType.toUpperCase()} - ${
+                                        deliveryItem.driverDocumentNumber
+                                      }`
+                                    : null}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.driverDenomination}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.driverLastName}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.driverLicenseNumber}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.carrierPlateNumber}
+                                </TableCell>
+                                <TableCell>
+                                  {products && products.length !== 0 ? (
+                                    <IconButton
+                                      onClick={() =>
+                                        checkProducts(deliveryItem, index)
+                                      }
+                                      size='small'
+                                    >
+                                      <FormatListBulletedIcon fontSize='small' />
+                                    </IconButton>
+                                  ) : null}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.observationDelivery}
+                                </TableCell>
+                                <TableCell>
+                                  {Number.parseFloat(
+                                    deliveryItem.totalGrossWeight,
+                                  ).toFixed(3)}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.numberOfPackages}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.transferStartDate}
+                                </TableCell>
+                              </TableRow>
 
-                            <TableRow key={`sub-${index}`}>
-                              <TableCell sx={{p: 0}} colSpan={10}>
-                                <Collapse
-                                  in={openProducts && index === rowNumber2}
-                                  timeout='auto'
-                                  unmountOnExit
-                                >
-                                  <Box sx={{margin: 0}}>
-                                    <Table size='small' aria-label='purchases'>
-                                      <TableHead
-                                        sx={{
-                                          backgroundColor: '#ededed',
-                                        }}
+                              <TableRow key={`sub-${index}`}>
+                                <TableCell sx={{p: 0}} colSpan={10}>
+                                  <Collapse
+                                    in={openProducts && index === rowNumber2}
+                                    timeout='auto'
+                                    unmountOnExit
+                                  >
+                                    <Box sx={{margin: 0}}>
+                                      <Table
+                                        size='small'
+                                        aria-label='purchases'
                                       >
-                                        <TableRow>
-                                          <TableCell>Código</TableCell>
-                                          <TableCell>Descripción</TableCell>
-                                          <TableCell>Cantidad</TableCell>
-                                        </TableRow>
-                                      </TableHead>
-                                      <TableBody>
-                                        {products && products.length !== 0
-                                          ? products.map((product, index3) => {
-                                              return (
-                                                <TableRow
-                                                  key={`${index3}-${index3}`}
-                                                >
-                                                  <TableCell>
-                                                    {product.businessProductCode !=
-                                                    null
-                                                      ? product.businessProductCode
-                                                      : product.product}
-                                                  </TableCell>
-                                                  <TableCell>
-                                                    {product.description}
-                                                  </TableCell>
-                                                  <TableCell>
-                                                    {product.quantityMovement}
-                                                  </TableCell>
-                                                </TableRow>
-                                              );
-                                            })
-                                          : null}
-                                      </TableBody>
-                                    </Table>
-                                  </Box>
-                                </Collapse>
-                              </TableCell>
-                            </TableRow>
-                          </>
-                        );
-                      })
+                                        <TableHead
+                                          sx={{
+                                            backgroundColor: '#ededed',
+                                          }}
+                                        >
+                                          <TableRow>
+                                            <TableCell>Código</TableCell>
+                                            <TableCell>Descripción</TableCell>
+                                            <TableCell>Cantidad</TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {products && products.length !== 0
+                                            ? products.map(
+                                                (product, index3) => {
+                                                  return (
+                                                    <TableRow
+                                                      key={`${index3}-${index3}`}
+                                                    >
+                                                      <TableCell>
+                                                        {product.businessProductCode !=
+                                                        null
+                                                          ? product.businessProductCode
+                                                          : product.product}
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        {product.description}
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        {
+                                                          product.quantityMovement
+                                                        }
+                                                      </TableCell>
+                                                    </TableRow>
+                                                  );
+                                                },
+                                              )
+                                            : null}
+                                        </TableBody>
+                                      </Table>
+                                    </Box>
+                                  </Collapse>
+                                </TableCell>
+                              </TableRow>
+                            </>
+                          );
+                        })
                     ) : (
                       <CircularProgress
                         disableShrink
@@ -699,6 +976,280 @@ const FinancesTable = (props) => {
               </TableContainer>
             </DialogContent>
           </>
+        ) : null}
+      </Dialog>
+      <Dialog
+        open={openSummary}
+        onClose={() => setOpenSummary(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle
+          sx={{
+            fontSize: '1.5em',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Stack
+            sx={{m: 2, justifyContent: 'center', marginBottom: '10px'}}
+            direction={isMobile ? 'column' : 'row'}
+            spacing={2}
+          >
+            <FormControl sx={{my: 0, mx: 'auto', width: 160}}>
+              <InputLabel id='summary-label' style={{fontWeight: 200}}>
+                Tipo Resumen
+              </InputLabel>
+              <Select
+                name='summary'
+                labelId='summary-label'
+                label='Tipo Resumen'
+                onChange={(event) => {
+                  console.log(event.target.value);
+                  setSummaryType(event.target.value);
+                }}
+                value={summaryType}
+              >
+                <MenuItem value='driver' style={{fontWeight: 200}}>
+                  Chofer
+                </MenuItem>
+                <MenuItem value='all' style={{fontWeight: 200}}>
+                  Todo
+                </MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              label='Nombre de Agrupador'
+              value={nombreAgrupador}
+              onChange={(e) => setNombreAgrupador(e.target.value)}
+              variant='outlined'
+            />
+            <TextField
+              label='Cantidad de Agrupación'
+              value={cantidadAgrupacion}
+              onChange={(e) => setCantidadAgrupacion(e.target.value)}
+              variant='outlined'
+            />
+          </Stack>
+
+          <IconButton
+            edge='end'
+            onClick={() => setOpenSummary(false)}
+            aria-label='close'
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        {summaryType == 'driver' ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Chofer</TableCell>
+                <TableCell>Placa</TableCell>
+                <TableCell>Productos</TableCell>
+                <TableCell>Puntos de Partida - Llegada</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {listDistribution &&
+              listDistribution[indexDistributionSelected] &&
+              listDistribution[indexDistributionSelected].deliveries.length > 0
+                ? acumularProductosPorConductor(
+                    listDistribution[indexDistributionSelected].deliveries,
+                  ).map((fila, indexSummary) => {
+                    const summaryProducts = fila.productsInfo;
+                    const summaryPoints = fila.points;
+                    return (
+                      <>
+                        <TableRow key={indexSummary}>
+                          <TableCell>
+                            {fila.driverDenomination +
+                              ' ' +
+                              fila.driverLastName}
+                          </TableCell>
+                          <TableCell>{fila.carrierPlateNumber}</TableCell>
+                          <TableCell>
+                            {fila.productsInfo &&
+                            fila.productsInfo.length !== 0 ? (
+                              <IconButton
+                                onClick={() =>
+                                  checkSummaryProducts(fila, indexSummary)
+                                }
+                                size='small'
+                              >
+                                <FormatListBulletedIcon fontSize='small' />
+                              </IconButton>
+                            ) : null}
+                          </TableCell>
+                          <TableCell>
+                            <IconButton
+                              onClick={() =>
+                                checkSummaryPoints(fila, indexSummary)
+                              }
+                              size='small'
+                            >
+                              <FormatListBulletedIcon fontSize='small' />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow key={`sub-${indexSummary}`}>
+                          <TableCell sx={{p: 0}} colSpan={10}>
+                            <Collapse
+                              in={
+                                openSummaryProducts &&
+                                indexSummary === summaryRowNumber
+                              }
+                              timeout='auto'
+                              unmountOnExit
+                            >
+                              <Box sx={{margin: 0}}>
+                                <Table size='small' aria-label='purchases'>
+                                  <TableHead
+                                    sx={{
+                                      backgroundColor: '#ededed',
+                                    }}
+                                  >
+                                    <TableRow>
+                                      <TableCell>Código</TableCell>
+                                      <TableCell>Descripción</TableCell>
+                                      <TableCell>Cantidad</TableCell>
+                                      <TableCell>Peso Unitario</TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {summaryProducts &&
+                                    summaryProducts.length !== 0
+                                      ? summaryProducts.map(
+                                          (product, indexSummaryProducts) => {
+                                            return (
+                                              <TableRow
+                                                key={`${indexSummaryProducts}-${indexSummaryProducts}`}
+                                              >
+                                                <TableCell>
+                                                  {product.product}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {product.description}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {product.quantityMovement}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {product.weight}
+                                                </TableCell>
+                                              </TableRow>
+                                            );
+                                          },
+                                        )
+                                      : null}
+                                  </TableBody>
+                                </Table>
+                              </Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>
+                        <TableRow key={`sub-${indexSummary}-2`}>
+                          <TableCell sx={{p: 0}} colSpan={10}>
+                            <Collapse
+                              in={
+                                openSummaryPoints &&
+                                indexSummary === summaryRowNumber
+                              }
+                              timeout='auto'
+                              unmountOnExit
+                            >
+                              <Box sx={{margin: 0}}>
+                                <Table size='small' aria-label='purchases'>
+                                  <TableHead
+                                    sx={{
+                                      backgroundColor: '#ededed',
+                                    }}
+                                  >
+                                    <TableRow>
+                                      <TableCell>Punto Partida</TableCell>
+                                      <TableCell>Direccion Partida</TableCell>
+                                      <TableCell>Punto Llegada</TableCell>
+                                      <TableCell>Direccion Llegada</TableCell>
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {summaryPoints && summaryPoints.length !== 0
+                                      ? summaryPoints.map(
+                                          (point, indexSummaryPoints) => {
+                                            return (
+                                              <TableRow
+                                                key={`${indexSummaryPoints}-${indexSummaryPoints}`}
+                                              >
+                                                <TableCell>
+                                                  {point.startingInternalCode}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {point.startingPointAddress}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {point.arrivalInternalCode}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {point.arrivalPointAddress}
+                                                </TableCell>
+                                              </TableRow>
+                                            );
+                                          },
+                                        )
+                                      : null}
+                                  </TableBody>
+                                </Table>
+                              </Box>
+                            </Collapse>
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    );
+                  })
+                : null}
+            </TableBody>
+          </Table>
+        ) : null}
+        {summaryType == 'all' ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Producto</TableCell>
+                <TableCell>Descripcion</TableCell>
+                <TableCell>Cantidad</TableCell>
+                <TableCell>Peso</TableCell>
+                <TableCell>Peso Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {listDistribution &&
+              listDistribution[indexDistributionSelected] &&
+              listDistribution[indexDistributionSelected].deliveries.length > 0
+                ? acumularProductos(
+                    listDistribution[indexDistributionSelected].deliveries,
+                  ).map((fila, indexSummary) => {
+                    return (
+                      <>
+                        <TableRow key={indexSummary}>
+                          <TableCell>{fila.product}</TableCell>
+                          <TableCell>{fila.description}</TableCell>
+                          <TableCell>{fila.quantityMovement}</TableCell>
+                          <TableCell>{fila.weight}</TableCell>
+                          <TableCell>
+                            {Number(
+                              fila.quantityMovement * fila.weight,
+                            ).toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    );
+                  })
+                : null}
+            </TableBody>
+          </Table>
         ) : null}
       </Dialog>
     </Card>

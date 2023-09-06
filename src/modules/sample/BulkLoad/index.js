@@ -932,7 +932,7 @@ const BulkLoad = (props) => {
       request: {
         payload: {
           merchantId: userDataRes.merchantSelected.merchantId,
-          devuelveerror: "S"
+          devuelveerror: 'S',
         },
       },
     };
@@ -963,7 +963,10 @@ const BulkLoad = (props) => {
           </DialogContentText>
         </>
       );
-    } else if (deleteCatalogsRes != undefined && deleteCatalogsRes.name == 'Error') {
+    } else if (
+      deleteCatalogsRes != undefined &&
+      deleteCatalogsRes.name == 'Error'
+    ) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -1076,23 +1079,23 @@ const BulkLoad = (props) => {
             <></>
           )}
         </Box>
-        {(userDataRes && userDataRes.merchantSelected.typeMerchant !== 'PROD') ? (
+        {userDataRes && userDataRes.merchantSelected.typeMerchant !== 'PROD' ? (
           <>
-          <Divider sx={{my: 2}} />
-          <Box>
-            <Button
-              variant='outlined'
-              color='secondary'
-              endIcon={<DeleteForeverIcon />}
-              onClick={setDeleteState}
-            >
-              Eliminar todo el catálogo del Negocio
-            </Button>
-          </Box>
+            <Divider sx={{my: 2}} />
+            <Box>
+              <Button
+                variant='outlined'
+                color='secondary'
+                endIcon={<DeleteForeverIcon />}
+                onClick={setDeleteState}
+              >
+                Eliminar todo el catálogo del Negocio
+              </Button>
+            </Box>
           </>
-         ) : (
+        ) : (
           <></>
-        )} 
+        )}
       </Card>
 
       <Dialog
@@ -1108,14 +1111,17 @@ const BulkLoad = (props) => {
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
         </DialogContent>
-        { (deleteCatalogsRes) ?
+        {deleteCatalogsRes ? (
           <>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={sendStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-          </> : <></>}
+            <DialogActions sx={{justifyContent: 'center'}}>
+              <Button variant='outlined' onClick={sendStatus}>
+                Aceptar
+              </Button>
+            </DialogActions>
+          </>
+        ) : (
+          <></>
+        )}
       </Dialog>
       <Dialog
         open={open2}

@@ -1467,7 +1467,7 @@ const GetReferralGuide = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue, values, getFieldProps}) => {
+          {({isSubmitting, setFieldValue, values, getFieldProps, validateForm}) => {
             changeValueField = setFieldValue;
             getValueField = getFieldProps;
             {
@@ -2322,7 +2322,14 @@ const GetReferralGuide = (props) => {
                       sx={{width: 1}}
                       color='secondary'
                       variant='outlined'
-                      onClick={() => handleClickOpenPrevisualizer()}
+                      onClick={() => {
+                        validateForm().then(() => {
+                          // Aquí puedes realizar cualquier acción adicional después de la validación del formulario
+                          // Si no hay errores de validación, puedes continuar con la lógica para previsualizar el PDF
+                          // De lo contrario, los mensajes de error se mostrarán automáticamente en los campos del formulario
+                          handleClickOpenPrevisualizer();
+                        });
+                      }}
                     >
                       Previsualizar PDF
                     </Button>
@@ -2689,6 +2696,14 @@ const GetReferralGuide = (props) => {
           />
         </DialogTitle>
         <DialogContent>
+          <Button
+            color='primary'
+            sx={{width: 1}}
+            variant='outlined'
+            onClick={() => window.open(urlPdf)}
+          >
+            Redirigir
+          </Button>
           {urlPdf ? (
             <Box sx={{width: 1, textAlign: 'center'}}>
               <canvas ref={canvasRef} style={{height: '100vh'}} />

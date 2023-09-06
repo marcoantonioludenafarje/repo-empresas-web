@@ -1796,6 +1796,14 @@ const NewOutput = (props) => {
           />
         </DialogTitle>
         <DialogContent>
+          <Button
+            color='primary'
+            sx={{width: 1}}
+            variant='outlined'
+            onClick={() => window.open(urlPdf)}
+          >
+            Redirigir
+          </Button>
           {urlPdf ? (
             <Box sx={{width: 1, textAlign: 'center'}}>
               <canvas ref={canvasRef} style={{height: '100vh'}} />

@@ -1507,16 +1507,14 @@ const OutputsTable = (props) => {
   };
 
   const goToFileDistribution = (path, obj) => {
-    console.log("confeti lo que quier", path, obj);
-    let nameRoute = obj.routeName?obj.routeName:obj.distribution
+    console.log('confeti lo que quier', path, obj);
+    let nameRoute = obj.routeName ? obj.routeName : obj.distribution;
     const data = {
       goDirectory: true,
       path: `${path}/guías/${nameRoute}-${obj.distribution}`,
     };
     localStorage.setItem('redirectUrl', JSON.stringify(data));
-    window.open(
-      `/sample/explorer`
-    );
+    window.open(`/sample/explorer`);
   };
 
   const goToMovements = (contableMovement) => {
@@ -2092,7 +2090,9 @@ const OutputsTable = (props) => {
                                             ? `Distribución: ${
                                                 delivery.routeName ||
                                                 delivery.distribution
-                                              } (${delivery.distribution.length})`
+                                              } (${
+                                                delivery.distribution.length
+                                              })`
                                             : 'Más comprobantes'}
                                         </TableCell>
                                         {delivery.distribution ? (
@@ -2102,7 +2102,8 @@ const OutputsTable = (props) => {
                                             hover
                                             onClick={() =>
                                               goToFileDistribution(
-                                                obj.folderMovement, delivery
+                                                obj.folderMovement,
+                                                delivery,
                                               )
                                             }
                                           >
