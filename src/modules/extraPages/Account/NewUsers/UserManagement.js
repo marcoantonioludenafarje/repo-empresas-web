@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Table,
   TableBody,
@@ -25,13 +25,17 @@ import {
 } from '@mui/material';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
-import {listUser} from '../../../../redux/actions/User';
+import {listUser, updateActive} from '../../../../redux/actions/User';
 
+import {red} from '@mui/material/colors';
 import {convertToDateWithoutTime} from '../../../../Utils/utils';
+
+let selectUser = {};
 
 const UserManagement = ({data}) => {
   const {listUserRes} = useSelector(({user}) => user);
@@ -40,6 +44,28 @@ const UserManagement = ({data}) => {
 
   const toListUser = (payload) => {
     dispatch(listUser(payload));
+  };
+
+  
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [disable, setDisable] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [openStatus, setOpenStatus] = useState(false);
+
+  const openMenu = Boolean(anchorEl);
+  let codProdSelected = '';
+  const handleClick = (codPro, event) => {
+    setDisable(false)
+    console.log('evento', event);
+    console.log('index del map', codPro);
+    setAnchorEl(event.currentTarget);
+    codProdSelected = codPro;
+    selectUser = listUserRes[codProdSelected]
+    console.log("confeti", selectUser);
+    ; /* .find((obj) => obj.client == codPro); */
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   useEffect(() => {
@@ -59,8 +85,45 @@ const UserManagement = ({data}) => {
     }
   }, [listUserRes]);
 
+  const handleClose2 = () => {
+    setOpen(false);
+  };
+
+  const setActive = () => {
+    setOpen(true);
+    handleClose();
+  };
+
+
+  const handleActive = () =>{
+    console.log('select user', selectUser);
+
+    let val;
+
+    if(selectUser.indactivo === 'S'){
+      val = 'N'
+    }
+    if (selectUser.indactivo === 'N') {
+      val = 'S'
+    }
+    const payload = {
+      request: {
+        payload:{
+          userId: selectUser.userId,
+          indactivo: val
+        }
+      }
+    }
+
+    dispatch(updateActive(payload))
+    console.log('payload >>', payload);
+
+    setOpenStatus(true);
+    setOpen(false)
+  }
+
   return (
-    <TableContainer component={Paper} sx={{maxHeight: 440}}>
+    <TableContainer component={Paper} sx={{maxHeight: 450}}>
       <Table stickyHeader size='small' aria-label='simple table'>
         <TableHead>
           <TableRow>
@@ -76,7 +139,9 @@ const UserManagement = ({data}) => {
             <TableCell>
               <IntlMessages id='common.dateRegistered' />
             </TableCell>
-            <TableCell></TableCell>
+            <TableCell>
+              <IntlMessages id='common.options' />
+            </TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -120,6 +185,17 @@ const UserManagement = ({data}) => {
                   <TableCell>{obj.profile ? obj.profile : ''}</TableCell>
                   <TableCell align='center'>
                     {convertToDateWithoutTime(obj.fecCreacion)}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      id='basic-button'
+                      aria-controls={openMenu ? 'basic-menu' : undefined}
+                      aria-haspopup='true'
+                      aria-expanded={openMenu ? 'true' : undefined}
+                      onClick={handleClick.bind(this, index)}
+                    >
+                      <KeyboardArrowDownIcon />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -177,6 +253,64 @@ const UserManagement = ({data}) => {
           }
         </TableBody>
       </Table>
+      <Menu
+        anchorEl={anchorEl}
+        open={openMenu}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/robot/update') === true && selectUser.indactivo === 'N'? (
+          <MenuItem onClick={setActive}>
+            Habilitar Usuario
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/robot/enable') === true && selectUser.indactivo === 'S' ? (
+          <MenuItem onClick={setActive}>
+            Deshabilitar Usuario
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/robot/delete') === true ? (
+          <MenuItem onClick={''}>
+            Cambio de Perfil
+          </MenuItem>
+        ) : null}
+      </Menu>
+      <Dialog
+        open={open}
+        onClose={handleClose2}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {selectUser.indactivo === 'S'?'Deshabilitar usuario?':'Habilitar usuario?'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+             {selectUser.indactivo === 'S'?'Desea deshabilitar los accesos del usuario?':'Desea habilitar los accesos del usuario?'}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={handleActive}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
     </TableContainer>
   );
 };

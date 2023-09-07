@@ -176,7 +176,7 @@ const NewUsers = () => {
     <Box
       sx={{
         position: 'relative',
-        maxWidth: 550,
+        maxWidth: 650,
       }}
     >
       <Typography

@@ -154,6 +154,7 @@ export const REGISTER_USER = 'register_user';
 export const USER_ATTRIBUTES = 'user_attributes';
 export const LIST_USER = 'list_user';
 export const UPDATE_USER = 'update_user';
+export const ACTIVE_USER = 'active_user'
 
 //BUSINESS
 export const UPGRADE_TO_NEW_PLAN = 'upgrade_to_new_plan';

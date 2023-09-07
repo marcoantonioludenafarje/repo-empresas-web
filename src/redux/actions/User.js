@@ -11,6 +11,7 @@ import {
   LIST_USER,
   UPDATE_USER,
   GET_SHOP_PRODUCTS,
+  ACTIVE_USER
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -116,3 +117,20 @@ export const getUser = (user) => {
 export const getEmailToSendCode = (email) => {
   return (dispatch) => dispatch({type: EMAIL_TO_SEND_CODE, payload: email});
 };
+
+export const updateActive = (payload) =>{
+  console.log("confeti >>", payload);
+  return (dispatch) =>{
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/business/administrative/changestatususer', {body: payload})
+      .then((data)=>{
+        console.log('indactive actions', data);
+        dispatch({type: ACTIVE_USER, payload: data.response.payload});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error)=>{
+        console.log('indactive actions error', error);
+        dispatch({tpye: FETCH_ERROR, payload: error.message})
+      })
+  }
+}
