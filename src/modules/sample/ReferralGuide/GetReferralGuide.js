@@ -928,7 +928,8 @@ const GetReferralGuide = (props) => {
             contableMovementId: selectedOutput.contableMovementId || '',
             createdAt: selectedOutput.createdAt,
             clientId: selectedOutput.clientId,
-            issueDate: specialFormatToSunat(),
+            // issueDate: specialFormatToSunat(), 
+            issueDate: dateWithHyphen(issueDate),
             serial: serial,
             automaticSendSunat: /* sendClient */ true,
             automaticSendClient: /* sendSunat */ true,
@@ -1507,7 +1508,7 @@ const GetReferralGuide = (props) => {
                       )}
                       required
                       value={issueDate}
-                      disabled
+                      // disabled
                       label='Fecha de emisión'
                       inputFormat='dd/MM/yyyy'
                       name='issueDate'
@@ -1531,7 +1532,7 @@ const GetReferralGuide = (props) => {
                       label='Fecha inicio traslado'
                       inputFormat='dd/MM/yyyy'
                       name='dateStartTransfer'
-                      minDate={new Date()}
+                      // minDate={new Date()}
                       onChange={(newValue) => {
                         setDateStartTransfer(newValue);
                         console.log('Fecha de inicio de traslado', newValue);
