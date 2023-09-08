@@ -22,6 +22,7 @@ import Sales from './Sales';
 import Agent from './Agent';
 import Appointment from './Appointment';
 import Specialist from './Specialist';
+import Admin from './Admin';
 
 const reducers = combineReducers({
   settings: Settings,
@@ -47,5 +48,6 @@ const reducers = combineReducers({
   agents: Agent,
   appointment: Appointment,
   specialists: Specialist,
+  admin: Admin,
 });
 export default reducers;

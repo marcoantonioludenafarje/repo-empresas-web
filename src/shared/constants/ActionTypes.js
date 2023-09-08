@@ -396,3 +396,9 @@ export const CREATE_SPECIALIST = 'create_specialist';
 export const LIST_SPECIALIST = 'list_specialist';
 export const DELETE_SPECIALIST = 'delete_specialist';
 export const UPDATE_SPECIALIST = 'update_specialist';
+
+//BUSINESS
+export const LIST_BUSINESS = 'list_business';
+export const UP_PRODUCTIVE = 'up_productive';
+export const ACTIVE_SUNAT = 'active_sunat';
+export const ABLE_BUSINESS = 'able_business';

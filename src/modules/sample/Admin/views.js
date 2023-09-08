@@ -46,15 +46,14 @@ import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import {
-  getSpecialists,
-  deleteSpecialists,
-} from '../../../redux/actions/Specialist';
+  getListBusiness,
+  ableBusiness
+} from '../../../redux/actions/Admin'
 import {convertToDate} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
-  GET_USER_DATA,
 } from '../../../shared/constants/ActionTypes';
 import Router from 'next/router';
 import {red} from '@mui/material/colors';
@@ -73,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let selectedSpecialist = {};
+let selectedBusiness = {};
 let deletePayload = {
   request: {
     payload: {
@@ -88,16 +87,9 @@ export default function Views(props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const [open2, setOpen2] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
 
-  const [openErrorQR, setopenErrorQR] = React.useState(false);
-  const [openLimitQR, setopenLimitQR] = React.useState(false);
-  const [openQRSuccess, setopenQRSuccess] = React.useState(false);
-  const [imgQR, setimgQR] = React.useState('');
 
-  const [openQRPop, setopenQRPop] = React.useState(false);
-  const [openQR, setopenQR] = React.useState(false);
   const [reload, setReload] = React.useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [filteredSpecialists, setFilteredSpecialists] = useState([]);
@@ -106,23 +98,23 @@ export default function Views(props) {
 
   let popUp = false;
 
-  const getSpecialist = (payload) => {
-    dispatch(getSpecialists(payload));
+  const onGetListBusiness = (payload) => {
+    dispatch(getListBusiness(payload));
   };
 
-  const deleteASpecialist = (payload) => {
-    dispatch(deleteSpecialists(payload));
-  };
   const reloadPage = () => {
     setReload(!reload);
   };
   const {userDataRes} = useSelector(({user}) => user);
 
-  const {listSpecialists, agentsLastEvaluatedKey_pageListAgents} = useSelector(
-    ({specialists}) => specialists,
-  );
+  // const {listBusiness, agentsLastEvaluatedKey_pageListAgents} = useSelector(
+  //   ({admin}) => specialists,
+  // );
+  const pruebaRedux = useSelector((state)=>state)
 
-  console.log('confeti los especialistas', listSpecialists);
+  const {listBusinessRes} = useSelector(({admin})=> admin);
+
+  console.log('confeti los especialistas', listBusinessRes);
 
   useEffect(() => {
     console.log('Estamos userDataRes', userDataRes);
@@ -131,7 +123,7 @@ export default function Views(props) {
       userDataRes.merchantSelected &&
       userDataRes.merchantSelected.merchantId
     ) {
-      console.log('Estamos entrando al getAgentes');
+      console.log('Estamos entrando al getBusiness');
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_CLIENTS, payload: undefined});
@@ -139,19 +131,17 @@ export default function Views(props) {
         request: {
           payload: {
             merchantId: userDataRes.merchantSelected.merchantId,
-            nameSpecialist: searchValue,
             LastEvaluatedKey: null,
           },
         },
       };
-      getSpecialist(listPayload);
+      onGetListBusiness(listPayload);
       // setFirstload(true);
     }
   }, [userDataRes, reload]);
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [anchorElQR, setAnchorElQR] = React.useState(null);
 
   /* let anchorEl = null; */
   const openMenu = Boolean(anchorEl);
@@ -159,28 +149,16 @@ export default function Views(props) {
     console.log('evento', event);
     console.log('index del map', codPro);
     setAnchorEl(event.currentTarget);
-    handleCloseQR(event.currentTarget);
     codProdSelected = codPro;
-    selectedSpecialist =
-      listSpecialists[codPro]; /* .find((obj) => obj.client == codPro); */
-    console.log('Select Agente', selectedSpecialist);
+    selectedBusiness =
+      listBusinessRes[codPro]; /* .find((obj) => obj.client == codPro); */
+    console.log('Select Agente', selectedBusiness);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const handleCloseQR = () => {
-    setAnchorElQR(null);
-  };
-  const goToUpdate = () => {
-    let userId = selectedSpecialist.user.userId;
-    selectedSpecialist.user = userId;
-    console.log('Actualizando', selectedSpecialist);
-    Router.push({
-      pathname: '/sample/specialists/update',
-      query: selectedSpecialist,
-    });
-  };
+
 
   const goToProduct = () => {
     //usuario
@@ -193,38 +171,6 @@ export default function Views(props) {
       pathname: '/sample/admin/sunat',
     });
   };
-
-  const goToEnable = () => {
-    console.log('Activar Agente', selectedSpecialist);
-  };
-  const handleClose2 = () => {
-    setOpen2(false);
-  };
-
-  const setDeleteState = () => {
-    setOpen2(true);
-    handleClose();
-  };
-
-  const setEnableState = () => {
-    setopenQRPop(true);
-    setopenErrorQR(false);
-    setopenLimitQR(false);
-    setopenQRSuccess(false);
-    handleCloseQR();
-  };
-
-  // const confirmDelete = () => {
-  //   console.log('selected agente', selectedSpecialist);
-  //   console.log('id de selected', selectedSpecialist.specialistId);
-  //   deletePayload.request.payload.specialistId =
-  //     selectedSpecialist.specialistId;
-  //   console.log('deletePayload', deletePayload);
-  //   deleteASpecialist(deletePayload);
-  //   setOpen2(false);
-  //   setOpenStatus(true);
-  //   reloadPage();
-  // };
 
   // Paso 2: Función para filtrar las campañas por el nombre de la campaña
   /*const filterSpecialists = (searchText) => {
@@ -374,8 +320,8 @@ export default function Views(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listClients?.map((row, index) => {
-              console.log('listSpecialists:-->', listClients);
+            {listBusinessRes?.map((row, index) => {
+              console.log('listSpecialists:-->', listBusinessRes);
               return (
                 <TableRow
                   key={index}
@@ -386,32 +332,32 @@ export default function Views(props) {
                     scope='row'
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.social}
+                    {row.denominationMerchant}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.user}
+                    {row.emailAdminUserId}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.state}
+                    {row.indactivo=='S'?'SÍ':'NO'}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.type}
+                    {row.typeMerchant}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.plan}
+                    {row.plans.length > 0 ? row.plans[row.plans.length - 1].type : ''}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.sunat}
+                    {row.isBillingEnabled?'SÍ':'NO'}
                   </TableCell>
                   <TableCell>
                     <Button

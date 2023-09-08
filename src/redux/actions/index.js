@@ -21,3 +21,4 @@ export * from './Sales';
 export * from './Agent';
 export * from './Appointment';
 export * from './Specialist';
+export * from './Admin';
