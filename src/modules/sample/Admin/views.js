@@ -381,51 +381,8 @@ export default function Views(props) {
         aria-label='outlined button group'
         className={classes.btnGroup}
       >
-        {localStorage
-          .getItem('pathsBack')
-          .includes('/inventory/robot/register') === true ? (
-          <Button
-            variant='outlined'
-            startIcon={<AddCircleOutlineOutlinedIcon />}
-          >
-            Nuevo
-          </Button>
-        ) : null}
-
-        {localStorage
-          .getItem('pathsBack')
-          .includes('/inventory/exportClients/*') === true ? (
-          <Button
-            variant='outlined'
-            startIcon={<GridOnOutlinedIcon />}
-            onClick={''}
-          >
-            Exportar todo
-          </Button>
-        ) : null}
-
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
-
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar especialista'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={sendStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       <Menu
         anchorEl={anchorEl}
@@ -437,7 +394,7 @@ export default function Views(props) {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/robot/update') === true ? (
+          .includes('/business/admin/productive') === true ? (
           <MenuItem onClick={goToProduct}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Dar Alta a productivo
@@ -445,7 +402,7 @@ export default function Views(props) {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/robot/delete') === true ? (
+          .includes('/business/admin/sunat') === true ? (
           <MenuItem onClick={goToSunat}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Activar SUNAT
@@ -453,7 +410,7 @@ export default function Views(props) {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/robot/update') === true ? (
+          .includes('/business/admin/enabled') === true ? (
           <MenuItem>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Habilitar Negocio
@@ -461,7 +418,7 @@ export default function Views(props) {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/robot/delete') === true ? (
+          .includes('/business/admin/disabled') === true ? (
           <MenuItem>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Deshabilitar Negocio

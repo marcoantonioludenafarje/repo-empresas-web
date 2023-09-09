@@ -25,6 +25,7 @@ import {
   Button,
   IconMenu,
   Badge,
+  Typography,
 } from '@mui/material';
 import {toggleNavCollapsed} from '../../../../../redux/actions';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -78,13 +79,26 @@ import localforage from 'localforage';
 // }
 import {AppContext} from '../../../../../Utils/AppContext';
 import {useEffect} from 'react';
+import {makeStyles} from '@mui/styles';
+
+const useStyles = makeStyles((theme) => ({
+  header: {
+    fontSize: '1em',
+    color: "#f0220e"
+  },
+  horizontalCenter: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+}));
 
 //FORCE UPDATE
 const useForceUpdate = () => {
   const [reload, setReload] = React.useState(0); // integer state
   return () => setReload((value) => value + 1); // update the state to force render
 };
-const AppHeader = () => {
+const AppHeader = (props) => {
+  const classes = useStyles(props);
   const {messages} = useIntl();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -92,6 +106,7 @@ const AppHeader = () => {
   const [requestType, setRequestType] = React.useState('');
   const [allowedNotifications, setAllowedNotifications] = React.useState(false);
   const [notificationUpdate, setNotificationUpdate] = React.useState(0);
+  const [cantdias,setCantdias] = React.useState(10);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -418,6 +433,12 @@ const AppHeader = () => {
         listNotificationsPayload.request.payload.userId = userDataRes.userId;
         toGetNotifications(listNotificationsPayload);
       }
+      if (userDataRes.merchantSelected.plans && userDataRes.merchantSelected.plans.find((obj)=>obj.active == true).finishAt) {
+        console.log ('xxx','entro')
+        setCantdias(Math.ceil((userDataRes.merchantSelected.plans.find((obj)=>obj.active == true).finishAt - Date.now()) / (1000 * 60 * 60 * 24)));
+        console.log ('xxx1',cantdias)
+      }
+        
     }
   }, [userDataRes]);
   useEffect(() => {
@@ -620,6 +641,22 @@ const AppHeader = () => {
             >
               <IntlMessages id='common.eCommerceBusiness' />
             </Button>
+          ) : null}
+        </Hidden>
+        <Hidden smDown>
+          {localStorage.getItem('payload') &&
+          JSON.parse(localStorage.getItem('payload')).profile ==
+            'INVENTORY_BUSINESS_ADMIN' &&
+          cantdias <=5 ? (
+            <Typography
+              variant='h1'
+              sx={{textAlign: 'center'}}
+              className={classes.header}
+              component='div'
+              gutterBottom
+            >
+              Faltan {cantdias} día(s) para el vencimiento de su suscripción
+            </Typography>
           ) : null}
         </Hidden>
         <IconButton
