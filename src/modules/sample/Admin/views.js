@@ -86,15 +86,11 @@ export default function Views(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const [openStatus, setOpenStatus] = useState(false);
-
-
   const [reload, setReload] = React.useState(0);
   const [searchValue, setSearchValue] = useState('');
-  const [filteredSpecialists, setFilteredSpecialists] = useState([]);
-  const {successMessage} = useSelector(({specialists}) => specialists);
-  const {errorMessage} = useSelector(({specialists}) => specialists);
+  const [filteredBusiness, setFilteredBusiness] = useState([]);
+  const [open, setOpen] = useState(false) 
+  const [openStatus, setOpenStatus] = useState(false);
 
   let popUp = false;
 
@@ -107,14 +103,10 @@ export default function Views(props) {
   };
   const {userDataRes} = useSelector(({user}) => user);
 
-  // const {listBusiness, agentsLastEvaluatedKey_pageListAgents} = useSelector(
-  //   ({admin}) => specialists,
-  // );
-  const pruebaRedux = useSelector((state)=>state)
 
-  const {listBusinessRes} = useSelector(({admin})=> admin);
+  const {listBusinessRes, successMessage, errorMessage} = useSelector(({admin})=> admin);
 
-  console.log('confeti los especialistas', listBusinessRes);
+  console.log('confeti', listBusinessRes);
 
   useEffect(() => {
     console.log('Estamos userDataRes', userDataRes);
@@ -139,6 +131,12 @@ export default function Views(props) {
       // setFirstload(true);
     }
   }, [userDataRes, reload]);
+  useEffect(() => {
+    if (listBusinessRes.length > 0) {
+      setFilteredBusiness(listBusinessRes);
+    }
+  }, [listBusinessRes]);
+
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -155,58 +153,93 @@ export default function Views(props) {
     console.log('Select Agente', selectedBusiness);
   };
 
-  const handleClose = () => {
+  const handleClose = () => { // MENU
     setAnchorEl(null);
   };
 
+  const handleClose2 = () => { // DIALOG
+    setOpen(false);
+  };
+
+  const setActive = () => {
+    setOpen(true);
+    handleClose();
+  };
 
   const goToProduct = () => {
     //usuario
     Router.push({
       pathname: '/sample/admin/productive',
+      query: selectedBusiness
     });
   };
   const goToSunat = () => {
     Router.push({
       pathname: '/sample/admin/sunat',
+      query: selectedBusiness
     });
   };
 
-  // Paso 2: Función para filtrar las campañas por el nombre de la campaña
-  /*const filterSpecialists = (searchText) => {
-    if (!searchText) {
-      setFilteredSpecialists(listSpecialists); // Si el valor del TextField está vacío, mostrar todas las campañas.
-    } else {
-      const filtered = listSpecialists.filter((specilist) =>
-        specilist.user.email.toLowerCase().includes(searchText.toLowerCase()),
-      );
-      setFilteredSpecialists(filtered);
+
+  const searchBusiness = (searchValue) => {
+    console.log("negocio >>", searchValue);
+    if (!searchValue) {
+      setFilteredBusiness(listBusinessRes);
+    }else{
+      const filtered = listBusinessRes.filter((business) => {
+        console.log("negocio", business.denominationMerchant);
+        const merchantName = business.denominationMerchant;
+        return (
+          merchantName &&
+          merchantName.toLowerCase().includes(searchValue.toLowerCase())
+        );
+      });
+      console.log("negocio >>>>", filtered);
+      setFilteredBusiness(filtered)
     }
-  };*/
+  }
 
-  /*useEffect(() => {
-    filterSpecialists(searchValue);
+  const handleActive = () =>{
+    console.log('select user', selectedBusiness);
 
-    console.log('filteredSpecialists', filteredSpecialists);
-  }, [searchValue, listSpecialists]);*/
+    let val;
 
-  const searchSpecialist = () => {
-    let listPayload = {
+    if(selectedBusiness.indactivo === 'S'){
+      val = 'N'
+    }
+    if (selectedBusiness.indactivo === 'N') {
+      val = 'S'
+    }
+    const payload = {
       request: {
-        payload: {
-          merchantId: userDataRes.merchantSelected.merchantId,
-          nameSpecialist: searchValue,
-          LastEvaluatedKey: null,
-        },
-      },
-    };
-    //getSpecialist(listPayload);
-  };
+        payload:{
+          merchantId: selectedBusiness.merchantId,
+          //userId: selectedBusiness.userId,
+          indactivo: val
+        }
+      }
+    }
 
-  const handleSearchValues = (event) => {
-    console.log('Evento', event);
-    //event.target.value=event.target.value.toUpperCase();
-    setSearchValue(event.target.value);
+    dispatch(ableBusiness(payload))
+    console.log('payload >>', payload);
+
+    setOpenStatus(true);
+    setOpen(false)
+  }
+
+  const sendStatus = () => {
+    setOpenStatus(false);
+    setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      onGetListBusiness(listPayload);
+    }, 2000);
   };
 
   const showMessage = () => {
@@ -221,7 +254,7 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha eliminado correctamente
+            La operación se hizo correctamente
           </DialogContentText>
         </>
       );
@@ -233,7 +266,7 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error al eliminar.
+            Se ha producido un error.
           </DialogContentText>
         </>
       );
@@ -242,36 +275,6 @@ export default function Views(props) {
     }
   };
 
-  const sendStatus = () => {
-    console.log('sendStatus', '');
-    setOpenStatus(false);
-    setTimeout(() => {
-      let listPayload = {
-        request: {
-          payload: {
-            merchantId: userDataRes.merchantSelected.merchantId,
-            nameSpecialist: searchValue,
-            LastEvaluatedKey: null,
-          },
-        },
-      };
-      //listPayload.request.payload.LastEvaluatedKey = null;
-      //dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
-      //getSpecialist(listPayload);
-    }, 2000);
-  };
-
-  const listClients = [
-    {
-      id: 1,
-      social: 'Empresa nueva',
-      user: 'Usuario nuevo',
-      state: 'Activo',
-      type: 'UAT',
-      plan: 'plan',
-      sunat: 'No',
-    },
-  ];
 
   return (
     <Card sx={{p: 4}}>
@@ -282,11 +285,12 @@ export default function Views(props) {
         className={classes.stack}
       >
         <TextField
-          label='Nombre usuario'
+          label='Nombre del Negocio'
           variant='outlined'
           name='nameToSearch'
           size='small'
-          onChange={handleSearchValues}
+          value={searchValue}
+          onChange={(e)=>setSearchValue(e.target.value)}
         />
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
@@ -295,7 +299,7 @@ export default function Views(props) {
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          onClick={searchSpecialist}
+          onClick={()=>searchBusiness(searchValue)}
         >
           Buscar
         </Button>
@@ -320,8 +324,8 @@ export default function Views(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listBusinessRes?.map((row, index) => {
-              console.log('listSpecialists:-->', listBusinessRes);
+            {filteredBusiness?.map((row, index) => {
+              console.log('negocio:-->', filteredBusiness);
               return (
                 <TableRow
                   key={index}
@@ -396,7 +400,7 @@ export default function Views(props) {
           .getItem('pathsBack')
           .includes('/business/admin/productive') === true ? (
           <MenuItem onClick={goToProduct}>
-            <CachedIcon sx={{mr: 1, my: 'auto'}} />
+            {/* <CachedIcon sx={{mr: 1, my: 'auto'}} /> */}
             Dar Alta a productivo
           </MenuItem>
         ) : null}
@@ -404,27 +408,75 @@ export default function Views(props) {
           .getItem('pathsBack')
           .includes('/business/admin/sunat') === true ? (
           <MenuItem onClick={goToSunat}>
-            <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            {/* <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} /> */}
             Activar SUNAT
           </MenuItem>
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/business/admin/enabled') === true ? (
-          <MenuItem>
-            <CachedIcon sx={{mr: 1, my: 'auto'}} />
+          .includes('/business/admin/enabled') === true && selectedBusiness.indactivo === 'N' ? (
+          <MenuItem onClick={setActive}>
+            {/* <CachedIcon sx={{mr: 1, my: 'auto'}} /> */}
             Habilitar Negocio
           </MenuItem>
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/business/admin/disabled') === true ? (
-          <MenuItem>
-            <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+          .includes('/business/admin/disabled') === true && selectedBusiness.indactivo === 'S' ? (
+          <MenuItem onClick={setActive}>
+            {/* <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} /> */}
             Deshabilitar Negocio
           </MenuItem>
         ) : null}
       </Menu>
+      <Dialog
+        open={open}
+        onClose={handleClose2}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {selectedBusiness.indactivo === 'S'?'Deshabilitar negocio?':'Habilitar negocio?'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+             {selectedBusiness.indactivo === 'S'?'Desea deshabilitar los accesos al negocio y sus usuarios?':'Desea habilitar los accesos al negocio y sus usuarios?'}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={handleActive}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+        {selectedBusiness.indactivo === 'S'?'Deshabilitar negocio?':'Habilitar negocio?'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Card>
   );
 }

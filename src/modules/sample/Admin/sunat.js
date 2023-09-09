@@ -45,13 +45,11 @@ import {
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-import SchoolIcon from '@mui/icons-material/School';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {newAppointment} from 'redux/actions';
-import {getSpecialists} from 'redux/actions/Specialist';
 
 import {useState} from 'react';
+import { activeSunat } from 'redux/actions';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -60,36 +58,50 @@ const validationSchema = yup.object({
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />)
     .max(maxLength, 'Se puede ingresar como maximo 10 caracteres'), */
-  title: yup
+  intoapiKey: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-  description: yup
+  intosecretkey: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-  duration: yup
-    .number()
+  intousersecu: yup
+    .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
+  intopasssecu: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  certvalue: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),
+  certkeyvalue: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
+    .required(<IntlMessages id='validation.required' />),      
 });
 const defaultValues = {
-  title: '',
-  description: '',
-  duration: 0,
+  intoapiKey: '',
+  intosecretkey: '',
+  intousersecu: '',
+  intopasssecu: '',
+  certvalue: '',
+  certkeyvalue: '',
 };
-let newAppointmentPayload = {
+let activedSunat = {
   request: {
     payload: {
-      appointments: [
+      activedatasunat: [
         {
-          clientId: '',
-          clientName: '',
-          specialistId: '',
-          specialistName: '',
-          appointmentDescription: '',
-          duration: '',
-          durationUnited: '',
+          intoapiKey: '',
+          intosecretkey: '',
+          intousersecu: '',
+          intopasssecu: '',
+          certvalue: '',
+          certkeyvalue: '',
         },
       ],
       merchantId: '',
@@ -150,32 +162,15 @@ const Sunat = (props) => {
   const [typeDialog, setTypeDialog] = React.useState('');
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
-  const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
-  const [notifyClientByWhatsapp, setNotifyClientByWhatsapp] =
     React.useState(false);
-  const [countryCode, setCountryCode] = React.useState('+51');
-  const [selectedClient, setSelectedClient] = React.useState('');
-
-  const [recordingClientByWhatsapp, setRecordingClientByWhatsapp] =
-    React.useState(false);
-
-  const [publishDate, setPublishDate] = React.useState(
-    Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
-  );
-  const [timelord, setTimelord] = useState(0);
-
-  const [finalDate, setFinalDate] = useState(publishDate);
 
   const dispatch = useDispatch();
   const router = useRouter();
 
-  //APIS
-  const toNewAppointment = (payload) => {
-    dispatch(newAppointment(payload));
-  };
-  const toGetSpecialist = (payload) => {
-    dispatch(getSpecialists(payload));
-  };
+  let {query} = router;
+  console.log('business', query);
+
+
   //GET_VALUES_APIS
   const state = useSelector((state) => state);
   console.log('estado', state);
@@ -185,8 +180,10 @@ const Sunat = (props) => {
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
 
-  const {listSpecialists} = useSelector(({specialists}) => specialists);
-  console.log('confeti especialistas', listSpecialists);
+  const onActiveSunat = (payload) =>{
+    activeSunat(payload)
+  }
+
 
   useEffect(() => {
     if (!userDataRes) {
@@ -207,13 +204,6 @@ const Sunat = (props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
-
-  useEffect(() => {
-    if (userDataRes) {
-      newAppointmentPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-    }
-  }, [userDataRes]);
 
   useEffect(() => {
     console.log('Estamos userDataResINCampaign', userDataRes);
@@ -237,16 +227,8 @@ const Sunat = (props) => {
           },
         },
       };
-      let globalParameterPayload = {
-        request: {
-          payload: {
-            abreParametro: null,
-            codTipoparametro: null,
-            country: 'peru',
-          },
-        },
-      };
-      toGetSpecialist(listPayload);
+
+      //toGetSpecialist(listPayload);
       // setFirstload(true);
     }
   }, [userDataRes]);
@@ -259,78 +241,35 @@ const Sunat = (props) => {
     setOpen(false);
   };
 
-  //let durationXD = getValueField('duration').value
-
   const handleDatas = (data, {setSubmitting}) => {
     setSubmitting(true);
     console.log(
       'CONFETI DATA',
-      data,
-      publishDate.getTime(),
-      finalDate.getTime(),
+      data
     );
-    console.log('objSelects DATA', getValueField('specialist').value);
-    console.log('objClients DATA', selectedClient);
-    console.log(
-      'objtrue',
-      notifyClientByEmail,
-      notifyClientByWhatsapp,
-      recordingClientByWhatsapp,
-    );
-
-    let specialistF = listSpecialists.filter(
-      (specialist) =>
-        specialist.specialistId === getValueField('specialist').value,
-    );
-    const durationInMilliseconds = parseInt(data.duration) * 60000; // Convert duration to milliseconds
-    const calculatedFinalDate = new Date(publishDate + durationInMilliseconds);
-
-    let email;
-    if (notifyClientByEmail) {
-      email = getValueField('clientEmail').value;
-    } else {
-      email = null;
-    }
-    let whatsapp;
-    if (notifyClientByWhatsapp) {
-      whatsapp = getValueField('numberContact').value;
-    } else {
-      whatsapp = null;
+    
+    activedSunat.request = {
+      payload: {
+        activedatasunat: [
+          {
+            intoapiKey: data.intoapiKey,
+            intosecretkey: data.intosecretkey,
+            intousersecu: data.intousersecu,
+            intopasssecu: data.intopasssecu,
+            certvalue: data.certvalue,
+            certkeyvalue: data.certkeyvalue,
+          },
+        ],
+        merchantId: query.merchantId,
+      }
     }
 
-    let starter = publishDate.getTime();
-    let end = finalDate.getTime();
 
-    newAppointmentPayload.request.payload.appointments = [
-      {
-        clientId: selectedClient.clientId,
-        clientName: selectedClient.denominationClient,
-        specialistId: specialistF[0].specialistId
-          ? specialistF[0].specialistId
-          : '',
-        specialistName: specialistF[0].specialistName
-          ? specialistF[0].specialistName
-          : '',
-        appointmentDescription: data.description,
-        scheduledStartedAt: starter,
-        scheduledFinishedAt: end,
-        duration: data.duration,
-        durationUnited: 'Min',
-        notifications: {
-          email: email,
-          whatsapp: whatsapp,
-          checkEmailNotify: notifyClientByEmail,
-          checkWhatsappNotify: notifyClientByWhatsapp,
-          checkWhatsappReminder: recordingClientByWhatsapp,
-        },
-      },
-    ];
-
-    console.log('objfinaly', newAppointmentPayload);
+    console.log('objfinaly', activedSunat);
 
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
-    toNewAppointment(newAppointmentPayload);
+    onActiveSunat(activedSunat);
     setSubmitting(false);
     setOpenStatus(true);
   };
@@ -374,7 +313,7 @@ const Sunat = (props) => {
   const sendStatus = () => {
     console.log('Esto es el momento');
     setOpenStatus(false);
-    Router.push('/sample/appointment/views');
+    Router.push('/sample/admin/table');
   };
 
   const handleCloseDialogClient = () => {
@@ -444,7 +383,7 @@ const Sunat = (props) => {
                   <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='INGRESE API KEY *'
-                      name='title'
+                      name='intoapiKey'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -459,7 +398,7 @@ const Sunat = (props) => {
                   <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Ingrese SECRETE KEY *'
-                      name='title'
+                      name='intosecretkey'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -474,7 +413,7 @@ const Sunat = (props) => {
                   <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Ingrese Usuario Secundario *'
-                      name='title'
+                      name='intousersecu'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -489,7 +428,7 @@ const Sunat = (props) => {
                   <Grid item xs={8} sm={12}>
                     <AppTextField
                       label='Ingrese Password Secundario *'
-                      name='title'
+                      name='intopasssecu'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -503,8 +442,8 @@ const Sunat = (props) => {
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <AppTextField
-                      label='Adjuntar certificado Digital *'
-                      name='title'
+                      label='Valor certificado Digital *'
+                      name='certvalue'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -518,8 +457,8 @@ const Sunat = (props) => {
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <AppTextField
-                      label='Password certificado Digital*'
-                      name='title'
+                      label='Clave certificado Digital*'
+                      name='certkeyvalue'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -599,7 +538,7 @@ const Sunat = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Citas'}
+          {'Activación Sunat'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -635,7 +574,7 @@ const Sunat = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Cita'}
+          {'Activación Sunat'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
