@@ -28,9 +28,11 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import DeleteIcon from '@mui/icons-material/Delete';
+
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
-import {listUser, updateActive} from '../../../../redux/actions/User';
+import {changeRol, listUser, updateActive} from '../../../../redux/actions/User';
 
 import {red} from '@mui/material/colors';
 import {convertToDateWithoutTime} from '../../../../Utils/utils';
@@ -38,7 +40,7 @@ import {convertToDateWithoutTime} from '../../../../Utils/utils';
 let selectUser = {};
 
 const UserManagement = ({data}) => {
-  const {listUserRes} = useSelector(({user}) => user);
+  const {listUserRes, successMessage, errorMessage} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   const dispatch = useDispatch();
 
@@ -122,6 +124,76 @@ const UserManagement = ({data}) => {
     setOpen(false)
   }
 
+  const handleChangeRol = ()=>{
+
+    const payload = {
+      request:{
+        payload:{
+          useriD: selectUser.userId,
+          rol: data.rol,
+          roles: [
+            data.rol
+          ]
+        }
+      }
+    }
+
+    dispatch(changeRol(payload))
+    setOpenStatus(true);
+    setOpen(false)
+
+  }
+
+  const sendStatus = () => {
+    setOpenStatus(false);
+    setTimeout(() => {
+      let listUserPayload = {
+        request: {
+          payload: {
+            merchantId: userDataRes.merchantSelected.merchantId,
+          },
+        },
+      };
+      toListUser(listUserPayload);
+    }, 2000);
+
+    console.log('listUserRes: ', listUserRes);
+  };
+
+
+  const showMessage = () => {
+    if (successMessage != undefined) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            La operación se hizo correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
+    }
+  };
+
   return (
     <TableContainer component={Paper} sx={{maxHeight: 450}}>
       <Table stickyHeader size='small' aria-label='simple table'>
@@ -141,6 +213,9 @@ const UserManagement = ({data}) => {
             </TableCell>
             <TableCell>
               <IntlMessages id='common.options' />
+            </TableCell>
+            <TableCell>
+              <IntlMessages id='common.active' />
             </TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -185,6 +260,9 @@ const UserManagement = ({data}) => {
                   <TableCell>{obj.profile ? obj.profile : ''}</TableCell>
                   <TableCell align='center'>
                     {convertToDateWithoutTime(obj.fecCreacion)}
+                  </TableCell>
+                  <TableCell>
+                    {obj.indactivo=='S'?'SÍ':'NO'}
                   </TableCell>
                   <TableCell>
                     <Button
@@ -308,6 +386,25 @@ const UserManagement = ({data}) => {
           </Button>
           <Button variant='outlined' onClick={handleClose2}>
             No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+        {selectUser.indactivo === 'S'?'Deshabilitar usuario?':'Habilitar usuario?'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
           </Button>
         </DialogActions>
       </Dialog>

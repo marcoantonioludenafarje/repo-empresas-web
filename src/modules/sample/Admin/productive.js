@@ -45,13 +45,11 @@ import {
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-import SchoolIcon from '@mui/icons-material/School';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {newAppointment} from 'redux/actions';
-import {getSpecialists} from 'redux/actions/Specialist';
 
 import {useState} from 'react';
+import { activeSunat } from 'redux/actions';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -60,36 +58,34 @@ const validationSchema = yup.object({
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />)
     .max(maxLength, 'Se puede ingresar como maximo 10 caracteres'), */
-  title: yup
+  businessName: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-  description: yup
+  planeSelect: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
-  duration: yup
-    .number()
-    .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),
+    .required(<IntlMessages id='validation.required' />),  
 });
 const defaultValues = {
-  title: '',
-  description: '',
-  duration: 0,
+  intoapiKey: '',
+  intosecretkey: '',
+  intousersecu: '',
+  intopasssecu: '',
+  certvalue: '',
+  certkeyvalue: '',
 };
-let newAppointmentPayload = {
+let altaProd = {
   request: {
     payload: {
-      appointments: [
+      altadataprod: [
         {
-          clientId: '',
-          clientName: '',
-          specialistId: '',
-          specialistName: '',
-          appointmentDescription: '',
-          duration: '',
-          durationUnited: '',
+          intoapiKey: '',
+          intosecretkey: '',
+          intousersecu: '',
+          intopasssecu: '',
+          certvalue: '',
+          certkeyvalue: '',
         },
       ],
       merchantId: '',
@@ -150,32 +146,15 @@ const Productive = (props) => {
   const [typeDialog, setTypeDialog] = React.useState('');
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
-  const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
-  const [notifyClientByWhatsapp, setNotifyClientByWhatsapp] =
     React.useState(false);
-  const [countryCode, setCountryCode] = React.useState('+51');
-  const [selectedClient, setSelectedClient] = React.useState('');
-
-  const [recordingClientByWhatsapp, setRecordingClientByWhatsapp] =
-    React.useState(false);
-
-  const [publishDate, setPublishDate] = React.useState(
-    Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
-  );
-  const [timelord, setTimelord] = useState(0);
-
-  const [finalDate, setFinalDate] = useState(publishDate);
 
   const dispatch = useDispatch();
   const router = useRouter();
 
-  //APIS
-  const toNewAppointment = (payload) => {
-    dispatch(newAppointment(payload));
-  };
-  const toGetSpecialist = (payload) => {
-    dispatch(getSpecialists(payload));
-  };
+  let {query} = router;
+  console.log('business', query);
+
+
   //GET_VALUES_APIS
   const state = useSelector((state) => state);
   console.log('estado', state);
@@ -185,8 +164,12 @@ const Productive = (props) => {
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
 
-  const {listSpecialists} = useSelector(({specialists}) => specialists);
-  console.log('confeti especialistas', listSpecialists);
+  const onActiveSunat = (payload) =>{
+    console.log("objfin >>", payload);
+    dispatch(activeSunat(payload))
+    console.log("objlast");
+  }
+
 
   useEffect(() => {
     if (!userDataRes) {
@@ -207,13 +190,6 @@ const Productive = (props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
-
-  useEffect(() => {
-    if (userDataRes) {
-      newAppointmentPayload.request.payload.merchantId =
-        userDataRes.merchantSelected.merchantId;
-    }
-  }, [userDataRes]);
 
   useEffect(() => {
     console.log('Estamos userDataResINCampaign', userDataRes);
@@ -237,16 +213,8 @@ const Productive = (props) => {
           },
         },
       };
-      let globalParameterPayload = {
-        request: {
-          payload: {
-            abreParametro: null,
-            codTipoparametro: null,
-            country: 'peru',
-          },
-        },
-      };
-      toGetSpecialist(listPayload);
+
+      //toGetSpecialist(listPayload);
       // setFirstload(true);
     }
   }, [userDataRes]);
@@ -259,78 +227,37 @@ const Productive = (props) => {
     setOpen(false);
   };
 
-  //let durationXD = getValueField('duration').value
-
   const handleDatas = (data, {setSubmitting}) => {
     setSubmitting(true);
     console.log(
       'CONFETI DATA',
-      data,
-      publishDate.getTime(),
-      finalDate.getTime(),
+      data
     );
-    console.log('objSelects DATA', getValueField('specialist').value);
-    console.log('objClients DATA', selectedClient);
-    console.log(
-      'objtrue',
-      notifyClientByEmail,
-      notifyClientByWhatsapp,
-      recordingClientByWhatsapp,
-    );
-
-    let specialistF = listSpecialists.filter(
-      (specialist) =>
-        specialist.specialistId === getValueField('specialist').value,
-    );
-    const durationInMilliseconds = parseInt(data.duration) * 60000; // Convert duration to milliseconds
-    const calculatedFinalDate = new Date(publishDate + durationInMilliseconds);
-
-    let email;
-    if (notifyClientByEmail) {
-      email = getValueField('clientEmail').value;
-    } else {
-      email = null;
-    }
-    let whatsapp;
-    if (notifyClientByWhatsapp) {
-      whatsapp = getValueField('numberContact').value;
-    } else {
-      whatsapp = null;
+    
+    altaProd.request = {
+      payload: {
+        altadataprod: [
+          {
+            sunatClientId: data.intoapiKey,
+            sunatClientSecret: data.intosecretkey,
+            sunatSecondayUserName: data.intousersecu,
+            sunatSecondayUserPassword: data.intopasssecu,
+            digitalCertifiedCertValue: data.certvalue,
+            digitalCertifiedKeyValue: data.certkeyvalue,
+            isBillingEnabled: true
+          },
+        ],
+        merchantId: query.merchantId,
+      }
     }
 
-    let starter = publishDate.getTime();
-    let end = finalDate.getTime();
 
-    newAppointmentPayload.request.payload.appointments = [
-      {
-        clientId: selectedClient.clientId,
-        clientName: selectedClient.denominationClient,
-        specialistId: specialistF[0].specialistId
-          ? specialistF[0].specialistId
-          : '',
-        specialistName: specialistF[0].specialistName
-          ? specialistF[0].specialistName
-          : '',
-        appointmentDescription: data.description,
-        scheduledStartedAt: starter,
-        scheduledFinishedAt: end,
-        duration: data.duration,
-        durationUnited: 'Min',
-        notifications: {
-          email: email,
-          whatsapp: whatsapp,
-          checkEmailNotify: notifyClientByEmail,
-          checkWhatsappNotify: notifyClientByWhatsapp,
-          checkWhatsappReminder: recordingClientByWhatsapp,
-        },
-      },
-    ];
-
-    console.log('objfinaly', newAppointmentPayload);
+    console.log('objfinaly', altaProd);
 
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
-    toNewAppointment(newAppointmentPayload);
+    onActiveSunat(altaProd);
+    
     setSubmitting(false);
     setOpenStatus(true);
   };
@@ -374,7 +301,7 @@ const Productive = (props) => {
   const sendStatus = () => {
     console.log('Esto es el momento');
     setOpenStatus(false);
-    Router.push('/sample/appointment/views');
+    Router.push('/sample/admin/table');
   };
 
   const handleCloseDialogClient = () => {
@@ -402,7 +329,7 @@ const Productive = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          Activar Sunat
+          Dar Alta Productivo
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -443,8 +370,8 @@ const Productive = (props) => {
                 <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
                   <Grid item xs={8} sm={12}>
                     <AppTextField
-                      label='INGRESE API KEY *'
-                      name='title'
+                      label='Razón Social del Negocio *'
+                      name='businessName'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -458,8 +385,8 @@ const Productive = (props) => {
                   </Grid>
                   <Grid item xs={8} sm={12}>
                     <AppTextField
-                      label='Ingrese SECRETE KEY *'
-                      name='title'
+                      label='Seleccione el plan *'
+                      name='planeSelect'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -471,66 +398,7 @@ const Productive = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
-                    <AppTextField
-                      label='Ingrese Usuario Secundario *'
-                      name='title'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={8} sm={12}>
-                    <AppTextField
-                      label='Ingrese Password Secundario *'
-                      name='title'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={8} sm={12}>
-                    <AppTextField
-                      label='Adjuntar certificado Digital *'
-                      name='title'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={8} sm={12}>
-                    <AppTextField
-                      label='Password certificado Digital*'
-                      name='title'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
+                  
                 </Grid>
 
                 <ButtonGroup
@@ -566,30 +434,6 @@ const Productive = (props) => {
         </Formik>
       </Box>
 
-      <Dialog
-        open={openDialogClient}
-        onClose={handleCloseDialogClient}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        {typeDialog == 'client' ? (
-          <>
-            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-              {'Búsqueda de clientes'}
-              <CancelOutlinedIcon
-                onClick={setOpenDialogClient.bind(this, false)}
-                className={classes.closeButton}
-              />
-            </DialogTitle>
-            <DialogContent>
-              <AddClientForm sendData={getClient} />
-            </DialogContent>
-          </>
-        ) : (
-          <></>
-        )}
-      </Dialog>
 
       <Dialog
         open={open}
@@ -599,7 +443,7 @@ const Productive = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Citas'}
+          {'Dar alta a Producción'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -635,7 +479,7 @@ const Productive = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Cita'}
+          {'Activación Sunat'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}

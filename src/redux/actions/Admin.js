@@ -32,7 +32,7 @@ import {
           .then((data) => {
             console.log('up productive resultado', data);
             dispatch({type: UP_PRODUCTIVE, payload: data.response.payload});
-            dispatch({type: FETCH_SUCCESS, payload: 'success'});
+            dispatch({type: FETCH_SUCCESS, payload: 'Activado a Productivo'});
           })
           .catch((error) => {
             console.log('up productive error', error);

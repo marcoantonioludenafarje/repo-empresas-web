@@ -134,3 +134,20 @@ export const updateActive = (payload) =>{
       })
   }
 }
+
+export const changeRol = (payload) =>{
+  console.log("confeti >>", payload);
+  return (dispatch) =>{
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/business/administrative/changeroluser', {body: payload})
+      .then((data)=>{
+        console.log('rol actions', data);
+        dispatch({type: CHANGE_ROL, payload: data.response.payload});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error)=>{
+        console.log('rol actions error', error);
+        dispatch({tpye: FETCH_ERROR, payload: error.message})
+      })
+  }  
+}

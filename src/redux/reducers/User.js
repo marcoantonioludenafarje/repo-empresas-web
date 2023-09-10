@@ -11,7 +11,8 @@ import {
   UPDATE_USER,
   GET_SHOP_PRODUCTS,
   RESET_USER,
-  ACTIVE_USER
+  ACTIVE_USER,
+  CHANGE_ROL
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -92,6 +93,12 @@ const userReducer = (state = INIT_STATE, action) => {
       return{
         ...state,
         activeUserRes: action.payload
+      }
+    case CHANGE_ROL:
+      console.log('data reducer CHANGE_ROL', action.payload);
+      return{
+        ...state,
+        changerolRes: action.payload
       }
     case RESET_USER:
       return {
