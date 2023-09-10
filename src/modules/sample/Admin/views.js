@@ -25,6 +25,7 @@ import {
   Stack,
   useTheme,
   useMediaQuery,
+  IconButton,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -45,11 +46,12 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   getListBusiness,
   ableBusiness
 } from '../../../redux/actions/Admin'
-import {convertToDate} from '../../../Utils/utils';
+import {convertToDate,convertToDateWithoutTime} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   FETCH_SUCCESS,
@@ -57,6 +59,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import Router from 'next/router';
 import {red} from '@mui/material/colors';
+import ExtendExpirationForm from './extend';
 
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -88,7 +91,8 @@ export default function Views(props) {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [openStatus, setOpenStatus] = useState(false);
-
+  const [extendExpiration, setExtendExpiration] = React.useState(false);
+  const [dateExpiration, setDateExpiration] = React.useState('');
 
   const [reload, setReload] = React.useState(0);
   const [searchValue, setSearchValue] = useState('');
@@ -100,6 +104,10 @@ export default function Views(props) {
 
   const onGetListBusiness = (payload) => {
     dispatch(getListBusiness(payload));
+  };
+
+  const onExtendSuscriptionBusiness = (payload) => {
+    dispatch(extendSuscriptionBusiness(payload));
   };
 
   const reloadPage = () => {
@@ -140,6 +148,33 @@ export default function Views(props) {
     }
   }, [userDataRes, reload]);
 
+  const filterData = (dataFilters) => {
+    console.log('prueba2', dataFilters);
+    let listPayload = {
+      request: {
+        payload: {
+          merchantId: selectedBusiness.merchantId,
+          plans: selectedBusiness.plans,
+          extendExpiration: dataFilters,
+        },
+      },
+    };
+    console.log('prueba22',listPayload)
+    //onExtendSuscriptionBusiness(listPayload);
+    setExtendExpiration(false);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    listPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
+        },
+      },
+    };
+    onGetListBusiness(listPayload);
+  };
+
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -171,6 +206,14 @@ export default function Views(props) {
       pathname: '/sample/admin/sunat',
     });
   };
+  
+  const goToExpiration = () => {
+    console.log('selectedBusiness',selectedBusiness);
+    setExtendExpiration(true);
+    setDateExpiration((selectedBusiness.plans.find((obj)=>obj.active == true).finishAt > 0 ? selectedBusiness.plans.find((obj)=>obj.active == true).finishAt : Date.now()))
+    handleClose();
+  };
+  
 
   // Paso 2: Función para filtrar las campañas por el nombre de la campaña
   /*const filterSpecialists = (searchText) => {
@@ -315,13 +358,13 @@ export default function Views(props) {
               <TableCell>Estado</TableCell>
               <TableCell>Tipo</TableCell>
               <TableCell>Plan</TableCell>
+              <TableCell>Vencimiento Suscripción</TableCell>
               <TableCell>Integrada a SUNAT?</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {listBusinessRes?.map((row, index) => {
-              console.log('listSpecialists:-->', listBusinessRes);
               return (
                 <TableRow
                   key={index}
@@ -353,6 +396,11 @@ export default function Views(props) {
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
                     {row.plans.length > 0 ? row.plans[row.plans.length - 1].type : ''}
+                  </TableCell>
+                  <TableCell
+                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                  >
+                    {row.plans.length && row.plans.find((obj)=>obj.active == true).finishAt > 0 ? convertToDateWithoutTime(row.plans.find((obj)=>obj.active == true).finishAt) : ''}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
@@ -410,6 +458,14 @@ export default function Views(props) {
         ) : null}
         {localStorage
           .getItem('pathsBack')
+          .includes('/business/admin/expiration') === true ? (
+          <MenuItem onClick={goToExpiration}>
+            <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            Ampliar fecha suscripción
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
           .includes('/business/admin/enabled') === true ? (
           <MenuItem>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
@@ -425,6 +481,43 @@ export default function Views(props) {
           </MenuItem>
         ) : null}
       </Menu>
+
+      <Dialog
+        open={extendExpiration}
+        onClose={() => setExtendExpiration(false)}
+        maxWidth='sm'
+        fullWidth
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          <IconButton
+            aria-label='close'
+            onClick={() => setExtendExpiration(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          {'Ampliar Fecha Suscripción'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <DialogContentText
+            sx={{fontSize: '1.2em'}}
+            id='alert-dialog-description'
+          >
+            <ExtendExpirationForm
+              sendData={filterData}
+              ds={dateExpiration}
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
+      </Dialog>
     </Card>
   );
 }

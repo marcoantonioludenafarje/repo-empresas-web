@@ -57,6 +57,22 @@ import {
       };
   };
 
+  export const extendSuscriptionBusiness = (payload) =>{
+    return (dispatch, getState) => {
+        dispatch({type: FETCH_START});
+        API.post('tunexo', '/business/administrative/extendSucription', {body: payload})
+          .then((data) => {
+            console.log('extendSuscriptionBusiness resultado', data);
+            dispatch({type: EXTEND_SUSCRIPTION, payload: data.response.payload});
+            dispatch({type: FETCH_SUCCESS, payload: 'success'});
+          })
+          .catch((error) => {
+            console.log('activeSunat error', error);
+            dispatch({type: FETCH_ERROR, payload: error.message});
+          });
+      };
+  };
+
   export const ableBusiness = (payload) =>{
     return (dispatch, getState) => {
         dispatch({type: FETCH_START});

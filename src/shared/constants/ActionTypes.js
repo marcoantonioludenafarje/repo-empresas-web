@@ -402,3 +402,4 @@ export const LIST_BUSINESS = 'list_business';
 export const UP_PRODUCTIVE = 'up_productive';
 export const ACTIVE_SUNAT = 'active_sunat';
 export const ABLE_BUSINESS = 'able_business';
+export const EXTEND_SUSCRIPTION = 'extend_suscription';

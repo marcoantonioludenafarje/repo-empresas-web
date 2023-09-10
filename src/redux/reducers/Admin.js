@@ -5,7 +5,8 @@ import {
     UP_PRODUCTIVE,
     LIST_BUSINESS,
     ACTIVE_SUNAT,
-    ABLE_BUSINESS
+    ABLE_BUSINESS,
+    EXTEND_SUSCRIPTION,
   } from '../../shared/constants/ActionTypes';
   
   const INIT_STATE = {
@@ -49,6 +50,12 @@ import {
         return{
           ...state,
           upProductiveRes: action.payload
+        }
+      case EXTEND_SUSCRIPTION:
+        console.log('data reducer extend suscription', action.payload);
+        return{
+          ...state,
+          extendSuscripcionRes: action.payload
         }
     
       // case RESET_USER:
