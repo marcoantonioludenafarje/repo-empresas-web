@@ -41,20 +41,22 @@ import {
       };
   };
 
-  export const activeSunat = (payload) =>{
-    return (dispatch, getState) => {
-        dispatch({type: FETCH_START});
-        API.post('tunexo', '/business/administrative/listbusiness', {body: payload})
-          .then((data) => {
-            console.log('activeSunat resultado', data);
-            dispatch({type: ACTIVE_SUNAT, payload: data.response.payload});
-            dispatch({type: FETCH_SUCCESS, payload: 'success'});
-          })
-          .catch((error) => {
-            console.log('activeSunat error', error);
-            dispatch({type: FETCH_ERROR, payload: error.message});
-          });
-      };
+  export const activeSunat = (payload) => {
+    console.log("objfy act", payload);
+    return async (dispatch, getState) => {
+      console.log("objfy >> actions", payload);
+      dispatch({ type: FETCH_START });
+  
+      try {
+        const data = await API.post('tunexo', '/business/administrative/activesunat', { body: payload });
+        console.log('activeSunat resultado', data);
+        dispatch({ type: ACTIVE_SUNAT, payload: data.response.payload });
+        dispatch({ type: FETCH_SUCCESS, payload: 'Sunat activado correctamente' });
+      } catch (error) {
+        console.log('activeSunat error', error);
+        dispatch({ type: FETCH_ERROR, payload: error.message });
+      }
+    };
   };
 
   export const ableBusiness = (payload) =>{

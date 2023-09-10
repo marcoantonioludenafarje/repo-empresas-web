@@ -132,7 +132,7 @@ export default function Views(props) {
     }
   }, [userDataRes, reload]);
   useEffect(() => {
-    if (listBusinessRes.length > 0) {
+    if (listBusinessRes && listBusinessRes.length > 0) {
       setFilteredBusiness(listBusinessRes);
     }
   }, [listBusinessRes]);

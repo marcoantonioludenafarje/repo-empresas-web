@@ -181,7 +181,9 @@ const Sunat = (props) => {
   const {userDataRes} = useSelector(({user}) => user);
 
   const onActiveSunat = (payload) =>{
-    activeSunat(payload)
+    console.log("objfin >>", payload);
+    dispatch(activeSunat(payload))
+    console.log("objlast");
   }
 
 
@@ -252,12 +254,13 @@ const Sunat = (props) => {
       payload: {
         activedatasunat: [
           {
-            intoapiKey: data.intoapiKey,
-            intosecretkey: data.intosecretkey,
-            intousersecu: data.intousersecu,
-            intopasssecu: data.intopasssecu,
-            certvalue: data.certvalue,
-            certkeyvalue: data.certkeyvalue,
+            sunatClientId: data.intoapiKey,
+            sunatClientSecret: data.intosecretkey,
+            sunatSecondayUserName: data.intousersecu,
+            sunatSecondayUserPassword: data.intopasssecu,
+            digitalCertifiedCertValue: data.certvalue,
+            digitalCertifiedKeyValue: data.certkeyvalue,
+            isBillingEnabled: true
           },
         ],
         merchantId: query.merchantId,
@@ -270,6 +273,7 @@ const Sunat = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
     onActiveSunat(activedSunat);
+    
     setSubmitting(false);
     setOpenStatus(true);
   };
