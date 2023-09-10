@@ -22,6 +22,9 @@ import {
   DialogTitle,
   CircularProgress,
   Typography,
+  FormControl,
+  Select,
+  InputLabel
 } from '@mui/material';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -32,7 +35,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
-import {changeRol, listUser, updateActive} from '../../../../redux/actions/User';
+import {changeRol, listUser, updateActive, listRol} from '../../../../redux/actions/User';
 
 import {red} from '@mui/material/colors';
 import {convertToDateWithoutTime} from '../../../../Utils/utils';
@@ -42,10 +45,14 @@ let selectUser = {};
 const UserManagement = ({data}) => {
   const {listUserRes, successMessage, errorMessage} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {listRolRes} = useSelector(({user}) => user);
   const dispatch = useDispatch();
 
   const toListUser = (payload) => {
     dispatch(listUser(payload));
+  };
+  const toListRol = (payload) => {
+    dispatch(listRol(payload));
   };
 
   
@@ -53,6 +60,7 @@ const UserManagement = ({data}) => {
   const [disable, setDisable] = useState(false);
   const [open, setOpen] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
+  const [openChangeRol, setOpenChangeRol] = useState(false);
 
   const openMenu = Boolean(anchorEl);
   let codProdSelected = '';
@@ -69,6 +77,24 @@ const UserManagement = ({data}) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+
+  useEffect(() => {
+    if (listRolRes) {
+      console.log('listRolRes desde useeffect', listRolRes);
+    }
+  }, [listRolRes]);
+
+  useEffect(() => {
+    let listRolPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+    toListRol(listRolPayload);
+  }, []);
 
   useEffect(() => {
     let listUserPayload = {
@@ -95,6 +121,15 @@ const UserManagement = ({data}) => {
     setOpen(true);
     handleClose();
   };
+  
+  const setChangeRol = () =>{
+    setOpenChangeRol(true);
+    handleClose();
+  }
+
+  const handleClose3 = () =>{
+    setOpenChangeRol(false);
+  }
 
 
   const handleActive = () =>{
@@ -212,10 +247,10 @@ const UserManagement = ({data}) => {
               <IntlMessages id='common.dateRegistered' />
             </TableCell>
             <TableCell>
-              <IntlMessages id='common.options' />
+              <IntlMessages id='common.active' />
             </TableCell>
             <TableCell>
-              <IntlMessages id='common.active' />
+              <IntlMessages id='common.options' />
             </TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -356,7 +391,7 @@ const UserManagement = ({data}) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/robot/delete') === true ? (
-          <MenuItem onClick={''}>
+          <MenuItem onClick={setChangeRol} disabled={true}>
             Cambio de Perfil
           </MenuItem>
         ) : null}
@@ -405,6 +440,70 @@ const UserManagement = ({data}) => {
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button variant='outlined' onClick={sendStatus}>
             Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openChangeRol}
+        onClose={handleClose3}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+        {'Cambio de Rol'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+        <FormControl fullWidth sx={{my: 0}}>
+            {/* <InputLabel id='profileType-label' style={{fontWeight: 200}}>
+              <IntlMessages id='common.business.profileType' />
+            </InputLabel> */}
+            <Select
+              // value={profileType}
+              name='profileType'
+              labelId='profileType-label'
+              displayEmpty
+              label={<IntlMessages id='common.business.profileType' />}
+              // onChange={handleFieldRol}
+            >
+              {/* {listRolRes && typeof listRolRes !== 'string' ? (
+                listRolRes.map((obj, index) => {
+                  objSelects.rol = obj.description;
+                  objSelects.rolId = obj.rolId;
+                  return (
+                    <MenuItem
+                      key={index}
+                      value={obj.rolId}
+                      style={{fontWeight: 200}}
+                    >
+                      {obj.description}
+                    </MenuItem>
+                  );
+                })
+              ) : (
+                <></>
+              )} */}
+              <MenuItem>
+                ADMIN_PREMIUM
+              </MenuItem>
+              <MenuItem>
+                SUPERVISOR
+              </MenuItem>
+              <MenuItem>
+                CONTADOR
+              </MenuItem>
+              <MenuItem>
+                SOLO_CONSULTAS
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={handleChangeRol}>
+            Cambiar
+          </Button>
+          <Button variant='outlined' onClick={handleClose3}>
+            No
           </Button>
         </DialogActions>
       </Dialog>
