@@ -767,8 +767,7 @@ const FinancesTable = (props) => {
                 <div style={{marginLeft: '5px'}}>GUÍAS</div>
               </Button>
               {
-                !listDistribution[indexDistributionSelected]
-                .movementHeaderId && !listDistribution[indexDistributionSelected].folderMovement ? (
+                listDistribution[indexDistributionSelected].folderMovement ? (
 
                   <Button
                   variant='contained'
