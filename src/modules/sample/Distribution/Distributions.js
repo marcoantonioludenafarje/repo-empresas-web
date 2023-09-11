@@ -29,6 +29,8 @@ import {
   InputLabel,
   Select,
 } from '@mui/material';
+
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
@@ -573,6 +575,12 @@ const FinancesTable = (props) => {
     }
     setSummaryRowNumber(index);
   };
+  const newDistribution = () => {
+    Router.push({
+      pathname: '/sample/distribution/new-distribution',
+      query: {},
+    });
+  }
   // useEffect(() => {
   //   if (open && listDistribution &&
   //     listDistribution.length > 0 &&
@@ -654,7 +662,19 @@ const FinancesTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-
+      <Stack
+        sx={{mt: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        className={classes.stack}
+      >
+        <Button
+          variant='outlined'
+          startIcon={<AddCircleOutlineOutlinedIcon />}
+          onClick={newDistribution}
+        >
+          Nuevo
+        </Button>
+      </Stack>
       <Menu
         id='basic-menu'
         anchorEl={anchorEl}

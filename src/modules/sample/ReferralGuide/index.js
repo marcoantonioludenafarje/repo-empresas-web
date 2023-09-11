@@ -37,6 +37,7 @@ import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import FindReplaceIcon from '@mui/icons-material/FindReplace';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CachedIcon from '@mui/icons-material/Cached';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import CompareArrowsOutlinedIcon from '@mui/icons-material/CompareArrowsOutlined';
@@ -611,7 +612,12 @@ const ReferralGuidesTable = (props) => {
     console.log(' factura', selectedReferralGuide);
     Router.push({pathname: '/sample/bills/get', query: selectedReferralGuide});
   };
-
+  const newReferralGuide = () => {
+    Router.push({
+      pathname: '/sample/referral-guide/get',
+      query: {},
+    });
+  }
   const exportToExcel = () => {
     let listPayload = {
       request: {
@@ -1090,6 +1096,17 @@ const ReferralGuidesTable = (props) => {
         direction={isMobile ? 'column' : 'row'}
         className={classes.stack}
       >
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportReferralGuides/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<AddCircleOutlineOutlinedIcon />}
+            onClick={newReferralGuide}
+          >
+            Nuevo
+          </Button>
+        ) : null}
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/exportReferralGuides/*') === true ? (
