@@ -423,7 +423,7 @@ const Distribution = (props) => {
           contableMovementId: selectedOutput?.contableMovementId || '',
           movementHeaderId: selectedOutput?.movementHeaderId,
           createdAt: selectedOutput?.createdAt,
-          clientId: selectedOutput ? selectedOutput.clientId : selectedAddressee,
+          clientId: selectedOutput ? selectedOutput.clientId : selectedAddressee.clientId,
           addressee: selectedAddressee,
           issueDate: dateWithHyphen(issueDate),
           serial: serial,
