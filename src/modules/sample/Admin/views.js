@@ -44,12 +44,18 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
+import MoveUpIcon from '@mui/icons-material/MoveUp';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import HandymanIcon from '@mui/icons-material/Handyman';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   getListBusiness,
-  ableBusiness
+  ableBusiness,
+  extendSuscriptionBusiness,
 } from '../../../redux/actions/Admin'
 import {convertToDate,convertToDateWithoutTime} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
@@ -160,19 +166,9 @@ export default function Views(props) {
       },
     };
     console.log('prueba22',listPayload)
-    //onExtendSuscriptionBusiness(listPayload);
+    onExtendSuscriptionBusiness(listPayload);
     setExtendExpiration(false);
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    listPayload = {
-      request: {
-        payload: {
-          merchantId: userDataRes.merchantSelected.merchantId,
-          LastEvaluatedKey: null,
-        },
-      },
-    };
-    onGetListBusiness(listPayload);
+    setOpenStatus(true);
   };
 
   let codProdSelected = '';
@@ -264,7 +260,7 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha eliminado correctamente
+            Se ha actualizado correctamente
           </DialogContentText>
         </>
       );
@@ -276,7 +272,7 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error al eliminar.
+            Se ha producido un error al actualizar.
           </DialogContentText>
         </>
       );
@@ -286,21 +282,19 @@ export default function Views(props) {
   };
 
   const sendStatus = () => {
-    console.log('sendStatus', '');
     setOpenStatus(false);
     setTimeout(() => {
-      let listPayload = {
-        request: {
-          payload: {
-            merchantId: userDataRes.merchantSelected.merchantId,
-            nameSpecialist: searchValue,
-            LastEvaluatedKey: null,
-          },
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    let listPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: null,
         },
-      };
-      //listPayload.request.payload.LastEvaluatedKey = null;
-      //dispatch({type: GET_PROVIDERS, payload: {callType: 'firstTime'}});
-      //getSpecialist(listPayload);
+      },
+    };
+    onGetListBusiness(listPayload);
     }, 2000);
   };
 
@@ -444,7 +438,7 @@ export default function Views(props) {
           .getItem('pathsBack')
           .includes('/business/admin/productive') === true ? (
           <MenuItem onClick={goToProduct}>
-            <CachedIcon sx={{mr: 1, my: 'auto'}} />
+            <MoveUpIcon sx={{mr: 1, my: 'auto'}} />
             Dar Alta a productivo
           </MenuItem>
         ) : null}
@@ -452,7 +446,7 @@ export default function Views(props) {
           .getItem('pathsBack')
           .includes('/business/admin/sunat') === true ? (
           <MenuItem onClick={goToSunat}>
-            <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            <HandymanIcon sx={{mr: 1, my: 'auto'}} />
             Activar SUNAT
           </MenuItem>
         ) : null}
@@ -460,7 +454,7 @@ export default function Views(props) {
           .getItem('pathsBack')
           .includes('/business/admin/expiration') === true ? (
           <MenuItem onClick={goToExpiration}>
-            <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            <MoreTimeIcon sx={{mr: 1, my: 'auto'}} />
             Ampliar fecha suscripción
           </MenuItem>
         ) : null}
@@ -468,7 +462,7 @@ export default function Views(props) {
           .getItem('pathsBack')
           .includes('/business/admin/enabled') === true ? (
           <MenuItem>
-            <CachedIcon sx={{mr: 1, my: 'auto'}} />
+            <ThumbUpOffAltIcon sx={{mr: 1, my: 'auto'}} />
             Habilitar Negocio
           </MenuItem>
         ) : null}
@@ -476,11 +470,31 @@ export default function Views(props) {
           .getItem('pathsBack')
           .includes('/business/admin/disabled') === true ? (
           <MenuItem>
-            <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            <ThumbDownOffAltIcon sx={{mr: 1, my: 'auto'}} />
             Deshabilitar Negocio
           </MenuItem>
         ) : null}
       </Menu>
+
+      <Dialog
+        open={openStatus}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Ampliar Fecha Suscripción'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Dialog
         open={extendExpiration}

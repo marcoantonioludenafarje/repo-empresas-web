@@ -374,7 +374,7 @@ const Home = (props) => {
         className={classes.horizontalCenter}
         sx={{mt: 10}}
       >
-        <Typography>Copyright 2022®</Typography>
+        <Typography>Copyright 2023®</Typography>
         <Typography>Powered by TuNexo</Typography>
       </Stack>
       {/* <Grid container spacing={6} sx={{textAlign: 'center'}}>

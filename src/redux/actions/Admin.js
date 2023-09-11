@@ -60,7 +60,7 @@ import {
   export const extendSuscriptionBusiness = (payload) =>{
     return (dispatch, getState) => {
         dispatch({type: FETCH_START});
-        API.post('tunexo', '/business/administrative/extendSucription', {body: payload})
+        API.post('tunexo', '/business/administrative/extendsucription', {body: payload})
           .then((data) => {
             console.log('extendSuscriptionBusiness resultado', data);
             dispatch({type: EXTEND_SUSCRIPTION, payload: data.response.payload});
