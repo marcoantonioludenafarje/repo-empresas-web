@@ -768,14 +768,14 @@ const FinancesTable = (props) => {
               </Button>
               {
                 !listDistribution[indexDistributionSelected]
-                .movementHeaderId ? (
+                .movementHeaderId && !listDistribution[indexDistributionSelected].folderMovement ? (
 
                   <Button
                   variant='contained'
                   color='primary'
                   onClick={() =>
                     goToFiles(
-                      `distributions/${listDistribution[indexDistributionSelected]
+                      listDistribution[indexDistributionSelected].folderMovement ?  listDistribution[indexDistributionSelected].folderMovement : `distributions/${listDistribution[indexDistributionSelected]
                           .routeName}-${listDistribution[indexDistributionSelected]
                         .deliveryDistributionId}`
                     )
