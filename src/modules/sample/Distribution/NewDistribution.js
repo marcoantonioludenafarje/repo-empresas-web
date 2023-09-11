@@ -35,6 +35,7 @@ import {
   Modal,
   Menu,
 } from '@mui/material';
+import AddClientForm from '../ClientSelection/AddClientForm';
 import {ClickAwayListener} from '@mui/base';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
@@ -57,12 +58,12 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CachedIcon from '@mui/icons-material/Cached';
 import SettingsIcon from '@mui/icons-material/Settings';
-
+import CloseIcon from '@mui/icons-material/Close';
 import {makeStyles} from '@mui/styles';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import DeliveryCard from './DeliveryCard';
-import {DateTimePicker} from '@mui/lab';
+import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import AppInfoView from '../../../@crema/core/AppInfoView';
@@ -159,6 +160,7 @@ const Distribution = (props) => {
     totalWeight: 0,
     products: [],
   };
+  let changeValueField;
   const [initialDate, setInitialDate] = React.useState(new Date());
   const [finalDate, setFinalDate] = React.useState(new Date());
   const [selectedRouteId, setSelectedRouteId] = React.useState('');
@@ -190,7 +192,9 @@ const Distribution = (props) => {
   //PDF
   const [pdfScale, setPdfScale] = React.useState('100');
   const [weightFields, setWeightFields] = React.useState(true);
-
+  const [openAddresseeDialog,setOpenAddresseeDialog] = React.useState(false);
+  const [issueDate, setIssueDate] = React.useState(Date.now());
+  const [selectedAddressee, setSelectedAddressee] = React.useState('');
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const classes = useStyles(props);
@@ -414,15 +418,16 @@ const Distribution = (props) => {
             userDataRes.merchantSelected.denominationMerchant,
           routeName: selectedRoute.routeName,
           typePDF: userDataRes.merchantSelected.typeMerchant,
-          folderMovement: selectedOutput.folderMovement,
-          movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
-          contableMovementId: selectedOutput.contableMovementId || '',
-          movementHeaderId: selectedOutput.movementHeaderId,
-          createdAt: selectedOutput.createdAt,
-          clientId: selectedOutput.clientId,
-          issueDate: dateWithHyphen(new Date()),
+          folderMovement: selectedOutput?.folderMovement,
+          movementTypeMerchantId: selectedOutput?.movementTypeMerchantId,
+          contableMovementId: selectedOutput?.contableMovementId || '',
+          movementHeaderId: selectedOutput?.movementHeaderId,
+          createdAt: selectedOutput?.createdAt,
+          clientId: selectedOutput ? selectedOutput.clientId : selectedAddressee,
+          addressee: selectedAddressee,
+          issueDate: dateWithHyphen(issueDate),
           serial: serial,
-          documentsMovement: selectedOutput.documentsMovement,
+          documentsMovement: selectedOutput?.documentsMovement,
           startingDate: toDateAndHOurs(initialDate),
           arrivalDate: toDateAndHOurs(finalDate),
           reasonForTransfer: 'sale',
@@ -492,7 +497,9 @@ const Distribution = (props) => {
       setSubmitting(false);
     }, 2000);
   };
-
+  const openSelectAddressee = () => {
+    setOpenAddresseeDialog(true);
+  };
   const setRouteIndex = (index, obj) => {
     let changedRoutes = routes;
     changedRoutes[index] = obj;
@@ -720,7 +727,11 @@ const Distribution = (props) => {
       // }
     }
   }, [predefinedRoutes_PageNewDistribution, selectedRoute_PageNewDistribution]);
-
+  const saveAddressee = (addressee) => {
+    setSelectedAddressee(addressee);
+    changeValueField('addressee', addressee.denominationClient);
+    setOpenAddresseeDialog(false);
+  };
   return (
     <Card sx={{p: 4}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -753,8 +764,9 @@ const Distribution = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting}) => {
-            const arrFolderMovement = query.folderMovement.split('/');
+          {({isSubmitting, setFieldValue}) => {
+            changeValueField = setFieldValue;
+            const arrFolderMovement = query.folderMovement?.split('/');
             return (
               <Form
                 id='principal-form'
@@ -767,22 +779,24 @@ const Distribution = (props) => {
                   spacing={2}
                   sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
                 >
-                  <Grid item xs={12}>
-                    <AppTextField
-                      label={<IntlMessages id='eCommerce.sale.related' />}
-                      name='saleRelated'
-                      variant='outlined'
-                      disabled
-                      defaultValue={arrFolderMovement[2]}
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                      }}
-                    />
-                  </Grid>
+                  {query.folderMovement ? (
+                    <Grid item xs={12}>
+                      <AppTextField
+                        label={<IntlMessages id='eCommerce.sale.related' />}
+                        name='saleRelated'
+                        variant='outlined'
+                        disabled
+                        defaultValue={arrFolderMovement[2]}
+                        sx={{
+                          width: '100%',
+                          '& .MuiInputBase-input': {
+                            fontSize: 14,
+                          },
+                          my: 2,
+                        }}
+                      />
+                    </Grid>
+                  ) : null}
 
                   {/* <Grid item xs={7}>
                     <Typography sx={{px: 2}}>
@@ -801,7 +815,53 @@ const Distribution = (props) => {
                   <Grid item xs={5}>
                     70
                   </Grid> */}
-
+                  <Grid xs={6} sm={6} sx={{px: 2, mt: 4}}>
+                    <DesktopDatePicker
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{position: 'relative', bottom: '-8px'}}
+                          {...params}
+                        />
+                      )}
+                      required
+                      value={issueDate}
+                      // disabled
+                      label='Fecha de emisión'
+                      inputFormat='dd/MM/yyyy'
+                      name='issueDate'
+                      onChange={(newValue) => {
+                        console.log('Fecha de emisión', issueDate);
+                        console.log('Campo de fecha', newValue);
+                        setIssueDate(newValue);
+                      }}
+                    />
+                  </Grid>
+                  <Grid xs={6} sm={6} sx={{mt: 4}}>
+                    <AppTextField
+                      label='Destinatario'
+                      name='addressee'
+                      disabled
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
+                    <Button
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={() => openSelectAddressee()}
+                      //disabled={!selectedDeliveryState}
+                    >
+                      Seleccionar Destinatario (Cliente)
+                    </Button>
+                  </Grid>
                   <Grid item xs={8} sx={{mt: 4}}>
                     <DateTimePicker
                       renderInput={(params) => (
@@ -1334,7 +1394,43 @@ const Distribution = (props) => {
           </DialogActions>
         </Dialog>
       </ClickAwayListener>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openAddresseeDialog}
+          onClose={() => {setOpenAddresseeDialog(false)}}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+          maxWidth='xl'
+          disableEscapeKeyDown
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            <Box sx={{mx: 10}}>
+              {`Seleccionar Destinatario (Cliente)`}
+            </Box>
 
+            <IconButton
+              aria-label='close'
+              onClick={() => {setOpenAddresseeDialog(false)}}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            <AddClientForm sendData={saveAddressee} />
+          </DialogContent>
+
+          <DialogActions sx={{justifyContent: 'center'}}>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
       <Modal
         aria-labelledby='transition-modal-title'
         aria-describedby='transition-modal-description'

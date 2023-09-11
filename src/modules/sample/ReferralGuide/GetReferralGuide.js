@@ -221,7 +221,7 @@ const GetReferralGuide = (props) => {
   const [issueDate, setIssueDate] = React.useState(Date.now());
   const [dateStartTransfer, setDateStartTransfer] = React.useState(Date.now());
   const [selectedProducts, setSelectedProducts] = React.useState([]);
-  const [selectedOutput, setSelectedOutput] = React.useState({});
+  const [selectedOutput, setSelectedOutput] = React.useState('');
   const [totalWeight, setTotalWeight] = React.useState(0);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [typeDialog, setTypeDialog] = React.useState('');
@@ -923,11 +923,11 @@ const GetReferralGuide = (props) => {
             deliveryDistributionId: routeToReferralGuide
               ? routeToReferralGuide.deliveryDistributionId
               : '',
-            movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
-            movementHeaderId: selectedOutput.movementHeaderId,
-            contableMovementId: selectedOutput.contableMovementId || '',
-            createdAt: selectedOutput.createdAt,
-            clientId: selectedOutput.clientId,
+            movementTypeMerchantId: selectedOutput?.movementTypeMerchantId,
+            movementHeaderId: selectedOutput?.movementHeaderId,
+            contableMovementId: selectedOutput?.contableMovementId || '',
+            createdAt: selectedOutput?.createdAt,
+            clientId: selectedOutput ? selectedOutput.clientId : selectedAddressee.clientId,
             // issueDate: specialFormatToSunat(), 
             issueDate: dateWithHyphen(issueDate),
             serial: serial,
@@ -962,10 +962,10 @@ const GetReferralGuide = (props) => {
             arrivalSunatCode: data.arrivalSunatCode,
             observation: data.observation,
             productsInfo: parsedProducts,
-            documentsMovement: selectedOutput.documentsMovement,
-            clientEmail: selectedOutput.clientEmail,
+            documentsMovement: selectedOutput?.documentsMovement,
+            clientEmail: selectedOutput?.clientEmail,
             typePDF: userDataRes.merchantSelected.typeMerchant,
-            folderMovement: selectedOutput.folderMovement,
+            folderMovement: selectedOutput?.folderMovement,
             denominationMerchant:
               userDataRes.merchantSelected.denominationMerchant,
             weightFields: weightFields,
@@ -1388,12 +1388,13 @@ const GetReferralGuide = (props) => {
           deliveryDistributionId: routeToReferralGuide
             ? routeToReferralGuide.deliveryDistributionId
             : '',
-          movementTypeMerchantId: selectedOutput.movementTypeMerchantId,
-          movementHeaderId: selectedOutput.movementHeaderId,
-          contableMovementId: selectedOutput.contableMovementId || '',
-          createdAt: selectedOutput.createdAt,
-          clientId: selectedOutput.clientId,
-          issueDate: specialFormatToSunat(),
+          movementTypeMerchantId: selectedOutput?.movementTypeMerchantId,
+          movementHeaderId: selectedOutput?.movementHeaderId,
+          contableMovementId: selectedOutput?.contableMovementId || '',
+          createdAt: selectedOutput?.createdAt,
+          clientId: selectedOutput ? selectedOutput.clientId : selectedAddressee.clientId,
+          //issueDate: specialFormatToSunat(),
+          issueDate: dateWithHyphen(issueDate),
           serial: serial,
           automaticSendSunat: /* sendClient */ true,
           automaticSendClient: /* sendSunat */ true,
@@ -1428,10 +1429,10 @@ const GetReferralGuide = (props) => {
           arrivalSunatCode: getValueField('arrivalSunatCode').value,
           observation: getValueField('observation').value,
           productsInfo: parsedProducts,
-          documentsMovement: selectedOutput.documentsMovement,
-          clientEmail: selectedOutput.clientEmail,
+          documentsMovement: selectedOutput?.documentsMovement,
+          clientEmail: selectedOutput?.clientEmail,
           typePDF: userDataRes.merchantSelected.typeMerchant,
-          folderMovement: selectedOutput.folderMovement,
+          folderMovement: selectedOutput?.folderMovement,
           denominationMerchant:
             userDataRes.merchantSelected.denominationMerchant,
           weightFields: weightFields,
@@ -1643,7 +1644,7 @@ const GetReferralGuide = (props) => {
                       sx={{width: 1}}
                       variant='outlined'
                       onClick={() => openSelectAddressee()}
-                      disabled={!selectedDeliveryState}
+                      //disabled={!selectedDeliveryState}
                     >
                       Seleccionar Destinatario (Cliente)
                     </Button>
