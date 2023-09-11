@@ -402,6 +402,14 @@ const FinancesTable = (props) => {
       return null;
     }
   };
+  const goToFiles = (folderMovement) => {
+    const data = {
+      goDirectory: true,
+      path: folderMovement,
+    };
+    localStorage.setItem('redirectUrl', JSON.stringify(data));
+    window.open('/sample/explorer');
+  };
   const showIconStatus = (bool, obj) => {
     switch (bool) {
       case 'waiting':
@@ -758,7 +766,28 @@ const FinancesTable = (props) => {
                 <ArrowForwardIcon />
                 <div style={{marginLeft: '5px'}}>GUÍAS</div>
               </Button>
-              <div style={{margin: '0 auto'}}>Puntos de entrega</div>
+              {
+                !listDistribution[indexDistributionSelected]
+                .movementHeaderId ? (
+
+                  <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={() =>
+                    goToFiles(
+                      `distributions/${listDistribution[indexDistributionSelected]
+                          .routeName}-${listDistribution[indexDistributionSelected]
+                        .deliveryDistributionId}`
+                    )
+                  }
+                  sx={{ml:5}}
+                >
+                  <ArrowForwardIcon />
+                  <div style={{marginLeft: '5px'}}>Archivos</div>
+                </Button>
+                ) : null
+              }
+              <div sx={{ml:5}}>Puntos de entrega</div>
             </DialogTitle>
             <DialogContent>
               {/* <Stack
