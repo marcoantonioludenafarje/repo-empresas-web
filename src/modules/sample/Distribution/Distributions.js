@@ -30,6 +30,7 @@ import {
   Select,
 } from '@mui/material';
 
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
@@ -745,48 +746,54 @@ const FinancesTable = (props) => {
               sx={{fontSize: '1.5em', display: 'flex', alignItems: 'center'}}
               id='alert-dialog-title'
             >
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={() =>
-                  showObject(
-                    listDistribution[indexDistributionSelected]
-                      .deliveryDistributionId,
-                    'distribution',
-                  )
-                }
-                disabled={
-                  !(
-                    listDistribution[indexDistributionSelected] &&
-                    listDistribution[indexDistributionSelected].deliveries
-                      .length > 0
-                  )
-                }
+              <Stack
+                sx={{m: 2, justifyContent: 'center', marginBottom: '10px'}}
+                direction={isMobile ? 'column' : 'row'}
+                spacing={2}
               >
-                <ArrowForwardIcon />
-                <div style={{marginLeft: '5px'}}>GUÍAS</div>
-              </Button>
-              {
-                listDistribution[indexDistributionSelected].folderMovement ? (
-
-                  <Button
+                <Button
                   variant='contained'
                   color='primary'
                   onClick={() =>
-                    goToFiles(
-                      listDistribution[indexDistributionSelected].folderMovement ?  listDistribution[indexDistributionSelected].folderMovement : `distributions/${listDistribution[indexDistributionSelected]
-                          .routeName}-${listDistribution[indexDistributionSelected]
-                        .deliveryDistributionId}`
+                    showObject(
+                      listDistribution[indexDistributionSelected]
+                        .deliveryDistributionId,
+                      'distribution',
                     )
                   }
-                  sx={{ml:5}}
+                  disabled={
+                    !(
+                      listDistribution[indexDistributionSelected] &&
+                      listDistribution[indexDistributionSelected].deliveries
+                        .length > 0
+                    )
+                  }
                 >
                   <ArrowForwardIcon />
-                  <div style={{marginLeft: '5px'}}>Archivos</div>
+                  <div style={{marginLeft: '5px'}}>GUÍAS</div>
                 </Button>
-                ) : null
-              }
-              <div sx={{ml:5}}>Puntos de entrega</div>
+                {
+                  listDistribution[indexDistributionSelected].folderMovement ? (
+
+                    <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() =>
+                      goToFiles(
+                        listDistribution[indexDistributionSelected].folderMovement ?  listDistribution[indexDistributionSelected].folderMovement : `distributions/${listDistribution[indexDistributionSelected]
+                            .routeName}-${listDistribution[indexDistributionSelected]
+                          .deliveryDistributionId}`
+                      )
+                    }
+                    sx={{ml:5}}
+                  >
+                    <FolderOutlinedIcon />
+                    <div style={{marginLeft: '5px'}}>Archivos</div>
+                  </Button>
+                  ) : null
+                }
+                <Typography sx={{ml:5, fontSize:20}}>Puntos de entrega</Typography>
+              </Stack>
             </DialogTitle>
             <DialogContent>
               {/* <Stack
