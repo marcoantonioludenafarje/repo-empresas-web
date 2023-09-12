@@ -701,6 +701,8 @@
   "sidebar.myUserData": "Mis datos",
   "sidebar.logout": "Cerrar sesión",
   "sidebar.sample": "Muestra",
+  "sidebar.sample.documents": "Documentos",
+  "sidebar.sample.agenda": "Agenda Online",
   "sidebar.sample.planRegistration": "Alta de Plan de Negocio",
   "sidebar.sample.billing": "Ver mi Facturación",
   "sidebar.sample.bills": "Facturas",
