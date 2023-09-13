@@ -714,8 +714,7 @@ const NewProduct = (props) => {
             type: GET_PRESIGNED,
             payload: undefined,
           });
-          /* console.log('finalPayload', { */
-          console.log('Este es el payload de registrar producto', {
+          const finalPayload = {
             request: {
               payload: {
                 products: [
@@ -749,41 +748,10 @@ const NewProduct = (props) => {
                 merchantId: userDataRes.merchantSelected.merchantId,
               },
             },
-          });
-          toAddProduct({
-            request: {
-              payload: {
-                products: [
-                  {
-                    businessProductCode: data.businessProductCode,
-                    description: data.description,
-                    alias: data.alias,
-                    costPriceUnit: Number(data.costPriceUnit),
-                    sellPriceUnit: Number(data.referecialPriceSell),
-                    weight: Number(data.weight),
-                    initialStock: parseInt(Number(data.initialStock)),
-                    customCodeProduct: data.customCodeProduct,
-                    secondaryUnitMeasure: secondaryUnitMeasure,
-                    sumQuantity: Number(data.sumQuantity),
-                    title: data.title,
-                    commercialDescription: data.commercialDescription,
-                    unitMeasureWeight: weight_unit,
-                    unitMeasureMoney: money_unit,
-                    category: selectedCategory,
-                    tags: selectedFilters,
-                    typeProduct: objSelects.typeProduct,
-                    imgKeys: selectedJsonImages,
-                    unitMeasure: unitMeasure,
-                    unitsToProduce: 1,
-                    inputsProduct: cleanProducts,
-                    publish: publish,
-                    isStockNeeded: isStockNeeded,
-                  },
-                ],
-                merchantId: userDataRes.merchantSelected.merchantId,
-              },
-            },
-          });
+          };
+
+          console.log('finalPayload', finalPayload);
+          toAddProduct(finalPayload);
           console.log('resultado del registro', addProductResponse);
           setOpen(true);
         } else {

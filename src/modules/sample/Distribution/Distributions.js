@@ -29,6 +29,9 @@ import {
   InputLabel,
   Select,
 } from '@mui/material';
+
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
@@ -400,6 +403,14 @@ const FinancesTable = (props) => {
       return null;
     }
   };
+  const goToFiles = (folderMovement) => {
+    const data = {
+      goDirectory: true,
+      path: folderMovement,
+    };
+    localStorage.setItem('redirectUrl', JSON.stringify(data));
+    window.open('/sample/explorer');
+  };
   const showIconStatus = (bool, obj) => {
     switch (bool) {
       case 'waiting':
@@ -573,6 +584,12 @@ const FinancesTable = (props) => {
     }
     setSummaryRowNumber(index);
   };
+  const newDistribution = () => {
+    Router.push({
+      pathname: '/sample/distribution/new-distribution',
+      query: {},
+    });
+  };
   // useEffect(() => {
   //   if (open && listDistribution &&
   //     listDistribution.length > 0 &&
@@ -654,7 +671,19 @@ const FinancesTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-
+      <Stack
+        sx={{mt: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        className={classes.stack}
+      >
+        <Button
+          variant='outlined'
+          startIcon={<AddCircleOutlineOutlinedIcon />}
+          onClick={newDistribution}
+        >
+          Nuevo
+        </Button>
+      </Stack>
       <Menu
         id='basic-menu'
         anchorEl={anchorEl}
@@ -717,28 +746,55 @@ const FinancesTable = (props) => {
               sx={{fontSize: '1.5em', display: 'flex', alignItems: 'center'}}
               id='alert-dialog-title'
             >
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={() =>
-                  showObject(
-                    listDistribution[indexDistributionSelected]
-                      .deliveryDistributionId,
-                    'distribution',
-                  )
-                }
-                disabled={
-                  !(
-                    listDistribution[indexDistributionSelected] &&
-                    listDistribution[indexDistributionSelected].deliveries
-                      .length > 0
-                  )
-                }
+              <Stack
+                sx={{m: 2, justifyContent: 'center', marginBottom: '10px'}}
+                direction={isMobile ? 'column' : 'row'}
+                spacing={2}
               >
-                <ArrowForwardIcon />
-                <div style={{marginLeft: '5px'}}>GUÍAS</div>
-              </Button>
-              <div style={{margin: '0 auto'}}>Puntos de entrega</div>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={() =>
+                    showObject(
+                      listDistribution[indexDistributionSelected]
+                        .deliveryDistributionId,
+                      'distribution',
+                    )
+                  }
+                  disabled={
+                    !(
+                      listDistribution[indexDistributionSelected] &&
+                      listDistribution[indexDistributionSelected].deliveries
+                        .length > 0
+                    )
+                  }
+                >
+                  <ArrowForwardIcon />
+                  <div style={{marginLeft: '5px'}}>GUÍAS</div>
+                </Button>
+                {listDistribution[indexDistributionSelected].folderMovement ? (
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() =>
+                      goToFiles(
+                        listDistribution[indexDistributionSelected]
+                          .folderMovement
+                          ? listDistribution[indexDistributionSelected]
+                              .folderMovement
+                          : `distributions/${listDistribution[indexDistributionSelected].routeName}-${listDistribution[indexDistributionSelected].deliveryDistributionId}`,
+                      )
+                    }
+                    sx={{ml: 5}}
+                  >
+                    <FolderOutlinedIcon />
+                    <div style={{marginLeft: '5px'}}>Archivos</div>
+                  </Button>
+                ) : null}
+                <Typography sx={{ml: 5, fontSize: 20}}>
+                  Puntos de entrega
+                </Typography>
+              </Stack>
             </DialogTitle>
             <DialogContent>
               {/* <Stack

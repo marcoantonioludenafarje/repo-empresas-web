@@ -25,6 +25,7 @@ import {
   Stack,
   useTheme,
   useMediaQuery,
+  IconButton,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -43,13 +44,20 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
+import MoveUpIcon from '@mui/icons-material/MoveUp';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import HandymanIcon from '@mui/icons-material/Handyman';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   getListBusiness,
-  ableBusiness
-} from '../../../redux/actions/Admin'
-import {convertToDate} from '../../../Utils/utils';
+  ableBusiness,
+  extendSuscriptionBusiness,
+} from '../../../redux/actions/Admin';
+import {convertToDate, convertToDateWithoutTime} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   FETCH_SUCCESS,
@@ -57,6 +65,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import Router from 'next/router';
 import {red} from '@mui/material/colors';
+import ExtendExpirationForm from './extend';
 
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -86,11 +95,16 @@ export default function Views(props) {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [openStatus, setOpenStatus] = useState(false);
+  const [extendExpiration, setExtendExpiration] = React.useState(false);
+  const [dateExpiration, setDateExpiration] = React.useState('');
+
   const [reload, setReload] = React.useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [filteredBusiness, setFilteredBusiness] = useState([]);
-  const [open, setOpen] = useState(false) 
-  const [openStatus, setOpenStatus] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [openStatus2, setOpenStatus2] = useState(false);
 
   let popUp = false;
 
@@ -98,13 +112,18 @@ export default function Views(props) {
     dispatch(getListBusiness(payload));
   };
 
+  const onExtendSuscriptionBusiness = (payload) => {
+    dispatch(extendSuscriptionBusiness(payload));
+  };
+
   const reloadPage = () => {
     setReload(!reload);
   };
   const {userDataRes} = useSelector(({user}) => user);
 
-
-  const {listBusinessRes, successMessage, errorMessage} = useSelector(({admin})=> admin);
+  const {listBusinessRes, successMessage, errorMessage} = useSelector(
+    ({admin}) => admin,
+  );
 
   console.log('confeti', listBusinessRes);
 
@@ -137,6 +156,22 @@ export default function Views(props) {
     }
   }, [listBusinessRes]);
 
+  const filterData = (dataFilters) => {
+    console.log('prueba2', dataFilters);
+    let listPayload = {
+      request: {
+        payload: {
+          merchantId: selectedBusiness.merchantId,
+          plans: selectedBusiness.plans,
+          extendExpiration: dataFilters,
+        },
+      },
+    };
+    console.log('prueba22', listPayload);
+    onExtendSuscriptionBusiness(listPayload);
+    setExtendExpiration(false);
+    setOpenStatus(true);
+  };
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -153,11 +188,13 @@ export default function Views(props) {
     console.log('Select Agente', selectedBusiness);
   };
 
-  const handleClose = () => { // MENU
+  const handleClose = () => {
+    // MENU
     setAnchorEl(null);
   };
 
-  const handleClose2 = () => { // DIALOG
+  const handleClose2 = () => {
+    // DIALOG
     setOpen(false);
   };
 
@@ -168,67 +205,80 @@ export default function Views(props) {
 
   const goToProduct = () => {
     //usuario
+
+    console.log('selectedBusiness', selectedBusiness);
     Router.push({
       pathname: '/sample/admin/productive',
-      query: selectedBusiness
+      query: selectedBusiness,
     });
   };
   const goToSunat = () => {
     Router.push({
       pathname: '/sample/admin/sunat',
-      query: selectedBusiness
+      query: selectedBusiness,
     });
   };
 
+  const goToExpiration = () => {
+    console.log('selectedBusiness', selectedBusiness);
+    setExtendExpiration(true);
+    setDateExpiration(
+      selectedBusiness.plans.find((obj) => obj.active == true).finishAt > 0
+        ? selectedBusiness.plans.find((obj) => obj.active == true).finishAt
+        : Date.now(),
+    );
+    handleClose();
+  };
 
   const searchBusiness = (searchValue) => {
-    console.log("negocio >>", searchValue);
+    console.log('negocio >>', searchValue);
     if (!searchValue) {
       setFilteredBusiness(listBusinessRes);
-    }else{
+    } else {
       const filtered = listBusinessRes.filter((business) => {
-        console.log("negocio", business.denominationMerchant);
+        console.log('negocio', business.denominationMerchant);
         const merchantName = business.denominationMerchant;
         return (
           merchantName &&
           merchantName.toLowerCase().includes(searchValue.toLowerCase())
         );
       });
-      console.log("negocio >>>>", filtered);
-      setFilteredBusiness(filtered)
+      console.log('negocio >>>>', filtered);
+      setFilteredBusiness(filtered);
     }
-  }
+  };
 
-  const handleActive = () =>{
+  const handleActive = () => {
     console.log('select user', selectedBusiness);
 
     let val;
 
-    if(selectedBusiness.indactivo === 'S'){
-      val = 'N'
+    if (selectedBusiness.indactivo === 'S') {
+      val = 'N';
     }
     if (selectedBusiness.indactivo === 'N') {
-      val = 'S'
+      val = 'S';
     }
     const payload = {
       request: {
-        payload:{
+        payload: {
           merchantId: selectedBusiness.merchantId,
           //userId: selectedBusiness.userId,
-          indactivo: val
-        }
-      }
-    }
+          indactivo: val,
+        },
+      },
+    };
 
-    dispatch(ableBusiness(payload))
+    dispatch(ableBusiness(payload));
     console.log('payload >>', payload);
 
-    setOpenStatus(true);
-    setOpen(false)
-  }
+    setOpenStatus2(true);
+    setOpen(false);
+  };
 
   const sendStatus = () => {
     setOpenStatus(false);
+    setOpenStatus2(false);
     setTimeout(() => {
       let listPayload = {
         request: {
@@ -254,7 +304,7 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            La operación se hizo correctamente
+            Se ha actualizado correctamente
           </DialogContentText>
         </>
       );
@@ -266,7 +316,7 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error.
+            Se ha producido un error al actualizar.
           </DialogContentText>
         </>
       );
@@ -274,7 +324,6 @@ export default function Views(props) {
       return <CircularProgress disableShrink />;
     }
   };
-
 
   return (
     <Card sx={{p: 4}}>
@@ -290,7 +339,7 @@ export default function Views(props) {
           name='nameToSearch'
           size='small'
           value={searchValue}
-          onChange={(e)=>setSearchValue(e.target.value)}
+          onChange={(e) => setSearchValue(e.target.value)}
         />
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
@@ -299,7 +348,7 @@ export default function Views(props) {
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          onClick={()=>searchBusiness(searchValue)}
+          onClick={() => searchBusiness(searchValue)}
         >
           Buscar
         </Button>
@@ -319,6 +368,7 @@ export default function Views(props) {
               <TableCell>Estado</TableCell>
               <TableCell>Tipo</TableCell>
               <TableCell>Plan</TableCell>
+              <TableCell>Vencimiento Suscripción</TableCell>
               <TableCell>Integrada a SUNAT?</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
@@ -346,7 +396,7 @@ export default function Views(props) {
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.indactivo=='S'?'SÍ':'NO'}
+                    {row.indactivo == 'S' ? 'SÍ' : 'NO'}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
@@ -356,12 +406,24 @@ export default function Views(props) {
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.plans.length > 0 ? row.plans[row.plans.length - 1].type : ''}
+                    {row.plans.length > 0
+                      ? row.plans[row.plans.length - 1].type
+                      : ''}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
-                    {row.isBillingEnabled?'SÍ':'NO'}
+                    {row.plans.length &&
+                    row.plans.find((obj) => obj.active == true).finishAt > 0
+                      ? convertToDateWithoutTime(
+                          row.plans.find((obj) => obj.active == true).finishAt,
+                        )
+                      : ''}
+                  </TableCell>
+                  <TableCell
+                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                  >
+                    {row.isBillingEnabled ? 'SÍ' : 'NO'}
                   </TableCell>
                   <TableCell>
                     <Button
@@ -400,31 +462,40 @@ export default function Views(props) {
           .getItem('pathsBack')
           .includes('/business/admin/productive') === true ? (
           <MenuItem onClick={goToProduct}>
-            {/* <CachedIcon sx={{mr: 1, my: 'auto'}} /> */}
+            <MoveUpIcon sx={{mr: 1, my: 'auto'}} />
             Dar Alta a productivo
           </MenuItem>
         ) : null}
-        {localStorage
-          .getItem('pathsBack')
-          .includes('/business/admin/sunat') === true ? (
+        {localStorage.getItem('pathsBack').includes('/business/admin/sunat') ===
+        true ? (
           <MenuItem onClick={goToSunat}>
-            {/* <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} /> */}
+            <HandymanIcon sx={{mr: 1, my: 'auto'}} />
             Activar SUNAT
           </MenuItem>
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/business/admin/enabled') === true && selectedBusiness.indactivo === 'N' ? (
+          .includes('/business/admin/expiration') === true ? (
+          <MenuItem onClick={goToExpiration}>
+            <MoreTimeIcon sx={{mr: 1, my: 'auto'}} />
+            Ampliar fecha suscripción
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/business/admin/enabled') === true &&
+        selectedBusiness.indactivo === 'N' ? (
           <MenuItem onClick={setActive}>
-            {/* <CachedIcon sx={{mr: 1, my: 'auto'}} /> */}
+            <ThumbUpOffAltIcon sx={{mr: 1, my: 'auto'}} />
             Habilitar Negocio
           </MenuItem>
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/business/admin/disabled') === true && selectedBusiness.indactivo === 'S' ? (
+          .includes('/business/admin/disabled') === true &&
+        selectedBusiness.indactivo === 'S' ? (
           <MenuItem onClick={setActive}>
-            {/* <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} /> */}
+            <ThumbDownOffAltIcon sx={{mr: 1, my: 'auto'}} />
             Deshabilitar Negocio
           </MenuItem>
         ) : null}
@@ -437,7 +508,9 @@ export default function Views(props) {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {selectedBusiness.indactivo === 'S'?'Deshabilitar negocio?':'Habilitar negocio?'}
+          {selectedBusiness.indactivo === 'S'
+            ? 'Deshabilitar negocio?'
+            : 'Habilitar negocio?'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -445,7 +518,9 @@ export default function Views(props) {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-             {selectedBusiness.indactivo === 'S'?'Desea deshabilitar los accesos al negocio y sus usuarios?':'Desea habilitar los accesos al negocio y sus usuarios?'}
+            {selectedBusiness.indactivo === 'S'
+              ? 'Desea deshabilitar los accesos al negocio y sus usuarios?'
+              : 'Desea habilitar los accesos al negocio y sus usuarios?'}
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
@@ -458,6 +533,27 @@ export default function Views(props) {
         </DialogActions>
       </Dialog>
       <Dialog
+        open={openStatus2}
+        onClose={sendStatus}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {selectedBusiness.indactivo === 'S'
+            ? 'Deshabilitar negocio?'
+            : 'Habilitar negocio'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          {showMessage()}
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={sendStatus}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={openStatus}
         onClose={sendStatus}
         sx={{textAlign: 'center'}}
@@ -465,7 +561,7 @@ export default function Views(props) {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-        {selectedBusiness.indactivo === 'S'?'Deshabilitar negocio?':'Habilitar negocio?'}
+          {'Ampliar Fecha Suscripción'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -477,6 +573,39 @@ export default function Views(props) {
         </DialogActions>
       </Dialog>
 
+      <Dialog
+        open={extendExpiration}
+        onClose={() => setExtendExpiration(false)}
+        maxWidth='sm'
+        fullWidth
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          <IconButton
+            aria-label='close'
+            onClick={() => setExtendExpiration(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          {'Ampliar Fecha Suscripción'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <DialogContentText
+            sx={{fontSize: '1.2em'}}
+            id='alert-dialog-description'
+          >
+            <ExtendExpirationForm sendData={filterData} ds={dateExpiration} />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
+      </Dialog>
     </Card>
   );
 }

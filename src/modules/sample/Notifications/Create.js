@@ -24,7 +24,8 @@ import {
   Autocomplete,
   OutlinedInput,
 } from '@mui/material';
-import {uuid} from 'uuidv4';
+import {v4 as uuidv4} from 'uuid';
+
 import {
   onGetBusinessParameter,
   onGetGlobalParameter,
@@ -389,7 +390,7 @@ const NewClient = (props) => {
       template: getValueField('campaignContent').value,
     });
     let tramaNotification = selectedNotification;
-    let uuidNotification = uuid();
+    let uuidNotification = uuidv4();
     tramaNotification.channelSelected = ChannelSelected;
     tramaNotification.eventId = uuidNotification;
     tramaNotification.createdAt = Date.now();

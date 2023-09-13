@@ -24,18 +24,23 @@ import {
   Typography,
   FormControl,
   Select,
-  InputLabel
+  InputLabel,
 } from '@mui/material';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
-import {changeRol, listUser, updateActive, listRol} from '../../../../redux/actions/User';
+import {
+  changeRol,
+  listUser,
+  updateActive,
+  listRol,
+} from '../../../../redux/actions/User';
 
 import {red} from '@mui/material/colors';
 import {convertToDateWithoutTime} from '../../../../Utils/utils';
@@ -43,10 +48,14 @@ import {convertToDateWithoutTime} from '../../../../Utils/utils';
 let selectUser = {};
 
 const UserManagement = ({data}) => {
-  const {listUserRes, successMessage, errorMessage} = useSelector(({user}) => user);
+  const {listUserRes, successMessage, errorMessage} = useSelector(
+    ({user}) => user,
+  );
   const {userDataRes} = useSelector(({user}) => user);
   const {listRolRes} = useSelector(({user}) => user);
   const dispatch = useDispatch();
+
+  console.log('DATA', data);
 
   const toListUser = (payload) => {
     dispatch(listUser(payload));
@@ -55,7 +64,6 @@ const UserManagement = ({data}) => {
     dispatch(listRol(payload));
   };
 
-  
   const [anchorEl, setAnchorEl] = useState(null);
   const [disable, setDisable] = useState(false);
   const [open, setOpen] = useState(false);
@@ -65,19 +73,20 @@ const UserManagement = ({data}) => {
   const openMenu = Boolean(anchorEl);
   let codProdSelected = '';
   const handleClick = (codPro, event) => {
-    setDisable(false)
+    setDisable(false);
     console.log('evento', event);
     console.log('index del map', codPro);
     setAnchorEl(event.currentTarget);
     codProdSelected = codPro;
-    selectUser = listUserRes[codProdSelected]
-    console.log("confeti", selectUser);
-    ; /* .find((obj) => obj.client == codPro); */
+    selectUser = listUserRes[codProdSelected];
+    console.log(
+      'confeti',
+      selectUser,
+    ); /* .find((obj) => obj.client == codPro); */
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
-
 
   useEffect(() => {
     if (listRolRes) {
@@ -109,7 +118,7 @@ const UserManagement = ({data}) => {
   }, []);
   useEffect(() => {
     if (listUserRes) {
-      console.log('listUserRes desde useeffect', listUserRes);
+      console.log('listUserRes desde management', listUserRes);
     }
   }, [listUserRes]);
 
@@ -121,63 +130,58 @@ const UserManagement = ({data}) => {
     setOpen(true);
     handleClose();
   };
-  
-  const setChangeRol = () =>{
+
+  const setChangeRol = () => {
     setOpenChangeRol(true);
     handleClose();
-  }
+  };
 
-  const handleClose3 = () =>{
+  const handleClose3 = () => {
     setOpenChangeRol(false);
-  }
+  };
 
-
-  const handleActive = () =>{
+  const handleActive = () => {
     console.log('select user', selectUser);
 
     let val;
 
-    if(selectUser.indactivo === 'S'){
-      val = 'N'
+    if (selectUser.indactivo === 'S') {
+      val = 'N';
     }
     if (selectUser.indactivo === 'N') {
-      val = 'S'
+      val = 'S';
     }
     const payload = {
       request: {
-        payload:{
+        payload: {
           userId: selectUser.userId,
-          indactivo: val
-        }
-      }
-    }
+          indactivo: val,
+        },
+      },
+    };
 
-    dispatch(updateActive(payload))
+    dispatch(updateActive(payload));
     console.log('payload >>', payload);
 
     setOpenStatus(true);
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
-  const handleChangeRol = ()=>{
-
+  const handleChangeRol = () => {
     const payload = {
-      request:{
-        payload:{
+      request: {
+        payload: {
           useriD: selectUser.userId,
           rol: data.rol,
-          roles: [
-            data.rol
-          ]
-        }
-      }
-    }
+          roles: [data.rol],
+        },
+      },
+    };
 
-    dispatch(changeRol(payload))
+    dispatch(changeRol(payload));
     setOpenStatus(true);
-    setOpen(false)
-
-  }
+    setOpen(false);
+  };
 
   const sendStatus = () => {
     setOpenStatus(false);
@@ -194,7 +198,6 @@ const UserManagement = ({data}) => {
 
     console.log('listUserRes: ', listUserRes);
   };
-
 
   const showMessage = () => {
     if (successMessage != undefined) {
@@ -296,9 +299,7 @@ const UserManagement = ({data}) => {
                   <TableCell align='center'>
                     {convertToDateWithoutTime(obj.fecCreacion)}
                   </TableCell>
-                  <TableCell>
-                    {obj.indactivo=='S'?'SÍ':'NO'}
-                  </TableCell>
+                  <TableCell>{obj.indactivo == 'S' ? 'SÍ' : 'NO'}</TableCell>
                   <TableCell>
                     <Button
                       id='basic-button'
@@ -376,24 +377,20 @@ const UserManagement = ({data}) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/robot/update') === true && selectUser.indactivo === 'N'? (
-          <MenuItem onClick={setActive}>
-            Habilitar Usuario
-          </MenuItem>
+          .includes('/inventory/robot/update') === true &&
+        selectUser.indactivo === 'N' ? (
+          <MenuItem onClick={setActive}>Habilitar Usuario</MenuItem>
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/robot/enable') === true && selectUser.indactivo === 'S' ? (
-          <MenuItem onClick={setActive}>
-            Deshabilitar Usuario
-          </MenuItem>
+          .includes('/inventory/robot/enable') === true &&
+        selectUser.indactivo === 'S' ? (
+          <MenuItem onClick={setActive}>Deshabilitar Usuario</MenuItem>
         ) : null}
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/robot/delete') === true ? (
-          <MenuItem onClick={setChangeRol} disabled={true}>
-            Cambio de Perfil
-          </MenuItem>
+          <MenuItem onClick={setChangeRol}>Cambio de Perfil</MenuItem>
         ) : null}
       </Menu>
       <Dialog
@@ -404,7 +401,9 @@ const UserManagement = ({data}) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {selectUser.indactivo === 'S'?'Deshabilitar usuario?':'Habilitar usuario?'}
+          {selectUser.indactivo === 'S'
+            ? 'Deshabilitar usuario?'
+            : 'Habilitar usuario?'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -412,7 +411,9 @@ const UserManagement = ({data}) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-             {selectUser.indactivo === 'S'?'Desea deshabilitar los accesos del usuario?':'Desea habilitar los accesos del usuario?'}
+            {selectUser.indactivo === 'S'
+              ? 'Desea deshabilitar los accesos del usuario?'
+              : 'Desea habilitar los accesos del usuario?'}
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
@@ -432,7 +433,9 @@ const UserManagement = ({data}) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-        {selectUser.indactivo === 'S'?'Deshabilitar usuario?':'Habilitar usuario?'}
+          {selectUser.indactivo === 'S'
+            ? 'Deshabilitar usuario?'
+            : 'Habilitar usuario?'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
@@ -451,10 +454,10 @@ const UserManagement = ({data}) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-        {'Cambio de Rol'}
+          {'Cambio de Rol'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-        <FormControl fullWidth sx={{my: 0}}>
+          <FormControl fullWidth sx={{my: 0}}>
             {/* <InputLabel id='profileType-label' style={{fontWeight: 200}}>
               <IntlMessages id='common.business.profileType' />
             </InputLabel> */}
@@ -483,18 +486,10 @@ const UserManagement = ({data}) => {
               ) : (
                 <></>
               )} */}
-              <MenuItem>
-                ADMIN_PREMIUM
-              </MenuItem>
-              <MenuItem>
-                SUPERVISOR
-              </MenuItem>
-              <MenuItem>
-                CONTADOR
-              </MenuItem>
-              <MenuItem>
-                SOLO_CONSULTAS
-              </MenuItem>
+              <MenuItem>ADMIN_PREMIUM</MenuItem>
+              <MenuItem>SUPERVISOR</MenuItem>
+              <MenuItem>CONTADOR</MenuItem>
+              <MenuItem>SOLO_CONSULTAS</MenuItem>
             </Select>
           </FormControl>
         </DialogContent>

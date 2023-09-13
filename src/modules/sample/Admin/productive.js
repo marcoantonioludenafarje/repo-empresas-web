@@ -41,15 +41,17 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
+  GET_BUSINESS_PLANS,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
+import {onGetBusinessPlans} from '../../../redux/actions/General';
 
 import {useState} from 'react';
-import { activeSunat } from 'redux/actions';
+import {activeSunat, upgradeProductive} from 'redux/actions';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -62,32 +64,19 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />),
-  planeSelect: yup
-    .string()
-    .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),  
 });
 const defaultValues = {
-  intoapiKey: '',
-  intosecretkey: '',
-  intousersecu: '',
-  intopasssecu: '',
-  certvalue: '',
-  certkeyvalue: '',
+  businessName: '',
+  //planeSelect: ''
 };
 let altaProd = {
   request: {
     payload: {
-      altadataprod: [
-        {
-          intoapiKey: '',
-          intosecretkey: '',
-          intousersecu: '',
-          intopasssecu: '',
-          certvalue: '',
-          certkeyvalue: '',
-        },
-      ],
+      dataproductive: {
+        planDaysDesired: 30,
+        planDesired: '',
+        planDesiredId: '',
+      },
       merchantId: '',
     },
   },
@@ -146,14 +135,16 @@ const Productive = (props) => {
   const [typeDialog, setTypeDialog] = React.useState('');
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
-    React.useState(false);
+  React.useState(false);
 
+  const [planes, setPlanes] = useState(null);
   const dispatch = useDispatch();
   const router = useRouter();
 
   let {query} = router;
   console.log('business', query);
 
+  defaultValues.businessName = query.denominationMerchant;
 
   //GET_VALUES_APIS
   const state = useSelector((state) => state);
@@ -163,13 +154,15 @@ const Productive = (props) => {
   const {errorMessage} = useSelector(({appointment}) => appointment);
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
+  const {getBusinessPlansRes} = useSelector(({general}) => general);
 
-  const onActiveSunat = (payload) =>{
-    console.log("objfin >>", payload);
-    dispatch(activeSunat(payload))
-    console.log("objlast");
-  }
+  console.log('PLAN >>>', getBusinessPlansRes);
 
+  const onUpgradeProd = (payload) => {
+    console.log('objfin >>', payload);
+    dispatch(upgradeProductive(payload));
+    console.log('objlast');
+  };
 
   useEffect(() => {
     if (!userDataRes) {
@@ -189,6 +182,25 @@ const Productive = (props) => {
 
       toGetUserData(getUserDataPayload);
     }
+  }, []);
+
+  useEffect(() => {
+    if (!getBusinessPlansRes) {
+      console.log('Planes de negocio');
+
+      dispatch({type: GET_BUSINESS_PLANS, payload: undefined});
+      const toGetBusinessPlans = (payload) => {
+        dispatch(onGetBusinessPlans(payload));
+      };
+      let getBusinessPlansPayload = {
+        request: {
+          payload: {},
+        },
+      };
+
+      toGetBusinessPlans(getBusinessPlansPayload);
+    }
+    setPlanes(getBusinessPlansRes);
   }, []);
 
   useEffect(() => {
@@ -229,35 +241,36 @@ const Productive = (props) => {
 
   const handleDatas = (data, {setSubmitting}) => {
     setSubmitting(true);
-    console.log(
-      'CONFETI DATA',
-      data
-    );
-    
+    console.log('CONFETI DATA', data);
+
+    console.log('pla <<<<<<<<<<<<<<<  ', getValueField('planeSelect').value);
+    let idplan = getValueField('planeSelect').value;
+    console.log('pla <<<<<<<<<<<<<<<<<<<<xd  ', idplan);
+
+    let plan = planes.filter((pl) => {
+      console.log('plan pl', pl);
+      return pl.subscriptionPlanId === idplan;
+    });
+
+    console.log('plan >>> xd', plan);
+
     altaProd.request = {
       payload: {
-        altadataprod: [
-          {
-            sunatClientId: data.intoapiKey,
-            sunatClientSecret: data.intosecretkey,
-            sunatSecondayUserName: data.intousersecu,
-            sunatSecondayUserPassword: data.intopasssecu,
-            digitalCertifiedCertValue: data.certvalue,
-            digitalCertifiedKeyValue: data.certkeyvalue,
-            isBillingEnabled: true
-          },
-        ],
+        dataproductive: {
+          planDaysDesired: 30,
+          planDesired: plan[0].description,
+          planDesiredId: plan[0].subscriptionPlanId,
+        },
         merchantId: query.merchantId,
-      }
-    }
-
+      },
+    };
 
     console.log('objfinaly', altaProd);
 
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
-    onActiveSunat(altaProd);
-    
+    onUpgradeProd(altaProd);
+
     setSubmitting(false);
     setOpenStatus(true);
   };
@@ -384,21 +397,34 @@ const Productive = (props) => {
                     />
                   </Grid>
                   <Grid item xs={8} sm={12}>
-                    <AppTextField
-                      label='Seleccione el plan *'
-                      name='planeSelect'
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel id='plan-label' style={{fontWeight: 200}}>
+                        Seleccione el plan
+                      </InputLabel>
+                      <Select
+                        name='planeSelect'
+                        labelId='plan-label'
+                        label='Seleccione el plan *'
+                        onChange={(option, value) => {
+                          setFieldValue('planeSelect', value.props.value);
+                          // setIdentidad(value.props.value);
+                        }}
+                      >
+                        {getBusinessPlansRes?.map((plans, index) => {
+                          setPlanes(getBusinessPlansRes);
+                          return (
+                            <MenuItem
+                              key={`plans-${index}`}
+                              value={plans.subscriptionPlanId}
+                              style={{fontWeight: 200}}
+                            >
+                              {plans.description}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
                   </Grid>
-                  
                 </Grid>
 
                 <ButtonGroup
@@ -433,7 +459,6 @@ const Productive = (props) => {
           }}
         </Formik>
       </Box>
-
 
       <Dialog
         open={open}
@@ -479,7 +504,7 @@ const Productive = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Activación Sunat'}
+          {'Alta a Productivo'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           {showMessage()}
