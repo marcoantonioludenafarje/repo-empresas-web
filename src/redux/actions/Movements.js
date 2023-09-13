@@ -39,6 +39,7 @@ import {
   GET_INPUT_PAGE_LISTGUIDE,
   PREVISUALIZE_BILL,
   PREVISUALIZE_REFERRAL_GUIDE,
+  PROOF_MONITORING,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -897,6 +898,28 @@ export const previsualizeReferralGuide = (payload) => {
       })
       .catch((error) => {
         console.log('previsualizeReferralGuide error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const proofMonitoring = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/proofMonitoring', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('proofMonitoring resultado', data);
+        dispatch({
+          type: PROOF_MONITORING,
+          payload: data.response.payload,
+          request: payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('proofMonitoring error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

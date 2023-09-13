@@ -1,5 +1,5 @@
 import {BiAlignLeft} from 'react-icons/bi';
-
+import ScreenSearchDesktopIcon from '@mui/icons-material/ScreenSearchDesktop';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import AddIcon from '@mui/icons-material/Add';
 import TableRowsOutlinedIcon from '@mui/icons-material/TableRowsOutlined';
@@ -223,8 +223,8 @@ const rolesRoutesConfig = {
     },
     {
       id: 'distribution',
-      title: 'distribution',
-      messageId: 'sidebar.sample.documents',
+      title: 'proofs',
+      messageId: 'sidebar.sample.proofs',
       type: 'collapse',
       icon: <DocumentScannerIcon fontSize='small' />,
       children: [
@@ -267,6 +267,14 @@ const rolesRoutesConfig = {
           type: 'item',
           icon: <SettingsIcon fontSize='small' />,
           url: '/sample/referral-guide/customize',
+        },
+        {
+          id: 'referralGuides',
+          title: 'ProofMonitoring',
+          messageId: 'sidebar.sample.proofMonitoring',
+          type: 'item',
+          icon: <ScreenSearchDesktopIcon fontSize='small' />,
+          url: '/sample/proof/monitoring',
         },
       ],
     },

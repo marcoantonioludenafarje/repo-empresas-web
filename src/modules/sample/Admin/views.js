@@ -184,7 +184,7 @@ export default function Views(props) {
     setAnchorEl(event.currentTarget);
     codProdSelected = codPro;
     selectedBusiness =
-      listBusinessRes[codPro]; /* .find((obj) => obj.client == codPro); */
+    filteredBusiness[codPro]; /* .find((obj) => obj.client == codPro); */
     console.log('Select Agente', selectedBusiness);
   };
 

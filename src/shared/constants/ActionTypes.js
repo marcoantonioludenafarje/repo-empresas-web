@@ -224,6 +224,7 @@ export const REFERRAL_GUIDES_BATCH_CONSULT = 'referral_guides_batch_consult';
 export const CANCEL_REFERRAL_GUIDE = 'cancel_referral_guide';
 export const UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST =
   'update_referral_guide_items_page_list';
+export const PROOF_MONITORING = 'proof_monitoring';
 //ROUTES
 export const GENERATE_ROUTE = 'generate_route';
 export const UPDATE_ROUTE = 'update_route';
