@@ -41,6 +41,7 @@ import {
   RESET_MOVEMENTS,
   PREVISUALIZE_BILL,
   PREVISUALIZE_REFERRAL_GUIDE,
+  PROOF_MONITORING,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -64,6 +65,8 @@ const INIT_STATE = {
   inputLastEvaluatedKey_pageListInput: null,
   outputItems_pageListOutput: [],
   outputLastEvaluatedKey_pageListOutput: null,
+  proofMonitoringItems_pageListGuide: [],
+  proofMonitoringLastEvaluatedKey_pageListGuide: null,
 };
 
 const movementsReducer = (state = INIT_STATE, action) => {
@@ -629,6 +632,44 @@ const movementsReducer = (state = INIT_STATE, action) => {
         ...state,
         previsualizeReferralGuideRes: action.payload,
       };
+
+    case PROOF_MONITORING:
+      console.log('actionProofMonitoring1234', action);
+      console.log('actionProofMonitoring.payload1234', action.payload);
+      let handleSortPM = action.handleSort;
+      if (handleSortPM) {
+        return {
+          ...state,
+          proofMonitoringItems_pageListGuide: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [
+            ...state.proofMonitoringItems_pageListGuide,
+            ...action.payload.Items,
+          ];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+        return {
+          ...state,
+          proofMonitoringItems_pageListGuide: items,
+          proofMonitoringLastEvaluatedKey_pageListGuide: lastEvaluatedKey,
+        };
+      }
     // case SET_LIST_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES:
     //   console.log(
     //     'data de reducer SET_LIST_ROUTE_PREDEFINED',
