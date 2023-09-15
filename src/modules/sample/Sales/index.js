@@ -79,6 +79,8 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import SearchIcon from '@mui/icons-material/Search';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import {CalendarPicker} from '@mui/lab';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import ForwardToInboxIcon from '@mui/icons-material/ForwardToInbox';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {red} from '@mui/material/colors';
@@ -1797,7 +1799,7 @@ const SalesTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/movementProducts/register?path=/output/*') ===
+          .includes('/facturacion/sale/register') ===
           true && !popUp ? (
           <Button
             variant='outlined'
@@ -1810,7 +1812,7 @@ const SalesTable = (props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportOutputs/*') === true && !popUp ? (
+          .includes('/facturacion/exportSales/*') === true && !popUp ? (
           <Button
             variant='outlined'
             startIcon={<GridOnOutlinedIcon />}
@@ -1908,7 +1910,7 @@ const SalesTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          .includes('/facturacion/sale/viewPDF') ===
           true && selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() =>
@@ -1926,33 +1928,33 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          .includes('/facturacion/sale/sendEmail') ===
           true && selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() => {
               setOpenSendEmail(true);
             }}
           >
-            <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
+            <ForwardToInboxIcon sx={{mr: 1, my: 'auto'}} />
             Enviar Correo
           </MenuItem>
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          .includes('/facturacion/sale/sendWhatsapp') ===
           true && selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() => {
               setOpenSendWhatsapp(true);
             }}
           >
-            <PictureAsPdfIcon sx={{mr: 1, my: 'auto'}} />
+            <WhatsAppIcon sx={{mr: 1, my: 'auto'}} />
             Enviar Whatsapp
           </MenuItem>
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          .includes('/facturacion/sale/update') ===
         true ? (
           <MenuItem disabled onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
@@ -1961,7 +1963,7 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          .includes('/facturacion/sale/registerTicket') ===
           true &&
         selectedSale &&
         (!selectedSale.client.id ||
@@ -1974,7 +1976,7 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          .includes('/facturacion/sale/registerReceipt') ===
           true &&
         selectedSale &&
         (!selectedSale.client.id ||
@@ -1987,7 +1989,7 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/movementProducts/update?path=/output/*') ===
+          .includes('/facturacion/sale/registerBill') ===
           true &&
         selectedSale &&
         !(
@@ -2002,7 +2004,7 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/movementProducts/delete?path=/output/*') ===
+          .includes('/facturacion/sale/delete') ===
         true ? (
           <MenuItem onClick={setDeleteState}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
@@ -2012,7 +2014,7 @@ const SalesTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes(
-            '/facturacion/accounting/movement/register?path=/sellticketOfOutput/*',
+            '/facturacion/sale/registerTicket',
           ) && selectedOutput.movementSubType == 'sales' ? (
           <MenuItem
             onClick={() => {
@@ -2031,7 +2033,7 @@ const SalesTable = (props) => {
         localStorage
           .getItem('pathsBack')
           .includes(
-            '/facturacion/accounting/movement/register?path=/receiptOfOutput/*',
+            '/facturacion/sale/registerReceipt',
           ) &&
         selectedOutput.movementSubType == 'sales' ? (
           <MenuItem onClick={getReceipt}>
@@ -2044,7 +2046,7 @@ const SalesTable = (props) => {
         localStorage
           .getItem('pathsBack')
           .includes(
-            '/facturacion/accounting/movement/register?path=/referralGuideOfOutput/*',
+            '/facturacion/sale/registerReferralGuide',
           ) &&
         selectedOutput.movementSubType == 'sales' ? (
           <MenuItem
@@ -2064,7 +2066,7 @@ const SalesTable = (props) => {
         localStorage
           .getItem('pathsBack')
           .includes(
-            '/facturacion/accounting/movement/register?path=/billOfOutput/*',
+            '/facturacion/sale/registerBill',
           ) &&
         selectedOutput.movementSubType == 'sales' ? (
           // && !selectedOutput.existBill &&
@@ -2085,7 +2087,7 @@ const SalesTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes(
-            '/facturacion/accounting/movement/register?path=/incomeOfOutput/*',
+            '/facturacion/sales/registerOutcome',
           ) &&
         // (selectedOutput.existBill ||
         //   selectedOutput.existReceipt ||

@@ -367,7 +367,7 @@ const Views = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/campaigns/register') === true ? (
+          .includes('/inventory/appointments/register') === true ? (
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
@@ -379,7 +379,7 @@ const Views = (props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportClients/*') === true ? (
+          .includes('/inventory/exportAppointments/*') === true ? (
           <Button
             variant='outlined'
             startIcon={<GridOnOutlinedIcon />}

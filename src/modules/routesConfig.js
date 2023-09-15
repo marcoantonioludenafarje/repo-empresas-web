@@ -114,22 +114,22 @@ const rolesRoutesConfig = {
       ],
     },
     {
-      id: 'crm',
-      title: 'CRM',
+      id: 'agenda',
+      title: 'agenda',
       messageId: 'sidebar.sample.agenda',
       type: 'collapse',
       icon: <EventIcon fontSize='small' />,
       children: [
         {
-          id: 'campaignsTable',
-          title: 'Tabla de citas',
+          id: 'appoinmentsTable',
+          title: 'Appoinments Table',
           messageId: 'sidebar.sample.viewAppoinment',
           type: 'item',
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/appointment/views',
         },
         {
-          id: 'campaignsTable',
+          id: 'specialistsTable',
           title: 'Specialist Table',
           messageId: 'sidebar.sample.viewSpecialists',
           type: 'item',
@@ -139,14 +139,14 @@ const rolesRoutesConfig = {
       ],
     },
     {
-      id: 'crm',
+      id: 'sales',
       title: 'SALES',
       messageId: 'sidebar.sample.sales',
       type: 'collapse',
       icon: <PointOfSaleIcon fontSize='small' />,
       children: [
         {
-          id: 'campaignsTable',
+          id: 'salesTable',
           title: 'Sales Table',
           messageId: 'sidebar.sample.sales',
           type: 'item',
@@ -154,8 +154,8 @@ const rolesRoutesConfig = {
           url: '/sample/sales/table',
         },
         {
-          id: 'campaignsTable',
-          title: 'Sales Table',
+          id: 'ordersTable',
+          title: 'Ordes Table',
           messageId: 'sidebar.sample.orders',
           type: 'item',
           icon: <TableRowsOutlinedIcon fontSize='small' />,
@@ -229,7 +229,7 @@ const rolesRoutesConfig = {
           url: '/sample/referral-guide/table',
         },
         {
-          id: 'referralGuides',
+          id: 'referralGuidesCustomize',
           title: 'ReferralGuideCustomize',
           messageId: 'sidebar.sample.customize',
           type: 'item',
@@ -237,7 +237,7 @@ const rolesRoutesConfig = {
           url: '/sample/referral-guide/customize',
         },
         {
-          id: 'referralGuides',
+          id: 'ProofMonitoring',
           title: 'ProofMonitoring',
           messageId: 'sidebar.sample.proofMonitoring',
           type: 'item',

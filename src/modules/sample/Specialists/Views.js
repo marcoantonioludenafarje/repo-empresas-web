@@ -399,7 +399,7 @@ export default function Views(props) {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/robot/register') === true ? (
+          .includes('/inventory/specialist/register') === true ? (
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
@@ -411,7 +411,7 @@ export default function Views(props) {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportClients/*') === true ? (
+          .includes('/inventory/exportSpecialists/*') === true ? (
           <Button
             variant='outlined'
             startIcon={<GridOnOutlinedIcon />}
@@ -483,7 +483,7 @@ export default function Views(props) {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/robot/update') === true ? (
+          .includes('/inventory/specialist/update') === true ? (
           <MenuItem onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Actualizar
@@ -491,7 +491,7 @@ export default function Views(props) {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/robot/delete') === true ? (
+          .includes('/inventory/specialist/delete') === true ? (
           <MenuItem onClick={setDeleteState}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Eliminar

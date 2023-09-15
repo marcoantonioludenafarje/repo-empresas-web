@@ -632,7 +632,7 @@ const ProofMonitoring = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/referralGuide/seePDF') === true ? (
+          .includes('/facturacion/proofMonitoring/seePDF') === true ? (
           <MenuItem onClick={() => window.open(selectedProof.linkPdf)}>
             <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
             Ver PDF
@@ -640,7 +640,7 @@ const ProofMonitoring = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/referralGuide/seeXML') === true ? (
+          .includes('/facturacion/proofMonitoring/seeXML') === true ? (
           <MenuItem onClick={() => window.open(selectedProof.linkXml)}>
             <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
             Ver XML
@@ -648,7 +648,7 @@ const ProofMonitoring = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/referralGuide/seeCDR') === true ? (
+          .includes('/facturacion/proofMonitoring/seeCDR') === true ? (
           <MenuItem onClick={() => window.open(selectedProof.linkCdr)}>
             <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
             Ver CDR

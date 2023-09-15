@@ -435,7 +435,7 @@ export default function Views(props) {
 
         {localStorage
           .getItem('pathsBack')
-          .includes('/inventory/exportClients/*') === true ? (
+          .includes('/inventory/exportRobots/*') === true ? (
           <Button
             variant='outlined'
             startIcon={<GridOnOutlinedIcon />}
