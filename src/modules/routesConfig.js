@@ -190,7 +190,7 @@ const rolesRoutesConfig = {
     },
     
     {
-      id: 'distribution',
+      id: 'voucher',
       title: 'proofs',
       messageId: 'sidebar.sample.proofs',
       type: 'collapse',
