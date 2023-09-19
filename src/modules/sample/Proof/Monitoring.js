@@ -159,7 +159,8 @@ const ProofMonitoring = (props) => {
   const [loading, setLoading] = React.useState(true);
   const [proofType, setProofType] = React.useState('all');
   const [selectedMerchantId, setSelectedMerchantId] = React.useState('all');
-  const [selectedAcceptedStatus, setSelectedAcceptedStatus] = React.useState('waiting');
+  const [selectedAcceptedStatus, setSelectedAcceptedStatus] =
+    React.useState('waiting');
   //API FUNCTIONS
   const toListProofMonitoringItems = (payload) => {
     dispatch(proofMonitoring(payload));
@@ -329,8 +330,8 @@ const ProofMonitoring = (props) => {
             initialTime: initialTime,
             finalTime: finalTime,
             proofType: proofType,
-            merchantId: "all",
-            acceptedStatus: "waiting",
+            merchantId: 'all',
+            acceptedStatus: 'waiting',
           },
         },
       };
@@ -436,10 +437,10 @@ const ProofMonitoring = (props) => {
         className={classes.stack}
       >
         <FormControl sx={{my: 0, width: 140}}>
-            <InputLabel id='proofType-label' style={{fontWeight: 200}}>
+          <InputLabel id='proofType-label' style={{fontWeight: 200}}>
             Tipo de Comprobante
-            </InputLabel>
-            <Select
+          </InputLabel>
+          <Select
             size={isMobile ? 'small' : 'medium'}
             defaultValue={proofType}
             name='proofType'
@@ -447,34 +448,37 @@ const ProofMonitoring = (props) => {
             label='Tipo de Comprobante'
             sx={{maxWidth: 140}}
             onChange={(event) => {
-                setProofType(event.target.value);
+              setProofType(event.target.value);
             }}
-            >
+          >
             <MenuItem value='all' style={{fontWeight: 200}}>
-                Todos
+              Todos
             </MenuItem>
             <MenuItem value='RECEIPT' style={{fontWeight: 200}}>
-                Boleta
+              Boleta
             </MenuItem>
             <MenuItem value='BILL' style={{fontWeight: 200}}>
-                Factura
+              Factura
             </MenuItem>
             <MenuItem value='REFERRAL_GUIDE' style={{fontWeight: 200}}>
-                Guía de Remisión
+              Guía de Remisión
             </MenuItem>
             <MenuItem value='CREDIT_NOTE' style={{fontWeight: 200}}>
-                Nota de crédito
+              Nota de crédito
             </MenuItem>
             <MenuItem value='DEBIT_NOTE' style={{fontWeight: 200}}>
-                Nota de débito
+              Nota de débito
             </MenuItem>
-            </Select>
+          </Select>
         </FormControl>
         <FormControl sx={{my: 0, width: 140}}>
-            <InputLabel id='selectedAcceptedStatus-label' style={{fontWeight: 200}}>
+          <InputLabel
+            id='selectedAcceptedStatus-label'
+            style={{fontWeight: 200}}
+          >
             Estado
-            </InputLabel>
-            <Select
+          </InputLabel>
+          <Select
             size={isMobile ? 'small' : 'medium'}
             defaultValue={selectedAcceptedStatus}
             name='selectedAcceptedStatus'
@@ -482,16 +486,16 @@ const ProofMonitoring = (props) => {
             label='Estado'
             sx={{maxWidth: 140}}
             onChange={(event) => {
-                setSelectedAcceptedStatus(event.target.value);
+              setSelectedAcceptedStatus(event.target.value);
             }}
-            >
+          >
             <MenuItem value='waiting' style={{fontWeight: 200}}>
-                En espera
+              En espera
             </MenuItem>
             <MenuItem value='denied' style={{fontWeight: 200}}>
-                Denegado
+              Denegado
             </MenuItem>
-            </Select>
+          </Select>
         </FormControl>
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
@@ -562,9 +566,7 @@ const ProofMonitoring = (props) => {
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
-                  <TableCell>
-                    {obj.merchantId}
-                  </TableCell>
+                  <TableCell>{obj.merchantId}</TableCell>
                   <TableCell>
                     {obj.documentIntern && obj.documentIntern.includes('-')
                       ? obj.documentIntern.split('-')[0]
@@ -620,7 +622,7 @@ const ProofMonitoring = (props) => {
           </Stack>
         ) : null}
       </TableContainer>
-      
+
       <Menu
         id='basic-menu'
         anchorEl={anchorEl}
@@ -664,7 +666,6 @@ const ProofMonitoring = (props) => {
         <DialogTitle sx={{fontSize: '1.5em'}}>Error de guía</DialogTitle>
         <DialogContent>{errorDetail}</DialogContent>
       </Dialog>
-      
     </Card>
   );
 };

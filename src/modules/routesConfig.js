@@ -188,7 +188,7 @@ const rolesRoutesConfig = {
         },
       ],
     },
-    
+
     {
       id: 'voucher',
       title: 'proofs',

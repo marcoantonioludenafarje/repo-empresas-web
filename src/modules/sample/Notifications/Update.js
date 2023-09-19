@@ -24,7 +24,6 @@ import {
   Autocomplete,
   OutlinedInput,
 } from '@mui/material';
-import {uuid} from 'uuidv4';
 import {
   onGetBusinessParameter,
   onGetGlobalParameter,

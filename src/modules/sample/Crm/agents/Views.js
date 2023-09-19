@@ -25,6 +25,7 @@ import {
   Stack,
   useTheme,
   useMediaQuery,
+  Typography,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
@@ -45,13 +46,17 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import ArrowCircleUpOutlinedIcon from '@mui/icons-material/ArrowCircleUpOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
-import {getAgents, deleteAgents} from '../../../../redux/actions/Agent';
+import {
+  getAgents,
+  deleteAgents,
+  startAgentSession,
+} from '../../../../redux/actions/Agent';
 import {convertToDate} from '../../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
-  GET_USER_DATA,
+  UPDATE_AGENT_ITEMS_PAGE_LIST,
 } from '../../../../shared/constants/ActionTypes';
 import Router from 'next/router';
 import {red} from '@mui/material/colors';
@@ -92,6 +97,7 @@ export default function Views(props) {
   const [openLimitQR, setopenLimitQR] = React.useState(false);
   const [openQRSuccess, setopenQRSuccess] = React.useState(false);
   const [imgQR, setimgQR] = React.useState('');
+  const [countImgQR, setCountImgQR] = React.useState(0);
 
   const [openQRPop, setopenQRPop] = React.useState(false);
   const [openQR, setopenQR] = React.useState(false);
@@ -106,6 +112,10 @@ export default function Views(props) {
 
   const getAgent = (payload) => {
     dispatch(getAgents(payload));
+  };
+
+  const sendStartAgentSession = (payload) => {
+    dispatch(startAgentSession(payload));
   };
 
   const deleteAgent = (payload) => {
@@ -142,6 +152,8 @@ export default function Views(props) {
 
   const handleCloseQR2 = () => {
     setopenQRPop(false);
+    setimgQR('');
+    setCountImgQR(0);
   };
 
   const {userDataRes} = useSelector(({user}) => user);
@@ -155,23 +167,35 @@ export default function Views(props) {
   console.log('confeti los agentes', listAgents);
 
   useEffect(() => {
-    if (onChangeQRAgentRes && onChangeQRAgentRes.urlQR) {
+    if (onChangeQRAgentRes) {
       console.log('onChangeQRAgentRes', onChangeQRAgentRes);
-      if (onChangeQRAgentRes.urlQR != imgQR) {
+      if (onChangeQRAgentRes.urlQR && onChangeQRAgentRes.urlQR != imgQR) {
         setimgQR(onChangeQRAgentRes.urlQR);
-      }
-      if (onChangeQRAgentRes.type == 'failureAgentQR') {
-        setopenLimitQR(true);
-        setopenQRSuccess(false);
-        setopenErrorQR(false);
-      } else if (onChangeQRAgentRes.type == 'successAgentQR') {
-        setopenQRSuccess(true);
-        setopenErrorQR(false);
-        setopenLimitQR(false);
-      } else {
-        setopenQRSuccess(false);
-        setopenErrorQR(false);
-        setopenLimitQR(false); //Quitar en caso de que Marco decida que el stop sea un tipo
+        setCountImgQR(countImgQR + 1);
+      } else if (!onChangeQRAgentRes.urlQR) {
+        if (onChangeQRAgentRes.type == 'failureAgentQR') {
+          setopenLimitQR(true);
+          setopenQRSuccess(false);
+          setopenErrorQR(false);
+        } else if (onChangeQRAgentRes.type == 'successAgentQR') {
+          const newListItems = listAgents.map((obj) => {
+            if (obj.robotId == selectedAgent.robotId) {
+              obj.status = 'ON';
+            }
+            return obj;
+          });
+          dispatch({
+            type: UPDATE_AGENT_ITEMS_PAGE_LIST,
+            payload: newListItems,
+          });
+          setopenQRSuccess(true);
+          setopenErrorQR(false);
+          setopenLimitQR(false);
+        } else {
+          setopenQRSuccess(false);
+          setopenErrorQR(false);
+          setopenLimitQR(false); //Quitar en caso de que Marco decida que el stop sea un tipo
+        }
       }
     }
   }, [onChangeQRAgentRes]);
@@ -284,6 +308,13 @@ export default function Views(props) {
     handleCloseQR();
   };
 
+  const startSession = () => {
+    sendStartAgentSession({
+      robotId: selectedAgent.robotId,
+      userId: userDataRes.userId,
+    });
+  };
+
   const confirmDelete = () => {
     console.log('selected agente', selectedAgent);
     console.log('id de selected', selectedAgent.robotId);
@@ -393,9 +424,23 @@ export default function Views(props) {
                 </TableCell>
                 <TableCell>
                   {row.status == 'OFF' ? (
-                    <IntlMessages id='common.disableAgent' />
+                    <span
+                      style={{
+                        fontWeight: 'bold', // Texto en negrita para resaltar cuando el estado es "OFF"
+                        color: 'red', // Color de texto rojo para resaltar cuando el estado es "OFF"
+                      }}
+                    >
+                      <IntlMessages id='common.disableAgent' />
+                    </span>
                   ) : (
-                    <IntlMessages id='common.enableAgent' />
+                    <span
+                      style={{
+                        fontWeight: 'normal', // Texto en peso normal cuando el estado es "ON"
+                        color: 'green', // Color de texto verde para resaltar cuando el estado es "ON"
+                      }}
+                    >
+                      <IntlMessages id='common.enableAgent' />
+                    </span>
                   )}
                 </TableCell>
                 <TableCell>
@@ -523,17 +568,33 @@ export default function Views(props) {
             Reiniciar   
         </Button>
         </div> */}
+          <Typography>{`Número de Intentos: ${countImgQR}`}</Typography>
           {openErrorQR == false &&
           openLimitQR == false &&
-          openQRSuccess == false ? (
+          openQRSuccess == false &&
+          imgQR ? (
             <img
-              src={onChangeQRAgentRes?.urlQR}
+              src={imgQR}
               alt='ImagenQR'
-              width='400'
+              style={{maxWidth: '100%', height: 'auto'}}
+              //width='400'
               onError={(e) => {
                 e.target.style.display = 'none';
               }}
             />
+          ) : null}
+          {openErrorQR == false &&
+          openLimitQR == false &&
+          openQRSuccess == false &&
+          !imgQR ? (
+            <Button
+              sx={{mt: 2}}
+              onClick={startSession}
+              variant='contained'
+              startIcon={<QrCodeIcon />}
+            >
+              Generar QR
+            </Button>
           ) : null}
           {openLimitQR === true ? (
             <>
@@ -549,7 +610,11 @@ export default function Views(props) {
                 <ErrorIcon color='error' sx={{fontSize: '4em', mx: 2}} />
                 <p>Lo siento, se ha excedido el limite de intentos </p>
               </DialogContentText>
-              <Button variant='contained' startIcon={<QrCodeIcon />}>
+              <Button
+                onClick={startSession}
+                variant='contained'
+                startIcon={<QrCodeIcon />}
+              >
                 Generar QR
               </Button>
             </>
@@ -611,7 +676,10 @@ export default function Views(props) {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/robot/enable') === true ? (
-          <MenuItem onClick={setEnableState}>
+          <MenuItem
+            disabled={selectedAgent.status == 'ON'}
+            onClick={setEnableState}
+          >
             <ArrowCircleUpOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Activar
           </MenuItem>

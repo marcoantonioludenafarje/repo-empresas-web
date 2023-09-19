@@ -1799,8 +1799,7 @@ const SalesTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/register') ===
-          true && !popUp ? (
+          .includes('/facturacion/sale/register') === true && !popUp ? (
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
@@ -1910,8 +1909,8 @@ const SalesTable = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/viewPDF') ===
-          true && selectedSale.proofOfPaymentPdf ? (
+          .includes('/facturacion/sale/viewPDF') === true &&
+        selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() =>
               showObject(
@@ -1928,8 +1927,8 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/sendEmail') ===
-          true && selectedSale.proofOfPaymentPdf ? (
+          .includes('/facturacion/sale/sendEmail') === true &&
+        selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() => {
               setOpenSendEmail(true);
@@ -1941,8 +1940,8 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/sendWhatsapp') ===
-          true && selectedSale.proofOfPaymentPdf ? (
+          .includes('/facturacion/sale/sendWhatsapp') === true &&
+        selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() => {
               setOpenSendWhatsapp(true);
@@ -1954,8 +1953,7 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/update') ===
-        true ? (
+          .includes('/facturacion/sale/update') === true ? (
           <MenuItem disabled onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Actualizar
@@ -1963,8 +1961,7 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/registerTicket') ===
-          true &&
+          .includes('/facturacion/sale/registerTicket') === true &&
         selectedSale &&
         (!selectedSale.client.id ||
           selectedSale.client.id.split('-')[0] !== 'RUC') &&
@@ -1976,8 +1973,7 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/registerReceipt') ===
-          true &&
+          .includes('/facturacion/sale/registerReceipt') === true &&
         selectedSale &&
         (!selectedSale.client.id ||
           selectedSale.client.id.split('-')[0] !== 'RUC') &&
@@ -1989,8 +1985,7 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/registerBill') ===
-          true &&
+          .includes('/facturacion/sale/registerBill') === true &&
         selectedSale &&
         !(
           !selectedSale.client.id ||
@@ -2004,8 +1999,7 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/delete') ===
-        true ? (
+          .includes('/facturacion/sale/delete') === true ? (
           <MenuItem onClick={setDeleteState}>
             <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Eliminar
@@ -2013,9 +2007,8 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes(
-            '/facturacion/sale/registerTicket',
-          ) && selectedOutput.movementSubType == 'sales' ? (
+          .includes('/facturacion/sale/registerTicket') &&
+        selectedOutput.movementSubType == 'sales' ? (
           <MenuItem
             onClick={() => {
               setEarningGeneration(
@@ -2032,9 +2025,7 @@ const SalesTable = (props) => {
         {validationClientType(selectedOutput, 'receipt') &&
         localStorage
           .getItem('pathsBack')
-          .includes(
-            '/facturacion/sale/registerReceipt',
-          ) &&
+          .includes('/facturacion/sale/registerReceipt') &&
         selectedOutput.movementSubType == 'sales' ? (
           <MenuItem onClick={getReceipt}>
             <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
@@ -2045,9 +2036,7 @@ const SalesTable = (props) => {
         {validationClientType(selectedOutput, 'referralGuide') &&
         localStorage
           .getItem('pathsBack')
-          .includes(
-            '/facturacion/sale/registerReferralGuide',
-          ) &&
+          .includes('/facturacion/sale/registerReferralGuide') &&
         selectedOutput.movementSubType == 'sales' ? (
           <MenuItem
             disabled={
@@ -2065,9 +2054,7 @@ const SalesTable = (props) => {
         {validationClientType(selectedOutput, 'bill') &&
         localStorage
           .getItem('pathsBack')
-          .includes(
-            '/facturacion/sale/registerBill',
-          ) &&
+          .includes('/facturacion/sale/registerBill') &&
         selectedOutput.movementSubType == 'sales' ? (
           // && !selectedOutput.existBill &&
           // !selectedOutput.existReceipt &&
@@ -2086,9 +2073,7 @@ const SalesTable = (props) => {
 
         {localStorage
           .getItem('pathsBack')
-          .includes(
-            '/facturacion/sales/registerOutcome',
-          ) &&
+          .includes('/facturacion/sales/registerOutcome') &&
         // (selectedOutput.existBill ||
         //   selectedOutput.existReceipt ||
         //   selectedOutput.existSellTicket) &&

@@ -49,7 +49,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {useState} from 'react';
-import { activeSunat } from 'redux/actions';
+import {activeSunat} from 'redux/actions';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -81,7 +81,7 @@ const validationSchema = yup.object({
   certkeyvalue: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />)
-    .required(<IntlMessages id='validation.required' />),      
+    .required(<IntlMessages id='validation.required' />),
 });
 const defaultValues = {
   intoapiKey: '',
@@ -162,14 +162,13 @@ const Sunat = (props) => {
   const [typeDialog, setTypeDialog] = React.useState('');
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
-    React.useState(false);
+  React.useState(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
 
   let {query} = router;
   console.log('business', query);
-
 
   //GET_VALUES_APIS
   const state = useSelector((state) => state);
@@ -180,12 +179,11 @@ const Sunat = (props) => {
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
 
-  const onActiveSunat = (payload) =>{
-    console.log("objfin >>", payload);
-    dispatch(activeSunat(payload))
-    console.log("objlast");
-  }
-
+  const onActiveSunat = (payload) => {
+    console.log('objfin >>', payload);
+    dispatch(activeSunat(payload));
+    console.log('objlast');
+  };
 
   useEffect(() => {
     if (!userDataRes) {
@@ -245,11 +243,8 @@ const Sunat = (props) => {
 
   const handleDatas = (data, {setSubmitting}) => {
     setSubmitting(true);
-    console.log(
-      'CONFETI DATA',
-      data
-    );
-    
+    console.log('CONFETI DATA', data);
+
     activedSunat.request = {
       payload: {
         activedatasunat: [
@@ -260,20 +255,19 @@ const Sunat = (props) => {
             sunatSecondayUserPassword: data.intopasssecu,
             digitalCertifiedCertValue: data.certvalue,
             digitalCertifiedKeyValue: data.certkeyvalue,
-            isBillingEnabled: true
+            isBillingEnabled: true,
           },
         ],
         merchantId: query.merchantId,
-      }
-    }
-
+      },
+    };
 
     console.log('objfinaly', activedSunat);
 
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
     onActiveSunat(activedSunat);
-    
+
     setSubmitting(false);
     setOpenStatus(true);
   };
