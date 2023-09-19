@@ -8,6 +8,8 @@ import {
   UPDATE_AGENT,
   ONCHANGE_QR_AGENT,
   RESET_AGENTS,
+  START_AGENT_SESSION,
+  UPDATE_AGENT_ITEMS_PAGE_LIST,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -102,6 +104,15 @@ const agentsReducer = (state = INIT_STATE, action) => {
         successMessage: '',
         errorMessage: '',
         clientsLastEvalutedKey_pageListClients: null,
+      };
+    case START_AGENT_SESSION:
+      return {
+        ...state,
+        startAgentSessionRes: action.payload
+      }
+    case UPDATE_AGENT_ITEMS_PAGE_LIST:
+      return {
+        listAgents: action.payload,
       };
     default:
       return state;

@@ -385,7 +385,8 @@ export const LIST_AGENT = 'list_agent';
 export const DELETE_AGENT = 'delete_agent';
 export const UPDATE_AGENT = 'update_agent';
 export const ONCHANGE_QR_AGENT = 'onchange_agent';
-
+export const START_AGENT_SESSION = 'start_agent_session';
+export const UPDATE_AGENT_ITEMS_PAGE_LIST = 'update_agent_items_page_list';
 export const NEW_SALE_PROOF_OF_PAYMENT = 'new_sale_proof_of_payment';
 
 //APOINTMENT

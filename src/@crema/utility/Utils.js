@@ -232,3 +232,16 @@ export const request2 = (method, path, payload) => {
   //   },
   // })
 };
+
+export const requestWhatsappModule = (method, path, payload) => {
+  console.log('Ahora axios requestWhatsappModule');
+  return axios[method](
+    `http://wssp-channel.tunexo.pe/apigateway${path}`,
+    payload,
+    {
+      headers: {
+        'Content-type': 'application/json',
+      },
+    },
+  );
+}

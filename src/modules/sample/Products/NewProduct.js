@@ -129,6 +129,10 @@ const validationSchema = yup.object({
     .string()
     .typeError(<IntlMessages id='validation.string' />)
     .required(<IntlMessages id='validation.required' />)
+    ,
+  alias: yup
+    .string()
+    .typeError(<IntlMessages id='validation.string' />)
     .test(
       'stickSymbolPresenced',
       'Símbolos | y - no están permitidos, evitarlos por favor',
@@ -136,7 +140,6 @@ const validationSchema = yup.object({
         return !/\||\-/.test(value);
       },
     ),
-  alias: yup.string().typeError(<IntlMessages id='validation.string' />),
   //.required(<IntlMessages id='validation.required' />)
   title: yup.string().typeError(<IntlMessages id='validation.string' />),
   commercialDescription: yup
