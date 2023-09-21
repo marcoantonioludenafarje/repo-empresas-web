@@ -53,6 +53,7 @@ import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import {red} from '@mui/material/colors';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import AppUpperCaseTextField from '@crema/core/AppFormComponents/AppUpperCaseTextField';
 import {makeStyles} from '@mui/styles';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
@@ -984,7 +985,7 @@ const Create = (props) => {
               >
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={6}>
-                    <AppTextField
+                    <AppUpperCaseTextField
                       label='Nombre de la Campaña *'
                       name='campaignName'
                       variant='outlined'
@@ -1197,10 +1198,10 @@ const Create = (props) => {
                     </Box>
                   </DialogTitle>
                   <Box sx={{width: 1, textAlign: 'center', mt: 2}}>
-                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                    <Typography sx={{fontSize: 12, fontWeight: 600}}>
                       El proceso de generar Variaciones demora unos segundos
                     </Typography>
-                    <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                    <Typography sx={{fontSize: 12, fontWeight: 600}}>
                       {`Sí demora, vuelva a darle click en "Necesito Ayuda!"`}
                     </Typography>
                   </Box>
@@ -1210,7 +1211,9 @@ const Create = (props) => {
                       sx={{width: 1, textAlign: 'center', mt: 2, color: 'red'}}
                     >
                       {verification && (
-                        <Typography sx={{fontSize: 18, fontWeight: 600}}>
+                        <Typography
+                          sx={{fontSize: 12, fontWeight: 600, margin: 0}}
+                        >
                           Cantidad de variaciones obligatorias:
                           {verificationVariations() -
                             variationsDataContent.length}
@@ -1228,7 +1231,10 @@ const Create = (props) => {
                         expanded={expandedAccordion === index}
                         onChange={handleAccordionChange(index)}
                       >
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          sx={{backgroundColor: '#E3F2FD'}}
+                        >
                           {variation}
                           <Box sx={{ml: 'auto'}}>
                             <Button
@@ -1319,15 +1325,17 @@ const Create = (props) => {
                         // setIdentidad(value.props.value);
                       }}
                     >
-                      {listAgents.map((agent, index) => (
-                        <MenuItem
-                          key={`agent-${index}`}
-                          value={agent.robotId}
-                          style={{fontWeight: 200}}
-                        >
-                          {agent.robotName}
-                        </MenuItem>
-                      ))}
+                      {listAgents
+                        .filter((agent) => agent.status === 'ON')
+                        .map((agent, index) => (
+                          <MenuItem
+                            key={`agent-${index}`}
+                            value={agent.robotId}
+                            style={{fontWeight: 200}}
+                          >
+                            {agent.robotName}
+                          </MenuItem>
+                        ))}
                     </Select>
                   </FormControl>
                 </Grid>
