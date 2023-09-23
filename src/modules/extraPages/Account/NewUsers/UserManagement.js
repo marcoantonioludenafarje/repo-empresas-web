@@ -172,20 +172,20 @@ const UserManagement = ({data}) => {
   };
 
   const handleChangeRol = () => {
-    console.log("data", data);
-    console.log("select", objSelects);
-    console.log("selectUser", selectUser);
+    console.log('data', data);
+    console.log('select', objSelects);
+    console.log('selectUser', selectUser);
     const payload = {
       request: {
         payload: {
           userId: selectUser.userId,
           newrolId: objSelects.profileType,
           rolId: selectUser.rol,
-          merchantId: userDataRes.merchantSelected.merchantId
+          merchantId: userDataRes.merchantSelected.merchantId,
         },
       },
     };
-    console.log("selectpayload", payload);
+    console.log('selectpayload', payload);
     dispatch(changeRol(payload));
     setOpenStatus(true);
     setOpen(false);
@@ -207,19 +207,13 @@ const UserManagement = ({data}) => {
     console.log('listUserRes: ', listUserRes);
   };
 
-
   const handleFieldRol = (event) => {
     console.log('evento', event);
     //setProfileType(event.target.value);
     console.log('objSelects', objSelects);
-    // Object.keys(objSelects).map((key) => {
-    //   if (key == event.target.name) {
-    //     objSelects[key] = event.target.value;
-    //   }
-    // });
-    const { name, value} = event.target;
-    objSelects[name] = value
-    
+    const {name, value} = event.target;
+    objSelects[name] = value;
+
     console.log('objSelects >>', objSelects);
   };
 
