@@ -151,7 +151,7 @@ export const changeRol = (payload) => {
       })
       .catch((error) => {
         console.log('rol actions error', error);
-        dispatch({tpye: FETCH_ERROR, payload: error.message});
+        dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
 };
