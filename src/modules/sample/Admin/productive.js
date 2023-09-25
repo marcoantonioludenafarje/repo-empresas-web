@@ -82,6 +82,12 @@ let altaProd = {
   },
 };
 
+const toEpoch = (strDate) => {
+  let someDate = new Date(strDate);
+  someDate = someDate.getTime();
+  return someDate;
+};
+
 const useStyles = makeStyles((theme) => ({
   container: {
     textAlign: 'center',
@@ -143,6 +149,10 @@ const Productive = (props) => {
 
   let {query} = router;
   console.log('business', query);
+  const [dateExpiration, setDateExpiration] = React.useState(Date.now()+1000*60*60*24*30);
+  const [dateExpirationForm, setDateExpirationForm] = React.useState(
+    toEpoch(Date.now()+1000*60*60*24*30),
+  );
 
   defaultValues.businessName = query.denominationMerchant;
 
@@ -213,21 +223,6 @@ const Productive = (props) => {
       console.log('Estamos entrando al getClients');
       dispatch({type: FETCH_SUCCESS, payload: ''});
       dispatch({type: FETCH_ERROR, payload: ''});
-      //dispatch({type: GET_CLIENTS, payload: undefined});
-      let listPayload = {
-        request: {
-          payload: {
-            typeDocumentClient: '',
-            numberDocumentClient: '',
-            denominationClient: '',
-            merchantId: userDataRes.merchantSelected.merchantId,
-            LastEvaluatedKey: null,
-          },
-        },
-      };
-
-      //toGetSpecialist(listPayload);
-      // setFirstload(true);
     }
   }, [userDataRes]);
 
@@ -257,9 +252,10 @@ const Productive = (props) => {
     altaProd.request = {
       payload: {
         dataproductive: {
-          planDaysDesired: 30,
+          planDaysDesired: Math.ceil((dateExpiration - Date.now())/(1000*60*60*24)),
           planDesired: plan[0].description,
           planDesiredId: plan[0].subscriptionPlanId,
+          roleDesiredId: plan[0].templateRolId,
         },
         merchantId: query.merchantId,
       },
@@ -273,6 +269,16 @@ const Productive = (props) => {
 
     setSubmitting(false);
     setOpenStatus(true);
+  };
+
+  const compare = (a, b) => {
+    if (a.description > b.description) {
+      return 1;
+    }
+    if (a.description < b.description) {
+      return -1;
+    }
+    return 0;
   };
 
   const showMessage = () => {
@@ -410,7 +416,7 @@ const Productive = (props) => {
                           // setIdentidad(value.props.value);
                         }}
                       >
-                        {getBusinessPlansRes?.map((plans, index) => {
+                        {getBusinessPlansRes?.sort(compare).map((plans, index) => {
                           setPlanes(getBusinessPlansRes);
                           return (
                             <MenuItem
@@ -424,6 +430,27 @@ const Productive = (props) => {
                         })}
                       </Select>
                     </FormControl>
+                  </Grid>
+                  <Grid item xs={8} sm={12}>
+                    <Grid item xs={12}>
+                      <FormControl fullWidth sx={{my: 2}}>
+                        <DateTimePicker
+                          renderInput={(params) => (
+                            <TextField size='small' {...params} />
+                          )}
+                          value={dateExpirationForm}
+                          required
+                          label='Fecha Expiración Suscripción'
+                          inputFormat='dd/MM/yyyy hh:mm a'
+                          minDate={Date.now()}
+                          onChange={(newValue) => {
+                            console.log('new valie', newValue);
+                            setDateExpiration(toEpoch(newValue));
+                            setDateExpirationForm(newValue);
+                          }}
+                        />
+                      </FormControl>
+                    </Grid>
                   </Grid>
                 </Grid>
 
