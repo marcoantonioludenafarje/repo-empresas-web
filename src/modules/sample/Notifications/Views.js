@@ -95,6 +95,7 @@ export default function Views(props) {
   const [filteredNotifications, setFilteredNotifications] = useState([]);
   const {businessParameter} = useSelector(({general}) => general);
   const [nelem, setNelem] = React.useState(0);
+  const [listNotifications, setListNotifications] = React.useState("");
   const [listValidNotification, setListValidNotification] = React.useState([]);
   const [reload, setReload] = React.useState(0);
   console.log('businessParameter ', businessParameter);
@@ -126,13 +127,13 @@ export default function Views(props) {
     agentsLastEvaluatedKey_pageListAgents,
   } = useSelector(({notifications}) => notifications);*/
 
-  const listNotifications = verTiposEventos(businessParameter);
   console.log('confeti los agentes', listNotifications[0]);
 
   const showMessage = () => {
     console.log('Mensaje QR');
   };
   useEffect(() => {
+
     if (!listNotifications || listNotifications.length === 0) {
       return;
     }
@@ -167,34 +168,13 @@ export default function Views(props) {
       console.log('Este es el valid', listNotificacionModific);
       setListValidNotification(listNotificacionModific);
     }
-  }, [businessParameter, reload]);
+  }, [listNotifications, reload]);
 
   useEffect(() => {
-    console.log('Estamos userDataRes', userDataRes);
-    if (
-      userDataRes &&
-      userDataRes.merchantSelected &&
-      userDataRes.merchantSelected.merchantId
-    ) {
-      console.log('Estamos entrando al getAgentes');
-      dispatch({type: FETCH_SUCCESS, payload: undefined});
-      dispatch({type: FETCH_ERROR, payload: undefined});
-      //dispatch({type: GET_CLIENTS, payload: undefined});
-      let listPayload = {
-        request: {
-          payload: {
-            typeDocumentClient: '',
-            numberDocumentClient: '',
-            denominationClient: '',
-            merchantId: userDataRes.merchantSelected.merchantId,
-            LastEvaluatedKey: null,
-          },
-        },
-      };
-      //getNotification(listPayload);
-      // setFirstload(true);
+    if(businessParameter && businessParameter.length > 0){
+      setListNotifications(verTiposEventos(businessParameter));
     }
-  }, [userDataRes, reload, businessParameter]);
+  }, [businessParameter]);
 
   let codProdSelected = '';
   const [anchorEl, setAnchorEl] = React.useState(null);

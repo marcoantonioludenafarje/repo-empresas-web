@@ -310,8 +310,12 @@ export default function Views(props) {
 
   const startSession = () => {
     sendStartAgentSession({
-      robotId: selectedAgent.robotId,
-      userId: userDataRes.userId,
+      request: {
+        payload: {
+          robotId: selectedAgent.robotId,
+          userId: userDataRes.userId,
+        }
+      }
     });
   };
 

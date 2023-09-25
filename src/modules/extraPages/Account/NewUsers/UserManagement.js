@@ -46,6 +46,10 @@ import {red} from '@mui/material/colors';
 import {convertToDateWithoutTime} from '../../../../Utils/utils';
 
 let selectUser = {};
+let objSelects = {
+  rol: '',
+  rolId: '',
+};
 
 const UserManagement = ({data}) => {
   const {listUserRes, successMessage, errorMessage} = useSelector(
@@ -168,16 +172,20 @@ const UserManagement = ({data}) => {
   };
 
   const handleChangeRol = () => {
+    console.log('data', data);
+    console.log('select', objSelects);
+    console.log('selectUser', selectUser);
     const payload = {
       request: {
         payload: {
-          useriD: selectUser.userId,
-          rol: data.rol,
-          roles: [data.rol],
+          userId: selectUser.userId,
+          newrolId: objSelects.profileType,
+          rolId: selectUser.rol,
+          merchantId: userDataRes.merchantSelected.merchantId,
         },
       },
     };
-
+    console.log('selectpayload', payload);
     dispatch(changeRol(payload));
     setOpenStatus(true);
     setOpen(false);
@@ -197,6 +205,16 @@ const UserManagement = ({data}) => {
     }, 2000);
 
     console.log('listUserRes: ', listUserRes);
+  };
+
+  const handleFieldRol = (event) => {
+    console.log('evento', event);
+    //setProfileType(event.target.value);
+    console.log('objSelects', objSelects);
+    const {name, value} = event.target;
+    objSelects[name] = value;
+
+    console.log('objSelects >>', objSelects);
   };
 
   const showMessage = () => {
@@ -467,9 +485,9 @@ const UserManagement = ({data}) => {
               labelId='profileType-label'
               displayEmpty
               label={<IntlMessages id='common.business.profileType' />}
-              // onChange={handleFieldRol}
+              onChange={handleFieldRol}
             >
-              {/* {listRolRes && typeof listRolRes !== 'string' ? (
+              {listRolRes && typeof listRolRes !== 'string' ? (
                 listRolRes.map((obj, index) => {
                   objSelects.rol = obj.description;
                   objSelects.rolId = obj.rolId;
@@ -485,11 +503,7 @@ const UserManagement = ({data}) => {
                 })
               ) : (
                 <></>
-              )} */}
-              <MenuItem>ADMIN_PREMIUM</MenuItem>
-              <MenuItem>SUPERVISOR</MenuItem>
-              <MenuItem>CONTADOR</MenuItem>
-              <MenuItem>SOLO_CONSULTAS</MenuItem>
+              )}
             </Select>
           </FormControl>
         </DialogContent>

@@ -104,7 +104,7 @@ const rolesRoutesConfig = {
           url: '/sample/crm/views',
         },
         {
-          id: 'campaignsTable',
+          id: 'agentsTable',
           title: 'Tabla de agentes',
           messageId: 'sidebar.sample.viewAgents',
           type: 'item',
@@ -360,7 +360,7 @@ const rolesRoutesConfig = {
           url: '/sample/providers/table',
         },
         {
-          id: 'campaignsTable',
+          id: 'taskManagement',
           title: 'Notification Table',
           messageId: 'sidebar.sample.viewNotifications',
           type: 'item',
