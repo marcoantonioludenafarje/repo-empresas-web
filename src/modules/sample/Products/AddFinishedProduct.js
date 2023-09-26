@@ -8,6 +8,7 @@ import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 
+import {ClickAwayListener} from '@mui/base';
 import {
   Button,
   ButtonGroup,
@@ -181,6 +182,10 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
     Router.push('/sample/products/table');
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (
       successMessage != undefined &&
@@ -501,18 +506,22 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
           </Form>
         )}
       </Formik>
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Producción'}
-        </DialogTitle>
-        {showMessage()}
-      </Dialog>
+
+      
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Producción'}
+          </DialogTitle>
+          {showMessage()}
+        </Dialog>
+      </ClickAwayListener>
     </Box>
   ) : null;
 };

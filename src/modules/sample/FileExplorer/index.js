@@ -80,6 +80,7 @@ const validationSchema = yup.object({
     .matches(/^[a-z0-9\s]+$/i, 'No se permiten caracteres especiales'),
 });
 
+import {ClickAwayListener} from '@mui/base';
 const defaultValues = {
   name: '',
 };
@@ -160,13 +161,13 @@ const FileExplorer = (props) => {
   console.log('Lista final de paths para listar archivos', listGetFilesPath);
 
   const existQuery = () => {
-    return query && query !== {} && query.goDirectory;
+    return query && query.goDirectory;
   };
 
   console.log('redirectUrl', JSON.parse(localStorage.getItem('redirectUrl')));
   const existStorage = () => {
     const data = JSON.parse(localStorage.getItem('redirectUrl'));
-    return data && data !== {} && data.goDirectory && data.path;
+    return data && data.goDirectory && data.path;
   };
   useEffect(() => {
     if (!userDataRes) {
@@ -319,6 +320,10 @@ const FileExplorer = (props) => {
     setOpenStatus(false);
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (successMessage != undefined) {
       return (
@@ -1051,25 +1056,28 @@ const FileExplorer = (props) => {
           <></>
         )}
       </Dialog>
-      <Dialog
-        open={openStatus}
-        onClose={handleOpenStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar Archivo'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={handleOpenStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={handleOpenStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Eliminar Archivo'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={handleOpenStatus}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
     </>
   );
 };

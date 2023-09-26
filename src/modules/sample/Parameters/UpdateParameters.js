@@ -81,6 +81,7 @@ import {
   UPDATE_CATALOGS,
 } from '../../../shared/constants/ActionTypes';
 import SchoolIcon from '@mui/icons-material/School';
+import {ClickAwayListener} from '@mui/base';
 const XLSX = require('xlsx');
 
 const UpdateParameters = () => {
@@ -771,6 +772,10 @@ const UpdateParameters = () => {
     setOpenAlert(false);
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (registerSuccess()) {
       console.log('Fue exitoso?');
@@ -958,12 +963,12 @@ const UpdateParameters = () => {
                       id='defaultMoney-label'
                       style={{fontWeight: 200}}
                     >
-                      <IntlMessages id='common.busines.defaultMoney' />
+                      <IntlMessages id='common.business.defaultMoney' />
                     </InputLabel>
                     <Select
                       name='defaultMoney'
                       labelId='defaultMoney-label'
-                      label={<IntlMessages id='common.busines.defaultMoney' />}
+                      label={<IntlMessages id='common.business.defaultMoney' />}
                       displayEmpty
                       onChange={handleField}
                       value={defaultMoney}
@@ -986,12 +991,12 @@ const UpdateParameters = () => {
                       id='defaultWeight-label'
                       style={{fontWeight: 200}}
                     >
-                      <IntlMessages id='common.busines.defaultWeight' />
+                      <IntlMessages id='common.business.defaultWeight' />
                     </InputLabel>
                     <Select
                       name='defaultWeight'
                       labelId='defaultWeight-label'
-                      label={<IntlMessages id='common.busines.defaultWeight' />}
+                      label={<IntlMessages id='common.business.defaultWeight' />}
                       displayEmpty
                       onChange={handleField}
                       value={defaultWeight}
@@ -1691,25 +1696,28 @@ const UpdateParameters = () => {
           </Box>
         </Box>
       )}
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {<IntlMessages id='message.update.configurationParameters' />}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={sendStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {<IntlMessages id='message.update.configurationParameters' />}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={sendStatus}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
       <Dialog
         open={openAlert}
         onClose={sendAlert}

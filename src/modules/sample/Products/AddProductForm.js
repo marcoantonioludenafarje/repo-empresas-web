@@ -224,7 +224,7 @@ const AddProductForm = ({sendData, type}) => {
                 autoComplete='on'
                 onChange={handleValues}
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid container spacing={2} sx={{maxWidth: 500, margin: 'auto'}}>
                   <Grid item xs={11}>
                     <AppTextField
                       label='Producto a buscar'

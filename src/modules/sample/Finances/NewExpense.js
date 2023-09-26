@@ -11,6 +11,7 @@ import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 
+import {ClickAwayListener} from '@mui/base';
 import {
   Button,
   ButtonGroup,
@@ -536,6 +537,10 @@ const NewExpense = (props) => {
     } else {
       setOpenStatus(false);
     }
+  };
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
   };
   const showMessage = () => {
     if (registerSuccess()) {
@@ -1125,25 +1130,28 @@ const NewExpense = (props) => {
             );
           }}
         </Formik>
-        <Dialog
-          open={openStatus}
-          onClose={sendStatus}
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Egreso'}
-          </DialogTitle>
-          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            {showMessage()}
-          </DialogContent>
-          <DialogActions sx={{justifyContent: 'center'}}>
-            <Button variant='outlined' onClick={sendStatus}>
-              Aceptar
-            </Button>
-          </DialogActions>
-        </Dialog>
+        
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Dialog
+            open={openStatus}
+            onClose={sendStatus}
+            sx={{textAlign: 'center'}}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Registro de Egreso'}
+            </DialogTitle>
+            <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+              {showMessage()}
+            </DialogContent>
+            <DialogActions sx={{justifyContent: 'center'}}>
+              <Button variant='outlined' onClick={sendStatus}>
+                Aceptar
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </ClickAwayListener>
       </Box>
 
       <Dialog

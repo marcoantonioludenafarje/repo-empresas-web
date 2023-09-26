@@ -17,6 +17,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import {red} from '@mui/material/colors';
+import {ClickAwayListener} from '@mui/base';
 import {
   GET_PRESIGNED,
   GET_USER_DATA,
@@ -87,6 +88,10 @@ const BusinessInfo = () => {
 
   const [open, setOpen] = React.useState(false);
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const toUpdateDataBusiness = (payload) => {
     dispatch(updateDataBusiness(payload));
   };
@@ -299,25 +304,27 @@ const BusinessInfo = () => {
           );
         }}
       </Formik>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Actualización del Negocio'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={handleClose}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Actualización del Negocio'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={handleClose}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
     </Box>
   ) : null;
 };

@@ -3,6 +3,7 @@ import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import AddClientForm from '../ClientSelection/AddClientForm';
 
+import {ClickAwayListener} from '@mui/base';
 import {makeStyles} from '@mui/styles';
 import {
   Card,
@@ -234,6 +235,10 @@ const Productive = (props) => {
     setOpen(false);
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const handleDatas = (data, {setSubmitting}) => {
     setSubmitting(true);
     console.log('CONFETI DATA', data);
@@ -523,25 +528,27 @@ const Productive = (props) => {
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Alta a Productivo'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={sendStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Alta a Productivo'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={sendStatus}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
     </Card>
   );
 };

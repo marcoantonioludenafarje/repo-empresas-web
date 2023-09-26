@@ -33,6 +33,7 @@ import {
   Alert,
 } from '@mui/material';
 
+import {ClickAwayListener} from '@mui/base';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
@@ -207,6 +208,10 @@ const BulkLoad = (props) => {
     }
   }, []);
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const processData = (data) => {
     const keys = data[0];
     const datav2 = data
@@ -1098,31 +1103,33 @@ const BulkLoad = (props) => {
         )}
       </Card>
 
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar todo el catálogo del Negocio'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        {deleteCatalogsRes ? (
-          <>
-            <DialogActions sx={{justifyContent: 'center'}}>
-              <Button variant='outlined' onClick={sendStatus}>
-                Aceptar
-              </Button>
-            </DialogActions>
-          </>
-        ) : (
-          <></>
-        )}
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Eliminar todo el catálogo del Negocio'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          {deleteCatalogsRes ? (
+            <>
+              <DialogActions sx={{justifyContent: 'center'}}>
+                <Button variant='outlined' onClick={sendStatus}>
+                  Aceptar
+                </Button>
+              </DialogActions>
+            </>
+          ) : (
+            <></>
+          )}
+        </Dialog>
+      </ClickAwayListener>
       <Dialog
         open={open2}
         onClose={handleClose2}

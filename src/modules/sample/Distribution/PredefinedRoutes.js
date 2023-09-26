@@ -45,6 +45,7 @@ import CachedIcon from '@mui/icons-material/Cached';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 
+import {ClickAwayListener} from '@mui/base';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -281,6 +282,10 @@ const PredefinedRoutes = () => {
     }
   }, []);
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (successMessage != undefined) {
       return (
@@ -738,26 +743,27 @@ const PredefinedRoutes = () => {
             </Button>
           </ButtonGroup>
 
-          <Dialog
-            open={openStatus}
-            onClose={sendStatus}
-            sx={{textAlign: 'center'}}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-              {'Eliminar ruta'}
-            </DialogTitle>
-            <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-              {showMessage()}
-            </DialogContent>
-            <DialogActions sx={{justifyContent: 'center'}}>
-              <Button variant='outlined' onClick={sendStatus}>
-                Aceptar
-              </Button>
-            </DialogActions>
-          </Dialog>
-
+          <ClickAwayListener onClickAway={handleClickAway}>
+            <Dialog
+              open={openStatus}
+              onClose={sendStatus}
+              sx={{textAlign: 'center'}}
+              aria-labelledby='alert-dialog-title'
+              aria-describedby='alert-dialog-description'
+            >
+              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                {'Eliminar ruta'}
+              </DialogTitle>
+              <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+                {showMessage()}
+              </DialogContent>
+              <DialogActions sx={{justifyContent: 'center'}}>
+                <Button variant='outlined' onClick={sendStatus}>
+                  Aceptar
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </ClickAwayListener>
           <Dialog
             open={open2}
             onClose={handleClose2}

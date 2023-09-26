@@ -2,6 +2,8 @@ import React, {useEffect} from 'react';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 
+
+import {ClickAwayListener} from '@mui/base';
 import {makeStyles} from '@mui/styles';
 import {
   Card,
@@ -83,6 +85,7 @@ let newAppointmentPayload = {
           clientName: '',
           specialistId: '',
           specialistName: '',
+          appointmentTitle: '',
           appointmentDescription: '',
           duration: '',
           durationUnited: '',
@@ -179,7 +182,7 @@ const Edit = (props) => {
   };
 
   const toEditAppointment = (payload) => {
-    distpatch(updateAppointment(payload));
+    dispatch(updateAppointment(payload));
   };
 
   const toGetSpecialist = (payload) => {
@@ -344,6 +347,7 @@ const Edit = (props) => {
         ? specialistF[0].specialistName
         : '',
       appointmentDescription: data.description,
+      appointmentTitle: data.title,
       scheduledStartedAt: starter,
       scheduledFinishedAt: end,
       duration: data.duration,
@@ -366,6 +370,10 @@ const Edit = (props) => {
     setOpenStatus(true);
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (successMessage != '') {
       console.log('MENSAJE DE VALIDEZ', successMessage);
@@ -814,25 +822,27 @@ const Edit = (props) => {
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Cita'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={sendStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Actualización de Cita'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={sendStatus}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
     </Card>
   );
 };

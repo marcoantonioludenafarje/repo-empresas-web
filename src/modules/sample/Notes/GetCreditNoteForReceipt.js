@@ -27,6 +27,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 
+import {ClickAwayListener} from '@mui/base';
 import AppLoader from '../../../@crema/core/AppLoader';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
@@ -772,6 +773,10 @@ const GetCreditNote = () => {
     setOpenDialog(false);
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (
       successMessage != undefined &&
@@ -1448,60 +1453,63 @@ const GetCreditNote = () => {
         ) : null}
       </Dialog>
 
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-        maxWidth='xl'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          <Box sx={{mx: 10}}>
-            {typeResult == 'statusResult'
-              ? `Registro de Nota de ${creditNote ? 'crédito' : 'débito'}`
-              : null}
-          </Box>
-          <IconButton
-            aria-label='close'
-            onClick={closeDialog}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
 
-        {typeResult == 'statusResult' ? (
-          showMessage()
-        ) : (
-          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            {typeResult == 'confirmCancel' ? showCancelMessage() : null}
-          </DialogContent>
-        )}
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+          maxWidth='xl'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            <Box sx={{mx: 10}}>
+              {typeResult == 'statusResult'
+                ? `Registro de Nota de ${creditNote ? 'crédito' : 'débito'}`
+                : null}
+            </Box>
+            <IconButton
+              aria-label='close'
+              onClick={closeDialog}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
 
-        <DialogActions sx={{justifyContent: 'center'}}>
-          {typeResult == 'confirmCancel' ? (
-            <>
-              <Button
-                variant='outlined'
-                onClick={() => {
-                  Router.push('/sample/receipts/table');
-                }}
-              >
-                Sí
-              </Button>
-              <Button variant='outlined' onClick={() => setOpenDialog(false)}>
-                No
-              </Button>
-            </>
-          ) : null}
-        </DialogActions>
-      </Dialog>
+          {typeResult == 'statusResult' ? (
+            showMessage()
+          ) : (
+            <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+              {typeResult == 'confirmCancel' ? showCancelMessage() : null}
+            </DialogContent>
+          )}
+
+          <DialogActions sx={{justifyContent: 'center'}}>
+            {typeResult == 'confirmCancel' ? (
+              <>
+                <Button
+                  variant='outlined'
+                  onClick={() => {
+                    Router.push('/sample/receipts/table');
+                  }}
+                >
+                  Sí
+                </Button>
+                <Button variant='outlined' onClick={() => setOpenDialog(false)}>
+                  No
+                </Button>
+              </>
+            ) : null}
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
     </Card>
   );
 };

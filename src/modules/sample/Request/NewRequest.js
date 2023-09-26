@@ -34,6 +34,7 @@ import Router, {useRouter} from 'next/router';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import Typography from '@mui/material/Typography';
 
+import {ClickAwayListener} from '@mui/base';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import Grid from '@mui/material/Grid';
 import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
@@ -210,6 +211,10 @@ const NewRequest = ({data, subType, closeNewRequest}) => {
     }
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (registerSuccess()) {
       console.log('Request exitoso?');
@@ -604,18 +609,20 @@ const NewRequest = ({data, subType, closeNewRequest}) => {
         }}
       </Formik>
 
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Solicitud'}
-        </DialogTitle>
-        {showMessage()}
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Registro de Solicitud'}
+          </DialogTitle>
+          {showMessage()}
+        </Dialog>
+      </ClickAwayListener>
     </Box>
   );
 };

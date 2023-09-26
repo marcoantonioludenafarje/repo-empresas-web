@@ -9,6 +9,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import {Fonts} from '../../../shared/constants/AppEnums';
 import unitMeasureOptions from '../../../Utils/unitMeasureOptions.json';
 
+import {ClickAwayListener} from '@mui/base';
 import {orange} from '@mui/material/colors';
 import {
   FETCH_SUCCESS,
@@ -827,6 +828,10 @@ const NewProduct = (props) => {
     }
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const handleClose2 = () => {
     setOpen2(false);
   };
@@ -1726,79 +1731,81 @@ const NewProduct = (props) => {
             );
           }}
         </Formik>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          {typeDialog == 'registrarProducto' ? (
-            <>
-              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Registro de Producto'}
-              </DialogTitle>
-              <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-                {showMessage()}
-              </DialogContent>
-              <DialogActions sx={{justifyContent: 'center'}}>
-                <Button variant='outlined' onClick={handleClose}>
-                  Aceptar
-                </Button>
-              </DialogActions>
-            </>
-          ) : (
-            <></>
-          )}
-          {typeDialog == 'nonTitle' ? (
-            <>
-              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Falta indicar el título comercial'}
-              </DialogTitle>
-              <DialogContent>
-                <CancelOutlinedIcon
-                  //onClick={setOpen.bind(this, false)}
-                  sx={{fontSize: '6em', mx: 2, color: red[500]}}
-                />
-                <DialogContentText
-                  sx={{fontSize: '1.2em', m: 'auto'}}
-                  id='alert-dialog-description'
-                ></DialogContentText>
-              </DialogContent>
-              <DialogActions sx={{justifyContent: 'center'}}>
-                <Button variant='outlined' onClick={() => setOpen(false)}>
-                  Aceptar
-                </Button>
-              </DialogActions>
-            </>
-          ) : (
-            <></>
-          )}
-          {typeDialog == 'nonCommercialDescription' ? (
-            <>
-              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Falta llenar la descripción comercial'}
-              </DialogTitle>
-              <DialogContent>
-                <CancelOutlinedIcon
-                  //onClick={setOpen.bind(this, false)}
-                  sx={{fontSize: '6em', mx: 2, color: red[500]}}
-                />
-                <DialogContentText
-                  sx={{fontSize: '1.2em', m: 'auto'}}
-                  id='alert-dialog-description'
-                ></DialogContentText>
-              </DialogContent>
-              <DialogActions sx={{justifyContent: 'center'}}>
-                <Button variant='outlined' onClick={() => setOpen(false)}>
-                  Aceptar
-                </Button>
-              </DialogActions>
-            </>
-          ) : (
-            <></>
-          )}
-        </Dialog>
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            sx={{textAlign: 'center'}}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            {typeDialog == 'registrarProducto' ? (
+              <>
+                <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                  {'Registro de Producto'}
+                </DialogTitle>
+                <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+                  {showMessage()}
+                </DialogContent>
+                <DialogActions sx={{justifyContent: 'center'}}>
+                  <Button variant='outlined' onClick={handleClose}>
+                    Aceptar
+                  </Button>
+                </DialogActions>
+              </>
+            ) : (
+              <></>
+            )}
+            {typeDialog == 'nonTitle' ? (
+              <>
+                <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                  {'Falta indicar el título comercial'}
+                </DialogTitle>
+                <DialogContent>
+                  <CancelOutlinedIcon
+                    //onClick={setOpen.bind(this, false)}
+                    sx={{fontSize: '6em', mx: 2, color: red[500]}}
+                  />
+                  <DialogContentText
+                    sx={{fontSize: '1.2em', m: 'auto'}}
+                    id='alert-dialog-description'
+                  ></DialogContentText>
+                </DialogContent>
+                <DialogActions sx={{justifyContent: 'center'}}>
+                  <Button variant='outlined' onClick={() => setOpen(false)}>
+                    Aceptar
+                  </Button>
+                </DialogActions>
+              </>
+            ) : (
+              <></>
+            )}
+            {typeDialog == 'nonCommercialDescription' ? (
+              <>
+                <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                  {'Falta llenar la descripción comercial'}
+                </DialogTitle>
+                <DialogContent>
+                  <CancelOutlinedIcon
+                    //onClick={setOpen.bind(this, false)}
+                    sx={{fontSize: '6em', mx: 2, color: red[500]}}
+                  />
+                  <DialogContentText
+                    sx={{fontSize: '1.2em', m: 'auto'}}
+                    id='alert-dialog-description'
+                  ></DialogContentText>
+                </DialogContent>
+                <DialogActions sx={{justifyContent: 'center'}}>
+                  <Button variant='outlined' onClick={() => setOpen(false)}>
+                    Aceptar
+                  </Button>
+                </DialogActions>
+              </>
+            ) : (
+              <></>
+            )}
+          </Dialog>
+        </ClickAwayListener>
       </Box>
 
       <Dialog
@@ -1836,30 +1843,32 @@ const NewProduct = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
-        open={openSelect}
-        onClose={closeSelect}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        {/* {typeDialog == 'product' ? (
-          <> */}
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Selecciona los productos'}
-          <CancelOutlinedIcon
-            onClick={closeSelect}
-            className={classes.closeButton}
-          />
-        </DialogTitle>
-        <DialogContent>
-          <AddProductForm type='input' sendData={getNewProduct} />
-        </DialogContent>
-        {/* </>
-        ) : (
-          <></>
-        )} */}
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openSelect}
+          onClose={closeSelect}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          {/* {typeDialog == 'product' ? (
+            <> */}
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Selecciona los productos'}
+            <CancelOutlinedIcon
+              onClick={closeSelect}
+              className={classes.closeButton}
+            />
+          </DialogTitle>
+          <DialogContent>
+            <AddProductForm type='input' sendData={getNewProduct} />
+          </DialogContent>
+          {/* </>
+          ) : (
+            <></>
+          )} */}
+        </Dialog>
+      </ClickAwayListener>
     </Card>
   );
 };

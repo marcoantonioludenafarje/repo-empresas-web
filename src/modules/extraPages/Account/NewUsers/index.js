@@ -27,6 +27,7 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import {red} from '@mui/material/colors';
 
+import {ClickAwayListener} from '@mui/base';
 import {useDispatch, useSelector} from 'react-redux';
 import {registerUser} from '../../../../redux/actions/User';
 import {
@@ -116,7 +117,10 @@ const NewUsers = () => {
     };
     toListUser(listUserPayload);
   };
-
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (successMessage != undefined && registerUserRes != undefined) {
       if (registerSuccess()) {
@@ -251,18 +255,20 @@ const NewUsers = () => {
       </Formik>
       <UserManagement data={[]} />
 
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Alta de usuario'}
-        </DialogTitle>
-        {showMessage()}
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Alta de usuario'}
+          </DialogTitle>
+          {showMessage()}
+        </Dialog>
+      </ClickAwayListener>
     </Box>
   );
 };

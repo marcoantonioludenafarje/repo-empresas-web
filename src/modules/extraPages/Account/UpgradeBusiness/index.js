@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import UpgradeBusinessForm from './UpgradeBusinessForm';
 import {blue, green, red} from '@mui/material/colors';
 
+import {ClickAwayListener} from '@mui/base';
 import Router, {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {
@@ -130,6 +131,11 @@ const UpgradeBusiness = () => {
     } else {
       setOpenStatus(false);
     }
+  };
+  
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
   };
   const showMessage = () => {
     if (registerSuccess()) {
@@ -282,18 +288,20 @@ const UpgradeBusiness = () => {
         }}
       </Formik>
 
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Alta de plan'}
-        </DialogTitle>
-        {showMessage()}
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Alta de plan'}
+          </DialogTitle>
+          {showMessage()}
+        </Dialog>
+      </ClickAwayListener>
     </Box>
   );
 };
