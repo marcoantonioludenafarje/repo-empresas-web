@@ -83,6 +83,7 @@ let newAppointmentPayload = {
           clientName: '',
           specialistId: '',
           specialistName: '',
+          appointmentTitle: '',
           appointmentDescription: '',
           duration: '',
           durationUnited: '',
@@ -344,6 +345,7 @@ const Edit = (props) => {
         ? specialistF[0].specialistName
         : '',
       appointmentDescription: data.description,
+      appointmentTitle: data.title,
       scheduledStartedAt: starter,
       scheduledFinishedAt: end,
       duration: data.duration,

@@ -97,12 +97,12 @@ const Views = (props) => {
 
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [evently, setEvenly] = useState(null);
-  const [listEvents, setListEvents] = useState(null);
+  const [listEvents, setListEvents] = useState([]);
   console.log('Estado cita', listAppointments);
 
   const eventsadd = listAppointments.map((cita) => ({
     id: cita.appointmentId,
-    title: cita.appointmentDescription ? cita.appointmentDescription : '',
+    title: cita.appointmentTitle ? cita.appointmentTitle : '',
     start: cita.scheduledStartedAt
       ? convertToDate(cita.scheduledStartedAt)
       : new Date(2023, 7, 22, 6, 0),
@@ -132,49 +132,15 @@ const Views = (props) => {
   }));
 
   useEffect(() => {
-    setListEvents(datetocalendar);
-    console.log('estado cita>>', datetocalendar);
-  }, [listAppointments]);
+    if (datetocalendar) {
+      setListEvents(datetocalendar);
+    } else {
+      setListEvents([]);
+    }
 
-  // const events = [
-  //   {
-  //     id: 1,
-  //     title: 'Evento',
-  //     start: new Date(2023, 7, 18, 14, 0),
-  //     end: new Date(2023, 7, 18, 20, 0),
-  //     desc: 'Una pequeña descripción',
-  //     clientName: 'GREEN PRUEBA',
-  //     duration: 60
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Evento 3',
-  //     start: new Date(2023, 7, 24, 14, 0),
-  //     end: new Date(2023, 7, 24, 20, 0),
-  //     desc: 'Una pequeña descripción',
-  //     clientName: 'DARK MAGICIAN',
-  //     duration: 30
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Evento DARKEST',
-  //     start: new Date(2023, 7, 15, 10, 0), // Año, mes (0-11), día, hora, minutos
-  //     end: new Date(2023, 7, 15, 10, 45),
-  //     desc: 'Una pequeña descripción',
-  //     clientName: 'ACERTIJO',
-  //     duration: 45
-  //   },
-  //   {
-  //     id: 2163545641,
-  //     title: 'Evento DARK',
-  //     start: new Date(2023, 7, 15, 8, 0), // Año, mes (0-11), día, hora, minutos
-  //     end: new Date(2023, 7, 15, 8, 45),
-  //     desc: 'Una pequeña descripción',
-  //     clientName: 'ACERTIJO',
-  //     duration: 45
-  //   },
-  //   // Agrega más eventos aquí
-  // ];
+    console.log('estado cita>>', datetocalendar);
+    console.log('estado cita >>>>>', listEvents);
+  }, [listAppointments]);
 
   const handleClick = (event, eventEl) => {
     setSelectedEvent(event);
@@ -186,8 +152,6 @@ const Views = (props) => {
   };
 
   const handleMenuItemClick = (action, event) => {
-    // Implement logic here based on the selected action (e.g., edit, delete, etc.)
-    // You can use the selectedEvent to identify and perform actions on the event
     console.log('Selected action:', action, event);
     switch (action) {
       case 'edit':
@@ -282,7 +246,7 @@ const Views = (props) => {
       >
         Aplicar Filtro
       </Button>
-      {listEvents?.length ? (
+      {
         <Calendar
           localizer={localizer}
           events={listEvents.map((event) => ({
@@ -356,9 +320,15 @@ const Views = (props) => {
           //     event: EventMonthViews,
           //   },
           // }}
-          style={{width: '95%', height: '80%', marginTop: 20, marginLeft: 25}}
+          style={{
+            width: '95%',
+            height: '80%',
+            marginTop: 20,
+            marginLeft: 25,
+            cursor: 'pointer',
+          }}
         />
-      ) : null}
+      }
 
       <ButtonGroup
         variant='outlined'
