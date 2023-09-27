@@ -7,6 +7,7 @@ import {
   ACTIVE_SUNAT,
   ABLE_BUSINESS,
   EXTEND_SUSCRIPTION,
+  CLEAR_S3_OBJECTS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -56,6 +57,12 @@ const adminReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         extendSuscripcionRes: action.payload,
+      };
+    case CLEAR_S3_OBJECTS:
+      console.log('data reducer clearS3ObjectsRes', action.payload);
+      return {
+        ...state,
+        clearS3ObjectsRes: action.payload,
       };
 
     // case RESET_USER:

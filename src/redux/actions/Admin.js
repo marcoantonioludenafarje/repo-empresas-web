@@ -6,6 +6,7 @@ import {
   UP_PRODUCTIVE,
   ACTIVE_SUNAT,
   ABLE_BUSINESS,
+  CLEAR_S3_OBJECTS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -100,3 +101,22 @@ export const ableBusiness = (payload) => {
       });
   };
 };
+
+export const clearS3Objects = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/utility/administrative/clearS3Objects', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('clearS3Objects resultado', data);
+        dispatch({type: CLEAR_S3_OBJECTS, payload: data.response.payload});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('clearS3Objects error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
