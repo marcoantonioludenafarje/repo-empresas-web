@@ -642,7 +642,7 @@ const Edit = (props) => {
                   </Grid>
                   {notifyClientByEmail && (
                     <Grid item xs={8} sm={12}>
-                      <AppUpperCaseTextField
+                      <AppTextField
                         label='Correo de cliente'
                         name='clientEmail'
                         variant='outlined'
