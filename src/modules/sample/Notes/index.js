@@ -30,6 +30,7 @@ import {
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
+import {ClickAwayListener} from '@mui/base';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
@@ -475,6 +476,10 @@ const CreditNotesTable = (props) => {
     }
   }, [excelTemplateGeneratedToNotesRes, downloadExcel]);
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (successMessage != undefined) {
       return (
@@ -858,26 +863,27 @@ const CreditNotesTable = (props) => {
         </DialogContent>
       </Dialog>
 
-      <Dialog
-        open={openStatus}
-        onClose={() => setOpenStatus(false)}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Anulación de factura'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={() => setOpenStatus(false)}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
-
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={() => setOpenStatus(false)}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Anulación de factura'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={() => setOpenStatus(false)}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
       <Menu
         id='basic-menu'
         anchorEl={anchorEl}

@@ -58,6 +58,7 @@ import {
 } from '../../../redux/actions/Movements';
 import Router, {useRouter} from 'next/router';
 
+import {ClickAwayListener} from '@mui/base';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 /* import SelectedProducts from './SelectedProducts';
 import AddProductForm from './AddProductForm'; */
@@ -591,6 +592,10 @@ const NewOutput = (props) => {
     }
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const handleActualData = (event) => {
     console.log('evento onchange', event);
     Object.keys(actualValues).map((key) => {
@@ -1295,74 +1300,80 @@ const NewOutput = (props) => {
             );
           }}
         </Formik>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          {typeDialog == 'product' ? (
-            <>
-              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Selecciona los productos'}
-                <CancelOutlinedIcon
-                  onClick={setOpen.bind(this, false)}
-                  className={classes.closeButton}
-                />
-              </DialogTitle>
-              <DialogContent>
-                <AddExisingProduct type='output' sendData={getNewProduct} />
-              </DialogContent>
-            </>
-          ) : (
-            <></>
-          )}
-          {typeDialog == 'client' ? (
-            <>
-              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Búsqueda de clientes'}
-                <CancelOutlinedIcon
-                  onClick={setOpen.bind(this, false)}
-                  className={classes.closeButton}
-                />
-              </DialogTitle>
-              <DialogContent>
-                <AddClientForm sendData={getClient} />
-              </DialogContent>
-            </>
-          ) : (
-            <></>
-          )}
-          {typeDialog == 'document' ? (
-            <>
-              <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-                {'Ingresa los datos de documento'}
-                <CancelOutlinedIcon
-                  onClick={setOpen.bind(this, false)}
-                  className={classes.closeButton}
-                />
-              </DialogTitle>
-              <DialogContent>
-                <AddDocumentForm sendData={getDocument} />
-              </DialogContent>
-            </>
-          ) : (
-            <></>
-          )}
-        </Dialog>
-        <Dialog
-          open={openStatus}
-          onClose={sendStatus}
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Salida'}
-          </DialogTitle>
-          {showMessage()}
-        </Dialog>
+        
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Dialog
+            open={open}
+            onClose={handleClose}
+            sx={{textAlign: 'center'}}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            {typeDialog == 'product' ? (
+              <>
+                <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                  {'Selecciona los productos'}
+                  <CancelOutlinedIcon
+                    onClick={setOpen.bind(this, false)}
+                    className={classes.closeButton}
+                  />
+                </DialogTitle>
+                <DialogContent>
+                  <AddExisingProduct type='output' sendData={getNewProduct} />
+                </DialogContent>
+              </>
+            ) : (
+              <></>
+            )}
+            {typeDialog == 'client' ? (
+              <>
+                <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                  {'Búsqueda de clientes'}
+                  <CancelOutlinedIcon
+                    onClick={setOpen.bind(this, false)}
+                    className={classes.closeButton}
+                  />
+                </DialogTitle>
+                <DialogContent>
+                  <AddClientForm sendData={getClient} />
+                </DialogContent>
+              </>
+            ) : (
+              <></>
+            )}
+            {typeDialog == 'document' ? (
+              <>
+                <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+                  {'Ingresa los datos de documento'}
+                  <CancelOutlinedIcon
+                    onClick={setOpen.bind(this, false)}
+                    className={classes.closeButton}
+                  />
+                </DialogTitle>
+                <DialogContent>
+                  <AddDocumentForm sendData={getDocument} />
+                </DialogContent>
+              </>
+            ) : (
+              <></>
+            )}
+          </Dialog>
+        </ClickAwayListener>
+        
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Dialog
+            open={openStatus}
+            onClose={sendStatus}
+            sx={{textAlign: 'center'}}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Registro de Salida'}
+            </DialogTitle>
+            {showMessage()}
+          </Dialog>
+        </ClickAwayListener>
       </Box>
 
       <Dialog

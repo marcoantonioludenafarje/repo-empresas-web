@@ -78,6 +78,7 @@ import {
   NEW_SALE_PROOF_OF_PAYMENT,
 } from '../../../shared/constants/ActionTypes';
 
+import {ClickAwayListener} from '@mui/base';
 const useStyles = makeStyles((theme) => ({
   container: {
     textAlign: 'center',
@@ -725,6 +726,10 @@ const NewSaleProofOfPayment = (props) => {
     );
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (registerSuccess()) {
       return (
@@ -1444,18 +1449,21 @@ const NewSaleProofOfPayment = (props) => {
             );
           }}
         </Formik>
-        <Dialog
-          open={openStatus}
-          onClose={sendStatus}
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Comprobante'}
-          </DialogTitle>
-          {showMessage()}
-        </Dialog>
+        
+        <ClickAwayListener onClickAway={handleClickAway}>
+          <Dialog
+            open={openStatus}
+            onClose={sendStatus}
+            sx={{textAlign: 'center'}}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Registro de Comprobante'}
+            </DialogTitle>
+            {showMessage()}
+          </Dialog>
+        </ClickAwayListener>
       </Box>
       <Collapse in={showAlert}>
         <Alert

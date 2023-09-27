@@ -500,35 +500,21 @@ const SalesTable = (props) => {
   };
 
   //BUTTONS BAR FUNCTIONS
-  const searchOutputs = () => {
+  const searchSales = () => {
     let listPayload = {
       request: {
         payload: {
           initialTime: initialTime,
           finalTime: finalTime,
-          businessProductCode: null,
-          movementType: 'OUTPUT',
           merchantId: userDataRes.merchantSelected.merchantId,
-          createdAt: null,
-          searchByDocument: null,
-          movementHeaderId: null,
-          outputId: null,
-          userCreated: null,
+          searchByDocument: proofOfPaymentType,
+          userCreated: userDataRes.userId,
+          LastEvaluatedKey: null,
+          needItems: true
         },
       },
     };
-    listPayload.request.payload.denominationClient = '';
-    listPayload.request.payload.searchByDocument = '';
-    listPayload.request.payload.typeDocumentClient = '';
-    listPayload.request.payload.numberDocumentClient = '';
-    listPayload.request.payload.LastEvaluatedKey =
-      salesLastEvaluatedKey_pageListSales || null;
-    searchPrivilege('outputsTable')
-      ? (listPayload.request.payload.userCreated = null)
-      : (listPayload.request.payload.userCreated = userDataRes.userId);
-    console.log('toListSales [searchOutputs] ', listPayload);
-
-    listPayload.request.payload.needItems = true;
+    console.log('toListSales [searchSales] ', listPayload);
     toListSales(listPayload);
   };
   const newOutput = () => {
@@ -1482,7 +1468,7 @@ const SalesTable = (props) => {
           variant='contained'
           startIcon={<ManageSearchOutlinedIcon />}
           color='primary'
-          onClick={searchOutputs}
+          onClick={searchSales}
         >
           Buscar
         </Button>

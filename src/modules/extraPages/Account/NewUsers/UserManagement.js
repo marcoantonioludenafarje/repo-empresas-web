@@ -42,6 +42,7 @@ import {
   listRol,
 } from '../../../../redux/actions/User';
 
+import {ClickAwayListener} from '@mui/base';
 import {red} from '@mui/material/colors';
 import {convertToDateWithoutTime} from '../../../../Utils/utils';
 
@@ -144,6 +145,10 @@ const UserManagement = ({data}) => {
     setOpenChangeRol(false);
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const handleActive = () => {
     console.log('select user', selectUser);
 
@@ -443,27 +448,30 @@ const UserManagement = ({data}) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {selectUser.indactivo === 'S'
-            ? 'Deshabilitar usuario?'
-            : 'Habilitar usuario?'}
-        </DialogTitle>
-        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          {showMessage()}
-        </DialogContent>
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={sendStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {selectUser.indactivo === 'S'
+              ? 'Deshabilitar usuario?'
+              : 'Habilitar usuario?'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={sendStatus}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
       <Dialog
         open={openChangeRol}
         onClose={handleClose3}

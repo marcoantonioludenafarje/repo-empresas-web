@@ -62,6 +62,7 @@ import {orange} from '@mui/material/colors';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import {maxHeight} from '@mui/system';
 
+import {ClickAwayListener} from '@mui/base';
 const Distribution = () => {
   const {listRoute} = useSelector(({movements}) => movements);
   const emptyRoute = {
@@ -347,6 +348,10 @@ const Distribution = () => {
     } else {
       setOpenStatus(false);
     }
+  };
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
   };
   const showMessage = () => {
     if (registerSuccess()) {
@@ -825,23 +830,25 @@ const Distribution = () => {
         </Box>
       )}
 
-      <Dialog
-        open={openStatus}
-        onClose={sendStatus}
-        sx={{textAlign: 'center'}}
-        aria-labelledby='alert-dialog-title'
-        aria-describedby='alert-dialog-description'
-      >
-        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {<IntlMessages id='message.register.newRoute' />}
-        </DialogTitle>
-        {showMessage()}
-        <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={sendStatus}>
-            Aceptar
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {<IntlMessages id='message.register.newRoute' />}
+          </DialogTitle>
+          {showMessage()}
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={sendStatus}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
       <AppInfoView />
     </Card>
   );

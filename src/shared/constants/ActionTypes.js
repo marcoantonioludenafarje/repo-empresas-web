@@ -400,9 +400,10 @@ export const LIST_SPECIALIST = 'list_specialist';
 export const DELETE_SPECIALIST = 'delete_specialist';
 export const UPDATE_SPECIALIST = 'update_specialist';
 
-//BUSINESS
+//ADMIN
 export const LIST_BUSINESS = 'list_business';
 export const UP_PRODUCTIVE = 'up_productive';
 export const ACTIVE_SUNAT = 'active_sunat';
 export const ABLE_BUSINESS = 'able_business';
 export const EXTEND_SUSCRIPTION = 'extend_suscription';
+export const CLEAR_S3_OBJECTS = 'clear_s3_objects';

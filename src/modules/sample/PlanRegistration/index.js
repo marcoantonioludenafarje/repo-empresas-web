@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import UpgradeBusinessForm from './UpgradeBusinessForm';
 import {blue, green, red} from '@mui/material/colors';
 
+import {ClickAwayListener} from '@mui/base';
 import Router, {useRouter} from 'next/router';
 import PropTypes from 'prop-types';
 import {
@@ -154,6 +155,10 @@ const UpgradeBusiness = () => {
       setOpenStatus(false);
     }
   };
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (registerSuccess()) {
       return (
@@ -264,9 +269,7 @@ const UpgradeBusiness = () => {
                       setTypeDialog('maxPriceIsLessThanMinPrice');
                       setOpenStatus(true);
                     } else if (
-                      initialCategories.length == 0 ||
-                      !initialCategories ||
-                      initialCategories === []
+                      !initialCategories || initialCategories.length == 0
                     ) {
                       setTypeDialog('nonCategories');
                       setOpenStatus(true);
@@ -279,7 +282,7 @@ const UpgradeBusiness = () => {
                       setOpenStatus(true);
                     } else if (
                       publish &&
-                      (filters.length == 0 || !filters || filters === [])
+                      ( !filters || filters.length == 0)
                     ) {
                       setTypeDialog('nonFilters');
                       setOpenStatus(true);
@@ -482,146 +485,148 @@ const UpgradeBusiness = () => {
                 }}
               </Formik>
 
-              <Dialog
-                open={openStatus}
-                onClose={sendStatus}
-                sx={{textAlign: 'center'}}
-                aria-labelledby='alert-dialog-title'
-                aria-describedby='alert-dialog-description'
-              >
-                {typeDialog == 'darDeAlta' ? (
-                  <>
-                    <DialogTitle
-                      sx={{fontSize: '1.5em'}}
-                      id='alert-dialog-title'
-                    >
-                      {'Alta de plan'}
-                    </DialogTitle>
-                    {showMessage()}
-                  </>
-                ) : (
-                  <>
-                    {typeDialog == 'nonSlug' ? (
-                      <>
-                        <DialogTitle
-                          sx={{fontSize: '1.5em'}}
-                          id='alert-dialog-title'
-                        >
-                          {'Falta llenar la ruta del comercio'}
-                        </DialogTitle>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    {typeDialog == 'nonPriceRange' ? (
-                      <>
-                        <DialogTitle
-                          sx={{fontSize: '1.5em'}}
-                          id='alert-dialog-title'
-                        >
-                          {'Falta llenar algunos de los límites de precio'}
-                        </DialogTitle>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    {typeDialog == 'nonCategories' ? (
-                      <>
-                        <DialogTitle
-                          sx={{fontSize: '1.5em'}}
-                          id='alert-dialog-title'
-                        >
-                          {'Llene al menos una categoría'}
-                        </DialogTitle>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    {typeDialog == 'nonFilters' ? (
-                      <>
-                        <DialogTitle
-                          sx={{fontSize: '1.5em'}}
-                          id='alert-dialog-title'
-                        >
-                          {'Llene al menos un filtro y una opción'}
-                        </DialogTitle>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    {typeDialog == 'priceIsMoreThanZero' ? (
-                      <>
-                        <DialogTitle
-                          sx={{fontSize: '1.5em'}}
-                          id='alert-dialog-title'
-                        >
-                          {
-                            'Los límites de precio tienen que ser mayores o iguales a cero'
-                          }
-                        </DialogTitle>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    {typeDialog == 'maxPriceIsLessThanMinPrice' ? (
-                      <>
-                        <DialogTitle
-                          sx={{fontSize: '1.5em'}}
-                          id='alert-dialog-title'
-                        >
-                          {
-                            'El precio mínimo tiene que ser menor que el precio máximo'
-                          }
-                        </DialogTitle>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    {typeDialog == 'someCategoriesAreEmpty' ? (
-                      <>
-                        <DialogTitle
-                          sx={{fontSize: '1.5em'}}
-                          id='alert-dialog-title'
-                        >
-                          {'No pueden haber categorías vacías'}
-                        </DialogTitle>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    {typeDialog == 'someFiltersAreEmpty' ? (
-                      <>
-                        <DialogTitle
-                          sx={{fontSize: '1.5em'}}
-                          id='alert-dialog-title'
-                        >
-                          {'No pueden haber filtros o sus opciones vacías'}
-                        </DialogTitle>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                    <DialogContent>
-                      <CancelOutlinedIcon
-                        //onClick={setOpen.bind(this, false)}
-                        sx={{fontSize: '6em', mx: 2, color: red[500]}}
-                      />
-                      <DialogContentText
-                        sx={{fontSize: '1.2em', m: 'auto'}}
-                        id='alert-dialog-description'
-                      ></DialogContentText>
-                    </DialogContent>
-                    <DialogActions sx={{justifyContent: 'center'}}>
-                      <Button
-                        variant='outlined'
-                        onClick={() => setOpenStatus(false)}
+              <ClickAwayListener onClickAway={handleClickAway}>
+                <Dialog
+                  open={openStatus}
+                  onClose={sendStatus}
+                  sx={{textAlign: 'center'}}
+                  aria-labelledby='alert-dialog-title'
+                  aria-describedby='alert-dialog-description'
+                >
+                  {typeDialog == 'darDeAlta' ? (
+                    <>
+                      <DialogTitle
+                        sx={{fontSize: '1.5em'}}
+                        id='alert-dialog-title'
                       >
-                        Aceptar
-                      </Button>
-                    </DialogActions>
-                  </>
-                )}
-              </Dialog>
+                        {'Alta de plan'}
+                      </DialogTitle>
+                      {showMessage()}
+                    </>
+                  ) : (
+                    <>
+                      {typeDialog == 'nonSlug' ? (
+                        <>
+                          <DialogTitle
+                            sx={{fontSize: '1.5em'}}
+                            id='alert-dialog-title'
+                          >
+                            {'Falta llenar la ruta del comercio'}
+                          </DialogTitle>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {typeDialog == 'nonPriceRange' ? (
+                        <>
+                          <DialogTitle
+                            sx={{fontSize: '1.5em'}}
+                            id='alert-dialog-title'
+                          >
+                            {'Falta llenar algunos de los límites de precio'}
+                          </DialogTitle>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {typeDialog == 'nonCategories' ? (
+                        <>
+                          <DialogTitle
+                            sx={{fontSize: '1.5em'}}
+                            id='alert-dialog-title'
+                          >
+                            {'Llene al menos una categoría'}
+                          </DialogTitle>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {typeDialog == 'nonFilters' ? (
+                        <>
+                          <DialogTitle
+                            sx={{fontSize: '1.5em'}}
+                            id='alert-dialog-title'
+                          >
+                            {'Llene al menos un filtro y una opción'}
+                          </DialogTitle>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {typeDialog == 'priceIsMoreThanZero' ? (
+                        <>
+                          <DialogTitle
+                            sx={{fontSize: '1.5em'}}
+                            id='alert-dialog-title'
+                          >
+                            {
+                              'Los límites de precio tienen que ser mayores o iguales a cero'
+                            }
+                          </DialogTitle>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {typeDialog == 'maxPriceIsLessThanMinPrice' ? (
+                        <>
+                          <DialogTitle
+                            sx={{fontSize: '1.5em'}}
+                            id='alert-dialog-title'
+                          >
+                            {
+                              'El precio mínimo tiene que ser menor que el precio máximo'
+                            }
+                          </DialogTitle>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {typeDialog == 'someCategoriesAreEmpty' ? (
+                        <>
+                          <DialogTitle
+                            sx={{fontSize: '1.5em'}}
+                            id='alert-dialog-title'
+                          >
+                            {'No pueden haber categorías vacías'}
+                          </DialogTitle>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {typeDialog == 'someFiltersAreEmpty' ? (
+                        <>
+                          <DialogTitle
+                            sx={{fontSize: '1.5em'}}
+                            id='alert-dialog-title'
+                          >
+                            {'No pueden haber filtros o sus opciones vacías'}
+                          </DialogTitle>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      <DialogContent>
+                        <CancelOutlinedIcon
+                          //onClick={setOpen.bind(this, false)}
+                          sx={{fontSize: '6em', mx: 2, color: red[500]}}
+                        />
+                        <DialogContentText
+                          sx={{fontSize: '1.2em', m: 'auto'}}
+                          id='alert-dialog-description'
+                        ></DialogContentText>
+                      </DialogContent>
+                      <DialogActions sx={{justifyContent: 'center'}}>
+                        <Button
+                          variant='outlined'
+                          onClick={() => setOpenStatus(false)}
+                        >
+                          Aceptar
+                        </Button>
+                      </DialogActions>
+                    </>
+                  )}
+                </Dialog>
+              </ClickAwayListener>
             </Box>
           </Box>
         </Card>
