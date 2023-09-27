@@ -507,7 +507,6 @@ const AddFinishedProduct = ({product, listProducts, closeAddProd}) => {
         )}
       </Formik>
 
-      
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

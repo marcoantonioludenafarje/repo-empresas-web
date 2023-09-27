@@ -1078,7 +1078,6 @@ const ProductTable = (arrayObjs, props) => {
         )}
       </ButtonGroup>
 
-      
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

@@ -1527,7 +1527,6 @@ const GetCreditNote = () => {
         ) : null}
       </Dialog>
 
-
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openDialog}

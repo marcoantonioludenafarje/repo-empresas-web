@@ -510,7 +510,7 @@ const SalesTable = (props) => {
           searchByDocument: proofOfPaymentType,
           userCreated: userDataRes.userId,
           LastEvaluatedKey: null,
-          needItems: true
+          needItems: true,
         },
       },
     };
@@ -1431,7 +1431,9 @@ const SalesTable = (props) => {
           </Select>
         </FormControl>
         <DateTimePicker
-          renderInput={(params) => <TextField size={isMobile ? 'small' : 'medium'} {...params} />}
+          renderInput={(params) => (
+            <TextField size={isMobile ? 'small' : 'medium'} {...params} />
+          )}
           value={initialTimeValue}
           label='Inicio'
           size={isMobile ? 'small' : 'medium'}
@@ -1444,7 +1446,9 @@ const SalesTable = (props) => {
           }}
         />
         <DateTimePicker
-          renderInput={(params) => <TextField size={isMobile ? 'small' : 'medium'} {...params} />}
+          renderInput={(params) => (
+            <TextField size={isMobile ? 'small' : 'medium'} {...params} />
+          )}
           label='Fin'
           size={isMobile ? 'small' : 'medium'}
           inputFormat='dd/MM/yyyy hh:mm a'

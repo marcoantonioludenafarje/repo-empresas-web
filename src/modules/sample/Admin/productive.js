@@ -150,9 +150,11 @@ const Productive = (props) => {
 
   let {query} = router;
   console.log('business', query);
-  const [dateExpiration, setDateExpiration] = React.useState(Date.now()+1000*60*60*24*30);
+  const [dateExpiration, setDateExpiration] = React.useState(
+    Date.now() + 1000 * 60 * 60 * 24 * 30,
+  );
   const [dateExpirationForm, setDateExpirationForm] = React.useState(
-    toEpoch(Date.now()+1000*60*60*24*30),
+    toEpoch(Date.now() + 1000 * 60 * 60 * 24 * 30),
   );
 
   defaultValues.businessName = query.denominationMerchant;
@@ -257,7 +259,9 @@ const Productive = (props) => {
     altaProd.request = {
       payload: {
         dataproductive: {
-          planDaysDesired: Math.ceil((dateExpiration - Date.now())/(1000*60*60*24)),
+          planDaysDesired: Math.ceil(
+            (dateExpiration - Date.now()) / (1000 * 60 * 60 * 24),
+          ),
           planDesired: plan[0].description,
           planDesiredId: plan[0].subscriptionPlanId,
           roleDesiredId: plan[0].templateRolId,
@@ -421,18 +425,20 @@ const Productive = (props) => {
                           // setIdentidad(value.props.value);
                         }}
                       >
-                        {getBusinessPlansRes?.sort(compare).map((plans, index) => {
-                          setPlanes(getBusinessPlansRes);
-                          return (
-                            <MenuItem
-                              key={`plans-${index}`}
-                              value={plans.subscriptionPlanId}
-                              style={{fontWeight: 200}}
-                            >
-                              {plans.description}
-                            </MenuItem>
-                          );
-                        })}
+                        {getBusinessPlansRes
+                          ?.sort(compare)
+                          .map((plans, index) => {
+                            setPlanes(getBusinessPlansRes);
+                            return (
+                              <MenuItem
+                                key={`plans-${index}`}
+                                value={plans.subscriptionPlanId}
+                                style={{fontWeight: 200}}
+                              >
+                                {plans.description}
+                              </MenuItem>
+                            );
+                          })}
                       </Select>
                     </FormControl>
                   </Grid>

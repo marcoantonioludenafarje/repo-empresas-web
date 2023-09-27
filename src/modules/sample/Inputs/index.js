@@ -1343,7 +1343,6 @@ const InputsTable = (props) => {
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
 
-
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

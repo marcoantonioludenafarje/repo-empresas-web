@@ -1287,7 +1287,6 @@ const NewInput = (props) => {
             <></>
           )}
         </Dialog>
-        
 
         <ClickAwayListener onClickAway={handleClickAway}>
           <Dialog

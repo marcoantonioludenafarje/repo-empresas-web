@@ -739,7 +739,6 @@ const OrderTable = (arrayObjs, props) => {
         </Button>
       </ButtonGroup>
 
-      
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

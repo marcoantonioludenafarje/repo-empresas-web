@@ -319,8 +319,8 @@ export default function Views(props) {
         payload: {
           robotId: selectedAgent.robotId,
           userId: userDataRes.userId,
-        }
-      }
+        },
+      },
     });
   };
 

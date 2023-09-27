@@ -1687,7 +1687,6 @@ const UpdateProduct = (props) => {
           }}
         </Formik>
 
-        
         <ClickAwayListener onClickAway={handleClickAway}>
           <Dialog
             open={open}

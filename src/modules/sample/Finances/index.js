@@ -21,7 +21,6 @@ import {
   MenuItem,
   Menu,
   MenuList,
-  ClickAwayListener,
   Select,
   FormControlLabel,
   InputLabel,

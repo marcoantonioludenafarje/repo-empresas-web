@@ -50,7 +50,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {newAppointment} from 'redux/actions';
 import {getSpecialists} from 'redux/actions/Specialist';
 
-
 import {ClickAwayListener} from '@mui/base';
 import AddClientForm from '../../ClientSelection/AddClientForm';
 import {useState} from 'react';

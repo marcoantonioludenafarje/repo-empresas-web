@@ -269,7 +269,8 @@ const UpgradeBusiness = () => {
                       setTypeDialog('maxPriceIsLessThanMinPrice');
                       setOpenStatus(true);
                     } else if (
-                      !initialCategories || initialCategories.length == 0
+                      !initialCategories ||
+                      initialCategories.length == 0
                     ) {
                       setTypeDialog('nonCategories');
                       setOpenStatus(true);
@@ -280,10 +281,7 @@ const UpgradeBusiness = () => {
                     ) {
                       setTypeDialog('someCategoriesAreEmpty');
                       setOpenStatus(true);
-                    } else if (
-                      publish &&
-                      ( !filters || filters.length == 0)
-                    ) {
+                    } else if (publish && (!filters || filters.length == 0)) {
                       setTypeDialog('nonFilters');
                       setOpenStatus(true);
                       // } else if(filters.some(arrVal => "" === arrVal.filterName)) {

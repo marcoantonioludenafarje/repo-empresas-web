@@ -1300,7 +1300,7 @@ const NewOutput = (props) => {
             );
           }}
         </Formik>
-        
+
         <ClickAwayListener onClickAway={handleClickAway}>
           <Dialog
             open={open}
@@ -1359,7 +1359,7 @@ const NewOutput = (props) => {
             )}
           </Dialog>
         </ClickAwayListener>
-        
+
         <ClickAwayListener onClickAway={handleClickAway}>
           <Dialog
             open={openStatus}
