@@ -10,7 +10,6 @@ import {
 } from '../../shared/constants/ActionTypes';
 
 import API from '@aws-amplify/api';
-import {requestWhatsappModule} from '../../@crema/utility/Utils';
 
 export const newAgent = (payload) => {
   return (dispatch, getState) => {

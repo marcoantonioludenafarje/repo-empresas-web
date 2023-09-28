@@ -83,7 +83,7 @@ const widgetsData = {
     {
       id: 201,
       image: '/assets/images/avatar/A19.jpg',
-      message: 'Hey man! Whatsapp?',
+      message: 'Hey man! Wsp?',
       name: 'Angelina Joew',
     },
     {
@@ -107,7 +107,7 @@ const widgetsData = {
     {
       id: 205,
       image: '/assets/images/avatar/A19.jpg',
-      message: 'Hey man! Whatsapp?',
+      message: 'Hey man! Wsp?',
       name: 'Angelina Joew',
     },
   ],

@@ -216,7 +216,7 @@ const SalesTable = (props) => {
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [openSendEmail, setOpenSendEmail] = React.useState(false);
-  const [openSendWhatsapp, setOpenSendWhatsapp] = React.useState(false);
+  const [openSendWsp, setOpenSendWsp] = React.useState(false);
   const [open2valida, setOpen2valida] = React.useState(false);
   // const [open3, setOpen3] = React.useState(false);
   const [openDetails, setOpenDetails] = React.useState(false);
@@ -1390,8 +1390,8 @@ const SalesTable = (props) => {
   const sendSaleByMail = (data) => {
     console.log('enviando correo de la venta por correo');
   };
-  const sendSaleByWhatsapp = (data) => {
-    console.log('enviando correo de la venta por whatsapp');
+  const sendSaleByWsp = (data) => {
+    console.log('enviando correo de la venta por mensaje de texto');
   };
   return typeClient ? (
     <Card sx={{p: 4}}>
@@ -1929,15 +1929,15 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/sendWhatsapp') === true &&
+          .includes('/facturacion/sale/sendWsp') === true &&
         selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() => {
-              setOpenSendWhatsapp(true);
+              setOpenSendWsp(true);
             }}
           >
             <WhatsAppIcon sx={{mr: 1, my: 'auto'}} />
-            Enviar Whatsapp
+            Enviar Mensaje
           </MenuItem>
         ) : null}
         {localStorage
@@ -2215,8 +2215,8 @@ const SalesTable = (props) => {
       </Dialog>
 
       <Dialog
-        open={openSendWhatsapp}
-        onClose={() => setOpenSendWhatsapp(false)}
+        open={openSendWsp}
+        onClose={() => setOpenSendWsp(false)}
         maxWidth='sm'
         fullWidth
         sx={{textAlign: 'center'}}
@@ -2226,7 +2226,7 @@ const SalesTable = (props) => {
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
           <IconButton
             aria-label='close'
-            onClick={() => setOpenSendWhatsapp(false)}
+            onClick={() => setOpenSendWsp(false)}
             sx={{
               position: 'absolute',
               right: 8,
@@ -2235,20 +2235,20 @@ const SalesTable = (props) => {
           >
             <CloseIcon />
           </IconButton>
-          {'Envío de Venta por Whatsapp'}
+          {'Envío de Venta por Celular'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <Formik
             // validateOnChange={false}
             validationSchema={yup.object({
-              receiverWhatsapp: yup
+              receiverWsp: yup
                 .number()
                 .typeError(<IntlMessages id='validation.number' />),
             })}
             initialValues={{
-              receiverWhatsapp: '',
+              receiverWsp: '',
             }}
-            onSubmit={sendSaleByWhatsapp}
+            onSubmit={sendSaleByWsp}
           >
             {({isSubmitting, setFieldValue}) => {
               //changeValueField = setFieldValue;
@@ -2261,8 +2261,8 @@ const SalesTable = (props) => {
                   <Grid container spacing={2} sx={{width: 1}}>
                     <Grid item xs={12}>
                       <AppTextField
-                        label='Número de Whatsapp'
-                        name='receiverWhatsapp'
+                        label='Número telefónico'
+                        name='receiverWsp'
                         variant='outlined'
                         sx={{
                           width: '100%',

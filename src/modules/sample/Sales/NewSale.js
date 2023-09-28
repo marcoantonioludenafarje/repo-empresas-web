@@ -164,8 +164,8 @@ const NewSale = (props) => {
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState('ticket');
   const [igvDefault, setIgvDefault] = React.useState(0);
   const [sendEmail, setSendEmail] = React.useState(true);
-  const [sendWhatsapp, setSendWhatsapp] = React.useState(true);
-  const [whatsappNumber, setWhatsappNumber] = React.useState('');
+  const [sendWsp, setSendWsp] = React.useState(true);
+  const [wspNumber, setWspNumber] = React.useState('');
   const [isIgvChecked, setIsIgvChecked] = React.useState(false);
   const [typeDialog, setTypeDialog] = React.useState('');
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -423,9 +423,9 @@ const NewSale = (props) => {
     setSendEmail(isInputChecked);
     console.log('Evento de IGV cbx', isInputChecked);
   };
-  const handleSendWhatsapp = (event, isInputChecked) => {
-    setSendWhatsapp(isInputChecked);
-    console.log('Activar Mensaje de Whatsapp', isInputChecked);
+  const handleSendWsp = (event, isInputChecked) => {
+    setSendWsp(isInputChecked);
+    console.log('Activar Mensaje de Wsp', isInputChecked);
   };
   const handleEarningGeneration = (event, isInputChecked) => {
     setEarningGeneration(isInputChecked);
@@ -618,8 +618,8 @@ const NewSale = (props) => {
                 documentIntern: '',
                 documentsMovement: [],
                 clientEmail: getValueField('clientEmail').value,
-                sendWhatsapp: sendWhatsapp,
-                whatsappNumber: getValueField('whatsappNumber').value,
+                sendWsp: sendWsp,
+                wspNumber: getValueField('wspNumber').value,
                 transactionNumber:
                   getValueField('transactionNumber').value || '',
                 /* numberBill: 3, */
@@ -1271,8 +1271,8 @@ const NewSale = (props) => {
                     </Grid>
                     <Grid sx={{px: 1}} xs={8}>
                       <AppTextField
-                        label='Número de whatsapp'
-                        name='whatsappNumber'
+                        label='Número telefónico'
+                        name='wspNumber'
                         variant='outlined'
                         sx={{
                           width: '100%',
@@ -1288,10 +1288,10 @@ const NewSale = (props) => {
                       sx={{display: 'flex', alignItems: 'center', px: 1, mt: 2}}
                     >
                       <FormControlLabel
-                        label='Enviar Whatsapp'
+                        label='Enviar Mensaje Interno'
                         control={
                           <Checkbox
-                            onChange={handleSendWhatsapp}
+                            onChange={handleSendWsp}
                             defaultChecked={true}
                           />
                         }
