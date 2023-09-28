@@ -664,122 +664,135 @@ const GetReferralGuide = (props) => {
     }
   }, [query]);
   useEffect(() => {
-    if (
-      outputItems_pageListOutput === undefined ||
-      !Array.isArray(outputItems_pageListOutput) ||
-      outputItems_pageListOutput.length < 1
-    ) {
-      toGetMovements(listMovements);
-    }
-    if (outputItems_pageListOutput && outputItems_pageListOutput.length !== 0) {
-      let weight = 0;
-      let output = outputItems_pageListOutput.find(
-        (obj) => obj.movementHeaderId == query.movementHeaderId,
-      );
-      console.log('output', output);
-      setSelectedOutput(output);
+    if (query.movementHeaderId) {
       if (
-        !('useLocaleRoute' in query) &&
-        query.type !== 'summaryGuideSinceDistribution'
+        outputItems_pageListOutput === undefined ||
+        !Array.isArray(outputItems_pageListOutput) ||
+        outputItems_pageListOutput.length < 1
       ) {
-        console.log(
-          'output.descriptionProductsInfo',
-          output.descriptionProductsInfo,
-        );
-        setSelectedProducts(output.descriptionProductsInfo);
-        output.descriptionProductsInfo.map((obj) => {
-          weight += obj.weight * obj.quantityMovement;
-        });
-        console.log('weight', weight);
-
-        setTotalWeight(Number(weight.toFixed(3)));
-        changeValueField('totalWeight', Number(weight.toFixed(3)));
-        changeValueField('addressee', output.clientName);
-        changeValueField('clientEmail', output.clientEmail);
-      } else if (queryDistribution()) {
-        const date = routeToReferralGuide.transferStartDate;
-        const dateTranslate = strDateToDateObject(date);
-        console.log('date', dateTranslate);
-        setDateStartTransfer(dateTranslate);
-
-        let startingUbigeo = parsedUbigeos.find(
-          (ubigeo) => ubigeo.ubigeo == routeToReferralGuide.startingPointUbigeo,
-        );
-        let arrivalUbigeo = parsedUbigeos.find(
-          (ubigeo) => ubigeo.ubigeo == routeToReferralGuide.arrivalPointUbigeo,
-        );
-        setUbigeoStartingPoint(startingUbigeo.ubigeo);
-        setUbigeoArrivalPoint(arrivalUbigeo.ubigeo);
-        setExistArrivalUbigeo(true);
-        setSelectedStartingUbigeo(startingUbigeo);
-        setSelectedArrivalUbigeo(arrivalUbigeo);
-        setExistStartingUbigeo(true);
-        changeValueField(
-          'startingPoint',
-          routeToReferralGuide.startingPointAddress,
-        );
-        changeValueField(
-          'arrivalPoint',
-          routeToReferralGuide.arrivalPointAddress,
-        );
-
-        changeValueField(
-          'numberPackages',
-          routeToReferralGuide.numberOfPackages,
-        );
-        setTransportModeVal(routeToReferralGuide.typeOfTransport);
-        setReasonVal(routeToReferralGuide.reasonForTransfer);
-
-        setSelectedProducts(routeToReferralGuide.productsInfo);
-        console.log('productos a pasar', routeToReferralGuide.productsInfo);
-        weight = routeToReferralGuide.totalGrossWeight;
-        console.log('weight', weight);
-
-        setTotalWeight(Number(weight.toFixed(3)));
-        changeValueField('totalWeight', Number(weight.toFixed(3)));
-        const carrier = {
-          typeDocumentCarrier: routeToReferralGuide.carrierDocumentType,
-          carrierDocumentNumber: routeToReferralGuide.carrierDocumentNumber,
-          denominationCarrier: routeToReferralGuide.carrierDenomination,
-        };
-        setSelectedCarrier(carrier);
-        setExistCarrier(true);
-        changeValueField('addressee', routeToReferralGuide.carrierDenomination);
-        changeValueField(
-          'licensePlate',
-          routeToReferralGuide.carrierPlateNumber,
-        );
-        changeValueField('driverName', routeToReferralGuide.driverDenomination);
-        changeValueField(
-          'driverLastName',
-          routeToReferralGuide.driverLastName
-            ? routeToReferralGuide.driverLastName
-            : '',
-        );
-        if (
-          routeToReferralGuide.carrierDocumentType &&
-          typeof routeToReferralGuide.carrierDocumentType === 'string'
-        ) {
-          setDriverDocumentType(
-            routeToReferralGuide.driverDocumentType.toString().toUpperCase(),
-          );
-        }
-        changeValueField(
-          'driverDocumentNumber',
-          routeToReferralGuide.driverDocumentNumber,
-        );
-        changeValueField(
-          'driverLicenseNumber',
-          routeToReferralGuide.driverLicenseNumber
-            ? routeToReferralGuide.driverLicenseNumber
-            : '',
-        );
-        changeValueField('observation', routeToReferralGuide.observation);
+        toGetMovements(listMovements);
       }
-      /* dispatch({
-        type: ROUTE_TO_REFERRAL_GUIDE,
-        payload: null,
-      }); */
+      if (
+        outputItems_pageListOutput &&
+        outputItems_pageListOutput.length !== 0
+      ) {
+        let weight = 0;
+        let output = outputItems_pageListOutput.find(
+          (obj) => obj.movementHeaderId == query.movementHeaderId,
+        );
+        console.log('output', output);
+        setSelectedOutput(output);
+        if (
+          !('useLocaleRoute' in query) &&
+          query.type !== 'summaryGuideSinceDistribution'
+        ) {
+          console.log(
+            'output.descriptionProductsInfo',
+            output.descriptionProductsInfo,
+          );
+          setSelectedProducts(output.descriptionProductsInfo);
+          output.descriptionProductsInfo.map((obj) => {
+            weight += obj.weight * obj.quantityMovement;
+          });
+          console.log('weight', weight);
+
+          setTotalWeight(Number(weight.toFixed(3)));
+          changeValueField('totalWeight', Number(weight.toFixed(3)));
+          changeValueField('addressee', output.clientName);
+          changeValueField('clientEmail', output.clientEmail);
+        } else if (queryDistribution()) {
+          const date = routeToReferralGuide.transferStartDate;
+          const dateTranslate = strDateToDateObject(date);
+          console.log('date', dateTranslate);
+          setDateStartTransfer(dateTranslate);
+
+          let startingUbigeo = parsedUbigeos.find(
+            (ubigeo) =>
+              ubigeo.ubigeo == routeToReferralGuide.startingPointUbigeo,
+          );
+          let arrivalUbigeo = parsedUbigeos.find(
+            (ubigeo) =>
+              ubigeo.ubigeo == routeToReferralGuide.arrivalPointUbigeo,
+          );
+          setUbigeoStartingPoint(startingUbigeo.ubigeo);
+          setUbigeoArrivalPoint(arrivalUbigeo.ubigeo);
+          setExistArrivalUbigeo(true);
+          setSelectedStartingUbigeo(startingUbigeo);
+          setSelectedArrivalUbigeo(arrivalUbigeo);
+          setExistStartingUbigeo(true);
+          changeValueField(
+            'startingPoint',
+            routeToReferralGuide.startingPointAddress,
+          );
+          changeValueField(
+            'arrivalPoint',
+            routeToReferralGuide.arrivalPointAddress,
+          );
+
+          changeValueField(
+            'numberPackages',
+            routeToReferralGuide.numberOfPackages,
+          );
+          setTransportModeVal(routeToReferralGuide.typeOfTransport);
+          setReasonVal(routeToReferralGuide.reasonForTransfer);
+
+          setSelectedProducts(routeToReferralGuide.productsInfo);
+          console.log('productos a pasar', routeToReferralGuide.productsInfo);
+          weight = routeToReferralGuide.totalGrossWeight;
+          console.log('weight', weight);
+
+          setTotalWeight(Number(weight.toFixed(3)));
+          changeValueField('totalWeight', Number(weight.toFixed(3)));
+          const carrier = {
+            typeDocumentCarrier: routeToReferralGuide.carrierDocumentType,
+            carrierDocumentNumber: routeToReferralGuide.carrierDocumentNumber,
+            denominationCarrier: routeToReferralGuide.carrierDenomination,
+          };
+          setSelectedCarrier(carrier);
+          setExistCarrier(true);
+          changeValueField(
+            'addressee',
+            routeToReferralGuide.carrierDenomination,
+          );
+          changeValueField(
+            'licensePlate',
+            routeToReferralGuide.carrierPlateNumber,
+          );
+          changeValueField(
+            'driverName',
+            routeToReferralGuide.driverDenomination,
+          );
+          changeValueField(
+            'driverLastName',
+            routeToReferralGuide.driverLastName
+              ? routeToReferralGuide.driverLastName
+              : '',
+          );
+          if (
+            routeToReferralGuide.carrierDocumentType &&
+            typeof routeToReferralGuide.carrierDocumentType === 'string'
+          ) {
+            setDriverDocumentType(
+              routeToReferralGuide.driverDocumentType.toString().toUpperCase(),
+            );
+          }
+          changeValueField(
+            'driverDocumentNumber',
+            routeToReferralGuide.driverDocumentNumber,
+          );
+          changeValueField(
+            'driverLicenseNumber',
+            routeToReferralGuide.driverLicenseNumber
+              ? routeToReferralGuide.driverLicenseNumber
+              : '',
+          );
+          changeValueField('observation', routeToReferralGuide.observation);
+        }
+        /* dispatch({
+          type: ROUTE_TO_REFERRAL_GUIDE,
+          payload: null,
+        }); */
+      }
     }
   }, [outputItems_pageListOutput, routeToReferralGuide]);
 
@@ -1521,6 +1534,8 @@ const GetReferralGuide = (props) => {
                       value={issueDate}
                       // disabled
                       label='Fecha de emisión'
+                      minDate={new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)} // establece la fecha mínima en dos días a partir de la actual
+                      maxDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
                       inputFormat='dd/MM/yyyy'
                       name='issueDate'
                       onChange={(newValue) => {
@@ -1543,6 +1558,7 @@ const GetReferralGuide = (props) => {
                       label='Fecha inicio traslado'
                       inputFormat='dd/MM/yyyy'
                       name='dateStartTransfer'
+                      minDate={new Date(issueDate)}
                       // minDate={new Date()}
                       onChange={(newValue) => {
                         setDateStartTransfer(newValue);

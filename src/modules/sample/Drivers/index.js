@@ -339,15 +339,15 @@ const DriverTable = (arrayObjs, props) => {
       let parsedId = obj.driverId.split('-');
       obj['type'] = parsedId[0];
       obj['nroDocument'] = parsedId[1];
-      obj.updatedDate = convertToDate(obj.updatedDate);
+      obj.updatedAt = convertToDate(obj.updatedAt || obj.updatedDate);
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
-        (({type, nroDocument, fullName, license, updatedDate}) => ({
+        (({type, nroDocument, fullName, license, updatedAt}) => ({
           type,
           nroDocument,
           fullName,
           license,
-          updatedDate,
+          updatedAt,
         }))(obj),
       );
     });
@@ -564,7 +564,9 @@ const DriverTable = (arrayObjs, props) => {
                     <TableCell>{parsedId[1]}</TableCell>
                     <TableCell>{obj.fullName}</TableCell>
                     <TableCell>{obj.license}</TableCell>
-                    <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
+                    <TableCell>
+                      {convertToDate(obj.updatedAt || obj.updatedDate)}
+                    </TableCell>
                     {/* <TableCell>{obj.priceWithoutIgv.toFixed(2)}</TableCell>
                     <TableCell>{obj.stock}</TableCell>
                     <TableCell>{obj.costPriceUnit.toFixed(2)}</TableCell> */}

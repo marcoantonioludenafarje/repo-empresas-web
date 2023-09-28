@@ -552,10 +552,10 @@ const SalesTable = (props) => {
     setAnchorEl(null);
   };
   const goToUpdate = () => {
-    console.log('Actualizando', selectedOutput);
+    console.log('Actualizando', selectedSale);
     Router.push({
-      pathname: '/sample/outputs/update',
-      query: {...selectedOutput},
+      pathname: '/sample/Sales/update',
+      query: {...selectedSale},
     });
   };
   const goToGenerateTicket = () => {
@@ -657,7 +657,7 @@ const SalesTable = (props) => {
     };
     setOpenStatus(false);
     setTimeout(() => {
-      searchPrivilege('outputsTable')
+      searchPrivilege('salesTable')
         ? (listPayload.request.payload.userCreated = null)
         : (listPayload.request.payload.userCreated = userDataRes.userId);
       console.log('toListSales [sendStatus] ', listPayload);
@@ -699,7 +699,9 @@ const SalesTable = (props) => {
         '-' +
         (obj.codMovement ? obj.codMovement.split('-')[1] : '');
       obj.createdAt = convertToDateWithoutTime(obj.createdAt);
-      obj.updatedDate = convertToDateWithoutTime(obj.updatedDate);
+      obj.updatedAt = convertToDateWithoutTime(
+        obj.updatedAt || obj.updatedDate,
+      );
       obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
         ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
         : '';
@@ -738,7 +740,7 @@ const SalesTable = (props) => {
       // Crear la cadena de texto para productos
       let productsText = '';
 
-      obj.descriptionProductsInfo.forEach((producto, index) => {
+      obj.products.forEach((producto, index) => {
         const igv = producto.productIgv || 0.18;
         const subtotal = Number(
           (
@@ -757,7 +759,7 @@ const SalesTable = (props) => {
         productsText += productText;
       });
 
-      obj.descriptionProducts = productsText;
+      obj.products = productsText;
 
       console.log('statusObject1', obj);
 
@@ -765,10 +767,10 @@ const SalesTable = (props) => {
         (({
           codigo1,
           createdAt,
-          updatedDate,
+          updatedAt,
           movementSubType,
           clientdenomination,
-          descriptionProducts,
+          products,
           receipt1,
           ticket1,
           referralGuide1,
@@ -782,10 +784,10 @@ const SalesTable = (props) => {
         }) => ({
           codigo1,
           createdAt,
-          updatedDate,
+          updatedAt,
           movementSubType,
           clientdenomination,
-          descriptionProducts,
+          products,
           receipt1,
           ticket1,
           referralGuide1,
@@ -822,9 +824,9 @@ const SalesTable = (props) => {
   const exportDoc = () => {
     var ws = XLSX.utils.json_to_sheet(cleanList());
     var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Outputs');
+    XLSX.utils.book_append_sheet(wb, ws, 'Sales');
     XLSX.utils.sheet_add_aoa(ws, [headersExcel], {origin: 'A1'});
-    XLSX.writeFile(wb, 'Outputs.xlsx');
+    XLSX.writeFile(wb, 'Sales.xlsx');
   };
 
   const getDateParsed = () => {
@@ -1519,10 +1521,7 @@ const SalesTable = (props) => {
             listSalesRes.length >= 0 ? (
               listSalesRes.sort(compare).map((obj, index) => {
                 const style =
-                  obj.descriptionProductsInfo &&
-                  obj.descriptionProductsInfo.length != 0
-                    ? 'flex'
-                    : null;
+                  obj.products && obj.products.length != 0 ? 'flex' : null;
                 let groupedDocuments = [];
                 if (obj.documentsMovement && obj.documentsMovement.length > 0) {
                   groupedDocuments = obj.documentsMovement.reduce(

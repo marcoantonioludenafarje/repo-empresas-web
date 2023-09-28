@@ -1185,7 +1185,9 @@ const FinancesTable = (props) => {
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       <TableCell>
-                        {convertToDateWithoutTime(obj.updatedDate)}
+                        {convertToDateWithoutTime(
+                          obj.updatedAt || obj.updatedDate,
+                        )}
                       </TableCell>
                       <TableCell>
                         <Button

@@ -336,21 +336,15 @@ const ClientTable = (arrayObjs, props) => {
       let parsedId = obj.clientId.split('-');
       obj['type'] = parsedId[0];
       obj['nroDocument'] = parsedId[1];
-      obj.updatedDate = convertToDate(obj.updatedDate);
+      obj.updatedAt = convertToDate(obj.updatedAt || obj.updatedDate);
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
-        (({
+        (({type, nroDocument, denominationClient, nameContact, updatedAt}) => ({
           type,
           nroDocument,
           denominationClient,
           nameContact,
-          updatedDate,
-        }) => ({
-          type,
-          nroDocument,
-          denominationClient,
-          nameContact,
-          updatedDate,
+          updatedAt,
         }))(obj),
       );
     });
@@ -672,7 +666,9 @@ const ClientTable = (arrayObjs, props) => {
                     <TableCell>{obj.denominationClient}</TableCell>
                     <TableCell>{obj.nameContact}</TableCell>
                     <TableCell>{verTags(obj, businessParameter)}</TableCell>
-                    <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
+                    <TableCell>
+                      {convertToDate(obj.updatedAt || obj.updatedDate)}
+                    </TableCell>
                     <TableCell>
                       <Button
                         id='basic-button'

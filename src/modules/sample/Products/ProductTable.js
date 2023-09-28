@@ -886,9 +886,9 @@ const ProductTable = (arrayObjs, props) => {
               </TableCell>
               <TableCell>
                 <TableSortLabel
-                  active={orderBy === 'updatedDate'}
-                  direction={orderBy === 'updatedDate' ? order : 'asc'}
-                  onClick={() => handleSort('updatedDate', 'date')}
+                  active={orderBy === 'updatedAt'}
+                  direction={orderBy === 'updatedAt' ? order : 'asc'}
+                  onClick={() => handleSort('updatedAt', 'date')}
                 >
                   Última actualización
                 </TableSortLabel>
@@ -950,7 +950,9 @@ const ProductTable = (arrayObjs, props) => {
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       <TableCell>
-                        {convertToDateWithoutTime(obj.updatedDate)}
+                        {convertToDateWithoutTime(
+                          obj.updatedAt || obj.updatedDate,
+                        )}
                       </TableCell>
                       <TableCell>
                         <Button

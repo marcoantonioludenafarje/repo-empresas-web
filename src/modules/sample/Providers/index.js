@@ -288,7 +288,7 @@ const ProviderTable = (arrayObjs, props) => {
       let parsedId = obj.providerId.split('-');
       obj['type'] = parsedId[0];
       obj['nroDocument'] = parsedId[1];
-      obj.updatedDate = convertToDate(obj.updatedDate);
+      obj.updatedAt = convertToDate(obj.updatedAt || obj.updatedDate);
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
         (({
@@ -296,13 +296,13 @@ const ProviderTable = (arrayObjs, props) => {
           nroDocument,
           denominationProvider,
           nameContact,
-          updatedDate,
+          updatedAt,
         }) => ({
           type,
           nroDocument,
           denominationProvider,
           nameContact,
-          updatedDate,
+          updatedAt,
         }))(obj),
       );
     });
@@ -555,7 +555,9 @@ const ProviderTable = (arrayObjs, props) => {
                     <TableCell>{parsedId[1]}</TableCell>
                     <TableCell>{obj.denominationProvider}</TableCell>
                     <TableCell>{obj.nameContact}</TableCell>
-                    <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
+                    <TableCell>
+                      {convertToDate(obj.updatedAt || obj.updatedDate)}
+                    </TableCell>
                     <TableCell>
                       <Button
                         id='basic-button'
