@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {Calendar, momentLocalizer} from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import {
   Card,
   Box,
@@ -59,10 +60,12 @@ import {
 } from '../../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {deleteAppointment, getAppointment} from 'redux/actions';
+import {deleteAppointment, getAppointment, updateAppointment} from 'redux/actions';
 import {useState} from 'react';
 import {convertToDate} from 'Utils/utils';
 
+import {ClickAwayListener} from '@mui/base';
+import {red} from '@mui/material/colors';
 
 const localizer = momentLocalizer(moment);
 
@@ -92,6 +95,7 @@ const Views = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
   const router = useRouter();
+  const DragAndDropCalendar = withDragAndDrop(Calendar);
 
   const toGetAppointments = (payload) => {
     dispatch(getAppointment(payload));
@@ -103,7 +107,18 @@ const Views = (props) => {
 
   const {userDataRes} = useSelector(({user}) => user);
   const {listAppointments} = useSelector(({appointment}) => appointment);
+  const {successMessage} = useSelector(({appointment}) => appointment);
+  console.log('successMessage', successMessage);
+  const {errorMessage} = useSelector(({appointment}) => appointment);
+  console.log('errorMessage', errorMessage);
+  
+  const toEditAppointment = (payload) => {
+    dispatch(updateAppointment(payload));
+  };
 
+
+  const [open2, setOpen2] = useState(false);
+  const [openStatus, setOpenStatus] = useState(false);
   const [contextMenu, setContextMenu] = React.useState(null);
   const [anchorElect, setAnchorElect] = useState(null);
   const openMenu = Boolean(anchorElect);
@@ -153,8 +168,8 @@ const Views = (props) => {
       setListEvents([]);
     }
 
-    console.log('estado cita>>', datetocalendar);
-    console.log('estado cita >>>>>', listEvents);
+    console.log('estado cita xda >>', datetocalendar);
+    console.log('estado cita xd >>>>>', listEvents);
   }, [listAppointments]);
   let codProdSelected = '';
 
@@ -184,6 +199,12 @@ const Views = (props) => {
     setAnchorElect(null);
   };
 
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+
+  const [aux, setAux] = useState(null)
+
   const handleMenuItemClick = (event, action) => {
     console.log('Selected action, id:', action, event);
     switch (action) {
@@ -195,22 +216,85 @@ const Views = (props) => {
         break;
       case 'delete':
         console.log('delete, id', action, event);
-        let delAppoint = {
-          request: {
-            payload: {
-              appointmentId: event,
-              merchantId: userDataRes.merchantSelected.merchantId,
-            },
-          },
-        };
-        console.log('delete >>', delAppoint);
-        toDeleteAppointments(delAppoint);
+        setOpen2(true);
+        setAux(event)
+        //toDeleteAppointments(delAppoint);
         break;
+      case 'generate_attention':
+        console.log('atendido, id', action, event);
+        let citagenerada = listAppointments.find((cita)=> cita.appointmentId === event.id)
+        let letpayloadgene={
+          request:{
+            payload:{
+              ...cita,
+              merchantId: userDataRes.merchantSelected.merchantId,
+            }
+          }
+        }
+        console.log("generar>>", letpayloadgene, citagenerada);
+        // Router.push({
+        //   pathname: 'sample/attention/new',
+        //   query: citagenerada
+        // })
+        break;
+      case 'attended':
+        console.log('atendido, id', action, event);
+        let cita = listAppointments.find((cita)=> cita.appointmentId === event.id)
+        let letpayload={
+          request:{
+            payload:{
+              ...cita,
+              attention: 'Completed',
+              merchantId: userDataRes.merchantSelected.merchantId,
+            }
+          }
+        }
+        console.log("edit>>", letpayload, cita);
+        toEditAppointment(letpayload)
+        break;
+        
       default:
         break;
     }
 
     handleClose();
+  };
+
+
+  const confirmCancel = () => {
+    console.log('selected cita', aux);;
+    let delAppoint = {
+      request: {
+        payload: {
+          appointmentId: aux.id,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+    console.log("payload", delAppoint);
+    toDeleteAppointments(delAppoint);
+    setOpenStatus(true);
+    setOpen2(false);
+  };
+
+  const sendStatus = () => {
+    setOpenStatus(false);
+    setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: null,
+          },
+        },
+      };
+      // listPayload.request.payload.LastEvaluatedKey = null;
+      // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
+      toGetAppointments(listPayload)
+
+      //setListEvents(listAppointments);
+      console.log("estado cita >>>>>", listEvents);
+    }, 2000);
   };
 
   useEffect(() => {
@@ -246,6 +330,10 @@ const Views = (props) => {
   //   event.title.toLowerCase().includes(filterTitle.toLowerCase())
   // );
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const handleFilterNameDescription = (title) => {
     if (title === '') {
       setListEvents(datetocalendar);
@@ -260,6 +348,38 @@ const Views = (props) => {
       } else {
         setListEvents([]);
       }
+    }
+  };
+  const showMessage = () => {
+    if (successMessage != '') {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha cancelado correctamente
+          </DialogContentText>
+        </>
+      );
+    } else if (errorMessage) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al cancelar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return <CircularProgress disableShrink />;
     }
   };
 
@@ -470,6 +590,60 @@ const Views = (props) => {
           Eliminar
         </MenuItem>
       </Menu>
+
+      <Dialog
+        open={open2}
+        onClose={handleClose2}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar Cita'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea eliminar realmente la cita seleccionada?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={confirmCancel}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Dialog DEtalle */}
+
+      {/*Respuesta */}
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Cancelar Campaña'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={sendStatus}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
+
       <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'
