@@ -216,7 +216,7 @@ const SalesTable = (props) => {
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
   const [openSendEmail, setOpenSendEmail] = React.useState(false);
-  const [openSendWhatsapp, setOpenSendWhatsapp] = React.useState(false);
+  const [openSendWsp, setOpenSendWsp] = React.useState(false);
   const [open2valida, setOpen2valida] = React.useState(false);
   // const [open3, setOpen3] = React.useState(false);
   const [openDetails, setOpenDetails] = React.useState(false);
@@ -510,7 +510,7 @@ const SalesTable = (props) => {
           searchByDocument: proofOfPaymentType,
           userCreated: userDataRes.userId,
           LastEvaluatedKey: null,
-          needItems: true
+          needItems: true,
         },
       },
     };
@@ -552,10 +552,10 @@ const SalesTable = (props) => {
     setAnchorEl(null);
   };
   const goToUpdate = () => {
-    console.log('Actualizando', selectedOutput);
+    console.log('Actualizando', selectedSale);
     Router.push({
-      pathname: '/sample/outputs/update',
-      query: {...selectedOutput},
+      pathname: '/sample/Sales/update',
+      query: {...selectedSale},
     });
   };
   const goToGenerateTicket = () => {
@@ -657,7 +657,7 @@ const SalesTable = (props) => {
     };
     setOpenStatus(false);
     setTimeout(() => {
-      searchPrivilege('outputsTable')
+      searchPrivilege('salesTable')
         ? (listPayload.request.payload.userCreated = null)
         : (listPayload.request.payload.userCreated = userDataRes.userId);
       console.log('toListSales [sendStatus] ', listPayload);
@@ -699,7 +699,9 @@ const SalesTable = (props) => {
         '-' +
         (obj.codMovement ? obj.codMovement.split('-')[1] : '');
       obj.createdAt = convertToDateWithoutTime(obj.createdAt);
-      obj.updatedDate = convertToDateWithoutTime(obj.updatedDate);
+      obj.updatedAt = convertToDateWithoutTime(
+        obj.updatedAt || obj.updatedDate,
+      );
       obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
         ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
         : '';
@@ -738,7 +740,7 @@ const SalesTable = (props) => {
       // Crear la cadena de texto para productos
       let productsText = '';
 
-      obj.descriptionProductsInfo.forEach((producto, index) => {
+      obj.products.forEach((producto, index) => {
         const igv = producto.productIgv || 0.18;
         const subtotal = Number(
           (
@@ -757,7 +759,7 @@ const SalesTable = (props) => {
         productsText += productText;
       });
 
-      obj.descriptionProducts = productsText;
+      obj.products = productsText;
 
       console.log('statusObject1', obj);
 
@@ -765,10 +767,10 @@ const SalesTable = (props) => {
         (({
           codigo1,
           createdAt,
-          updatedDate,
+          updatedAt,
           movementSubType,
           clientdenomination,
-          descriptionProducts,
+          products,
           receipt1,
           ticket1,
           referralGuide1,
@@ -782,10 +784,10 @@ const SalesTable = (props) => {
         }) => ({
           codigo1,
           createdAt,
-          updatedDate,
+          updatedAt,
           movementSubType,
           clientdenomination,
-          descriptionProducts,
+          products,
           receipt1,
           ticket1,
           referralGuide1,
@@ -822,9 +824,9 @@ const SalesTable = (props) => {
   const exportDoc = () => {
     var ws = XLSX.utils.json_to_sheet(cleanList());
     var wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Outputs');
+    XLSX.utils.book_append_sheet(wb, ws, 'Sales');
     XLSX.utils.sheet_add_aoa(ws, [headersExcel], {origin: 'A1'});
-    XLSX.writeFile(wb, 'Outputs.xlsx');
+    XLSX.writeFile(wb, 'Sales.xlsx');
   };
 
   const getDateParsed = () => {
@@ -1388,8 +1390,8 @@ const SalesTable = (props) => {
   const sendSaleByMail = (data) => {
     console.log('enviando correo de la venta por correo');
   };
-  const sendSaleByWhatsapp = (data) => {
-    console.log('enviando correo de la venta por whatsapp');
+  const sendSaleByWsp = (data) => {
+    console.log('enviando correo de la venta por mensaje de texto');
   };
   return typeClient ? (
     <Card sx={{p: 4}}>
@@ -1431,7 +1433,9 @@ const SalesTable = (props) => {
           </Select>
         </FormControl>
         <DateTimePicker
-          renderInput={(params) => <TextField size={isMobile ? 'small' : 'medium'} {...params} />}
+          renderInput={(params) => (
+            <TextField size={isMobile ? 'small' : 'medium'} {...params} />
+          )}
           value={initialTimeValue}
           label='Inicio'
           size={isMobile ? 'small' : 'medium'}
@@ -1444,7 +1448,9 @@ const SalesTable = (props) => {
           }}
         />
         <DateTimePicker
-          renderInput={(params) => <TextField size={isMobile ? 'small' : 'medium'} {...params} />}
+          renderInput={(params) => (
+            <TextField size={isMobile ? 'small' : 'medium'} {...params} />
+          )}
           label='Fin'
           size={isMobile ? 'small' : 'medium'}
           inputFormat='dd/MM/yyyy hh:mm a'
@@ -1515,10 +1521,7 @@ const SalesTable = (props) => {
             listSalesRes.length >= 0 ? (
               listSalesRes.sort(compare).map((obj, index) => {
                 const style =
-                  obj.descriptionProductsInfo &&
-                  obj.descriptionProductsInfo.length != 0
-                    ? 'flex'
-                    : null;
+                  obj.products && obj.products.length != 0 ? 'flex' : null;
                 let groupedDocuments = [];
                 if (obj.documentsMovement && obj.documentsMovement.length > 0) {
                   groupedDocuments = obj.documentsMovement.reduce(
@@ -1926,15 +1929,15 @@ const SalesTable = (props) => {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/facturacion/sale/sendWhatsapp') === true &&
+          .includes('/facturacion/sale/sendWsp') === true &&
         selectedSale.proofOfPaymentPdf ? (
           <MenuItem
             onClick={() => {
-              setOpenSendWhatsapp(true);
+              setOpenSendWsp(true);
             }}
           >
             <WhatsAppIcon sx={{mr: 1, my: 'auto'}} />
-            Enviar Whatsapp
+            Enviar Mensaje
           </MenuItem>
         ) : null}
         {localStorage
@@ -2212,8 +2215,8 @@ const SalesTable = (props) => {
       </Dialog>
 
       <Dialog
-        open={openSendWhatsapp}
-        onClose={() => setOpenSendWhatsapp(false)}
+        open={openSendWsp}
+        onClose={() => setOpenSendWsp(false)}
         maxWidth='sm'
         fullWidth
         sx={{textAlign: 'center'}}
@@ -2223,7 +2226,7 @@ const SalesTable = (props) => {
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
           <IconButton
             aria-label='close'
-            onClick={() => setOpenSendWhatsapp(false)}
+            onClick={() => setOpenSendWsp(false)}
             sx={{
               position: 'absolute',
               right: 8,
@@ -2232,20 +2235,20 @@ const SalesTable = (props) => {
           >
             <CloseIcon />
           </IconButton>
-          {'Envío de Venta por Whatsapp'}
+          {'Envío de Venta por Celular'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <Formik
             // validateOnChange={false}
             validationSchema={yup.object({
-              receiverWhatsapp: yup
+              receiverWsp: yup
                 .number()
                 .typeError(<IntlMessages id='validation.number' />),
             })}
             initialValues={{
-              receiverWhatsapp: '',
+              receiverWsp: '',
             }}
-            onSubmit={sendSaleByWhatsapp}
+            onSubmit={sendSaleByWsp}
           >
             {({isSubmitting, setFieldValue}) => {
               //changeValueField = setFieldValue;
@@ -2258,8 +2261,8 @@ const SalesTable = (props) => {
                   <Grid container spacing={2} sx={{width: 1}}>
                     <Grid item xs={12}>
                       <AppTextField
-                        label='Número de Whatsapp'
-                        name='receiverWhatsapp'
+                        label='Número telefónico'
+                        name='receiverWsp'
                         variant='outlined'
                         sx={{
                           width: '100%',

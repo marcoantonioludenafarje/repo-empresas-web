@@ -777,7 +777,9 @@ const OutputsTable = (props) => {
         '-' +
         (obj.codMovement ? obj.codMovement.split('-')[1] : '');
       obj.createdAt = convertToDateWithoutTime(obj.createdAt);
-      obj.updatedDate = convertToDateWithoutTime(obj.updatedDate);
+      obj.updatedAt = convertToDateWithoutTime(
+        obj.updatedAt || obj.updatedDate,
+      );
       obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
         ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
         : '';
@@ -843,7 +845,7 @@ const OutputsTable = (props) => {
         (({
           codigo1,
           createdAt,
-          updatedDate,
+          updatedAt,
           movementSubType,
           clientdenomination,
           descriptionProducts,
@@ -860,7 +862,7 @@ const OutputsTable = (props) => {
         }) => ({
           codigo1,
           createdAt,
-          updatedDate,
+          updatedAt,
           movementSubType,
           clientdenomination,
           descriptionProducts,
@@ -1812,7 +1814,9 @@ const OutputsTable = (props) => {
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       <TableCell>
-                        {convertToDateWithoutTime(obj.updatedDate)}
+                        {convertToDateWithoutTime(
+                          obj.updatedAt || obj.updatedDate,
+                        )}
                       </TableCell>
                       <TableCell>
                         {showSubtypeMovement(obj.movementSubType)}

@@ -95,7 +95,7 @@ export default function Views(props) {
   const [filteredNotifications, setFilteredNotifications] = useState([]);
   const {businessParameter} = useSelector(({general}) => general);
   const [nelem, setNelem] = React.useState(0);
-  const [listNotifications, setListNotifications] = React.useState("");
+  const [listNotifications, setListNotifications] = React.useState('');
   const [listValidNotification, setListValidNotification] = React.useState([]);
   const [reload, setReload] = React.useState(0);
   console.log('businessParameter ', businessParameter);
@@ -133,7 +133,6 @@ export default function Views(props) {
     console.log('Mensaje QR');
   };
   useEffect(() => {
-
     if (!listNotifications || listNotifications.length === 0) {
       return;
     }
@@ -171,7 +170,7 @@ export default function Views(props) {
   }, [listNotifications, reload]);
 
   useEffect(() => {
-    if(businessParameter && businessParameter.length > 0){
+    if (businessParameter && businessParameter.length > 0) {
       setListNotifications(verTiposEventos(businessParameter));
     }
   }, [businessParameter]);

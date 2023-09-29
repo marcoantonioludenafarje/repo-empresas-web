@@ -448,7 +448,7 @@ const UserManagement = ({data}) => {
           </Button>
         </DialogActions>
       </Dialog>
-      
+
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

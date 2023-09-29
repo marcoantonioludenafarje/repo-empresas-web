@@ -557,7 +557,6 @@ const UpdateLocation = (props) => {
         </DialogActions>
       </Dialog>
 
-
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

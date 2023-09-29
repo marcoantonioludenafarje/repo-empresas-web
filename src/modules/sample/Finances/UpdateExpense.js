@@ -1023,7 +1023,7 @@ const UpdateExpense = (props) => {
             );
           }}
         </Formik>
-        
+
         <ClickAwayListener onClickAway={handleClickAway}>
           <Dialog
             open={openStatus}

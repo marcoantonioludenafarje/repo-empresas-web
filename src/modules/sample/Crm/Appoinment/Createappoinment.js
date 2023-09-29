@@ -50,7 +50,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {newAppointment} from 'redux/actions';
 import {getSpecialists} from 'redux/actions/Specialist';
 
-
 import {ClickAwayListener} from '@mui/base';
 import AddClientForm from '../../ClientSelection/AddClientForm';
 import {useState} from 'react';
@@ -154,12 +153,12 @@ const Createappoinment = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
-  const [notifyClientByWhatsapp, setNotifyClientByWhatsapp] =
+  const [notifyClientByWsp, setNotifyClientByWsp] =
     React.useState(false);
   const [countryCode, setCountryCode] = React.useState('+51');
   const [selectedClient, setSelectedClient] = React.useState('');
 
-  const [recordingClientByWhatsapp, setRecordingClientByWhatsapp] =
+  const [recordingClientByWsp, setRecordingClientByWsp] =
     React.useState(false);
 
   const [publishDate, setPublishDate] = React.useState(
@@ -280,8 +279,8 @@ const Createappoinment = (props) => {
     console.log(
       'objtrue',
       notifyClientByEmail,
-      notifyClientByWhatsapp,
-      recordingClientByWhatsapp,
+      notifyClientByWsp,
+      recordingClientByWsp,
     );
 
     let specialistF = listSpecialists.filter(
@@ -297,11 +296,11 @@ const Createappoinment = (props) => {
     } else {
       email = null;
     }
-    let whatsapp;
-    if (notifyClientByWhatsapp) {
-      whatsapp = getValueField('numberContact').value;
+    let wsp;
+    if (notifyClientByWsp) {
+      wsp = getValueField('numberContact').value;
     } else {
-      whatsapp = null;
+      wsp = null;
     }
 
     let starter = publishDate.getTime();
@@ -325,10 +324,10 @@ const Createappoinment = (props) => {
         durationUnited: 'Min',
         notifications: {
           email: email,
-          whatsapp: whatsapp,
+          wsp: wsp,
           checkEmailNotify: notifyClientByEmail,
-          checkWhatsappNotify: notifyClientByWhatsapp,
-          checkWhatsappReminder: recordingClientByWhatsapp,
+          checkWspNotify: notifyClientByWsp,
+          checkWspReminder: recordingClientByWsp,
         },
       },
     ];
@@ -637,18 +636,18 @@ const Createappoinment = (props) => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={notifyClientByWhatsapp}
+                          checked={notifyClientByWsp}
                           onChange={(e) =>
-                            setNotifyClientByWhatsapp(e.target.checked)
+                            setNotifyClientByWsp(e.target.checked)
                           }
-                          name='notifyClientByWhatsapp'
+                          name='notifyClientByWsp'
                           color='primary'
                         />
                       }
-                      label='Notificar a cliente por Whatsapp'
+                      label='Notificar a cliente por Wsp'
                     />
                   </Grid>
-                  {notifyClientByWhatsapp && (
+                  {notifyClientByWsp && (
                     <Grid item xs={2} md={2}>
                       <TextField
                         disabled
@@ -664,7 +663,7 @@ const Createappoinment = (props) => {
                       />
                     </Grid>
                   )}
-                  {notifyClientByWhatsapp && (
+                  {notifyClientByWsp && (
                     <Grid item xs={10}>
                       <AppTextField
                         label='Telefono fijo o celular de contacto'
@@ -685,16 +684,16 @@ const Createappoinment = (props) => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={recordingClientByWhatsapp}
+                          checked={recordingClientByWsp}
                           onChange={(e) =>
-                            setRecordingClientByWhatsapp(e.target.checked)
+                            setRecordingClientByWsp(e.target.checked)
                           }
-                          name='recordingClientByWhatsapp'
+                          name='recordingClientByWsp'
                           color='primary'
                         />
                         
                       }
-                      label='Recordatorio a cliente por Whatsapp'
+                      label='Recordatorio a cliente por Celular'
                     />
                     <Typography>
                       {businessParameter[5]?.value[0]?.periodicityAction.time}

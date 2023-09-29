@@ -1210,7 +1210,6 @@ const UpdateOutput = (props) => {
           )}
         </Dialog>
 
-        
         <ClickAwayListener onClickAway={handleClickAway}>
           <Dialog
             open={openStatus}

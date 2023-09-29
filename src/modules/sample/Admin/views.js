@@ -277,7 +277,6 @@ export default function Views(props) {
     setOpen(false);
   };
 
-
   const handleClickAway = () => {
     // Evita que se cierre el diálogo haciendo clic fuera del contenido
     // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
@@ -465,14 +464,15 @@ export default function Views(props) {
       >
         {localStorage
           .getItem('pathsBack')
-          .includes('/business/admin/productive') === true && selectedBusiness.typeMerchant === 'UAT' ? (
+          .includes('/business/admin/productive') === true &&
+        selectedBusiness.typeMerchant === 'UAT' ? (
           <MenuItem onClick={goToProduct}>
             <MoveUpIcon sx={{mr: 1, my: 'auto'}} />
             Dar Alta a productivo
           </MenuItem>
         ) : null}
         {localStorage.getItem('pathsBack').includes('/business/admin/sunat') ===
-        true  && selectedBusiness.typeMerchant === 'PROD' ? (
+          true && selectedBusiness.typeMerchant === 'PROD' ? (
           <MenuItem onClick={goToSunat}>
             <HandymanIcon sx={{mr: 1, my: 'auto'}} />
             Activar SUNAT
@@ -480,7 +480,8 @@ export default function Views(props) {
         ) : null}
         {localStorage
           .getItem('pathsBack')
-          .includes('/business/admin/expiration') === true && selectedBusiness.typeMerchant === 'PROD' ? (
+          .includes('/business/admin/expiration') === true &&
+        selectedBusiness.typeMerchant === 'PROD' ? (
           <MenuItem onClick={goToExpiration}>
             <MoreTimeIcon sx={{mr: 1, my: 'auto'}} />
             Ampliar fecha suscripción
@@ -537,7 +538,7 @@ export default function Views(props) {
           </Button>
         </DialogActions>
       </Dialog>
-      
+
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus2}
@@ -561,7 +562,7 @@ export default function Views(props) {
           </DialogActions>
         </Dialog>
       </ClickAwayListener>
-      
+
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

@@ -381,7 +381,7 @@ const LocationTable = (arrayObjs, props) => {
   const cleaneList = () => {
     let listResult = [];
     getLocationsRes.map((obj) => {
-      obj.updatedDate = convertToDate(obj.updatedDate);
+      obj.updatedAt = convertToDate(obj.updatedAt || obj.updatedDate);
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
         (({
@@ -390,14 +390,14 @@ const LocationTable = (arrayObjs, props) => {
           locationDetail,
           ubigeo,
           type,
-          updatedDate,
+          updatedAt,
         }) => ({
           modularCode,
           locationName,
           locationDetail,
           ubigeo,
           type,
-          updatedDate,
+          updatedAt,
         }))(obj),
       );
     });
@@ -705,7 +705,9 @@ const LocationTable = (arrayObjs, props) => {
                     <TableCell>{obj.locationDetail}</TableCell>
                     <TableCell>{setLabelUbigeo(obj.ubigeo)}</TableCell>
                     <TableCell>{obj.type}</TableCell>
-                    <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
+                    <TableCell>
+                      {convertToDate(obj.updatedAt || obj.updatedDate)}
+                    </TableCell>
                     {/* <TableCell>{obj.priceWithoutIgv.toFixed(2)}</TableCell>
                     <TableCell>{obj.stock}</TableCell>
                     <TableCell>{obj.costPriceUnit.toFixed(2)}</TableCell> */}
@@ -767,8 +769,7 @@ const LocationTable = (arrayObjs, props) => {
 
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
-      
-      
+
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

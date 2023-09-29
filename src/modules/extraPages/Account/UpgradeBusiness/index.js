@@ -132,7 +132,7 @@ const UpgradeBusiness = () => {
       setOpenStatus(false);
     }
   };
-  
+
   const handleClickAway = () => {
     // Evita que se cierre el diálogo haciendo clic fuera del contenido
     // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.

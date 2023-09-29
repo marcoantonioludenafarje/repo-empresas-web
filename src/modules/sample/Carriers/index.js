@@ -343,7 +343,7 @@ const CarrierTable = (arrayObjs, props) => {
       let parsedId = obj.carrierId.split('-');
       obj['type'] = parsedId[0];
       obj['nroDocument'] = parsedId[1];
-      obj.updatedDate = convertToDate(obj.updatedDate);
+      obj.updatedAt = convertToDate(obj.updatedAt || obj.updatedDate);
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
         (({
@@ -351,13 +351,13 @@ const CarrierTable = (arrayObjs, props) => {
           nroDocument,
           denominationCarrier,
           nameContact,
-          updatedDate,
+          updatedAt,
         }) => ({
           type,
           nroDocument,
           denominationCarrier,
           nameContact,
-          updatedDate,
+          updatedAt,
         }))(obj),
       );
     });
@@ -585,7 +585,9 @@ const CarrierTable = (arrayObjs, props) => {
                     <TableCell>{parsedId[1]}</TableCell>
                     <TableCell>{obj.denominationCarrier}</TableCell>
                     <TableCell>{obj.nameContact}</TableCell>
-                    <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
+                    <TableCell>
+                      {convertToDate(obj.updatedAt || obj.updatedDate)}
+                    </TableCell>
                     {/* <TableCell>{obj.priceWithoutIgv.toFixed(2)}</TableCell>
                     <TableCell>{obj.stock}</TableCell>
                     <TableCell>{obj.costPriceUnit.toFixed(2)}</TableCell> */}

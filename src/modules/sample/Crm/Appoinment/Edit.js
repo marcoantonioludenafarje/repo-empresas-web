@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 
-
 import {ClickAwayListener} from '@mui/base';
 import {makeStyles} from '@mui/styles';
 import {
@@ -162,12 +161,12 @@ const Edit = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
-  const [notifyClientByWhatsapp, setNotifyClientByWhatsapp] =
+  const [notifyClientByWsp, setNotifyClientByWsp] =
     React.useState(false);
   const [countryCode, setCountryCode] = React.useState('+51');
   const [selectedClient, setSelectedClient] = React.useState('');
 
-  const [recordingClientByWhatsapp, setRecordingClientByWhatsapp] =
+  const [recordingClientByWsp, setRecordingClientByWsp] =
     React.useState(false);
   const dispatch = useDispatch();
 
@@ -309,8 +308,8 @@ const Edit = (props) => {
     console.log(
       'objtrue',
       notifyClientByEmail,
-      notifyClientByWhatsapp,
-      recordingClientByWhatsapp,
+      notifyClientByWsp,
+      recordingClientByWsp,
     );
 
     let specialistF = listSpecialists.filter(
@@ -326,11 +325,11 @@ const Edit = (props) => {
     } else {
       email = null;
     }
-    let whatsapp;
-    if (notifyClientByWhatsapp) {
-      whatsapp = getValueField('numberContact').value;
+    let wsp;
+    if (notifyClientByWsp) {
+      wsp = getValueField('numberContact').value;
     } else {
-      whatsapp = null;
+      wsp = null;
     }
 
     let starter = publishDate.getTime();
@@ -354,10 +353,10 @@ const Edit = (props) => {
       durationUnited: 'Min',
       notifications: {
         email: email,
-        whatsapp: whatsapp,
+        wsp: wsp,
         checkEmailNotify: notifyClientByEmail,
-        checkWhatsappNotify: notifyClientByWhatsapp,
-        checkWhatsappReminder: recordingClientByWhatsapp,
+        checkWspNotify: notifyClientByWsp,
+        checkWspReminder: recordingClientByWsp,
       },
     };
 
@@ -664,18 +663,18 @@ const Edit = (props) => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={notifyClientByWhatsapp}
+                          checked={notifyClientByWsp}
                           onChange={(e) =>
-                            setNotifyClientByWhatsapp(e.target.checked)
+                            setNotifyClientByWsp(e.target.checked)
                           }
-                          name='notifyClientByWhatsapp'
+                          name='notifyClientByWsp'
                           color='primary'
                         />
                       }
-                      label='Notificar a cliente por Whatsapp'
+                      label='Notificar a cliente por Celular'
                     />
                   </Grid>
-                  {notifyClientByWhatsapp && (
+                  {notifyClientByWsp && (
                     <Grid item xs={2} md={2}>
                       <TextField
                         disabled
@@ -691,7 +690,7 @@ const Edit = (props) => {
                       />
                     </Grid>
                   )}
-                  {notifyClientByWhatsapp && (
+                  {notifyClientByWsp && (
                     <Grid item xs={10}>
                       <AppTextField
                         label='Telefono fijo o celular de contacto'
@@ -712,15 +711,15 @@ const Edit = (props) => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={recordingClientByWhatsapp}
+                          checked={recordingClientByWsp}
                           onChange={(e) =>
-                            setRecordingClientByWhatsapp(e.target.checked)
+                            setRecordingClientByWsp(e.target.checked)
                           }
-                          name='recordingClientByWhatsapp'
+                          name='recordingClientByWsp'
                           color='primary'
                         />
                       }
-                      label='Recordatorio a cliente por Whatsapp'
+                      label='Recordatorio a cliente por Celular'
                     />
                   </Grid>
                 </Grid>

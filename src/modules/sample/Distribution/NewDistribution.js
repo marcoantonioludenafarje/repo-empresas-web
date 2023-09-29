@@ -830,6 +830,8 @@ const Distribution = (props) => {
                       // disabled
                       label='Fecha de emisión'
                       inputFormat='dd/MM/yyyy'
+                      minDate={new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)} // establece la fecha mínima en dos días a partir de la actual
+                      maxDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
                       name='issueDate'
                       onChange={(newValue) => {
                         console.log('Fecha de emisión', issueDate);
@@ -874,6 +876,7 @@ const Distribution = (props) => {
                       }
                       inputFormat='dd/MM/yyyy hh:mm a'
                       value={initialDate}
+                      minDate={new Date(issueDate)}
                       onChange={(newDate) => {
                         setInitialDate(newDate);
                         console.log('initial date', newDate);
@@ -900,7 +903,7 @@ const Distribution = (props) => {
                       label={<IntlMessages id='dashboard.finalDateTime' />}
                       inputFormat='dd/MM/yyyy hh:mm a'
                       value={finalDate}
-                      minDateTime={new Date()}
+                      minDate={new Date(initialDate)}
                       onChange={(newDate) => {
                         setFinalDate(newDate);
                         console.log('final date', newDate);

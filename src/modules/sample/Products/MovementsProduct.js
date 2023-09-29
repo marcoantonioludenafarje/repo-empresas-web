@@ -13,7 +13,6 @@ import {
   MenuItem,
   Menu,
   MenuList,
-  ClickAwayListener,
   Popper,
   Grow,
   Stack,
@@ -494,7 +493,6 @@ const InputsTable = (props) => {
         )}
       </ButtonGroup>
 
-      
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

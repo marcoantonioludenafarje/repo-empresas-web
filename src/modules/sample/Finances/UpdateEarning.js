@@ -1012,7 +1012,7 @@ const UpdateEarning = (props) => {
             );
           }}
         </Formik>
-        
+
         <ClickAwayListener onClickAway={handleClickAway}>
           <Dialog
             open={openStatus}

@@ -253,21 +253,15 @@ const OrderTable = (arrayObjs, props) => {
       let parsedId = obj.orderId.split('-');
       obj['type'] = parsedId[0];
       obj['nroDocument'] = parsedId[1];
-      obj.updatedDate = convertToDate(obj.updatedDate);
+      obj.updatedAt = convertToDate(obj.updatedAt || obj.updatedDate);
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       listResult.push(
-        (({
+        (({type, nroDocument, denominationOrder, nameContact, updatedAt}) => ({
           type,
           nroDocument,
           denominationOrder,
           nameContact,
-          updatedDate,
-        }) => ({
-          type,
-          nroDocument,
-          denominationOrder,
-          nameContact,
-          updatedDate,
+          updatedAt,
         }))(obj),
       );
     });
@@ -580,7 +574,9 @@ const OrderTable = (arrayObjs, props) => {
                       <TableCell align='center'>
                         {showIconStatus(obj.status)}
                       </TableCell>
-                      <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
+                      <TableCell>
+                        {convertToDate(obj.updatedAt || obj.updatedDate)}
+                      </TableCell>
                       <TableCell>
                         <Button
                           id='basic-button'
@@ -739,7 +735,6 @@ const OrderTable = (arrayObjs, props) => {
         </Button>
       </ButtonGroup>
 
-      
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

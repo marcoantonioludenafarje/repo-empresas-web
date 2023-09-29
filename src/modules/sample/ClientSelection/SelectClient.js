@@ -93,7 +93,9 @@ const SelectClient = ({fcData}) => {
                   <TableCell>{parsedId[0]}</TableCell>
                   <TableCell>{parsedId[1]}</TableCell>
                   <TableCell>{obj.denominationClient}</TableCell>
-                  <TableCell>{dateWithHyphen(obj.updatedDate)}</TableCell>
+                  <TableCell>
+                    {dateWithHyphen(obj.updatedAt || obj.updatedDate)}
+                  </TableCell>
                   {/* <TableCell>
                     <IconButton
                       onClick={() => {

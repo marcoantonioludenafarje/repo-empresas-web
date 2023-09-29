@@ -682,7 +682,7 @@ const Customize = (props) => {
             </Box>
           </DialogContent>
         </Dialog>
-        
+
         <ClickAwayListener onClickAway={handleClickAway}>
           <Dialog
             open={openCustomizeUpdate}

@@ -21,7 +21,6 @@ import {
   MenuItem,
   Menu,
   MenuList,
-  ClickAwayListener,
   Select,
   FormControlLabel,
   InputLabel,
@@ -1186,7 +1185,9 @@ const FinancesTable = (props) => {
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       <TableCell>
-                        {convertToDateWithoutTime(obj.updatedDate)}
+                        {convertToDateWithoutTime(
+                          obj.updatedAt || obj.updatedDate,
+                        )}
                       </TableCell>
                       <TableCell>
                         <Button

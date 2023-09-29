@@ -1056,7 +1056,7 @@ const FileExplorer = (props) => {
           <></>
         )}
       </Dialog>
-      
+
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
           open={openStatus}

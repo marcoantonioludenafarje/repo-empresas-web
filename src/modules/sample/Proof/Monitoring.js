@@ -80,9 +80,7 @@ import {
   onGetGlobalParameter,
 } from '../../../redux/actions/General';
 import {getUserData} from '../../../redux/actions/User';
-import {
-  getListBusiness,
-} from '../../../redux/actions/Admin';
+import {getListBusiness} from '../../../redux/actions/Admin';
 import {
   convertToDate,
   convertToDateWithoutTime,
@@ -193,7 +191,10 @@ const ProofMonitoring = (props) => {
           initialTime: initialTime,
           finalTime: finalTime,
           proofType: proofType,
-          merchantId: listProdBusiness.length > 0 ? selectedProdBusiness.merchantId : userDataRes.merchantSelected.merchantId,
+          merchantId:
+            listProdBusiness.length > 0
+              ? selectedProdBusiness.merchantId
+              : userDataRes.merchantSelected.merchantId,
           acceptedStatus: selectedAcceptedStatus,
         },
       },
@@ -223,9 +224,7 @@ const ProofMonitoring = (props) => {
   const {globalParameter} = useSelector(({general}) => general);
   console.log('globalParameter123', globalParameter);
   const {userDataRes} = useSelector(({user}) => user);
-  const {listBusinessRes} = useSelector(
-    ({admin}) => admin,
-  );
+  const {listBusinessRes} = useSelector(({admin}) => admin);
   useEffect(() => {
     if (loading) {
       setLoading(false);
@@ -298,7 +297,10 @@ const ProofMonitoring = (props) => {
           initialTime: initialTime,
           finalTime: finalTime,
           proofType: proofType,
-          merchantId: listProdBusiness.length > 0 ? selectedProdBusiness.merchantId : userDataRes.merchantSelected.merchantId,
+          merchantId:
+            listProdBusiness.length > 0
+              ? selectedProdBusiness.merchantId
+              : userDataRes.merchantSelected.merchantId,
           acceptedStatus: selectedAcceptedStatus,
         },
       },
@@ -340,7 +342,10 @@ const ProofMonitoring = (props) => {
             initialTime: initialTime,
             finalTime: finalTime,
             proofType: proofType,
-            merchantId: listProdBusiness.length > 0 ? selectedProdBusiness.merchantId : userDataRes.merchantSelected.merchantId,
+            merchantId:
+              listProdBusiness.length > 0
+                ? selectedProdBusiness.merchantId
+                : userDataRes.merchantSelected.merchantId,
             acceptedStatus: 'waiting',
           },
         },
@@ -349,7 +354,10 @@ const ProofMonitoring = (props) => {
       listPayload.request.payload.LastEvaluatedKey = null;
       console.log('listPayload133:useEffect userDataRes:', listPayload);
       toListProofMonitoringItems(listPayload);
-      if(userDataRes.merchantSelected.merchantId == "cb1b5aff10ca4a548afae5b1f959e286"){
+      if (
+        userDataRes.merchantSelected.merchantId ==
+        'cb1b5aff10ca4a548afae5b1f959e286'
+      ) {
         let listBusinessPayload = {
           request: {
             payload: {
@@ -362,26 +370,28 @@ const ProofMonitoring = (props) => {
       }
     }
   }, [userDataRes]);
-  useEffect (()=>{
-    if(listBusinessRes && listBusinessRes.length > 0){
-      let newListProdBusiness = listBusinessRes.filter((obj)=>obj.typeMerchant == "PROD").map((obj)=>{
-        obj.label = obj.denominationMerchant
-        return obj
-      })
+  useEffect(() => {
+    if (listBusinessRes && listBusinessRes.length > 0) {
+      let newListProdBusiness = listBusinessRes
+        .filter((obj) => obj.typeMerchant == 'PROD')
+        .map((obj) => {
+          obj.label = obj.denominationMerchant;
+          return obj;
+        });
       newListProdBusiness.push({
-        merchantId: "all",
-        label: "TODOS",
-        denominationMerchant: "TODOS"
-      })
+        merchantId: 'all',
+        label: 'TODOS',
+        denominationMerchant: 'TODOS',
+      });
       setListProdBusiness(newListProdBusiness);
-      console.log("newListProdBusiness", newListProdBusiness)
+      console.log('newListProdBusiness', newListProdBusiness);
       setSelectedProdBusiness({
-        merchantId: "all",
-        label: "TODOS",
-        denominationMerchant: "TODOS"
+        merchantId: 'all',
+        label: 'TODOS',
+        denominationMerchant: 'TODOS',
       });
     }
-  },[listBusinessRes])
+  }, [listBusinessRes]);
   //FUNCIONES MENU
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
@@ -538,7 +548,9 @@ const ProofMonitoring = (props) => {
           </Select>
         </FormControl>
         <DateTimePicker
-          renderInput={(params) => <TextField size={isMobile ? 'small' : 'medium'} {...params} />}
+          renderInput={(params) => (
+            <TextField size={isMobile ? 'small' : 'medium'} {...params} />
+          )}
           value={value}
           label='Inicio'
           size={isMobile ? 'small' : 'medium'}
@@ -553,7 +565,9 @@ const ProofMonitoring = (props) => {
           }}
         />
         <DateTimePicker
-          renderInput={(params) => <TextField size={isMobile ? 'small' : 'medium'} {...params} />}
+          renderInput={(params) => (
+            <TextField size={isMobile ? 'small' : 'medium'} {...params} />
+          )}
           label='Fin'
           size={isMobile ? 'small' : 'medium'}
           inputFormat='dd/MM/yyyy hh:mm a'
@@ -577,41 +591,40 @@ const ProofMonitoring = (props) => {
           Buscar
         </Button>
       </Stack>
-      
+
       {listProdBusiness && listProdBusiness.length > 0 ? (
-          <Autocomplete
-            disablePortal
-            id='combo-box-demo'
-            value={selectedProdBusiness}
-            isOptionEqualToValue={(option, value) =>
-              option.merchantId === value.merchantId
+        <Autocomplete
+          disablePortal
+          id='combo-box-demo'
+          value={selectedProdBusiness}
+          isOptionEqualToValue={(option, value) =>
+            option.merchantId === value.merchantId
+          }
+          onChange={(event, value) => {
+            if (typeof value === 'object' && value != null && value !== '') {
+              setSelectedProdBusiness(value);
             }
-            onChange={(event, value) => {
-              if (
-                typeof value === 'object' &&
-                value != null &&
-                value !== ''
-              ) {
-                setSelectedProdBusiness(value);
-                
-              }
-            }}
-            options={listProdBusiness}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label='Negocio'
-                onChange={(event) => {
-                  console.log('event field', event.target.value);
-                  if (event.target.value === '') {
-                    console.log('si se cambia a null');
-                  }
-                }}
-              />
-            )}
-          />
-        ): null}
-      <span>{`Items: ${proofMonitoringItems_pageListGuide ? proofMonitoringItems_pageListGuide.length : 0}`}</span>
+          }}
+          options={listProdBusiness}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label='Negocio'
+              onChange={(event) => {
+                console.log('event field', event.target.value);
+                if (event.target.value === '') {
+                  console.log('si se cambia a null');
+                }
+              }}
+            />
+          )}
+        />
+      ) : null}
+      <span>{`Items: ${
+        proofMonitoringItems_pageListGuide
+          ? proofMonitoringItems_pageListGuide.length
+          : 0
+      }`}</span>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table
           sx={{minWidth: 650}}
@@ -643,7 +656,13 @@ const ProofMonitoring = (props) => {
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
-                  <TableCell>{listProdBusiness && listProdBusiness.length > 0 ? listProdBusiness.find((object)=>object.merchantId == obj.merchantId).denominationMerchant : userDataRes.merchantSelected.denominationMerchant}</TableCell>
+                  <TableCell>
+                    {listProdBusiness && listProdBusiness.length > 0
+                      ? listProdBusiness.find(
+                          (object) => object.merchantId == obj.merchantId,
+                        ).denominationMerchant
+                      : userDataRes.merchantSelected.denominationMerchant}
+                  </TableCell>
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')
                       ? obj.serialNumber.split('-')[0]

@@ -24,7 +24,6 @@ import {
   Autocomplete,
 } from '@mui/material';
 
-
 import {ClickAwayListener} from '@mui/base';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
@@ -568,7 +567,6 @@ const NewSpecialist = (props) => {
           </Button>
         </DialogActions>
       </Dialog>
-
 
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog

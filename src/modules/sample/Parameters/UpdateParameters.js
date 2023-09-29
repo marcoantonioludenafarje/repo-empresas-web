@@ -996,7 +996,9 @@ const UpdateParameters = () => {
                     <Select
                       name='defaultWeight'
                       labelId='defaultWeight-label'
-                      label={<IntlMessages id='common.business.defaultWeight' />}
+                      label={
+                        <IntlMessages id='common.business.defaultWeight' />
+                      }
                       displayEmpty
                       onChange={handleField}
                       value={defaultWeight}

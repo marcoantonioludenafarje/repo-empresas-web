@@ -119,4 +119,3 @@ export const clearS3Objects = (payload) => {
       });
   };
 };
-

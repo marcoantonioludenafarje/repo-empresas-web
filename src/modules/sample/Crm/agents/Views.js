@@ -319,8 +319,8 @@ export default function Views(props) {
         payload: {
           robotId: selectedAgent.robotId,
           userId: userDataRes.userId,
-        }
-      }
+        },
+      },
     });
   };
 
@@ -558,7 +558,7 @@ export default function Views(props) {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'ACTIVAR AGENTE WHATSAPP'}
+          {'ACTIVAR AGENTE'}
         </DialogTitle>
         <DialogContent
           sx={{

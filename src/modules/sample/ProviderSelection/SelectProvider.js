@@ -105,7 +105,9 @@ const SelectProvider = ({fcData}) => {
                   <TableCell>{parsedId[0]}</TableCell>
                   <TableCell>{parsedId[1]}</TableCell>
                   <TableCell>{obj.denominationProvider}</TableCell>
-                  <TableCell>{convertToDate(obj.updatedDate)}</TableCell>
+                  <TableCell>
+                    {convertToDate(obj.updatedAt || obj.updatedDate)}
+                  </TableCell>
                   {/* <TableCell>
                     <IconButton
                       onClick={() => {

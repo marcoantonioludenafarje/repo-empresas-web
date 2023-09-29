@@ -10,7 +10,6 @@ import {
 } from '../../shared/constants/ActionTypes';
 
 import API from '@aws-amplify/api';
-import {requestWhatsappModule} from '../../@crema/utility/Utils';
 
 export const newAgent = (payload) => {
   return (dispatch, getState) => {
@@ -108,12 +107,12 @@ export const startAgentSession = (payload) => {
       const data = await API.post('tunexo', '/utility/agent/startSession', {
         body: payload,
       });
-        console.log('START_AGENT_SESSION data', data);
-        dispatch({type: START_AGENT_SESSION, payload: data.response.payload});
-        dispatch({type: FETCH_SUCCESS, payload: 'success'});
-      } catch (error) {
-        console.log('START_AGENT_SESSION error', error);
-        dispatch({type: FETCH_ERROR, payload: 'error'});
-      };
+      console.log('START_AGENT_SESSION data', data);
+      dispatch({type: START_AGENT_SESSION, payload: data.response.payload});
+      dispatch({type: FETCH_SUCCESS, payload: 'success'});
+    } catch (error) {
+      console.log('START_AGENT_SESSION error', error);
+      dispatch({type: FETCH_ERROR, payload: 'error'});
+    }
   };
 };
