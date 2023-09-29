@@ -2554,6 +2554,7 @@ const GetReferralGuide = (props) => {
 
             <IconButton
               aria-label='close'
+              disabled={!registerError() && !registerSuccess()}
               onClick={sendStatus}
               sx={{
                 position: 'absolute',

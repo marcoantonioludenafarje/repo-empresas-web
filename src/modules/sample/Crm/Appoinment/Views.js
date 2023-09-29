@@ -104,9 +104,13 @@ const Views = (props) => {
   const {userDataRes} = useSelector(({user}) => user);
   const {listAppointments} = useSelector(({appointment}) => appointment);
 
+  const [contextMenu, setContextMenu] = React.useState(null);
   const [anchorElect, setAnchorElect] = useState(null);
   const openMenu = Boolean(anchorElect);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const handleCloseAgendaMenu = () => {
+    setContextMenu(null);
+  };
   const [evently, setEvenly] = useState(null);
   const [listEvents, setListEvents] = useState([]);
   console.log('Estado cita', listAppointments);
@@ -159,9 +163,23 @@ const Views = (props) => {
     console.log("cita evento", event);
     setSelectedEvent(cita);
     setAnchorElect(event.currentTarget);
-    console.log("cita puesta", anchorElect);
+    console.log("cita puesta", event.currentTarget);
   };
-  
+  const handleContextMenu = (event) => {
+    event.preventDefault();
+    setContextMenu(
+      contextMenu === null
+        ? {
+            mouseX: event.clientX + 2,
+            mouseY: event.clientY - 6,
+          }
+        : // repeated contextmenu when it is already open closes it with Chrome 84 on Ubuntu
+          // Other native context menus might behave different.
+          // With this behavior we prevent contextmenu from the backdrop to re-locale existing context menus.
+          null,
+    );
+  };
+
   const handleClose = () => {
     setAnchorElect(null);
   };
@@ -336,11 +354,12 @@ const Views = (props) => {
                 <TableCell>{event.desc}</TableCell>
                 <TableCell>
                   <Button
-                    id='basic-button'
-                    aria-controls={openMenu ? 'basic-menu' : undefined}
-                    aria-haspopup='true'
-                    aria-expanded={openMenu ? 'true' : undefined}
-                    onClick={handleClick.bind(event , event)}
+                    id={`agendaButton-${event.id}`}
+                    onClick={(event2) => {
+                      handleContextMenu(event2)
+                      setSelectedEvent(event);
+                    }} 
+                    style={{ cursor: 'pointer' }}
                   >
                     <KeyboardArrowDownIcon />
                   </Button>
@@ -421,15 +440,19 @@ const Views = (props) => {
       <Menu
         id='event-menu'
         anchorEl={anchorElect}
-        open={openMenu}
-        onClose={handleClose}
+        open={openMenu || contextMenu!==null}
+        onClose={contextMenu!==null ? handleCloseAgendaMenu : handleClose}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        //className={classes.menu}
-        //style={{ marginLeft: '100px' }}
+        anchorReference={contextMenu!==null ? "anchorPosition" : ""}
+        anchorPosition={
+          contextMenu !== null
+            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            : undefined
+        }
       >
         <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'generate_attention')}>
           Generar Atención
