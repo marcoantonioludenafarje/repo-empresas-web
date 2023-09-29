@@ -24,7 +24,14 @@ import {
   FormControlLabel,
   Checkbox,
   TextField,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
   Menu,
+  Paper
 } from '@mui/material';
 
 import {makeStyles} from '@mui/styles';
@@ -56,6 +63,7 @@ import {deleteAppointment, getAppointment} from 'redux/actions';
 import {useState} from 'react';
 import {convertToDate} from 'Utils/utils';
 
+
 const localizer = momentLocalizer(moment);
 
 const useStyles = makeStyles((theme) => ({
@@ -70,6 +78,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     marginBottom: '10px',
   },
+  menu:{
+    position: 'absolute'
+  }
 }));
 
 const newCamp = () => {
@@ -94,7 +105,7 @@ const Views = (props) => {
   const {listAppointments} = useSelector(({appointment}) => appointment);
 
   const [anchorElect, setAnchorElect] = useState(null);
-
+  const openMenu = Boolean(anchorElect);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [evently, setEvenly] = useState(null);
   const [listEvents, setListEvents] = useState([]);
@@ -141,18 +152,22 @@ const Views = (props) => {
     console.log('estado cita>>', datetocalendar);
     console.log('estado cita >>>>>', listEvents);
   }, [listAppointments]);
+  let codProdSelected = '';
 
-  const handleClick = (event, eventEl) => {
-    setSelectedEvent(event);
-    setAnchorElect(eventEl);
+  const handleClick = (cita, event) => {
+    console.log("cita elegida", cita);
+    console.log("cita evento", event);
+    setSelectedEvent(cita);
+    setAnchorElect(event.currentTarget);
+    console.log("cita puesta", anchorElect);
   };
-
+  
   const handleClose = () => {
     setAnchorElect(null);
   };
 
-  const handleMenuItemClick = (action, event) => {
-    console.log('Selected action:', action, event);
+  const handleMenuItemClick = (event, action) => {
+    console.log('Selected action, id:', action, event);
     switch (action) {
       case 'edit':
         Router.push({
@@ -161,11 +176,11 @@ const Views = (props) => {
         });
         break;
       case 'delete':
-        console.log('delete', action, event);
+        console.log('delete, id', action, event);
         let delAppoint = {
           request: {
             payload: {
-              appointmentId: event.id,
+              appointmentId: event,
               merchantId: userDataRes.merchantSelected.merchantId,
             },
           },
@@ -230,6 +245,113 @@ const Views = (props) => {
     }
   };
 
+  const CustomMonthEvent = ({ event, onClick }) => {
+    const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
+    return (
+      <Box
+        onClick={onClick}
+        sx={{
+          cursor: 'pointer',
+          '&:hover': {
+            backgroundColor: 'transparent', 
+          },
+        }}
+      >
+        <Typography variant="body1" gutterBottom>
+          {`${event.title} - ${clientWords}`}
+        </Typography>
+        <Typography variant="body2">
+          {moment(event.start).format('LT')} - {`Duración: ${event.duration} min`}
+        </Typography>
+      </Box>
+    );
+  };
+
+  const CustomWeekEvent = ({event, onClick}) =>{
+    const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
+    return (
+      <Box
+        onClick={onClick}
+        sx={{
+          cursor: 'pointer',
+          '&:hover': {
+            backgroundColor: 'transparent', 
+          },
+        }}
+      >
+        <Typography variant="body1" gutterBottom>
+          {`${clientWords}`}
+        </Typography>
+      </Box>
+    );
+  }
+
+  const CustomDayEvent = ({event, onClick}) =>{
+    const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
+    return (
+      <Box
+        onClick={onClick}
+        sx={{
+          cursor: 'pointer',
+          '&:hover': {
+            backgroundColor: 'transparent', 
+          },
+        }}
+      >
+        <Typography variant="body1" gutterBottom>
+        {`${event.title} - ${clientWords} - Duración: ${event.duration} min`}
+        </Typography>
+      </Box>
+    );
+  }
+
+  const CustomAgenda = ({event}) => {
+    console.log("eventos", event);
+    return (
+      <TableContainer component={Paper}>
+        <Table
+          sx={{minWidth: 650}}
+          stickyHeader
+          size='small'
+          aria-label='sticky table'
+        >
+          <TableHead>
+            <TableRow>
+              <TableCell>Cliente</TableCell>
+              <TableCell>Duración</TableCell>
+              <TableCell>Título</TableCell>
+              <TableCell>Descripción</TableCell> 
+              <TableCell>Opciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            
+            {console.log("evento", event)}
+                <TableRow key={event.id}
+                  sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                >
+                <TableCell>{event.clientName}</TableCell>
+                <TableCell>{event.duration}</TableCell>
+                <TableCell>{event.title}</TableCell>
+                <TableCell>{event.desc}</TableCell>
+                <TableCell>
+                  <Button
+                    id='basic-button'
+                    aria-controls={openMenu ? 'basic-menu' : undefined}
+                    aria-haspopup='true'
+                    aria-expanded={openMenu ? 'true' : undefined}
+                    onClick={handleClick.bind(event , event)}
+                  >
+                    <KeyboardArrowDownIcon />
+                  </Button>
+                </TableCell>
+              </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    );
+  };
+
   return (
     <Card>
       <TextField
@@ -249,57 +371,8 @@ const Views = (props) => {
       {
         <Calendar
           localizer={localizer}
-          events={listEvents.map((event) => ({
-            ...event,
-            title: (
-              <Box sx={{position: 'relative'}}>
-                <Typography variant='subtitle1'>{event.title}</Typography>
-                <Button
-                  aria-controls='event-menu'
-                  aria-haspopup='true'
-                  onClick={(e) => handleClick(event, e.currentTarget)}
-                  sx={{position: 'absolute', top: 0, right: 0}}
-                >
-                  <ArrowCircleLeftOutlinedIcon />
-                </Button>
-                <Typography variant='body2'>{event.clientName}</Typography>
-                <Typography variant='body2'>
-                  Inicio: {moment(event.start).format('HH:mm')}
-                </Typography>
-                <Typography variant='body2'>
-                  Duración: {event.duration} minutos
-                </Typography>
-                <Menu
-                  id='event-menu'
-                  anchorEl={anchorElect}
-                  open={Boolean(anchorElect)}
-                  onClose={handleClose}
-                >
-                  <MenuItem
-                    onClick={() => handleMenuItemClick('generate_attention')}
-                  >
-                    Generar Atención
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => handleMenuItemClick('send_reminder')}
-                  >
-                    Envíar Recordatorio
-                  </MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick('attended')}>
-                    Atendido
-                  </MenuItem>
-                  <MenuItem onClick={() => handleMenuItemClick('edit', event)}>
-                    Editar
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => handleMenuItemClick('delete', event)}
-                  >
-                    Eliminar
-                  </MenuItem>
-                </Menu>
-              </Box>
-            ),
-          }))}
+          events={listEvents}
+          onSelectEvent={handleClick}
           startAccessor='start'
           endAccessor='end'
           messages={{
@@ -315,6 +388,21 @@ const Views = (props) => {
             event: 'Evento',
             noEventsInRange: 'No hay eventos en este rango.',
           }}
+          //views={['month','week','day','agenda']}
+          components={{
+            month: {
+              event: CustomMonthEvent
+            },
+            week:{
+              event: CustomWeekEvent
+            },
+            day:{
+              event: CustomDayEvent
+            },
+            agenda:{
+              event: CustomAgenda
+            }
+          }} 
           // components={{
           //   month: {
           //     event: EventMonthViews,
@@ -330,6 +418,35 @@ const Views = (props) => {
         />
       }
 
+      <Menu
+        id='event-menu'
+        anchorEl={anchorElect}
+        open={openMenu}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        //className={classes.menu}
+        //style={{ marginLeft: '100px' }}
+      >
+        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'generate_attention')}>
+          Generar Atención
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'send_reminder')}>
+          Envíar Recordatorio
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'attended')}>
+          Atendido
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'edit')}>
+          Editar
+        </MenuItem>
+        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'delete')}>
+          Eliminar
+        </MenuItem>
+      </Menu>
       <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'

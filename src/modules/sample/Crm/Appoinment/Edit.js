@@ -547,7 +547,7 @@ const Edit = (props) => {
                     </FormControl>
                   </Grid>
                   <Grid item xs={8} sm={12}>
-                    <AppUpperCaseTextField
+                    <AppTextField
                       label='Descripción *'
                       name='description'
                       variant='outlined'
@@ -591,17 +591,14 @@ const Edit = (props) => {
                     />
                   </Grid>
                   <Grid item xs={8} sm={12}>
-                    <AppUpperCaseTextField
+                    <AppTextField
                       label='Duración escriba en minutos*'
                       name='duration'
                       variant='outlined'
                       type='number'
-                      onChange={(e) => {
-                        console.log('timelord', e);
-                        const filldate = new Date(
-                          publishDate.getTime() +
-                            getValueField('duration').value * 60000,
-                        );
+                      onInput={(e) => {
+                        console.log('timelord', e.target.value);
+                        const filldate = new Date(publishDate.getTime() + e.target.value * 60 * 1000)
                         setFinalDate(filldate);
                       }}
                       sx={{

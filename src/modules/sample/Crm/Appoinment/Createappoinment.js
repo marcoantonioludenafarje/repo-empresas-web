@@ -187,7 +187,10 @@ const Createappoinment = (props) => {
   const {errorMessage} = useSelector(({appointment}) => appointment);
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const {businessParameter, globalParameter} = useSelector(
+    ({general}) => general,
+  );
+  console.log("parametro negocio", businessParameter);
   const {listSpecialists} = useSelector(({specialists}) => specialists);
   console.log('confeti especialistas', listSpecialists);
 
@@ -511,7 +514,7 @@ const Createappoinment = (props) => {
                     </FormControl>
                   </Grid>
                   <Grid item xs={8} sm={12}>
-                    <AppUpperCaseTextField
+                    <AppTextField
                       label='Descripción *'
                       name='description'
                       variant='outlined'
@@ -555,17 +558,20 @@ const Createappoinment = (props) => {
                     />
                   </Grid>
                   <Grid item xs={8} sm={12}>
-                    <AppUpperCaseTextField
+                    <AppTextField
                       label='Duración escriba en minutos*'
                       name='duration'
                       variant='outlined'
                       type='number'
-                      onChange={(e) => {
-                        console.log('timelord', e);
-                        const filldate = new Date(
-                          publishDate.getTime() +
-                            getValueField('duration').value * 60000,
-                        );
+                      onInput={(e) => {
+                        // console.log('timelord', e.target.value);
+                        // console.log('timelord pub', publishDate);
+                        // console.log('timelord publish', publishDate.getTime());
+                        // console.log('timelord time en mili', e.target.value * 60 * 1000);
+                        // console.log('timelord suma', new Date(publishDate.getTime() + e.target.value * 60 * 1000));
+                        
+                        const filldate = new Date(publishDate.getTime() + e.target.value * 60 * 1000)
+                        console.log("timelord >>>", filldate);
                         setFinalDate(filldate);
                       }}
                       sx={{
@@ -686,9 +692,13 @@ const Createappoinment = (props) => {
                           name='recordingClientByWhatsapp'
                           color='primary'
                         />
+                        
                       }
                       label='Recordatorio a cliente por Whatsapp'
                     />
+                    <Typography>
+                      {businessParameter[5]?.value[0]?.periodicityAction.time}
+                    </Typography>
                   </Grid>
                 </Grid>
 

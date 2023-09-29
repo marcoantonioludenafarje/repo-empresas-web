@@ -152,6 +152,7 @@ export default function Views(props) {
     console.log('evento', event);
     console.log('index del map', codPro);
     setAnchorEl(event.currentTarget);
+    console.log('evento>', anchorEl);
     codProdSelected = codPro;
     selectedCampaign =
       listCampaigns[codPro]; /* .find((obj) => obj.client == codPro); */
