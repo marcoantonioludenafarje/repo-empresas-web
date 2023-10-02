@@ -146,6 +146,7 @@ const Views = (props) => {
       : 'description',
     clientName: cita.clientName ? cita.clientName : 'Client',
     duration: cita.duration,
+    attention: cita.attention,
   }));
 
   function convertStringToDate(dateString) {
@@ -385,14 +386,16 @@ const Views = (props) => {
 
   const CustomMonthEvent = ({ event, onClick }) => {
     const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
+    console.log("atention", event);
+    const backgroundColor = event.attention==='Progress' ? 'green' : 'red';
     return (
       <Box
         onClick={onClick}
         sx={{
           cursor: 'pointer',
-          '&:hover': {
-            backgroundColor: 'transparent', 
-          },
+          backgroundColor: backgroundColor,
+          borderColor: backgroundColor,
+          width: '100%'
         }}
       >
         <Typography variant="body1" gutterBottom>
@@ -407,11 +410,13 @@ const Views = (props) => {
 
   const CustomWeekEvent = ({event, onClick}) =>{
     const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
+    const backgroundColor = event.attention==='Progress' ? 'green' : 'red';
     return (
       <Box
         onClick={onClick}
         sx={{
           cursor: 'pointer',
+          backgroundColor: backgroundColor,
           '&:hover': {
             backgroundColor: 'transparent', 
           },
@@ -508,7 +513,7 @@ const Views = (props) => {
         Aplicar Filtro
       </Button>
       {
-        <Calendar
+        <DragAndDropCalendar
           localizer={localizer}
           events={listEvents}
           onSelectEvent={handleClick}
@@ -547,6 +552,7 @@ const Views = (props) => {
           //     event: EventMonthViews,
           //   },
           // }}
+          // className={xstyles}
           style={{
             width: '95%',
             height: '80%',
