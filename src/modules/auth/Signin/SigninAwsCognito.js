@@ -149,7 +149,7 @@ const SigninAwsCognito = () => {
         </Formik>
       </Box>
 
-      <Box
+      {/*<Box
         sx={{
           color: 'grey.500',
           mb: {xs: 5, md: 7},
@@ -174,7 +174,7 @@ const SigninAwsCognito = () => {
             </a>
           </Link>
         </Box>
-      </Box>
+        </Box>*/}
 
       {/* <Box
         sx={{
