@@ -513,7 +513,7 @@ const Views = (props) => {
         Aplicar Filtro
       </Button>
       {
-        <DragAndDropCalendar
+        <Calendar
           localizer={localizer}
           events={listEvents}
           onSelectEvent={handleClick}
