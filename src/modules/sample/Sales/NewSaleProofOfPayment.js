@@ -210,11 +210,9 @@ const NewSaleProofOfPayment = (props) => {
   console.log('businessParameter', businessParameter);
   const {globalParameter} = useSelector(({general}) => general);
   console.log('globalParameter123', globalParameter);
-  const {addReceiptRes} = useSelector(({movements}) => movements);
-  console.log('addReceiptRes', addReceiptRes);
-  const {successMessage} = useSelector(({movements}) => movements);
+  const {successMessage} = useSelector(({sale}) => sale);
   console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({movements}) => movements);
+  const {errorMessage} = useSelector(({sale}) => sale);
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
   const {newSaleProofOfPaymentRes} = useSelector(({sale}) => sale);
@@ -766,7 +764,7 @@ const NewSaleProofOfPayment = (props) => {
               id='alert-dialog-description'
             >
               Se ha producido un error al registrar. <br />
-              {newSaleProofOfPaymentRes !== undefined && 'error' in newSaleRes
+              {newSaleProofOfPaymentRes !== undefined && 'error' in newSaleProofOfPaymentRes
                 ? newSaleProofOfPaymentRes.error
                 : null}
             </DialogContentText>
