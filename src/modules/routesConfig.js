@@ -77,6 +77,14 @@ const rolesRoutesConfig = {
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/admin/cleanUp',
         },
+        {
+          id: 'adminTable',
+          title: 'Previews',
+          messageId: 'sidebar.sample.admin.previews',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/admin/previews',
+        }
       ],
     },
     {

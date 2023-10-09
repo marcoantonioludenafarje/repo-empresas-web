@@ -251,6 +251,7 @@ const Views = (props) => {
           }
         }
         console.log("edit>>", letpayload, cita);
+        setOpen2(true);
         toEditAppointment(letpayload)
         break;
         
@@ -626,7 +627,34 @@ const Views = (props) => {
         </DialogActions>
       </Dialog>
       {/* Dialog DEtalle */}
-
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Atender Cita'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea eliminar realmente la cita seleccionada?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={confirmCancel}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
       {/*Respuesta */}
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog

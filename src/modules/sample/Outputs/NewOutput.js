@@ -457,6 +457,14 @@ const NewOutput = (props) => {
     forceUpdate();
   };
 
+  const editProduct = (index) =>{
+    console.log("Llega a edit", index);
+    console.log("llega", selectedProducts);
+    console.log("llega lista", listProducts);
+    let productox = listProducts.find((producto)=>producto.businessProductCode === selectedProducts[0].businessProductCode)
+    console.log("llega pro", productox);
+  }
+
   const buildNewDoc = (clientId, document) => {
     console.log('Documentos', clientId, document);
     if (document && clientId) {
@@ -783,6 +791,8 @@ const NewOutput = (props) => {
     setShowInfo(isInputChecked);
     setEditTotal(isInputChecked);
     console.log('Evento de edicion total', isInputChecked);
+    console.log('Evento edit total', editTotal);
+    console.log('Evento show', showInfo);
   };
   const handleBill = (event, isInputChecked) => {
     setGenerateBill(isInputChecked);
@@ -1126,6 +1136,7 @@ const NewOutput = (props) => {
                   <SelectedProducts
                     arrayObjs={selectedProducts}
                     toDelete={removeProduct}
+                    //toEdit={editProduct}
                   />
                 </Box>
                 <Collapse in={showAlert}>

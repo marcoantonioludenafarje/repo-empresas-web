@@ -406,8 +406,33 @@ const Createappoinment = (props) => {
     setOpen(false);
   };
 
+
+  const timedura = () =>{
+        // Obtén el valor de businessParameter[5]?.value[0]?.periodicityAction.time
+    const timeValue = businessParameter[5]?.value[0]?.periodicityAction.time;
+
+    if (timeValue) {
+      // Construye el texto deseado
+      const resultText = `antes de ${timeValue} horas de la cita`;
+
+      // Ahora puedes mostrar resultText en tu componente Typography
+      return (
+        <Typography>
+          {resultText}
+        </Typography>
+      );
+    } else {
+      // Manejar el caso en el que el valor de tiempo no está disponible
+      return (
+        <Typography>
+          El valor de tiempo no está disponible.
+        </Typography>
+      );
+    }
+  }
+
   return (
-    <Card sx={{p: 4}}>
+    <Card sx={{p: 4, maxWidth: '100%', margin: '0 auto'}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
@@ -450,8 +475,8 @@ const Createappoinment = (props) => {
                 id='principal-form'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={8} sm={12}>
+                <Grid container sx={{width: 500, margin: 'auto'}}>
+                  <Grid item xs={8} sm={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Título *'
                       name='title'
@@ -695,8 +720,8 @@ const Createappoinment = (props) => {
                       }
                       label='Recordatorio a cliente por Celular'
                     />
-                    <Typography>
-                      {businessParameter[5]?.value[0]?.periodicityAction.time}
+                    <Typography align='center'>
+                      {timedura()}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -740,6 +765,7 @@ const Createappoinment = (props) => {
         sx={{textAlign: 'center'}}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
+        maxWidth='xl'
       >
         {typeDialog == 'client' ? (
           <>
@@ -750,7 +776,7 @@ const Createappoinment = (props) => {
                 className={classes.closeButton}
               />
             </DialogTitle>
-            <DialogContent>
+            <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
               <AddClientForm sendData={getClient} />
             </DialogContent>
           </>
