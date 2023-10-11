@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import AppPageMeta from '../../../@crema/core/AppPageMeta';
 import {
   Table,
@@ -140,20 +140,15 @@ const Previews = (props) => {
   const theme = useTheme();
   const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  let canvasRef = useRef(null);
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
     let someDate = new Date(strDate);
     someDate = someDate.getTime();
     return someDate;
   };
-  const [openStatus, setOpenStatus] = React.useState(false);
-  const [openError, setOpenError] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(25);
-  const [totalItems, setTotalItems] = React.useState([]);
-  const [lastKey, setLastKey] = React.useState(null);
-  const [errorDetail, setErrorDetail] = React.useState('');
+
+  const [scale, setScale] = React.useState(1.0);
   const [initialTime, setInitialTime] = React.useState(
     toEpoch(Date.now() - 89280000),
   );
@@ -198,26 +193,6 @@ const Previews = (props) => {
         dispatch(previsualizeReferralGuide(payload));
       };
 
-  const handleNextPage = (event) => {
-    let listPayload = {
-      request: {
-        payload: {
-          initialTime: initialTime,
-          finalTime: finalTime,
-          proofType: proofType,
-          merchantId:
-            listProdBusiness.length > 0
-              ? selectedProdBusiness.merchantId
-              : userDataRes.merchantSelected.merchantId,
-          acceptedStatus: selectedAcceptedStatus,
-        },
-      },
-    };
-    listPayload.request.payload.LastEvaluatedKey =
-      proofMonitoringLastEvaluatedKey_pageListGuide;
-    console.log('listPayload111:handleNextPage:', listPayload);
-    toListProofMonitoringItems(listPayload);
-  };
 
   //GET APIS RES
   const {
@@ -407,6 +382,7 @@ const Previews = (props) => {
         label: 'TODOS',
         denominationMerchant: 'TODOS',
       });
+      console.log('negocio', selectedProdBusiness);
     }
   }, [listBusinessRes]);
 
@@ -464,6 +440,7 @@ const Previews = (props) => {
     setOpenPrevisualizer(false);
   };
   const handleClickOpenPrevisualizer = () => {
+    console.log("negocio", selectedProdBusiness);
     setOpenPrevisualizer(true);
     setUrlPdf('');
     let previsualizePayload = {
@@ -604,7 +581,7 @@ const Previews = (props) => {
               setSelectedProdBusiness(value);
             }
           }}
-          options={[...listProdBusiness, "digital", "xd"]}
+          options={listProdBusiness}
           renderInput={(params) => (
             <TextField
               {...params}
@@ -625,16 +602,17 @@ const Previews = (props) => {
           : 0
       }`}</span>
 
-        <Box display="flex" justifyContent="center" mt={2}>
+        {(selectedProdBusiness.merchantId) !== "all" ? <Box display="flex" justifyContent="center" mt={2}>
             <Stack direction="row" spacing={2}>
             <Button variant="contained" onClick={handleBoletaClick}>Boleta</Button>
             <Button variant="contained" onClick={handleFacturaClick}>Factura</Button>
-            <Button variant="contained" onClick={handleGuiaRemisionClick}>Guía de Remisión</Button>
+            <Button variant="contained" onClick={handleClickOpenPrevisualizer}>Guía de Remisión</Button>
             <Button variant="contained" onClick={handleNotaCreditoClick}>Nota de Crédito</Button>
             <Button variant="contained" onClick={handleNotaDebitoClick}>Nota de Débito</Button>
             </Stack>
         </Box>
-
+        : null
+      }
         { viewGuide?<Box
             sx={{
             flex: 1,

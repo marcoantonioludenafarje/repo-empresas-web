@@ -152,6 +152,14 @@ const rolesRoutesConfig = {
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/specialists/table',
         },
+        {
+          id: 'specialistsTable',
+          title: 'Specialist Table',
+          messageId: 'sidebar.sample.viewAttentions',
+          type: 'item',
+          icon: <TableRowsOutlinedIcon fontSize='small' />,
+          url: '/sample/attentions/table',
+        },
       ],
     },
     {
