@@ -554,7 +554,7 @@ const SalesTable = (props) => {
   const goToUpdate = () => {
     console.log('Actualizando', selectedSale);
     Router.push({
-      pathname: '/sample/Sales/update',
+      pathname: '/sample/sales/update',
       query: {...selectedSale},
     });
   };
@@ -695,22 +695,31 @@ const SalesTable = (props) => {
     listSalesRes.map((obj) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
       obj.codigo1 =
-        showMinType(obj.movementType) +
-        '-' +
-        (obj.codMovement ? obj.codMovement.split('-')[1] : '');
+        obj.codMovement;
       obj.createdAt = convertToDateWithoutTime(obj.createdAt);
       obj.updatedAt = convertToDateWithoutTime(
         obj.updatedAt || obj.updatedDate,
       );
-      obj.movementSubType = `${showSubtypeMovement(obj.movementSubType, 'x')}`
-        ? `${showSubtypeMovement(obj.movementSubType, 'x')}`
-        : '';
+      switch (obj.proofOfPaymentType) {
+        case 'receipt':
+          obj.proofOfPaymentType = "Boleta"
+          break;
+        case 'ticket':
+          obj.proofOfPaymentType = "Ticket"
+          break;
+        case 'bill':
+          obj.proofOfPaymentType = "Factura"
+          break;
+      
+        default:
+          break;
+      }
       obj.clientdenomination =
-        (obj.client ? obj.numberDocumentClient + ' - ' : '') +
-        (obj.client ? obj.client.denomination : obj.clientName);
-      obj.totalPrice1 = obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '';
+        (obj.client.id ? (obj.client.id.split("-")[0]+"-"+obj.client.id.split("-")[1] + ' - ') : '') +
+        (obj.client ? obj.client.denomination : '');
+      obj.totalPrice1 = (obj.totalPriceWithIgv - obj.totalIgv).toFixed(2);
       obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
-        ? Number(obj.totalPriceWithIgv.toFixed(3))
+        ? Number(obj.totalPriceWithIgv.toFixed(2))
         : '';
       obj.status1 = `${showStatus(obj.status, 'x')}`
         ? `${showStatus(obj.status, 'x')}`
@@ -723,44 +732,36 @@ const SalesTable = (props) => {
         : '';
 
       console.log('statusObject', obj);
-      obj.receipt1 = statusTextObject(obj, obj.existReceipt, 'receipt');
-      obj.ticket1 = statusTextObject(
-        obj,
-        obj.existSellTicket ? true : false,
-        'ticket',
-      );
-      obj.referralGuide1 = statusTextObject(
-        obj,
-        obj.existReferralGuide,
-        'referralGuide',
-      );
-      obj.bill1 = statusTextObject(obj, obj.existBill, 'bill');
-      obj.income1 = statusTextObject(obj, obj.existIncome, 'income');
+      obj.income1 = obj.contableMovement.contableMovementId
+        ? `${showMinTypeRelated('INCOME')}-${
+            obj.contableMovement.codMovement.split('-')[1]
+          }`
+        : '';
 
       // Crear la cadena de texto para productos
       let productsText = '';
-
-      obj.products.forEach((producto, index) => {
-        const igv = producto.productIgv || 0.18;
-        const subtotal = Number(
-          (
-            producto.quantityMovement *
-            producto.priceBusinessMoneyWithIgv *
-            (1 + igv)
-          ).toFixed(2),
-        );
-
-        const productText = `Descripción: ${producto.description}| Cantidad: ${producto.quantityMovement}| Subtotal: ${subtotal}| Categoría: ${producto.category}`;
-
-        if (index > 0) {
-          productsText += '~';
-        }
-
-        productsText += productText;
-      });
+      if(obj.products){
+        obj.products.forEach((producto, index) => {
+          const igv = obj.igv;
+          const subtotal = Number(
+            (
+              producto.quantityMovement *
+              producto.unitPrice *(producto.taxCode == 1000 ?
+              (1 + igv) : 1)
+            ).toFixed(2),
+          );
+          const productText = `Descripción: ${producto.description}| Cantidad: ${producto.quantityMovement}| Subtotal: ${subtotal}| Categoría: ${producto.category}`;
+  
+          if (index > 0) {
+            productsText += '~';
+          }
+  
+          productsText += productText;
+        });
+      }
 
       obj.products = productsText;
-
+      obj.observation1 = obj.observation;
       console.log('statusObject1', obj);
 
       listResult.push(
@@ -768,58 +769,49 @@ const SalesTable = (props) => {
           codigo1,
           createdAt,
           updatedAt,
-          movementSubType,
+          proofOfPaymentType,
+          proofOfPaymentNumber,
+          issueDate,
           clientdenomination,
           products,
-          receipt1,
-          ticket1,
-          referralGuide1,
-          bill1,
-          income1,
           totalPrice1,
           totalPriceWithIgv1,
-          status1,
+          income1,
+          observation1,
           userCreatedMetadata1,
-          userUpdatedMetadata1,
         }) => ({
           codigo1,
           createdAt,
           updatedAt,
-          movementSubType,
+          proofOfPaymentType,
+          proofOfPaymentNumber,
+          issueDate,
           clientdenomination,
           products,
-          receipt1,
-          ticket1,
-          referralGuide1,
-          bill1,
-          income1,
           totalPrice1,
           totalPriceWithIgv1,
-          status1,
+          income1,
+          observation1,
           userCreatedMetadata1,
-          userUpdatedMetadata1,
         }))(obj),
       );
-    });
+      });
     return listResult;
   };
   const headersExcel = [
     'Codigo',
     'Fecha registrada',
     'Ultima actualización',
-    'Tipo de movimiento',
+    'Tipo de Comprobante',
+    'Nro Comprobante',
+    'Fecha Comprobante',
     'Cliente',
     'Detalle productos',
-    'Boleta relacionada',
-    'Ticket relacionada',
-    'Guía relacionada',
-    'Factura relacionada',
-    'Ingreso relacionado',
     `Precio total ${money_unit} sin IGV`,
     `Precio total ${money_unit} con IGV`,
-    'Estado',
+    'Ingreso relacionado',
+    'Observaciones',
     'Creado por',
-    'Modificado por',
   ];
   const exportDoc = () => {
     var ws = XLSX.utils.json_to_sheet(cleanList());
@@ -1372,19 +1364,23 @@ const SalesTable = (props) => {
 
   function showSubtotal(saleProducts) {
     let saleSubtotal = 0;
+    if(Array.isArray(saleProducts) && saleProducts.length> 0){
 
-    saleProducts.forEach((obj) => {
-      saleSubtotal += obj.unitPrice * obj.quantityMovement;
-    });
+      saleProducts.forEach((obj) => {
+        saleSubtotal += obj.unitPrice * obj.quantityMovement;
+      });
+    }
     return Number(saleSubtotal).toFixed(2);
   }
   function showTotalIgv(saleProducts) {
     let saleTotalIgv = 0;
-    saleProducts.forEach((obj) => {
-      if (obj.taxCode == 1000) {
-        saleTotalIgv += obj.unitPrice * obj.quantityMovement * saleIgvDefault;
-      }
-    });
+    if(Array.isArray(saleProducts) && saleProducts.length > 0){
+      saleProducts.forEach((obj) => {
+        if (obj.taxCode == 1000) {
+          saleTotalIgv += obj.unitPrice * obj.quantityMovement * saleIgvDefault;
+        }
+      });
+    }
     return Number(saleTotalIgv).toFixed(2);
   }
   const sendSaleByMail = (data) => {
@@ -1722,8 +1718,8 @@ const SalesTable = (props) => {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {obj.products !== undefined &&
-                                obj.products.length !== 0 ? (
+                                {obj.products && Array.isArray(obj.products) &&
+                                obj.products.length > 0 ? (
                                   obj.products.map((subProduct, index) => {
                                     return (
                                       <TableRow key={index}>
@@ -1943,7 +1939,7 @@ const SalesTable = (props) => {
         {localStorage
           .getItem('pathsBack')
           .includes('/facturacion/sale/update') === true ? (
-          <MenuItem disabled onClick={goToUpdate}>
+          <MenuItem onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Actualizar
           </MenuItem>
