@@ -283,8 +283,8 @@ const NewDriver = () => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={8} sm={12}>
+                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                  <Grid item xs={12} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='documentType-label'
@@ -308,7 +308,7 @@ const NewDriver = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Número Identificador *'
                       name='nroDocument'
@@ -323,7 +323,7 @@ const NewDriver = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Nombres *'
                       name='firstName'
@@ -338,7 +338,7 @@ const NewDriver = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Apellidos *'
                       name='lastName'
@@ -353,7 +353,7 @@ const NewDriver = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Licencia *'
                       name='license'

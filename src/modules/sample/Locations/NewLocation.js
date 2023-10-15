@@ -320,8 +320,8 @@ const NewLocation = () => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={8} sm={12}>
+                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Código *'
                       name='modularCode'
@@ -336,7 +336,7 @@ const NewLocation = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Nombre *'
                       name='locationName'
@@ -351,7 +351,7 @@ const NewLocation = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Dirección *'
                       name='locationDetail'
@@ -367,7 +367,7 @@ const NewLocation = () => {
                     />
                   </Grid>
 
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <Autocomplete
                       disablePortal
                       id='ubigeo'
@@ -408,7 +408,7 @@ const NewLocation = () => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='type-label' style={{fontWeight: 200}}>
                         Tipo
@@ -435,7 +435,7 @@ const NewLocation = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Código de Establecimiento Sunat (Domicilio Fiscal = 0000)'
                       name='sunatEstablishmentCode'

@@ -334,7 +334,7 @@ const NewSpecialist = (props) => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid container spacing={2} sx={{maxWidth: 500, margin: 'auto'}}>
                   <>
                     <Grid item xs={12}>
                       <Box

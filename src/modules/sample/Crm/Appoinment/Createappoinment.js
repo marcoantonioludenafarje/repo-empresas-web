@@ -432,7 +432,7 @@ const Createappoinment = (props) => {
   }
 
   return (
-    <Card sx={{p: 4, maxWidth: '100%', margin: '0 auto'}}>
+    <Card sx={{p: 4, width: '100%', margin: '0 auto'}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
@@ -448,6 +448,7 @@ const Createappoinment = (props) => {
           flexDirection: 'column',
           mb: 5,
           mx: 'auto',
+          width: '100%'
         }}
       >
         <Formik
@@ -475,8 +476,8 @@ const Createappoinment = (props) => {
                 id='principal-form'
                 /* onChange={handleActualData} */
               >
-                <Grid container sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                  <Grid item xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Título *'
                       name='title'
@@ -491,7 +492,7 @@ const Createappoinment = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -508,7 +509,7 @@ const Createappoinment = (props) => {
                         : 'No Definido'}
                     </Typography>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='specialist-label'
@@ -537,7 +538,7 @@ const Createappoinment = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Descripción *'
                       name='description'
@@ -556,7 +557,7 @@ const Createappoinment = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <DateTimePicker
                       minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
                       value={publishDate}
@@ -581,7 +582,7 @@ const Createappoinment = (props) => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Duración escriba en minutos*'
                       name='duration'
@@ -608,7 +609,7 @@ const Createappoinment = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <DateTimePicker
                       minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
                       value={finalDate}
@@ -625,7 +626,7 @@ const Createappoinment = (props) => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -641,7 +642,7 @@ const Createappoinment = (props) => {
                     />
                   </Grid>
                   {notifyClientByEmail && (
-                    <Grid item xs={8} sm={12}>
+                    <Grid item xs={12} sm={12}>
                       <AppTextField
                         label='Correo de cliente'
                         name='clientEmail'
@@ -657,7 +658,7 @@ const Createappoinment = (props) => {
                       />
                     </Grid>
                   )}
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -705,7 +706,7 @@ const Createappoinment = (props) => {
                       />
                     </Grid>
                   )}
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControlLabel
                       control={
                         <Checkbox

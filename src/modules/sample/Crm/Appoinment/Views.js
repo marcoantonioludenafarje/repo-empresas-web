@@ -118,6 +118,7 @@ const Views = (props) => {
 
 
   const [open2, setOpen2] = useState(false);
+  const [openAten, setOpenAten] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
   const [contextMenu, setContextMenu] = React.useState(null);
   const [anchorElect, setAnchorElect] = useState(null);
@@ -628,7 +629,7 @@ const Views = (props) => {
       </Dialog>
       {/* Dialog DEtalle */}
       <Dialog
-        open={open}
+        open={openAten}
         onClose={handleClose}
         sx={{textAlign: 'center'}}
         aria-labelledby='alert-dialog-title'

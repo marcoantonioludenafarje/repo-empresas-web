@@ -324,7 +324,7 @@ const UpdateProvider = (props) => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
+                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
                   <Grid item xs={12}>
                     <FormControl disabled fullWidth sx={{my: 2}}>
                       <InputLabel

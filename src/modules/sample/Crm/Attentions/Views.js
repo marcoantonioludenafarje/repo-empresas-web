@@ -53,6 +53,7 @@ import {
 } from '../../../../redux/actions/Agent';
 
 import {deleteAppointment, getAppointment, updateAppointment} from 'redux/actions';
+import { getAttention, updateAttention, deleteAttention } from 'redux/actions';
 import {convertToDate} from '../../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -96,25 +97,16 @@ export default function Views(props) {
   const [open2, setOpen2] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
 
-  const [openErrorQR, setopenErrorQR] = React.useState(false);
-  const [openLimitQR, setopenLimitQR] = React.useState(false);
-  const [openQRSuccess, setopenQRSuccess] = React.useState(false);
-  const [imgQR, setimgQR] = React.useState('');
-  const [countImgQR, setCountImgQR] = React.useState(0);
-
-  const [openQRPop, setopenQRPop] = React.useState(false);
-  const [openQR, setopenQR] = React.useState(false);
-
   const [searchValue, setSearchValue] = useState('');
   const [filteredAgents, setFilteredAgents] = useState([]);
 
-  const {successMessage} = useSelector(({agents}) => agents);
-  const {errorMessage} = useSelector(({agents}) => agents);
+  const {successMessage} = useSelector(({attention}) => attention);
+  const {errorMessage} = useSelector(({attention}) => attention);
 
   let popUp = false;
 
-  const getCita = (payload) => {
-    dispatch(getAppointment(payload));
+  const getAtencion = (payload) => {
+    dispatch(getAttention(payload));
   };
 
   const deleteAgent = (payload) => {
@@ -130,8 +122,11 @@ export default function Views(props) {
   const {userDataRes} = useSelector(({user}) => user);
 
   const {listAppointments} = useSelector(({appointment}) => appointment);
+  const {listAttentions} = useSelector(({attention}) => attention)
+  const state = useSelector((state)=>state);
+  console.log("ESTADO", state);
 
-  console.log('confeti los agentes', listAppointments);
+  console.log('confeti los agentes', listAttentions);
 
   const handleClickAway = () => {
     // Evita que se cierre el diálogo haciendo clic fuera del contenido
@@ -184,13 +179,12 @@ export default function Views(props) {
       let listPayload = {
         request: {
           payload: {
-            robotName: searchValue,
             merchantId: userDataRes.merchantSelected.merchantId,
             LastEvaluatedKey: null,
           },
         },
       };
-      getAppointment(listPayload);
+      getAtencion(listPayload);
       // setFirstload(true);
     }
   }, [userDataRes]);
@@ -349,7 +343,7 @@ export default function Views(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listAppointments?.map((row, index) => (
+            {listAttentions?.map((row, index) => (
               <TableRow
                 key={index}
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -463,7 +457,7 @@ export default function Views(props) {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar agente'}
+          {'Eliminar atención'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -494,23 +488,24 @@ export default function Views(props) {
       >
         {localStorage
           .getItem('pathsBack')
+          .includes('/inventory/robot/enable') === true ? (
+          <MenuItem
+            disabled={true}
+            onClick={setEnableState}
+          >
+            <ArrowCircleUpOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            Enviar mensaje
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
           .includes('/inventory/robot/update') === true ? (
           <MenuItem onClick={goToUpdate}>
             <CachedIcon sx={{mr: 1, my: 'auto'}} />
             Actualizar
           </MenuItem>
         ) : null}
-        {localStorage
-          .getItem('pathsBack')
-          .includes('/inventory/robot/enable') === true ? (
-          <MenuItem
-            disabled={selectedAgent.status == 'ON'}
-            onClick={setEnableState}
-          >
-            <ArrowCircleUpOutlinedIcon sx={{mr: 1, my: 'auto'}} />
-            Activar
-          </MenuItem>
-        ) : null}
+
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/robot/delete') === true ? (

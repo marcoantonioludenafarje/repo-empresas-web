@@ -286,8 +286,8 @@ const NewProvider = () => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={8} sm={12}>
+                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                  <Grid item xs={12} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='categoria-label'
@@ -317,7 +317,7 @@ const NewProvider = () => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Número Identificador *'
                       name='nroDocument'
@@ -332,7 +332,7 @@ const NewProvider = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Nombre / Razón Social *'
                       name='name'
@@ -347,7 +347,7 @@ const NewProvider = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Dirección'
                       name='addressProvider'
@@ -362,7 +362,7 @@ const NewProvider = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppLowerCaseTextField
                       label='Correo de Empresa'
                       name='emailProvider'
@@ -377,7 +377,7 @@ const NewProvider = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Nombre de contacto'
                       name='nameContact'
@@ -392,7 +392,7 @@ const NewProvider = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Telefono fijo o celular de contacto'
                       name='numberContact'
@@ -407,7 +407,7 @@ const NewProvider = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppLowerCaseTextField
                       label='Correo de contacto'
                       name='emailContact'
@@ -422,7 +422,7 @@ const NewProvider = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Información adicional'
                       multiline

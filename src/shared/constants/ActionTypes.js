@@ -394,6 +394,14 @@ export const LIST_APPOINTMENT = 'list_appointment';
 export const CREATE_APPOINTMENT = 'create_appointment';
 export const EDIT_APPOINTMENT = 'edit_appointment';
 export const DELETE_APPOINTMENT = 'delete_appointment';
+
+//ATTENTION
+export const LIST_ATTENTION = 'list_attention';
+export const CREATE_ATTENTION = 'create_attention';
+export const EDIT_ATTENTION = 'edit_attention';
+export const DELETE_ATTENTION = 'delete_attention';
+
+
 //SPECIALIST
 export const CREATE_SPECIALIST = 'create_specialist';
 export const LIST_SPECIALIST = 'list_specialist';

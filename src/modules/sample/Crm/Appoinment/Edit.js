@@ -477,8 +477,8 @@ const Edit = (props) => {
                 id='principal-form'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={8} sm={12}>
+                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500} >
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Título *'
                       name='title'
@@ -493,7 +493,7 @@ const Edit = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -510,7 +510,7 @@ const Edit = (props) => {
                         : 'No Definido'}
                     </Typography>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='specialist-label'
@@ -545,7 +545,7 @@ const Edit = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Descripción *'
                       name='description'
@@ -564,7 +564,7 @@ const Edit = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <DateTimePicker
                       minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
                       value={publishDate}
@@ -589,7 +589,7 @@ const Edit = (props) => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Duración escriba en minutos*'
                       name='duration'
@@ -610,7 +610,7 @@ const Edit = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <DateTimePicker
                       minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
                       value={finalDate}
@@ -627,7 +627,7 @@ const Edit = (props) => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -643,7 +643,7 @@ const Edit = (props) => {
                     />
                   </Grid>
                   {notifyClientByEmail && (
-                    <Grid item xs={8} sm={12}>
+                    <Grid item xs={12} sm={12}>
                       <AppTextField
                         label='Correo de cliente'
                         name='clientEmail'
@@ -659,7 +659,7 @@ const Edit = (props) => {
                       />
                     </Grid>
                   )}
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControlLabel
                       control={
                         <Checkbox

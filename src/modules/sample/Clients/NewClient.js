@@ -464,8 +464,8 @@ const NewClient = (props) => {
                 {/* <div>{JSON.stringify(values)}</div>
                 <div>{JSON.stringify(errors)}</div>
                  */}
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={8} sm={12}>
+                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                  <Grid item xs={12} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='documentType-label'
@@ -500,7 +500,7 @@ const NewClient = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Número Identificador *'
                       name='nroDocument'
@@ -533,7 +533,7 @@ const NewClient = (props) => {
                           }}
                         />
                       </Grid>
-                      <Grid item xs={8} sm={12}>
+                      <Grid item xs={12} sm={12}>
                         <AppUpperCaseTextField
                           label='Dirección *'
                           name='addressClient'
@@ -548,7 +548,7 @@ const NewClient = (props) => {
                           }}
                         />
                       </Grid>
-                      <Grid item xs={8} sm={12}>
+                      <Grid item xs={12} sm={12}>
                         <AppLowerCaseTextField
                           label='Correo de la empresa'
                           name='emailClient'
@@ -594,7 +594,7 @@ const NewClient = (props) => {
                           }}
                         />
                       </Grid>
-                      <Grid item xs={2} md={2}>
+                      <Grid item xs={4} md={2}>
                         <TextField
                           disabled
                           defaultValue={'+51'}
@@ -610,7 +610,7 @@ const NewClient = (props) => {
                           focused
                         />
                       </Grid>
-                      <Grid item xs={10}>
+                      <Grid item xs={8}>
                         <AppTextField
                           label='Telefono fijo o celular de contacto'
                           name='numberContact'
@@ -625,7 +625,7 @@ const NewClient = (props) => {
                           }}
                         />
                       </Grid>
-                      <Grid item xs={8} sm={12}>
+                      <Grid item xs={12} sm={12}>
                         <AppTextField
                           label='Información adicional'
                           multiline
