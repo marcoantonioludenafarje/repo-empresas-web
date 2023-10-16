@@ -883,7 +883,8 @@ const GetCreditNote = () => {
                     <Grid
                       container
                       spacing={2}
-                      sx={{width: 500, margin: 'auto'}}
+                      sx={{width: '100%', margin: 'auto'}}
+                      maxWidth={500}
                     >
                       <Grid item xs={6}>
                         <AppTextField

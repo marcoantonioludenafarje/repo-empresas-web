@@ -155,6 +155,7 @@ const Createappoinment = (props) => {
   const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
   const [notifyClientByWsp, setNotifyClientByWsp] =
     React.useState(false);
+  const [disabledFinaly, setDisabledFinaly] = React.useState(true)
   const [countryCode, setCountryCode] = React.useState('+51');
   const [selectedClient, setSelectedClient] = React.useState('');
 
@@ -402,6 +403,7 @@ const Createappoinment = (props) => {
 
     setSelectedClient(client);
     console.log('Cliente seleccionado', client);
+    setDisabledFinaly(false)
     //forceUpdate();
     setOpen(false);
   };
@@ -738,7 +740,7 @@ const Createappoinment = (props) => {
                     sx={{mx: 'auto', width: '40%', py: 2}}
                     type='submit'
                     variant='contained'
-                    disabled={isSubmitting}
+                    disabled={disabledFinaly}
                     form='principal-form'
                     startIcon={<SaveAltOutlinedIcon />}
                   >

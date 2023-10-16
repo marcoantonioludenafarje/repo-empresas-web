@@ -895,7 +895,8 @@ const GetCreditNote = () => {
                     <Grid
                       container
                       spacing={2}
-                      sx={{width: 500, margin: 'auto'}}
+                      sx={{width: '100%', margin: 'auto'}}
+                      maxWidth={500}
                     >
                       <Grid item xs={6}>
                         <AppTextField
@@ -1133,7 +1134,8 @@ const GetCreditNote = () => {
                     <Grid
                       container
                       spacing={2}
-                      sx={{width: 500, margin: 'auto'}}
+                      sx={{width: '100%', margin: 'auto'}}
+                      maxWidth={500}
                     >
                       {/*   <Grid item xs={12}>
                     <FormControl fullWidth sx={{my: 2}}>
@@ -1261,7 +1263,8 @@ const GetCreditNote = () => {
                     <Grid
                       container
                       spacing={2}
-                      sx={{width: 500, margin: 'auto'}}
+                      sx={{width: '100%', margin: 'auto'}}
+                      maxWidth={500}
                     >
                       <Grid item xs={12}>
                         <AppTextField

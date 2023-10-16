@@ -920,7 +920,8 @@ const UpdateProduct = (props) => {
                 <Grid
                   container
                   spacing={2}
-                  sx={{width: 500, mx: 'auto', mb: 4}}
+                  sx={{width: '100%', mx: 'auto', mb: 4}}
+                  maxWidth={500}
                 >
                   <Grid item xs={12}>
                     <AppUpperCaseTextField

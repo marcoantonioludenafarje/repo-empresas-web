@@ -1505,7 +1505,7 @@ const GetReferralGuide = (props) => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container sx={{maxWidth: 600, margin: 'auto'}}>
+                <Grid container sx={{width:'100%', margin: 'auto'}} maxWidth={600}>
                   <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Nro Guía de Remisión'
@@ -1583,7 +1583,7 @@ const GetReferralGuide = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={8} sm={4} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={4} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='transportMode-label'
@@ -1665,7 +1665,7 @@ const GetReferralGuide = (props) => {
                     </FormControl>
                   </Grid>
 
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -1789,10 +1789,10 @@ const GetReferralGuide = (props) => {
 
                 <Divider sx={{mt: 2, mb: 4}} />
 
-                <Grid container sx={{width: 500, margin: 'auto'}}>
+                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
                   {availableLocations() ? (
                     <>
-                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                      <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                         <Typography sx={{mx: 'auto'}}>
                           {selectedStartingLocation.locationDetail || ''}
                         </Typography>
@@ -1851,7 +1851,7 @@ const GetReferralGuide = (props) => {
                           )}
                         /> */}
                       </Grid>
-                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                      <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                         <Button
                           sx={{width: 1}}
                           variant='outlined'
@@ -1866,7 +1866,7 @@ const GetReferralGuide = (props) => {
 
                   {availableUbigeos() ? (
                     <>
-                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                      <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                         <Autocomplete
                           disablePortal
                           id='combo-box-demo'
@@ -1917,7 +1917,7 @@ const GetReferralGuide = (props) => {
                           </Alert>
                         </Collapse>
                       </Grid>
-                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                      <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                         <AppUpperCaseTextField
                           label='Punto de partida'
                           name='startingPoint'
@@ -1954,7 +1954,7 @@ const GetReferralGuide = (props) => {
                   ) : null}
                   {availableLocations() ? (
                     <>
-                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                      <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                         <Typography sx={{mx: 'auto'}}>
                           {selectedArrivalLocation.locationDetail || ''}
                         </Typography>
@@ -2014,7 +2014,7 @@ const GetReferralGuide = (props) => {
                           )}
                         /> */}
                       </Grid>
-                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                      <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                         <Button
                           sx={{width: 1}}
                           variant='outlined'
@@ -2028,7 +2028,7 @@ const GetReferralGuide = (props) => {
                   ) : null}
                   {availableUbigeos() ? (
                     <>
-                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                      <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                         <Autocomplete
                           disablePortal
                           id='combo-box-demo'
@@ -2096,7 +2096,7 @@ const GetReferralGuide = (props) => {
                           </Alert>
                         </Collapse>
                       </Grid>
-                      <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                      <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                         <AppUpperCaseTextField
                           label='Punto de llegada'
                           name='arrivalPoint'
@@ -2135,8 +2135,8 @@ const GetReferralGuide = (props) => {
 
                 <Divider sx={{mt: 2, mb: 4}} />
 
-                <Grid container sx={{width: 500, margin: 'auto'}}>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -2146,7 +2146,7 @@ const GetReferralGuide = (props) => {
                       Seleccionar transportista
                     </Button>
                   </Grid>
-                  <Grid item xs={4} sx={{textAlign: 'center'}}>
+                  <Grid item xs={6} sx={{textAlign: 'center'}}>
                     <Typography sx={{mx: 'auto', my: '10px'}}>
                       {selectedCarrier.denominationCarrier}
                     </Typography>
@@ -2161,8 +2161,8 @@ const GetReferralGuide = (props) => {
                   </Grid>
                 </Grid>
 
-                <Grid container sx={{width: 500, margin: 'auto'}}>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Placa de vehículo'
                       name='licensePlate'
@@ -2177,7 +2177,7 @@ const GetReferralGuide = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -2186,7 +2186,7 @@ const GetReferralGuide = (props) => {
                       Seleccionar conductor (Opcional)
                     </Button>
                   </Grid>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Nombre del conductor'
                       name='driverName'
@@ -2201,7 +2201,7 @@ const GetReferralGuide = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Apellidos del conductor'
                       name='driverLastName'
@@ -2216,7 +2216,7 @@ const GetReferralGuide = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='driverDocumentType-label'
@@ -2243,7 +2243,7 @@ const GetReferralGuide = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Número identificador del conductor'
                       name='driverDocumentNumber'
@@ -2258,7 +2258,7 @@ const GetReferralGuide = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Licencia del conductor'
                       name='driverLicenseNumber'
@@ -2273,7 +2273,7 @@ const GetReferralGuide = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Observación'
                       name='observation'
@@ -2289,7 +2289,7 @@ const GetReferralGuide = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid xs={8} sm={12} sx={{px: 1, mt: 2}}>
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -2307,7 +2307,7 @@ const GetReferralGuide = (props) => {
                     toChangeUnitMeasure={changeUnitMeasure}
                   />
                 </Box>
-                <Grid container sx={{width: 500, margin: 'auto'}}>
+                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
                   <Grid xs={6} sm={6} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Peso bruto total'
@@ -2343,9 +2343,10 @@ const GetReferralGuide = (props) => {
                 <Grid
                   container
                   spacing={2}
-                  sx={{width: 500, margin: 'auto', mb: 2}}
+                  sx={{width: '100%', margin: 'auto', mb: 2}}
+                  maxWidth={500}
                 >
-                  <Grid item xs={8} sm={12} sx={{mt: 2}}>
+                  <Grid item xs={12} sm={12} sx={{mt: 2}}>
                     <Button
                       sx={{width: 1}}
                       color='secondary'
