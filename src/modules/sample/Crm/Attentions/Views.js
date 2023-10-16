@@ -79,11 +79,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let selectedAgent = {};
+let selectedAttention = {};
 let deletePayload = {
   request: {
     payload: {
-      robotId: '',
+      attentionId: '',
     },
   },
 };
@@ -109,8 +109,8 @@ export default function Views(props) {
     dispatch(getAttention(payload));
   };
 
-  const deleteAgent = (payload) => {
-    dispatch(deleteAgents(payload));
+  const todeleteAttention = (payload) => {
+    dispatch(deleteAttention(payload));
   };
 
   const handleCloseQR2 = () => {
@@ -201,9 +201,9 @@ export default function Views(props) {
     setAnchorEl(event.currentTarget);
     handleCloseQR(event.currentTarget);
     codProdSelected = codPro;
-    selectedAgent =
+    selectedAttention =
       listAttentions[codPro]; /* .find((obj) => obj.client == codPro); */
-    console.log('Select Agente', selectedAgent);
+    console.log('Select Agente', selectedAttention);
   };
 
   const handleClose = () => {
@@ -213,14 +213,14 @@ export default function Views(props) {
     setAnchorElQR(null);
   };
   const goToUpdate = () => {
-    console.log('Actualizando', selectedAgent);
+    console.log('Actualizando', selectedAttention);
     Router.push({
       pathname: '/sample/attentions/update',
-      query: selectedAgent,
+      query: selectedAttention,
     });
   };
   const goToEnable = () => {
-    console.log('Activar Agente', selectedAgent);
+    console.log('Activar Agente', selectedAttention);
   };
   const handleClose2 = () => {
     setOpen2(false);
@@ -239,23 +239,13 @@ export default function Views(props) {
     handleCloseQR();
   };
 
-  const startSession = () => {
-    sendStartAgentSession({
-      request: {
-        payload: {
-          robotId: selectedAgent.robotId,
-          userId: userDataRes.userId,
-        },
-      },
-    });
-  };
 
   const confirmDelete = () => {
-    console.log('selected agente', selectedAgent);
-    console.log('id de selected', selectedAgent.robotId);
-    deletePayload.request.payload.robotId = selectedAgent.robotId;
+    console.log('selected agente', selectedAttention);
+    console.log('id de selected', selectedAttention.attentionId);
+    deletePayload.request.payload.attentionId = selectedAttention.attentionId;
     console.log('deletePayload', deletePayload);
-    deleteAgent(deletePayload);
+    //todeleteAttention(deletePayload);
     setOpen2(false);
     setOpenStatus(true);
   };
@@ -276,7 +266,7 @@ export default function Views(props) {
       },
     };
     console.log('listPayload2', listPayload2);
-    getAgent(listPayload2);
+    getAtencion(listPayload2);
   };
 
   const sendStatus = () => {

@@ -60,7 +60,7 @@ import {
 } from '../../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {deleteAppointment, getAppointment, updateAppointment} from 'redux/actions';
+import {deleteAppointment, getAppointment, newAttention, updateAppointment} from 'redux/actions';
 import {useState} from 'react';
 import {convertToDate} from 'Utils/utils';
 
@@ -104,6 +104,10 @@ const Views = (props) => {
   const toDeleteAppointments = (payload) => {
     dispatch(deleteAppointment(payload));
   };
+
+  const toCreateAttention = (payload) =>{
+    dispatch(newAttention(payload))
+  }
 
   const {userDataRes} = useSelector(({user}) => user);
   const {listAppointments} = useSelector(({appointment}) => appointment);
@@ -239,18 +243,8 @@ const Views = (props) => {
       case 'attended':
         console.log('atendido, id', action, event);
         let cita = listAppointments.find((cita)=> cita.appointmentId === event.id)
-        let letpayload={
-          request:{
-            payload:{
-              ...cita,
-              attention: 'Completed',
-              merchantId: userDataRes.merchantSelected.merchantId,
-            }
-          }
-        }
-        console.log("edit>>", letpayload, cita);
         setOpen2(true);
-        toEditAppointment(letpayload)
+        setAux(event)
         break;
         
       default:
@@ -258,6 +252,50 @@ const Views = (props) => {
     }
 
     handleClose();
+  };
+
+  const confirmattention = () => {
+    console.log('selected attention', aux);
+    let citaval = listAppointments.find((cita)=>cita.appointmentId === aux.id)
+    let letpayload={
+      request:{
+        payload:{
+          ...citaval,
+          attention: 'Completed',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        }
+      }
+    }
+    
+    console.log("edit>>", letpayload);
+    toEditAppointment(letpayload)
+    console.log('selected attention>>', citaval);
+    let geneattention = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          attentions:[{
+            attentionTitle: citaval.appointmentTitle,
+            clientId: citaval.clientId,
+            clientName: citaval.clientName,
+            specialistId: citaval.specialistId,
+            specialistName: citaval.specialistName,
+            attentionDescription: citaval.appointmentDescription,
+            scheduledStartedAt: citaval.scheduledStartedAt,
+            duration: citaval.duration,
+            durationUnited: citaval.durationUnited,
+            scheduledFinishedAt: citaval.scheduledFinishedAt,
+            notifications: citaval.notifications
+          }]
+        },
+      },
+    };
+    console.log("payload", geneattention);
+    toCreateAttention(geneattention);
+    setOpenStatus(true);
+    setOpen2(false);
+    setAux(null);
+    router.push('/sample/attentions/table')
   };
 
 
@@ -275,6 +313,7 @@ const Views = (props) => {
     toDeleteAppointments(delAppoint);
     setOpenStatus(true);
     setOpen2(false);
+    setAux(null)
   };
 
   const sendStatus = () => {
@@ -304,7 +343,7 @@ const Views = (props) => {
       userDataRes.merchantSelected &&
       userDataRes.merchantSelected.merchantId
     ) {
-      console.log('Estamos entrando al getCampañas');
+      console.log('Estamos entrando al getCitas');
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_CLIENTS, payload: undefined});
@@ -582,7 +621,7 @@ const Views = (props) => {
         <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'generate_attention')}>
           Generar Atención
         </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'send_reminder')}>
+        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'send_reminder')} disabled>
           Envíar Recordatorio
         </MenuItem>
         <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'attended')}>
@@ -604,7 +643,7 @@ const Views = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Eliminar Cita'}
+          {'Atención de Cita'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -612,11 +651,11 @@ const Views = (props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            ¿Desea eliminar realmente la cita seleccionada?
+            ¿Desea generar una atención rápida?
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={confirmCancel}>
+          <Button variant='outlined' onClick={confirmattention}>
             Sí
           </Button>
           <Button variant='outlined' onClick={handleClose2}>
@@ -663,7 +702,7 @@ const Views = (props) => {
           aria-describedby='alert-dialog-description'
         >
           <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Cancelar Campaña'}
+            {'Gestión de Citas'}
           </DialogTitle>
           <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
             {showMessage()}

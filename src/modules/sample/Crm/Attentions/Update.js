@@ -50,6 +50,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAppointment, newAppointment, updateAppointment} from 'redux/actions';
 import {getSpecialists} from 'redux/actions/Specialist';
+import { getAttention } from 'redux/actions';
 
 import AddClientForm from '../../ClientSelection/AddClientForm';
 import {useState} from 'react';
@@ -137,18 +138,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-let editappointment = {};
+let editattention = {};
 
 const Update = (props) => {
   const router = useRouter();
   console.log("ATENCION A ROUTER", router);
   let {query} = router;
   console.log('ATENCION A EDITAR', query);
-  const defaultValues = {
-    title: query.attentionTitle?query.attentionTitle:query.appointmentTitle,
-    description: query.desc,
-    duration: parseInt(query.duration),
-  };
   let changeValueField;
   let getValueField;
   let isFormikSubmitting;
@@ -175,6 +171,10 @@ const Update = (props) => {
     dispatch(getAppointment(payload));
   };
 
+  const toGetAttentions = (payload) => {
+    dispatch(getAttention(payload));
+  };
+
   const toNewAppointment = (payload) => {
     dispatch(newAppointment(payload));
   };
@@ -198,22 +198,46 @@ const Update = (props) => {
   const {listSpecialists} = useSelector(({specialists}) => specialists);
   console.log('confeti especialistas', listSpecialists);
 
+  const {listAttentions} = useSelector(({attention}) => attention)
+
   const {listAppointments} = useSelector(({appointment}) => appointment);
   console.log('confeti citas', listAppointments);
 
-  if (listAppointments != undefined) {
-    editappointment = listAppointments.find(
-      (input) => input.appointmentId == query.id,
+  if (listAttentions != undefined) {
+    editattention = listAttentions.find(
+      (input) => input.attentionId == query.attentionId,
     );
-    console.log('CITA SELECTA', editappointment);
+    console.log('CITA SELECTA', editattention);
   }
 
+ 
+    let part = router.asPath.split("?")
+    let idgene = part[1]
+    const citagenerada = listAppointments.find((cita)=> cita.appointmentId === idgene)
+    console.log("CITA GENERADA", citagenerada);
+
+  useEffect(()=>{
+    if (citagenerada) {
+      setSelectedClient(citagenerada.clientName)
+      console.log("CITA SELECTED", selectedClient);
+    }
+  },[citagenerada])
+  useEffect(() => {
+    console.log('cita actual', editattention);
+  }, [editattention]);
+
+  const defaultValues = {
+    title: query.attentionTitle?query.attentionTitle:citagenerada.appointmentTitle,
+    description: query.attentionDescription?query.attentionDescription:citagenerada.appointmentDescription,
+    duration: parseInt(query.duration?query.duration:citagenerada.duration),
+  };
+
   const [publishDate, setPublishDate] = React.useState(
-    new Date(editappointment?.scheduledStartedAt) /* Number(query.createdAt) */,
+    new Date(editattention?.scheduledStartedAt?editattention.scheduledStartedAt:citagenerada.scheduledStartedAt) /* Number(query.createdAt) */,
   );
 
   const [finalDate, setFinalDate] = useState(
-    new Date(editappointment?.scheduledFinishedAt),
+    new Date(editattention?.scheduledFinishedAt?editattention.scheduledFinishedAt:citagenerada.scheduledFinishedAt),
   );
 
   useEffect(() => {
@@ -235,10 +259,6 @@ const Update = (props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
-
-  useEffect(() => {
-    console.log('cita actual', editappointment);
-  }, [editappointment]);
 
   useEffect(() => {
     if (userDataRes) {
@@ -280,6 +300,7 @@ const Update = (props) => {
       };
       toGetAppointments(listPayload);
       toGetSpecialist(listPayload);
+      toGetAttentions(listPayload);
       // setFirstload(true);
     }
   }, [userDataRes]);
@@ -425,7 +446,6 @@ const Update = (props) => {
 
   const getClient = (client) => {
     console.log('Estoy en el getClient');
-
     setSelectedClient(client);
     console.log('Cliente seleccionado', client);
     //forceUpdate();
@@ -438,7 +458,7 @@ const Update = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          ACTUALIZAR ATENCIÓN
+          {citagenerada?"GENERAR ATENCIÓN":"ACTUALIZAR ATENCIÓN"}
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -505,7 +525,8 @@ const Update = (props) => {
                       Cliente:{' '}
                       {selectedClient && selectedClient.denominationClient
                         ? selectedClient.denominationClient
-                        : 'No Definido'}
+                        : ''}
+                      {citagenerada? selectedClient: 'No definido'}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={12}>
@@ -520,7 +541,7 @@ const Update = (props) => {
                         name='specialist'
                         labelId='specialist-label'
                         label='Especialista'
-                        value={editappointment?.specialistId}
+                        value={editattention?.specialistId?editattention.specialistId:citagenerada.specialistId}
                         onChange={(event) => {
                           const selectedSpecialistId = event.target.value;
                           const selectedSpecialist = listSpecialists.find(
