@@ -225,19 +225,16 @@ const Views = (props) => {
       case 'generate_attention':
         console.log('atendido, id', action, event);
         let citagenerada = listAppointments.find((cita)=> cita.appointmentId === event.id)
-        let letpayloadgene={
-          request:{
-            payload:{
-              ...cita,
-              merchantId: userDataRes.merchantSelected.merchantId,
-            }
-          }
-        }
-        console.log("generar>>", letpayloadgene, citagenerada);
-        // Router.push({
-        //   pathname: 'sample/attention/new',
-        //   query: citagenerada
-        // })
+        // let letpayloadgene={
+        //   request:{
+        //     payload:{
+        //       ...cita,
+        //       merchantId: userDataRes.merchantSelected.merchantId,
+        //     }
+        //   }
+        // }
+        console.log("generar>>", citagenerada);
+        router.push('/sample/attentions/update', { query: citagenerada.appointmentId });
         break;
       case 'attended':
         console.log('atendido, id', action, event);

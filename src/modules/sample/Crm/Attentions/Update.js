@@ -75,17 +75,17 @@ const validationSchema = yup.object({
     .required(<IntlMessages id='validation.required' />),
 });
 
-let newAppointmentPayload = {
+let newAttentionPayload = {
   request: {
     payload: {
-      appointments: [
+      attentions: [
         {
           clientId: '',
           clientName: '',
           specialistId: '',
           specialistName: '',
-          appointmentTitle: '',
-          appointmentDescription: '',
+          attentionTitle: '',
+          attentionDescription: '',
           duration: '',
           durationUnited: '',
         },
@@ -94,7 +94,6 @@ let newAppointmentPayload = {
     },
   },
 };
-
 const useStyles = makeStyles((theme) => ({
   container: {
     textAlign: 'center',
@@ -142,11 +141,11 @@ let editappointment = {};
 
 const Update = (props) => {
   const router = useRouter();
-
+  console.log("ATENCION A ROUTER", router);
   let {query} = router;
-  console.log('CITA A EDITAR', query);
+  console.log('ATENCION A EDITAR', query);
   const defaultValues = {
-    title: query.title,
+    title: query.attentionTitle?query.attentionTitle:query.appointmentTitle,
     description: query.desc,
     duration: parseInt(query.duration),
   };
@@ -243,7 +242,7 @@ const Update = (props) => {
 
   useEffect(() => {
     if (userDataRes) {
-      newAppointmentPayload.request.payload.merchantId =
+      newAttentionPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
     }
   }, [userDataRes]);
@@ -335,36 +334,35 @@ const Update = (props) => {
     let starter = publishDate.getTime();
     let end = finalDate.getTime();
 
-    newAppointmentPayload.request.payload = {
-      appointmentId: editappointment.appointmentId,
-      clientId: selectedClient.clientId,
-      clientName: selectedClient.denominationClient,
-      specialistId: specialistF[0].specialistId
-        ? specialistF[0].specialistId
-        : '',
-      specialistName: specialistF[0].specialistName
-        ? specialistF[0].specialistName
-        : '',
-      appointmentDescription: data.description,
-      appointmentTitle: data.title,
-      scheduledStartedAt: starter,
-      scheduledFinishedAt: end,
-      duration: data.duration,
-      durationUnited: 'Min',
-      notifications: {
-        email: email,
-        wsp: wsp,
-        checkEmailNotify: notifyClientByEmail,
-        checkWspNotify: notifyClientByWsp,
-        checkWspReminder: recordingClientByWsp,
+    newAttentionPayload.request.payload = 
+      {
+        clientId: selectedClient.clientId,
+        clientName: selectedClient.denominationClient,
+        specialistId: specialistF[0].specialistId
+          ? specialistF[0].specialistId
+          : '',
+        specialistName: specialistF[0].specialistName
+          ? specialistF[0].specialistName
+          : '',
+        attentionDescription: data.description,
+        attentionTitle: data.title,
+        scheduledStartedAt: starter,
+        scheduledFinishedAt: end,
+        duration: data.duration,
+        durationUnited: 'Min',
+        notifications: {
+          email: email,
+          wsp: wsp,
+          checkEmailNotify: notifyClientByEmail,
+          checkWspNotify: notifyClientByWsp,
+        },
       },
-    };
 
-    console.log('objfinaly', newAppointmentPayload);
+    console.log('objfinaly', newAttentionPayload);
 
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
-    toEditAppointment(newAppointmentPayload);
+    toEditAppointment(newAttentionPayload);
     setSubmitting(false);
     setOpenStatus(true);
   };
@@ -412,7 +410,7 @@ const Update = (props) => {
   const sendStatus = () => {
     console.log('Esto es el momento');
     setOpenStatus(false);
-    Router.push('/sample/appointment/views');
+    Router.push('/sample/attentions/table');
   };
 
   const handleCloseDialogClient = () => {
@@ -477,8 +475,8 @@ const Update = (props) => {
                 id='principal-form'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: 500, margin: 'auto'}}>
-                  <Grid item xs={8} sm={12}>
+                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Título *'
                       name='title'
@@ -493,7 +491,7 @@ const Update = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <Button
                       sx={{width: 1}}
                       variant='outlined'
@@ -510,7 +508,7 @@ const Update = (props) => {
                         : 'No Definido'}
                     </Typography>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
                         id='specialist-label'
@@ -545,7 +543,7 @@ const Update = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Descripción *'
                       name='description'
@@ -564,7 +562,7 @@ const Update = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <DateTimePicker
                       minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
                       value={publishDate}
@@ -589,7 +587,7 @@ const Update = (props) => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Duración escriba en minutos*'
                       name='duration'
@@ -610,7 +608,7 @@ const Update = (props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <DateTimePicker
                       minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
                       value={finalDate}
@@ -627,7 +625,7 @@ const Update = (props) => {
                       )}
                     />
                   </Grid>
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -643,7 +641,7 @@ const Update = (props) => {
                     />
                   </Grid>
                   {notifyClientByEmail && (
-                    <Grid item xs={8} sm={12}>
+                    <Grid item xs={12} sm={12}>
                       <AppTextField
                         label='Correo de cliente'
                         name='clientEmail'
@@ -659,7 +657,7 @@ const Update = (props) => {
                       />
                     </Grid>
                   )}
-                  <Grid item xs={8} sm={12}>
+                  <Grid item xs={12} sm={12}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -792,7 +790,7 @@ const Update = (props) => {
             variant='outlined'
             onClick={() => {
               setOpen(false);
-              Router.push('/sample/appointment/views');
+              Router.push('/sample/attentions/table');
             }}
           >
             Sí

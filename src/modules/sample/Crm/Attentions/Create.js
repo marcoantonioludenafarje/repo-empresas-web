@@ -49,7 +49,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newAppointment} from 'redux/actions';
 import {getSpecialists} from 'redux/actions/Specialist';
-
+import { newAttention } from 'redux/actions';
 import {ClickAwayListener} from '@mui/base';
 import AddClientForm from '../../ClientSelection/AddClientForm';
 import {useState} from 'react';
@@ -79,17 +79,17 @@ const defaultValues = {
   description: '',
   duration: 0,
 };
-let newAppointmentPayload = {
+let newAttentionPayload = {
   request: {
     payload: {
-      appointments: [
+      attentions: [
         {
           clientId: '',
           clientName: '',
           specialistId: '',
           specialistName: '',
-          appointmentTitle: '',
-          appointmentDescription: '',
+          attentionTitle: '',
+          attentionDescription: '',
           duration: '',
           durationUnited: '',
         },
@@ -172,8 +172,8 @@ const Create = (props) => {
   const router = useRouter();
 
   //APIS
-  const toNewAppointment = (payload) => {
-    dispatch(newAppointment(payload));
+  const toNewAttention = (payload) => {
+    dispatch(newAttention(payload));
   };
   const toGetSpecialist = (payload) => {
     dispatch(getSpecialists(payload));
@@ -181,9 +181,9 @@ const Create = (props) => {
   //GET_VALUES_APIS
   const state = useSelector((state) => state);
   console.log('estado', state);
-  const {successMessage} = useSelector(({appointment}) => appointment);
+  const {successMessage} = useSelector(({attention}) => attention);
   console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({appointment}) => appointment);
+  const {errorMessage} = useSelector(({attention}) => attention);
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
   const {businessParameter, globalParameter} = useSelector(
@@ -215,7 +215,7 @@ const Create = (props) => {
 
   useEffect(() => {
     if (userDataRes) {
-      newAppointmentPayload.request.payload.merchantId =
+      newAttentionPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
     }
   }, [userDataRes]);
@@ -306,7 +306,7 @@ const Create = (props) => {
     let starter = publishDate.getTime();
     let end = finalDate.getTime();
 
-    newAppointmentPayload.request.payload.appointments = [
+    newAttentionPayload.request.payload.attentions = [
       {
         clientId: selectedClient.clientId,
         clientName: selectedClient.denominationClient,
@@ -316,8 +316,8 @@ const Create = (props) => {
         specialistName: specialistF[0].specialistName
           ? specialistF[0].specialistName
           : '',
-        appointmentDescription: data.description,
-        appointmentTitle: data.title,
+        attentionDescription: data.description,
+        attentionTitle: data.title,
         scheduledStartedAt: starter,
         scheduledFinishedAt: end,
         duration: data.duration,
@@ -327,16 +327,15 @@ const Create = (props) => {
           wsp: wsp,
           checkEmailNotify: notifyClientByEmail,
           checkWspNotify: notifyClientByWsp,
-          checkWspReminder: recordingClientByWsp,
         },
       },
     ];
 
-    console.log('objfinaly', newAppointmentPayload);
+    console.log('objfinaly', newAttentionPayload);
 
     dispatch({type: FETCH_SUCCESS, payload: ''});
     dispatch({type: FETCH_ERROR, payload: ''});
-    toNewAppointment(newAppointmentPayload);
+    toNewAttention(newAttentionPayload);
     setSubmitting(false);
     setOpenStatus(true);
   };
@@ -384,7 +383,7 @@ const Create = (props) => {
   const sendStatus = () => {
     console.log('Esto es el momento');
     setOpenStatus(false);
-    Router.push('/sample/appointment/views');
+    Router.push('/sample/attentions/table');
   };
 
   const handleCloseDialogClient = () => {
@@ -451,7 +450,7 @@ const Create = (props) => {
                 id='principal-form'
                 /* onChange={handleActualData} */
               >
-                <Grid container sx={{width: 500, margin: 'auto'}}>
+                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
                   <Grid item xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Título *'
@@ -750,7 +749,7 @@ const Create = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {'Registro de Citas'}
+          {'Registro de Atenciones'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
           <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -767,7 +766,7 @@ const Create = (props) => {
             variant='outlined'
             onClick={() => {
               setOpen(false);
-              Router.push('/sample/appointment/views');
+              Router.push('/sample/attentions/table');
             }}
           >
             Sí
@@ -787,7 +786,7 @@ const Create = (props) => {
           aria-describedby='alert-dialog-description'
         >
           <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'Registro de Cita'}
+            {'Registro de Atención'}
           </DialogTitle>
           <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
             {showMessage()}

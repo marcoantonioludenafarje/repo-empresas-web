@@ -202,7 +202,7 @@ export default function Views(props) {
     handleCloseQR(event.currentTarget);
     codProdSelected = codPro;
     selectedAgent =
-      listAgents[codPro]; /* .find((obj) => obj.client == codPro); */
+      listAttentions[codPro]; /* .find((obj) => obj.client == codPro); */
     console.log('Select Agente', selectedAgent);
   };
 
@@ -215,7 +215,7 @@ export default function Views(props) {
   const goToUpdate = () => {
     console.log('Actualizando', selectedAgent);
     Router.push({
-      pathname: '/sample/agents/update',
+      pathname: '/sample/attentions/update',
       query: selectedAgent,
     });
   };
@@ -260,9 +260,9 @@ export default function Views(props) {
     setOpenStatus(true);
   };
 
-  const newAgent = () => {
+  const newAttention = () => {
     console.log('Para redireccionar a nuevo cliente');
-    Router.push('/sample/agents/create');
+    Router.push('/sample/attentions/create');
   };
 
   const searchAgents = () => {
@@ -349,36 +349,23 @@ export default function Views(props) {
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
               >
                 <TableCell>{convertToDate(row.createdAt)}</TableCell>
+                <TableCell>{convertToDate(row.scheduledStartedAt)}</TableCell>
+                
                 <TableCell
                   component='th'
                   scope='row'
                   style={{maxWidth: '200px', wordWrap: 'break-word'}}
                 >
-                  {row.robotName}
+                  {row.attentionTitle}
                 </TableCell>
                 <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
-                  {row.description}
+                  {row.clientName}
                 </TableCell>
-                <TableCell>
-                  {row.status == 'OFF' ? (
-                    <span
-                      style={{
-                        fontWeight: 'bold', // Texto en negrita para resaltar cuando el estado es "OFF"
-                        color: 'red', // Color de texto rojo para resaltar cuando el estado es "OFF"
-                      }}
-                    >
-                      <IntlMessages id='common.disableAgent' />
-                    </span>
-                  ) : (
-                    <span
-                      style={{
-                        fontWeight: 'normal', // Texto en peso normal cuando el estado es "ON"
-                        color: 'green', // Color de texto verde para resaltar cuando el estado es "ON"
-                      }}
-                    >
-                      <IntlMessages id='common.enableAgent' />
-                    </span>
-                  )}
+                <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
+                  {row.attentionDescription}
+                </TableCell>
+                <TableCell style={{maxWidth: '200px', wordWrap: 'break-word'}}>
+                  {row.specialistName}
                 </TableCell>
                 <TableCell>
                   <Button
@@ -396,7 +383,7 @@ export default function Views(props) {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* <ButtonGroup
+      <ButtonGroup
         variant='outlined'
         aria-label='outlined button group'
         className={classes.btnGroup}
@@ -407,7 +394,7 @@ export default function Views(props) {
           <Button
             variant='outlined'
             startIcon={<AddCircleOutlineOutlinedIcon />}
-            onClick={newAgent}
+            onClick={newAttention}
           >
             Nuevo
           </Button>
@@ -426,7 +413,7 @@ export default function Views(props) {
         ) : null}
 
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
-      </ButtonGroup> */}
+      </ButtonGroup>
 
       <ClickAwayListener onClickAway={handleClickAway}>
         <Dialog
@@ -494,7 +481,7 @@ export default function Views(props) {
             onClick={setEnableState}
           >
             <ArrowCircleUpOutlinedIcon sx={{mr: 1, my: 'auto'}} />
-            Enviar mensaje
+            Enviar msj Post atención
           </MenuItem>
         ) : null}
         {localStorage

@@ -13,18 +13,18 @@ import {
   export const newAttention = (payload) => {
     return (dispatch, getState) => {
       dispatch({type: FETCH_START, payload: {process: 'CREATE_ATTENTION'}});
-      API.post('tunexo', '/inventory/attention/register', {body: payload})
+      API.post('tunexo', '/business/attention/register', {body: payload})
         .then((data) => {
-          console.log('Nueva CITA resultado', data);
+          console.log('Nueva atención resultado', data);
           dispatch({type: CREATE_ATTENTION, payload: data.response.payload});
           dispatch({
             type: FETCH_SUCCESS,
-            payload: 'Se ha registrado la ATENCION correctamente',
+            payload: 'Se ha registrado la atención correctamente',
           });
         })
         .catch((error) => {
           console.log('Nueva ATENCION error', error);
-          dispatch({type: FETCH_ERROR, payload: 'Error al crear la ATENCION'});
+          dispatch({type: FETCH_ERROR, payload: 'Error al crear la atención'});
         });
     };
   };
@@ -33,7 +33,7 @@ import {
     return (dispatch, getState) => {
       dispatch({type: FETCH_START, payload: {process: 'LIST_ATTENTION'}});
   
-      API.post('tunexo', '/inventory/attention/list', {body: payload})
+      API.post('tunexo', '/business/attention/list', {body: payload})
         .then((data) => {
           console.log('get ATENCIONS resultado', data);
           dispatch({
@@ -58,7 +58,7 @@ import {
     return async (dispatch, getState) => {
       dispatch({type: FETCH_START, payload: {process: 'EDIT_ATTENTION'}});
       try {
-        const data = await API.post('tunexo', '/inventory/attention/update', {
+        const data = await API.post('tunexo', '/business/attention/update', {
           body: payload,
         });
         console.log('ATENCION action data update', data);
@@ -75,7 +75,7 @@ import {
     return async (dispatch, getState) => {
       dispatch({type: FETCH_START, payload: {process: 'DELETE_ATTENTION'}});
       try {
-        const data = await API.post('tunexo', '/inventory/attention/delete', {
+        const data = await API.post('tunexo', '/business/attention/delete', {
           body: payload,
         });
         console.log('se borro la ATENCION', data);
