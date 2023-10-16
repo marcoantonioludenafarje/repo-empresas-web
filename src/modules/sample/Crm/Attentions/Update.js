@@ -50,7 +50,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAppointment, newAppointment, updateAppointment} from 'redux/actions';
 import {getSpecialists} from 'redux/actions/Specialist';
-import { getAttention } from 'redux/actions';
+import { getAttention, newAttention, updateAttention } from 'redux/actions';
 
 import AddClientForm from '../../ClientSelection/AddClientForm';
 import {useState} from 'react';
@@ -175,12 +175,12 @@ const Update = (props) => {
     dispatch(getAttention(payload));
   };
 
-  const toNewAppointment = (payload) => {
-    dispatch(newAppointment(payload));
+  const toCreateAttention = (payload) => {
+    dispatch(newAttention(payload));
   };
 
-  const toEditAppointment = (payload) => {
-    dispatch(updateAppointment(payload));
+  const toEditAttention = (payload) => {
+    dispatch(updateAttention(payload));
   };
 
   const toGetSpecialist = (payload) => {
@@ -381,11 +381,22 @@ const Update = (props) => {
 
     console.log('objfinaly', newAttentionPayload);
 
-    dispatch({type: FETCH_SUCCESS, payload: ''});
-    dispatch({type: FETCH_ERROR, payload: ''});
-    toEditAppointment(newAttentionPayload);
-    setSubmitting(false);
-    setOpenStatus(true);
+    if (citagenerada) {
+
+      dispatch({type: FETCH_SUCCESS, payload: ''});
+      dispatch({type: FETCH_ERROR, payload: ''});
+      toCreateAttention(newAttentionPayload);
+      setSubmitting(false);
+      setOpenStatus(true);
+      
+    } else {
+        
+      dispatch({type: FETCH_SUCCESS, payload: ''});
+      dispatch({type: FETCH_ERROR, payload: ''});
+      toEditAttention(newAttentionPayload);
+      setSubmitting(false);
+      setOpenStatus(true); 
+    }
   };
 
   const handleClickAway = () => {

@@ -454,7 +454,7 @@ const Views = (props) => {
         onClick={onClick}
         sx={{
           cursor: 'pointer',
-          backgroundColor: backgroundColor,
+          // backgroundColor: backgroundColor,
           '&:hover': {
             backgroundColor: 'transparent', 
           },
