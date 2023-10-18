@@ -96,7 +96,25 @@ const validationSchema = yup.object({
   saleObservation: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />),
-  totalAmounth: yup
+  totalAmount: yup
+    .number()
+    .typeError(<IntlMessages id='validation.number' />)
+    .test(
+      'maxDigitsAfterDecimal',
+      'El número puede contener como máximo 3 decimales',
+      (number) => /^\d+(\.\d{1,3})?$/.test(number),
+    )
+    .required(<IntlMessages id='validation.required' />),
+  totalNet: yup
+    .number()
+    .typeError(<IntlMessages id='validation.number' />)
+    .test(
+      'maxDigitsAfterDecimal',
+      'El número puede contener como máximo 3 decimales',
+      (number) => /^\d+(\.\d{1,3})?$/.test(number),
+    )
+    .required(<IntlMessages id='validation.required' />),
+  totalIgv: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
     .test(
@@ -210,6 +228,15 @@ const NewEarning = (props) => {
       ? Date.now()
       : parseToGoodDate(bill.issueDate),
   );
+  const [proofOfPaymentDueDate, setProofOfPaymentDueDate] = React.useState(
+    isObjEmpty(query) || bill == undefined || bill.dueDate == undefined
+      ? Date.now()
+      : parseToGoodDate(bill.dueDate),
+  );
+
+  const [proofTransactionDate, setProofTransactionDate] = React.useState(
+    Date.now()
+  );
 
   const changeIcon = () => {
     setTypeIcon('2');
@@ -298,7 +325,7 @@ const NewEarning = (props) => {
         : bill.serialDocument,
     saleDetail: '',
     saleObservation: '',
-    totalAmounth: isObjEmpty(query) ? null : Number(query.totalPriceWithIgv),
+    totalAmount: isObjEmpty(query) ? null : Number(query.totalPriceWithIgv),
     documentsMovement: documentsMovement,
     totalAmountWithConcepts: isObjEmpty(query)
       ? 0
@@ -334,6 +361,7 @@ const NewEarning = (props) => {
             typeDocumentProvider: 'RUC',
             denominationProvider: '',
             billIssueDate: '',
+            billDueDate: '',
             serialNumberBill: '',
             description: '',
             unitMeasureMoney: moneyUnit,
@@ -400,6 +428,10 @@ const NewEarning = (props) => {
           : '';
       newFinancePayload.request.payload.movements[0].billIssueDate =
         convertToDateWithoutTime(value2);
+      newFinancePayload.request.payload.movements[0].billDueDate =
+        convertToDateWithoutTime(proofOfPaymentDueDate);
+      newFinancePayload.request.payload.movements[0].proofTransactionDate =
+        convertToDateWithoutTime(proofTransactionDate);
       newFinancePayload.request.payload.movements[0].serialNumberBill =
         getValueField('nroBill').value; //data.nroBill;
       newFinancePayload.request.payload.movements[0].description =
@@ -407,7 +439,13 @@ const NewEarning = (props) => {
       newFinancePayload.request.payload.movements[0].observation =
         getValueField('saleObservation').value; //data.saleObservation;
       newFinancePayload.request.payload.movements[0].totalAmount = Number(
-        getValueField('totalAmounth').value, //data.totalAmounth,
+        getValueField('totalAmount').value, //data.totalAmount,
+      );
+      newFinancePayload.request.payload.movements[0].totalNet = Number(
+        getValueField('totalNet').value, //data.totalAmount,
+      );
+      newFinancePayload.request.payload.movements[0].totalIgv = Number(
+        getValueField('totalIgv').value, //data.totalAmount,
       );
       newFinancePayload.request.payload.movements[0].documentsMovement =
         getValueField('documentsMovement').value; //data.documentsMovement || null;
@@ -622,7 +660,7 @@ const NewEarning = (props) => {
   };
 
   const handleChange = (event) => {
-    if (event.target.name == 'totalAmounth') {
+    if (event.target.name == 'totalAmount') {
       const ActualTotalAmount = Number(event.target.value);
       const newTotalOtherPayConcepts =
         ActualTotalAmount + totalAmountOfConcepts;
@@ -633,7 +671,7 @@ const NewEarning = (props) => {
       //   setPaymentMethod('debit');
       // }
     }
-    // if (event.target.name == 'totalAmounth') {
+    // if (event.target.name == 'totalAmount') {
     //   setTotalAmountWithConcepts(event.target.value);
     // }
   };
@@ -730,6 +768,9 @@ const NewEarning = (props) => {
                         <MenuItem value='ticket' style={{fontWeight: 200}}>
                           {messages['finance.proofOfPayment.type.ticket']}
                         </MenuItem>
+                        <MenuItem value='paymentOrder' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.paymentOrder']}
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -784,6 +825,70 @@ const NewEarning = (props) => {
                       onChange={(newValue) => {
                         setValue2(newValue);
                         console.log('date', newValue);
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <DesktopDatePicker
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{
+                            my: 2,
+                            width: '100%',
+                            position: 'relative',
+                            bottom: '-8px',
+                          }}
+                          {...params}
+                        />
+                      )}
+                      required
+                      sx={{my: 2}}
+                      value={proofOfPaymentDueDate}
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTDUEDATE',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
+                      inputFormat='dd/MM/yyyy'
+                      name='proofOfPaymentDueDate'
+                      onChange={(newValue) => {
+                        setProofOfPaymentDueDate(newValue);
+                        console.log('proofOfPaymentDueDate', newValue);
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <DesktopDatePicker
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{
+                            my: 2,
+                            width: '100%',
+                            position: 'relative',
+                            bottom: '-8px',
+                          }}
+                          {...params}
+                        />
+                      )}
+                      required
+                      sx={{my: 2}}
+                      value={proofTransactionDate}
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                            'COLLECTIONTRANSACTIONDATE',
+                            proofOfPaymentType.toUpperCase(),
+                          )
+                          : "Fecha de pago del movimiento"
+                      }
+                      inputFormat='dd/MM/yyyy'
+                      name='proofTransactionDate'
+                      onChange={(newValue) => {
+                        setProofTransactionDate(newValue);
+                        console.log('proofTransactionDate', newValue);
                       }}
                     />
                   </Grid>
@@ -908,12 +1013,54 @@ const NewEarning = (props) => {
                       label={
                         proofOfPaymentType
                           ? translateValue(
+                              'PROOFOFPAYMENTTOTALNET',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
+                      name='totalNet'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTTOTALIGV',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
+                      name='totalIgv'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
                               'PROOFOFPAYMENTTOTALAMOUNT',
                               proofOfPaymentType.toUpperCase(),
                             )
                           : null
                       }
-                      name='totalAmounth'
+                      name='totalAmount'
                       variant='outlined'
                       sx={{
                         width: '100%',

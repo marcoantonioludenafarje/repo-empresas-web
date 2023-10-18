@@ -68,6 +68,8 @@ export const dictionary = {
     CREDITNOTE: <IntlMessages id='document.type.creditNote' />,
     DEBITNOTE: <IntlMessages id='document.type.debitNote' />,
     TICKET: <IntlMessages id='document.type.sellticket' />,
+    PAYMENTORDER: <IntlMessages id='document.type.paymentOrder' />,
+    FEERECEIPT: <IntlMessages id='document.type.feeReceipt' />,
   },
   DOCUMENTCANCELSTATUS: {
     YES: <IntlMessages id='document.cancelStatus.true' />,
@@ -79,6 +81,8 @@ export const dictionary = {
       <IntlMessages id='finance.proofOfPayment.type.receipt.payStatus' />
     ),
     TICKET: <IntlMessages id='finance.proofOfPayment.type.ticket.payStatus' />,
+    PAYMENTORDER: <IntlMessages id='finance.proofOfPayment.type.paymentOrder.payStatus' />,
+    FEERECEIPT: <IntlMessages id='finance.proofOfPayment.type.feeReceipt.payStatus' />,
   },
   PROOFOFPAYMENTTOTALAMOUNT: {
     BILL: <IntlMessages id='finance.proofOfPayment.type.bill.totalAmount' />,
@@ -88,16 +92,78 @@ export const dictionary = {
     TICKET: (
       <IntlMessages id='finance.proofOfPayment.type.ticket.totalAmount' />
     ),
+    PAYMENTORDER: (
+      <IntlMessages id='finance.proofOfPayment.type.paymentOrder.totalAmount' />
+    ),
+    FEERECEIPT: (
+      <IntlMessages id='finance.proofOfPayment.type.feeReceipt.totalAmount' />
+    ),
   },
+  PROOFOFPAYMENTTOTALNET: {
+    BILL: <IntlMessages id='finance.proofOfPayment.type.bill.totalNet' />,
+    RECEIPT: (
+      <IntlMessages id='finance.proofOfPayment.type.receipt.totalNet' />
+    ),
+    TICKET: (
+      <IntlMessages id='finance.proofOfPayment.type.ticket.totalNet' />
+    ),
+    PAYMENTORDER: (
+      <IntlMessages id='finance.proofOfPayment.type.paymentOrder.totalNet' />
+    ),
+    FEERECEIPT: (
+      <IntlMessages id='finance.proofOfPayment.type.feeReceipt.totalNet' />
+    ),
+  },
+  PROOFOFPAYMENTTOTALIGV: {
+    BILL: <IntlMessages id='finance.proofOfPayment.type.bill.totalIgv' />,
+    RECEIPT: (
+      <IntlMessages id='finance.proofOfPayment.type.receipt.totalIgv' />
+    ),
+    TICKET: (
+      <IntlMessages id='finance.proofOfPayment.type.ticket.totalIgv' />
+    ),
+    PAYMENTORDER: (
+      <IntlMessages id='finance.proofOfPayment.type.paymentOrder.totalIgv' />
+    ),
+    FEERECEIPT: (
+      <IntlMessages id='finance.proofOfPayment.type.feeReceipt.totalIgv' />
+    ),
+  },
+  //PONER FEERECEIPT EN LOS TIPOS
   PROOFOFPAYMENTNUMBER: {
     BILL: <IntlMessages id='finance.proofOfPayment.type.bill.number' />,
     RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.number' />,
     TICKET: <IntlMessages id='finance.proofOfPayment.type.ticket.number' />,
+    PAYMENTORDER: <IntlMessages id='finance.proofOfPayment.type.paymentOrder.number' />,
+    FEERECEIPT: <IntlMessages id='finance.proofOfPayment.type.feeReceipt.number' />,
   },
   PROOFOFPAYMENTDATE: {
     BILL: <IntlMessages id='finance.proofOfPayment.type.bill.date' />,
     RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.date' />,
     TICKET: <IntlMessages id='finance.proofOfPayment.type.ticket.date' />,
+    PAYMENTORDER: <IntlMessages id='finance.proofOfPayment.type.paymentOrder.date' />,
+    FEERECEIPT: <IntlMessages id='finance.proofOfPayment.type.feeReceipt.date' />,
+  },
+  PROOFOFPAYMENTDUEDATE: {
+    BILL: <IntlMessages id='finance.proofOfPayment.type.bill.dueDate' />,
+    RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.dueDate' />,
+    TICKET: <IntlMessages id='finance.proofOfPayment.type.ticket.dueDate' />,
+    PAYMENTORDER: <IntlMessages id='finance.proofOfPayment.type.paymentOrder.dueDate' />,
+    FEERECEIPT: <IntlMessages id='finance.proofOfPayment.type.feeReceipt.dueDate' />,
+  },
+  COLLECTIONTRANSACTIONDATE: {
+    BILL: <IntlMessages id='finance.proofOfPayment.type.bill.collectionDate' />,
+    RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.collectionDate' />,
+    TICKET: <IntlMessages id='finance.proofOfPayment.type.ticket.collectionDate' />,
+    PAYMENTORDER: <IntlMessages id='finance.proofOfPayment.type.paymentOrder.collectionDate' />,
+    FEERECEIPT: <IntlMessages id='finance.proofOfPayment.type.feeReceipt.collectionDate' />,
+  },
+  PAYMENTTRANSACTIONDATE: {
+    BILL: <IntlMessages id='finance.proofOfPayment.type.bill.paymentDate' />,
+    RECEIPT: <IntlMessages id='finance.proofOfPayment.type.receipt.paymentDate' />,
+    TICKET: <IntlMessages id='finance.proofOfPayment.type.ticket.paymentDate' />,
+    PAYMENTORDER: <IntlMessages id='finance.proofOfPayment.type.paymentOrder.paymentDate' />,
+    FEERECEIPT: <IntlMessages id='finance.proofOfPayment.type.feeReceipt.paymentDate' />,
   },
   SUBTYPENOTE: {
     operationCancellation: (
