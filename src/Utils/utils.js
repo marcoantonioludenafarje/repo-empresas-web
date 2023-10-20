@@ -7,6 +7,21 @@ export const toEpoch = (strDate) => {
   return someDate;
 };
 
+export const timestampToISO8601 = (timestamp) => {
+    // Crear un objeto de fecha a partir del timestamp
+    let fecha = new Date(timestamp);
+
+    // Obtener año, mes y día
+    let año = fecha.getFullYear();
+    let mes = ('0' + (fecha.getMonth() + 1)).slice(-2);  // Asegurar que el mes tenga dos dígitos
+    let dia = ('0' + fecha.getDate()).slice(-2);  // Asegurar que el día tenga dos dígitos
+  
+    // Formatear la fecha como YYYY-MM-DD
+    let fechaFormateada = año + '-' + mes + '-' + dia;
+  
+    return fechaFormateada;
+}
+
 export const convertToDate = (miliseconds) => {
   const fecha = new Date(miliseconds);
   const fecha_actual = `${fecha.getDate()}/${
@@ -62,6 +77,25 @@ export const strDateToDateObject = (strDate) => {
   console.log('newDate', newDate);
   return newDate;
 };
+
+export const ISO8601DateToSunatDate = (fechaString) => {
+    // Crear un objeto de fecha
+    let fecha = fechaString.split("-");
+  
+    // Obtener día, mes y año como números
+    let dia = parseInt(fecha[2], 10);
+    let mes = parseInt(fecha[1], 10);
+    let año = parseInt(fecha[0], 10);
+  
+    // Asegurar que el día y el mes tengan dos dígitos
+    dia = dia < 10 ? '0' + dia : dia.toString();
+    mes = mes < 10 ? '0' + mes : mes.toString();
+  
+    // Formatear la fecha como DD/MM/YYYY
+    let fechaFormateada = dia + '/' + mes + '/' + año;
+  
+    return fechaFormateada;
+}
 
 export const strDateToDateObject_ES = (strDate) => {
   let date = strDate;

@@ -93,7 +93,9 @@ import {
   translateValue,
   fixDecimals,
   convertToDateWithoutTime,
+  ISO8601DateToSunatDate,
   toEpoch,
+  timestampToISO8601,
 } from '../../../Utils/utils';
 import MoreFiltersContableMovements from '../Filters/MoreFiltersContableMovements';
 import {exportExcelTemplateMovementsDetails} from '../../../redux/actions/Finances';
@@ -344,8 +346,8 @@ console.log("fecha utc", timestamp_utc)
           query.contableMovementId;
       }
 
-      listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
-      listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+      listFinancesPayload.request.payload.initialTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[0])) : toEpoch(dateRange[0]);
+      listFinancesPayload.request.payload.finalTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[1])) : toEpoch(dateRange[1]);
       listFinancesPayload.request.payload.movementType = '';
       listFinancesPayload.request.payload.dateType = 'createdDate';
       setLastPayload(listFinancesPayload);
@@ -443,8 +445,8 @@ console.log("fecha utc", timestamp_utc)
     listFinancesPayload.request.payload.movementType =
       movementType == 'TODOS' ? '' : movementType;
     listFinancesPayload.request.payload.dateType = dateType;
-    listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
-    listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+    listFinancesPayload.request.payload.initialTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[0])) : toEpoch(dateRange[0]);
+    listFinancesPayload.request.payload.finalTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[1])) : toEpoch(dateRange[1]);
     setLastPayload(listFinancesPayload);
     toGetFinances(listFinancesPayload);
     if (monthYearStatus) {
@@ -878,8 +880,8 @@ console.log("fecha utc", timestamp_utc)
       dataFilters.nroIdentifier;
     listFinancesPayload.request.payload.denominationProvider =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toLowerCase();
-    listFinancesPayload.request.payload.initialTime = toEpoch(dateRange[0]);
-    listFinancesPayload.request.payload.finalTime = toEpoch(dateRange[1]);
+    listFinancesPayload.request.payload.initialTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[0])) : toEpoch(dateRange[0]);
+    listFinancesPayload.request.payload.finalTime = dateType !== "createdDate" ?  timestampToISO8601(toEpoch(dateRange[1])) : toEpoch(dateRange[1]);
     listFinancesPayload.request.payload.movementType =
       movementType == 'TODOS' ? '' : movementType;
     listFinancesPayload.request.payload.dateType = dateType;  
@@ -1048,7 +1050,10 @@ console.log("fecha utc", timestamp_utc)
                 Fecha registrada
               </TableCell>
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
-                Número de documento
+                Tipo Comprobante Principal
+              </TableCell>
+              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                Número Comprobante Principal
               </TableCell>
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
                 Fecha emisión Comprobante
@@ -1071,6 +1076,8 @@ console.log("fecha utc", timestamp_utc)
               <TableCell sx={{width: isMobile ? '12px' : '15px'}}>
                 Medio de Pago
               </TableCell>
+              <TableCell>Monto Neto</TableCell>
+              <TableCell>Monto Igv</TableCell>
               <TableCell>Monto Total</TableCell>
               <TableCell>Vendedor</TableCell>
               <TableCell>Recaudador</TableCell>
@@ -1104,13 +1111,17 @@ console.log("fecha utc", timestamp_utc)
                       <TableCell>
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
+                      <TableCell>{translateValue(
+                              'DOCUMENTTYPE',
+                              obj.proofOfPaymentType.toUpperCase(),
+                            )}</TableCell>
                       <TableCell>{obj.serialNumberBill}</TableCell>
-                      <TableCell>{obj.billIssueDate}</TableCell>
+                      <TableCell>{obj.proofIssueDate  ? ISO8601DateToSunatDate(obj.proofIssueDate) : obj.billIssueDate}</TableCell>
                       <TableCell>
-                        {obj.billDueDate || obj.billIssueDate}
+                        {obj.proofDueDate ? ISO8601DateToSunatDate(obj.proofDueDate) : obj.billDueDate}
                       </TableCell>
                       <TableCell>
-                        {obj.proofTransactionDate ? convertToDateWithoutTime(obj.proofTransactionDate) : "Indeterminado"}
+                        {obj.proofTransactionDate  ? ISO8601DateToSunatDate(obj.proofTransactionDate) : "Indeterminado"}
                       </TableCell>
                       <TableCell>
                         {showStatus(obj.status, obj.movementType)}
@@ -1123,6 +1134,12 @@ console.log("fecha utc", timestamp_utc)
                             )
                           : null}
                       </TableCell>
+                      <TableCell>{`${moneySymbol} ${fixDecimals(
+                        obj.totalNet,
+                      )}`}</TableCell>
+                      <TableCell>{`${moneySymbol} ${fixDecimals(
+                        obj.totalIgv,
+                      )}`}</TableCell>
                       <TableCell>{`${moneySymbol} ${fixDecimals(
                         obj.totalAmount,
                       )}`}</TableCell>

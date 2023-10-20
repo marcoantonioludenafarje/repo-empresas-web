@@ -361,8 +361,9 @@ const NewExpense = (props) => {
             numberDocumentProvider: '',
             typeDocumentProvider: 'RUC',
             denominationProvider: '',
-            billIssueDate: '',
-            billDueDate: '',
+            proofIssueDate: '',
+            proofDueDate: '',
+            proofTransactionDate: '',
             serialNumberBill: '',
             description: '',
             unitMeasureMoney: moneyUnit,
@@ -420,9 +421,9 @@ const NewExpense = (props) => {
         selectedProvider.providerId.length != 0
           ? selectedProvider.providerId.split('-')[0]
           : '';
-      newFinancePayload.request.payload.movements[0].billIssueDate =
+      newFinancePayload.request.payload.movements[0].proofIssueDate =
         convertToDateWithoutTime(value2);
-      newFinancePayload.request.payload.movements[0].billDueDate =
+      newFinancePayload.request.payload.movements[0].proofDueDate =
         convertToDateWithoutTime(proofOfPaymentDueDate);
       newFinancePayload.request.payload.movements[0].proofTransactionDate =
         convertToDateWithoutTime(proofTransactionDate);

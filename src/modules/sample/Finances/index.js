@@ -90,6 +90,7 @@ import {
   translateValue,
   fixDecimals,
   convertToDateWithoutTime,
+  ISO8601DateToSunatDate,
 } from '../../../Utils/utils';
 import OtherPayConceptsTable from './OtherPayConceptsTable';
 import MoreFiltersFinances from '../Filters/MoreFiltersFinances';
@@ -1083,7 +1084,7 @@ const FinancesTable = (props) => {
                           ? `${obj.typeDocumentProvider} ${obj.numberDocumentProvider}`
                           : 'Sin documento'}
                       </TableCell>
-                      <TableCell>{obj.billIssueDate}</TableCell>
+                      <TableCell>{obj.proofIssueDate  ? ISO8601DateToSunatDate(obj.proofIssueDate) : obj.billIssueDate}</TableCell>
                       <TableCell>
                         {obj.denominationProvider
                           ? obj.denominationProvider

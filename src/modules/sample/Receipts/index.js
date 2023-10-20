@@ -730,6 +730,7 @@ const ReceiptsTable = (props) => {
         >
           <TableHead>
             <TableRow>
+              <TableCell>Fecha registro</TableCell>
               <TableCell>Fecha emisión</TableCell>
               <TableCell>Número serie</TableCell>
               <TableCell>Número boleta</TableCell>
@@ -765,8 +766,10 @@ const ReceiptsTable = (props) => {
                   key={index}
                 >
                   <TableCell>
-                    {strDateToDateObject_ES(obj.issueDate) ||
-                      convertToDateWithoutTime(obj.createdAt)}
+                    {convertToDateWithoutTime(obj.createdAt)}
+                  </TableCell>
+                  <TableCell>
+                    {strDateToDateObject_ES(obj.issueDate)}
                   </TableCell>
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')

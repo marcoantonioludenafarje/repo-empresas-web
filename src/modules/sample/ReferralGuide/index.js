@@ -80,6 +80,7 @@ import {getUserData} from '../../../redux/actions/User';
 import {
   convertToDate,
   convertToDateWithoutTime,
+  strDateToDateObject_ES,
   parseTo3Decimals,
   toSimpleDate,
 } from '../../../Utils/utils';
@@ -980,6 +981,7 @@ const ReferralGuidesTable = (props) => {
         >
           <TableHead>
             <TableRow>
+              <TableCell>Fecha de registro</TableCell>
               <TableCell>Fecha de emisión</TableCell>
               <TableCell>Número de serie</TableCell>
               <TableCell>Número de guía de remisión</TableCell>
@@ -1019,6 +1021,9 @@ const ReferralGuidesTable = (props) => {
                 >
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
+                  </TableCell>
+                  <TableCell>
+                    { obj.issueDate ? strDateToDateObject_ES(obj.issueDate) : convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   <TableCell>
                     {obj.documentIntern && obj.documentIntern.includes('-')
