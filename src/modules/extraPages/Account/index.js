@@ -202,7 +202,7 @@ const Account = () => {
                   tab.id == 7) ||
                   (tab.id === 2 &&
                     userDataRes &&
-                    userDataRes.merchantSelected.typeMerchant !== 'PROD' &&
+                    userDataRes.merchantSelected.typeMerchant !== 'UAT' &&
                     userDataRes.merchantSelected.merchantId !==
                       '2303d20e08534377bd2c053ecf9d281c') ? (
                   <></>
