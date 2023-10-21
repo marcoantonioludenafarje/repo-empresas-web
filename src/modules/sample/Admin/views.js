@@ -264,7 +264,7 @@ export default function Views(props) {
       request: {
         payload: {
           merchantId: selectedBusiness.merchantId,
-          userId: selectedBusiness.userId,
+          userId: selectedBusiness.adminUserId,
           indactivo: val,
         },
       },
