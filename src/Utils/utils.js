@@ -80,6 +80,10 @@ export const strDateToDateObject = (strDate) => {
 
 export const ISO8601DateToSunatDate = (fechaString) => {
     // Crear un objeto de fecha
+    if(typeof fechaString == "number"){
+      fechaString = ""
+    }
+    console.log("fechastring", fechaString)
     let fecha = fechaString.split("-");
   
     // Obtener día, mes y año como números
