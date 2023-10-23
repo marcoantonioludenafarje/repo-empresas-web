@@ -178,6 +178,7 @@ const BillsTable = (props) => {
     toEpoch(Date.now() - 89280000),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
+  const [openTransaction, setOpenTransaction] = React.useState(false);
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
@@ -571,6 +572,10 @@ const BillsTable = (props) => {
   const handleClickAway = () => {
     // Evita que se cierre el diálogo haciendo clic fuera del contenido
     // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
+
+  const handleOpenTransaction = () => {
+    setOpenTransaction(true)
   };
   const showMessage = () => {
     if (registerSuccess()) {
@@ -1065,6 +1070,10 @@ const BillsTable = (props) => {
         <MenuItem disabled>
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Reenviar
+        </MenuItem>
+        <MenuItem onClick={() => handleOpenTransaction}>
+          <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+          Confirmar pago
         </MenuItem>
         {localStorage
           .getItem('pathsBack')
