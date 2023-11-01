@@ -35,8 +35,13 @@ import {
   Paper,
 } from '@mui/material';
 
+import PropTypes from 'prop-types';
+
 import {makeStyles} from '@mui/styles';
 import 'moment/locale/es';
+import CustomMonthEvent from '../Appoinment/CustomMonthEvent';
+import CustomDayEvent from '../Appoinment/CustomDayEvent';
+import CustomWeekEvent from '../Appoinment/CustomWeekEvent';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
@@ -435,71 +440,6 @@ const Views = (props) => {
     }
   };
 
-  const CustomMonthEvent = ({event, onClick}) => {
-    const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
-    console.log('atention', event);
-    const backgroundColor = event.attention === 'Progress' ? 'green' : 'red';
-    return (
-      <Box
-        onClick={onClick}
-        sx={{
-          cursor: 'pointer',
-          backgroundColor: backgroundColor,
-          borderColor: backgroundColor,
-          width: '100%',
-        }}
-      >
-        <Typography variant='body1' gutterBottom>
-          {`${event.title} - ${clientWords}`}
-        </Typography>
-        <Typography variant='body2'>
-          {moment(event.start).format('LT')} -{' '}
-          {`Duración: ${event.duration} min`}
-        </Typography>
-      </Box>
-    );
-  };
-
-  const CustomWeekEvent = ({event, onClick}) => {
-    const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
-    const backgroundColor = event.attention === 'Progress' ? 'green' : 'red';
-    return (
-      <Box
-        onClick={onClick}
-        sx={{
-          cursor: 'pointer',
-          // backgroundColor: backgroundColor,
-          '&:hover': {
-            backgroundColor: 'transparent',
-          },
-        }}
-      >
-        <Typography variant='body1' gutterBottom>
-          {`${clientWords}`}
-        </Typography>
-      </Box>
-    );
-  };
-
-  const CustomDayEvent = ({event, onClick}) => {
-    const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
-    return (
-      <Box
-        onClick={onClick}
-        sx={{
-          cursor: 'pointer',
-          '&:hover': {
-            backgroundColor: 'transparent',
-          },
-        }}
-      >
-        <Typography variant='body1' gutterBottom>
-          {`${event.title} - ${clientWords} - Duración: ${event.duration} min`}
-        </Typography>
-      </Box>
-    );
-  };
-
   const CustomAgenda = ({event}) => {
     console.log('eventos', event);
     return (
@@ -547,7 +487,9 @@ const Views = (props) => {
       </TableContainer>
     );
   };
-
+  CustomAgenda.propTypes = {
+    event: PropTypes.object,
+  };
   return (
     <Card>
       <TextField
@@ -599,12 +541,6 @@ const Views = (props) => {
               event: CustomAgenda,
             },
           }}
-          // components={{
-          //   month: {
-          //     event: EventMonthViews,
-          //   },
-          // }}
-          // className={xstyles}
           style={{
             width: '95%',
             height: '80%',
