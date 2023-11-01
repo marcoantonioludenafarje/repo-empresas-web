@@ -47,6 +47,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import {red} from '@mui/material/colors';
 
+import DocumentsTableForFinance from '../DocumentSelector/DocumentsTableForFinance';
+import AddDocumentFormForFinance from '../DocumentSelector/AddDocumentFormForFinance';
 import {onGetBusinessParameter} from '../../../redux/actions/General';
 import {useDispatch, useSelector} from 'react-redux';
 import Router, {useRouter} from 'next/router';
@@ -58,6 +60,7 @@ import {
   getYear,
   toEpoch,
   simpleDateToDateObj,
+  ISODateToDateObj,
   convertToDateWithoutTime,
   isObjEmpty,
   translateValue,
@@ -95,7 +98,25 @@ const validationSchema = yup.object({
   saleObservation: yup
     .string()
     .typeError(<IntlMessages id='validation.string' />),
-  totalAmounth: yup
+  totalAmount: yup
+    .number()
+    .typeError(<IntlMessages id='validation.number' />)
+    .test(
+      'maxDigitsAfterDecimal',
+      'El número puede contener como máximo 3 decimales',
+      (number) => /^\d+(\.\d{1,3})?$/.test(number),
+    )
+    .required(<IntlMessages id='validation.required' />),
+  totalNet: yup
+    .number()
+    .typeError(<IntlMessages id='validation.number' />)
+    .test(
+      'maxDigitsAfterDecimal',
+      'El número puede contener como máximo 3 decimales',
+      (number) => /^\d+(\.\d{1,3})?$/.test(number),
+    )
+    .required(<IntlMessages id='validation.required' />),
+  totalIgv: yup
     .number()
     .typeError(<IntlMessages id='validation.number' />)
     .test(
@@ -149,6 +170,13 @@ const UpdateEarning = (props) => {
     Number(query.totalAmountOfAddConcepts) -
       Number(query.totalAmountOfSubtractConcepts) || 0,
   );
+  const [listDocuments, setListDocuments] = React.useState([]);
+  
+  const [proofOfPaymentDueDate, setProofOfPaymentDueDate] = React.useState(Date.now());
+
+  const [proofTransactionDate, setProofTransactionDate] = React.useState(
+    Date.now()
+  );
   const dispatch = useDispatch();
 
   const toUpdateFinance = (payload) => {
@@ -188,6 +216,34 @@ const UpdateEarning = (props) => {
         setValue2(toEpoch(simpleDateToDateObj(query.billIssueDate)));
       } else {
         setValue2(Number(query.billIssueDate));
+      }
+    }
+    if(query.proofIssueDate){
+      if (typeof query.proofIssueDate === 'string') {
+        setValue2(toEpoch(ISODateToDateObj(query.proofIssueDate)));
+      } else {
+        setValue2(Number(query.proofIssueDate));
+      }
+    }
+    if (query.billDueDate) {
+      if (typeof query.billDueDate === 'string') {
+        setProofOfPaymentDueDate(toEpoch(simpleDateToDateObj(query.billDueDate)));
+      } else {
+        setProofOfPaymentDueDate(Number(query.billDueDate));
+      }
+    }
+    if(query.proofDueDate){
+      if (typeof query.proofDueDate === 'string') {
+        setProofDueDate(toEpoch(ISODateToDateObj(query.proofDueDate)));
+      } else {
+        setProofDueDate(Number(query.proofDueDate));
+      }
+    }
+    if (query.proofTransactionDate) {
+      if (typeof query.proofTransactionDate === 'string') {
+        setProofTransactionDate(toEpoch(ISODateToDateObj(query.proofTransactionDate)));
+      } else {
+        setProofTransactionDate(Number(query.proofTransactionDate));
       }
     }
   }, [query]);
@@ -278,6 +334,12 @@ const UpdateEarning = (props) => {
   }, []);
 
   useEffect(() => {
+    if(Object.keys(selectedEarning).length !== 0){
+      setListDocuments(selectedEarning.documentsMovement)
+    }
+  },[selectedEarning])
+
+  useEffect(() => {
     if (listClients && listClients.length > 0) {
       console.log('query.providerId', query.providerId);
       console.log('listClients', listClients);
@@ -300,7 +362,9 @@ const UpdateEarning = (props) => {
     transactionNumber: query.transactionNumber,
     saleDetail: query.description,
     saleObservation: query.observation,
-    totalAmounth: Number(query.totalAmount),
+    totalNet: Number(query.totalNet),
+    totalIgv: Number(query.totalIgv),
+    totalAmount: Number(query.totalAmount),
     totalAmountWithConcepts: isObjEmpty(query)
       ? 0
       : Number(query.totalAmountWithConcepts),
@@ -332,7 +396,7 @@ const UpdateEarning = (props) => {
         numberDocumentProvider: '',
         typeDocumentProvider: 'RUC',
         denominationProvider: '',
-        billIssueDate: '',
+        proofIssueDate: '',
         serialNumberBill: '',
         description: '',
         unitMeasureMoney: moneyUnit,
@@ -365,12 +429,24 @@ const UpdateEarning = (props) => {
       : '';
     newFinancePayload.request.payload.typeDocumentProvider =
       selectedClient.clientId ? selectedClient.clientId.split('-')[0] : '';
-    newFinancePayload.request.payload.billIssueDate =
+    newFinancePayload.request.payload.proofIssueDate =
       convertToDateWithoutTime(value2);
+    newFinancePayload.request.payload.proofDueDate =
+      convertToDateWithoutTime(proofOfPaymentDueDate);
+    newFinancePayload.request.payload.proofTransactionDate =
+      convertToDateWithoutTime(proofTransactionDate);
     newFinancePayload.request.payload.serialNumberBill = data.nroBill;
     newFinancePayload.request.payload.description = data.saleDetail;
     newFinancePayload.request.payload.observation = data.saleObservation;
-    newFinancePayload.request.payload.totalAmount = Number(data.totalAmounth);
+    newFinancePayload.request.payload.totalAmount = Number(data.totalAmount);
+    newFinancePayload.request.payload.totalNet = Number(
+      data.totalNet, //data.totalAmount,
+    );
+    newFinancePayload.request.payload.totalIgv = Number(
+      data.totalIgv, //data.totalAmount,
+    );
+    newFinancePayload.request.payload.documentsMovement =
+    listDocuments;
     newFinancePayload.request.payload.status = statusEarning;
     newFinancePayload.request.payload.folderMovement = query.folderMovement;
     newFinancePayload.request.payload.movementHeaderId =
@@ -550,6 +626,20 @@ const UpdateEarning = (props) => {
     setOpen(false);
   };
 
+  const getDocument = (document) => {
+    console.log('Documento seleccionado', document);
+    let newListDocuments = listDocuments;
+    newListDocuments.push(document)
+    setListDocuments(newListDocuments)
+    forceUpdate();
+  };
+  const removeDocument = (index) => {
+    let newListDocuments = listDocuments;
+    newListDocuments.splice(index, 1);
+    setListDocuments(newListDocuments)
+    forceUpdate();
+  };
+
   const removePayment = (index) => {
     console.log('index', index);
     listPayments.splice(index, 1);
@@ -568,7 +658,7 @@ const UpdateEarning = (props) => {
   };
 
   const handleChange = (event) => {
-    if (event.target.name == 'totalAmounth') {
+    if (event.target.name == 'totalAmount') {
       const ActualTotalAmount = Number(event.target.value);
       const newTotalOtherPayConcepts =
         ActualTotalAmount + totalAmountOfConcepts;
@@ -579,7 +669,7 @@ const UpdateEarning = (props) => {
       //   setPaymentMethod('debit');
       // }
     }
-    // if (event.target.name == 'totalAmounth') {
+    // if (event.target.name == 'totalAmount') {
     //   setTotalAmountWithConcepts(event.target.value);
     // }
   };
@@ -670,6 +760,9 @@ const UpdateEarning = (props) => {
                         <MenuItem value='ticket' style={{fontWeight: 200}}>
                           {messages['finance.proofOfPayment.type.ticket']}
                         </MenuItem>
+                        <MenuItem value='paymentOrder' style={{fontWeight: 200}}>
+                          {messages['finance.proofOfPayment.type.paymentOrder']}
+                        </MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>
@@ -726,6 +819,70 @@ const UpdateEarning = (props) => {
                       onChange={(newValue) => {
                         setValue2(newValue);
                         console.log('date', newValue);
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <DesktopDatePicker
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{
+                            my: 2,
+                            width: '100%',
+                            position: 'relative',
+                            bottom: '-8px',
+                          }}
+                          {...params}
+                        />
+                      )}
+                      required
+                      sx={{my: 2}}
+                      value={proofOfPaymentDueDate}
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTDUEDATE',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
+                      inputFormat='dd/MM/yyyy'
+                      name='proofOfPaymentDueDate'
+                      onChange={(newValue) => {
+                        setProofOfPaymentDueDate(newValue);
+                        console.log('proofOfPaymentDueDate', newValue);
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <DesktopDatePicker
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{
+                            my: 2,
+                            width: '100%',
+                            position: 'relative',
+                            bottom: '-8px',
+                          }}
+                          {...params}
+                        />
+                      )}
+                      required
+                      sx={{my: 2}}
+                      value={proofTransactionDate}
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                            'COLLECTIONTRANSACTIONDATE',
+                            proofOfPaymentType.toUpperCase(),
+                          )
+                          : "Fecha de pago del movimiento"
+                      }
+                      inputFormat='dd/MM/yyyy'
+                      name='proofTransactionDate'
+                      onChange={(newValue) => {
+                        setProofTransactionDate(newValue);
+                        console.log('proofTransactionDate', newValue);
                       }}
                     />
                   </Grid>
@@ -851,12 +1008,54 @@ const UpdateEarning = (props) => {
                       label={
                         proofOfPaymentType
                           ? translateValue(
+                              'PROOFOFPAYMENTTOTALNET',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
+                      name='totalNet'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
+                              'PROOFOFPAYMENTTOTALIGV',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : null
+                      }
+                      name='totalIgv'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label={
+                        proofOfPaymentType
+                          ? translateValue(
                               'PROOFOFPAYMENTTOTALAMOUNT',
                               proofOfPaymentType.toUpperCase(),
                             )
                           : 'Monto comprobante (con igv)'
                       }
-                      name='totalAmounth'
+                      name='totalAmount'
                       variant='outlined'
                       sx={{
                         width: '100%',
@@ -983,6 +1182,30 @@ const UpdateEarning = (props) => {
                       : null}
                   </Alert>
                 </Collapse>
+                
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
+                >
+                  <Grid item xs={12}>
+                    <Button
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={handleClickOpen.bind(this, 'document')}
+                    >
+                      Añade comprobantes secundarios
+                    </Button>
+                  </Grid>
+
+                  <Grid item xs={12} sx={{my: 5}}>
+                    <DocumentsTableForFinance
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                    />
+                  </Grid>
+                </Grid>
+
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -1104,6 +1327,23 @@ const UpdateEarning = (props) => {
             </DialogTitle>
             <DialogContent>
               <AddClientForm sendData={getCLient} />
+            </DialogContent>
+          </>
+        ) : (
+          <></>
+        )}
+        
+        {typeDialog == 'document' ? (
+          <>
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Ingresa los datos de documento'}
+              <CancelOutlinedIcon
+                onClick={setOpen.bind(this, false)}
+                className={classes.closeButton}
+              />
+            </DialogTitle>
+            <DialogContent>
+              <AddDocumentFormForFinance sendData={getDocument} />
             </DialogContent>
           </>
         ) : (

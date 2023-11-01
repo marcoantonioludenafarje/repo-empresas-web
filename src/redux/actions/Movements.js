@@ -40,6 +40,7 @@ import {
   PREVISUALIZE_BILL,
   PREVISUALIZE_REFERRAL_GUIDE,
   PROOF_MONITORING,
+  REGISTER_TRANSACTION,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -920,6 +921,27 @@ export const proofMonitoring = (payload) => {
       })
       .catch((error) => {
         console.log('proofMonitoring error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const registerTransaction = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/updateProofTransactionDate', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('updateProofTransactionDate resultado', data);
+        dispatch({
+          type: REGISTER_TRANSACTION,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('updateProofTransactionDate error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

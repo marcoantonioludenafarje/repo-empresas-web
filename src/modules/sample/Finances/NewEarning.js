@@ -74,6 +74,8 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import {useIntl} from 'react-intl';
 
+import DocumentsTableForFinance from '../DocumentSelector/DocumentsTableForFinance';
+import AddDocumentFormForFinance from '../DocumentSelector/AddDocumentFormForFinance';
 const useStyles = makeStyles((theme) => ({
   closeButton: {
     cursor: 'pointer',
@@ -128,7 +130,6 @@ let listPayments = [];
 let listOtherPayConcepts = [];
 let typeAlert = '';
 let selectedOutput = {};
-
 const NewEarning = (props) => {
   //VARIABLES DE PARAMETROS
   let changeValueField;
@@ -154,6 +155,7 @@ const NewEarning = (props) => {
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   const [conceptAction, setConceptAction] = React.useState('add');
   const [statusEarning, setStatusEarning] = React.useState('paid');
+  const [listDocuments, setListDocuments] = React.useState([]);
   const [purchaseType, setPurchaseType] = React.useState('cash');
   const [tooltip, setTooltip] = React.useState(false);
   const [totalAmount, setTotalAmount] = React.useState(0);
@@ -218,11 +220,6 @@ const NewEarning = (props) => {
         )
       : {issueDate: '', serialDocument: '', typeDocument: ''};
   console.log('El bill', bill);
-  const documentsMovement =
-    selectedOutput && selectedOutput.documentsMovement !== undefined
-      ? selectedOutput.documentsMovement
-      : [];
-  console.log('Documents Movement', documentsMovement);
   const [value2, setValue2] = React.useState(
     isObjEmpty(query) || bill == undefined || bill.issueDate == undefined
       ? Date.now()
@@ -292,6 +289,14 @@ const NewEarning = (props) => {
     }
   }, [businessParameter != undefined]);
 
+  useEffect(() => {
+    const documentsMovement =
+      selectedOutput && selectedOutput.documentsMovement !== undefined
+        ? selectedOutput.documentsMovement
+        : [];
+    console.log('Documents Movement', documentsMovement);
+    setListDocuments(documentsMovement);
+  }, [selectedOutput])
   const month = [
     'January',
     'February',
@@ -326,7 +331,6 @@ const NewEarning = (props) => {
     saleDetail: '',
     saleObservation: '',
     totalAmount: isObjEmpty(query) ? null : Number(query.totalPriceWithIgv),
-    documentsMovement: documentsMovement,
     totalAmountWithConcepts: isObjEmpty(query)
       ? 0
       : Number(query.totalAmountWithConcepts),
@@ -341,7 +345,7 @@ const NewEarning = (props) => {
     },
   };
   let anotherValues = {
-    regsiterDate: Number.isInteger(value) ? value : toEpoch(value),
+    registerDate: Number.isInteger(value) ? value : toEpoch(value),
     billDate: Number.isInteger(value2) ? value : toEpoch(value2),
     state: 'paid',
     conceptAction: 'add',
@@ -373,7 +377,6 @@ const NewEarning = (props) => {
             otherPayConcepts: [],
             observation: '',
             movementHeaderId: '',
-            documentsMovement: '',
           },
         ],
       },
@@ -449,7 +452,7 @@ const NewEarning = (props) => {
         getValueField('totalIgv').value, //data.totalAmount,
       );
       newFinancePayload.request.payload.movements[0].documentsMovement =
-        getValueField('documentsMovement').value; //data.documentsMovement || null;
+      listDocuments;
       newFinancePayload.request.payload.movements[0].status = statusEarning;
       newFinancePayload.request.payload.movements[0].movementHeaderId =
         !isObjEmpty(query) && query.movementHeaderId
@@ -641,6 +644,20 @@ const NewEarning = (props) => {
     setSelectedClient(client);
     console.log('Cliente seleccionado', client);
     setOpen(false);
+  };
+
+  const getDocument = (document) => {
+    console.log('Documento seleccionado', document);
+    let newListDocuments = listDocuments;
+    newListDocuments.push(document)
+    setListDocuments(newListDocuments)
+    forceUpdate();
+  };
+  const removeDocument = (index) => {
+    let newListDocuments = listDocuments;
+    newListDocuments.splice(index, 1);
+    setListDocuments(newListDocuments)
+    forceUpdate();
   };
 
   const removePayment = (index) => {
@@ -1209,6 +1226,30 @@ const NewEarning = (props) => {
                       : null}
                   </Alert>
                 </Collapse>
+
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
+                >
+                  <Grid item xs={12}>
+                    <Button
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={handleClickOpen.bind(this, 'document')}
+                    >
+                      Añade comprobantes secundarios
+                    </Button>
+                  </Grid>
+
+                  <Grid item xs={12} sx={{my: 5}}>
+                    <DocumentsTableForFinance
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                    />
+                  </Grid>
+                </Grid>
+
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -1386,6 +1427,23 @@ const NewEarning = (props) => {
             </DialogTitle>
             <DialogContent>
               <AddClientForm sendData={getClient} />
+            </DialogContent>
+          </>
+        ) : (
+          <></>
+        )}
+        
+        {typeDialog == 'document' ? (
+          <>
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Ingresa los datos de documento'}
+              <CancelOutlinedIcon
+                onClick={setOpen.bind(this, false)}
+                className={classes.closeButton}
+              />
+            </DialogTitle>
+            <DialogContent>
+              <AddDocumentFormForFinance sendData={getDocument} />
             </DialogContent>
           </>
         ) : (

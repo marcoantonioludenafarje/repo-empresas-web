@@ -155,7 +155,7 @@ const CreditNotesTable = (props) => {
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [loading, setLoading] = React.useState(true);
   const [initialTime, setInitialTime] = React.useState(
-    toEpoch(Date.now() - 89280000),
+    toEpoch(Date.now() - 89280000*7),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
 
@@ -421,7 +421,7 @@ const CreditNotesTable = (props) => {
   };
 
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 89280000);
+  const [value, setValue] = React.useState(Date.now() - 89280000*7);
   const [value2, setValue2] = React.useState(Date.now());
 
   const goToUpdate = () => {

@@ -42,6 +42,7 @@ import {
   PREVISUALIZE_BILL,
   PREVISUALIZE_REFERRAL_GUIDE,
   PROOF_MONITORING,
+  REGISTER_TRANSACTION,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -715,6 +716,12 @@ const movementsReducer = (state = INIT_STATE, action) => {
         inputLastEvaluatedKey_pageListInput: null,
         outputItems_pageListOutput: [],
         outputLastEvaluatedKey_pageListOutput: null,
+      };
+    case REGISTER_TRANSACTION:
+      console.log('data de reducer REGISTER_TRANSACTION', action.payload);
+      return {
+        ...state,
+        registerTransactionRes: action.payload,
       };
     default:
       return state;

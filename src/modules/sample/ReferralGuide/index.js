@@ -183,7 +183,7 @@ const ReferralGuidesTable = (props) => {
   const [lastKey, setLastKey] = React.useState(null);
   const [errorDetail, setErrorDetail] = React.useState('');
   const [initialTime, setInitialTime] = React.useState(
-    toEpoch(Date.now() - 89280000),
+    toEpoch(Date.now() -  89280000*3),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
   const [batchConsultIsActive, setBatchConsultIsActive] = React.useState(false);
@@ -606,7 +606,7 @@ const ReferralGuidesTable = (props) => {
   };
 
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 89280000);
+  const [value, setValue] = React.useState(Date.now() -  89280000*3);
   const [value2, setValue2] = React.useState(Date.now());
 
   const goToUpdate = () => {
@@ -670,7 +670,7 @@ const ReferralGuidesTable = (props) => {
       let listPayload = {
         request: {
           payload: {
-            initialTime: toEpoch(Date.now() - 89280000),
+            initialTime: toEpoch(Date.now() - 89280000*3),
             finalTime: toEpoch(Date.now()),
             businessProductCode: null,
             movementType: 'REFERRAL_GUIDE',

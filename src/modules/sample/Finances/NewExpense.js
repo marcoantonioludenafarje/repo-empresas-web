@@ -57,6 +57,8 @@ import Router, {useRouter} from 'next/router';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import {width} from '@mui/system';
 
+import DocumentsTableForFinance from '../DocumentSelector/DocumentsTableForFinance';
+import AddDocumentFormForFinance from '../DocumentSelector/AddDocumentFormForFinance';
 import AddProviderForm from '../ProviderSelection/AddProviderForm';
 import {addFinance} from '../../../redux/actions/Finances';
 import {
@@ -149,6 +151,7 @@ const NewExpense = (props) => {
   const [totalAmountWithConcepts, setTotalAmountWithConcepts] =
     React.useState(0);
   const [totalAmountOfConcepts, setTotalAmountOfConcepts] = React.useState(0);
+  const [listDocuments, setListDocuments] = React.useState([]);
   const [minTutorial, setMinTutorial] = React.useState(false);
   const [typeIcon, setTypeIcon] = React.useState('2');
   const [proofOfPaymentType, setProofOfPaymentType] = React.useState('bill');
@@ -342,7 +345,7 @@ const NewExpense = (props) => {
     },
   };
   let anotherValues = {
-    regsiterDate: Number.isInteger(value) ? value : toEpoch(value),
+    registerDate: Number.isInteger(value) ? value : toEpoch(value),
     billDate: Number.isInteger(value2) ? value : toEpoch(value2),
     state: 'paid',
     conceptAction: 'add',
@@ -442,6 +445,8 @@ const NewExpense = (props) => {
       newFinancePayload.request.payload.movements[0].totalIgv = Number(
         getValueField('totalIgv').value, //data.totalIgv,
       );
+      newFinancePayload.request.payload.movements[0].documentsMovement =
+      listDocuments;
       newFinancePayload.request.payload.movements[0].status = statusExpense;
       newFinancePayload.request.payload.movements[0].movementHeaderId =
         !isObjEmpty(query) && query.movementHeaderId
@@ -633,6 +638,20 @@ const NewExpense = (props) => {
     selectedProvider = provider;
     console.log('Proveedor seleccionado', provider);
     setOpen(false);
+  };
+
+  const getDocument = (document) => {
+    console.log('Documento seleccionado', document);
+    let newListDocuments = listDocuments;
+    newListDocuments.push(document)
+    setListDocuments(newListDocuments)
+    forceUpdate();
+  };
+  const removeDocument = (index) => {
+    let newListDocuments = listDocuments;
+    newListDocuments.splice(index, 1);
+    setListDocuments(newListDocuments)
+    forceUpdate();
   };
 
   const removePayment = (index) => {
@@ -1202,6 +1221,30 @@ const NewExpense = (props) => {
                       : null}
                   </Alert>
                 </Collapse>
+                
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
+                >
+                  <Grid item xs={12}>
+                    <Button
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={handleClickOpen.bind(this, 'document')}
+                    >
+                      Añade comprobantes secundarios
+                    </Button>
+                  </Grid>
+
+                  <Grid item xs={12} sx={{my: 5}}>
+                    <DocumentsTableForFinance
+                      arrayObjs={listDocuments}
+                      toDelete={removeDocument}
+                    />
+                  </Grid>
+                </Grid>
+
                 <ButtonGroup
                   orientation='vertical'
                   variant='outlined'
@@ -1370,6 +1413,23 @@ const NewExpense = (props) => {
             </DialogTitle>
             <DialogContent>
               <AddProviderForm sendData={getProvider} />
+            </DialogContent>
+          </>
+        ) : (
+          <></>
+        )}
+        
+        {typeDialog == 'document' ? (
+          <>
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Ingresa los datos de documento'}
+              <CancelOutlinedIcon
+                onClick={setOpen.bind(this, false)}
+                className={classes.closeButton}
+              />
+            </DialogTitle>
+            <DialogContent>
+              <AddDocumentFormForFinance sendData={getDocument} />
             </DialogContent>
           </>
         ) : (

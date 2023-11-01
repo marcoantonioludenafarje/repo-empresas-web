@@ -245,6 +245,7 @@ export const GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS =
   'generate_excel_template_to_Receipts';
 export const GENERATE_EXCEL_TEMPLATE_TO_NOTES =
   'generate_excel_template_to_Notes';
+export const REGISTER_TRANSACTION = 'register_transaction';
 //DISTRIBUTIONS
 export const LIST_DISTRIBUTION = 'list_distribution';
 export const TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION =

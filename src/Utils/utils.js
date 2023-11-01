@@ -409,6 +409,19 @@ export const simpleDateToDateObj = (date) => {
   return dateObject;
 };
 
+export const ISODateToDateObj = (date) => {
+  console.log('fecha a dateObj', date);
+  var dateParts;
+  if (date.includes('/')) {
+    dateParts = date.split('/');
+  }
+  if (date.includes('-')) {
+    dateParts = date.split('-');
+  }
+  var dateObject = new Date(+dateParts[0], dateParts[1] - 1, +dateParts[2]);
+  return dateObject;
+};
+
 export const isObjEmpty = (obj) => {
   return Object.keys(obj).length === 0;
 };

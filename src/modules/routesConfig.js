@@ -30,6 +30,7 @@ import InventoryOutlinedIcon from '@mui/icons-material/InventoryOutlined';
 import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import EventIcon from '@mui/icons-material/Event';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 const rolesRoutesConfig = {
   APP_CLIENT: [
     /* {
@@ -251,6 +252,14 @@ const rolesRoutesConfig = {
           type: 'item',
           icon: <ReceiptOutlinedIcon fontSize='small' />,
           url: '/sample/referral-guide/table',
+        },
+        {
+          id: 'ProofMonitoring',
+          title: 'ProofsOfPaymentConsolidation',
+          messageId: 'sidebar.sample.proofsOfPaymentConsolidation',
+          type: 'item',
+          icon: <SummarizeIcon fontSize='small' />,
+          url: '/sample/proof/consolidated',
         },
         {
           id: 'referralGuidesCustomize',

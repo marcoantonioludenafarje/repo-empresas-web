@@ -169,7 +169,7 @@ const ReceiptsTable = (props) => {
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
   const [initialTime, setInitialTime] = React.useState(
-    toEpoch(Date.now() - 89280000),
+    toEpoch(Date.now() - 89280000*2),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
 
@@ -459,7 +459,7 @@ const ReceiptsTable = (props) => {
   };
 
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 89280000);
+  const [value, setValue] = React.useState(Date.now() - 89280000*2);
   const [value2, setValue2] = React.useState(Date.now());
   const goToUpdate = () => {
     console.log(' boleta', selectedReceipt);

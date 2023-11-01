@@ -75,9 +75,11 @@ import {
   dateWithHyphen,
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
+import TransactionRegisterForm from './TransactionRegisterForm';
 import {
   getBillItems_pageListBill,
   cancelInvoice,
+  registerTransaction,
   addCreditNote,
   billBatchConsult,
 } from '../../../redux/actions/Movements';
@@ -175,7 +177,7 @@ const BillsTable = (props) => {
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
   const [initialTime, setInitialTime] = React.useState(
-    toEpoch(Date.now() - 89280000),
+    toEpoch(Date.now() - 89280000*7),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
   const [openTransaction, setOpenTransaction] = React.useState(false);
@@ -184,7 +186,7 @@ const BillsTable = (props) => {
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   const documentSunat = 'bill';
   const {moneySymbol} = useSelector(({general}) => general);
-
+  const [openTransactionStatus, setOpenTransactionStatus] = React.useState(false);
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getBillItems_pageListBill(payload));
@@ -197,6 +199,9 @@ const BillsTable = (props) => {
   };
   const toCancelInvoice = (payload) => {
     dispatch(cancelInvoice(payload));
+  };
+  const toRegisterTransaction = (payload) => {
+    dispatch(registerTransaction(payload))
   };
   const toExportExcelTemplateToBills = (payload) => {
     dispatch(exportExcelTemplateToBills(payload));
@@ -250,7 +255,7 @@ const BillsTable = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  const {cancelInvoiceRes} = useSelector(({movements}) => movements);
+  const {cancelInvoiceRes, registerTransactionRes} = useSelector(({movements}) => movements);
   console.log('cancelInvoiceRes', cancelInvoiceRes);
 
   useEffect(() => {
@@ -295,7 +300,7 @@ const BillsTable = (props) => {
       let listPayload = {
         request: {
           payload: {
-            initialTime: toEpoch(Date.now() - 89280000),
+            initialTime: toEpoch(Date.now() - 89280000*7),
             finalTime: toEpoch(Date.now()),
             businessProductCode: null,
             movementType: 'BILL',
@@ -498,7 +503,7 @@ const BillsTable = (props) => {
   };
 
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 89280000);
+  const [value, setValue] = React.useState(Date.now() - 89280000*7);
   const [value2, setValue2] = React.useState(Date.now());
 
   const registerSuccess = () => {
@@ -511,6 +516,16 @@ const BillsTable = (props) => {
   const registerError = () => {
     return (successMessage != undefined && cancelInvoiceRes) || errorMessage;
   };
+  const registerTransactionSuccess = () => {
+    return (
+      successMessage != undefined &&
+      registerTransactionRes != undefined &&
+      !('error' in registerTransactionRes)
+    );
+  };
+  const registerTransactionError = () => {
+    return (successMessage != undefined && registerTransactionRes) || errorMessage;
+  };
   const sendStatus = () => {
     if (registerSuccess()) {
       setOpenStatus(false);
@@ -519,6 +534,15 @@ const BillsTable = (props) => {
       setOpenStatus(false);
     } else {
       setOpenStatus(false);
+    }
+  };
+  const sendTransactionStatus = () => {
+    if (registerTransactionSuccess()) {
+      setOpenTransactionStatus(false);
+    } else if (registerTransactionError()) {
+      setOpenTransactionStatus(false);
+    } else {
+      setOpenTransactionStatus(false);
     }
   };
 
@@ -605,6 +629,47 @@ const BillsTable = (props) => {
             <br />
             {cancelInvoiceRes && 'error' in cancelInvoiceRes
               ? cancelInvoiceRes.error
+              : null}
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return (
+        <CircularProgress
+          disableShrink
+          sx={{m: '10px', position: 'relative'}}
+        />
+      );
+    }
+  };
+  const showTransactionMessage = () => {
+    if (registerTransactionSuccess()) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se registró correctamente.
+          </DialogContentText>
+        </>
+      );
+    } else if (registerTransactionError()) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al tratar de registrar.
+            <br />
+            {registerTransactionRes && 'error' in registerTransactionRes
+              ? registerTransactionRes.error
               : null}
           </DialogContentText>
         </>
@@ -778,6 +843,30 @@ const BillsTable = (props) => {
     setOpenForm(false);
   };
 
+  const registerTransaction = (proofTransactionDate) => {
+    let finalPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          proofTransactionDate: proofTransactionDate,
+          movementHeaderId: selectedBill.movementHeaderId,
+          contableMovementId: selectedBill.contableMovementId,
+          userCreated: userDataRes.userId,
+          userCreatedMetadata: {
+            nombreCompleto: userDataRes.nombreCompleto,
+            email: userDataRes.email,
+          },
+        },
+      },
+    };
+    console.log('cancelBill payload', finalPayload);
+    dispatch({type: REGISTER_TRANSACTION, payload: undefined});
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    toRegisterTransaction(finalPayload);
+    setOpenStatus(true);
+    setOpenTransaction(false);
+  }
   return (
     <Card sx={{p: 4}}>
       <Stack
@@ -1071,7 +1160,7 @@ const BillsTable = (props) => {
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Reenviar
         </MenuItem>
-        <MenuItem onClick={() => handleOpenTransaction}>
+        <MenuItem onClick={handleOpenTransaction}>
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Confirmar pago
         </MenuItem>
@@ -1177,6 +1266,45 @@ const BillsTable = (props) => {
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
+
+      <Dialog
+        open={openTransaction}
+        onClose={() => setOpenTransaction(false)}
+        fullWidth
+        maxWidth='xs'
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Confirmar pago'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <TransactionRegisterForm sendData={registerTransaction} />
+        </DialogContent>
+      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openTransactionStatus}
+          onClose={() => setOpenTransactionStatus(false)}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Confirmar pago'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showTransactionMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={() => sendTransactionStatus(false)}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
+
     </Card>
   );
 };
