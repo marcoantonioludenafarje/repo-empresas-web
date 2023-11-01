@@ -161,13 +161,11 @@ const Edit = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
-  const [notifyClientByWsp, setNotifyClientByWsp] =
-    React.useState(false);
+  const [notifyClientByWsp, setNotifyClientByWsp] = React.useState(false);
   const [countryCode, setCountryCode] = React.useState('+51');
   const [selectedClient, setSelectedClient] = React.useState('');
 
-  const [recordingClientByWsp, setRecordingClientByWsp] =
-    React.useState(false);
+  const [recordingClientByWsp, setRecordingClientByWsp] = React.useState(false);
   const dispatch = useDispatch();
 
   //APIS
@@ -477,7 +475,12 @@ const Edit = (props) => {
                 id='principal-form'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500} >
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={500}
+                >
                   <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Título *'
@@ -597,7 +600,9 @@ const Edit = (props) => {
                       type='number'
                       onInput={(e) => {
                         console.log('timelord', e.target.value);
-                        const filldate = new Date(publishDate.getTime() + e.target.value * 60 * 1000)
+                        const filldate = new Date(
+                          publishDate.getTime() + e.target.value * 60 * 1000,
+                        );
                         setFinalDate(filldate);
                       }}
                       sx={{

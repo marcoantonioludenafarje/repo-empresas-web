@@ -85,7 +85,7 @@ const rolesRoutesConfig = {
           type: 'item',
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/admin/previews',
-        }
+        },
       ],
     },
     {

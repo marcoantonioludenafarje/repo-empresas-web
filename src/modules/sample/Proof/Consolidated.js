@@ -49,20 +49,14 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PageviewIcon from '@mui/icons-material/Pageview';
 import {red, amber} from '@mui/material/colors';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import {
-  DateTimePicker,
-} from '@mui/lab';
+import {DateTimePicker} from '@mui/lab';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {getUserData} from '../../../redux/actions/User';
 import {getListBusiness} from '../../../redux/actions/Admin';
-import {
-  convertToDateWithoutTime,
-} from '../../../Utils/utils';
-import {
-  proofMonitoring,
-} from '../../../redux/actions/Movements';
+import {convertToDateWithoutTime} from '../../../Utils/utils';
+import {proofMonitoring} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -106,7 +100,7 @@ const ProofsOfPaymentConsolidation = (props) => {
   const [openError, setOpenError] = React.useState(false);
   const [errorDetail, setErrorDetail] = React.useState('');
   const [initialTime, setInitialTime] = React.useState(
-    toEpoch(Date.now() - 89280000*4),
+    toEpoch(Date.now() - 89280000 * 4),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
@@ -126,7 +120,7 @@ const ProofsOfPaymentConsolidation = (props) => {
         payload: {
           initialTime: initialTime,
           finalTime: finalTime,
-          serviceType: "proofsOfPaymentConsolidation",
+          serviceType: 'proofsOfPaymentConsolidation',
           merchantId: userDataRes.merchantSelected.merchantId,
         },
       },
@@ -147,7 +141,7 @@ const ProofsOfPaymentConsolidation = (props) => {
     'proofMonitoringItems_pageListGuide',
     proofMonitoringItems_pageListGuide,
   );
-  
+
   const {moneySymbol} = useSelector(({general}) => general);
   const {successMessage} = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
@@ -229,7 +223,7 @@ const ProofsOfPaymentConsolidation = (props) => {
         payload: {
           initialTime: initialTime,
           finalTime: finalTime,
-          serviceType: "proofsOfPaymentConsolidation",
+          serviceType: 'proofsOfPaymentConsolidation',
           merchantId: userDataRes.merchantSelected.merchantId,
         },
       },
@@ -266,7 +260,7 @@ const ProofsOfPaymentConsolidation = (props) => {
           payload: {
             initialTime: initialTime,
             finalTime: finalTime,
-            serviceType: "proofsOfPaymentConsolidation",
+            serviceType: 'proofsOfPaymentConsolidation',
             merchantId: userDataRes.merchantSelected.merchantId,
           },
         },
@@ -290,7 +284,7 @@ const ProofsOfPaymentConsolidation = (props) => {
   };
 
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 89280000*4);
+  const [value, setValue] = React.useState(Date.now() - 89280000 * 4);
   const [value2, setValue2] = React.useState(Date.now());
   const compare = (a, b) => {
     if (a.serialNumber.split('-')[1] < b.serialNumber.split('-')[1]) {

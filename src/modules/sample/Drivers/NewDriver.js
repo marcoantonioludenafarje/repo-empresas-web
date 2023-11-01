@@ -283,7 +283,12 @@ const NewDriver = () => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={500}
+                >
                   <Grid item xs={12} sm={12}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel

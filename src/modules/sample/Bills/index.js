@@ -177,7 +177,7 @@ const BillsTable = (props) => {
   );
   const [moreFilters, setMoreFilters] = React.useState(false);
   const [initialTime, setInitialTime] = React.useState(
-    toEpoch(Date.now() - 89280000*7),
+    toEpoch(Date.now() - 89280000 * 7),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
   const [openTransaction, setOpenTransaction] = React.useState(false);
@@ -186,7 +186,8 @@ const BillsTable = (props) => {
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   const documentSunat = 'bill';
   const {moneySymbol} = useSelector(({general}) => general);
-  const [openTransactionStatus, setOpenTransactionStatus] = React.useState(false);
+  const [openTransactionStatus, setOpenTransactionStatus] =
+    React.useState(false);
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getBillItems_pageListBill(payload));
@@ -201,7 +202,7 @@ const BillsTable = (props) => {
     dispatch(cancelInvoice(payload));
   };
   const toRegisterTransaction = (payload) => {
-    dispatch(registerTransaction(payload))
+    dispatch(registerTransaction(payload));
   };
   const toExportExcelTemplateToBills = (payload) => {
     dispatch(exportExcelTemplateToBills(payload));
@@ -255,7 +256,9 @@ const BillsTable = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  const {cancelInvoiceRes, registerTransactionRes} = useSelector(({movements}) => movements);
+  const {cancelInvoiceRes, registerTransactionRes} = useSelector(
+    ({movements}) => movements,
+  );
   console.log('cancelInvoiceRes', cancelInvoiceRes);
 
   useEffect(() => {
@@ -300,7 +303,7 @@ const BillsTable = (props) => {
       let listPayload = {
         request: {
           payload: {
-            initialTime: toEpoch(Date.now() - 89280000*7),
+            initialTime: toEpoch(Date.now() - 89280000 * 7),
             finalTime: toEpoch(Date.now()),
             businessProductCode: null,
             movementType: 'BILL',
@@ -503,7 +506,7 @@ const BillsTable = (props) => {
   };
 
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 89280000*7);
+  const [value, setValue] = React.useState(Date.now() - 89280000 * 7);
   const [value2, setValue2] = React.useState(Date.now());
 
   const registerSuccess = () => {
@@ -524,7 +527,9 @@ const BillsTable = (props) => {
     );
   };
   const registerTransactionError = () => {
-    return (successMessage != undefined && registerTransactionRes) || errorMessage;
+    return (
+      (successMessage != undefined && registerTransactionRes) || errorMessage
+    );
   };
   const sendStatus = () => {
     if (registerSuccess()) {
@@ -599,7 +604,7 @@ const BillsTable = (props) => {
   };
 
   const handleOpenTransaction = () => {
-    setOpenTransaction(true)
+    setOpenTransaction(true);
   };
   const showMessage = () => {
     if (registerSuccess()) {
@@ -866,7 +871,7 @@ const BillsTable = (props) => {
     toRegisterTransaction(finalPayload);
     setOpenStatus(true);
     setOpenTransaction(false);
-  }
+  };
   return (
     <Card sx={{p: 4}}>
       <Stack
@@ -963,9 +968,7 @@ const BillsTable = (props) => {
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
-                  <TableCell>
-                    {strDateToDateObject_ES(obj.issueDate)}
-                  </TableCell>
+                  <TableCell>{strDateToDateObject_ES(obj.issueDate)}</TableCell>
                   <TableCell>
                     {obj.serialNumberBill && obj.serialNumberBill.includes('-')
                       ? obj.serialNumberBill.split('-')[0]
@@ -1298,13 +1301,15 @@ const BillsTable = (props) => {
             {showTransactionMessage()}
           </DialogContent>
           <DialogActions sx={{justifyContent: 'center'}}>
-            <Button variant='outlined' onClick={() => sendTransactionStatus(false)}>
+            <Button
+              variant='outlined'
+              onClick={() => sendTransactionStatus(false)}
+            >
               Aceptar
             </Button>
           </DialogActions>
         </Dialog>
       </ClickAwayListener>
-
     </Card>
   );
 };

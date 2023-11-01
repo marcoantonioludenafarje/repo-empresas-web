@@ -50,7 +50,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAppointment, newAppointment, updateAppointment} from 'redux/actions';
 import {getSpecialists} from 'redux/actions/Specialist';
-import { getAttention, newAttention, updateAttention } from 'redux/actions';
+import {getAttention, newAttention, updateAttention} from 'redux/actions';
 
 import AddClientForm from '../../ClientSelection/AddClientForm';
 import {useState} from 'react';
@@ -142,7 +142,7 @@ let editattention = {};
 
 const Update = (props) => {
   const router = useRouter();
-  console.log("ATENCION A ROUTER", router);
+  console.log('ATENCION A ROUTER', router);
   let {query} = router;
   console.log('ATENCION A EDITAR', query);
   let changeValueField;
@@ -156,13 +156,11 @@ const Update = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
-  const [notifyClientByWsp, setNotifyClientByWsp] =
-    React.useState(false);
+  const [notifyClientByWsp, setNotifyClientByWsp] = React.useState(false);
   const [countryCode, setCountryCode] = React.useState('+51');
   const [selectedClient, setSelectedClient] = React.useState('');
 
-  const [recordingClientByWsp, setRecordingClientByWsp] =
-    React.useState(false);
+  const [recordingClientByWsp, setRecordingClientByWsp] = React.useState(false);
   const dispatch = useDispatch();
 
   //APIS
@@ -198,7 +196,7 @@ const Update = (props) => {
   const {listSpecialists} = useSelector(({specialists}) => specialists);
   console.log('confeti especialistas', listSpecialists);
 
-  const {listAttentions} = useSelector(({attention}) => attention)
+  const {listAttentions} = useSelector(({attention}) => attention);
 
   const {listAppointments} = useSelector(({appointment}) => appointment);
   console.log('confeti citas', listAppointments);
@@ -210,34 +208,47 @@ const Update = (props) => {
     console.log('CITA SELECTA', editattention);
   }
 
- 
-    let part = router.asPath.split("?")
-    let idgene = part[1]
-    const citagenerada = listAppointments.find((cita)=> cita.appointmentId === idgene)
-    console.log("CITA GENERADA", citagenerada);
+  let part = router.asPath.split('?');
+  let idgene = part[1];
+  const citagenerada = listAppointments.find(
+    (cita) => cita.appointmentId === idgene,
+  );
+  console.log('CITA GENERADA', citagenerada);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (citagenerada) {
-      setSelectedClient(citagenerada.clientName)
-      console.log("CITA SELECTED", selectedClient);
+      setSelectedClient(citagenerada.clientName);
+      console.log('CITA SELECTED', selectedClient);
     }
-  },[citagenerada])
+  }, [citagenerada]);
   useEffect(() => {
     console.log('cita actual', editattention);
   }, [editattention]);
 
   const defaultValues = {
-    title: query.attentionTitle?query.attentionTitle:citagenerada.appointmentTitle,
-    description: query.attentionDescription?query.attentionDescription:citagenerada.appointmentDescription,
-    duration: parseInt(query.duration?query.duration:citagenerada.duration),
+    title: query.attentionTitle
+      ? query.attentionTitle
+      : citagenerada.appointmentTitle,
+    description: query.attentionDescription
+      ? query.attentionDescription
+      : citagenerada.appointmentDescription,
+    duration: parseInt(query.duration ? query.duration : citagenerada.duration),
   };
 
   const [publishDate, setPublishDate] = React.useState(
-    new Date(editattention?.scheduledStartedAt?editattention.scheduledStartedAt:citagenerada.scheduledStartedAt) /* Number(query.createdAt) */,
+    new Date(
+      editattention?.scheduledStartedAt
+        ? editattention.scheduledStartedAt
+        : citagenerada.scheduledStartedAt,
+    ) /* Number(query.createdAt) */,
   );
 
   const [finalDate, setFinalDate] = useState(
-    new Date(editattention?.scheduledFinishedAt?editattention.scheduledFinishedAt:citagenerada.scheduledFinishedAt),
+    new Date(
+      editattention?.scheduledFinishedAt
+        ? editattention.scheduledFinishedAt
+        : citagenerada.scheduledFinishedAt,
+    ),
   );
 
   useEffect(() => {
@@ -355,47 +366,42 @@ const Update = (props) => {
     let starter = publishDate.getTime();
     let end = finalDate.getTime();
 
-    newAttentionPayload.request.payload = 
-      {
-        clientId: selectedClient.clientId,
-        clientName: selectedClient.denominationClient,
-        specialistId: specialistF[0].specialistId
-          ? specialistF[0].specialistId
-          : '',
-        specialistName: specialistF[0].specialistName
-          ? specialistF[0].specialistName
-          : '',
-        attentionDescription: data.description,
-        attentionTitle: data.title,
-        scheduledStartedAt: starter,
-        scheduledFinishedAt: end,
-        duration: data.duration,
-        durationUnited: 'Min',
-        notifications: {
-          email: email,
-          wsp: wsp,
-          checkEmailNotify: notifyClientByEmail,
-          checkWspNotify: notifyClientByWsp,
-        },
+    (newAttentionPayload.request.payload = {
+      clientId: selectedClient.clientId,
+      clientName: selectedClient.denominationClient,
+      specialistId: specialistF[0].specialistId
+        ? specialistF[0].specialistId
+        : '',
+      specialistName: specialistF[0].specialistName
+        ? specialistF[0].specialistName
+        : '',
+      attentionDescription: data.description,
+      attentionTitle: data.title,
+      scheduledStartedAt: starter,
+      scheduledFinishedAt: end,
+      duration: data.duration,
+      durationUnited: 'Min',
+      notifications: {
+        email: email,
+        wsp: wsp,
+        checkEmailNotify: notifyClientByEmail,
+        checkWspNotify: notifyClientByWsp,
       },
-
-    console.log('objfinaly', newAttentionPayload);
+    }),
+      console.log('objfinaly', newAttentionPayload);
 
     if (citagenerada) {
-
       dispatch({type: FETCH_SUCCESS, payload: ''});
       dispatch({type: FETCH_ERROR, payload: ''});
       toCreateAttention(newAttentionPayload);
       setSubmitting(false);
       setOpenStatus(true);
-      
     } else {
-        
       dispatch({type: FETCH_SUCCESS, payload: ''});
       dispatch({type: FETCH_ERROR, payload: ''});
       toEditAttention(newAttentionPayload);
       setSubmitting(false);
-      setOpenStatus(true); 
+      setOpenStatus(true);
     }
   };
 
@@ -469,7 +475,7 @@ const Update = (props) => {
         <Typography
           sx={{mx: 'auto', my: '10px', fontWeight: 600, fontSize: 25}}
         >
-          {citagenerada?"GENERAR ATENCIÓN":"ACTUALIZAR ATENCIÓN"}
+          {citagenerada ? 'GENERAR ATENCIÓN' : 'ACTUALIZAR ATENCIÓN'}
         </Typography>
       </Box>
       <Divider sx={{mt: 2, mb: 4}} />
@@ -506,7 +512,12 @@ const Update = (props) => {
                 id='principal-form'
                 /* onChange={handleActualData} */
               >
-                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={500}
+                >
                   <Grid item xs={12} sm={12}>
                     <AppTextField
                       label='Título *'
@@ -537,7 +548,7 @@ const Update = (props) => {
                       {selectedClient && selectedClient.denominationClient
                         ? selectedClient.denominationClient
                         : ''}
-                      {citagenerada? selectedClient: 'No definido'}
+                      {citagenerada ? selectedClient : 'No definido'}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={12}>
@@ -552,7 +563,11 @@ const Update = (props) => {
                         name='specialist'
                         labelId='specialist-label'
                         label='Especialista'
-                        value={editattention?.specialistId?editattention.specialistId:citagenerada.specialistId}
+                        value={
+                          editattention?.specialistId
+                            ? editattention.specialistId
+                            : citagenerada.specialistId
+                        }
                         onChange={(event) => {
                           const selectedSpecialistId = event.target.value;
                           const selectedSpecialist = listSpecialists.find(
@@ -627,7 +642,9 @@ const Update = (props) => {
                       type='number'
                       onInput={(e) => {
                         console.log('timelord', e.target.value);
-                        const filldate = new Date(publishDate.getTime() + e.target.value * 60 * 1000)
+                        const filldate = new Date(
+                          publishDate.getTime() + e.target.value * 60 * 1000,
+                        );
                         setFinalDate(filldate);
                       }}
                       sx={{

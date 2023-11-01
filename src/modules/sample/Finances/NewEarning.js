@@ -232,7 +232,7 @@ const NewEarning = (props) => {
   );
 
   const [proofTransactionDate, setProofTransactionDate] = React.useState(
-    Date.now()
+    Date.now(),
   );
 
   const changeIcon = () => {
@@ -296,7 +296,7 @@ const NewEarning = (props) => {
         : [];
     console.log('Documents Movement', documentsMovement);
     setListDocuments(documentsMovement);
-  }, [selectedOutput])
+  }, [selectedOutput]);
   const month = [
     'January',
     'February',
@@ -452,7 +452,7 @@ const NewEarning = (props) => {
         getValueField('totalIgv').value, //data.totalAmount,
       );
       newFinancePayload.request.payload.movements[0].documentsMovement =
-      listDocuments;
+        listDocuments;
       newFinancePayload.request.payload.movements[0].status = statusEarning;
       newFinancePayload.request.payload.movements[0].movementHeaderId =
         !isObjEmpty(query) && query.movementHeaderId
@@ -649,14 +649,14 @@ const NewEarning = (props) => {
   const getDocument = (document) => {
     console.log('Documento seleccionado', document);
     let newListDocuments = listDocuments;
-    newListDocuments.push(document)
-    setListDocuments(newListDocuments)
+    newListDocuments.push(document);
+    setListDocuments(newListDocuments);
     forceUpdate();
   };
   const removeDocument = (index) => {
     let newListDocuments = listDocuments;
     newListDocuments.splice(index, 1);
-    setListDocuments(newListDocuments)
+    setListDocuments(newListDocuments);
     forceUpdate();
   };
 
@@ -786,7 +786,10 @@ const NewEarning = (props) => {
                         <MenuItem value='ticket' style={{fontWeight: 200}}>
                           {messages['finance.proofOfPayment.type.ticket']}
                         </MenuItem>
-                        <MenuItem value='paymentOrder' style={{fontWeight: 200}}>
+                        <MenuItem
+                          value='paymentOrder'
+                          style={{fontWeight: 200}}
+                        >
                           {messages['finance.proofOfPayment.type.paymentOrder']}
                         </MenuItem>
                       </Select>
@@ -897,10 +900,10 @@ const NewEarning = (props) => {
                       label={
                         proofOfPaymentType
                           ? translateValue(
-                            'COLLECTIONTRANSACTIONDATE',
-                            proofOfPaymentType.toUpperCase(),
-                          )
-                          : "Fecha de pago del movimiento"
+                              'COLLECTIONTRANSACTIONDATE',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : 'Fecha de pago del movimiento'
                       }
                       inputFormat='dd/MM/yyyy'
                       name='proofTransactionDate'
@@ -1432,7 +1435,7 @@ const NewEarning = (props) => {
         ) : (
           <></>
         )}
-        
+
         {typeDialog == 'document' ? (
           <>
             <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>

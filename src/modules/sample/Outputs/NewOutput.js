@@ -457,13 +457,17 @@ const NewOutput = (props) => {
     forceUpdate();
   };
 
-  const editProduct = (index) =>{
-    console.log("Llega a edit", index);
-    console.log("llega", selectedProducts);
-    console.log("llega lista", listProducts);
-    let productox = listProducts.find((producto)=>producto.businessProductCode === selectedProducts[0].businessProductCode)
-    console.log("llega pro", productox);
-  }
+  const editProduct = (index) => {
+    console.log('Llega a edit', index);
+    console.log('llega', selectedProducts);
+    console.log('llega lista', listProducts);
+    let productox = listProducts.find(
+      (producto) =>
+        producto.businessProductCode ===
+        selectedProducts[0].businessProductCode,
+    );
+    console.log('llega pro', productox);
+  };
 
   const buildNewDoc = (clientId, document) => {
     console.log('Documentos', clientId, document);

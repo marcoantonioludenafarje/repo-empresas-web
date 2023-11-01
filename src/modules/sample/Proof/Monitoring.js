@@ -149,7 +149,7 @@ const ProofMonitoring = (props) => {
   const [lastKey, setLastKey] = React.useState(null);
   const [errorDetail, setErrorDetail] = React.useState('');
   const [initialTime, setInitialTime] = React.useState(
-    toEpoch(Date.now() - 89280000*4),
+    toEpoch(Date.now() - 89280000 * 4),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
@@ -401,7 +401,7 @@ const ProofMonitoring = (props) => {
   };
 
   //SELECCIÓN CALENDARIO
-  const [value, setValue] = React.useState(Date.now() - 89280000*4);
+  const [value, setValue] = React.useState(Date.now() - 89280000 * 4);
   const [value2, setValue2] = React.useState(Date.now());
 
   const goToUpdate = () => {

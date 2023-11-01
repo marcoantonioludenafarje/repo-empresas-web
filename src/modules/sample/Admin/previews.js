@@ -95,7 +95,7 @@ import {
   cancelInvoice,
   referralGuidesBatchConsult,
   cancelReferralGuide,
-  previsualizeReferralGuide
+  previsualizeReferralGuide,
 } from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -110,8 +110,8 @@ import {
   CANCEL_REFERRAL_GUIDE,
   UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST,
 } from '../../../shared/constants/ActionTypes';
-import { Preview } from '@mui/icons-material';
-import { useState } from 'react';
+import {Preview} from '@mui/icons-material';
+import {useState} from 'react';
 const XLSX = require('xlsx');
 
 //ESTILOS
@@ -167,7 +167,7 @@ const Previews = (props) => {
   const [pdfScale, setPdfScale] = React.useState('100');
   const [selectedAcceptedStatus, setSelectedAcceptedStatus] =
     React.useState('waiting');
-    const [urlPdf, setUrlPdf] = React.useState('');
+  const [urlPdf, setUrlPdf] = React.useState('');
   //API FUNCTIONS
   const toListProofMonitoringItems = (payload) => {
     dispatch(proofMonitoring(payload));
@@ -188,11 +188,10 @@ const Previews = (props) => {
     dispatch(getListBusiness(payload));
   };
 
-    //PREVISUALIZE
-    const toPrevisualizeReferralGuide = (payload) => {
-        dispatch(previsualizeReferralGuide(payload));
-      };
-
+  //PREVISUALIZE
+  const toPrevisualizeReferralGuide = (payload) => {
+    dispatch(previsualizeReferralGuide(payload));
+  };
 
   //GET APIS RES
   const {
@@ -386,50 +385,49 @@ const Previews = (props) => {
     }
   }, [listBusinessRes]);
 
-  const [viewBoleta, setViewBoleta] = useState(false)
-  const [viewFactura, setViewFactura] = useState(false)
-  const [viewGuide, setViewGuide] = useState(false)
-  const [viewCreditNote, setViewCreditNote] = useState(false)
-  const [viewDebitNote, setViewDebitNote] = useState(false)
+  const [viewBoleta, setViewBoleta] = useState(false);
+  const [viewFactura, setViewFactura] = useState(false);
+  const [viewGuide, setViewGuide] = useState(false);
+  const [viewCreditNote, setViewCreditNote] = useState(false);
+  const [viewDebitNote, setViewDebitNote] = useState(false);
 
-
-  const handleBoletaClick = () =>{
+  const handleBoletaClick = () => {
     setViewGuide(false);
     setViewCreditNote(false);
     setViewDebitNote(false);
     setViewFactura(false);
     setViewBoleta(true);
-  }
-  const handleFacturaClick = () =>{
+  };
+  const handleFacturaClick = () => {
     setViewGuide(false);
     setViewBoleta(false);
     setViewCreditNote(false);
     setViewDebitNote(false);
     setViewFactura(true);
-  }
-  const handleGuiaRemisionClick = () =>{
+  };
+  const handleGuiaRemisionClick = () => {
     setViewBoleta(false);
     setViewCreditNote(false);
     setViewDebitNote(false);
     setViewFactura(false);
     setViewGuide(true);
 
-    //alert("XD guia") 
-  }
-  const handleNotaCreditoClick = () =>{
+    //alert("XD guia")
+  };
+  const handleNotaCreditoClick = () => {
     setViewGuide(false);
     setViewBoleta(false);
     setViewDebitNote(false);
     setViewFactura(false);
     setViewCreditNote(true);
-  }
-  const handleNotaDebitoClick = () =>{
+  };
+  const handleNotaDebitoClick = () => {
     setViewGuide(false);
     setViewBoleta(false);
     setViewCreditNote(false);
     setViewFactura(false);
     setViewDebitNote(true);
-  }
+  };
   useEffect(() => {
     if (previsualizeReferralGuideRes && previsualizeReferralGuideRes.url) {
       setUrlPdf(previsualizeReferralGuideRes.url);
@@ -440,7 +438,7 @@ const Previews = (props) => {
     setOpenPrevisualizer(false);
   };
   const handleClickOpenPrevisualizer = () => {
-    console.log("negocio", selectedProdBusiness);
+    console.log('negocio', selectedProdBusiness);
     setOpenPrevisualizer(true);
     setUrlPdf('');
     let previsualizePayload = {
@@ -565,10 +563,9 @@ const Previews = (props) => {
     setScale(1.0);
   };
 
-
   return (
     <Card sx={{p: 4}}>
-      {listProdBusiness  ? (
+      {listProdBusiness ? (
         <Autocomplete
           disablePortal
           id='combo-box-demo'
@@ -602,86 +599,97 @@ const Previews = (props) => {
           : 0
       }`}</span>
 
-        {(selectedProdBusiness.merchantId) !== "all" ? <Box display="flex" justifyContent="center" mt={2}>
-            <Stack direction="row" spacing={2}>
-            <Button variant="contained" onClick={handleBoletaClick}>Boleta</Button>
-            <Button variant="contained" onClick={handleFacturaClick}>Factura</Button>
-            <Button variant="contained" onClick={handleClickOpenPrevisualizer}>Guía de Remisión</Button>
-            <Button variant="contained" onClick={handleNotaCreditoClick}>Nota de Crédito</Button>
-            <Button variant="contained" onClick={handleNotaDebitoClick}>Nota de Débito</Button>
-            </Stack>
+      {selectedProdBusiness.merchantId !== 'all' ? (
+        <Box display='flex' justifyContent='center' mt={2}>
+          <Stack direction='row' spacing={2}>
+            <Button variant='contained' onClick={handleBoletaClick}>
+              Boleta
+            </Button>
+            <Button variant='contained' onClick={handleFacturaClick}>
+              Factura
+            </Button>
+            <Button variant='contained' onClick={handleClickOpenPrevisualizer}>
+              Guía de Remisión
+            </Button>
+            <Button variant='contained' onClick={handleNotaCreditoClick}>
+              Nota de Crédito
+            </Button>
+            <Button variant='contained' onClick={handleNotaDebitoClick}>
+              Nota de Débito
+            </Button>
+          </Stack>
         </Box>
-        : null
-      }
-        { viewGuide?<Box
-            sx={{
+      ) : null}
+      {viewGuide ? (
+        <Box
+          sx={{
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
             mb: 5,
-            }}
+          }}
         >
-            <Button
-               sx={{width: 1}}
-               color='secondary'
-               variant='outlined'
-               onClick={() => handleClickOpenPrevisualizer()}
-            >
-                Previsualizar PDF
-            </Button>
-        </Box>: (null)
-        }
+          <Button
+            sx={{width: 1}}
+            color='secondary'
+            variant='outlined'
+            onClick={() => handleClickOpenPrevisualizer()}
+          >
+            Previsualizar PDF
+          </Button>
+        </Box>
+      ) : null}
 
-        <Dialog
-          open={openPrevisualizer}
-          onClose={handleClosePrevisualizer}
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {'GUÍA DE REMISIÓN PDF'}
-            <CancelOutlinedIcon
-              onClick={setOpenPrevisualizer.bind(this, false)}
-              className={classes.closeButton}
-            />
-          </DialogTitle>
-          <DialogContent>
-            <Button
-              color='primary'
-              sx={{width: 1}}
-              variant='outlined'
-              onClick={() => window.open(urlPdf)}
-            >
-              Redirigir
-            </Button>
-            {urlPdf ? (
-              <Box sx={{width: 1, textAlign: 'center'}}>
-                <canvas ref={canvasRef} style={{height: '100vh'}} />
-              </Box>
-            ) : (
-              <CircularProgress size={16} />
-            )}
-
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginTop: '1rem',
-              }}
-            >
-              <IconButton onClick={handleZoomIn}>
-                <ZoomInIcon />
-              </IconButton>
-              <IconButton onClick={handleZoomOut}>
-                <ZoomOutIcon />
-              </IconButton>
-              <IconButton onClick={handleResetZoom}>
-                <ZoomOutMapIcon />
-              </IconButton>
+      <Dialog
+        open={openPrevisualizer}
+        onClose={handleClosePrevisualizer}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'GUÍA DE REMISIÓN PDF'}
+          <CancelOutlinedIcon
+            onClick={setOpenPrevisualizer.bind(this, false)}
+            className={classes.closeButton}
+          />
+        </DialogTitle>
+        <DialogContent>
+          <Button
+            color='primary'
+            sx={{width: 1}}
+            variant='outlined'
+            onClick={() => window.open(urlPdf)}
+          >
+            Redirigir
+          </Button>
+          {urlPdf ? (
+            <Box sx={{width: 1, textAlign: 'center'}}>
+              <canvas ref={canvasRef} style={{height: '100vh'}} />
             </Box>
-          </DialogContent>
-        </Dialog>
+          ) : (
+            <CircularProgress size={16} />
+          )}
+
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginTop: '1rem',
+            }}
+          >
+            <IconButton onClick={handleZoomIn}>
+              <ZoomInIcon />
+            </IconButton>
+            <IconButton onClick={handleZoomOut}>
+              <ZoomOutIcon />
+            </IconButton>
+            <IconButton onClick={handleResetZoom}>
+              <ZoomOutMapIcon />
+            </IconButton>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 };

@@ -52,8 +52,12 @@ import {
   startAgentSession,
 } from '../../../../redux/actions/Agent';
 
-import {deleteAppointment, getAppointment, updateAppointment} from 'redux/actions';
-import { getAttention, updateAttention, deleteAttention } from 'redux/actions';
+import {
+  deleteAppointment,
+  getAppointment,
+  updateAppointment,
+} from 'redux/actions';
+import {getAttention, updateAttention, deleteAttention} from 'redux/actions';
 import {convertToDate} from '../../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -122,9 +126,9 @@ export default function Views(props) {
   const {userDataRes} = useSelector(({user}) => user);
 
   const {listAppointments} = useSelector(({appointment}) => appointment);
-  const {listAttentions} = useSelector(({attention}) => attention)
-  const state = useSelector((state)=>state);
-  console.log("ESTADO", state);
+  const {listAttentions} = useSelector(({attention}) => attention);
+  const state = useSelector((state) => state);
+  console.log('ESTADO', state);
 
   console.log('confeti los agentes', listAttentions);
 
@@ -239,7 +243,6 @@ export default function Views(props) {
     handleCloseQR();
   };
 
-
   const confirmDelete = () => {
     console.log('selected agente', selectedAttention);
     console.log('id de selected', selectedAttention.attentionId);
@@ -340,7 +343,7 @@ export default function Views(props) {
               >
                 <TableCell>{convertToDate(row.createdAt)}</TableCell>
                 <TableCell>{convertToDate(row.scheduledStartedAt)}</TableCell>
-                
+
                 <TableCell
                   component='th'
                   scope='row'
@@ -466,10 +469,7 @@ export default function Views(props) {
         {localStorage
           .getItem('pathsBack')
           .includes('/inventory/robot/enable') === true ? (
-          <MenuItem
-            disabled={true}
-            onClick={setEnableState}
-          >
+          <MenuItem disabled={true} onClick={setEnableState}>
             <ArrowCircleUpOutlinedIcon sx={{mr: 1, my: 'auto'}} />
             Enviar msj Post atención
           </MenuItem>

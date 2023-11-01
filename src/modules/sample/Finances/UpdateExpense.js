@@ -177,11 +177,13 @@ const UpdateExpense = (props) => {
     Number(query.totalAmountOfAddConcepts) -
       Number(query.totalAmountOfSubtractConcepts) || 0,
   );
-  
-  const [proofOfPaymentDueDate, setProofOfPaymentDueDate] = React.useState(Date.now());
+
+  const [proofOfPaymentDueDate, setProofOfPaymentDueDate] = React.useState(
+    Date.now(),
+  );
 
   const [proofTransactionDate, setProofTransactionDate] = React.useState(
-    Date.now()
+    Date.now(),
   );
 
   const [listDocuments, setListDocuments] = React.useState([]);
@@ -226,7 +228,7 @@ const UpdateExpense = (props) => {
         setValue2(Number(query.billIssueDate));
       }
     }
-    if(query.proofIssueDate){
+    if (query.proofIssueDate) {
       if (typeof query.proofIssueDate === 'string') {
         setValue2(toEpoch(ISODateToDateObj(query.proofIssueDate)));
       } else {
@@ -235,14 +237,16 @@ const UpdateExpense = (props) => {
     }
     if (query.billDueDate) {
       if (typeof query.billDueDate === 'string') {
-        setProofOfPaymentDueDate(toEpoch(simpleDateToDateObj(query.billDueDate)));
+        setProofOfPaymentDueDate(
+          toEpoch(simpleDateToDateObj(query.billDueDate)),
+        );
       } else {
         setProofOfPaymentDueDate(Number(query.billDueDate));
       }
     }
-    if(query.proofDueDate){
+    if (query.proofDueDate) {
       if (typeof query.proofDueDate === 'string') {
-        console.log("Está pasando por aquí")
+        console.log('Está pasando por aquí');
         setProofOfPaymentDueDate(toEpoch(ISODateToDateObj(query.proofDueDate)));
       } else {
         setProofOfPaymentDueDate(Number(query.proofDueDate));
@@ -250,7 +254,9 @@ const UpdateExpense = (props) => {
     }
     if (query.proofTransactionDate) {
       if (typeof query.proofTransactionDate === 'string') {
-        setProofTransactionDate(toEpoch(ISODateToDateObj(query.proofTransactionDate)));
+        setProofTransactionDate(
+          toEpoch(ISODateToDateObj(query.proofTransactionDate)),
+        );
       } else {
         setProofTransactionDate(Number(query.proofTransactionDate));
       }
@@ -345,10 +351,10 @@ const UpdateExpense = (props) => {
   }, []);
 
   useEffect(() => {
-    if(Object.keys(selectedExpense).length !== 0){
-      setListDocuments(selectedExpense.documentsMovement)
+    if (Object.keys(selectedExpense).length !== 0) {
+      setListDocuments(selectedExpense.documentsMovement);
     }
-  },[selectedExpense])
+  }, [selectedExpense]);
   useEffect(() => {
     if (listProviders && listProviders.length > 0) {
       console.log('query.providerId', query.providerId);
@@ -445,8 +451,9 @@ const UpdateExpense = (props) => {
         : '';
     newFinancePayload.request.payload.proofIssueDate =
       convertToDateWithoutTime(value2);
-    newFinancePayload.request.payload.proofDueDate =
-      convertToDateWithoutTime(proofOfPaymentDueDate);
+    newFinancePayload.request.payload.proofDueDate = convertToDateWithoutTime(
+      proofOfPaymentDueDate,
+    );
     newFinancePayload.request.payload.proofTransactionDate =
       convertToDateWithoutTime(proofTransactionDate);
     newFinancePayload.request.payload.serialNumberBill = data.nroBill;
@@ -459,8 +466,7 @@ const UpdateExpense = (props) => {
     newFinancePayload.request.payload.totalIgv = Number(
       data.totalIgv, //data.totalAmount,
     );
-    newFinancePayload.request.payload.documentsMovement =
-    listDocuments;
+    newFinancePayload.request.payload.documentsMovement = listDocuments;
     newFinancePayload.request.payload.status = statusExpense;
     newFinancePayload.request.payload.folderMovement = query.folderMovement;
     newFinancePayload.request.payload.movementHeaderId =
@@ -641,14 +647,14 @@ const UpdateExpense = (props) => {
   const getDocument = (document) => {
     console.log('Documento seleccionado', document);
     let newListDocuments = listDocuments;
-    newListDocuments.push(document)
-    setListDocuments(newListDocuments)
+    newListDocuments.push(document);
+    setListDocuments(newListDocuments);
     forceUpdate();
   };
   const removeDocument = (index) => {
     let newListDocuments = listDocuments;
     newListDocuments.splice(index, 1);
-    setListDocuments(newListDocuments)
+    setListDocuments(newListDocuments);
     forceUpdate();
   };
 
@@ -885,10 +891,10 @@ const UpdateExpense = (props) => {
                       label={
                         proofOfPaymentType
                           ? translateValue(
-                            'COLLECTIONTRANSACTIONDATE',
-                            proofOfPaymentType.toUpperCase(),
-                          )
-                          : "Fecha de pago del movimiento"
+                              'COLLECTIONTRANSACTIONDATE',
+                              proofOfPaymentType.toUpperCase(),
+                            )
+                          : 'Fecha de pago del movimiento'
                       }
                       inputFormat='dd/MM/yyyy'
                       name='proofTransactionDate'
@@ -1193,7 +1199,7 @@ const UpdateExpense = (props) => {
                       : null}
                   </Alert>
                 </Collapse>
-                
+
                 <Grid
                   container
                   spacing={2}
@@ -1343,7 +1349,7 @@ const UpdateExpense = (props) => {
         ) : (
           <></>
         )}
-        
+
         {typeDialog == 'document' ? (
           <>
             <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>

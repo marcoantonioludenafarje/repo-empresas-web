@@ -12,7 +12,7 @@ import {
   IconButton,
   MenuItem,
   Menu,
-  TextField
+  TextField,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -41,7 +41,6 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
   const [editedIndex, setEditedIndex] = React.useState(null);
   const [editedSubtotals, setEditedSubtotals] = React.useState([]);
 
-  
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
   const {userAttributes} = useSelector(({user}) => user);
@@ -60,35 +59,34 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
   }, [businessParameter != undefined]);
 
   const parseTo3Decimals = (number) => {
-    console.log("NUEVO TRASH", number);
+    console.log('NUEVO TRASH', number);
     let newValue = number + Number.EPSILON;
     newValue = Math.round(newValue * 1000) / 1000;
     return newValue;
   };
-  const parseTo3editDecimals = (number, count) => {        
-      console.log("NUEVO CONTEO", number, count);
-      let newValue = (number * count) + Number.EPSILON;
-      console.log("NUEVO VAL", newValue);
-      newValue = Math.round(newValue * 1000) / 1000;
-      console.log("NUEVO VALOR", newValue, number, count);
-      return newValue;
+  const parseTo3editDecimals = (number, count) => {
+    console.log('NUEVO CONTEO', number, count);
+    let newValue = number * count + Number.EPSILON;
+    console.log('NUEVO VAL', newValue);
+    newValue = Math.round(newValue * 1000) / 1000;
+    console.log('NUEVO VALOR', newValue, number, count);
+    return newValue;
   };
-
 
   const deleteProduct = (index) => {
     console.log('Index', index);
     toDelete(index);
   };
 
-  const editProduct = (index) =>{
+  const editProduct = (index) => {
     console.log('Index edit', index);
     //toEdit(index);
     setEditedIndex(index);
     setEditedCount(arrayObjs[index].count);
-    setEditedSubtotals(arrayObjs.map(obj => obj.subtotal));
-    console.log("index edit index", editedIndex);
-    console.log("index edit count", editedCount);
-  }
+    setEditedSubtotals(arrayObjs.map((obj) => obj.subtotal));
+    console.log('index edit index', editedIndex);
+    console.log('index edit count', editedCount);
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -161,26 +159,29 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
                     <>
                       <TableCell>
                         <TextField
-                          type="number"
+                          type='number'
                           value={editedCount}
                           onChange={(e) => {
                             setEditedCount(e.target.value);
                             const updatedSubtotals = [...editedSubtotals];
-                            updatedSubtotals[index] = parseTo3editDecimals(obj.priceProduct, e.target.value);
+                            updatedSubtotals[index] = parseTo3editDecimals(
+                              obj.priceProduct,
+                              e.target.value,
+                            );
                             setEditedSubtotals(updatedSubtotals);
                           }}
-                          variant="outlined" // Puedes personalizar esto según tus preferencias
+                          variant='outlined' // Puedes personalizar esto según tus preferencias
                         />
                       </TableCell>
                       <TableCell>
-                     {`${parseTo3editDecimals(obj.subtotal).toFixed(
-                       3,
-                     )} ${moneyUnit}`}
-                   </TableCell>
+                        {`${parseTo3editDecimals(obj.subtotal).toFixed(
+                          3,
+                        )} ${moneyUnit}`}
+                      </TableCell>
                       <TableCell>
                         <Button
-                          variant="contained"
-                          color="primary"
+                          variant='contained'
+                          color='primary'
                           onClick={() => {
                             // Aquí debes guardar la cantidad editada en tu objeto o hacer lo que necesites con ella.
                             // Por ejemplo, actualizando el objeto en el estado.
@@ -192,8 +193,8 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
                           Guardar
                         </Button>
                         <Button
-                          variant="contained"
-                          color="secondary"
+                          variant='contained'
+                          color='secondary'
                           onClick={() => {
                             setEditedIndex(null);
                             setEditedCount(null);
@@ -207,10 +208,15 @@ const SelectedProducts = ({arrayObjs, toDelete}) => {
                     <>
                       <TableCell>{obj.count}</TableCell>
                       <TableCell>
-                      { editedSubtotals[index] ? `${parseTo3editDecimals(editedSubtotals[index], 1).toFixed(3)} ${moneyUnit}`: `${parseTo3Decimals(obj.subtotal).toFixed(
-                       3,
-                     )} ${moneyUnit}`}
-                   </TableCell>
+                        {editedSubtotals[index]
+                          ? `${parseTo3editDecimals(
+                              editedSubtotals[index],
+                              1,
+                            ).toFixed(3)} ${moneyUnit}`
+                          : `${parseTo3Decimals(obj.subtotal).toFixed(
+                              3,
+                            )} ${moneyUnit}`}
+                      </TableCell>
                       <TableCell>
                         <IconButton onClick={deleteProduct.bind(this, index)}>
                           <DeleteIcon />

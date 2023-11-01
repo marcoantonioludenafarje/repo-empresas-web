@@ -402,7 +402,6 @@ export const CREATE_ATTENTION = 'create_attention';
 export const EDIT_ATTENTION = 'edit_attention';
 export const DELETE_ATTENTION = 'delete_attention';
 
-
 //SPECIALIST
 export const CREATE_SPECIALIST = 'create_specialist';
 export const LIST_SPECIALIST = 'list_specialist';

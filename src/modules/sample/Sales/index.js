@@ -694,29 +694,32 @@ const SalesTable = (props) => {
     let listResult = [];
     listSalesRes.map((obj) => {
       //ESTOS CAMPOS DEBEN TENER EL MISMO NOMBRE, TANTO ARRIBA COMO ABAJO
-      obj.codigo1 =
-        obj.codMovement;
+      obj.codigo1 = obj.codMovement;
       obj.createdAt = convertToDateWithoutTime(obj.createdAt);
       obj.updatedAt = convertToDateWithoutTime(
         obj.updatedAt || obj.updatedDate,
       );
       switch (obj.proofOfPaymentType) {
         case 'receipt':
-          obj.proofOfPaymentType = "Boleta"
+          obj.proofOfPaymentType = 'Boleta';
           break;
         case 'ticket':
-          obj.proofOfPaymentType = "Ticket"
+          obj.proofOfPaymentType = 'Ticket';
           break;
         case 'bill':
-          obj.proofOfPaymentType = "Factura"
+          obj.proofOfPaymentType = 'Factura';
           break;
-      
+
         default:
           break;
       }
       obj.clientdenomination =
-        (obj.client.id ? (obj.client.id.split("-")[0]+"-"+obj.client.id.split("-")[1] + ' - ') : '') +
-        (obj.client ? obj.client.denomination : '');
+        (obj.client.id
+          ? obj.client.id.split('-')[0] +
+            '-' +
+            obj.client.id.split('-')[1] +
+            ' - '
+          : '') + (obj.client ? obj.client.denomination : '');
       obj.totalPrice1 = (obj.totalPriceWithIgv - obj.totalIgv).toFixed(2);
       obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
         ? Number(obj.totalPriceWithIgv.toFixed(2))
@@ -740,22 +743,22 @@ const SalesTable = (props) => {
 
       // Crear la cadena de texto para productos
       let productsText = '';
-      if(obj.products){
+      if (obj.products) {
         obj.products.forEach((producto, index) => {
           const igv = obj.igv;
           const subtotal = Number(
             (
               producto.quantityMovement *
-              producto.unitPrice *(producto.taxCode == 1000 ?
-              (1 + igv) : 1)
+              producto.unitPrice *
+              (producto.taxCode == 1000 ? 1 + igv : 1)
             ).toFixed(2),
           );
           const productText = `Descripción: ${producto.description}| Cantidad: ${producto.quantityMovement}| Subtotal: ${subtotal}| Categoría: ${producto.category}`;
-  
+
           if (index > 0) {
             productsText += '~';
           }
-  
+
           productsText += productText;
         });
       }
@@ -795,7 +798,7 @@ const SalesTable = (props) => {
           userCreatedMetadata1,
         }))(obj),
       );
-      });
+    });
     return listResult;
   };
   const headersExcel = [
@@ -1364,8 +1367,7 @@ const SalesTable = (props) => {
 
   function showSubtotal(saleProducts) {
     let saleSubtotal = 0;
-    if(Array.isArray(saleProducts) && saleProducts.length> 0){
-
+    if (Array.isArray(saleProducts) && saleProducts.length > 0) {
       saleProducts.forEach((obj) => {
         saleSubtotal += obj.unitPrice * obj.quantityMovement;
       });
@@ -1374,7 +1376,7 @@ const SalesTable = (props) => {
   }
   function showTotalIgv(saleProducts) {
     let saleTotalIgv = 0;
-    if(Array.isArray(saleProducts) && saleProducts.length > 0){
+    if (Array.isArray(saleProducts) && saleProducts.length > 0) {
       saleProducts.forEach((obj) => {
         if (obj.taxCode == 1000) {
           saleTotalIgv += obj.unitPrice * obj.quantityMovement * saleIgvDefault;
@@ -1718,7 +1720,8 @@ const SalesTable = (props) => {
                                 </TableRow>
                               </TableHead>
                               <TableBody>
-                                {obj.products && Array.isArray(obj.products) &&
+                                {obj.products &&
+                                Array.isArray(obj.products) &&
                                 obj.products.length > 0 ? (
                                   obj.products.map((subProduct, index) => {
                                     return (

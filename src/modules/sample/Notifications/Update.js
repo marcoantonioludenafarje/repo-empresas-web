@@ -742,7 +742,12 @@ correctamente */}
                   }
                 }}
               >
-                <Grid container spacing={2} sx={{width: '100%', margin: 'auto'}} maxWidth={700}>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={700}
+                >
                   <>
                     <Grid item xs={12}>
                       <AppUpperCaseTextField

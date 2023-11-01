@@ -32,7 +32,7 @@ import {
   TableRow,
   TableCell,
   Menu,
-  Paper
+  Paper,
 } from '@mui/material';
 
 import {makeStyles} from '@mui/styles';
@@ -60,7 +60,12 @@ import {
 } from '../../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
-import {deleteAppointment, getAppointment, newAttention, updateAppointment} from 'redux/actions';
+import {
+  deleteAppointment,
+  getAppointment,
+  newAttention,
+  updateAppointment,
+} from 'redux/actions';
 import {useState} from 'react';
 import {convertToDate} from 'Utils/utils';
 
@@ -81,9 +86,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     marginBottom: '10px',
   },
-  menu:{
-    position: 'absolute'
-  }
+  menu: {
+    position: 'absolute',
+  },
 }));
 
 const newCamp = () => {
@@ -105,9 +110,9 @@ const Views = (props) => {
     dispatch(deleteAppointment(payload));
   };
 
-  const toCreateAttention = (payload) =>{
-    dispatch(newAttention(payload))
-  }
+  const toCreateAttention = (payload) => {
+    dispatch(newAttention(payload));
+  };
 
   const {userDataRes} = useSelector(({user}) => user);
   const {listAppointments} = useSelector(({appointment}) => appointment);
@@ -115,11 +120,10 @@ const Views = (props) => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({appointment}) => appointment);
   console.log('errorMessage', errorMessage);
-  
+
   const toEditAppointment = (payload) => {
     dispatch(updateAppointment(payload));
   };
-
 
   const [open2, setOpen2] = useState(false);
   const [openAten, setOpenAten] = useState(false);
@@ -180,11 +184,11 @@ const Views = (props) => {
   let codProdSelected = '';
 
   const handleClick = (cita, event) => {
-    console.log("cita elegida", cita);
-    console.log("cita evento", event);
+    console.log('cita elegida', cita);
+    console.log('cita evento', event);
     setSelectedEvent(cita);
     setAnchorElect(event.currentTarget);
-    console.log("cita puesta", event.currentTarget);
+    console.log('cita puesta', event.currentTarget);
   };
   const handleContextMenu = (event) => {
     event.preventDefault();
@@ -209,7 +213,7 @@ const Views = (props) => {
     setOpen2(false);
   };
 
-  const [aux, setAux] = useState(null)
+  const [aux, setAux] = useState(null);
 
   const handleMenuItemClick = (event, action) => {
     console.log('Selected action, id:', action, event);
@@ -223,12 +227,14 @@ const Views = (props) => {
       case 'delete':
         console.log('delete, id', action, event);
         setOpen2(true);
-        setAux(event)
+        setAux(event);
         //toDeleteAppointments(delAppoint);
         break;
       case 'generate_attention':
         console.log('atendido, id', action, event);
-        let citagenerada = listAppointments.find((cita)=> cita.appointmentId === event.id)
+        let citagenerada = listAppointments.find(
+          (cita) => cita.appointmentId === event.id,
+        );
         // let letpayloadgene={
         //   request:{
         //     payload:{
@@ -237,16 +243,20 @@ const Views = (props) => {
         //     }
         //   }
         // }
-        console.log("generar>>", citagenerada);
-        router.push('/sample/attentions/update', { query: citagenerada.appointmentId });
+        console.log('generar>>', citagenerada);
+        router.push('/sample/attentions/update', {
+          query: citagenerada.appointmentId,
+        });
         break;
       case 'attended':
         console.log('atendido, id', action, event);
-        let cita = listAppointments.find((cita)=> cita.appointmentId === event.id)
+        let cita = listAppointments.find(
+          (cita) => cita.appointmentId === event.id,
+        );
         setOpen2(true);
-        setAux(event)
+        setAux(event);
         break;
-        
+
       default:
         break;
     }
@@ -256,51 +266,54 @@ const Views = (props) => {
 
   const confirmattention = () => {
     console.log('selected attention', aux);
-    let citaval = listAppointments.find((cita)=>cita.appointmentId === aux.id)
-    let letpayload={
-      request:{
-        payload:{
+    let citaval = listAppointments.find(
+      (cita) => cita.appointmentId === aux.id,
+    );
+    let letpayload = {
+      request: {
+        payload: {
           ...citaval,
           attention: 'Completed',
           merchantId: userDataRes.merchantSelected.merchantId,
-        }
-      }
-    }
-    
-    console.log("edit>>", letpayload);
-    toEditAppointment(letpayload)
+        },
+      },
+    };
+
+    console.log('edit>>', letpayload);
+    toEditAppointment(letpayload);
     console.log('selected attention>>', citaval);
     let geneattention = {
       request: {
         payload: {
           merchantId: userDataRes.merchantSelected.merchantId,
-          attentions:[{
-            attentionTitle: citaval.appointmentTitle,
-            clientId: citaval.clientId,
-            clientName: citaval.clientName,
-            specialistId: citaval.specialistId,
-            specialistName: citaval.specialistName,
-            attentionDescription: citaval.appointmentDescription,
-            scheduledStartedAt: citaval.scheduledStartedAt,
-            duration: citaval.duration,
-            durationUnited: citaval.durationUnited,
-            scheduledFinishedAt: citaval.scheduledFinishedAt,
-            notifications: citaval.notifications
-          }]
+          attentions: [
+            {
+              attentionTitle: citaval.appointmentTitle,
+              clientId: citaval.clientId,
+              clientName: citaval.clientName,
+              specialistId: citaval.specialistId,
+              specialistName: citaval.specialistName,
+              attentionDescription: citaval.appointmentDescription,
+              scheduledStartedAt: citaval.scheduledStartedAt,
+              duration: citaval.duration,
+              durationUnited: citaval.durationUnited,
+              scheduledFinishedAt: citaval.scheduledFinishedAt,
+              notifications: citaval.notifications,
+            },
+          ],
         },
       },
     };
-    console.log("payload", geneattention);
+    console.log('payload', geneattention);
     toCreateAttention(geneattention);
     setOpenStatus(true);
     setOpen2(false);
     setAux(null);
-    router.push('/sample/attentions/table')
+    router.push('/sample/attentions/table');
   };
 
-
   const confirmCancel = () => {
-    console.log('selected cita', aux);;
+    console.log('selected cita', aux);
     let delAppoint = {
       request: {
         payload: {
@@ -309,11 +322,11 @@ const Views = (props) => {
         },
       },
     };
-    console.log("payload", delAppoint);
+    console.log('payload', delAppoint);
     toDeleteAppointments(delAppoint);
     setOpenStatus(true);
     setOpen2(false);
-    setAux(null)
+    setAux(null);
   };
 
   const sendStatus = () => {
@@ -329,10 +342,10 @@ const Views = (props) => {
       };
       // listPayload.request.payload.LastEvaluatedKey = null;
       // dispatch({type: GET_CLIENTS, payload: {callType: "firstTime"}});
-      toGetAppointments(listPayload)
+      toGetAppointments(listPayload);
 
       //setListEvents(listAppointments);
-      console.log("estado cita >>>>>", listEvents);
+      console.log('estado cita >>>>>', listEvents);
     }, 2000);
   };
 
@@ -422,10 +435,10 @@ const Views = (props) => {
     }
   };
 
-  const CustomMonthEvent = ({ event, onClick }) => {
+  const CustomMonthEvent = ({event, onClick}) => {
     const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
-    console.log("atention", event);
-    const backgroundColor = event.attention==='Progress' ? 'green' : 'red';
+    console.log('atention', event);
+    const backgroundColor = event.attention === 'Progress' ? 'green' : 'red';
     return (
       <Box
         onClick={onClick}
@@ -433,22 +446,23 @@ const Views = (props) => {
           cursor: 'pointer',
           backgroundColor: backgroundColor,
           borderColor: backgroundColor,
-          width: '100%'
+          width: '100%',
         }}
       >
-        <Typography variant="body1" gutterBottom>
+        <Typography variant='body1' gutterBottom>
           {`${event.title} - ${clientWords}`}
         </Typography>
-        <Typography variant="body2">
-          {moment(event.start).format('LT')} - {`Duración: ${event.duration} min`}
+        <Typography variant='body2'>
+          {moment(event.start).format('LT')} -{' '}
+          {`Duración: ${event.duration} min`}
         </Typography>
       </Box>
     );
   };
 
-  const CustomWeekEvent = ({event, onClick}) =>{
+  const CustomWeekEvent = ({event, onClick}) => {
     const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
-    const backgroundColor = event.attention==='Progress' ? 'green' : 'red';
+    const backgroundColor = event.attention === 'Progress' ? 'green' : 'red';
     return (
       <Box
         onClick={onClick}
@@ -456,18 +470,18 @@ const Views = (props) => {
           cursor: 'pointer',
           // backgroundColor: backgroundColor,
           '&:hover': {
-            backgroundColor: 'transparent', 
+            backgroundColor: 'transparent',
           },
         }}
       >
-        <Typography variant="body1" gutterBottom>
+        <Typography variant='body1' gutterBottom>
           {`${clientWords}`}
         </Typography>
       </Box>
     );
-  }
+  };
 
-  const CustomDayEvent = ({event, onClick}) =>{
+  const CustomDayEvent = ({event, onClick}) => {
     const clientWords = event.clientName.split(' ').slice(0, 2).join(' ');
     return (
       <Box
@@ -475,19 +489,19 @@ const Views = (props) => {
         sx={{
           cursor: 'pointer',
           '&:hover': {
-            backgroundColor: 'transparent', 
+            backgroundColor: 'transparent',
           },
         }}
       >
-        <Typography variant="body1" gutterBottom>
-        {`${event.title} - ${clientWords} - Duración: ${event.duration} min`}
+        <Typography variant='body1' gutterBottom>
+          {`${event.title} - ${clientWords} - Duración: ${event.duration} min`}
         </Typography>
       </Box>
     );
-  }
+  };
 
   const CustomAgenda = ({event}) => {
-    console.log("eventos", event);
+    console.log('eventos', event);
     return (
       <TableContainer component={Paper}>
         <Table
@@ -501,33 +515,33 @@ const Views = (props) => {
               <TableCell>Cliente</TableCell>
               <TableCell>Duración</TableCell>
               <TableCell>Título</TableCell>
-              <TableCell>Descripción</TableCell> 
+              <TableCell>Descripción</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            
-            {console.log("evento", event)}
-                <TableRow key={event.id}
-                  sx={{'&:last-child td, &:last-child th': {border: 0}}}
+            {console.log('evento', event)}
+            <TableRow
+              key={event.id}
+              sx={{'&:last-child td, &:last-child th': {border: 0}}}
+            >
+              <TableCell>{event.clientName}</TableCell>
+              <TableCell>{event.duration}</TableCell>
+              <TableCell>{event.title}</TableCell>
+              <TableCell>{event.desc}</TableCell>
+              <TableCell>
+                <Button
+                  id={`agendaButton-${event.id}`}
+                  onClick={(event2) => {
+                    handleContextMenu(event2);
+                    setSelectedEvent(event);
+                  }}
+                  style={{cursor: 'pointer'}}
                 >
-                <TableCell>{event.clientName}</TableCell>
-                <TableCell>{event.duration}</TableCell>
-                <TableCell>{event.title}</TableCell>
-                <TableCell>{event.desc}</TableCell>
-                <TableCell>
-                  <Button
-                    id={`agendaButton-${event.id}`}
-                    onClick={(event2) => {
-                      handleContextMenu(event2)
-                      setSelectedEvent(event);
-                    }} 
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <KeyboardArrowDownIcon />
-                  </Button>
-                </TableCell>
-              </TableRow>
+                  <KeyboardArrowDownIcon />
+                </Button>
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -573,18 +587,18 @@ const Views = (props) => {
           //views={['month','week','day','agenda']}
           components={{
             month: {
-              event: CustomMonthEvent
+              event: CustomMonthEvent,
             },
-            week:{
-              event: CustomWeekEvent
+            week: {
+              event: CustomWeekEvent,
             },
-            day:{
-              event: CustomDayEvent
+            day: {
+              event: CustomDayEvent,
             },
-            agenda:{
-              event: CustomAgenda
-            }
-          }} 
+            agenda: {
+              event: CustomAgenda,
+            },
+          }}
           // components={{
           //   month: {
           //     event: EventMonthViews,
@@ -604,27 +618,36 @@ const Views = (props) => {
       <Menu
         id='event-menu'
         anchorEl={anchorElect}
-        open={openMenu || contextMenu!==null}
-        onClose={contextMenu!==null ? handleCloseAgendaMenu : handleClose}
+        open={openMenu || contextMenu !== null}
+        onClose={contextMenu !== null ? handleCloseAgendaMenu : handleClose}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        anchorReference={contextMenu!==null ? "anchorPosition" : ""}
+        transformOrigin={{horizontal: 'right', vertical: 'top'}}
+        anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+        anchorReference={contextMenu !== null ? 'anchorPosition' : ''}
         anchorPosition={
           contextMenu !== null
-            ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
+            ? {top: contextMenu.mouseY, left: contextMenu.mouseX}
             : undefined
         }
       >
-        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'generate_attention')}>
+        <MenuItem
+          onClick={() =>
+            handleMenuItemClick(selectedEvent, 'generate_attention')
+          }
+        >
           Generar Atención
         </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'send_reminder')} disabled>
+        <MenuItem
+          onClick={() => handleMenuItemClick(selectedEvent, 'send_reminder')}
+          disabled
+        >
           Envíar Recordatorio
         </MenuItem>
-        <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'attended')}>
+        <MenuItem
+          onClick={() => handleMenuItemClick(selectedEvent, 'attended')}
+        >
           Atendido
         </MenuItem>
         <MenuItem onClick={() => handleMenuItemClick(selectedEvent, 'edit')}>

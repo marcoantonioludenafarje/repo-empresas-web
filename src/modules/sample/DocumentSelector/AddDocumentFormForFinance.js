@@ -108,24 +108,24 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
           .typeError(<IntlMessages id='validation.string' />)
           .required(<IntlMessages id='validation.required' />)
           .max(maxLength, <IntlMessages id='validation.maxLength' />),
-          totalAmount: yup
-            .number()
-            .typeError(<IntlMessages id='validation.number' />)
-            .test(
-              'maxDigitsAfterDecimal',
-              'El número puede contener como máximo 3 decimales',
-              (number) => /^\d+(\.\d{1,3})?$/.test(number),
-            )
-            .required(<IntlMessages id='validation.required' />),
-          totalIgv: yup
-            .number()
-            .typeError(<IntlMessages id='validation.number' />)
-            .test(
-              'maxDigitsAfterDecimal',
-              'El número puede contener como máximo 3 decimales',
-              (number) => /^\d+(\.\d{1,3})?$/.test(number),
-            )
-            .required(<IntlMessages id='validation.required' />),
+        totalAmount: yup
+          .number()
+          .typeError(<IntlMessages id='validation.number' />)
+          .test(
+            'maxDigitsAfterDecimal',
+            'El número puede contener como máximo 3 decimales',
+            (number) => /^\d+(\.\d{1,3})?$/.test(number),
+          )
+          .required(<IntlMessages id='validation.required' />),
+        totalIgv: yup
+          .number()
+          .typeError(<IntlMessages id='validation.number' />)
+          .test(
+            'maxDigitsAfterDecimal',
+            'El número puede contener como máximo 3 decimales',
+            (number) => /^\d+(\.\d{1,3})?$/.test(number),
+          )
+          .required(<IntlMessages id='validation.required' />),
       }),
     [isRefGuide],
   );
@@ -189,8 +189,12 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
                         onChange={handleBillType}
                         /* value={moneyToConvert} */
                       >
-                        {!acceptedType || acceptedType.includes('creditNote') ? (
-                          <MenuItem value='creditNote' style={{fontWeight: 200}}>
+                        {!acceptedType ||
+                        acceptedType.includes('creditNote') ? (
+                          <MenuItem
+                            value='creditNote'
+                            style={{fontWeight: 200}}
+                          >
                             <IntlMessages id='document.type.creditNote' />
                           </MenuItem>
                         ) : null}
@@ -219,10 +223,14 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={4} 
-                      sx={{
-                        mb: isMobile ? 2 : 0,
-                      }}>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={4}
+                    sx={{
+                      mb: isMobile ? 2 : 0,
+                    }}
+                  >
                     <DesktopDatePicker
                       renderInput={(params) => (
                         <TextField
@@ -243,7 +251,7 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label="Total IGV"
+                      label='Total IGV'
                       name='totalIgv'
                       variant='outlined'
                       sx={{
@@ -257,7 +265,7 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <AppTextField
-                      label="Monto Total"
+                      label='Monto Total'
                       name='totalAmount'
                       variant='outlined'
                       sx={{

@@ -1084,7 +1084,11 @@ const FinancesTable = (props) => {
                           ? `${obj.typeDocumentProvider} ${obj.numberDocumentProvider}`
                           : 'Sin documento'}
                       </TableCell>
-                      <TableCell>{obj.proofIssueDate  ? ISO8601DateToSunatDate(obj.proofIssueDate) : obj.billIssueDate}</TableCell>
+                      <TableCell>
+                        {obj.proofIssueDate
+                          ? ISO8601DateToSunatDate(obj.proofIssueDate)
+                          : obj.billIssueDate}
+                      </TableCell>
                       <TableCell>
                         {obj.denominationProvider
                           ? obj.denominationProvider

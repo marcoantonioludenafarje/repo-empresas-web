@@ -764,7 +764,8 @@ const NewSaleProofOfPayment = (props) => {
               id='alert-dialog-description'
             >
               Se ha producido un error al registrar. <br />
-              {newSaleProofOfPaymentRes !== undefined && 'error' in newSaleProofOfPaymentRes
+              {newSaleProofOfPaymentRes !== undefined &&
+              'error' in newSaleProofOfPaymentRes
                 ? newSaleProofOfPaymentRes.error
                 : null}
             </DialogContentText>

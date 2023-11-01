@@ -226,9 +226,9 @@ const ContableMovements = (props) => {
     ({finances}) => finances,
   );
   var fecha_actual = new Date();
-var timestamp_utc = Math.floor(fecha_actual.getTime() / 1000);
-console.log("fecha utc", timestamp_utc)
-  console.log("fecha peru", Date.now())
+  var timestamp_utc = Math.floor(fecha_actual.getTime() / 1000);
+  console.log('fecha utc', timestamp_utc);
+  console.log('fecha peru', Date.now());
 
   const {jwtToken} = useSelector(({general}) => general);
   console.log('getFinancesRes', getFinancesRes);
@@ -346,8 +346,14 @@ console.log("fecha utc", timestamp_utc)
           query.contableMovementId;
       }
 
-      listFinancesPayload.request.payload.initialTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[0])) : toEpoch(dateRange[0]);
-      listFinancesPayload.request.payload.finalTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[1])) : toEpoch(dateRange[1]);
+      listFinancesPayload.request.payload.initialTime =
+        dateType !== 'createdDate'
+          ? timestampToISO8601(toEpoch(dateRange[0]))
+          : toEpoch(dateRange[0]);
+      listFinancesPayload.request.payload.finalTime =
+        dateType !== 'createdDate'
+          ? timestampToISO8601(toEpoch(dateRange[1]))
+          : toEpoch(dateRange[1]);
       listFinancesPayload.request.payload.movementType = '';
       listFinancesPayload.request.payload.dateType = 'createdDate';
       setLastPayload(listFinancesPayload);
@@ -445,8 +451,14 @@ console.log("fecha utc", timestamp_utc)
     listFinancesPayload.request.payload.movementType =
       movementType == 'TODOS' ? '' : movementType;
     listFinancesPayload.request.payload.dateType = dateType;
-    listFinancesPayload.request.payload.initialTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[0])) : toEpoch(dateRange[0]);
-    listFinancesPayload.request.payload.finalTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[1])) : toEpoch(dateRange[1]);
+    listFinancesPayload.request.payload.initialTime =
+      dateType !== 'createdDate'
+        ? timestampToISO8601(toEpoch(dateRange[0]))
+        : toEpoch(dateRange[0]);
+    listFinancesPayload.request.payload.finalTime =
+      dateType !== 'createdDate'
+        ? timestampToISO8601(toEpoch(dateRange[1]))
+        : toEpoch(dateRange[1]);
     setLastPayload(listFinancesPayload);
     toGetFinances(listFinancesPayload);
     if (monthYearStatus) {
@@ -880,11 +892,17 @@ console.log("fecha utc", timestamp_utc)
       dataFilters.nroIdentifier;
     listFinancesPayload.request.payload.denominationProvider =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toLowerCase();
-    listFinancesPayload.request.payload.initialTime = dateType !== "createdDate" ? timestampToISO8601(toEpoch(dateRange[0])) : toEpoch(dateRange[0]);
-    listFinancesPayload.request.payload.finalTime = dateType !== "createdDate" ?  timestampToISO8601(toEpoch(dateRange[1])) : toEpoch(dateRange[1]);
+    listFinancesPayload.request.payload.initialTime =
+      dateType !== 'createdDate'
+        ? timestampToISO8601(toEpoch(dateRange[0]))
+        : toEpoch(dateRange[0]);
+    listFinancesPayload.request.payload.finalTime =
+      dateType !== 'createdDate'
+        ? timestampToISO8601(toEpoch(dateRange[1]))
+        : toEpoch(dateRange[1]);
     listFinancesPayload.request.payload.movementType =
       movementType == 'TODOS' ? '' : movementType;
-    listFinancesPayload.request.payload.dateType = dateType;  
+    listFinancesPayload.request.payload.dateType = dateType;
     listFinancesPayload.request.payload.merchantId =
       userDataRes.merchantSelected.merchantId;
     if (dataFilters.paymentMethod == 'all') {
@@ -1111,17 +1129,27 @@ console.log("fecha utc", timestamp_utc)
                       <TableCell>
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
-                      <TableCell>{translateValue(
-                              'DOCUMENTTYPE',
-                              obj.proofOfPaymentType.toUpperCase(),
-                            )}</TableCell>
-                      <TableCell>{obj.serialNumberBill}</TableCell>
-                      <TableCell>{obj.proofIssueDate  ? ISO8601DateToSunatDate(obj.proofIssueDate) : obj.billIssueDate}</TableCell>
                       <TableCell>
-                        {obj.proofDueDate ? ISO8601DateToSunatDate(obj.proofDueDate) : obj.billDueDate}
+                        {translateValue(
+                          'DOCUMENTTYPE',
+                          obj.proofOfPaymentType.toUpperCase(),
+                        )}
+                      </TableCell>
+                      <TableCell>{obj.serialNumberBill}</TableCell>
+                      <TableCell>
+                        {obj.proofIssueDate
+                          ? ISO8601DateToSunatDate(obj.proofIssueDate)
+                          : obj.billIssueDate}
                       </TableCell>
                       <TableCell>
-                        {obj.proofTransactionDate  ? ISO8601DateToSunatDate(obj.proofTransactionDate) : "Indeterminado"}
+                        {obj.proofDueDate
+                          ? ISO8601DateToSunatDate(obj.proofDueDate)
+                          : obj.billDueDate}
+                      </TableCell>
+                      <TableCell>
+                        {obj.proofTransactionDate
+                          ? ISO8601DateToSunatDate(obj.proofTransactionDate)
+                          : 'Indeterminado'}
                       </TableCell>
                       <TableCell>
                         {showStatus(obj.status, obj.movementType)}

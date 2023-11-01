@@ -1505,7 +1505,11 @@ const GetReferralGuide = (props) => {
                 autoComplete='on'
                 /* onChange={handleActualData} */
               >
-                <Grid container sx={{width:'100%', margin: 'auto'}} maxWidth={600}>
+                <Grid
+                  container
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={600}
+                >
                   <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Nro Guía de Remisión'
@@ -1789,7 +1793,11 @@ const GetReferralGuide = (props) => {
 
                 <Divider sx={{mt: 2, mb: 4}} />
 
-                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                <Grid
+                  container
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={500}
+                >
                   {availableLocations() ? (
                     <>
                       <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
@@ -2135,7 +2143,11 @@ const GetReferralGuide = (props) => {
 
                 <Divider sx={{mt: 2, mb: 4}} />
 
-                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                <Grid
+                  container
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={500}
+                >
                   <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <Button
                       sx={{width: 1}}
@@ -2161,7 +2173,11 @@ const GetReferralGuide = (props) => {
                   </Grid>
                 </Grid>
 
-                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                <Grid
+                  container
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={500}
+                >
                   <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppUpperCaseTextField
                       label='Placa de vehículo'
@@ -2307,7 +2323,11 @@ const GetReferralGuide = (props) => {
                     toChangeUnitMeasure={changeUnitMeasure}
                   />
                 </Box>
-                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                <Grid
+                  container
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={500}
+                >
                   <Grid xs={6} sm={6} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Peso bruto total'

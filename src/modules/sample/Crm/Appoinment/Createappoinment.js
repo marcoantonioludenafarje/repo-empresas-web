@@ -153,14 +153,12 @@ const Createappoinment = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
-  const [notifyClientByWsp, setNotifyClientByWsp] =
-    React.useState(false);
-  const [disabledFinaly, setDisabledFinaly] = React.useState(true)
+  const [notifyClientByWsp, setNotifyClientByWsp] = React.useState(false);
+  const [disabledFinaly, setDisabledFinaly] = React.useState(true);
   const [countryCode, setCountryCode] = React.useState('+51');
   const [selectedClient, setSelectedClient] = React.useState('');
 
-  const [recordingClientByWsp, setRecordingClientByWsp] =
-    React.useState(false);
+  const [recordingClientByWsp, setRecordingClientByWsp] = React.useState(false);
 
   const [publishDate, setPublishDate] = React.useState(
     Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
@@ -190,7 +188,7 @@ const Createappoinment = (props) => {
   const {businessParameter, globalParameter} = useSelector(
     ({general}) => general,
   );
-  console.log("parametro negocio", businessParameter);
+  console.log('parametro negocio', businessParameter);
   const {listSpecialists} = useSelector(({specialists}) => specialists);
   console.log('confeti especialistas', listSpecialists);
 
@@ -403,14 +401,13 @@ const Createappoinment = (props) => {
 
     setSelectedClient(client);
     console.log('Cliente seleccionado', client);
-    setDisabledFinaly(false)
+    setDisabledFinaly(false);
     //forceUpdate();
     setOpen(false);
   };
 
-
-  const timedura = () =>{
-        // Obtén el valor de businessParameter[5]?.value[0]?.periodicityAction.time
+  const timedura = () => {
+    // Obtén el valor de businessParameter[5]?.value[0]?.periodicityAction.time
     const timeValue = businessParameter[5]?.value[0]?.periodicityAction.time;
 
     if (timeValue) {
@@ -418,20 +415,12 @@ const Createappoinment = (props) => {
       const resultText = `antes de ${timeValue} horas de la cita`;
 
       // Ahora puedes mostrar resultText en tu componente Typography
-      return (
-        <Typography>
-          {resultText}
-        </Typography>
-      );
+      return <Typography>{resultText}</Typography>;
     } else {
       // Manejar el caso en el que el valor de tiempo no está disponible
-      return (
-        <Typography>
-          El valor de tiempo no está disponible.
-        </Typography>
-      );
+      return <Typography>El valor de tiempo no está disponible.</Typography>;
     }
-  }
+  };
 
   return (
     <Card sx={{p: 4, width: '100%', margin: '0 auto'}}>
@@ -450,7 +439,7 @@ const Createappoinment = (props) => {
           flexDirection: 'column',
           mb: 5,
           mx: 'auto',
-          width: '100%'
+          width: '100%',
         }}
       >
         <Formik
@@ -478,7 +467,11 @@ const Createappoinment = (props) => {
                 id='principal-form'
                 /* onChange={handleActualData} */
               >
-                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                <Grid
+                  container
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={500}
+                >
                   <Grid item xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Título *'
@@ -596,9 +589,11 @@ const Createappoinment = (props) => {
                         // console.log('timelord publish', publishDate.getTime());
                         // console.log('timelord time en mili', e.target.value * 60 * 1000);
                         // console.log('timelord suma', new Date(publishDate.getTime() + e.target.value * 60 * 1000));
-                        
-                        const filldate = new Date(publishDate.getTime() + e.target.value * 60 * 1000)
-                        console.log("timelord >>>", filldate);
+
+                        const filldate = new Date(
+                          publishDate.getTime() + e.target.value * 60 * 1000,
+                        );
+                        console.log('timelord >>>', filldate);
                         setFinalDate(filldate);
                       }}
                       sx={{
@@ -719,13 +714,10 @@ const Createappoinment = (props) => {
                           name='recordingClientByWsp'
                           color='primary'
                         />
-                        
                       }
                       label='Recordatorio a cliente por Celular'
                     />
-                    <Typography align='center'>
-                      {timedura()}
-                    </Typography>
+                    <Typography align='center'>{timedura()}</Typography>
                   </Grid>
                 </Grid>
 

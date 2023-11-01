@@ -49,7 +49,7 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newAppointment} from 'redux/actions';
 import {getSpecialists} from 'redux/actions/Specialist';
-import { newAttention } from 'redux/actions';
+import {newAttention} from 'redux/actions';
 import {ClickAwayListener} from '@mui/base';
 import AddClientForm from '../../ClientSelection/AddClientForm';
 import {useState} from 'react';
@@ -153,13 +153,11 @@ const Create = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [notifyClientByEmail, setNotifyClientByEmail] = React.useState(false);
-  const [notifyClientByWsp, setNotifyClientByWsp] =
-    React.useState(false);
+  const [notifyClientByWsp, setNotifyClientByWsp] = React.useState(false);
   const [countryCode, setCountryCode] = React.useState('+51');
   const [selectedClient, setSelectedClient] = React.useState('');
 
-  const [recordingClientByWsp, setRecordingClientByWsp] =
-    React.useState(false);
+  const [recordingClientByWsp, setRecordingClientByWsp] = React.useState(false);
 
   const [publishDate, setPublishDate] = React.useState(
     Date.now() + 60 * 60 * 1000 /* Number(query.createdAt) */,
@@ -189,7 +187,7 @@ const Create = (props) => {
   const {businessParameter, globalParameter} = useSelector(
     ({general}) => general,
   );
-  console.log("parametro negocio", businessParameter);
+  console.log('parametro negocio', businessParameter);
   const {listSpecialists} = useSelector(({specialists}) => specialists);
   console.log('confeti especialistas', listSpecialists);
 
@@ -405,7 +403,6 @@ const Create = (props) => {
     setOpen(false);
   };
 
-
   return (
     <Card sx={{p: 4, mx: 'auto'}}>
       <Box sx={{width: 1, textAlign: 'center'}}>
@@ -450,7 +447,11 @@ const Create = (props) => {
                 id='principal-form'
                 /* onChange={handleActualData} */
               >
-                <Grid container sx={{width: '100%', margin: 'auto'}} maxWidth={500}>
+                <Grid
+                  container
+                  sx={{width: '100%', margin: 'auto'}}
+                  maxWidth={500}
+                >
                   <Grid item xs={12} sm={12} sx={{px: 1, mt: 2}}>
                     <AppTextField
                       label='Título *'
@@ -568,9 +569,11 @@ const Create = (props) => {
                         // console.log('timelord publish', publishDate.getTime());
                         // console.log('timelord time en mili', e.target.value * 60 * 1000);
                         // console.log('timelord suma', new Date(publishDate.getTime() + e.target.value * 60 * 1000));
-                        
-                        const filldate = new Date(publishDate.getTime() + e.target.value * 60 * 1000)
-                        console.log("timelord >>>", filldate);
+
+                        const filldate = new Date(
+                          publishDate.getTime() + e.target.value * 60 * 1000,
+                        );
+                        console.log('timelord >>>', filldate);
                         setFinalDate(filldate);
                       }}
                       sx={{
