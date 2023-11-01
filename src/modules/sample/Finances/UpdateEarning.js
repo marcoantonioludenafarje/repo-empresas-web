@@ -234,9 +234,9 @@ const UpdateEarning = (props) => {
     }
     if(query.proofDueDate){
       if (typeof query.proofDueDate === 'string') {
-        setProofDueDate(toEpoch(ISODateToDateObj(query.proofDueDate)));
+        setProofOfPaymentDueDate(toEpoch(ISODateToDateObj(query.proofDueDate)));
       } else {
-        setProofDueDate(Number(query.proofDueDate));
+        setProofOfPaymentDueDate(Number(query.proofDueDate));
       }
     }
     if (query.proofTransactionDate) {
