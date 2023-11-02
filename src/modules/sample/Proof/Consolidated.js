@@ -55,7 +55,8 @@ import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {getUserData} from '../../../redux/actions/User';
 import {getListBusiness} from '../../../redux/actions/Admin';
-import {convertToDateWithoutTime} from '../../../Utils/utils';
+import {convertToDateWithoutTime,
+  translateValue,} from '../../../Utils/utils';
 import {proofMonitoring} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -419,6 +420,7 @@ const ProofsOfPaymentConsolidation = (props) => {
           <TableHead>
             <TableRow>
               <TableCell>Fecha de emisión</TableCell>
+              <TableCell>Tipo Comprobante</TableCell>
               <TableCell>Número de serie</TableCell>
               <TableCell>Número Comprobante</TableCell>
               <TableCell>Identificador Receptor</TableCell>
@@ -452,7 +454,13 @@ const ProofsOfPaymentConsolidation = (props) => {
                   key={index}
                 >
                   <TableCell>
-                    {convertToDateWithoutTime(obj.createdAt)}
+                    {obj.issueDate}
+                  </TableCell>
+                  <TableCell>
+                    {translateValue(
+                          'DOCUMENTTYPE',
+                          obj.movementType.toUpperCase(),
+                        )}
                   </TableCell>
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')
