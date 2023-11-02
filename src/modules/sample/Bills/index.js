@@ -75,7 +75,7 @@ import {
   dateWithHyphen,
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
-import TransactionRegisterForm from './TransactionRegisterForm';
+import TransactionRegisterForm from "./transactionRegisterForm";
 import {
   getBillItems_pageListBill,
   cancelInvoice,
