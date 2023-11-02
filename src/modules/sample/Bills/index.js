@@ -75,7 +75,7 @@ import {
   dateWithHyphen,
 } from '../../../Utils/utils';
 import AddReasonForm from '../ReasonForm/AddReasonForm';
-import TransactionRegisterForm from "./transactionRegisterForm";
+import TransactionRegisterForm from './transactionRegisterForm';
 import {
   getBillItems_pageListBill,
   cancelInvoice,
@@ -94,6 +94,7 @@ import {
   BILLS_BATCH_CONSULT,
   ADD_CREDIT_NOTE,
   BILL_BATCH_CONSULT,
+  REGISTER_TRANSACTION,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -546,8 +547,6 @@ const BillsTable = (props) => {
       setOpenTransactionStatus(false);
     } else if (registerTransactionError()) {
       setOpenTransactionStatus(false);
-    } else {
-      setOpenTransactionStatus(false);
     }
   };
 
@@ -848,7 +847,7 @@ const BillsTable = (props) => {
     setOpenForm(false);
   };
 
-  const registerTransaction = (proofTransactionDate) => {
+  const handleRegisterTransaction = (proofTransactionDate) => {
     let finalPayload = {
       request: {
         payload: {
@@ -869,7 +868,8 @@ const BillsTable = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     toRegisterTransaction(finalPayload);
-    setOpenStatus(true);
+    setOpenTransactionStatus(true);
+
     setOpenTransaction(false);
   };
   return (
@@ -1283,7 +1283,7 @@ const BillsTable = (props) => {
           {'Confirmar pago'}
         </DialogTitle>
         <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-          <TransactionRegisterForm sendData={registerTransaction} />
+          <TransactionRegisterForm sendData={handleRegisterTransaction} />
         </DialogContent>
       </Dialog>
       <ClickAwayListener onClickAway={handleClickAway}>
@@ -1303,7 +1303,7 @@ const BillsTable = (props) => {
           <DialogActions sx={{justifyContent: 'center'}}>
             <Button
               variant='outlined'
-              onClick={() => sendTransactionStatus(false)}
+              onClick={() => setOpenTransactionStatus(false)}
             >
               Aceptar
             </Button>

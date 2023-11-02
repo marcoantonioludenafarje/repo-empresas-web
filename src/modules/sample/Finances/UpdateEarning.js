@@ -442,6 +442,9 @@ const UpdateEarning = (props) => {
     );
     newFinancePayload.request.payload.proofTransactionDate =
       convertToDateWithoutTime(proofTransactionDate);
+    newFinancePayload.request.payload.proofOfPaymentId = query.proofOfPaymentId
+      ? query.proofOfPaymentId
+      : '';
     newFinancePayload.request.payload.serialNumberBill = data.nroBill;
     newFinancePayload.request.payload.description = data.saleDetail;
     newFinancePayload.request.payload.observation = data.saleObservation;

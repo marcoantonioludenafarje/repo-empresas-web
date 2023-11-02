@@ -61,7 +61,9 @@ import {
 } from '@mui/lab';
 import {CalendarPicker} from '@mui/lab';
 import {getUserData} from '../../../redux/actions/User';
+import TransactionRegisterForm from './TransactionRegisterForm';
 
+import {ClickAwayListener} from '@mui/base';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -77,6 +79,7 @@ import AddReasonForm from '../ReasonForm/AddReasonForm';
 import {
   getReceiptItems_pageListReceipt,
   cancelInvoice,
+  registerTransaction,
 } from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
@@ -86,6 +89,7 @@ import {
   GET_RECEIPT_PAGE_LISTGUIDE,
   GENERATE_EXCEL_TEMPLATE_TO_RECEIPTS,
   RECEIPTS_BATCH_CONSULT,
+  REGISTER_TRANSACTION,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -173,6 +177,9 @@ const ReceiptsTable = (props) => {
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
 
+  const [openTransaction, setOpenTransaction] = React.useState(false);
+  const [openTransactionStatus, setOpenTransactionStatus] =
+    React.useState(false);
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
   const documentSunat = 'receipt';
@@ -195,6 +202,9 @@ const ReceiptsTable = (props) => {
     dispatch(exportExcelTemplateToReceipts(payload));
   };
 
+  const toRegisterTransaction = (payload) => {
+    dispatch(registerTransaction(payload));
+  };
   const handleNextPage = (event) => {
     //console.log('Llamando al  handleNextPage', handleNextPage);
     let listPayload = {
@@ -224,7 +234,9 @@ const ReceiptsTable = (props) => {
   console.log('receiptItems_pageListReceipt', receiptItems_pageListReceipt);
   const {dataBusinessRes} = useSelector(({general}) => general);
   console.log('dataBusinessRes', dataBusinessRes);
-  const {successMessage} = useSelector(({movements}) => movements);
+  const {successMessage, registerTransactionRes} = useSelector(
+    ({movements}) => movements,
+  );
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
@@ -513,6 +525,18 @@ const ReceiptsTable = (props) => {
     }
   }, [excelTemplateGeneratedToReceiptsRes, downloadExcel]);
 
+  const registerTransactionSuccess = () => {
+    return (
+      successMessage != undefined &&
+      registerTransactionRes != undefined &&
+      !('error' in registerTransactionRes)
+    );
+  };
+  const registerTransactionError = () => {
+    return (
+      (successMessage != undefined && registerTransactionRes) || errorMessage
+    );
+  };
   const showMessage = () => {
     if (successMessage != undefined) {
       return (
@@ -538,6 +562,48 @@ const ReceiptsTable = (props) => {
             id='alert-dialog-description'
           >
             Se ha producido un error al tratar de eliminar.
+          </DialogContentText>
+        </>
+      );
+    } else {
+      return (
+        <CircularProgress
+          disableShrink
+          sx={{m: '10px', position: 'relative'}}
+        />
+      );
+    }
+  };
+
+  const showTransactionMessage = () => {
+    if (registerTransactionSuccess()) {
+      return (
+        <>
+          <CheckCircleOutlineOutlinedIcon
+            color='success'
+            sx={{fontSize: '6em', mx: 2}}
+          />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se registró correctamente.
+          </DialogContentText>
+        </>
+      );
+    } else if (registerTransactionError()) {
+      return (
+        <>
+          <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            Se ha producido un error al tratar de registrar.
+            <br />
+            {registerTransactionRes && 'error' in registerTransactionRes
+              ? registerTransactionRes.error
+              : null}
           </DialogContentText>
         </>
       );
@@ -646,6 +712,46 @@ const ReceiptsTable = (props) => {
     handleClose();
   };
 
+  const sendTransactionStatus = () => {
+    if (registerTransactionSuccess()) {
+      setOpenTransactionStatus(true);
+    } else if (registerTransactionError()) {
+      setOpenTransactionStatus(false);
+    }
+  };
+  const handleOpenTransaction = () => {
+    setOpenTransaction(true);
+  };
+
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
+  const handleRegisterTransaction = (proofTransactionDate) => {
+    let finalPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          proofTransactionDate: proofTransactionDate,
+          movementHeaderId: selectedReceipt.movementHeaderId,
+          contableMovementId: selectedReceipt.contableMovementId,
+          userCreated: userDataRes.userId,
+          userCreatedMetadata: {
+            nombreCompleto: userDataRes.nombreCompleto,
+            email: userDataRes.email,
+          },
+        },
+      },
+    };
+    console.log('handleRegisterTransaction payload', finalPayload);
+    dispatch({type: REGISTER_TRANSACTION, payload: undefined});
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    toRegisterTransaction(finalPayload);
+    setOpenTransactionStatus(true);
+
+    setOpenTransaction(false);
+  };
   const cancelReceipt = (reason) => {
     console.log('Razón', reason);
     cancelReceiptPayload.request.payload.reason = reason;
@@ -957,6 +1063,10 @@ const ReceiptsTable = (props) => {
           <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Reenviar
         </MenuItem> */}
+        <MenuItem onClick={handleOpenTransaction}>
+          <DataSaverOffOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+          Confirmar pago
+        </MenuItem>
         {localStorage
           .getItem('pathsBack')
           .includes('/facturacion/receipt/seePDF') === true ? (
@@ -1035,6 +1145,46 @@ const ReceiptsTable = (props) => {
         ) : null} */}
       </Menu>
 
+      <Dialog
+        open={openTransaction}
+        onClose={() => setOpenTransaction(false)}
+        fullWidth
+        maxWidth='xs'
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Confirmar pago'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <TransactionRegisterForm sendData={handleRegisterTransaction} />
+        </DialogContent>
+      </Dialog>
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openTransactionStatus}
+          onClose={() => setOpenTransactionStatus(false)}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Confirmar pago'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showTransactionMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button
+              variant='outlined'
+              onClick={() => setOpenTransactionStatus(false)}
+            >
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
       <Dialog
         open={moreFilters}
         onClose={() => setMoreFilters(false)}
