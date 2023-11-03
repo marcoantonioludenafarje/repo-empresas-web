@@ -41,6 +41,7 @@ import {
   PREVISUALIZE_REFERRAL_GUIDE,
   PROOF_MONITORING,
   REGISTER_TRANSACTION,
+  GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -942,6 +943,27 @@ export const registerTransaction = (payload) => {
       })
       .catch((error) => {
         console.log('updateProofTransactionDate error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const exportExcelTemplateToConsolidated = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/inventory/exportReceipts', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelTemplateToConsolidated resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('exportExcelTemplateToConsolidated error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

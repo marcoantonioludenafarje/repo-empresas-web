@@ -581,7 +581,7 @@ const NewEarning = (props) => {
   };
   const sendStatus = () => {
     if (registerSuccess()) {
-      Router.push('/sample/finances/table');
+      Router.push('/sample/contableMovements');
       setOpenStatus(false);
     } else if (registerError()) {
       setOpenStatus(false);
@@ -1481,7 +1481,7 @@ const NewEarning = (props) => {
               setOpen2(false);
               setSelectedClient({});
               typeAlert = '';
-              Router.push('/sample/finances/table');
+              Router.push('/sample/contableMovements');
             }}
           >
             Sí

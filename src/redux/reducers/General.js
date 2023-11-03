@@ -35,6 +35,7 @@ import {
   GET_CLIENTS_PRESIGNED,
   GET_IMAGE_PRESIGNED,
   CUSTOMIZE_PDF,
+  VALIDATE_SUNAT,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -282,6 +283,12 @@ const generalReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         customizePdfRes: action.payload,
+      };
+    case VALIDATE_SUNAT:
+      console.log('data de reducer VALIDATE_SUNAT', action.payload);
+      return {
+        ...state,
+        validateSunatRes: action.payload,
       };
     case RESET_GENERAL:
       return {

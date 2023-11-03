@@ -203,14 +203,14 @@ const rolesRoutesConfig = {
           icon: <TableRowsOutlinedIcon fontSize='small' />,
           url: '/sample/contableMovements',
         },
-        {
-          id: 'movements',
-          title: 'Movements table',
-          messageId: 'sidebar.sample.ingressEgress',
-          type: 'item',
-          icon: <TableRowsOutlinedIcon fontSize='small' />,
-          url: '/sample/finances/table',
-        },
+        // {
+        //   id: 'movements',
+        //   title: 'Movements table',
+        //   messageId: 'sidebar.sample.ingressEgress',
+        //   type: 'item',
+        //   icon: <TableRowsOutlinedIcon fontSize='small' />,
+        //   url: '/sample/finances/table',
+        // },
       ],
     },
 

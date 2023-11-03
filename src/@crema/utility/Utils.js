@@ -232,3 +232,15 @@ export const request2 = (method, path, payload) => {
   //   },
   // })
 };
+
+export const sunatValidateRequest = (type, nro) => {
+  console.log('Ahora axios validate SUNAT');
+  return axios['get'](
+    `https://dniruc.apisperu.com/api/v1/${type}/${nro}?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImFjYWVkcmljQGdtYWlsLmNvbSJ9.zJfG6QfvGG1A9oNFneACJkqWcmwRhP0yslJmgQS32Go`,
+    {
+      headers: {
+        'Content-type': 'application/json',
+      },
+    },
+  );
+};

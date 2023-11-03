@@ -49,20 +49,24 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PageviewIcon from '@mui/icons-material/Pageview';
 import {red, amber} from '@mui/material/colors';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import GridOnOutlinedIcon from '@mui/icons-material/GridOnOutlined';
 import {DateTimePicker} from '@mui/lab';
 
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {getUserData} from '../../../redux/actions/User';
 import {getListBusiness} from '../../../redux/actions/Admin';
-import {convertToDateWithoutTime,
-  translateValue,} from '../../../Utils/utils';
-import {proofMonitoring} from '../../../redux/actions/Movements';
+import {convertToDateWithoutTime, translateValue} from '../../../Utils/utils';
+import {
+  proofMonitoring,
+  exportExcelTemplateToConsolidated,
+} from '../../../redux/actions/Movements';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
   PROOF_MONITORING,
+  GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED,
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
@@ -106,10 +110,15 @@ const ProofsOfPaymentConsolidation = (props) => {
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
+
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
   const [loading, setLoading] = React.useState(true);
+  const toExportExcelTemplateToConsolidated = (payload) => {
+    dispatch(exportExcelTemplateToConsolidated(payload));
+  };
   //API FUNCTIONS
   const toListProofMonitoringItems = (payload) => {
     dispatch(proofMonitoring(payload));
@@ -144,10 +153,17 @@ const ProofsOfPaymentConsolidation = (props) => {
   );
 
   const {moneySymbol} = useSelector(({general}) => general);
-  const {successMessage} = useSelector(({movements}) => movements);
+  const {
+    successMessage,
+    errorMessage,
+    excelTemplateGeneratedToConsolidatedRes,
+  } = useSelector(({movements}) => movements);
   console.log('successMessage', successMessage);
-  const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
+  console.log(
+    'excelTemplateGeneratedToConsolidatedRes',
+    excelTemplateGeneratedToConsolidatedRes,
+  );
   const {businessParameter} = useSelector(({general}) => general);
   console.log('businessParameter', businessParameter);
   const {globalParameter} = useSelector(({general}) => general);
@@ -317,6 +333,51 @@ const ProofsOfPaymentConsolidation = (props) => {
     }
   };
 
+  useEffect(() => {
+    if (excelTemplateGeneratedToConsolidatedRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelTemplateGeneratedToConsolidatedRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Consolidated.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelTemplateGeneratedToConsolidatedRes, downloadExcel]);
+  const exportToExcel = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          initialTime: initialTime,
+          finalTime: finalTime,
+          serviceType: 'consolidated',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({
+      type: GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED,
+      payload: undefined,
+    });
+    toExportExcelTemplateToConsolidated(excelPayload);
+    setDownloadExcel(true);
+  };
+
   const showPaymentMethod = (type) => {
     switch (type) {
       case 'CASH':
@@ -453,14 +514,12 @@ const ProofsOfPaymentConsolidation = (props) => {
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
                 >
-                  <TableCell>
-                    {obj.issueDate}
-                  </TableCell>
+                  <TableCell>{obj.issueDate}</TableCell>
                   <TableCell>
                     {translateValue(
-                          'DOCUMENTTYPE',
-                          obj.movementType.toUpperCase(),
-                        )}
+                      'DOCUMENTTYPE',
+                      obj.movementType.toUpperCase(),
+                    )}
                   </TableCell>
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')
@@ -550,6 +609,23 @@ const ProofsOfPaymentConsolidation = (props) => {
         ) : null}
       </TableContainer>
 
+      <ButtonGroup
+        variant='outlined'
+        aria-label='outlined button group'
+        className={classes.btnGroup}
+      >
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/exportReceipts/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={exportToExcel}
+          >
+            Exportar todo
+          </Button>
+        ) : null}
+      </ButtonGroup>
       <Menu
         id='basic-menu'
         anchorEl={anchorEl}

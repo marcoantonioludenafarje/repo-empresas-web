@@ -21,7 +21,6 @@ import {
   MenuItem,
   Menu,
   MenuList,
-  ClickAwayListener,
   Select,
   FormControlLabel,
   InputLabel,
@@ -46,6 +45,8 @@ import {
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
+import {ClickAwayListener} from '@mui/base';
+import ResultState from '../Finances/ResultState';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
@@ -84,6 +85,7 @@ import {
   deleteFinance,
   exportExcelMovementsDetails,
   exportExcelMovementsSummary,
+  getFinancesForResultState,
 } from '../../../redux/actions/Finances';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -160,7 +162,9 @@ const ContableMovements = (props) => {
   const [downloadExcelDetails, setDownloadExcelDetails] = React.useState(false);
   const [downloadExcelSummary, setDownloadExcelSummary] = React.useState(false);
   const [lastPayload, setLastPayload] = React.useState('');
+  const [resultState, setResultState] = React.useState(false);
 
+  const [selectedFinance, setSelectedFinance] = React.useState('');
   const currentDate = new Date(); // Obtenemos la fecha actual
   const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0)); // Modificamos la fecha actual para que sea a las 0 horas del día
   const endOfDay = addMinutes(addHours(new Date(startOfDay), 23), 59); // Agregamos 23 horas a la fecha de inicio para obtener las 23:59 del día actual
@@ -175,17 +179,7 @@ const ContableMovements = (props) => {
   console.log('query', query);
   const {userDataRes} = useSelector(({user}) => user);
 
-  let deletePayload = {
-    request: {
-      payload: {
-        contableMovementId: '',
-        movementHeaderId: '',
-        movementTypeMerchantId: '',
-      },
-    },
-  };
   let codFinanceSelected = '';
-  let selectedFinance = '';
 
   useEffect(() => {
     if (!userDataRes) {
@@ -211,6 +205,7 @@ const ContableMovements = (props) => {
     allFinancesRes,
     financesLastEvaluatedKey_pageListFinances,
   } = useSelector(({finances}) => finances);
+  const {getFinancesForResultStateRes} = useSelector(({finances}) => finances);
   const {deleteFinanceRes} = useSelector(({finances}) => finances);
   const {businessParameter} = useSelector(({general}) => general);
   const {moneyUnitBusiness} = useSelector(({general}) => general);
@@ -233,6 +228,7 @@ const ContableMovements = (props) => {
   const {jwtToken} = useSelector(({general}) => general);
   console.log('getFinancesRes', getFinancesRes);
   console.log('deleteFinanceRes', deleteFinanceRes);
+  console.log('getFinancesForResultStateRes', getFinancesForResultStateRes);
   console.log('businessParameter', businessParameter);
   console.log('moneyUnitBusiness', moneyUnitBusiness);
   console.log('weightBusiness', weightBusiness);
@@ -250,6 +246,9 @@ const ContableMovements = (props) => {
   };
   const toDeleteFinance = (payload) => {
     dispatch(deleteFinance(payload));
+  };
+  const toGetFinancesForResultState = (payload) => {
+    dispatch(getFinancesForResultState(payload, jwtToken));
   };
   const toGetExcelMovementsDetails = (payload) => {
     dispatch(exportExcelMovementsDetails(payload));
@@ -530,8 +529,8 @@ const ContableMovements = (props) => {
   const handleClick = (codFinance, event) => {
     setAnchorEl(event.currentTarget);
     codFinanceSelected = codFinance;
-    selectedFinance = allFinancesRes[codFinance];
-    console.log('selectedFinance', selectedFinance);
+    setSelectedFinance(allFinancesRes[codFinance]);
+    console.log('selectedFinance', codFinanceSelected);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -541,13 +540,17 @@ const ContableMovements = (props) => {
     handleClose();
   };
   const confirmDelete = () => {
-    deletePayload.request.payload.contableMovementId =
-      selectedFinance.contableMovementId;
-    deletePayload.request.payload.movementHeaderId =
-      selectedFinance.movementHeaderId;
-    deletePayload.request.payload.movementTypeMerchantId =
-      selectedFinance.movementTypeMerchantId;
+    let deletePayload = {
+      request: {
+        payload: {
+          contableMovementId: selectedFinance.contableMovementId,
+          movementHeaderId: selectedFinance.movementHeaderId,
+          movementTypeMerchantId: selectedFinance.movementTypeMerchantId,
+        },
+      },
+    };
     dispatch({type: DELETE_FINANCE, payload: undefined});
+    console.log('deletePayload', deletePayload);
     toDeleteFinance(deletePayload);
     setOpen2(false);
     /* setTimeout(() => { */
@@ -558,6 +561,10 @@ const ContableMovements = (props) => {
     setOpen2(false);
   };
 
+  const handleClickAway = () => {
+    // Evita que se cierre el diálogo haciendo clic fuera del contenido
+    // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
+  };
   const showMessage = () => {
     if (successMessage != undefined) {
       return (
@@ -744,8 +751,8 @@ const ContableMovements = (props) => {
     }
   };
   const checkDocuments = (input, index) => {
-    selectedFinance = input;
-    console.log('selectedFinance', selectedFinance);
+    setSelectedFinance(input);
+    console.log('selectedFinance', input);
     if (openDetails == true) {
       setOpenDetails(false);
     }
@@ -822,8 +829,8 @@ const ContableMovements = (props) => {
   };
 
   const checkPaids = (input, index) => {
-    selectedFinance = input;
-    console.log('selectedFinance', selectedFinance);
+    setSelectedFinance(input);
+    console.log('selectedFinance', input);
     setOpenOtherPayConcepts(false);
     setOpenPaids(true);
     if (openPaids == true && rowNumber == index) {
@@ -833,8 +840,8 @@ const ContableMovements = (props) => {
   };
 
   const checkOtherPayConcepts = (input, index) => {
-    selectedFinance = input;
-    console.log('selectedFinance', selectedFinance);
+    setSelectedFinance(input);
+    console.log('selectedFinance', input);
     setOpenPaids(false);
     setOpenOtherPayConcepts(true);
     if (openOtherPayConcepts == true && rowNumber == index) {
@@ -1099,7 +1106,7 @@ const ContableMovements = (props) => {
               <TableCell>Monto Total</TableCell>
               <TableCell>Vendedor</TableCell>
               <TableCell>Recaudador</TableCell>
-              {/* <TableCell>Opciones</TableCell> */}
+              <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1181,7 +1188,7 @@ const ContableMovements = (props) => {
                           ? obj.proofOfPaymentUserCreatedMetadata.nombreCompleto
                           : ''}
                       </TableCell>
-                      {/* <TableCell>
+                      <TableCell>
                         <Button
                           id='basic-button'
                           aria-controls={openMenu ? 'basic-menu' : undefined}
@@ -1191,7 +1198,7 @@ const ContableMovements = (props) => {
                         >
                           <KeyboardArrowDownIcon />
                         </Button>
-                      </TableCell> */}
+                      </TableCell>
                     </TableRow>
                     <TableRow key={`doc2-${index}`}>
                       <TableCell
@@ -1426,6 +1433,7 @@ const ContableMovements = (props) => {
         sx={{my: 10}}
         variant='outlined'
         aria-label='outlined button group'
+        orientation={isMobile ? 'vertical' : 'horizontal'}
       >
         {localStorage
           .getItem('pathsBack')
@@ -1451,6 +1459,43 @@ const ContableMovements = (props) => {
             Exportar Detalle
           </Button>
         ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/accounting/movement/register') === true ? (
+          <Button
+            variant='outlined'
+            onClick={() => {
+              Router.push('/sample/finances/new-earning');
+            }}
+            startIcon={<AddCircleOutlineOutlinedIcon />}
+          >
+            Nuevo Ingreso
+          </Button>
+        ) : null}
+
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/accounting/movement/register') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<AddCircleOutlineOutlinedIcon />}
+            onClick={() => {
+              Router.push('/sample/finances/new-expense');
+            }}
+          >
+            Nuevo Egreso
+          </Button>
+        ) : null}
+
+        <Button
+          disabled
+          onClick={() => {
+            setResultState(true);
+          }}
+          variant='outlined'
+        >
+          Generar estado de resultado
+        </Button>
       </ButtonGroup>
 
       <Menu
@@ -1464,6 +1509,22 @@ const ContableMovements = (props) => {
       >
         {localStorage
           .getItem('pathsBack')
+          .includes('/facturacion/accounting/movement/update') === true ? (
+          <MenuItem onClick={goToUpdate}>
+            <CachedIcon sx={{mr: 1, my: 'auto'}} />
+            Actualizar
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/accounting/movement/delete') === true ? (
+          <MenuItem onClick={setDeleteState}>
+            <DeleteOutlineOutlinedIcon sx={{mr: 1, my: 'auto'}} />
+            Eliminar
+          </MenuItem>
+        ) : null}
+        {localStorage
+          .getItem('pathsBack')
           .includes(
             '/utility/listObjectsPathMerchant?path=/Movimientos contables/*',
           ) === true ? (
@@ -1474,6 +1535,43 @@ const ContableMovements = (props) => {
         ) : null}
       </Menu>
 
+      <Dialog
+        open={resultState}
+        onClose={() => setResultState(false)}
+        fullWidth
+        maxWidth='xl'
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Estado de Resultado'}
+          <IconButton
+            aria-label='close'
+            onClick={() => setResultState(false)}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex'}}>
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            <ResultState
+              data={getFinancesForResultStateRes}
+              principalYear={year}
+              principalMonth={month}
+            />
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={moreFilters}
         onClose={() => setMoreFilters(false)}
@@ -1507,6 +1605,57 @@ const ContableMovements = (props) => {
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
       </Dialog>
+
+      <Dialog
+        open={open2}
+        onClose={handleClose2}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar finanza'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea eliminar realmente la información seleccionada?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={confirmDelete}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleClose2}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <ClickAwayListener onClickAway={handleClickAway}>
+        <Dialog
+          open={openStatus}
+          onClose={sendStatus}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Eliminar finanza'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            {showMessage()}
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={sendStatus}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </ClickAwayListener>
     </Card>
   );
 };

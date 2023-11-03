@@ -43,6 +43,7 @@ import {
   PREVISUALIZE_REFERRAL_GUIDE,
   PROOF_MONITORING,
   REGISTER_TRANSACTION,
+  GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -725,6 +726,16 @@ const movementsReducer = (state = INIT_STATE, action) => {
       };
     default:
       return state;
+
+    case GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED:
+      console.log(
+        'data de reducer case GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED',
+        action.payload,
+      );
+      return {
+        ...state,
+        excelTemplateGeneratedToConsolidatedRes: action.payload,
+      };
   }
 };
 

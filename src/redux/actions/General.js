@@ -30,9 +30,11 @@ import {
   GET_CLIENTS_PRESIGNED,
   GET_IMAGE_PRESIGNED,
   CUSTOMIZE_PDF,
+  VALIDATE_SUNAT,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
+import {sunatValidateRequest} from '../../@crema/utility/Utils';
 export const onGetBusinessParameter = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -595,6 +597,32 @@ export const customizePdf = (payload) => {
       .catch((error) => {
         console.log('customizePdf error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const validateSUNAT = (payload) => {
+  return (dispatch, getState) => {
+    //dispatch({type: FETCH_START, payload: {process: 'VALIDATE_SUNAT'}});
+    sunatValidateRequest(payload.type, payload.nro)
+      .then((data) => {
+        console.log('validateSUNAT resultado', data);
+        dispatch({
+          type: VALIDATE_SUNAT,
+          payload: data.data,
+          request: payload,
+        });
+        // dispatch({
+        //   type: FETCH_SUCCESS,
+        //   payload: {
+        //     process: 'VALIDATE_SUNAT',
+        //     message: 'Validar sunat',
+        //   },
+        // });
+      })
+      .catch((error) => {
+        console.log('validateSUNAT error', error);
+        //dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
 };

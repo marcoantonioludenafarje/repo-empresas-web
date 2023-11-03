@@ -225,6 +225,8 @@ export const CANCEL_REFERRAL_GUIDE = 'cancel_referral_guide';
 export const UPDATE_REFERRAL_GUIDE_ITEMS_PAGE_LIST =
   'update_referral_guide_items_page_list';
 export const PROOF_MONITORING = 'proof_monitoring';
+export const GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED =
+  'generate_excel_template_to_consolidated';
 //ROUTES
 export const GENERATE_ROUTE = 'generate_route';
 export const UPDATE_ROUTE = 'update_route';
@@ -415,3 +417,6 @@ export const ACTIVE_SUNAT = 'active_sunat';
 export const ABLE_BUSINESS = 'able_business';
 export const EXTEND_SUSCRIPTION = 'extend_suscription';
 export const CLEAR_S3_OBJECTS = 'clear_s3_objects';
+
+//SUNAT
+export const VALIDATE_SUNAT = 'validate_sunat';

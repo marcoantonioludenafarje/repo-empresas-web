@@ -22,10 +22,14 @@ import {
   IconButton,
   TextField,
   Autocomplete,
+  Collapse,
+  Alert,
 } from '@mui/material';
 
 import {ClickAwayListener} from '@mui/base';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
@@ -51,6 +55,7 @@ import {
 import {getUserData} from '../../../redux/actions/User';
 import {useState} from 'react';
 import CheckIcon from '@mui/icons-material/Check';
+import {validateSUNAT} from '../../../redux/actions/General';
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
   documentType: yup.string(),
@@ -164,6 +169,8 @@ const formatSentence = (phrase) => {
 };
 
 const NewClient = (props) => {
+  let getValueField;
+  let changeValueField;
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
@@ -172,6 +179,10 @@ const NewClient = (props) => {
   // const [isRUC, setRUC] = React.useState(false);
   const [identidad, setIdentidad] = React.useState(null);
 
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [typeAlert, setTypeAlert] = React.useState('');
+  const [severityAlert, setSeverityAlert] = React.useState('warning');
+  const [messageAlert, setMessageAlert] = React.useState('');
   const [birthDay, setBirthDay] = React.useState(new Date());
 
   const [listTags, setListTags] = React.useState([]);
@@ -183,11 +194,16 @@ const NewClient = (props) => {
     documentType: '',
   };
 
-  const {businessParameter} = useSelector(({general}) => general);
-
+  const {businessParameter, validateSunatRes} = useSelector(
+    ({general}) => general,
+  );
+  console.log('validateSunatRes', validateSunatRes);
   //APIS
   const toNewClient = (payload) => {
     dispatch(newClient(payload));
+  };
+  const toValidateSunat = (payload) => {
+    dispatch(validateSUNAT(payload));
   };
   const [dateRegister, setDateRegister] = React.useState(Date.now());
   //GET_VALUES_APIS
@@ -221,7 +237,37 @@ const NewClient = (props) => {
       setMinTutorial(true);
     }, 2000);
   }, []);
-
+  useEffect(() => {
+    if (validateSunatRes && getValueField) {
+      if (validateSunatRes.message) {
+        setShowAlert(true);
+        setTypeAlert('validateSUNAT');
+        setMessageAlert(validateSunatRes.message);
+      } else {
+        if (getValueField('documentType').value == 'DNI') {
+          changeValueField('givenName', validateSunatRes.nombres);
+          changeValueField('lastName', validateSunatRes.apellidoPaterno);
+          changeValueField('secondLastName', validateSunatRes.apellidoMaterno);
+          let completeName = `${validateSunatRes.nombres} ${validateSunatRes.apellidoPaterno} ${validateSunatRes.apellidoMaterno}`;
+          changeValueField('name', completeName);
+        } else if (getValueField('documentType').value == 'RUC') {
+          changeValueField('name', validateSunatRes.razonSocial);
+          changeValueField('addressClient', validateSunatRes.direccion);
+          setShowAlert(true);
+          setTypeAlert('validateSUNAT');
+          if (
+            validateSunatRes.condicion == 'HABIDO' &&
+            validateSunatRes.estado == 'ACTIVO'
+          ) {
+            setSeverityAlert('success');
+          }
+          setMessageAlert(
+            `Condición: ${validateSunatRes.condicion}, Estado: ${validateSunatRes.estado}`,
+          );
+        }
+      }
+    }
+  }, [validateSunatRes]);
   useEffect(() => {
     switch (process) {
       case 'CREATE_NEW_CLIENT':
@@ -420,7 +466,9 @@ const NewClient = (props) => {
           onSubmit={handleData}
           enableReinitialize={true}
         >
-          {({values, errors, isSubmitting, setFieldValue}) => {
+          {({values, errors, isSubmitting, setFieldValue, getFieldProps}) => {
+            getValueField = getFieldProps;
+            changeValueField = setFieldValue;
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -510,6 +558,24 @@ const NewClient = (props) => {
                       label='Número Identificador *'
                       name='nroDocument'
                       variant='outlined'
+                      InputProps={{
+                        endAdornment: (
+                          <IconButton
+                            onClick={() => {
+                              console.log(
+                                'nroDocument',
+                                getValueField('nroDocument').value,
+                              );
+                              toValidateSunat({
+                                type: values['documentType'].toLowerCase(),
+                                nro: getValueField('nroDocument').value,
+                              });
+                            }}
+                          >
+                            <SearchIcon />
+                          </IconButton>
+                        ),
+                      }}
                       sx={{
                         width: '100%',
                         '& .MuiInputBase-input': {
@@ -520,6 +586,27 @@ const NewClient = (props) => {
                       }}
                     />
                   </Grid>
+
+                  <Collapse in={showAlert}>
+                    <Alert
+                      severity='info'
+                      action={
+                        <IconButton
+                          aria-label='close'
+                          color='inherit'
+                          size='small'
+                          onClick={() => {
+                            setShowAlert(false);
+                          }}
+                        >
+                          <CloseIcon fontSize='inherit' />
+                        </IconButton>
+                      }
+                      sx={{mb: 2}}
+                    >
+                      {typeAlert == 'validateSUNAT' ? messageAlert : null}
+                    </Alert>
+                  </Collapse>
 
                   {values['documentType'] == 'RUC' ? (
                     <>

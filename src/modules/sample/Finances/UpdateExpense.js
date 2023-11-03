@@ -587,7 +587,7 @@ const UpdateExpense = (props) => {
   };
   const sendStatus = () => {
     if (registerSuccess()) {
-      Router.push('/sample/finances/table');
+      Router.push('/sample/contableMovements');
       setOpenStatus(false);
     } else if (registerError()) {
       setOpenStatus(false);
@@ -1398,7 +1398,7 @@ const UpdateExpense = (props) => {
               setOpen2(false);
               setSelectedProvider({});
               typeAlert = '';
-              Router.push('/sample/finances/table');
+              Router.push('/sample/contableMovements');
             }}
           >
             Sí
