@@ -12,6 +12,7 @@ const VerticalNavItem = ({
   className,
   router,
   level,
+  closeM,
   ...rest
 }) => {
   const {
@@ -24,6 +25,12 @@ const VerticalNavItem = ({
   const {pathname} = router;
   return (
     <ListItem
+      onClick={() => {
+        console.log("he clickeado")
+        if(closeM){
+          closeM()
+        }
+      }}
       className={clsx('nav-item menu-vertical-item', {
         'rounded-menu': menuStyle === MenuStyle.ROUNDED,
         'rounded-menu-reverse': menuStyle === MenuStyle.ROUNDED_REVERSE,
@@ -175,4 +182,5 @@ VerticalNavItem.propTypes = {
   className: PropsTypes.string,
   item: PropsTypes.object,
   router: PropsTypes.object,
+  closeM: PropsTypes.func,
 };

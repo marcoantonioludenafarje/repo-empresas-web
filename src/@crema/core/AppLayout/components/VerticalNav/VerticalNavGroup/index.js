@@ -9,7 +9,7 @@ import {useAuthUser} from '../../../../../utility/AuthHooks';
 import {useSidebarContext} from '../../../../../utility/AppContextProvider/SidebarContextProvider';
 import VerticalNavGroupItem from './VerticalNavGroupItem';
 
-const VerticalNavGroup = ({item, router, level}) => {
+const VerticalNavGroup = ({item, router, level, closeM}) => {
   const {sidebarTextColor} = useSidebarContext();
   const {user} = useAuthUser();
   const hasPermission = useMemo(
@@ -36,15 +36,15 @@ const VerticalNavGroup = ({item, router, level}) => {
           {item.children.map((item) => (
             <React.Fragment key={item.id}>
               {item.type === 'group' && (
-                <NavVerticalGroup item={item} level={level} router={router} />
+                <NavVerticalGroup item={item} level={level} router={router}  closeM={closeM}/>
               )}
 
               {item.type === 'collapse' && (
-                <VerticalCollapse item={item} level={level} router={router} />
+                <VerticalCollapse item={item} level={level} router={router} closeM={closeM} />
               )}
 
               {item.type === 'item' && (
-                <VerticalItem item={item} level={level} router={router} />
+                <VerticalItem item={item} level={level} router={router} closeM={closeM} />
               )}
             </React.Fragment>
           ))}
@@ -66,6 +66,7 @@ VerticalNavGroup.propTypes = {
   }),
   level: PropTypes.number,
   router: PropTypes.object,
+  closeM: PropTypes.func,
 };
 
 VerticalNavGroup.defaultProps = {};

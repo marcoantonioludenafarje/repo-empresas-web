@@ -233,6 +233,7 @@ const OutputsTable = (props) => {
   const theme = useTheme();
   const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
     let someDate = new Date(strDate);
@@ -1704,10 +1705,16 @@ const OutputsTable = (props) => {
         >
           <TableHead>
             <TableRow>
+              {isNotMobile ? (
               <TableCell>Codigo</TableCell>
+              ) : null}
               <TableCell>Fecha registrada</TableCell>
+              {isNotMobile ? (
               <TableCell>Última actualización</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Tipo de movimiento</TableCell>
+              ) : null}
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'denominationClient'}
@@ -1718,20 +1725,40 @@ const OutputsTable = (props) => {
                 </TableSortLabel>
               </TableCell>
               <TableCell>Detalle productos</TableCell>
+              {isNotMobile ? (
               <TableCell>Detalle documentos</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Boleta Venta relacionada</TableCell>
-              {typeClient == 'PN' ? (
+              ) : null}
+              {isNotMobile && typeClient == 'PN' ? (
                 <TableCell>Ticket Venta relacionada</TableCell>
               ) : null}
+              {isNotMobile ? (
               <TableCell>Guía de remisión relacionada</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Factura relacionada</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Último ingreso</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Ingresos</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Precio total sin IGV</TableCell>
+              ) : null}
               <TableCell>Precio total con IGV</TableCell>
+              {isNotMobile ? (
               <TableCell>Estado</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Creado por</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Modificado por</TableCell>
+              ) : null}
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
@@ -1797,6 +1824,7 @@ const OutputsTable = (props) => {
                       sx={{'&:last-child td, &:last-child th': {border: 0}}}
                       key={index}
                     >
+                      {isNotMobile ? (
                       <TableCell
                         sx={{
                           color:
@@ -1810,17 +1838,22 @@ const OutputsTable = (props) => {
                       >{`${showMinType(obj.movementType)} - ${
                         obj.codMovement ? obj.codMovement.split('-')[1] : ''
                       }`}</TableCell>
+                      ) : null}
                       <TableCell>
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
+                      {isNotMobile ? (
                       <TableCell>
                         {convertToDateWithoutTime(
                           obj.updatedAt || obj.updatedDate,
                         )}
                       </TableCell>
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell>
                         {showSubtypeMovement(obj.movementSubType)}
                       </TableCell>
+                      ) : null}
                       <TableCell>
                         {(obj.clientId
                           ? obj.numberDocumentClient + ' - '
@@ -1829,7 +1862,7 @@ const OutputsTable = (props) => {
                             ? obj.client.denomination
                             : obj.clientName)}
                       </TableCell>
-                      <TableCell align='center'>
+                      <TableCell>
                         {/* {obj.descriptionProductsInfo
                           ? obj.descriptionProducts
                           : ''} */}
@@ -1845,7 +1878,8 @@ const OutputsTable = (props) => {
                           <></>
                         )}
                       </TableCell>
-                      <TableCell align='center'>
+                      {isNotMobile ? (
+                      <TableCell>
                         {obj.documentsMovement &&
                         obj.documentsMovement.length != 0 ? (
                           <IconButton
@@ -1858,10 +1892,13 @@ const OutputsTable = (props) => {
                           <></>
                         )}
                       </TableCell>
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell align='center'>
                         {statusObject(obj, obj.existReceipt, 'receipt')}
                       </TableCell>
-                      {typeClient == 'PN' ? (
+                      ) : null}
+                      {isNotMobile && typeClient == 'PN' ? (
                         <TableCell align='center'>
                           {statusObject(
                             obj,
@@ -1870,6 +1907,7 @@ const OutputsTable = (props) => {
                           )}
                         </TableCell>
                       ) : null}
+                      {isNotMobile ? (
                       <TableCell align='center'>
                         {statusObject(
                           obj,
@@ -1877,10 +1915,14 @@ const OutputsTable = (props) => {
                           'referralGuide',
                         )}
                       </TableCell>
-                      {/* factura */}
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell align='center'>
                         {statusObject(obj, obj.existBill, 'bill')}
                       </TableCell>
+                      ) : null}
+                      {/* factura */}
+                      {isNotMobile ? (
                       <TableCell align='center'>
                         {statusObject(
                           obj,
@@ -1896,7 +1938,9 @@ const OutputsTable = (props) => {
                             : '',
                         )}
                       </TableCell>
-                      <TableCell align='center'>
+                      ) : null}
+                      {isNotMobile ? (
+                      <TableCell>
                         {obj.contableMovements &&
                         obj.contableMovements.length != 0 ? (
                           <IconButton
@@ -1909,27 +1953,36 @@ const OutputsTable = (props) => {
                           <></>
                         )}
                       </TableCell>
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell>
                         {obj.totalPrice
                           ? `${moneySymbol} ${obj.totalPrice.toFixed(3)}`
                           : ''}
                       </TableCell>
+                      ) : null}
                       <TableCell>
                         {obj.totalPriceWithIgv
                           ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(3)}`
                           : ''}
                       </TableCell>
+                      {isNotMobile ? (
                       <TableCell>{showStatus(obj.status)}</TableCell>
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell>
                         {obj.userCreatedMetadata
                           ? obj.userCreatedMetadata.nombreCompleto
                           : ''}
                       </TableCell>
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell>
                         {obj.userUpdatedMetadata
                           ? obj.userUpdatedMetadata.nombreCompleto
                           : ''}
                       </TableCell>
+                      ) : null}
                       <TableCell>
                         <Button
                           id='basic-button'

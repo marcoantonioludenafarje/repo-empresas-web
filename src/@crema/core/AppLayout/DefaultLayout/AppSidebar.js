@@ -45,7 +45,7 @@ const AppSidebar = (props) => {
                 mt: 0.5,
               }}
             >
-              <VerticalNav />
+              <VerticalNav closeMenu={handleToggleDrawer}/>
             </AppScrollbar>
           </MainSidebar>
         </Drawer>

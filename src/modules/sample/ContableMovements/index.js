@@ -1444,7 +1444,7 @@ const ContableMovements = (props) => {
             onClick={getExcelMovementsSummary}
             startIcon={<GridOnOutlinedIcon />}
           >
-            Exportar Resumen Por Día
+            Resumen Por Día
           </Button>
         ) : null}
 
@@ -1494,7 +1494,7 @@ const ContableMovements = (props) => {
           }}
           variant='outlined'
         >
-          Generar estado de resultado
+          Estado de resultado
         </Button>
       </ButtonGroup>
 

@@ -10,7 +10,7 @@ import {checkPermission} from '../../../../../utility/helper/RouteHelper';
 import {useAuthUser} from '../../../../../utility/AuthHooks';
 import VerticalNavItem from './VerticalNavItem';
 
-const VerticalItem = ({level, router, item}) => {
+const VerticalItem = ({level, router, item, closeM}) => {
   const {user} = useAuthUser();
   const hasPermission = useMemo(
     () => checkPermission(item.permittedRole, user.role),
@@ -28,6 +28,7 @@ const VerticalItem = ({level, router, item}) => {
           level={level}
           router={router}
           exact={item.exact}
+          closeM={closeM}
         >
           {item.icon && (
             <Box component='span'>
@@ -77,6 +78,7 @@ VerticalItem.propTypes = {
   }),
   level: PropTypes.number,
   router: PropTypes.object,
+  closeM: PropTypes.func,
 };
 
 VerticalItem.defaultProps = {};

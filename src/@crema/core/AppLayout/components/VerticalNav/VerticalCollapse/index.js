@@ -41,7 +41,7 @@ const isUrlInChildren = (parent, url) => {
   return false;
 };
 
-const VerticalCollapse = ({item, router, level}) => {
+const VerticalCollapse = ({item, router, level, closeM}) => {
   const {theme} = useThemeContext();
   const {sidebarTextColor} = useSidebarContext();
   const {pathname} = useRouter();
@@ -125,7 +125,7 @@ const VerticalCollapse = ({item, router, level}) => {
               )}
 
               {item.type === 'item' && (
-                <VerticalItem item={item} level={level + 1} router={router} />
+                <VerticalItem item={item} level={level + 1} router={router} closeM={closeM}/>
               )}
             </React.Fragment>
           ))}
@@ -147,6 +147,7 @@ VerticalCollapse.propTypes = {
   }),
   level: PropTypes.number,
   router: PropsTypes.object,
+  closeM: PropTypes.func,
 };
 VerticalCollapse.defaultProps = {};
 
