@@ -1759,7 +1759,7 @@ const OutputsTable = (props) => {
               {isNotMobile ? (
               <TableCell>Modificado por</TableCell>
               ) : null}
-              <TableCell>Opciones</TableCell>
+              <TableCell>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

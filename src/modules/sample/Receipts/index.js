@@ -30,6 +30,7 @@ import {
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
+import { normalizeConfig } from 'next/dist/server/config-shared';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
@@ -152,6 +153,8 @@ const ReceiptsTable = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const isNotMobile = useMediaQuery(theme.breakpoints.up("lg"));
   const forceUpdate = useForceUpdate();
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
@@ -836,12 +839,23 @@ const ReceiptsTable = (props) => {
         >
           <TableHead>
             <TableRow>
+              {isNotMobile ? (
               <TableCell>Fecha registro</TableCell>
+              ) : null}
               <TableCell>Fecha emisión</TableCell>
+              {isNotMobile ? (
+              <>
               <TableCell>Número serie</TableCell>
               <TableCell>Número boleta</TableCell>
+              </>
+              ) : (
+                <TableCell>Serie-Número</TableCell>
+              )}
               <TableCell>Identificador Receptor</TableCell>
+              {isNotMobile ? (
               <TableCell>Nombre Receptor</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'observation'}
@@ -851,16 +865,23 @@ const ReceiptsTable = (props) => {
                   Observación
                 </TableSortLabel>
               </TableCell>
+              ) : null}
               {/* <TableCell>Subtotal</TableCell> */}
               {/* <TableCell>Inafecta</TableCell>
               <TableCell>Exonerada</TableCell>
               <TableCell>Gravada</TableCell> */}
+              {isNotMobile ? (
               <TableCell>IGV</TableCell>
+              ) : null}
               <TableCell>Importe total</TableCell>
+              {isNotMobile ? (
               <TableCell>Forma de pago</TableCell>
+              ) : null}
               <TableCell>Aceptado por Sunat</TableCell>
+              {isNotMobile ? (
               <TableCell>Anulado?</TableCell>
-              <TableCell>Opciones</TableCell>
+              ) : null}
+              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -871,10 +892,14 @@ const ReceiptsTable = (props) => {
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
                 >
+                  {isNotMobile ? (
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
+                  ) : null}
                   <TableCell>{strDateToDateObject_ES(obj.issueDate)}</TableCell>
+                  {isNotMobile ? (
+                    <>
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')
                       ? obj.serialNumber.split('-')[0]
@@ -885,6 +910,14 @@ const ReceiptsTable = (props) => {
                       ? obj.serialNumber.split('-')[1]
                       : ''}
                   </TableCell>
+                  </>
+                  ) : (
+                    <TableCell>{obj.serialNumber && obj.serialNumber.includes('-')
+                    ? obj.serialNumber.split('-')[0]
+                    : ''}-{obj.serialNumber && obj.serialNumber.includes('-')
+                    ? obj.serialNumber.split('-')[1]
+                    : ''}</TableCell>
+                  )}
                   <TableCell>
                     {obj.clientId
                       ? `${obj.clientId.split('-')[0]} - ${
@@ -892,12 +925,16 @@ const ReceiptsTable = (props) => {
                         }`
                       : ''}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell>
                     {obj.clientId
                       ? obj.denominationClient
                       : 'Cliente No Definido'}
                   </TableCell>
+                  ) : null}
+                  {isNotMobile ? (
                   <TableCell>{obj.observation}</TableCell>
+                  ) : null}
                   {/* <TableCell>
                     {obj.totalPriceWithoutIgv
                       ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
@@ -914,20 +951,25 @@ const ReceiptsTable = (props) => {
                   {/* <TableCell>{obj.totalTaxFree ? `${moneySymbol} ${obj.totalTaxFree.toFixed(2)} ` : `${moneySymbol} 0` }</TableCell>
                   <TableCell>{obj.totalTaxExempt ? `${moneySymbol} ${obj.totalTaxExempt.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell>
                   <TableCell>{obj.totalTaxed ? `${moneySymbol} ${obj.totalTaxed.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell> */}
+                  {isNotMobile ? (
                   <TableCell>
                     {obj.totalIgv
                       ? `${moneySymbol} ${obj.totalIgv.toFixed(2)} `
                       : `${moneySymbol} 0`}
                   </TableCell>
+                  ) : null}
                   <TableCell>
                     {obj.totalPriceWithIgv
                       ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(2)} `
                       : ''}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell>{showPaymentMethod(obj.paymentMethod)}</TableCell>
+                  ) : null}
                   <TableCell align='center'>
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell align='center'>
                     {
                       showDocument(
@@ -936,8 +978,10 @@ const ReceiptsTable = (props) => {
                       ) /*showCanceled(obj.cancelStatus)*/
                     }
                   </TableCell>
-                  <TableCell>
+                  ) : null}
+                  <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
                     <Button
+                      sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
                       id='basic-button'
                       aria-controls={openMenu ? 'basic-menu' : undefined}
                       aria-haspopup='true'

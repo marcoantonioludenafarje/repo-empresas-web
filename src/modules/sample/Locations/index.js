@@ -76,6 +76,7 @@ import {
 } from '../../../Utils/utils';
 import originalUbigeos from '../../../Utils/ubigeo.json';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
+import { normalizeConfig } from 'next/dist/server/config-shared';
 
 import {ClickAwayListener} from '@mui/base';
 let selectedLocation = {};
@@ -119,6 +120,7 @@ const LocationTable = (arrayObjs, props) => {
   const theme = useTheme();
   const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -663,7 +665,7 @@ const LocationTable = (arrayObjs, props) => {
           Más filtros
         </Button> */}
         <Button
-          startIcon={<ManageSearchOutlinedIcon />}
+          startIcon={isNotMobile ? <ManageSearchOutlinedIcon /> : null}
           variant='contained'
           color='primary'
           onClick={searchLocations}
@@ -686,8 +688,10 @@ const LocationTable = (arrayObjs, props) => {
               <TableCell>Dirección</TableCell>
               <TableCell>Ubicación</TableCell>
               <TableCell>Tipo</TableCell>
+              {isNotMobile ? (
               <TableCell>Última actualización</TableCell>
-              <TableCell></TableCell>
+              ) : null}
+              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -705,14 +709,17 @@ const LocationTable = (arrayObjs, props) => {
                     <TableCell>{obj.locationDetail}</TableCell>
                     <TableCell>{setLabelUbigeo(obj.ubigeo)}</TableCell>
                     <TableCell>{obj.type}</TableCell>
+                    {isNotMobile ? (
                     <TableCell>
                       {convertToDate(obj.updatedAt || obj.updatedDate)}
                     </TableCell>
+                    ) : null}
                     {/* <TableCell>{obj.priceWithoutIgv.toFixed(2)}</TableCell>
                     <TableCell>{obj.stock}</TableCell>
                     <TableCell>{obj.costPriceUnit.toFixed(2)}</TableCell> */}
-                    <TableCell>
+                    <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
                       <Button
+                        sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
                         id='basic-button'
                         aria-controls={openMenu ? 'basic-menu' : undefined}
                         aria-haspopup='true'

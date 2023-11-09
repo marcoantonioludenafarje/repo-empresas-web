@@ -27,6 +27,18 @@ export const dictionary = {
     otherUses: <IntlMessages id='movements.type.otherUses' />,
     buys: <IntlMessages id='movements.type.buys' />,
   },
+  REASON_FOR_TRANSFER: {
+    BUY: <IntlMessages id='referralGuide.reason.buys' />,
+    SALE: <IntlMessages id='referralGuide.reason.sales' />,
+    TRANSFERBETWEENESTABLISHMENTSOFTHESAMECOMPANY: <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOfTheSameCompany' />,
+    SALESUBJECTTOBUYERCONFIRMATION: <IntlMessages id='referralGuide.reason.saleSubjectToBuyerConfirmation' />,
+    ITINERANTSENDERTRANSFERCP: <IntlMessages id='referralGuide.reason.itinerantSenderTransferCP' />,
+    IMPORT: <IntlMessages id='referralGuide.reason.import' />,
+    EXPORT: <IntlMessages id='referralGuide.reason.export' />,
+    TRANSFERTOPRIMARYAREA: <IntlMessages id='referralGuide.reason.transferToPrimaryArea' />,
+    RETURN: <IntlMessages id='referralGuide.reason.return' />,
+    OTHERS: <IntlMessages id='referralGuide.reason.others' />,
+  },
   CONTABLE_MOVEMENTS: {
     INPUT: <IntlMessages id='sidebar.sample.inputs' />,
     OUTPUT: <IntlMessages id='sidebar.sample.outputs' />,

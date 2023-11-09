@@ -610,7 +610,7 @@ export const showReferralGuideReason = (text, reason) => {
         break;
       case 'traslado_entre_establecimientos_de_la_misma_empresa':
         return (
-          <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany.' />
+          <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOfTheSameCompany.' />
         );
         break;
       case 'traslado_emisor_itinerante_CP':
@@ -652,7 +652,7 @@ export const showReferralGuideReason = (text, reason) => {
         break;
       case 'transferBetweenEstablishmentsOfTheSameCompany':
         return (
-          <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany.' />
+          <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOfTheSameCompany.' />
         );
         break;
       case 'transferItinerantIssuerCP':

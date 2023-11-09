@@ -475,13 +475,15 @@ const DriverTable = (arrayObjs, props) => {
         className={classes.stack}
       >
         <FormControl sx={{my: 0, width: 140}}>
-          <InputLabel id='categoria-label' style={{fontWeight: 200}}>
+          <InputLabel id='categoria-label' style={{fontWeight: 200}}
+            sx={{mt: -2}}>
             Identificador
           </InputLabel>
           <Select
             defaultValue=''
             name='typeDocumentDriver'
             labelId='documentType-label'
+            size='small'
             label='Identificador'
             sx={{maxWidth: 140}}
             onChange={handleSearchValues}

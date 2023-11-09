@@ -83,6 +83,7 @@ import {
   strDateToDateObject_ES,
   parseTo3Decimals,
   toSimpleDate,
+  translateValue,
 } from '../../../Utils/utils';
 import {
   getReferralGuides_PageListGuide,
@@ -105,6 +106,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
+import { normalizeConfig } from 'next/dist/server/config-shared';
 //ESTILOS
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -162,6 +164,7 @@ const ReferralGuidesTable = (props) => {
   const theme = useTheme();
   const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
     let someDate = new Date(strDate);
@@ -981,10 +984,18 @@ const ReferralGuidesTable = (props) => {
         >
           <TableHead>
             <TableRow>
+              {isNotMobile ? (
               <TableCell>Fecha de registro</TableCell>
+              ) : null}
               <TableCell>Fecha de emisión</TableCell>
+              {isNotMobile ? (
+              <>
               <TableCell>Número de serie</TableCell>
               <TableCell>Número de guía de remisión</TableCell>
+              </>
+              ) : (
+                <TableCell>Serie-Número</TableCell>
+              )}
               <TableCell>Motivo</TableCell>
               <TableCell>
                 <TableSortLabel
@@ -995,6 +1006,7 @@ const ReferralGuidesTable = (props) => {
                   Receptor
                 </TableSortLabel>
               </TableCell>
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'observation'}
@@ -1004,11 +1016,18 @@ const ReferralGuidesTable = (props) => {
                   Observación
                 </TableSortLabel>
               </TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Enviado a Sunat</TableCell>
+              ) : null}
               <TableCell>Aceptado por Sunat</TableCell>
+              {isNotMobile ? (
               <TableCell>Anulado?</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Error</TableCell>
-              <TableCell>Opciones</TableCell>
+              ) : null}
+              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1019,14 +1038,18 @@ const ReferralGuidesTable = (props) => {
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
                 >
+                  {isNotMobile ? (
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
+                  ) : null}
                   <TableCell>
                     {obj.issueDate
                       ? strDateToDateObject_ES(obj.issueDate)
                       : convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
+                  {isNotMobile ? (
+                  <>
                   <TableCell>
                     {obj.documentIntern && obj.documentIntern.includes('-')
                       ? obj.documentIntern.split('-')[0]
@@ -1037,22 +1060,37 @@ const ReferralGuidesTable = (props) => {
                       ? obj.documentIntern.split('-')[1]
                       : ''}
                   </TableCell>
-                  <TableCell>{obj.reasonForTransfer || ''} </TableCell>
+                  </>
+                  ) : (
+                    <TableCell>{obj.documentIntern && obj.documentIntern.includes('-')
+                    ? obj.documentIntern.split('-')[0]
+                    : ''}-{obj.documentIntern && obj.documentIntern.includes('-')
+                    ? obj.documentIntern.split('-')[1]
+                    : ''}</TableCell>
+                  )}
+                  <TableCell>{obj.reasonForTransfer ? translateValue("REASON_FOR_TRANSFER",(obj.reasonForTransfer).toUpperCase()) : ''} </TableCell>
                   <TableCell>
                     {`${obj.clientId.split('-')[1]}` +
                       ' ' +
                       obj.denominationClient}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell>{obj.observation || ''} </TableCell>
+                  ) : null}
+                  {isNotMobile ? (
                   <TableCell align='center'>
                     {showIconStatus(obj.sendingStatus)}
                   </TableCell>
+                  ) : null}
                   <TableCell align='center'>
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell>
                     {showCanceled(obj.cancelStatus || false)}
                   </TableCell>
+                  ) : null}
+                  {isNotMobile ? (
                   <TableCell>
                     <Button
                       onClick={() => {
@@ -1063,8 +1101,10 @@ const ReferralGuidesTable = (props) => {
                       {showIconErrorStatus(obj.errorDetail || false)}
                     </Button>
                   </TableCell>
-                  <TableCell>
+                  ) : null}
+                  <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
                     <Button
+                      sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
                       id='basic-button'
                       aria-controls={openMenu ? 'basic-menu' : undefined}
                       aria-haspopup='true'

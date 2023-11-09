@@ -54,6 +54,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import {red} from '@mui/material/colors';
 
+import { normalizeConfig } from 'next/dist/server/config-shared';
 import {makeStyles} from '@mui/styles';
 import {useHistory} from 'react-router-dom';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -145,6 +146,7 @@ const ProductTable = (arrayObjs, props) => {
   const theme = useTheme();
   const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   const [firstload, setFirstload] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
@@ -821,6 +823,7 @@ const ProductTable = (arrayObjs, props) => {
                   Prod&Serv
                 </TableSortLabel>
               </TableCell> */}
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'description'}
@@ -830,6 +833,7 @@ const ProductTable = (arrayObjs, props) => {
                   Descripción
                 </TableSortLabel>
               </TableCell>
+              ) : null}
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'alias'}
@@ -839,6 +843,7 @@ const ProductTable = (arrayObjs, props) => {
                   Alias
                 </TableSortLabel>
               </TableCell>
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'weight'}
@@ -848,6 +853,8 @@ const ProductTable = (arrayObjs, props) => {
                   Peso
                 </TableSortLabel>
               </TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'costPriceUnit'}
@@ -857,6 +864,7 @@ const ProductTable = (arrayObjs, props) => {
                   Precio costo sugerido
                 </TableSortLabel>
               </TableCell>
+              ) : null}
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'sellPriceUnit'}
@@ -866,6 +874,7 @@ const ProductTable = (arrayObjs, props) => {
                   Precio venta sugerido
                 </TableSortLabel>
               </TableCell>
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'initialStock'}
@@ -875,6 +884,8 @@ const ProductTable = (arrayObjs, props) => {
                   Stock inicial
                 </TableSortLabel>
               </TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'createdAt'}
@@ -884,6 +895,8 @@ const ProductTable = (arrayObjs, props) => {
                   Fecha registrada
                 </TableSortLabel>
               </TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'updatedAt'}
@@ -893,7 +906,8 @@ const ProductTable = (arrayObjs, props) => {
                   Última actualización
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Opciones</TableCell>
+              ) : null}
+              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -937,25 +951,38 @@ const ProductTable = (arrayObjs, props) => {
                           <></>
                         )}
                       </TableCell>
+                      {isNotMobile ? (
                       <TableCell>{`${obj.alias ? obj.alias : ''}`}</TableCell>
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell>{`${obj.weight} ${weight_unit}`}</TableCell>
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell>{`${obj.costPriceUnit.toFixed(
                         3,
                       )} ${money_unit}`}</TableCell>
+                      ) : null}
                       <TableCell>{`${obj.priceBusinessMoneyWithIgv.toFixed(
                         3,
                       )} ${money_unit}`}</TableCell>
+                      {isNotMobile ? (
                       <TableCell>{obj.initialStock}</TableCell>
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell>
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
+                      ) : null}
+                      {isNotMobile ? (
                       <TableCell>
                         {convertToDateWithoutTime(
                           obj.updatedAt || obj.updatedDate,
                         )}
                       </TableCell>
-                      <TableCell>
+                      ) : null}
+                      <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
                         <Button
+                          sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
                           id='basic-button'
                           aria-controls={openMenu ? 'basic-menu' : undefined}
                           aria-haspopup='true'

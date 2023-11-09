@@ -165,6 +165,8 @@ const InputsTable = (props) => {
   const theme = useTheme();
   const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
     let someDate = new Date(strDate);
@@ -1030,10 +1032,16 @@ const InputsTable = (props) => {
         >
           <TableHead>
             <TableRow>
+              {isNotMobile ? (
               <TableCell>Codigo</TableCell>
+              ) : null}
               <TableCell>Fecha registrada</TableCell>
+              {isNotMobile ? (
               <TableCell>Última actualización</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Tipo de movimiento</TableCell>
+              ) : null}
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'denominationProvider'}
@@ -1044,15 +1052,29 @@ const InputsTable = (props) => {
                 </TableSortLabel>
               </TableCell>
               <TableCell>Detalle productos</TableCell>
+              {isNotMobile ? (
               <TableCell>Detalle documentos</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Egreso relacionado</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Precio total sin IGV</TableCell>
+              ) : null}
               <TableCell>Precio total con IGV</TableCell>
+              {isNotMobile ? (
               <TableCell>Porcentaje IGV</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Estado</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Creado por</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Modificado por</TableCell>
-              <TableCell>Opciones</TableCell>
+              ) : null}
+              <TableCell>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1073,20 +1095,26 @@ const InputsTable = (props) => {
                         sx={{'&:last-child td, &:last-child th': {border: 0}}}
                         key={index}
                       >
+                        {isNotMobile ? (
                         <TableCell>{`${showMinType(obj.movementType)} - ${
                           obj.codMovement ? obj.codMovement.split('-')[1] : ''
                         }`}</TableCell>
+                        ) : null}
                         <TableCell>
                           {convertToDateWithoutTime(obj.createdAt)}
                         </TableCell>
+                        {isNotMobile ? (
                         <TableCell>
                           {convertToDateWithoutTime(
                             obj.updatedAt || obj.updatedDate,
                           )}
                         </TableCell>
+                        ) : null}
+                        {isNotMobile ? (
                         <TableCell>
                           {showSubtypeMovement(obj.movementSubType)}
                         </TableCell>
+                        ) : null}
                         <TableCell>
                           {(obj.provider && obj.provider.id.split('-')[1]
                             ? obj.provider.id.split('-')[1] + ' - '
@@ -1116,6 +1144,7 @@ const InputsTable = (props) => {
                             <></>
                           )}
                         </TableCell>
+                        {isNotMobile ? (
                         <TableCell align='center'>
                           {obj.documentsMovement &&
                           obj.documentsMovement.length != 0 ? (
@@ -1129,6 +1158,8 @@ const InputsTable = (props) => {
                             <></>
                           )}
                         </TableCell>
+                        ) : null}
+                        {isNotMobile ? (
                         <TableCell align='center'>
                           {showIconStatus(
                             obj.movementSubType,
@@ -1145,11 +1176,14 @@ const InputsTable = (props) => {
                               : '',
                           )}
                         </TableCell>
+                        ) : null}
+                        {isNotMobile ? (
                         <TableCell>
                           {obj.totalPrice
                             ? `${moneySymbol} ${obj.totalPrice.toFixed(3)}`
                             : ''}
                         </TableCell>
+                        ) : null}
                         <TableCell>
                           {obj.totalPriceWithIgv
                             ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(
@@ -1157,18 +1191,26 @@ const InputsTable = (props) => {
                               )}`
                             : ''}
                         </TableCell>
+                        {isNotMobile ? (
                         <TableCell>{showIgv(obj.igv)}</TableCell>
+                        ) : null}
+                        {isNotMobile ? (
                         <TableCell>{showStatus(obj.status)}</TableCell>
+                        ) : null}
+                        {isNotMobile ? (
                         <TableCell>
                           {obj.userCreatedMetadata
                             ? obj.userCreatedMetadata.nombreCompleto
                             : ''}
                         </TableCell>
+                        ) : null}
+                        {isNotMobile ? (
                         <TableCell>
                           {obj.userUpdatedMetadata
                             ? obj.userUpdatedMetadata.nombreCompleto
                             : ''}
                         </TableCell>
+                        ) : null}
                         <TableCell>
                           <Button
                             id='basic-button'

@@ -30,6 +30,7 @@ import {
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
+import { normalizeConfig } from 'next/dist/server/config-shared';
 import {ClickAwayListener} from '@mui/base';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -140,6 +141,8 @@ const CreditNotesTable = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   const forceUpdate = useForceUpdate();
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
@@ -631,6 +634,7 @@ const CreditNotesTable = (props) => {
             // console.log('payload de busqueda', listPayload);
           }}
         />
+        {isNotMobile ? (
         <Button
           onClick={() => setMoreFilters(true)}
           startIcon={<FilterAltOutlinedIcon />}
@@ -638,6 +642,7 @@ const CreditNotesTable = (props) => {
         >
           Más filtros
         </Button>
+        ) : null}
         <Button
           variant='contained'
           startIcon={<ManageSearchOutlinedIcon />}
@@ -657,12 +662,23 @@ const CreditNotesTable = (props) => {
         >
           <TableHead>
             <TableRow>
+              {isNotMobile ? (
               <TableCell>Fecha registro</TableCell>
+              ) : null}
               <TableCell>Fecha emisión</TableCell>
+              {isNotMobile ? (
+              <>
               <TableCell>Número serie</TableCell>
               <TableCell>Número factura</TableCell>
+              </>
+              ) : (
+                <TableCell>Serie-Número</TableCell>
+              )}
               <TableCell>Identificador Receptor</TableCell>
+              {isNotMobile ? (
               <TableCell>Nombre Receptor</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'observation'}
@@ -672,16 +688,23 @@ const CreditNotesTable = (props) => {
                   Observación
                 </TableSortLabel>
               </TableCell>
+              ) : null}
               {/* <TableCell>Subtotal</TableCell> */}
               {/* <TableCell>Inafecta</TableCell>
               <TableCell>Exonerada</TableCell>
               <TableCell>Gravada</TableCell> */}
+              {isNotMobile ? (
               <TableCell>IGV</TableCell>
+              ) : null}
               <TableCell>Importe total</TableCell>
+              {isNotMobile ? (
               <TableCell>Forma de pago</TableCell>
+              ) : null}
               <TableCell>Aceptado por Sunat</TableCell>
+              {isNotMobile ? (
               <TableCell>Anulado?</TableCell>
-              <TableCell>Opciones</TableCell>
+              ) : null}
+              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -691,10 +714,14 @@ const CreditNotesTable = (props) => {
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
                 >
+                  {isNotMobile ? (
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
+                  ) : null}
                   <TableCell>{strDateToDateObject_ES(obj.issueDate)}</TableCell>
+                  {isNotMobile ? (
+                  <>
                   <TableCell>
                     {obj.serialNumber && obj.serialNumber.includes('-')
                       ? obj.serialNumber.split('-')[0]
@@ -719,6 +746,14 @@ const CreditNotesTable = (props) => {
                       ? obj.documentIntern.split('-')[1]
                       : null} */}
                   </TableCell>
+                  </>
+                  ) : (
+                  <TableCell>{obj.serialNumber && obj.serialNumber.includes('-')
+                  ? obj.serialNumber.split('-')[0]
+                  : null}-{obj.serialNumber && obj.serialNumber.includes('-')
+                  ? obj.serialNumber.split('-')[1]
+                  : null}</TableCell>
+                  )}
                   <TableCell>
                     {obj.clientId
                       ? `${obj.clientId.split('-')[0]} - ${
@@ -726,12 +761,16 @@ const CreditNotesTable = (props) => {
                         }`
                       : ''}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell>
                     {obj.clientId
                       ? obj.denominationClient
                       : 'Cliente No Definido'}
                   </TableCell>
+                  ) : null}
+                  {isNotMobile ? (
                   <TableCell>{obj.observation}</TableCell>
+                  ) : null}
                   {/* <TableCell>
                     {obj.totalPriceWithoutIgv
                       ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
@@ -748,25 +787,32 @@ const CreditNotesTable = (props) => {
                   {/* <TableCell>{obj.totalTaxFree ? `${moneySymbol} ${obj.totalTaxFree.toFixed(2)} ` : `${moneySymbol} 0` }</TableCell>
                   <TableCell>{obj.totalTaxExempt ? `${moneySymbol} ${obj.totalTaxExempt.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell>
                   <TableCell>{obj.totalTaxed ? `${moneySymbol} ${obj.totalTaxed.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell> */}
+                  {isNotMobile ? (
                   <TableCell>
                     {obj.totalIgv
                       ? `${moneySymbol} ${obj.totalIgv.toFixed(2)} `
                       : `${moneySymbol} 0`}
                   </TableCell>
+                  ) : null}
                   <TableCell>
-                    {obj.totalPriceWithIgv
+                    {obj.totalPriceWithIgv >=0
                       ? `${moneySymbol}  ${obj.totalPriceWithIgv.toFixed(2)}`
                       : ''}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell>{showPaymentMethod(obj.movementType)}</TableCell>
+                  ) : null}
                   <TableCell align='center'>
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell align='center'>
                     {showCanceled(obj.cancelStatus)}
                   </TableCell>
-                  <TableCell>
+                  ) : null}
+                  <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
                     <Button
+                      sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
                       id='basic-button'
                       aria-controls={openMenu ? 'basic-menu' : undefined}
                       aria-haspopup='true'

@@ -54,6 +54,7 @@ import {exportExcelTemplateToBills} from '../../../redux/actions/General';
 import CloseIcon from '@mui/icons-material/Close';
 import MoreFiltersDocumentSunat from '../Filters/MoreFiltersDocumentSunat';
 
+import { normalizeConfig } from 'next/dist/server/config-shared';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
   DesktopDatePicker,
@@ -155,6 +156,8 @@ const BillsTable = (props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   const forceUpdate = useForceUpdate();
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
@@ -934,12 +937,21 @@ const BillsTable = (props) => {
         >
           <TableHead>
             <TableRow>
+              {isNotMobile ? (
               <TableCell>Fecha registro</TableCell>
+              ) : null}
               <TableCell>Fecha emisión</TableCell>
-              <TableCell>Número serie</TableCell>
-              <TableCell>Número factura</TableCell>
+              {isNotMobile ? (
+                <>
+                <TableCell>Número serie</TableCell>
+                <TableCell>Número factura</TableCell>
+                </>
+              ) : (<TableCell>Serie-Número</TableCell>)}
               <TableCell>Identificador Receptor</TableCell>
+              {isNotMobile ? (
               <TableCell>Nombre Receptor</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'observation'}
@@ -949,13 +961,22 @@ const BillsTable = (props) => {
                   Observación
                 </TableSortLabel>
               </TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Subtotal</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>IGV</TableCell>
+              ) : null}
               <TableCell>Importe total</TableCell>
+              {isNotMobile ? (
               <TableCell>Forma de pago</TableCell>
+              ) : null}
               <TableCell>Aceptado por Sunat</TableCell>
+              {isNotMobile ? (
               <TableCell>Anulado?</TableCell>
-              <TableCell>Opciones</TableCell>
+              ) : null}
+              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -965,20 +986,30 @@ const BillsTable = (props) => {
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   key={index}
                 >
+                  {isNotMobile ? (
                   <TableCell>
                     {convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
+                  ) : null}
                   <TableCell>{strDateToDateObject_ES(obj.issueDate)}</TableCell>
-                  <TableCell>
-                    {obj.serialNumberBill && obj.serialNumberBill.includes('-')
-                      ? obj.serialNumberBill.split('-')[0]
-                      : ''}
-                  </TableCell>
-                  <TableCell>
-                    {obj.serialNumberBill && obj.serialNumberBill.includes('-')
-                      ? obj.serialNumberBill.split('-')[1]
-                      : ''}
-                  </TableCell>
+                  {isNotMobile ? (
+                    <>
+                    <TableCell>
+                      {obj.serialNumberBill && obj.serialNumberBill.includes('-')
+                        ? obj.serialNumberBill.split('-')[0]
+                        : ''}
+                    </TableCell>
+                    <TableCell>
+                      {obj.serialNumberBill && obj.serialNumberBill.includes('-')
+                        ? obj.serialNumberBill.split('-')[1]
+                        : ''}
+                    </TableCell>
+                    </>
+                  ) : (<TableCell>{obj.serialNumberBill && obj.serialNumberBill.includes('-')
+                  ? obj.serialNumberBill.split('-')[0]
+                  : ''}-{obj.serialNumberBill && obj.serialNumberBill.includes('-')
+                  ? obj.serialNumberBill.split('-')[1]
+                  : ''}</TableCell>)}
                   <TableCell>
                     {obj.clientId
                       ? `${obj.clientId.split('-')[0]} - ${
@@ -986,17 +1017,24 @@ const BillsTable = (props) => {
                         }`
                       : ''}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell>
                     {obj.clientId
                       ? obj.denominationClient
                       : 'Cliente No Definido'}
                   </TableCell>
+                  ) : null}
+                  {isNotMobile ? (
                   <TableCell>{obj.observation}</TableCell>
+                  ) : null}
+                  {isNotMobile ? (
                   <TableCell>
                     {obj.totalPriceWithoutIgv
                       ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
                       : ''}
                   </TableCell>
+                  ) : null}
+                  {isNotMobile ? (
                   <TableCell>
                     {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv
                       ? `${moneySymbol} ${Number(
@@ -1005,15 +1043,19 @@ const BillsTable = (props) => {
                         ).toFixed(2)} `
                       : ''}
                   </TableCell>
+                  ) : null}
                   <TableCell>
                     {obj.totalPriceWithIgv
                       ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(2)} `
                       : ''}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell>{showPaymentMethod(obj.paymentMethod)}</TableCell>
+                  ) : null}
                   <TableCell align='center'>
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
+                  {isNotMobile ? (
                   <TableCell align='center'>
                     {
                       showDocument(
@@ -1022,8 +1064,10 @@ const BillsTable = (props) => {
                       ) /*showCanceled(obj.cancelStatus)*/
                     }
                   </TableCell>
-                  <TableCell>
+                  ) : null}
+                  <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
                     <Button
+                      sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
                       id='basic-button'
                       aria-controls={openMenu ? 'basic-menu' : undefined}
                       aria-haspopup='true'

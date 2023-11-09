@@ -102,6 +102,8 @@ import {
 import MoreFiltersContableMovements from '../Filters/MoreFiltersContableMovements';
 import {exportExcelTemplateMovementsDetails} from '../../../redux/actions/Finances';
 
+import { normalizeConfig } from 'next/dist/server/config-shared';
+
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
     marginTop: '2rem',
@@ -140,6 +142,7 @@ const ContableMovements = (props) => {
   const theme = useTheme();
   const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   const [value, setValue] = React.useState(Date.now());
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open2, setOpen2] = React.useState(false);
@@ -1052,7 +1055,7 @@ const ContableMovements = (props) => {
           Más filtros
         </Button>
         <Button
-          startIcon={<ManageSearchOutlinedIcon />}
+          startIcon={isNotMobile ? <ManageSearchOutlinedIcon /> : null}
           variant='contained'
           color='primary'
           onClick={searchFinances}
@@ -1068,15 +1071,19 @@ const ContableMovements = (props) => {
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
                 Codigo
               </TableCell>
+              {isNotMobile ? (
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
                 Tipo
               </TableCell>
+              ) : null}
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
                 Fecha registrada
               </TableCell>
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
                 Tipo Comprobante Principal
               </TableCell>
+              {isNotMobile ? (
+              <>
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
                 Número Comprobante Principal
               </TableCell>
@@ -1103,10 +1110,12 @@ const ContableMovements = (props) => {
               </TableCell>
               <TableCell>Monto Neto</TableCell>
               <TableCell>Monto Igv</TableCell>
+              </>
+              ) : null}
               <TableCell>Monto Total</TableCell>
               <TableCell>Vendedor</TableCell>
               <TableCell>Recaudador</TableCell>
-              <TableCell>Opciones</TableCell>
+              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1132,7 +1141,9 @@ const ContableMovements = (props) => {
                           ? obj.codMovement.split('-')[1]
                           : obj.folderMovement.split('/').slice(-1)
                       }`}</TableCell>
+                      {isNotMobile ? (
                       <TableCell>{showType(obj.movementType)}</TableCell>
+                      ) : null}
                       <TableCell>
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
@@ -1142,6 +1153,8 @@ const ContableMovements = (props) => {
                           obj.proofOfPaymentType.toUpperCase(),
                         )}
                       </TableCell>
+                      {isNotMobile ? (
+                      <>
                       <TableCell>{obj.serialNumberBill}</TableCell>
                       <TableCell>
                         {obj.proofIssueDate
@@ -1175,6 +1188,8 @@ const ContableMovements = (props) => {
                       <TableCell>{`${moneySymbol} ${fixDecimals(
                         obj.totalIgv,
                       )}`}</TableCell>
+                      </>
+                      ) : null}
                       <TableCell>{`${moneySymbol} ${fixDecimals(
                         obj.totalAmount,
                       )}`}</TableCell>
@@ -1188,8 +1203,9 @@ const ContableMovements = (props) => {
                           ? obj.proofOfPaymentUserCreatedMetadata.nombreCompleto
                           : ''}
                       </TableCell>
-                      <TableCell>
+                      <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
                         <Button
+                          sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
                           id='basic-button'
                           aria-controls={openMenu ? 'basic-menu' : undefined}
                           aria-haspopup='true'
@@ -1415,7 +1431,7 @@ const ContableMovements = (props) => {
               />
             )}
             <TableRow>
-              <TableCell colSpan={8}>Total</TableCell>
+              <TableCell colSpan={isNotMobile ? 12: 3}>Total</TableCell>
               <TableCell align='left'>S/ {totalAmount}</TableCell>
             </TableRow>
           </TableBody>

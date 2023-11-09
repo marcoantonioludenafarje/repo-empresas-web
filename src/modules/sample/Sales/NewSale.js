@@ -28,6 +28,8 @@ import {
   FormControlLabel,
   CircularProgress,
   ToggleButtonGroup,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   CustomizerItemWrapper,
@@ -146,6 +148,8 @@ const NewSale = (props) => {
   const {query} = router;
   console.log('query', query);
 
+  const theme = useTheme();
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   //APIS FUNCTIONS
   const getAddSale = (payload) => {
     dispatch(newSale(payload));
@@ -916,17 +920,20 @@ const NewSale = (props) => {
                       variant='outlined'
                       onClick={handleClickOpen.bind(this, 'client')}
                     >
-                      Selecciona un cliente
+                    Cliente:{' '}
+                    {selectedClient && selectedClient.denominationClient
+                      ? selectedClient.denominationClient
+                      : 'No Definido'}
                     </Button>
                   </Grid>
-                  <Grid sx={{px: 1, mt: 2}} xs={11}>
+                  {/* <Grid sx={{px: 1, mt: 2}} xs={11}>
                     <Typography sx={{mx: 'auto', my: '10px'}}>
                       Cliente:{' '}
                       {selectedClient && selectedClient.denominationClient
                         ? selectedClient.denominationClient
                         : 'No Definido'}
                     </Typography>
-                  </Grid>
+                  </Grid> */}
                   {selectedClient && selectedClient.denominationClient ? (
                     <Grid sx={{px: 1, mt: 2}} xs={1}>
                       <IconButton
@@ -965,6 +972,7 @@ const NewSale = (props) => {
                 >
                   {registerType == 'saleWithProofOfPayment' ? (
                     <>
+                      {isNotMobile ? (
                       <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                         <AppTextField
                           label='Nro Venta'
@@ -981,6 +989,7 @@ const NewSale = (props) => {
                           }}
                         />
                       </Grid>
+                      ) : null}
                       <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                         <DateTimePicker
                           renderInput={(params) => (
@@ -1031,7 +1040,7 @@ const NewSale = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  {registerType == 'saleWithProofOfPayment' ? (
+                  {registerType == 'saleWithProofOfPayment' && isNotMobile ? (
                     <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                       <AppTextField
                         label={`Total ${moneyUnit} sin IGV`}
@@ -1269,6 +1278,9 @@ const NewSale = (props) => {
                         }
                       />
                     </Grid>
+                    {/* {isNotMobile ? (
+                    <>
+                    
                     <Grid sx={{px: 1}} xs={8}>
                       <AppTextField
                         label='Número telefónico'
@@ -1297,6 +1309,8 @@ const NewSale = (props) => {
                         }
                       />
                     </Grid>
+                    </>
+                    ) : null} */}
                     <Grid sx={{px: 1, mt: 2}} xs={12}>
                       <AppTextField
                         label='Observación'

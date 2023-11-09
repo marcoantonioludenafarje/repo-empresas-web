@@ -1157,7 +1157,7 @@
   "referralGuide.reason.buys": "Compras",
   "referralGuide.reason.sales": "Ventas",
   "referralGuide.reason.saleSubjectToBuyerConfirmation": "Venta sujeta a confirmación del comprador",
-  "referralGuide.reason.transferBetweenEstablishmentsOftheSameCompany": "Traslado entre establecimientos de la misma empresa",
+  "referralGuide.reason.transferBetweenEstablishmentsOfTheSameCompany": "Traslado entre establecimientos de la misma empresa",
   "referralGuide.reason.itinerantSenderTransferCP": "Traslado emisor itinerante CP",
   "referralGuide.reason.import": "Importación",
   "referralGuide.reason.export": "Exportación",

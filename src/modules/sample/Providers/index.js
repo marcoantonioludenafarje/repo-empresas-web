@@ -31,6 +31,7 @@ import {
   IconButton,
 } from '@mui/material';
 
+import { normalizeConfig } from 'next/dist/server/config-shared';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
@@ -102,6 +103,7 @@ const ProviderTable = (arrayObjs, props) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   const [firstload, setFirstload] = React.useState(true);
   const [open, setOpen] = React.useState(false);
   const [selectedIndex, setSelectedIndex] = React.useState(1);
@@ -463,12 +465,14 @@ const ProviderTable = (arrayObjs, props) => {
         className={classes.stack}
       >
         <FormControl sx={{my: 0, width: 140}}>
-          <InputLabel id='categoria-label' style={{fontWeight: 200}}>
+          <InputLabel id='categoria-label' style={{fontWeight: 200}}
+            sx={{mt: -2}}>
             Identificador
           </InputLabel>
           <Select
             defaultValue=''
             name='typeDocumentProvider'
+            size='small'
             labelId='documentType-label'
             label='Identificador'
             sx={{maxWidth: 140}}
@@ -538,8 +542,10 @@ const ProviderTable = (arrayObjs, props) => {
               <TableCell>Número Identificador</TableCell>
               <TableCell>Nombre / Razón social</TableCell>
               <TableCell>Nombre Contacto</TableCell>
+              {isNotMobile ? (
               <TableCell>Última actualización</TableCell>
-              <TableCell></TableCell>
+              ) : null}
+              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -555,11 +561,14 @@ const ProviderTable = (arrayObjs, props) => {
                     <TableCell>{parsedId[1]}</TableCell>
                     <TableCell>{obj.denominationProvider}</TableCell>
                     <TableCell>{obj.nameContact}</TableCell>
+                    {isNotMobile ? (
                     <TableCell>
                       {convertToDate(obj.updatedAt || obj.updatedDate)}
                     </TableCell>
-                    <TableCell>
+                    ) : null}
+                    <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
                       <Button
+                        sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
                         id='basic-button'
                         aria-controls={openMenu ? 'basic-menu' : undefined}
                         aria-haspopup='true'
