@@ -106,6 +106,7 @@ export default function Views(props) {
   const [filteredBusiness, setFilteredBusiness] = useState([]);
   const [open, setOpen] = useState(false);
   const [openStatus2, setOpenStatus2] = useState(false);
+  const [type, setType] = React.useState('TODOS');
 
   let popUp = false;
 
@@ -143,7 +144,8 @@ export default function Views(props) {
         request: {
           payload: {
             merchantId: userDataRes.merchantSelected.merchantId,
-            LastEvaluatedKey: null,
+            type: type,
+            LastEvaluatedKey: null,            
           },
         },
       };
@@ -231,12 +233,13 @@ export default function Views(props) {
     handleClose();
   };
 
-  const searchBusiness = (searchValue) => {
+  const searchBusiness = (searchValue, type) => {
     console.log('negocio >>', searchValue);
+    let filtered;
     if (!searchValue) {
-      setFilteredBusiness(listBusinessRes);
+      filtered = listBusinessRes;
     } else {
-      const filtered = listBusinessRes.filter((business) => {
+      filtered = listBusinessRes.filter((business) => {
         console.log('negocio', business.denominationMerchant);
         const merchantName = business.denominationMerchant;
         return (
@@ -245,8 +248,21 @@ export default function Views(props) {
         );
       });
       console.log('negocio >>>>', filtered);
-      setFilteredBusiness(filtered);
     }
+
+    console.log('negocio0', type);
+    if (type!= 'TODOS') {
+      filtered = filtered.filter((business) => {
+        const typeBusiness = business.typeMerchant;
+        return (
+          typeBusiness &&
+          typeBusiness.includes(type)
+        );
+      });
+    }
+
+    setFilteredBusiness(filtered);
+    
   };
 
   const handleActive = () => {
@@ -289,7 +305,8 @@ export default function Views(props) {
         request: {
           payload: {
             merchantId: userDataRes.merchantSelected.merchantId,
-            LastEvaluatedKey: null,
+            type: type,
+            LastEvaluatedKey: null,            
           },
         },
       };
@@ -346,14 +363,39 @@ export default function Views(props) {
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
         />
+        <FormControl sx={{my: 0, width: 100}}>
+          <InputLabel id='movementType-label' style={{fontWeight: 200}}>
+            Tipo
+          </InputLabel>
+          <Select
+            name='type'
+            labelId='type-label'
+            label='Tipo'
+            onChange={(event) => {
+              console.log(event.target.value);
+              setType(event.target.value);
+            }}
+            defaultValue={type}
+          >
+            <MenuItem value={'TODOS'} style={{fontWeight: 150}}>
+              TODOS
+            </MenuItem>
+            <MenuItem value={'PROD'} style={{fontWeight: 150}}>
+              PROD
+            </MenuItem>
+            <MenuItem value={'UAT'} style={{fontWeight: 150}}>
+              UAT
+            </MenuItem>
+          </Select>
+        </FormControl>
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
-        </Button>
+        </Button>        
         <Button
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          onClick={() => searchBusiness(searchValue)}
+          onClick={() => searchBusiness(searchValue,type)}
         >
           Buscar
         </Button>
