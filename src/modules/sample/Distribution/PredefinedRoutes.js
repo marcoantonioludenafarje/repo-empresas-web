@@ -409,14 +409,27 @@ const PredefinedRoutes = () => {
   const sendStatus = () => {
     setOpenStatus(false);
     console.log('Reseteando todo');
-    if (userDataRes && userDataRes.merchantSelected) {
-      let payload = {
-        merchantId: userDataRes.merchantSelected.merchantId,
-        LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
-      };
-
-      toListRoutes(payload);
-    }
+    setTimeout(() => {
+      if (userDataRes && userDataRes.merchantSelected) {
+        let payload = {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
+        };
+        let listPayload = {
+          request: {
+            payload: {
+              typeDocumentClient: '',
+              numberDocumentClient: '',
+              denominationClient: '',
+              merchantId: userDataRes.merchantSelected.merchantId,
+              LastEvaluatedKey: null,
+            },
+          },
+        };
+        toListRoutes(payload);
+        
+      }      
+    }, 2000);  
   };
 
   const confirmDelete = () => {
@@ -428,11 +441,11 @@ const PredefinedRoutes = () => {
     deleteRoutePredefined(deletePayload);
     setOpen2(false);
     setOpenStatus(true);
-    let payload = {
+    /*let payload = {
       merchantId: userDataRes.merchantSelected.merchantId,
       LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
     };
-    dispatch(listPredefinedRoutes_____PageListPredefinedRoutes(payload));
+    dispatch(listPredefinedRoutes_____PageListPredefinedRoutes(payload));*/
     //reloadPage();
   };
 
@@ -496,6 +509,7 @@ const PredefinedRoutes = () => {
   const classesDialog = useStylesByDialog();
   const handleClose = () => {
     setOpen(false);
+    setAnchorEl(null);
   };
 
   const handleClickOpen = (type) => {
@@ -772,7 +786,7 @@ const PredefinedRoutes = () => {
             aria-describedby='alert-dialog-description'
           >
             <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-              {'Eliminar Especialista'}
+              {'Eliminar Ruta'}
             </DialogTitle>
             <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
               <PriorityHighIcon
