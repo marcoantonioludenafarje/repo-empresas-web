@@ -745,7 +745,7 @@ const NewProduct = (props) => {
                     unitsToProduce: 1,
                     inputsProduct: cleanProducts,
                     publish: publish,
-                    isStockNeeded: isStockNeeded,
+                    isStockNeeded: unitMeasure == 'ZZ' ? false : isStockNeeded,
                   },
                 ],
                 merchantId: userDataRes.merchantSelected.merchantId,

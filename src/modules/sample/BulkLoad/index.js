@@ -443,6 +443,22 @@ const BulkLoad = (props) => {
                   "' no existe, debe de ser 'Insumo' o 'Producto intermedio' o 'Producto final'.  ";
               }
             }
+            console.log('product[NECESITA STOCK]', product['NECESITA STOCK']);
+            if (product['NECESITA STOCK'] == undefined) {
+              msjError =
+                msjError +
+                "Validación de PRODUCTO: '" +
+                product['ALIAS'] +
+                "' debe de tener un valor 'VERDADERO' o 'FALSO' en NECESITA STOCK.  ";
+            } else {
+              if (!(product['NECESITA STOCK'] == true || product['NECESITA STOCK'] == false)) {
+                msjError =
+                  msjError +
+                  "Validación de PRODUCTO: NECESITA STOCK '" +
+                  product['NECESITA STOCK'] +
+                  "' no es válido, debe de ser 'VERDADERO' o 'FALSO'.  ";
+              }
+            }
 
             if (product['DOSIFICACION']) {
               let productsSelected = product['DOSIFICACION']
@@ -692,6 +708,12 @@ const BulkLoad = (props) => {
                 .toString()
                 .toUpperCase();
             }
+
+            if (delivery['ESTABLECIMIENTO SUNAT']) {
+              delivery['ESTABLECIMIENTO SUNAT'] = delivery['ESTABLECIMIENTO SUNAT']
+                .toString()
+                .toUpperCase();
+            }
           });
 
           originPointsDataV2.forEach((origin) => {
@@ -750,6 +772,12 @@ const BulkLoad = (props) => {
                 "' debe de tener DIRECCION EXACTA.  ";
             } else {
               origin['DIRECCION EXACTA'] = origin['DIRECCION EXACTA']
+                .toString()
+                .toUpperCase();
+            }
+
+            if (origin['ESTABLECIMIENTO SUNAT']) {
+              origin['ESTABLECIMIENTO SUNAT'] = origin['ESTABLECIMIENTO SUNAT']
                 .toString()
                 .toUpperCase();
             }
