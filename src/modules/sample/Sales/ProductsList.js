@@ -155,20 +155,20 @@ const ProductsList = ({
                       }}
                     />
                   </TableCell>
-                  <TableCell>{obj.unitPrice}</TableCell>
+                  <TableCell>{obj.unitPrice.toFixed(3)}</TableCell>
                   {igvEnabled ? (
                     <TableCell>
                       {obj.taxCode == 1000
-                        ? valueWithIGV(obj.unitPrice)
-                        : obj.unitPrice}
+                        ? Number(valueWithIGV(obj.unitPrice)).toFixed(3)
+                        : obj.unitPrice.toFixed(3)}
                     </TableCell>
                   ) : null}
-                  <TableCell>{Number(obj.subtotal.toFixed(2))}</TableCell>
+                  <TableCell>{Number(obj.subtotal).toFixed(3)}</TableCell>
                   {igvEnabled ? (
                     <TableCell>
                       {obj.taxCode == 1000
-                        ? Number(valueWithIGV(obj.subtotal)).toFixed(2)
-                        : Number(obj.subtotal.toFixed(2))}
+                        ? Number(valueWithIGV(obj.subtotal)).toFixed(3)
+                        : Number(obj.subtotal.toFixed(3))}
                     </TableCell>
                   ) : null}
                   {/* <TableCell>{showTypeIGV(obj.taxCode)}</TableCell> */}
