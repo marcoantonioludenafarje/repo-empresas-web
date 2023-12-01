@@ -402,7 +402,7 @@ const AwsAuthProvider = ({children}) => {
       dispatch({
         type: SHOW_MESSAGE,
         payload:
-          'Se ha enviado un código a su dirección de correo electrónico registrada. ¡Ingrese el código para completar el proceso!',
+          'Se ha enviado un código a su número celular. ¡Ingrese el código para completar el proceso!',
       });
     } catch (error) {
       console.log('El error', error);
