@@ -228,6 +228,7 @@ const ReferralGuidesTable = (props) => {
   };
 
   const handleNextPage = (event) => {
+    setLoading(true);
     //console.log('Llamando al  handleNextPage', handleNextPage);
     let listPayload = {
       request: {
@@ -361,6 +362,7 @@ const ReferralGuidesTable = (props) => {
     }
   };
   const filterData = (dataFilters) => {
+    setLoading(true);
     console.log('dataFilters', dataFilters);
     let listPayload = {
       request: {
@@ -441,6 +443,7 @@ const ReferralGuidesTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    setLoading(true);
     let listPayload = {
       request: {
         payload: {
@@ -546,6 +549,7 @@ const ReferralGuidesTable = (props) => {
   }, [countdown]);
   useEffect(() => {
     if (userDataRes) {
+      setLoading(true);
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_MOVEMENTS, payload: undefined});
@@ -1121,6 +1125,12 @@ const ReferralGuidesTable = (props) => {
             )}
           </TableBody>
         </Table>
+        { loading ? (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        ): null}
+        { successMessage && !loading && referralGuideItems_pageListGuide && referralGuideItems_pageListGuide.length == 0 ? (
+        <span>{`No se han encontrado resultados`}</span>
+        ) : null}
         {referralGuideLastEvalutedKey_pageListGuide ? (
           <Stack spacing={2}>
             <IconButton onClick={() => handleNextPage()} size='small'>

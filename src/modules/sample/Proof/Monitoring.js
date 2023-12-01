@@ -185,6 +185,7 @@ const ProofMonitoring = (props) => {
   };
 
   const handleNextPage = (event) => {
+    setLoading(true)
     let listPayload = {
       request: {
         payload: {
@@ -291,6 +292,7 @@ const ProofMonitoring = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    setLoading(true)
     let listPayload = {
       request: {
         payload: {
@@ -330,6 +332,7 @@ const ProofMonitoring = (props) => {
   }, []);
   useEffect(() => {
     if (userDataRes) {
+      setLoading(true)
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       let listPayload = {
@@ -706,6 +709,12 @@ const ProofMonitoring = (props) => {
             )}
           </TableBody>
         </Table>
+        { loading ? (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        ): null}
+        { successMessage && !loading && proofMonitoringItems_pageListGuide && proofMonitoringItems_pageListGuide.length == 0 ? (
+        <span>{`No se han encontrado resultados`}</span>
+        ) : null}
         {proofMonitoringLastEvaluatedKey_pageListGuide ? (
           <Stack spacing={2}>
             <IconButton onClick={() => handleNextPage()} size='small'>

@@ -394,6 +394,7 @@ const BillsTable = (props) => {
     }
   };
   const filterData = (dataFilters) => {
+    setLoading(true);
     console.log('dataFilters', dataFilters);
     let listPayload = {
       request: {
@@ -433,6 +434,7 @@ const BillsTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    setLoading(true);
     let listPayload = {
       request: {
         payload: {
@@ -457,6 +459,7 @@ const BillsTable = (props) => {
     //dispatch({type: GET_BILL_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
 
     if (userDataRes) {
+      setLoading(true);
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_MOVEMENTS, payload: undefined});
@@ -537,6 +540,7 @@ const BillsTable = (props) => {
   };
   const sendStatus = () => {
     if (registerSuccess()) {
+      setLoading(true);
       setOpenStatus(false);
       toGetMovements(listPayload);
     } else if (registerError()) {
@@ -1084,6 +1088,12 @@ const BillsTable = (props) => {
             )}
           </TableBody>
         </Table>
+        { loading ? (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        ): null}
+        { successMessage && !loading && billItems_pageListBill && billItems_pageListBill.length == 0 ? (
+        <span>{`No se han encontrado resultados`}</span>
+        ) : null}
         {billLastEvalutedKey_pageListBill ? (
           <Stack spacing={2}>
             <IconButton onClick={() => handleNextPage()} size='small'>
@@ -1115,7 +1125,7 @@ const BillsTable = (props) => {
           disabled={isLoading}
           color='success'
         >
-          Consulta Masiva de Guías en SUNAT
+          Consulta Masiva de Facturas en SUNAT
           {isLoading && <CircularProgress sx={{ml: 2}} size={24} />}
         </Button>
       </ButtonGroup>

@@ -20,9 +20,13 @@ import {
   Divider,
   Typography,
   IconButton,
+  Collapse,
+  Alert,
 } from '@mui/material';
 
 import {ClickAwayListener} from '@mui/base';
+import SearchIcon from '@mui/icons-material/Search';
+import CloseIcon from '@mui/icons-material/Close';
 import SaveAltOutlinedIcon from '@mui/icons-material/SaveAltOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
@@ -36,6 +40,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   GET_USER_DATA,
+  VALIDATE_SUNAT,
 } from '../../../shared/constants/ActionTypes';
 import {getUserData} from '../../../redux/actions/User';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -46,6 +51,7 @@ import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpp
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newProvider} from '../../../redux/actions/Providers';
+import {validateSUNAT} from '../../../redux/actions/General';
 
 /* const maxLength = 100000000000; //11 chars */
 const validationSchema = yup.object({
@@ -114,9 +120,15 @@ let newProviderPayload = {
   },
 };
 const NewProvider = () => {
+  let getValueField;
+  let changeValueField;
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [minTutorial, setMinTutorial] = React.useState(false);
+  const [showAlert, setShowAlert] = React.useState(false);
+  const [typeAlert, setTypeAlert] = React.useState('');
+  const [severityAlert, setSeverityAlert] = React.useState('warning');
+  const [messageAlert, setMessageAlert] = React.useState('');
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -128,6 +140,9 @@ const NewProvider = () => {
   const toNewProvider = (payload) => {
     dispatch(newProvider(payload));
   };
+  const toValidateSunat = (payload) => {
+    dispatch(validateSUNAT(payload));
+  };
   //GET_VALUES_APIS
   const {newProviderRes} = useSelector(({providers}) => providers);
   console.log('newProviderRes', newProviderRes);
@@ -137,8 +152,10 @@ const NewProvider = () => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const {validateSunatRes} = useSelector(({general}) => general,);
+  console.log('validateSunatRes', validateSunatRes);
   useEffect(() => {
+    dispatch({type: VALIDATE_SUNAT, payload: undefined});
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
 
@@ -168,6 +185,38 @@ const NewProvider = () => {
     }
   }, [userDataRes]);
 
+  useEffect(() => {
+    if (validateSunatRes && getValueField) {
+      if (validateSunatRes.message) {
+        setShowAlert(true);
+        setTypeAlert('validateSUNAT');
+        setMessageAlert(validateSunatRes.message);
+      } else {
+        if (objSelects['documentType'] == 'DNI') {
+          changeValueField('givenName', validateSunatRes.nombres);
+          changeValueField('lastName', validateSunatRes.apellidoPaterno);
+          changeValueField('secondLastName', validateSunatRes.apellidoMaterno);
+          let completeName = `${validateSunatRes.nombres} ${validateSunatRes.apellidoPaterno} ${validateSunatRes.apellidoMaterno}`;
+          changeValueField('name', completeName);
+          setShowAlert(false);
+        } else if (objSelects['documentType'] == 'RUC') {
+          changeValueField('name', validateSunatRes.razonSocial);
+          changeValueField('addressClient', validateSunatRes.direccion);
+          setShowAlert(true);
+          setTypeAlert('validateSUNAT');
+          if (
+            validateSunatRes.condicion == 'HABIDO' &&
+            validateSunatRes.estado == 'ACTIVO'
+          ) {
+            setSeverityAlert('success');
+          }
+          setMessageAlert(
+            `Condición: ${validateSunatRes.condicion}, Estado: ${validateSunatRes.estado}`,
+          );
+        }
+      }
+    }
+  }, [validateSunatRes]);
   const cancel = () => {
     setOpen(true);
   };
@@ -278,7 +327,9 @@ const NewProvider = () => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps}) => {
+            getValueField = getFieldProps;
+            changeValueField = setFieldValue;
             return (
               <Form
                 style={{textAlign: 'left', justifyContent: 'center'}}
@@ -327,6 +378,24 @@ const NewProvider = () => {
                       label='Número Identificador *'
                       name='nroDocument'
                       variant='outlined'
+                      InputProps={{
+                        endAdornment: (
+                          <IconButton
+                            onClick={() => {
+                              console.log(
+                                'nroDocument',
+                                getValueField('nroDocument').value,
+                              );
+                              toValidateSunat({
+                                type: objSelects['documentType'].toLowerCase(),
+                                nro: getValueField('nroDocument').value,
+                              });
+                            }}
+                          >
+                            <SearchIcon />
+                          </IconButton>
+                        ),
+                      }}
                       sx={{
                         width: '100%',
                         '& .MuiInputBase-input': {
@@ -337,6 +406,26 @@ const NewProvider = () => {
                       }}
                     />
                   </Grid>
+                  <Collapse in={showAlert}>
+                    <Alert
+                      severity='info'
+                      action={
+                        <IconButton
+                          aria-label='close'
+                          color='inherit'
+                          size='small'
+                          onClick={() => {
+                            setShowAlert(false);
+                          }}
+                        >
+                          <CloseIcon fontSize='inherit' />
+                        </IconButton>
+                      }
+                      sx={{mb: 2}}
+                    >
+                      {typeAlert == 'validateSUNAT' ? messageAlert : null}
+                    </Alert>
+                  </Collapse>
                   <Grid item xs={12} sm={12}>
                     <AppUpperCaseTextField
                       label='Nombre / Razón Social *'

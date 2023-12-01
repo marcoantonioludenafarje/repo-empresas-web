@@ -191,6 +191,7 @@ const CreditNotesTable = (props) => {
   };
 
   const handleNextPage = (event) => {
+    setLoading(true)
     //console.log('Llamando al  handleNextPage', handleNextPage);
     let listPayload = {
       request: {
@@ -233,6 +234,11 @@ const CreditNotesTable = (props) => {
   let exchangeRate;
 
   useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, [noteItems_pageListNote]);
+  useEffect(() => {
     //dispatch({type: GET_NOTE_PAGE_LISTGUIDE, payload: {callType: 'firstTime'}});
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -254,6 +260,7 @@ const CreditNotesTable = (props) => {
   }, []);
   useEffect(() => {
     if (userDataRes) {
+      setLoading(true)
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_MOVEMENTS, payload: undefined});
@@ -357,6 +364,7 @@ const CreditNotesTable = (props) => {
     }
   };
   const filterData = (dataFilters) => {
+    setLoading(true)
     console.log('dataFilters', dataFilters);
     let listPayload = {
       request: {
@@ -393,6 +401,7 @@ const CreditNotesTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    setLoading(true)
     let listPayload = {
       request: {
         payload: {
@@ -578,6 +587,7 @@ const CreditNotesTable = (props) => {
   };
 
   const cancelCreditNote = (reason) => {
+    setLoading(true)
     console.log('Razón', reason);
     cancelInvoicePayload.request.payload.reason = reason;
     cancelInvoicePayload.request.payload.serial =
@@ -829,6 +839,12 @@ const CreditNotesTable = (props) => {
             )}
           </TableBody>
         </Table>
+        { loading ? (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        ): null}
+        { successMessage && !loading && noteItems_pageListNote && noteItems_pageListNote.length == 0 ? (
+        <span>{`No se han encontrado resultados`}</span>
+        ) : null}
         {noteLastEvalutedKey_pageListNote ? (
           <Stack spacing={2}>
             <IconButton onClick={() => handleNextPage()} size='small'>
