@@ -166,6 +166,7 @@ const ContableMovements = (props) => {
   const [downloadExcelSummary, setDownloadExcelSummary] = React.useState(false);
   const [lastPayload, setLastPayload] = React.useState('');
   const [resultState, setResultState] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const [selectedFinance, setSelectedFinance] = React.useState('');
   const currentDate = new Date(); // Obtenemos la fecha actual
@@ -259,7 +260,11 @@ const ContableMovements = (props) => {
   const toGetExcelMovementsSummary = (payload) => {
     dispatch(exportExcelMovementsSummary(payload));
   };
-
+  useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, [allFinancesRes]);
   useEffect(() => {
     if (exportExcelMovementsDetailsRes && downloadExcelDetails) {
       setDownloadExcelDetails(false);
@@ -320,6 +325,7 @@ const ContableMovements = (props) => {
   }, [allFinancesRes]);
   useEffect(() => {
     if (userDataRes) {
+      setLoading(true);
       let listFinancesPayload = {
         request: {
           payload: {
@@ -370,6 +376,7 @@ const ContableMovements = (props) => {
     }
   }, [userDataRes]);
   const handleNextPage = (event) => {
+    setLoading(true);
     //console.log('Llamando al  handleNextPage', handleNextPage);
     let listFinancesPayload = {
       request: {
@@ -433,6 +440,7 @@ const ContableMovements = (props) => {
     }
   };
   const searchFinances = () => {
+    setLoading(true);
     dispatch({type: GET_FINANCES, payload: []});
     let listFinancesPayload = {
       request: {
@@ -470,6 +478,7 @@ const ContableMovements = (props) => {
   };
 
   const searchFinancesInDebt = () => {
+    setLoading(true);
     let listFinancesPayload = {
       request: {
         payload: {
@@ -500,6 +509,7 @@ const ContableMovements = (props) => {
   };
 
   const sendStatus = () => {
+    setLoading(true);
     setOpenStatus(false);
     dispatch({type: GET_FINANCES, payload: []});
     let listFinancesPayload = {
@@ -871,6 +881,7 @@ const ContableMovements = (props) => {
     setDownloadExcelDetails(true);
   };
   const filterData = (dataFilters) => {
+    setLoading(true);
     let listFinancesPayload = {
       request: {
         payload: {
@@ -1436,6 +1447,12 @@ const ContableMovements = (props) => {
             </TableRow>
           </TableBody>
         </Table>
+        { loading ? (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        ): null}
+        { successMessage && !loading && allFinancesRes && allFinancesRes.length == 0 ? (
+        <span>{`No se han encontrado resultados`}</span>
+        ) : null}
         {financesLastEvaluatedKey_pageListFinances ? (
           <Stack spacing={2}>
             <IconButton onClick={() => handleNextPage()} size='small'>

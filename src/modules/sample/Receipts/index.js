@@ -209,6 +209,7 @@ const ReceiptsTable = (props) => {
     dispatch(registerTransaction(payload));
   };
   const handleNextPage = (event) => {
+    setLoading(true);
     //console.log('Llamando al  handleNextPage', handleNextPage);
     let listPayload = {
       request: {
@@ -331,6 +332,7 @@ const ReceiptsTable = (props) => {
     }
   };
   const filterData = (dataFilters) => {
+    setLoading(true);
     console.log('dataFilters', dataFilters);
     let listPayload = {
       request: {
@@ -373,6 +375,7 @@ const ReceiptsTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
+    setLoading(true);
     let listPayload = {
       request: {
         payload: {
@@ -422,6 +425,7 @@ const ReceiptsTable = (props) => {
 
   useEffect(() => {
     if (userDataRes) {
+      setLoading(true);
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_MOVEMENTS, payload: undefined});
@@ -756,6 +760,7 @@ const ReceiptsTable = (props) => {
     setOpenTransaction(false);
   };
   const cancelReceipt = (reason) => {
+    setLoading(true);
     console.log('Razón', reason);
     cancelReceiptPayload.request.payload.reason = reason;
     cancelReceiptPayload.request.payload.serial =
@@ -998,6 +1003,12 @@ const ReceiptsTable = (props) => {
             )}
           </TableBody>
         </Table>
+        { loading ? (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        ): null}
+        { successMessage && !loading && receiptItems_pageListReceipt && receiptItems_pageListReceipt.length == 0 ? (
+        <span>{`No se han encontrado resultados`}</span>
+        ) : null}
         {receiptLastEvalutedKey_pageListReceipt ? (
           <Stack spacing={2}>
             <IconButton onClick={() => handleNextPage()} size='small'>

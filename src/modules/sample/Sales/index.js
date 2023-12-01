@@ -245,6 +245,7 @@ const SalesTable = (props) => {
   const [finalTimeValue, setFinalTimeValue] = React.useState(Date.now());
   const [typeClient, setTypeClient] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [saleIgvDefault, setSaleIgvDefault] = React.useState(0);
   const [initialTime, setInitialTime] = React.useState(
     toEpoch(Date.now() - 2678400000),
@@ -318,9 +319,14 @@ const SalesTable = (props) => {
   console.log('products123', listProducts);
   const {getRolUserRes} = useSelector(({general}) => general);
   console.log('Esto es getRolUserRes', getRolUserRes);
-
+  useEffect(() => {
+    if (loading) {
+      setLoading(false);
+    }
+  }, [listSalesRes]);
   useEffect(() => {
     if (userDataRes && userDataRes.merchantSelected && getRolUserRes) {
+      setLoading(true);
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       let listPayload = {
@@ -375,6 +381,7 @@ const SalesTable = (props) => {
 
   useEffect(() => {
     if (generateSellTicketRes) {
+      setLoading(true);
       let listPayload = {
         request: {
           payload: {
@@ -425,6 +432,7 @@ const SalesTable = (props) => {
   console.log('Valores default peso', weight_unit, 'moneda', money_unit);
 
   const handleNextPage = (event) => {
+    setLoading(true);
     //console.log('Llamando al  handleNextPage', handleNextPage);
     let listPayload = {
       request: {
@@ -504,6 +512,7 @@ const SalesTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchSales = () => {
+    setLoading(true);
     let listPayload = {
       request: {
         payload: {
@@ -642,6 +651,7 @@ const SalesTable = (props) => {
   };
 
   const sendStatus = () => {
+    setLoading(true);
     let listPayload = {
       request: {
         payload: {
@@ -1268,6 +1278,7 @@ const SalesTable = (props) => {
     }
   };
   const filterData = (dataFilters) => {
+    setLoading(true);
     console.log('dataFilters', dataFilters);
     let listPayload = {
       request: {
@@ -1809,6 +1820,12 @@ const SalesTable = (props) => {
             )}
           </TableBody>
         </Table>
+        { loading ? (
+          <CircularProgress disableShrink sx={{m: '10px'}} />
+        ): null}
+        { successMessage && !loading && listSalesRes && listSalesRes.length == 0 ? (
+        <span>{`No se han encontrado resultados`}</span>
+        ) : null}
         {salesLastEvaluatedKey_pageListSales ? (
           <Stack spacing={2}>
             <IconButton onClick={() => handleNextPage()} size='small'>
