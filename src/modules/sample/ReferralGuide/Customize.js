@@ -567,7 +567,7 @@ const Customize = (props) => {
                         aria-label='left aligned'
                         disabled
                       >
-                        75%
+                       75% 
                       </ToggleButton>
                       <ToggleButton value='100' aria-label='centered'>
                         100%
@@ -575,7 +575,8 @@ const Customize = (props) => {
                       <ToggleButton value='150' aria-label='right aligned'>
                         150%
                       </ToggleButton>
-                      <ToggleButton value='180' aria-label='justified'>
+                      <ToggleButton value='180' aria-label='justified' disabled >
+                      
                         180%
                       </ToggleButton>
                     </ToggleButtonGroup>
