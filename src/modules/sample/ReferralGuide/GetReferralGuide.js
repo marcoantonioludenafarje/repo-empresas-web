@@ -1030,7 +1030,7 @@ const GetReferralGuide = (props) => {
         toGetMovements(listPayload);
         setShowForms(true);
       } else { */
-      Router.push('/sample/outputs/table');
+      Router.push('/sample/referral-guide/table');
       /* } */
     }
     setOpenDialog(false);
@@ -2617,7 +2617,7 @@ const GetReferralGuide = (props) => {
                 <Button
                   variant='outlined'
                   onClick={() => {
-                    Router.push('/sample/outputs/table');
+                    Router.push('/sample/referral-guide/table');
                   }}
                 >
                   Sí
