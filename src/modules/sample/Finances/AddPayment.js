@@ -10,6 +10,7 @@ import {
   FormControl,
   Grid,
   Tooltip,
+  Snackbar
 } from '@mui/material';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -19,7 +20,9 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import PropTypes from 'prop-types';
 import {useIntl} from 'react-intl';
-
+import MuiAlert from '@mui/material/Alert';
+const Alert2 = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;});
 const validationSchema = yup.object({
   description: yup
     .string()
@@ -50,6 +53,15 @@ const AddPayment = ({sendData}) => {
   const [paymentMethod, setPaymentMethod] = React.useState('cash');
   const [tooltip, setTooltip] = React.useState(false);
   const [counter, setCounter] = React.useState(0);
+  const [openAddedPayment, setOpenAddedPayment] = React.useState(false);
+
+  const handleCloseAddedPayment = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenAddedPayment(false);
+  };
 
   const defaultValues = {
     amount: null,
@@ -83,6 +95,7 @@ const AddPayment = ({sendData}) => {
     console.log('Data', data);
     console.log('newObj', newObj);
     sendData(newObj);
+    setOpenAddedPayment(true);
     setSubmitting(false);
   };
 
@@ -96,6 +109,7 @@ const AddPayment = ({sendData}) => {
   };
 
   return (
+    <>
     <Formik
       validateOnChange={true}
       validationSchema={validationSchema}
@@ -306,7 +320,18 @@ const AddPayment = ({sendData}) => {
           </>
         );
       }}
+  
     </Formik>
+    <Snackbar
+        open={openAddedPayment}
+        autoHideDuration={4000}
+        onClose={handleCloseAddedPayment}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+      >
+        <Alert2>Producto añadido correctamente!</Alert2>
+      </Snackbar>
+    </> 
+    
   );
 };
 

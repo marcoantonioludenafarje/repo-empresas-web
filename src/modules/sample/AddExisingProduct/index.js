@@ -13,10 +13,14 @@ import {
   Alert,
   DialogTitle,
   Typography,
+  Snackbar
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-
+import MuiAlert from '@mui/material/Alert';
+const Alert2 = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+});
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
@@ -84,8 +88,16 @@ const AddExistingProduct = ({sendData, type}) => {
   const [nameChanged, setNameChanged] = React.useState(false);
   const [basicUrl, setBasicUrl] = React.useState(null);
   const [typeAlert, setTypeAlert] = React.useState('faltaProduct');
+  const [openAddedProduct, setOpenAddedProduct] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleCloseAddedProduct = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenAddedProduct(false);
   };
 
   useEffect(() => {
@@ -180,6 +192,7 @@ const AddExistingProduct = ({sendData, type}) => {
         actualValues.priceProduct = '';
         actualValues.count = '';
         actualValues.subTotal = '';
+        setOpenAddedProduct(true);
       } else {
         console.log('Porfavor selecciona un producto');
         typeAlert = 'faltaProduct';
@@ -339,6 +352,14 @@ const AddExistingProduct = ({sendData, type}) => {
           );
         }}
       </Formik>
+      <Snackbar
+        open={openAddedProduct}
+        autoHideDuration={4000}
+        onClose={handleCloseAddedProduct}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+      >
+        <Alert2>Producto añadido correctamente!</Alert2>
+      </Snackbar>
       <Collapse in={showAlert}>
         <Alert
           severity='error'

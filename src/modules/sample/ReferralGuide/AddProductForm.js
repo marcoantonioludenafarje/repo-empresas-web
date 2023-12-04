@@ -25,11 +25,15 @@ import {
   Alert,
   DialogContentText,
   DialogTitle,
+  Snackbar
 } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
-
+import MuiAlert from '@mui/material/Alert';
+const Alert2 = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+});
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
@@ -155,11 +159,18 @@ const AddProductForm = ({sendData, type}) => {
   const [typeElement, setTypeElement] = React.useState('NIU');
   const [proSearch, setProSearch] = React.useState();
   const [nameChanged, setNameChanged] = React.useState(false);
+  const [openAddedProduct, setOpenAddedProduct] = React.useState(false);
   const handleClose = () => {
     /* selectedProduct = {}; */
     setOpen(false);
   };
+  const handleCloseAddedProduct = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
 
+    setOpenAddedProduct(false);
+  };
   const handleClickOpen = () => {
     setShowAlert(false);
     if (actualValues.productSearch != '') {
@@ -235,6 +246,7 @@ const AddProductForm = ({sendData, type}) => {
         actualValues.productSearch = '';
         actualValues.count = '';
         actualValues.subTotal = '';
+        setOpenAddedProduct(true);
       } else {
         console.log('Porfavor selecciona un producto');
         typeAlert = 'faltaProduct';
@@ -392,6 +404,14 @@ const AddProductForm = ({sendData, type}) => {
           );
         }}
       </Formik>
+      <Snackbar
+        open={openAddedProduct}
+        autoHideDuration={4000}
+        onClose={handleCloseAddedProduct}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+      >
+        <Alert2>Producto añadido correctamente!</Alert2>
+      </Snackbar>
       <Collapse in={showAlert}>
         <Alert
           severity='error'

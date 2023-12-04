@@ -27,12 +27,15 @@ import {
   DialogTitle,
   useTheme,
   useMediaQuery,
+  Snackbar
 } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
-
+import MuiAlert from '@mui/material/Alert';
+const Alert2 = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;});
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
@@ -84,6 +87,7 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
   const [open, setOpen] = React.useState(false);
   const [showAlert, setShowAlert] = React.useState(false);
   const [isRefGuide, setIsRefGuide] = React.useState(false);
+  const [openAddedDocument, setOpenAddedDocument] = React.useState(false);
   const [billType, setBillType] = React.useState(
     !acceptedType ? 'creditNote' : acceptedType[0],
   );
@@ -91,6 +95,14 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
   const handleClose = () => {
     setOpen(false);
   };
+  const handleCloseAddedDocument = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenAddedDocument(false);
+  };
+
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -142,6 +154,7 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
       issueDate: toSimpleDate(dateRegister),
       isSelected: true,
     });
+    setOpenAddedDocument(true);
     setSubmitting(false);
   };
 
@@ -296,6 +309,14 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
           );
         }}
       </Formik>
+      <Snackbar
+        open={openAddedDocument}
+        autoHideDuration={4000}
+        onClose={handleCloseAddedDocument}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+      >
+        <Alert2>Producto añadido correctamente!</Alert2>
+      </Snackbar>
       <Collapse in={showAlert}>
         <Alert
           severity='error'
