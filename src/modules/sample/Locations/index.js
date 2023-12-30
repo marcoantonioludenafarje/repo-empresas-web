@@ -450,7 +450,7 @@ const LocationTable = (arrayObjs, props) => {
     // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
   };
   const showMessage = () => {
-    if (successMessage != undefined) {
+    if (successMessage != undefined && !deleteLocationRes.error) {
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -465,7 +465,7 @@ const LocationTable = (arrayObjs, props) => {
           </DialogContentText>
         </>
       );
-    } else if (errorMessage) {
+    } else if (deleteLocationRes.error || errorMessage != undefined ) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -473,7 +473,7 @@ const LocationTable = (arrayObjs, props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha producido un error al eliminar.
+           {deleteLocationRes.error} {errorMessage}
           </DialogContentText>
         </>
       );
@@ -508,7 +508,12 @@ const LocationTable = (arrayObjs, props) => {
   };
 
   const confirmDelete = () => {
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
     deletePayload.request.payload.locationId = selectedLocation.locationId;
+    deletePayload.request.payload.locationName = selectedLocation.modularCode + "-" + selectedLocation.locationName;
+    deletePayload.request.payload.type = selectedLocation.type;
+    deletePayload.request.payload.merchantId = selectedLocation.merchantId;
     toDeleteLocation(deletePayload);
     setOpen2(false);
     setOpenStatus(true);
