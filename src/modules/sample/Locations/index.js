@@ -450,7 +450,7 @@ const LocationTable = (arrayObjs, props) => {
     // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
   };
   const showMessage = () => {
-    if (successMessage != undefined && !deleteLocationRes.error) {
+    if (successMessage != undefined && deleteLocationRes && (!deleteLocationRes.error)) {
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -465,7 +465,7 @@ const LocationTable = (arrayObjs, props) => {
           </DialogContentText>
         </>
       );
-    } else if (deleteLocationRes.error || errorMessage != undefined ) {
+    } else if (deleteLocationRes && deleteLocationRes.error || errorMessage != undefined ) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
