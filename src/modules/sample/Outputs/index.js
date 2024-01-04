@@ -1751,6 +1751,9 @@ const OutputsTable = (props) => {
               ) : null}
               <TableCell>Precio total con IGV</TableCell>
               {isNotMobile ? (
+              <TableCell>Observaciones</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Estado</TableCell>
               ) : null}
               {isNotMobile ? (
@@ -1966,6 +1969,9 @@ const OutputsTable = (props) => {
                           ? `${moneySymbol} ${obj.totalPriceWithIgv.toFixed(3)}`
                           : ''}
                       </TableCell>
+                      {isNotMobile ? (
+                      <TableCell>{obj.observation}</TableCell>
+                      ) : null}
                       {isNotMobile ? (
                       <TableCell>{showStatus(obj.status)}</TableCell>
                       ) : null}

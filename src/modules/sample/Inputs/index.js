@@ -1066,6 +1066,9 @@ const InputsTable = (props) => {
               <TableCell>Porcentaje IGV</TableCell>
               ) : null}
               {isNotMobile ? (
+              <TableCell>Observaciones</TableCell>
+              ) : null}
+              {isNotMobile ? (
               <TableCell>Estado</TableCell>
               ) : null}
               {isNotMobile ? (
@@ -1193,6 +1196,9 @@ const InputsTable = (props) => {
                         </TableCell>
                         {isNotMobile ? (
                         <TableCell>{showIgv(obj.igv)}</TableCell>
+                        ) : null}
+                        {isNotMobile ? (
+                        <TableCell>{obj.observation}</TableCell>
                         ) : null}
                         {isNotMobile ? (
                         <TableCell>{showStatus(obj.status)}</TableCell>
