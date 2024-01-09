@@ -181,6 +181,7 @@ const AddExistingProduct = ({sendData, type}) => {
           customCodeProduct: selectedProduct.customCodeProduct
             ? selectedProduct.customCodeProduct
             : '',
+          locations: selectedProduct.locations || null,
           count: Number(data.count),
           priceProduct: Number(data.priceProduct),
           subtotal: Number(
