@@ -77,6 +77,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 
 import {ClickAwayListener} from '@mui/base';
+import { getLocations } from 'redux/actions';
 const useStyles = makeStyles((theme) => ({
   container: {
     textAlign: 'center',
@@ -179,17 +180,10 @@ const NewInput = (props) => {
   const toGetMovements = (payload) => {
     dispatch(getInputItems_pageListInput(payload));
   };
+  const toGetStartingLocations = (payload) => {
+    dispatch(getLocations(payload));
+  };
 
-  useEffect(() => {
-    dispatch({type: RES_ADD_MOVEMENT, payload: []});
-    getBusinessParameter(businessParameterPayload);
-    getGlobalParameter(globalParameterPayload);
-    selectedProducts = [];
-    selectedProvider = {};
-    listDocuments = [];
-    typeAlert = '';
-    total = 0;
-  }, []);
 
   //VARIABLES DE PARAMETROS
   let weight_unit;
@@ -214,6 +208,8 @@ const NewInput = (props) => {
   const [status, setStatus] = React.useState('requested');
   const [guide, setGuide] = React.useState(false);
   const [percentageIgv, setPercentageIgv] = React.useState(null);
+  const [selectedStartingLocation, setSelectedStartingLocation] = React.useState({});
+  const [selectedStartingLocationId, setSelectedStartingLocationId] = React.useState('');
   const [typeDocument, settypeDocument] = React.useState('buys');
   const [exchangeRate, setExchangeRate] = React.useState('');
   const [hasBill, setHasBill] = React.useState([]);
@@ -254,13 +250,53 @@ const NewInput = (props) => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {jwtToken} = useSelector(({general}) => general);
+  const {getLocationsRes} = useSelector(({locations}) => locations);
 
-  //SETEANDO PARAMETROS
-  if (businessParameter != undefined) {
-    weight_unit = businessParameter.find(
-      (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
-    ).value;
-  }
+  console.log('Quiero usar jwtToken', jwtToken);
+  
+  let businessParameterPayload = {
+    request: {
+      payload: {
+        abreParametro: null,
+        codTipoparametro: null,
+        merchantId: userDataRes.merchantSelected.merchantId,
+      },
+    },
+  };
+  let globalParameterPayload = {
+    request: {
+      payload: {
+        abreParametro: null,
+        codTipoparametro: null,
+        country: 'peru',
+      },
+    },
+  };
+  useEffect(() => {
+    dispatch({type: RES_ADD_MOVEMENT, payload: []});
+    toGetStartingLocations({
+      request: {
+        payload: {
+          locationName: '',
+          ubigeo: '',
+          merchantId: '',
+          modularCode: '',
+          LastEvaluatedKey: null,
+          needItems: true,
+          type: 'PUNTO PARTIDA',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    })
+    getBusinessParameter(businessParameterPayload);
+    getGlobalParameter(globalParameterPayload);
+    selectedProducts = [];
+    selectedProvider = {};
+    listDocuments = [];
+    typeAlert = '';
+    total = 0;
+  }, []);
   useEffect(() => {
     if (businessParameter != undefined) {
       let obtainedMoneyUnit = businessParameter.find(
@@ -321,7 +357,27 @@ const NewInput = (props) => {
       setMinTutorial(true);
     }, 2000);
   }, [exchangeRate]);
-
+  useEffect(() => {
+    console.log(
+      'Este es el getLocationRes',
+      getLocationsRes,
+    );
+    if (
+      getLocationsRes &&
+      getLocationsRes.length > 0 &&
+      !selectedStartingLocation.locationId
+    ) {
+      const initialLocation = getLocationsRes[0];
+      setSelectedStartingLocationId(initialLocation.locationId);
+      setSelectedStartingLocation(initialLocation);
+    }
+  }, [getLocationsRes]);
+  //SETEANDO PARAMETROS
+  if (businessParameter != undefined) {
+    weight_unit = businessParameter.find(
+      (obj) => obj.abreParametro == 'DEFAULT_WEIGHT_UNIT',
+    ).value;
+  }
   const defaultValues = {
     documentIntern: '',
     serie: '',
@@ -343,35 +399,6 @@ const NewInput = (props) => {
     initialDate: '',
     money_unit: moneyToConvert,
   };
-  let businessParameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
-  let globalParameterPayload = {
-    request: {
-      payload: {
-        abreParametro: null,
-        codTipoparametro: null,
-        country: 'peru',
-      },
-    },
-  };
-  let listPayload = {
-    request: {
-      payload: {
-        initialTime: null,
-        finalTime: null,
-        businessProductCode: null,
-        movementType: 'INPUT',
-        merchantId: userDataRes.merchantSelected.merchantId,
-      },
-    },
-  };
 
   console.log('Valores default peso', weight_unit, 'moneda', moneyUnit);
 
@@ -387,7 +414,15 @@ const NewInput = (props) => {
     setTypeDialog(type);
     setShowAlert(false);
   };
+  const selectStartingLocation = (event) => {
+    console.log('Id Location', event.target.value);
+    const selectedLocation = getLocationsRes.find(
+      (obj) => obj.locationId == event.target.value,
+    );
 
+    setSelectedStartingLocationId(event.target.value);
+    setSelectedStartingLocation(selectedLocation);
+  };
   const getNewProduct = (product) => {
     console.log('nuevo producto1', product);
     if (selectedProducts && selectedProducts.length >= 1) {
@@ -534,6 +569,7 @@ const NewInput = (props) => {
                 isGeneratedByTunexo: generateBill,
                 status: status,
                 movementSubType: typeDocument,
+                startingLocation: selectedStartingLocation,
                 documentsMovement: cleanDocuments,
                 editTotal: editTotal,
                 observation: getValueField('inputObservation').value, //data.inputObservation,
@@ -548,6 +584,7 @@ const NewInput = (props) => {
                   businessProductCode: obj.businessProductCode,
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
+                  locations: obj.locations,
                 };
               }),
             },
@@ -557,7 +594,7 @@ const NewInput = (props) => {
         /*dispatch({type: FETCH_SUCCESS, payload: undefined});
           dispatch({type: FETCH_ERROR, payload: undefined});
           dispatch({type: ADD_MOVEMENT, payload: []});*/
-        getAddMovement(finalPayload);
+        //getAddMovement(finalPayload);
         console.log('Data formulario principal', finalPayload);
         /*selectedProducts = [];
           selectedProvider = {};
@@ -1032,7 +1069,36 @@ const NewInput = (props) => {
                     </Typography>
                   </Grid>
                 </Grid>
-
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{ maxWidth: 500, width: 'auto', margin: 'auto' }}>
+                  <FormControl fullWidth sx={{ my: 2 }}>
+                    <InputLabel id='startingLocation-label' style={{ fontWeight: 200 }}>
+                      <IntlMessages id='common.startingLocation' />
+                    </InputLabel>
+                    <Select
+                      name='startingLocation'
+                      labelId='route-label'
+                      label={<IntlMessages id='common.startingLocation' />}
+                      onChange={(event) => selectStartingLocation(event)}
+                      value={selectedStartingLocationId}
+                      MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
+                    >
+                      {getLocationsRes.map((location, index) => {
+                            return (
+                              <MenuItem
+                                value={location.locationId}
+                                key={index}
+                                style={{ fontWeight: 200 }}
+                              >
+                                {location.locationName}
+                              </MenuItem>
+                            );
+                          })}
+                    </Select>
+                  </FormControl>
+                </Grid>
                 <Divider sx={{m: 2}} />
                 {/* <Grid item xs={6} sm={6}> */}
 
