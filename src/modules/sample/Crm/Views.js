@@ -40,7 +40,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import BlockSharpIcon from '@mui/icons-material/BlockSharp';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import {getCampaigns, deleteCampaigns} from '../../../redux/actions/Campaign';
+import {getCampaigns2, deleteCampaigns} from '../../../redux/actions/Campaign';
 import {convertToDate} from '../../../Utils/utils';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -96,7 +96,7 @@ export default function Views(props) {
   let popUp = false;
 
   const getCampaign = (payload) => {
-    dispatch(getCampaigns(payload));
+    dispatch(getCampaigns2(payload));
   };
 
   const deleteCampaign = (payload) => {
@@ -136,6 +136,7 @@ export default function Views(props) {
             LastEvaluatedKey: null,
           },
         },
+        merchantId: userDataRes.merchantSelected.merchantId,
       };
       getCampaign(listPayload);
       // setFirstload(true);

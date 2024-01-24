@@ -60,7 +60,7 @@ import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 import Router, {useRouter} from 'next/router';
 import {useDispatch, useSelector} from 'react-redux';
 import {newClient, onGetClients} from '../../../redux/actions/Clients';
-import {newCampaign, generateVariations} from '../../../redux/actions/Campaign';
+import {newCampaign2, generateVariations} from '../../../redux/actions/Campaign';
 import {getAgents} from '../../../redux/actions/Agent';
 import {
   createPresigned,
@@ -210,7 +210,7 @@ const Create = (props) => {
   };
 
   const createCampaign = (payload) => {
-    dispatch(newCampaign(payload));
+    dispatch(newCampaign2(payload));
   };
   const toCreatePresigned = (payload, file) => {
     dispatch(createPresigned(payload, file));
@@ -460,6 +460,7 @@ const Create = (props) => {
       // Show success message
       dispatch({type: RESET_CAMPAIGNS}); //Esto de aquí está para que cuándo quiero conseguir el nuevo successMessage borré el clientes y obtenga el campañaas
       console.log('newCampaignPayload', payload);
+      payload.merchantId = userDataRes.merchantSelected.merchantId
       createCampaign(payload);
       // Reset form
       toSubmitting(false);
