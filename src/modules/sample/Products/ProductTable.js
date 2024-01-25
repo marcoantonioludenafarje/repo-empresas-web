@@ -723,7 +723,18 @@ const ProductTable = (arrayObjs, props) => {
     if (type == 'endProduct') return 'Producto terminado';
     if (type == 'service') return 'Servicio';
   };
-
+  const showLocations = (locations) => {
+    let locationsText = "";
+    if (locations) {
+      locations.forEach((obj, index) => {
+        locationsText += obj.locationName.split("-")[0]
+        if ((index + 1) !== locations.length) {
+          locationsText += " , "
+        }
+      })
+    }
+    return locationsText
+  };
   const goToMovementsDetail = (product) => {
     console.log('|', product);
     Router.push({
@@ -877,11 +888,11 @@ const ProductTable = (arrayObjs, props) => {
               {isNotMobile ? (
               <TableCell>
                 <TableSortLabel
-                  active={orderBy === 'initialStock'}
-                  direction={orderBy === 'initialStock' ? order : 'asc'}
-                  onClick={() => handleSort('initialStock', 'number')}
+                  active={orderBy === 'warehouse'}
+                  direction={orderBy === 'warehouse' ? order : 'asc'}
+                  onClick={() => handleSort('warehouse')}
                 >
-                  Stock inicial
+                  Almacenes
                 </TableSortLabel>
               </TableCell>
               ) : null}
@@ -966,7 +977,7 @@ const ProductTable = (arrayObjs, props) => {
                         3,
                       )} ${money_unit}`}</TableCell>
                       {isNotMobile ? (
-                      <TableCell>{obj.initialStock}</TableCell>
+                      <TableCell>{showLocations(obj.locations)}</TableCell>
                       ) : null}
                       {isNotMobile ? (
                       <TableCell>

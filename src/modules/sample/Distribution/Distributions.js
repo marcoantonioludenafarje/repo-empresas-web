@@ -610,6 +610,7 @@ const FinancesTable = (props) => {
               <TableCell>Fecha de creación</TableCell>
               <TableCell>Nombre de ruta</TableCell>
               <TableCell>Cant.Puntos</TableCell>
+              <TableCell>Guías</TableCell>
               <TableCell>Razón para transferir</TableCell>
               <TableCell>Observación</TableCell>
               {/* <TableCell>Entregas</TableCell> */}
@@ -629,6 +630,7 @@ const FinancesTable = (props) => {
                       <TableCell>{justDate(obj.createdAt)}</TableCell>
                       <TableCell>{obj.routeName}</TableCell>
                       <TableCell>{obj.cantDeliveries}</TableCell>
+                      <TableCell>{obj.serialNumberRange ? `${ obj.serialNumberRange[0]} al ${obj.serialNumberRange[1]}` : ""}</TableCell>
                       <TableCell>
                         {showSubtypeMovement(obj.reasonForTransfer)}
                       </TableCell>

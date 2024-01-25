@@ -24,9 +24,14 @@ import {
   CircularProgress,
   useMediaQuery,
   useTheme,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogActions,
+  Badge,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
-
+import WarehouseIcon from '@mui/icons-material/Warehouse';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -110,6 +115,7 @@ const InventoryTable = (props) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const [openWarehouse, setOpenWarehouse] = React.useState(false);
   const [fast, setFast] = React.useState({});
 
   //API FUNCTIONS
@@ -198,6 +204,15 @@ const InventoryTable = (props) => {
     setAnchorEl(event.currentTarget);
     codProdSelected = codClient;
     selectedProduct = getInventoryProductsRes[codClient];
+    console.log('selectedProduct', selectedProduct);
+    setFast(selectedProduct);
+  };
+  const handleWarehouseClick = (product, event) => {
+    console.log('evento', event);
+    console.log('index del map', product);
+    setOpenWarehouse(true);
+    codProdSelected = product;
+    selectedProduct = getInventoryProductsRes[product];
     console.log('selectedProduct', selectedProduct);
     setFast(selectedProduct);
   };
@@ -357,9 +372,8 @@ const InventoryTable = (props) => {
             <TableRow>
               <TableCell>Código</TableCell>
               <TableCell>Descripción</TableCell>
-              <TableCell>Nro entradas</TableCell>
-              <TableCell>Nro salidas</TableCell>
               <TableCell>Stock</TableCell>
+              <TableCell>Entradas/Salidas</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
@@ -376,9 +390,27 @@ const InventoryTable = (props) => {
                     {obj.businessProductCode || obj.product}
                   </TableCell>
                   <TableCell>{obj.description}</TableCell>
-                  <TableCell>{obj.numInputs}</TableCell>
-                  <TableCell>{obj.numOutputs}</TableCell>
-                  <TableCell>{obj.stock}</TableCell>
+                  <TableCell>
+                    <Badge 
+                      badgeContent={obj.stock} 
+                      color="primary" 
+                      anchorOrigin={{
+                        vertical: 'left',
+                        horizontal: 'right',
+                      }}
+                    >
+                      <Button
+                        id='basic-button'
+                        aria-controls={openWarehouse ? true : undefined}
+                        aria-haspopup='true'
+                        aria-expanded={openWarehouse ? true : undefined}
+                        onClick={handleWarehouseClick.bind(this, index)}
+                      >
+                        <WarehouseIcon />
+                      </Button>
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{`${obj.numOutputs} / ${obj.numInputs}`}</TableCell>
                   <TableCell>
                     <Button
                       id='basic-button'
@@ -429,6 +461,52 @@ const InventoryTable = (props) => {
           </MenuItem>
         ) : null}
       </Menu>
+      <Dialog
+          open={openWarehouse}
+          onClose={()=>setOpenWarehouse(false)}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {fast.description}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            <TableContainer component={Paper} sx={{maxHeight: 440}}>
+              <Table sx={{minWidth: 650}} stickyHeader aria-label='simple table'>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Código</TableCell>
+                    <TableCell>Nombre</TableCell>
+                    <TableCell>Cantidad</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {fast.locations &&
+                  Array.isArray(fast.locations) ? (
+                    fast.locations.map((obj, index) => (
+                      <TableRow
+                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                        key={obj.locationName}
+                      >
+                        <TableCell>
+                          {obj.locationName.split("-")[0]}
+                        </TableCell>
+                        <TableCell>{obj.locationName.split("-")[1]}</TableCell>
+                        <TableCell>{obj.stock}</TableCell>
+                      </TableRow>
+                    ))
+                  ) : null}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button variant='outlined' onClick={()=>setOpenWarehouse(false)}>
+              Aceptar
+            </Button>
+          </DialogActions>
+        </Dialog>
     </Card>
   );
 };
