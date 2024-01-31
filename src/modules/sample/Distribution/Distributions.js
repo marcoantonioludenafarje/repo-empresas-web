@@ -49,6 +49,7 @@ import PendingIcon from '@mui/icons-material/Pending';
 import {red, amber} from '@mui/material/colors';
 import {getUserData} from '../../../redux/actions/User';
 import CachedIcon from '@mui/icons-material/Cached';
+import ExcelIcon from '../../../assets/icon/excel.svg';
 
 import {
   FETCH_SUCCESS,
@@ -56,12 +57,15 @@ import {
   LIST_ROUTE,
   GET_USER_DATA,
   ROUTE_TO_REFERRAL_GUIDE,
+  GENERATE_EXCEL_SUMMARY_ROUTES,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {
   listDistributions,
   getDistribution,
   getOneDistribution,
+  exportExcelSummaryRoutes,
+  excelSummaryRoutesRes,
 } from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -163,6 +167,10 @@ const FinancesTable = (props) => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
+  const {excelSummaryRoutesRes} = useSelector(({movements}) => movements);
+  console.log('excelSummaryRoutesRes', excelSummaryRoutesRes);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
+
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
@@ -174,6 +182,10 @@ const FinancesTable = (props) => {
   //APIS
   const toListDistributions = (payload) => {
     dispatch(listDistributions(payload));
+  };
+
+  const toExportExcelSummaryRoutes = (payload) => {
+    dispatch(exportExcelSummaryRoutes(payload));
   };
 
   useEffect(() => {
@@ -590,6 +602,50 @@ const FinancesTable = (props) => {
       query: {},
     });
   };
+
+  useEffect(() => {
+    if (excelSummaryRoutesRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelSummaryRoutesRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'SummaryRoutes.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelSummaryRoutesRes, downloadExcel]);
+  const exportToExcel = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          deliveryDistributionId: distributionSelected,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({
+      type: GENERATE_EXCEL_SUMMARY_ROUTES,
+      payload: undefined,
+    });
+    toExportExcelSummaryRoutes(excelPayload);
+    setDownloadExcel(true);
+  };
+
   // useEffect(() => {
   //   if (open && listDistribution &&
   //     listDistribution.length > 0 &&
@@ -1080,17 +1136,34 @@ const FinancesTable = (props) => {
             </FormControl>
 
             <TextField
-              label='Nombre de Agrupador'
+              label='Nombre Agrupador'
               value={nombreAgrupador}
               onChange={(e) => setNombreAgrupador(e.target.value)}
               variant='outlined'
             />
             <TextField
-              label='Cantidad de Agrupación'
+              label='Cantidad Agrupación'
               value={cantidadAgrupacion}
               onChange={(e) => setCantidadAgrupacion(e.target.value)}
               variant='outlined'
             />
+            <IconButton
+              sx={{
+                mt: 1,
+                '& svg': {
+                  height: 35,
+                  width: 35,
+                },
+                color: 'text.secondary',
+              }}
+              edge='end'
+              color='inherit'
+              aria-label='open drawer'
+              onClick={exportToExcel}
+            >
+              <ExcelIcon />
+            </IconButton>
+            
           </Stack>
 
           <IconButton
