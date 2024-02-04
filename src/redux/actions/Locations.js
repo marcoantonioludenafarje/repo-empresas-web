@@ -41,6 +41,13 @@ export const getLocations = (payload, jwtToken) => {
       });
   };
 };
+
+
+
+
+
+
+
 export const newLocation = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
