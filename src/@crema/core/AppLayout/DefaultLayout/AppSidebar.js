@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Drawer from '@mui/material/Drawer';
 import Hidden from '@mui/material/Hidden';
 import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
 import clsx from 'clsx';
 import {toggleNavCollapsed} from '../../../../redux/actions';
 import {useDispatch, useSelector} from 'react-redux';
@@ -20,6 +21,21 @@ const AppSidebar = (props) => {
 
   const {sidebarTextColor} = useSidebarContext();
   const {userDataRes} = useSelector(({user}) => user);
+  const [listWarehouse, setListWarehouse] = React.useState("");
+
+  useEffect(() => {
+    if (userDataRes && userDataRes.locations && userDataRes.locations.length > 0) {
+      let listW = "";
+      userDataRes.locations.forEach((element, index) => {
+        if((index+1) == userDataRes.locations.length){
+          listW = listW + element
+        } else {
+          listW = listW + element + " | "
+        }
+      });
+      setListWarehouse(listW);
+    }
+  }, [userDataRes]);
 
   const handleToggleDrawer = () => {
     dispatch(toggleNavCollapsed());
@@ -39,10 +55,17 @@ const AppSidebar = (props) => {
         >
           <MainSidebar>
             <UserInfo color={sidebarTextColor} />
-            <Box>
-              {userDataRes ? "Almacenes: "
-              : null}
-            </Box>
+            <Tooltip title={`Almacenes: ${listWarehouse}`}>
+              <Box sx={{
+                pl: 3,
+                pr: 3,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}>
+                {`Almacenes: ${listWarehouse}`}
+              </Box>
+            </Tooltip>
             <AppScrollbar
               sx={{
                 py: 2,
@@ -59,9 +82,17 @@ const AppSidebar = (props) => {
       <Hidden lgDown>
         <MainSidebar>
           <UserInfo color={sidebarTextColor} />
-          <Box>
-            Almacenes: OF_001 | ALM_001
-          </Box>
+          <Tooltip title={`Almacenes: ${listWarehouse}`}>
+            <Box sx={{
+              pl: 3,
+              pr: 3,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis', // Ajusta este valor según tus necesidades
+            }}>
+              {`Almacenes: ${listWarehouse}`}
+            </Box>
+          </Tooltip>
           <AppScrollbar
             className={clsx({
               'has-footer-fixed': footer && footerType === 'fixed',

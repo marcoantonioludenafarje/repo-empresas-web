@@ -1072,6 +1072,7 @@ const NewInput = (props) => {
                       onChange={(event) => selectStartingLocation(event)}
                       value={selectedStartingLocationId}
                       MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
+                      disabled={selectedProducts && selectedProducts.length > 0}
                     >
                       {getStartingLocationsRes.map((location, index) => {
                         if(!(userDataRes.locations) || !(userDataRes.locations.length > 0) || userDataRes.locations.includes(location.modularCode)){
