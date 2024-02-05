@@ -128,6 +128,7 @@ const InventoryTable = (props) => {
   console.log('getInventoryProductsRes', getInventoryProductsRes);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
 
   useEffect(() => {
     if (!userDataRes) {
@@ -484,18 +485,21 @@ const InventoryTable = (props) => {
                 <TableBody>
                   {fast.locations &&
                   Array.isArray(fast.locations) ? (
-                    fast.locations.map((obj, index) => (
-                      <TableRow
-                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                        key={obj.locationName}
-                      >
-                        <TableCell>
-                          {obj.locationName.split("-")[0]}
-                        </TableCell>
-                        <TableCell>{obj.locationName.split("-")[1]}</TableCell>
-                        <TableCell>{obj.stock}</TableCell>
-                      </TableRow>
-                    ))
+                    fast.locations.map((obj, index) => {
+                      const locationName = getStartingLocationsRes.find(objL => objL.modularCode == obj.modularCode).locationName
+                      return (
+                        <TableRow
+                          sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                          key={obj.modularCode}
+                        >
+                          <TableCell>
+                            {obj.modularCode.split("-")[0]}
+                          </TableCell>
+                          <TableCell>{locationName}</TableCell>
+                          <TableCell>{obj.stock}</TableCell>
+                        </TableRow>
+                      )
+                    })
                   ) : null}
                 </TableBody>
               </Table>

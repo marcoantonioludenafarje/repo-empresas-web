@@ -1,6 +1,7 @@
 import React from 'react';
 import Drawer from '@mui/material/Drawer';
 import Hidden from '@mui/material/Hidden';
+import Box from '@mui/material/Box';
 import clsx from 'clsx';
 import {toggleNavCollapsed} from '../../../../redux/actions';
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,6 +19,7 @@ const AppSidebar = (props) => {
   const {footer, footerType} = useLayoutContext();
 
   const {sidebarTextColor} = useSidebarContext();
+  const {userDataRes} = useSelector(({user}) => user);
 
   const handleToggleDrawer = () => {
     dispatch(toggleNavCollapsed());
@@ -37,6 +39,10 @@ const AppSidebar = (props) => {
         >
           <MainSidebar>
             <UserInfo color={sidebarTextColor} />
+            <Box>
+              {userDataRes ? "Almacenes: "
+              : null}
+            </Box>
             <AppScrollbar
               sx={{
                 py: 2,
@@ -53,6 +59,9 @@ const AppSidebar = (props) => {
       <Hidden lgDown>
         <MainSidebar>
           <UserInfo color={sidebarTextColor} />
+          <Box>
+            Almacenes: OF_001 | ALM_001
+          </Box>
           <AppScrollbar
             className={clsx({
               'has-footer-fixed': footer && footerType === 'fixed',

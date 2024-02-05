@@ -251,7 +251,7 @@ const NewInput = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   const {jwtToken} = useSelector(({general}) => general);
-  const {getLocationsRes} = useSelector(({locations}) => locations);
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
 
   console.log('Quiero usar jwtToken', jwtToken);
   
@@ -275,20 +275,6 @@ const NewInput = (props) => {
   };
   useEffect(() => {
     dispatch({type: RES_ADD_MOVEMENT, payload: []});
-    toGetStartingLocations({
-      request: {
-        payload: {
-          locationName: '',
-          ubigeo: '',
-          merchantId: '',
-          modularCode: '',
-          LastEvaluatedKey: null,
-          needItems: true,
-          type: 'PUNTO PARTIDA',
-          merchantId: userDataRes.merchantSelected.merchantId,
-        },
-      },
-    })
     getBusinessParameter(businessParameterPayload);
     getGlobalParameter(globalParameterPayload);
     selectedProducts = [];
@@ -360,18 +346,18 @@ const NewInput = (props) => {
   useEffect(() => {
     console.log(
       'Este es el getLocationRes',
-      getLocationsRes,
+      getStartingLocationsRes,
     );
     if (
-      getLocationsRes &&
-      getLocationsRes.length > 0 &&
+      getStartingLocationsRes &&
+      getStartingLocationsRes.length > 0 &&
       !selectedStartingLocation.locationId
     ) {
-      const initialLocation = getLocationsRes[0];
+      const initialLocation = getStartingLocationsRes[0];
       setSelectedStartingLocationId(initialLocation.locationId);
       setSelectedStartingLocation(initialLocation);
     }
-  }, [getLocationsRes]);
+  }, [getStartingLocationsRes]);
   //SETEANDO PARAMETROS
   if (businessParameter != undefined) {
     weight_unit = businessParameter.find(
@@ -416,7 +402,7 @@ const NewInput = (props) => {
   };
   const selectStartingLocation = (event) => {
     console.log('Id Location', event.target.value);
-    const selectedLocation = getLocationsRes.find(
+    const selectedLocation = getStartingLocationsRes.find(
       (obj) => obj.locationId == event.target.value,
     );
 
@@ -585,6 +571,8 @@ const NewInput = (props) => {
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
                   locations: obj.locations,
+                  preStock: obj.stock,
+                  finalBalanceCost: obj.finalBalanceCost,
                 };
               }),
             },
@@ -1085,17 +1073,19 @@ const NewInput = (props) => {
                       value={selectedStartingLocationId}
                       MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
                     >
-                      {getLocationsRes.map((location, index) => {
-                            return (
-                              <MenuItem
-                                value={location.locationId}
-                                key={index}
-                                style={{ fontWeight: 200 }}
-                              >
-                                {location.locationName}
-                              </MenuItem>
-                            );
-                          })}
+                      {getStartingLocationsRes.map((location, index) => {
+                        if(!(userDataRes.locations) || !(userDataRes.locations.length > 0) || userDataRes.locations.includes(location.modularCode)){
+                          return (
+                            <MenuItem
+                              value={location.locationId}
+                              key={index}
+                              style={{ fontWeight: 200 }}
+                            >
+                              {location.locationName}
+                            </MenuItem>
+                          );
+                        } 
+                      })}
                     </Select>
                   </FormControl>
                 </Grid>

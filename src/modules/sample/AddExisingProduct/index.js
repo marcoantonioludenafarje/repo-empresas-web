@@ -115,6 +115,7 @@ const AddExistingProduct = ({sendData, type}) => {
           businessProductCode: null,
           description: null,
           merchantId: userDataRes.merchantSelected.merchantId,
+          locations: userDataRes.locations || [],
         },
       },
     };
@@ -182,6 +183,8 @@ const AddExistingProduct = ({sendData, type}) => {
             ? selectedProduct.customCodeProduct
             : '',
           locations: selectedProduct.locations || null,
+          preStock: selectedProduct.stock,
+          finalBalanceCost: selectedProduct.finalBalanceCost || null,
           count: Number(data.count),
           priceProduct: Number(data.priceProduct),
           subtotal: Number(

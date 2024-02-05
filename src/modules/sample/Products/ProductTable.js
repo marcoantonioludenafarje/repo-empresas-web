@@ -26,6 +26,9 @@ import {
   useTheme,
   useMediaQuery,
   TableSortLabel,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
 import {
   getYear,
@@ -152,6 +155,8 @@ const ProductTable = (arrayObjs, props) => {
   const [selectedIndex, setSelectedIndex] = React.useState(1);
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
+  const [selectedLocations, setSelectedLocations] = React.useState([]);
+  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
   const [open2, setOpen2] = React.useState(false);
   const [openLimit, setOpenLimit] = React.useState(false);
   const [showAddProd, setShowAddProd] = React.useState(false);
@@ -205,6 +210,7 @@ const ProductTable = (arrayObjs, props) => {
     useSelector(({products}) => products);
   console.log('allProductsRes', allProductsRes);
 
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
 
@@ -217,6 +223,7 @@ const ProductTable = (arrayObjs, props) => {
           description: '',
           merchantId: userDataRes.merchantSelected.merchantId,
           LastEvaluatedKey: productsLastEvaluatedKey_pageListProducts,
+          locations: selectedLocations,
         },
       },
     };
@@ -298,7 +305,18 @@ const ProductTable = (arrayObjs, props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
-
+  useEffect(() => {
+    console.log(
+      'Este es el getLocationRes',
+      getStartingLocationsRes,
+    );
+    if (
+      getStartingLocationsRes &&
+      getStartingLocationsRes.length > 0
+    ) {
+      
+    }
+  }, [getStartingLocationsRes]);
   useEffect(() => {
     if (userDataRes) {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -311,6 +329,7 @@ const ProductTable = (arrayObjs, props) => {
             productSearch: '',
             description: '',
             merchantId: userDataRes.merchantSelected.merchantId,
+            locations: userDataRes.locations,
             LastEvaluatedKey: null,
           },
         },
@@ -321,7 +340,7 @@ const ProductTable = (arrayObjs, props) => {
         userDataRes.merchantSelected.merchantId;
       businessParameterPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
-
+      setSelectedLocations(userDataRes.locations)
       toGetAllProducts(listPayload);
       getBusinessParameter(businessParameterPayload);
       getGlobalParameter(globalParameterPayload);
@@ -407,6 +426,7 @@ const ProductTable = (arrayObjs, props) => {
           productSearch: businessProductCode,
           description: descriptionProduct,
           merchantId: userDataRes.merchantSelected.merchantId,
+          locations: selectedLocations,
           LastEvaluatedKey: null,
         },
       },
@@ -727,7 +747,7 @@ const ProductTable = (arrayObjs, props) => {
     let locationsText = "";
     if (locations) {
       locations.forEach((obj, index) => {
-        locationsText += obj.locationName.split("-")[0]
+        locationsText += obj
         if ((index + 1) !== locations.length) {
           locationsText += " , "
         }
@@ -766,6 +786,39 @@ const ProductTable = (arrayObjs, props) => {
         spacing={2}
         className={classes.stack}
       >
+        {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+        <FormControl sx={{my: 0, width: 160}}>
+          <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+            Almacén
+          </InputLabel>
+          <Select
+            name='selectedLocation'
+            labelId='selectedLocation-label'
+            label='Almacén'
+            onChange={(event) => {
+              console.log(event.target.value);
+              setSelectedLocation(event.target.value)
+              if(event.target.value == "TODOS"){
+                let allLocations = userDataRes.locations
+                setSelectedLocations(allLocations)
+              } else {
+                setSelectedLocations([event.target.value])
+              }
+            }}
+            defaultValue={selectedLocation}
+          >
+            <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
+              TODOS
+            </MenuItem>
+            {userDataRes.locations.map((actualLocation, index) => {
+              const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+              return (
+                <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                  {locationName}
+                </MenuItem>)
+            })}
+          </Select>
+        </FormControl>) : null}
         <TextField
           label='Código'
           variant='outlined'
@@ -977,7 +1030,7 @@ const ProductTable = (arrayObjs, props) => {
                         3,
                       )} ${money_unit}`}</TableCell>
                       {isNotMobile ? (
-                      <TableCell>{showLocations(obj.locations)}</TableCell>
+                      <TableCell>{showLocations(obj.locationsArray)}</TableCell>
                       ) : null}
                       {isNotMobile ? (
                       <TableCell>

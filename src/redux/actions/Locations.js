@@ -1,5 +1,6 @@
 import {
   GET_LOCATIONS,
+  GET_STARTING_LOCATIONS,
   FETCH_START,
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -41,13 +42,32 @@ export const getLocations = (payload, jwtToken) => {
       });
   };
 };
-
-
-
-
-
-
-
+export const getStartingLocations = (payload, jwtToken) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START, payload: {process: 'GET_STARTING_LOCATIONS'}});
+    console.log('Llega a location el jwtToken? 122', jwtToken);
+    request('post', '/facturacion/locations/list', payload)
+      .then((data) => {
+        console.log('getStartingLocations resultado', data);
+        dispatch({
+          type: GET_STARTING_LOCATIONS,
+          payload: data.data.response.payload,
+          request: payload,
+        });
+        dispatch({
+          type: FETCH_SUCCESS,
+          payload: {
+            process: 'GET_STARTING_LOCATIONS',
+            message: 'Listado de locaciones exitoso',
+          },
+        });
+      })
+      .catch((error) => {
+        console.log('getStartingLocations error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
 export const newLocation = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});

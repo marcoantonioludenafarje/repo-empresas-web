@@ -1,5 +1,6 @@
 import {
   GET_LOCATIONS,
+  GET_STARTING_LOCATIONS,
   FETCH_SUCCESS,
   FETCH_ERROR,
   NEW_LOCATION,
@@ -54,6 +55,41 @@ const locationsReducer = (state = INIT_STATE, action) => {
           ...state,
           getLocationsRes: items,
           locationsLastEvaluatedKey_pageListLocations: lastEvaluatedKey,
+        };
+      }
+    case GET_STARTING_LOCATIONS:
+      console.log('actionLocation1234', action);
+      console.log('action.payload1234', action.payload);
+      let handleSortSL = action.handleSort;
+      if (handleSortSL) {
+        return {
+          ...state,
+          getStartingLocationsRes: action.payload,
+        };
+      } else {
+        let request = action.request.request.payload;
+        let lastEvaluatedKeyRequest = null;
+        let items = [];
+        let lastEvaluatedKey = '';
+
+        if (request && request.LastEvaluatedKey) {
+          // En estos casos hay que agregar al listado actual de items
+          items = [...state.getStartingLocationsRes, ...action.payload.Items];
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        } else {
+          // En estos casos hay que setear con lo que venga
+          items = action.payload.Items;
+          lastEvaluatedKey = action.payload.LastEvaluatedKey
+            ? action.payload.LastEvaluatedKey
+            : null;
+        }
+
+        return {
+          ...state,
+          getStartingLocationsRes: items,
+          locationsLastEvaluatedKey_pageListStartingLocations: lastEvaluatedKey,
         };
       }
     case NEW_LOCATION:
