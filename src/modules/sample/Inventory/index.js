@@ -411,7 +411,7 @@ const InventoryTable = (props) => {
                       </Button>
                     </Badge>
                   </TableCell>
-                  <TableCell>{`${obj.numOutputs} / ${obj.numInputs}`}</TableCell>
+                  <TableCell>{`${obj.numInputs} / ${obj.numOutputs}`}</TableCell>
                   <TableCell>
                     <Button
                       id='basic-button'
