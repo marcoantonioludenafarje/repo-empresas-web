@@ -152,6 +152,8 @@ const FinancesTable = (props) => {
   const [openSummaryProducts, setOpenSummaryProducts] = React.useState(false);
   const [openSummaryPoints, setOpenSummaryPoints] = React.useState(false);
   const [summaryRowNumber, setSummaryRowNumber] = React.useState(0);
+  const [selectedLocations, setSelectedLocations] = React.useState([]);
+  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -179,6 +181,8 @@ const FinancesTable = (props) => {
     React.useState(null);
 
   const [typeDialog, setTypeDialog] = React.useState('');
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
+
   //APIS
   const toListDistributions = (payload) => {
     dispatch(listDistributions(payload));
@@ -221,7 +225,8 @@ const FinancesTable = (props) => {
       } else {
         listDistributionsPayload.request.payload.merchantId =
           userDataRes.merchantSelected.merchantId;
-
+        listDistributionsPayload.request.payload.locations = userDataRes.locations;
+        setSelectedLocations(userDataRes.locations)
         toListDistributions(listDistributionsPayload);
       }
     }
@@ -657,8 +662,65 @@ const FinancesTable = (props) => {
   //     setListDeliveryDetail(detail)
   //   }
   // }, [open, listDistribution])
+  const searchDistributions = () => {
+    
+    listDistributionsPayload.request.payload.merchantId = userDataRes.merchantSelected.merchantId;
+    listDistributionsPayload.request.payload.locations = selectedLocations;
+    console.log("payload listDistributions", listDistributionsPayload)
+
+    toListDistributions(listDistributionsPayload);
+  };
   return (
     <Card sx={{p: 4}}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
+        {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+          <FormControl sx={{my: 0, width: 160}}>
+            <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+              Almacén
+            </InputLabel>
+            <Select
+              name='selectedLocation'
+              labelId='selectedLocation-label'
+              label='Almacén'
+              onChange={(event) => {
+                console.log(event.target.value);
+                setSelectedLocation(event.target.value)
+                if(event.target.value == "TODOS"){
+                  let allLocations = userDataRes.locations
+                  setSelectedLocations(allLocations)
+                } else {
+                  setSelectedLocations([event.target.value])
+                }
+              }}
+              defaultValue={selectedLocation}
+            >
+              <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
+                TODOS
+              </MenuItem>
+              {userDataRes.locations.map((actualLocation, index) => {
+                const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+                return (
+                  <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                    {locationName}
+                  </MenuItem>)
+              })}
+            </Select>
+          </FormControl>
+        ) : null}
+        <Button
+          variant='contained'
+          startIcon={<ManageSearchOutlinedIcon />}
+          color='primary'
+          onClick={searchDistributions}
+        >
+          Buscar
+        </Button>
+      </Stack>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table stickyHeader size='small' aria-label='simple table'>
           <TableHead>

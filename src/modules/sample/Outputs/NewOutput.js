@@ -608,7 +608,7 @@ const NewOutput = (props) => {
                   quantity: Number(obj.count),
                   priceUnit: Number(obj.priceProduct),
                   locations: obj.locations,
-                  preStock: obj.stock,
+                  preStock: obj.preStock,
                   finalBalanceCost: obj.finalBalanceCost,
                 };
               }),

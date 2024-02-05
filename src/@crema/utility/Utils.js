@@ -193,6 +193,7 @@ export const request = (method, path, payload) => {
             Authorization: localStorage.getItem('jwt'),
             'Content-type': 'application/json',
             merchantid: payload.body.merchantId,
+            locations: payload.body.locations || "",
           },
         },
       );

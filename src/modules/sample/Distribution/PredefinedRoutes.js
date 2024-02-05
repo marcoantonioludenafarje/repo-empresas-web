@@ -177,6 +177,8 @@ const PredefinedRoutes = () => {
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const [reload, setReload] = React.useState(true);
+  const [selectedLocations, setSelectedLocations] = React.useState([]);
+  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -212,6 +214,8 @@ const PredefinedRoutes = () => {
     console.log('Alterando el valor de nuestro arreglo de puntos de rutas....');
     setListRouteBySelectedRoutes(selectedRoute_PageListPredefinedRoutes);
   }, [selectedRoute_PageListPredefinedRoutes]);
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
+
   const [page, setPage] = React.useState(1);
 
   const deleteRoutePredefined = (payload) => {
@@ -274,13 +278,15 @@ const PredefinedRoutes = () => {
       let payload = {
         merchantId: userDataRes.merchantSelected.merchantId,
         LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
+        locations: JSON.stringify(userDataRes.locations),
       };
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: LIST_ROUTE, payload: undefined});
+      setSelectedLocations(userDataRes.locations)
       toListRoutes(payload);
     }
-  }, []);
+  }, [userDataRes]);
 
   const handleClickAway = () => {
     // Evita que se cierre el diálogo haciendo clic fuera del contenido
@@ -649,12 +655,70 @@ const PredefinedRoutes = () => {
     }
     setSummaryRowNumber(index);
   };
+  const searchRoutes = () => {
+    let payload = {
+      merchantId: userDataRes.merchantSelected.merchantId,
+      LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
+      locations: JSON.stringify(selectedLocations),
+    };
+    console.log("payload listRoutes", payload)
+    toListRoutes(payload);
+  };
   return (
     <>
       {loading ? (
         <AppLoader />
       ) : (
         <Card sx={{p: 4}}>
+          <Stack
+            sx={{m: 2}}
+            direction={isMobile ? 'column' : 'row'}
+            spacing={2}
+            className={classes.stack}
+          >
+            {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+              <FormControl sx={{my: 0, width: 160}}>
+                <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+                  Almacén
+                </InputLabel>
+                <Select
+                  name='selectedLocation'
+                  labelId='selectedLocation-label'
+                  label='Almacén'
+                  onChange={(event) => {
+                    console.log(event.target.value);
+                    setSelectedLocation(event.target.value)
+                    if(event.target.value == "TODOS"){
+                      let allLocations = userDataRes.locations
+                      setSelectedLocations(allLocations)
+                    } else {
+                      setSelectedLocations([event.target.value])
+                    }
+                  }}
+                  defaultValue={selectedLocation}
+                >
+                  <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
+                    TODOS
+                  </MenuItem>
+                  {userDataRes.locations.map((actualLocation, index) => {
+                    const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+                    return (
+                      <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                        {locationName}
+                      </MenuItem>)
+                  })}
+                </Select>
+              </FormControl>
+            ) : null}
+            <Button
+              variant='contained'
+              startIcon={<ManageSearchOutlinedIcon />}
+              color='primary'
+              onClick={searchRoutes}
+            >
+              Buscar
+            </Button>
+          </Stack>
           <TableContainer component={Paper} sx={{maxHeight: 440}}>
             <Table
               stickyHeader
