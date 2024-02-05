@@ -286,6 +286,7 @@ export const UPDATE_DRIVER = 'update_driver';
 
 //LOCATIONS
 export const GET_LOCATIONS = 'get_locations';
+export const GET_STARTING_LOCATIONS = 'get_starting_locations';
 export const NEW_LOCATION = 'new_location';
 export const DELETE_LOCATION = 'delete_location';
 export const UPDATE_LOCATION = 'update_location';

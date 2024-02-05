@@ -276,6 +276,8 @@ const OutputsTable = (props) => {
     toEpoch(Date.now() - 2678400000),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
+  const [selectedLocations, setSelectedLocations] = React.useState([]);
+  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
@@ -345,6 +347,7 @@ const OutputsTable = (props) => {
   console.log('products123', listProducts);
   const {getRolUserRes} = useSelector(({general}) => general);
   console.log('Esto es getRolUserRes', getRolUserRes);
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
 
   useEffect(() => {
     dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
@@ -389,6 +392,7 @@ const OutputsTable = (props) => {
             movementHeaderId: null,
             outputId: null,
             userCreated: null,
+            locations: userDataRes.locations,
           },
         },
       };
@@ -428,6 +432,7 @@ const OutputsTable = (props) => {
         userDataRes.merchantSelected.typeClient,
       );
 
+      setSelectedLocations(userDataRes.locations)
       setTypeClient(
         userDataRes.merchantSelected.typeClient
           ? userDataRes.merchantSelected.typeClient
@@ -454,6 +459,7 @@ const OutputsTable = (props) => {
             movementHeaderId: null,
             outputId: null,
             userCreated: null,
+            locations: selectedLocations,
           },
         },
       };
@@ -499,6 +505,7 @@ const OutputsTable = (props) => {
             movementHeaderId: null,
             outputId: null,
             userCreated: null,
+            locations: selectedLocations,
           },
         },
       };
@@ -545,6 +552,7 @@ const OutputsTable = (props) => {
           movementHeaderId: null,
           outputId: null,
           userCreated: null,
+          locations: selectedLocations,
         },
       },
     };
@@ -623,6 +631,7 @@ const OutputsTable = (props) => {
           movementHeaderId: null,
           outputId: null,
           userCreated: null,
+          locations: selectedLocations,
         },
       },
     };
@@ -735,6 +744,7 @@ const OutputsTable = (props) => {
           movementHeaderId: null,
           outputId: null,
           userCreated: null,
+          locations: selectedLocations,
         },
       },
     };
@@ -1558,6 +1568,7 @@ const OutputsTable = (props) => {
           movementHeaderId: null,
           outputId: null,
           userCreated: null,
+          locations: selectedLocations,
         },
       },
     };
@@ -1652,6 +1663,39 @@ const OutputsTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
+      {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+      <FormControl sx={{my: 0, width: 160}}>
+        <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+          Almacén
+        </InputLabel>
+        <Select
+          name='selectedLocation'
+          labelId='selectedLocation-label'
+          label='Almacén'
+          onChange={(event) => {
+            console.log(event.target.value);
+            setSelectedLocation(event.target.value)
+            if(event.target.value == "TODOS"){
+              let allLocations = userDataRes.locations
+              setSelectedLocations(allLocations)
+            } else {
+              setSelectedLocations([event.target.value])
+            }
+          }}
+          defaultValue={selectedLocation}
+        >
+          <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
+            TODOS
+          </MenuItem>
+          {userDataRes.locations.map((actualLocation, index) => {
+            const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+            return (
+              <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                {locationName}
+              </MenuItem>)
+          })}
+        </Select>
+      </FormControl>) : null}
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
