@@ -187,8 +187,8 @@ const SelectProduct = ({fcData, search}) => {
             <TableCell>Código</TableCell>
             <TableCell>Descripción</TableCell>
             <TableCell>Stock</TableCell>
-            <TableCell>Precio compra sugerido</TableCell>
-            <TableCell>Precio venta sugerido</TableCell>
+            <TableCell>Costo sugerido</TableCell>
+            <TableCell>Valor de venta sugerido</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

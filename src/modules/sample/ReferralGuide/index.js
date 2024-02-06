@@ -32,6 +32,9 @@ import {
   useMediaQuery,
   Typography,
   TableSortLabel,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -204,6 +207,8 @@ const ReferralGuidesTable = (props) => {
   const documentSunat = 'referralGuide';
 
   const [valueObservation, setValueObservation] = React.useState('');
+  const [selectedLocations, setSelectedLocations] = React.useState([]);
+  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getReferralGuides_PageListGuide(payload));
@@ -244,6 +249,7 @@ const ReferralGuidesTable = (props) => {
           movementHeaderId: query.referralGuideId || '',
           outputId: query.movementHeaderId || '',
           deliveryDistributionId: query.deliveryDistributionId || '',
+          locations: selectedLocations,
         },
       },
     };
@@ -276,6 +282,7 @@ const ReferralGuidesTable = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
 
   useEffect(() => {
     if (loading) {
@@ -457,6 +464,7 @@ const ReferralGuidesTable = (props) => {
           searchByBill: null,
           movementHeaderId: null,
           outputId: null,
+          locations: selectedLocations,
         },
       },
     };
@@ -567,6 +575,7 @@ const ReferralGuidesTable = (props) => {
             searchByBill: null,
             movementHeaderId: null,
             outputId: null,
+            locations: userDataRes.locations,
           },
         },
       };
@@ -590,6 +599,7 @@ const ReferralGuidesTable = (props) => {
       }
       listPayload.request.payload.LastEvaluatedKey = null;
       console.log('listPayload133:useEffect userDataRes:', listPayload);
+      setSelectedLocations(userDataRes.locations)
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -687,6 +697,7 @@ const ReferralGuidesTable = (props) => {
             searchByBill: null,
             movementHeaderId: null,
             outputId: null,
+            locations: selectedLocations,
           },
         },
       };
@@ -927,6 +938,40 @@ const ReferralGuidesTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
+        {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+          <FormControl sx={{my: 0, width: 160}}>
+            <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+              Almacén
+            </InputLabel>
+            <Select
+              name='selectedLocation'
+              labelId='selectedLocation-label'
+              label='Almacén'
+              onChange={(event) => {
+                console.log(event.target.value);
+                setSelectedLocation(event.target.value)
+                if(event.target.value == "TODOS"){
+                  let allLocations = userDataRes.locations
+                  setSelectedLocations(allLocations)
+                } else {
+                  setSelectedLocations([event.target.value])
+                }
+              }}
+              defaultValue={selectedLocation}
+            >
+              <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
+                TODOS
+              </MenuItem>
+              {userDataRes.locations.map((actualLocation, index) => {
+                const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+                return (
+                  <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                    {locationName}
+                  </MenuItem>)
+              })}
+            </Select>
+          </FormControl>
+        ) : null}
         <TextField
           label='Observación'
           variant='outlined'

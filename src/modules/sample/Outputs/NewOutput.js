@@ -221,8 +221,8 @@ const NewOutput = (props) => {
   const [isClientValidated, setIsClientValidated] = React.useState(false);
 
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [selectedStartingLocation, setSelectedStartingLocation] = React.useState({});
-  const [selectedStartingLocationId, setSelectedStartingLocationId] = React.useState('');
+  const [selectedStartingLocation, setSelectedStartingLocation] = React.useState("");
+  const [selectedStartingLocationId, setSelectedStartingLocationId] = React.useState('ND');
   const prevExchangeRateRef = useRef();
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
@@ -355,15 +355,15 @@ const NewOutput = (props) => {
       'Este es el getLocationRes',
       getStartingLocationsRes,
     );
-    if (
-      getStartingLocationsRes &&
-      getStartingLocationsRes.length > 0 &&
-      !selectedStartingLocation.locationId
-    ) {
-      const initialLocation = getStartingLocationsRes[0];
-      setSelectedStartingLocationId(initialLocation.locationId);
-      setSelectedStartingLocation(initialLocation);
-    }
+    // if (
+    //   getStartingLocationsRes &&
+    //   getStartingLocationsRes.length > 0 &&
+    //   !selectedStartingLocation.locationId
+    // ) {
+    //   const initialLocation = getStartingLocationsRes[0];
+    //   setSelectedStartingLocationId(initialLocation.locationId);
+    //   setSelectedStartingLocation(initialLocation);
+    // }
   }, [getStartingLocationsRes]);
   //SETEANDO PARAMETROS
   if (businessParameter != undefined) {
@@ -412,12 +412,17 @@ const NewOutput = (props) => {
 
   const selectStartingLocation = (event) => {
     console.log('Id Location', event.target.value);
-    const selectedLocation = getStartingLocationsRes.find(
-      (obj) => obj.locationId == event.target.value,
-    );
-
-    setSelectedStartingLocationId(event.target.value);
-    setSelectedStartingLocation(selectedLocation);
+    if(event.target.value !== "ND"){
+      const selectedLocation = getStartingLocationsRes.find(
+        (obj) => obj.locationId == event.target.value,
+      );
+  
+      setSelectedStartingLocationId(event.target.value);
+      setSelectedStartingLocation(selectedLocation);
+    } else {
+      setSelectedStartingLocationId(event.target.value);
+      setSelectedStartingLocation("");
+    }
   };
   const getNewProduct = (product) => {
     console.log('nuevo producto', product);
@@ -1160,39 +1165,48 @@ const NewOutput = (props) => {
                   )}
                 </Grid>
 
-                <Grid
-                  container
-                  spacing={2}
-                  sx={{ maxWidth: 500, width: 'auto', margin: 'auto' }}>
-                  <FormControl fullWidth sx={{ my: 2 }}>
-                    <InputLabel id='startingLocation-label' style={{ fontWeight: 200 }}>
-                      <IntlMessages id='common.startingLocation' />
-                    </InputLabel>
-                    <Select
-                      name='startingLocation'
-                      labelId='route-label'
-                      label={<IntlMessages id='common.startingLocation' />}
-                      onChange={(event) => selectStartingLocation(event)}
-                      value={selectedStartingLocationId}
-                      MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
-                      disabled={selectedProducts && selectedProducts.length > 0}
-                    >
-                      {getStartingLocationsRes.map((location, index) => {
-                        if(!(userDataRes.locations) || !(userDataRes.locations.length > 0) || userDataRes.locations.includes(location.modularCode)){
-                          return (
-                            <MenuItem
-                              value={location.locationId}
-                              key={index}
-                              style={{ fontWeight: 200 }}
-                            >
-                              {location.locationName}
-                            </MenuItem>
-                          );
-                        } 
-                      })}
-                    </Select>
-                  </FormControl>
-                </Grid>
+                {getStartingLocationsRes && getStartingLocationsRes.length > 0 ? (
+                  <Grid
+                    container
+                    spacing={2}
+                    sx={{ maxWidth: 500, width: 'auto', margin: 'auto' }}
+                  >
+                    <FormControl fullWidth sx={{ my: 2 }}>
+                      <InputLabel id='startingLocation-label' style={{ fontWeight: 200 }}>
+                        <IntlMessages id='common.startingLocation' />
+                      </InputLabel>
+                      <Select
+                        name='startingLocation'
+                        labelId='route-label'
+                        label={<IntlMessages id='common.startingLocation' />}
+                        onChange={(event) => selectStartingLocation(event)}
+                        value={selectedStartingLocationId}
+                        MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
+                        disabled={selectedProducts && selectedProducts.length > 0}
+                      >
+                        <MenuItem
+                          value={"ND"}
+                          style={{ fontWeight: 200 }}
+                        >
+                          No Designado
+                        </MenuItem>
+                        {getStartingLocationsRes.map((location, index) => {
+                          if(!(userDataRes.locations) || !(userDataRes.locations.length > 0) || userDataRes.locations.includes(location.modularCode)){
+                            return (
+                              <MenuItem
+                                value={location.locationId}
+                                key={index}
+                                style={{ fontWeight: 200 }}
+                              >
+                                {location.locationName}
+                              </MenuItem>
+                            );
+                          } 
+                        })}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                ) : null}
                 <Divider sx={{m: 2}} />
 
                 <Grid

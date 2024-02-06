@@ -272,7 +272,7 @@ const AddExistingProduct = ({sendData, type}) => {
 
                   <Grid item xs={4}>
                     <AppTextField
-                      label='Precio venta sugerido'
+                      label={`${type == "input" ? "Costo sugerido" : "Valor de venta sugerido"}`}
                       name='priceProduct'
                       variant='outlined'
                       sx={{

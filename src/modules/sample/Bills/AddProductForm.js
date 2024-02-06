@@ -376,7 +376,7 @@ const AddProductForm = ({sendData, type, igvEnabled}) => {
 
                   <Grid item xs={4}>
                     <AppTextField
-                      label='Precio venta sugerido'
+                      label='Valor de venta sugerido'
                       name='priceProduct'
                       variant='outlined'
                       sx={{

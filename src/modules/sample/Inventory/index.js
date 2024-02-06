@@ -483,7 +483,7 @@ const InventoryTable = (props) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {fast.locations &&
+                  {fast.locations && getStartingLocationsRes && Array.isArray(getStartingLocationsRes) &&
                   Array.isArray(fast.locations) ? (
                     fast.locations.map((obj, index) => {
                       const locationName = getStartingLocationsRes.find(objL => objL.modularCode == obj.modularCode).locationName
