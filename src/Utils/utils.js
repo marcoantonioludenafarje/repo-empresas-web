@@ -630,6 +630,15 @@ export const showReferralGuideReason = (text, reason) => {
       case 'devolucion':
         return <IntlMessages id='referralGuide.reason.return' />;
         break;
+      case 'venta_con_entrega_a_terceros':
+        return <IntlMessages id='referralGuide.reason.saleToThirdParties' />;
+        break;
+      case 'consignacion':
+        return <IntlMessages id='referralGuide.reason.consignment' />;
+        break;
+      case 'recojo_de_bienes_transformados':
+        return <IntlMessages id='referralGuide.reason.collectionOfTransformedGoods' />;
+        break;
       case 'otros':
         return <IntlMessages id='referralGuide.reason.others' />;
         break;
@@ -675,6 +684,15 @@ export const showReferralGuideReason = (text, reason) => {
       case 'others':
         return <IntlMessages id='referralGuide.reason.others' />;
         break;
+      case 'saleToThirdParties':
+        return <IntlMessages id='referralGuide.reason.saleToThirdParties' />;
+        break;
+      case 'consignment':
+        return <IntlMessages id='referralGuide.reason.consignment' />;
+        break;
+      case 'collectionOfTransformedGoods':
+        return <IntlMessages id='referralGuide.reason.collectionOfTransformedGoods' />;
+        break;
       default:
         return <IntlMessages id='referralGuide.reason.sales' />;
     }
@@ -709,6 +727,15 @@ export const showReferralGuideReason = (text, reason) => {
         break;
       case 'otros':
         return 'others';
+        break;
+      case 'venta_con_entrega_a_terceros':
+        return 'saleToThirdParties';
+        break;
+      case 'consignacion':
+        return 'consignment';
+        break;
+      case 'recojo_de_bienes_transformados':
+        return 'collectionOfTransformedGoods';
         break;
       default:
         return null;

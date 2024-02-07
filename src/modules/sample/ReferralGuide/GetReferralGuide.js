@@ -1721,8 +1721,20 @@ const GetReferralGuide = (props) => {
                         >
                           Venta sujeta a confirmación del comprador
                         </MenuItem>
+                        <MenuItem
+                          value='saleToThirdParties'
+                          style={{fontWeight: 200}}
+                        >
+                          Venta con entrega a terceros
+                        </MenuItem>
                         <MenuItem value='buy' style={{fontWeight: 200}}>
                           Compra
+                        </MenuItem>
+                        <MenuItem value='consignment' style={{fontWeight: 200}}>
+                          Consignación
+                        </MenuItem>
+                        <MenuItem value='collectionOfTransformedGoods' style={{fontWeight: 200}}>
+                          Recojo de bienes transformados
                         </MenuItem>
                         <MenuItem
                           value='transferBetweenEstablishmentsOfTheSameCompany'
