@@ -445,7 +445,7 @@ const OutputsTable = (props) => {
     setValue2(Date.now());
 
     console.log('Se ejecuta esto?');
-    if (userDataRes) {
+    if (userDataRes && actualDateRes) {
       let listPayload = {
         request: {
           payload: {
