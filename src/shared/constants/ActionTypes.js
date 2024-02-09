@@ -252,6 +252,7 @@ export const REGISTER_TRANSACTION = 'register_transaction';
 export const LIST_DISTRIBUTION = 'list_distribution';
 export const TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION =
   'to_update_item_in_list_distribution';
+export const GENERATE_EXCEL_SUMMARY_ROUTES = 'generate_excel_summary_routes';
 
 export const GENERATE_DISTRIBUTION = 'generate_distribution';
 export const PREVISUALIZE_BILL = 'previsualize_bill';
@@ -286,6 +287,7 @@ export const UPDATE_DRIVER = 'update_driver';
 
 //LOCATIONS
 export const GET_LOCATIONS = 'get_locations';
+export const GET_STARTING_LOCATIONS = 'get_starting_locations';
 export const NEW_LOCATION = 'new_location';
 export const DELETE_LOCATION = 'delete_location';
 export const UPDATE_LOCATION = 'update_location';

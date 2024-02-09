@@ -50,6 +50,7 @@ import {
   onGetBusinessParameter,
   onGetGlobalParameter,
 } from '../../../../redux/actions/General';
+import { getStartingLocations } from '../../../../redux/actions';
 import {getEmailToSendCode, getUserData} from '../../../../redux/actions/User';
 // import {useHistory} from 'react-router-dom';
 import {useRouter} from 'next/router';
@@ -105,6 +106,9 @@ const AwsAuthProvider = ({children}) => {
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
+  };
+  const toGetStartingLocations = (payload) => {
+    dispatch(getStartingLocations(payload));
   };
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
@@ -244,6 +248,21 @@ const AwsAuthProvider = ({children}) => {
       console.log('getUserDataPayload123', getUserDataPayload);
 
       /* toGetAllProducts(listPayload); */
+      toGetStartingLocations({
+        request: {
+          payload: {
+            locationName: '',
+            ubigeo: '',
+            merchantId: '',
+            modularCode: '',
+            LastEvaluatedKey: null,
+            needItems: true,
+            type: 'PUNTO PARTIDA',
+            merchantId: awsCognitoData.user.signInUserSession.idToken.payload
+            .merchantSelectedId,
+          },
+        },
+      })
       getBusinessParameter(businessParameterPayload);
       toGetDataBusiness(dataBusinessPayload);
       toGetRolUser(getRolUserPayload);

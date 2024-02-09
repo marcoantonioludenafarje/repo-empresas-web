@@ -10,7 +10,13 @@ import {
   CircularProgress,
   Button,
   Grid,
+  Badge,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
 import PropTypes from 'prop-types';
@@ -56,6 +62,8 @@ const SelectProduct = ({fcData, search}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [moneyUnit, setMoneyUnit] = React.useState('');
 
+  const [openWarehouse, setOpenWarehouse] = React.useState(false);
+  const [fast, setFast] = React.useState({});
   const {listProducts} = useSelector(({products}) => products);
   console.log('products123', listProducts);
   const {businessParameter} = useSelector(({general}) => general);
@@ -64,6 +72,8 @@ const SelectProduct = ({fcData, search}) => {
   console.log('userAttributes', userAttributes);
   const {userDataRes} = useSelector(({user}) => user);
   console.log('userDataRes', userDataRes);
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
+
   listProductsPayload.request.payload.merchantId =
     userDataRes.merchantSelected.merchantId;
 
@@ -88,6 +98,12 @@ const SelectProduct = ({fcData, search}) => {
     return newValue;
   };
 
+  const handleWarehouseClick = (product, index) => {
+    console.log('index', index);
+    console.log('product del map', product);
+    setOpenWarehouse(true);
+    setFast(product);
+  };
   const handleData = (data, {setSubmitting}) => {
     setSubmitting(true);
     dispatch({type: FETCH_SUCCESS, payload: undefined});
@@ -170,14 +186,14 @@ const SelectProduct = ({fcData, search}) => {
           <TableRow>
             <TableCell>Código</TableCell>
             <TableCell>Descripción</TableCell>
-            <TableCell>Cantidad</TableCell>
-            <TableCell>Precio compra sugerido</TableCell>
-            <TableCell>Precio venta sugerido</TableCell>
+            <TableCell>Stock</TableCell>
+            <TableCell>Costo sugerido</TableCell>
+            <TableCell>Valor de venta sugerido</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {listProducts && Array.isArray(listProducts) ? (
-            listProducts.map((obj) => {
+            listProducts.map((obj, index) => {
               return (
                 <TableRow
                   sx={{
@@ -193,7 +209,29 @@ const SelectProduct = ({fcData, search}) => {
                 >
                   <TableCell>{obj.businessProductCode}</TableCell>
                   <TableCell>{obj.description}</TableCell>
-                  <TableCell>{obj.stock}</TableCell>
+                  <TableCell>
+                    <Badge 
+                      badgeContent={obj.stock} 
+                      color="primary" 
+                      anchorOrigin={{
+                        vertical: 'left',
+                        horizontal: 'right',
+                      }}
+                    >
+                      <Button
+                        id='basic-button'
+                        aria-controls={openWarehouse ? true : undefined}
+                        aria-haspopup='true'
+                        aria-expanded={openWarehouse ? true : undefined}
+                        onClick={(event) => {
+                          handleWarehouseClick(obj, index);
+                          event.stopPropagation();
+                        }}
+                      >
+                        <WarehouseIcon />
+                      </Button>
+                    </Badge>
+                  </TableCell>
                   <TableCell>
                     {`${parseTo3Decimals(Number(obj.costPriceUnit)).toFixed(
                       3,
@@ -215,6 +253,55 @@ const SelectProduct = ({fcData, search}) => {
           )}
         </TableBody>
       </Table>
+      <Dialog
+        open={openWarehouse}
+        onClose={()=>setOpenWarehouse(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {fast.description}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <TableContainer component={Paper} sx={{maxHeight: 440}}>
+            <Table sx={{minWidth: 650}} stickyHeader aria-label='simple table'>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Código</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Cantidad</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {fast.locations &&
+                Array.isArray(fast.locations) ? (
+                  fast.locations.map((obj, index) => {
+                    const locationName = getStartingLocationsRes.find(objL => objL.modularCode == obj.modularCode).locationName
+                    return (
+                      <TableRow
+                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                        key={obj.modularCode}
+                      >
+                        <TableCell>
+                          {obj.modularCode.split("-")[0]}
+                        </TableCell>
+                        <TableCell>{locationName}</TableCell>
+                        <TableCell>{obj.stock}</TableCell>
+                      </TableRow>
+                    )
+                  })
+                ) : null}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={()=>setOpenWarehouse(false)}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </TableContainer>
   );
 };

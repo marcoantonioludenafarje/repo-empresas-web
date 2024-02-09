@@ -49,6 +49,7 @@ import PendingIcon from '@mui/icons-material/Pending';
 import {red, amber} from '@mui/material/colors';
 import {getUserData} from '../../../redux/actions/User';
 import CachedIcon from '@mui/icons-material/Cached';
+import ExcelIcon from '../../../assets/icon/excel.svg';
 
 import {
   FETCH_SUCCESS,
@@ -56,12 +57,15 @@ import {
   LIST_ROUTE,
   GET_USER_DATA,
   ROUTE_TO_REFERRAL_GUIDE,
+  GENERATE_EXCEL_SUMMARY_ROUTES,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {
   listDistributions,
   getDistribution,
   getOneDistribution,
+  exportExcelSummaryRoutes,
+  excelSummaryRoutesRes,
 } from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -148,6 +152,8 @@ const FinancesTable = (props) => {
   const [openSummaryProducts, setOpenSummaryProducts] = React.useState(false);
   const [openSummaryPoints, setOpenSummaryPoints] = React.useState(false);
   const [summaryRowNumber, setSummaryRowNumber] = React.useState(0);
+  const [selectedLocations, setSelectedLocations] = React.useState([]);
+  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -163,6 +169,10 @@ const FinancesTable = (props) => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
+  const {excelSummaryRoutesRes} = useSelector(({movements}) => movements);
+  console.log('excelSummaryRoutesRes', excelSummaryRoutesRes);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
+
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
 
@@ -171,9 +181,15 @@ const FinancesTable = (props) => {
     React.useState(null);
 
   const [typeDialog, setTypeDialog] = React.useState('');
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
+
   //APIS
   const toListDistributions = (payload) => {
     dispatch(listDistributions(payload));
+  };
+
+  const toExportExcelSummaryRoutes = (payload) => {
+    dispatch(exportExcelSummaryRoutes(payload));
   };
 
   useEffect(() => {
@@ -209,7 +225,8 @@ const FinancesTable = (props) => {
       } else {
         listDistributionsPayload.request.payload.merchantId =
           userDataRes.merchantSelected.merchantId;
-
+        listDistributionsPayload.request.payload.locations = userDataRes.locations;
+        setSelectedLocations(userDataRes.locations)
         toListDistributions(listDistributionsPayload);
       }
     }
@@ -590,6 +607,50 @@ const FinancesTable = (props) => {
       query: {},
     });
   };
+
+  useEffect(() => {
+    if (excelSummaryRoutesRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelSummaryRoutesRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'SummaryRoutes.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelSummaryRoutesRes, downloadExcel]);
+  const exportToExcel = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          deliveryDistributionId: distributionSelected,
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({
+      type: GENERATE_EXCEL_SUMMARY_ROUTES,
+      payload: undefined,
+    });
+    toExportExcelSummaryRoutes(excelPayload);
+    setDownloadExcel(true);
+  };
+
   // useEffect(() => {
   //   if (open && listDistribution &&
   //     listDistribution.length > 0 &&
@@ -601,8 +662,65 @@ const FinancesTable = (props) => {
   //     setListDeliveryDetail(detail)
   //   }
   // }, [open, listDistribution])
+  const searchDistributions = () => {
+    
+    listDistributionsPayload.request.payload.merchantId = userDataRes.merchantSelected.merchantId;
+    listDistributionsPayload.request.payload.locations = selectedLocations;
+    console.log("payload listDistributions", listDistributionsPayload)
+
+    toListDistributions(listDistributionsPayload);
+  };
   return (
     <Card sx={{p: 4}}>
+      <Stack
+        sx={{m: 2}}
+        direction={isMobile ? 'column' : 'row'}
+        spacing={2}
+        className={classes.stack}
+      >
+        {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+          <FormControl sx={{my: 0, width: 160}}>
+            <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+              Almacén
+            </InputLabel>
+            <Select
+              name='selectedLocation'
+              labelId='selectedLocation-label'
+              label='Almacén'
+              onChange={(event) => {
+                console.log(event.target.value);
+                setSelectedLocation(event.target.value)
+                if(event.target.value == "TODOS"){
+                  let allLocations = userDataRes.locations
+                  setSelectedLocations(allLocations)
+                } else {
+                  setSelectedLocations([event.target.value])
+                }
+              }}
+              defaultValue={selectedLocation}
+            >
+              <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
+                TODOS
+              </MenuItem>
+              {userDataRes.locations.map((actualLocation, index) => {
+                const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+                return (
+                  <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                    {locationName}
+                  </MenuItem>)
+              })}
+            </Select>
+          </FormControl>
+        ) : null}
+        <Button
+          variant='contained'
+          startIcon={<ManageSearchOutlinedIcon />}
+          color='primary'
+          onClick={searchDistributions}
+        >
+          Buscar
+        </Button>
+      </Stack>
       <TableContainer component={Paper} sx={{maxHeight: 440}}>
         <Table stickyHeader size='small' aria-label='simple table'>
           <TableHead>
@@ -610,6 +728,7 @@ const FinancesTable = (props) => {
               <TableCell>Fecha de creación</TableCell>
               <TableCell>Nombre de ruta</TableCell>
               <TableCell>Cant.Puntos</TableCell>
+              <TableCell>Guías</TableCell>
               <TableCell>Razón para transferir</TableCell>
               <TableCell>Observación</TableCell>
               {/* <TableCell>Entregas</TableCell> */}
@@ -629,6 +748,7 @@ const FinancesTable = (props) => {
                       <TableCell>{justDate(obj.createdAt)}</TableCell>
                       <TableCell>{obj.routeName}</TableCell>
                       <TableCell>{obj.cantDeliveries}</TableCell>
+                      <TableCell>{obj.serialNumberRange ? `${ obj.serialNumberRange[0]} al ${obj.serialNumberRange[1]}` : ""}</TableCell>
                       <TableCell>
                         {showSubtypeMovement(obj.reasonForTransfer)}
                       </TableCell>
@@ -1078,17 +1198,34 @@ const FinancesTable = (props) => {
             </FormControl>
 
             <TextField
-              label='Nombre de Agrupador'
+              label='Nombre Agrupador'
               value={nombreAgrupador}
               onChange={(e) => setNombreAgrupador(e.target.value)}
               variant='outlined'
             />
             <TextField
-              label='Cantidad de Agrupación'
+              label='Cantidad Agrupación'
               value={cantidadAgrupacion}
               onChange={(e) => setCantidadAgrupacion(e.target.value)}
               variant='outlined'
             />
+            <IconButton
+              sx={{
+                mt: 1,
+                '& svg': {
+                  height: 35,
+                  width: 35,
+                },
+                color: 'text.secondary',
+              }}
+              edge='end'
+              color='inherit'
+              aria-label='open drawer'
+              onClick={exportToExcel}
+            >
+              <ExcelIcon />
+            </IconButton>
+            
           </Stack>
 
           <IconButton

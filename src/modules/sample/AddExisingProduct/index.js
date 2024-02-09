@@ -115,6 +115,7 @@ const AddExistingProduct = ({sendData, type}) => {
           businessProductCode: null,
           description: null,
           merchantId: userDataRes.merchantSelected.merchantId,
+          locations: userDataRes.locations || [],
         },
       },
     };
@@ -181,6 +182,9 @@ const AddExistingProduct = ({sendData, type}) => {
           customCodeProduct: selectedProduct.customCodeProduct
             ? selectedProduct.customCodeProduct
             : '',
+          locations: selectedProduct.locations || null,
+          preStock: selectedProduct.stock,
+          finalBalanceCost: selectedProduct.finalBalanceCost || null,
           count: Number(data.count),
           priceProduct: Number(data.priceProduct),
           subtotal: Number(
@@ -268,7 +272,7 @@ const AddExistingProduct = ({sendData, type}) => {
 
                   <Grid item xs={4}>
                     <AppTextField
-                      label='Precio venta sugerido'
+                      label={`${type == "input" ? "Costo sugerido" : "Valor de venta sugerido"}`}
                       name='priceProduct'
                       variant='outlined'
                       sx={{

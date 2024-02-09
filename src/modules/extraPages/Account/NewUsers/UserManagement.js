@@ -25,6 +25,8 @@ import {
   FormControl,
   Select,
   InputLabel,
+  Checkbox,
+  Box,
 } from '@mui/material';
 import IntlMessages from '../../../../@crema/utility/IntlMessages';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -40,7 +42,12 @@ import {
   listUser,
   updateActive,
   listRol,
+  changeWarehouses
 } from '../../../../redux/actions/User';
+import {
+  getLocations
+} from 'redux/actions';
+
 
 import {ClickAwayListener} from '@mui/base';
 import {red} from '@mui/material/colors';
@@ -58,6 +65,8 @@ const UserManagement = ({data}) => {
   );
   const {userDataRes} = useSelector(({user}) => user);
   const {listRolRes} = useSelector(({user}) => user);
+  const {getLocationsRes} = useSelector(({locations}) => locations);
+
   const dispatch = useDispatch();
 
   console.log('DATA', data);
@@ -69,12 +78,19 @@ const UserManagement = ({data}) => {
     dispatch(listRol(payload));
   };
 
+
+  const toListLocations = (payload) => {
+    dispatch(getLocations(payload));
+  };
+
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [disable, setDisable] = useState(false);
   const [open, setOpen] = useState(false);
   const [openStatus, setOpenStatus] = useState(false);
   const [openChangeRol, setOpenChangeRol] = useState(false);
-
+  const [openAssignWarehouse, setOpenAssignWarehouse] = useState(false);
+  const [listWarehouses , setListWarehouses] = useState([]);
   const openMenu = Boolean(anchorEl);
   let codProdSelected = '';
   const handleClick = (codPro, event) => {
@@ -120,6 +136,21 @@ const UserManagement = ({data}) => {
     };
     toListUser(listUserPayload);
     console.log('listUserRes: ', listUserRes);
+    toListLocations({
+      request: {
+        payload: {
+          locationName: '',
+          ubigeo: '',
+          merchantId: '',
+          modularCode: '',
+          LastEvaluatedKey: null,
+          needItems: true,
+          type: 'PUNTO PARTIDA',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    })
+
   }, []);
   useEffect(() => {
     if (listUserRes) {
@@ -144,6 +175,24 @@ const UserManagement = ({data}) => {
   const handleClose3 = () => {
     setOpenChangeRol(false);
   };
+
+
+  const handleAssignWarehouse  = () => {
+    setOpenAssignWarehouse(true);
+    console.log("getLocationsRes123", getLocationsRes)
+    console.log("selectUser 123", selectUser)
+    setListWarehouses(selectUser.locations || [])
+  };
+
+
+  const handleCloseAssignWarehouse = () => {
+    setOpenAssignWarehouse(false);
+  };
+
+  const onChangeCheckedTasks = () => {
+    console.log("Escogio determinado list")
+  }
+
 
   const handleClickAway = () => {
     // Evita que se cierre el diálogo haciendo clic fuera del contenido
@@ -196,6 +245,30 @@ const UserManagement = ({data}) => {
     setOpen(false);
   };
 
+
+
+  const handleSaveAssignWarehouse = () => {
+    console.log('data', data);
+    console.log('select', objSelects);
+    console.log('selectUser', selectUser);
+    const payload = {
+      request: {
+        payload: {
+          userId: selectUser.userId,
+          // newrolId: objSelects.profileType,
+          // rolId: selectUser.rol,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          locations : listWarehouses
+        },
+      },
+    };
+    console.log('selectpayload', payload);
+    dispatch(changeWarehouses(payload));
+    setOpenStatus(true);
+    setOpen(false);
+  };
+
+  
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
@@ -221,6 +294,32 @@ const UserManagement = ({data}) => {
 
     console.log('objSelects >>', objSelects);
   };
+
+  const handleChangeWarehouse = (event) => {
+    console.log('evento', event);
+    //setProfileType(event.target.value);
+    console.log('objSelects', objSelects);
+    // const {name, value} = event.target;
+    // objSelects[name] = value;
+
+    // console.log('objSelects >>', objSelects);
+  };
+
+
+  const onChangeCheckedWarehouses = (event, modularCode) => {
+    console.log('evento', event);
+    console.log("El modularCode", modularCode)
+    let newListWarehouses
+    if(listWarehouses.includes(modularCode)){
+      newListWarehouses = listWarehouses.filter(item => item !== modularCode);
+    }else{
+      newListWarehouses = [...listWarehouses ,modularCode]
+    }
+    setListWarehouses(newListWarehouses)
+
+  };
+
+
 
   const showMessage = () => {
     if (successMessage != undefined) {
@@ -270,8 +369,14 @@ const UserManagement = ({data}) => {
               <IntlMessages id='common.profile' />
             </TableCell>
             <TableCell>
+              <IntlMessages id='common.locations' />
+            </TableCell>
+            <TableCell>
               <IntlMessages id='common.dateRegistered' />
             </TableCell>
+
+
+            
             <TableCell>
               <IntlMessages id='common.active' />
             </TableCell>
@@ -319,6 +424,8 @@ const UserManagement = ({data}) => {
                     {obj.nombreCompleto ? obj.nombreCompleto : ''}
                   </TableCell>
                   <TableCell>{obj.profile ? obj.profile : ''}</TableCell>
+                  <TableCell>{obj.locations ? obj.locations.join(" | ") : ''}</TableCell>
+                  
                   <TableCell align='center'>
                     {convertToDateWithoutTime(obj.fecCreacion)}
                   </TableCell>
@@ -415,6 +522,13 @@ const UserManagement = ({data}) => {
           .includes('/inventory/robot/delete') === true ? (
           <MenuItem onClick={setChangeRol}>Cambio de Perfil</MenuItem>
         ) : null}
+
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/inventory/robot/delete') === true ? (
+          <MenuItem onClick={handleAssignWarehouse}>Asignar almacén</MenuItem>
+        ) : null}
+
       </Menu>
       <Dialog
         open={open}
@@ -524,6 +638,66 @@ const UserManagement = ({data}) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+
+      <Dialog
+        open={openAssignWarehouse}
+        onClose={handleCloseAssignWarehouse}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Asignar Almacén'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <FormControl fullWidth sx={{my: 0}}>
+
+
+              {getLocationsRes && typeof getLocationsRes !== 'string' ? (
+                getLocationsRes.map((obj, index) => {
+                  // objSelects.rol = obj.description;
+                  // objSelects.rolId = obj.rolId;
+                  return (
+                    <div key={obj.locationId}>
+
+                    <Checkbox
+                    sx={{
+                      color: 'text.disabled',
+                    }}
+                    checked={listWarehouses.includes(obj.modularCode)}
+                    onChange={(event) => onChangeCheckedWarehouses(event, obj.modularCode)}
+                    color='primary'
+                    />
+                      <Box
+                      component='span'
+                      sx={{
+                        color: 'grey.500',
+                      }}
+                      >
+                      <span> {obj.locationName} </span>
+
+                    </Box>
+                    </div>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+
+          </FormControl>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={handleSaveAssignWarehouse}>
+            Cambiar
+          </Button>
+          <Button variant='outlined' onClick={handleCloseAssignWarehouse}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
     </TableContainer>
   );
 };

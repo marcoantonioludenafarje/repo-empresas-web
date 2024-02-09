@@ -61,10 +61,10 @@ const EditDistributionDeliveryModal = ({
   const [temporaryDelivery, setTemporaryDelivery] = React.useState('');
   console.log(
     'Esta es la fecha del la distribucion',
-    new Date(temporaryDelivery?.transferTimeStampDate),
+    new Date(temporaryDelivery?.transferStartTime),
   );
   const [dateStartTransfer, setDateStartTransfer] = React.useState(
-    new Date(temporaryDelivery?.transferTimeStampDate),
+    new Date(temporaryDelivery?.transferStartTime),
   );
   const [makeReferralGuide, setMakeReferralGuide] = React.useState(false);
   console.log('Este es el dateStartTranfer', dateStartTransfer);
@@ -205,6 +205,7 @@ const EditDistributionDeliveryModal = ({
       observationDelivery: event.target.observationDelivery.value,
       generateReferralGuide: makeReferralGuide,
       transferStartDate: dateWithHyphen(dateStartTransfer),
+      transferStartTime: dateStartTransfer,
     };
     console.log('transferStartDate', newTemporaryDelivery.transferStartDate);
     setTemporaryDelivery(newTemporaryDelivery);
@@ -519,9 +520,9 @@ const EditDistributionDeliveryModal = ({
             <DateTimePicker
               minDateTime={new Date(Date.now() + 59 * 60 * 1000)}
               value={
-                temporaryDelivery.transferTimeStampDate &&
+                temporaryDelivery.transferStartTime &&
                 dateStartTransfer == 'Invalid Date'
-                  ? new Date(temporaryDelivery?.transferTimeStampDate)
+                  ? new Date(temporaryDelivery?.transferStartTime)
                   : dateStartTransfer
               }
               onChange={(newValue) => {

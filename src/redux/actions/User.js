@@ -155,3 +155,26 @@ export const changeRol = (payload) => {
       });
   };
 };
+
+
+export const changeWarehouses = (payload) => {
+  console.log('confeti >>', payload);
+  return (dispatch) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/business/administrative/assignwarehousestouser', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('rol actions', data);
+        // dispatch({type: CHANGE_ROL, payload: data.response.payload});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('rol actions error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+
+

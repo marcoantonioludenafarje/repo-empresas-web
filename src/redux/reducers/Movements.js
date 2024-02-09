@@ -44,6 +44,7 @@ import {
   PROOF_MONITORING,
   REGISTER_TRANSACTION,
   GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED,
+  GENERATE_EXCEL_SUMMARY_ROUTES,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -735,6 +736,16 @@ const movementsReducer = (state = INIT_STATE, action) => {
       return {
         ...state,
         excelTemplateGeneratedToConsolidatedRes: action.payload,
+      };
+
+    case GENERATE_EXCEL_SUMMARY_ROUTES:
+      console.log(
+        'data de reducer case GENERATE_EXCEL_SUMMARY_ROUTES',
+        action.payload,
+      );
+      return {
+        ...state,
+        excelSummaryRoutesRes: action.payload,
       };
   }
 };

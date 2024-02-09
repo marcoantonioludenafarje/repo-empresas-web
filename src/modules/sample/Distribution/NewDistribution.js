@@ -219,6 +219,7 @@ const Distribution = (props) => {
     dispatch(
       listPredefinedRoutes_____PageNewDistribution({
         merchantId: userDataRes.merchantSelected.merchantId,
+        locations: userDataRes.locations && userDataRes.locations.length > 0 ? JSON.stringify(userDataRes.locations) : ""
       }),
     );
   };

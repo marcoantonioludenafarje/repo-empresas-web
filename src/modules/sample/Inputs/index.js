@@ -31,6 +31,9 @@ import {
   useMediaQuery,
   useTheme,
   TableSortLabel,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 
@@ -190,6 +193,8 @@ const InputsTable = (props) => {
     toEpoch(Date.now() - 2678400000),
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
+  const [selectedLocations, setSelectedLocations] = React.useState([]);
+  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
@@ -243,6 +248,7 @@ const InputsTable = (props) => {
   const {userDataRes} = useSelector(({user}) => user);
   const {actualDateRes} = useSelector(({general}) => general);
   console.log('actualDateRes', actualDateRes);
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
   useEffect(() => {
     if (!userDataRes) {
       console.log('Esto se ejecuta?');
@@ -279,6 +285,7 @@ const InputsTable = (props) => {
             createdAt: null,
             searchByDocument: null,
             movementHeaderId: null,
+            locations: userDataRes.locations,
           },
         },
       };
@@ -306,12 +313,13 @@ const InputsTable = (props) => {
       }
       getBusinessParameter(businessParameterPayload);
       getGlobalParameter(globalParameterPayload);
+      setSelectedLocations(userDataRes.locations)
     }
   }, [userDataRes]);
   useEffect(() => {
     setValue2(Date.now());
     console.log('Se ejecuta esto?');
-    if (userDataRes) {
+    if (userDataRes && actualDateRes) {
       let listPayload = {
         request: {
           payload: {
@@ -323,6 +331,7 @@ const InputsTable = (props) => {
             createdAt: null,
             searchByDocument: null,
             movementHeaderId: null,
+            locations: selectedLocations,
           },
         },
       };
@@ -424,6 +433,7 @@ const InputsTable = (props) => {
           createdAt: null,
           searchByDocument: null,
           movementHeaderId: null,
+          locations: selectedLocations,
         },
       },
     };
@@ -609,6 +619,7 @@ const InputsTable = (props) => {
           createdAt: null,
           searchByDocument: null,
           movementHeaderId: null,
+          locations: selectedLocations,
         },
       },
     };
@@ -917,6 +928,7 @@ const InputsTable = (props) => {
           createdAt: null,
           searchByDocument: null,
           movementHeaderId: null,
+          locations: selectedLocations,
         },
       },
     };
@@ -977,6 +989,40 @@ const InputsTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
+        {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+          <FormControl sx={{my: 0, width: 160}}>
+            <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+              Almacén
+            </InputLabel>
+            <Select
+              name='selectedLocation'
+              labelId='selectedLocation-label'
+              label='Almacén'
+              onChange={(event) => {
+                console.log(event.target.value);
+                setSelectedLocation(event.target.value)
+                if(event.target.value == "TODOS"){
+                  let allLocations = userDataRes.locations
+                  setSelectedLocations(allLocations)
+                } else {
+                  setSelectedLocations([event.target.value])
+                }
+              }}
+              defaultValue={selectedLocation}
+            >
+              <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
+                TODOS
+              </MenuItem>
+              {userDataRes.locations.map((actualLocation, index) => {
+                const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+                return (
+                  <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                    {locationName}
+                  </MenuItem>)
+              })}
+            </Select>
+          </FormControl>
+        ) : null}
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
