@@ -913,6 +913,7 @@
   "common.deliveries": "Entregas",
   "common.productTags": "Filtros de producto",
   "common.productCategories": "Categorías de producto",
+  "common.seriesByWarehouse": "Series por almacén",
   "common.filterName": "Nombre del Filtro",
   "common.extraInformationForPdf": "Información Extra para PDF (Opcional)",
   "common.business.ubigeo": "Ubigeo",

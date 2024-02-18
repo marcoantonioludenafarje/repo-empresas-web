@@ -179,9 +179,13 @@ const UpdateParameters = () => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({products}) => products);
   console.log('errorMessage', errorMessage);
+  const {getStartingLocationsRes} = useSelector(({locations}) => locations);
   const [excelOrCsv, setExcelOrCsv] = React.useState('');
   const [excelOrCsvName, setExcelOrCsvName] = React.useState('');
   const [tagSelectedDelete, setTagSelectedDelete] = React.useState({});
+  const [billParameter, setBillParameter] = React.useState({});
+  const [receiptParameter, setReceiptParameter] = React.useState({});
+  const [referralGuideParameterParameter, setReferralGuideParameterParameter] = React.useState({});
   let deletePayload = {
     request: {
       payload: {
@@ -406,6 +410,15 @@ const UpdateParameters = () => {
       let obtainedMoneyUnit = businessParameter.find(
         (obj) => obj.abreParametro == 'DEFAULT_MONEY_UNIT',
       ).value;
+      let referralGuideParameters = businessParameter.find(
+        (obj) => obj.abreParametro == 'SERIES_REFERRAL_GUIDE',
+      );
+      let receiptParameters = businessParameter.find(
+        (obj) => obj.abreParametro == 'SERIES_RECEIPT',
+      );
+      let billParameters = businessParameter.find(
+        (obj) => obj.abreParametro == 'SERIES_BILL',
+      );
       console.log('moneyUnit desde selectProducts', moneyUnit);
       console.log('categoriesProductParameter', categoriesProductParameter);
       console.log(
@@ -438,6 +451,12 @@ const UpdateParameters = () => {
       console.log('clientTagsParameter', clientTagsParameter);
       setCategories(categoriesProductParameter);
       setMoneyUnit(obtainedMoneyUnit);
+
+      setReceiptParameter(receiptParametes);
+      setBillParameter(billParameters);
+      setReferralGuideParameter(referralGuideParameters);
+
+
       changeValue('defaultWeight', defaultWeightParameter);
       changeValue('defaultMoney', defaultMoneyParameter);
       changeValue('defaultIgvActivation', Number(defaultIgvParameter));
