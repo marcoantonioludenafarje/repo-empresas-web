@@ -972,6 +972,7 @@ const GetReferralGuide = (props) => {
             startingPointUbigeo: ubigeoStartingPoint.toString(),
             startingPointAddress: data.startingPoint,
             startingSunatCode: data.startingSunatCode,
+            startingInternalCode: selectedStartingLocation?.modularCode || "",
             arrivalPointUbigeo: ubigeoArrivalPoint.toString(),
             arrivalPointAddress: data.arrivalPoint,
             arrivalSunatCode: data.arrivalSunatCode,
