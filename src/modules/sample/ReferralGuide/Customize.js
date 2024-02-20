@@ -151,6 +151,8 @@ const Customize = (props) => {
   const [openCustomizeUpdate, setOpenCustomizeUpdate] = React.useState('');
   const [pdfScale, setPdfScale] = React.useState('100');
   const [weightFields, setWeightFields] = React.useState(false);
+  const [complianceSeal, setComplianceSeal] = React.useState(false);
+
 
   //PREVISUALIZE
   const [scale, setScale] = React.useState(1.0);
@@ -237,6 +239,11 @@ const Customize = (props) => {
         setWeightFields(false);
       } else {
         setWeightFields(true);
+      }
+      if (referralGuideParameter.complianceSeal == false) {
+        setComplianceSeal(false);
+      } else {
+        setComplianceSeal(true);
       }
       if (referralGuideParameter.pdfScale) {
         setPdfScale(referralGuideParameter.pdfScale);
@@ -356,6 +363,7 @@ const Customize = (props) => {
           denominationMerchant: 'DIGISOLUTIONS SRL',
           weightFields: weightFields,
           pdfScale: pdfScale,
+          complianceSeal: complianceSeal,
         },
       },
     };
@@ -384,6 +392,7 @@ const Customize = (props) => {
       if (obj.abreParametro == 'SERIES_REFERRAL_GUIDE') {
         obj.weightFields = weightFields;
         obj.pdfScale = pdfScale;
+        obj.complianceSeal = complianceSeal
       }
       return obj;
     });
@@ -399,6 +408,7 @@ const Customize = (props) => {
           referralGuide: {
             weightFields: weightFields,
             pdfScale: pdfScale,
+            complianceSeal: complianceSeal,
           },
         },
       },
@@ -592,6 +602,19 @@ const Customize = (props) => {
                     >
                       Peso unitario y Peso Total
                     </ToggleButton>
+
+                    <ToggleButton
+                      sx={{ml: 2}}
+                      value='check'
+                      selected={complianceSeal}
+                      color='primary'
+                      onChange={() => {
+                        setComplianceSeal(!complianceSeal);
+                      }}
+                    >
+                      Sello de Conformidad
+                    </ToggleButton>
+
                   </Stack>
                   <Box
                     sx={{
