@@ -192,6 +192,7 @@ const Distribution = (props) => {
   //PDF
   const [pdfScale, setPdfScale] = React.useState('100');
   const [weightFields, setWeightFields] = React.useState(true);
+  const [complianceSeal, setComplianceSeal] = React.useState(true);
   const [openAddresseeDialog, setOpenAddresseeDialog] = React.useState(false);
   const [issueDate, setIssueDate] = React.useState(Date.now());
   const [selectedAddressee, setSelectedAddressee] = React.useState('');
@@ -370,6 +371,11 @@ const Distribution = (props) => {
       } else {
         setWeightFields(true);
       }
+      if (referralGuideParameter.complianceSeal == false) {
+        setComplianceSeal(false);
+      } else {
+        setComplianceSeal(true);
+      }
       if (referralGuideParameter.pdfScale) {
         setPdfScale(referralGuideParameter.pdfScale);
       } else {
@@ -438,6 +444,7 @@ const Distribution = (props) => {
           typeOfTransport: transportModeVal,
           observation: data.observation,
           weightFields: weightFields,
+          complianceSeal: complianceSeal,
           pdfScale: pdfScale,
           deliveries: routes.map((route, index) => {
             if (route !== undefined) {
