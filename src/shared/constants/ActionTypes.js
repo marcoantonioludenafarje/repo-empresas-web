@@ -323,6 +323,7 @@ export const ROUTE_TO_REFERRAL_GUIDE = 'route_to_referral_guide';
 export const UPDATE_GENERATE_REFERRAL_GUIDE_VALUE =
   'update_generate_referral_guide_value';
 export const ACTUAL_DATE = 'actual_date';
+export const SEND_TUNEXO_CREDENTIALS = "send_tunexo_credentials";
 
 //REQUESTS
 export const NEW_REQUEST = 'new_request';

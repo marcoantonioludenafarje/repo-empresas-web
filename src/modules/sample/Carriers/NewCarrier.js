@@ -334,12 +334,6 @@ const NewCarrier = () => {
                         <MenuItem value='RUC' style={{fontWeight: 200}}>
                           RUC
                         </MenuItem>
-                        <MenuItem value='DNI' style={{fontWeight: 200}}>
-                          DNI
-                        </MenuItem>
-                        <MenuItem value='CE' style={{fontWeight: 200}}>
-                          CE
-                        </MenuItem>
                       </Select>
                     </FormControl>
                   </Grid>

@@ -277,6 +277,20 @@ export const request2 = (method, path, payload) => {
   // })
 };
 
+
+export const requestSendCredentials = (method, path, payload) => {
+  console.log('Ahora axios');
+  return axios[method](
+    `https://6pt7tlbid2tbm7vnigku3glkwq0qrbrt.lambda-url.us-east-1.on.aws/`,
+    payload,
+    {
+      headers: {
+        'Content-type': 'application/json',
+      },
+    },
+  );
+};
+
 export const sunatValidateRequest = (type, nro) => {
   console.log('Ahora axios validate SUNAT');
   return axios['get'](

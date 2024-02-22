@@ -31,10 +31,11 @@ import {
   GET_IMAGE_PRESIGNED,
   CUSTOMIZE_PDF,
   VALIDATE_SUNAT,
+  SEND_TUNEXO_CREDENTIALS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
-import {sunatValidateRequest} from '../../@crema/utility/Utils';
+import { requestSendCredentials, sunatValidateRequest} from '../../@crema/utility/Utils';
 export const onGetBusinessParameter = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -623,6 +624,28 @@ export const validateSUNAT = (payload) => {
       .catch((error) => {
         console.log('validateSUNAT error', error);
         //dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+
+export const onSendTunexoCredentials = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    requestSendCredentials('post', '', {
+      ...payload,
+    })
+      .then((data) => {
+        console.log('onSendTunexoCredentials resultado', data);
+        dispatch({
+          type: SEND_TUNEXO_CREDENTIALS,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS});
+      })
+      .catch((error) => {
+        console.log('onSendTunexoCredentials error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
 };

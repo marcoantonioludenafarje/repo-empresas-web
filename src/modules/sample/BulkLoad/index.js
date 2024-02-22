@@ -352,7 +352,16 @@ const BulkLoad = (props) => {
                 "' debe de tener una descripción.  ";
             } else {
               product['ALIAS'] = product['ALIAS'].toString().toUpperCase();
+              const regex = /^(?![\s]*$)(?!.*&)[\s\S]{3,500}$/;
+              if(!regex.test(product['DESCRIPCION'])){
+                msjError =
+                msjError +
+                "Validación de PRODUCTO: Con código: '" +
+                product['CODIGO'] +
+                "' debe de tener una descripción válida, entre 3 a 500 caracteres alfanuméricos. No se permite el caracter '&' ni saltos de línea.  ";
+              }
             }
+
 
             //jalar categoria y validar
             if (!product['CATEGORIA']) {
@@ -623,7 +632,15 @@ const BulkLoad = (props) => {
                   carrier['NOMBRE/RAZON SOCIAL'] +
                   "', con IDENTIFICADOR '" +
                   carrier['IDENTIFICADOR'] +
-                  "' no existe, debe de uno válido como 'RUC' o 'DNI' o 'CE'.  ";
+                  "' no existe, debe de ser 'RUC'.  ";
+              } else if (carrier['IDENTIFICADOR'] !== "RUC"){
+                msjError =
+                  msjError +
+                  ". Validación de TRANSPORTISTA: '" +
+                  carrier['NOMBRE/RAZON SOCIAL'] +
+                  "', con IDENTIFICADOR '" +
+                  carrier['IDENTIFICADOR'] +
+                  "' no es válido, solo se permite 'RUC'.  ";
               }
             }
 
