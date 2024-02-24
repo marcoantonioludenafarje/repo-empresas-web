@@ -9,7 +9,8 @@ import {useThemeContext} from '../../../../../utility/AppContextProvider/ThemeCo
 import AppMessages from '../../../../AppMessages';
 import AppNotifications from '../../../../AppNotifications';
 import UserInfo from '../UserInfo';
-import Logo from '../../../../../../assets/icon/bannerTuNexoInventarios.svg';
+import Logo from '../../../../../../assets/icon/bannerTuNexoFactElect.svg';
+//import Logo from '../../../../../../assets/icon/bannerTuNexoInventarios.svg';
 
 const BucketMinibar = () => {
   const {theme} = useThemeContext();

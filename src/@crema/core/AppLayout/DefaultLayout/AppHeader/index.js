@@ -56,8 +56,8 @@ import NewRequest from '../../../../../modules/sample/Request/NewRequest';
 import RequestIcon from '../../../../../assets/icon/requestIcon.svg';
 import NotificationEmpty from '../../../../../assets/icon/notificationEmpty.svg';
 import NotificationNonEmpty from '../../../../../assets/icon/notificationNonEmpty.svg';
-import NotificationOFF from '../../../../../assets/icon/notificationOFF.svg';
-import NotificationON from '../../../../../assets/icon/notificationON.svg';
+import NotificationOFF from '../../../../../assets/icon/notificationOFF1.svg';
+import NotificationON from '../../../../../assets/icon/notificationON1.svg';
 import ManualIcon from '../../../../../assets/icon/manual.svg';
 
 import {
