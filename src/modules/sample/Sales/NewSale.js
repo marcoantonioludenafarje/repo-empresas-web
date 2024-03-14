@@ -639,7 +639,7 @@ const NewSale = (props) => {
                 referralGuideSerial: getValueField('referralGuide').value
                   ? getValueField('referralGuide').value
                   : '',
-                dueDate: specialFormatToSunat(value),
+                dueDate: specialFormatToSunat(value + 1 * 24 * 60 * 60 * 1000),
                 observation: getValueField('observation').value
                   ? getValueField('observation').value
                   : '',

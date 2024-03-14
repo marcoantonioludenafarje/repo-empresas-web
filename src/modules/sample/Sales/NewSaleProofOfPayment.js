@@ -657,7 +657,7 @@ const NewSaleProofOfPayment = (props) => {
               codMovement: query.codMovement,
               saleFolderMovement: query.folderMovement,
               referralGuideSerial: data.guide ? data.guide : '',
-              dueDate: specialFormatToSunat(value),
+              dueDate: specialFormatToSunat(value + 1 * 24 * 60 * 60 * 1000),
               observation: data.observation ? data.observation : '',
               igv: isIgvChecked ? Number(igvDefault) : 0,
               productsInfo: selectedProducts.map((obj) => {

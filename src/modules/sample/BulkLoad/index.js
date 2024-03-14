@@ -919,6 +919,30 @@ const BulkLoad = (props) => {
       setShowAlert(true);
     }
   };
+
+  
+  const onChangeHandler2 = (event) => {
+    if (excelOrCsv && excelOrCsv.target.files) {
+      const reader = new FileReader();
+      reader.onload = (excelOrCsv) => {
+        const bstr = excelOrCsv.target.result;
+        const wb = XLSX.read(bstr, {type: 'binary'});
+        console.log('wb', wb);
+        const caeSheet = wb.Sheets['Reporte'];
+        const caeData = XLSX.utils.sheet_to_json(caeSheet, {
+          header: 1,
+        });
+        const caeDataV2 = processData(caeData);
+
+        console.log('caeDataV2', caeDataV2);
+      };
+      reader.readAsBinaryString(excelOrCsv.target.files[0]);
+    } else {
+      msjError =
+        'Validaciones de Carga Catálogo: Archivo no existe, verifique que lo haya cargado';
+      setShowAlert(true);
+    }
+  };
   const handleFile = (event) => {
     console.log('evento', event);
     setExcelOrCsvName(

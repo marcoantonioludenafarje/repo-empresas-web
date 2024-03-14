@@ -996,16 +996,16 @@ const PredefinedRoutes = () => {
                                 <>
                                   <TableRow key={index2}>
                                     <TableCell>
-                                      {route.arrivalPointAddress}
-                                    </TableCell>
-                                    <TableCell>
-                                      {route.arrivalPointUbigeo}
-                                    </TableCell>
-                                    <TableCell>
                                       {route.startingPointAddress}
                                     </TableCell>
                                     <TableCell>
                                       {route.startingPointUbigeo}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.arrivalPointAddress}
+                                    </TableCell>
+                                    <TableCell>
+                                      {route.arrivalPointUbigeo}
                                     </TableCell>
                                     <TableCell>
                                       {route.driverDocumentType &&

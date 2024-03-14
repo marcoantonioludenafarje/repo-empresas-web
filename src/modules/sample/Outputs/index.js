@@ -2530,10 +2530,6 @@ const OutputsTable = (props) => {
           // !selectedOutput.existReceipt &&
           // !selectedOutput.existSellTicket
           <MenuItem
-            disabled={
-              userDataRes.merchantSelected &&
-              !userDataRes.merchantSelected.isBillingEnabled
-            }
             onClick={getInvoice}
           >
             <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />

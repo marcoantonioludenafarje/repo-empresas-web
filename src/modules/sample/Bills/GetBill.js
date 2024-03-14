@@ -276,6 +276,7 @@ const NewOutput = (props) => {
     money_unit: money_unit,
     clientEmail: query.clientEmail,
     transactionNumber: '',
+    quota: 1,
   };
   const actualValues = {
     nroBill: '',
@@ -287,6 +288,7 @@ const NewOutput = (props) => {
     totalField: '',
     totalFieldIgv: '',
     money_unit: '',
+    quota: 1,
   };
   let listPayload = {
     request: {
@@ -478,6 +480,13 @@ const NewOutput = (props) => {
   //CALENDARIO
   const [value, setValue] = React.useState(
     Date.now() /* Number(query.createdAt) */,
+  );
+  const [quotas, setQuotas] = React.useState(
+    [{
+      date:Date.now(),
+      amount: 0,
+      nro: 1   
+    }]
   );
   const [value2, setValue2] = React.useState(
     query.deletedAt ? query.deletedAt : Date.now(),
@@ -1371,7 +1380,7 @@ const NewOutput = (props) => {
                         defaultValue='1'
                         name='quota'
                         labelId='quota-label'
-                        label='Moneda'
+                        label='quota'
                         onChange={handleActualData}
                       >
                         {Array(12)

@@ -1580,114 +1580,6 @@ const GetReferralGuide = (props) => {
                     />
                   </Grid>
 
-                  <Grid xs={6} sm={8} sx={{px: 1, mt: 2}}>
-                    <AppTextField
-                      label='Destinatario'
-                      name='addressee'
-                      disabled
-                      variant='outlined'
-                      sx={{
-                        width: '100%',
-                        '& .MuiInputBase-input': {
-                          fontSize: 14,
-                        },
-                        my: 2,
-                        mx: 0,
-                      }}
-                    />
-                  </Grid>
-                  <Grid xs={12} sm={4} sx={{px: 1, mt: 2}}>
-                    <FormControl fullWidth sx={{my: 2}}>
-                      <InputLabel
-                        id='transportMode-label'
-                        style={{fontWeight: 200}}
-                      >
-                        Modalidad de transporte
-                      </InputLabel>
-                      <Select
-                        sx={{textAlign: 'left'}}
-                        onChange={(event) => {
-                          setTransportModeVal(event.target.value);
-
-                          if (event.target.value == 'privateTransportation') {
-                            const selfCarrier = {
-                              nameContact:
-                                userDataRes.merchantSelected
-                                  .denominationMerchant,
-                              typeDocumentCarrier:
-                                userDataRes.merchantSelected
-                                  .typeDocumentMerchant,
-                              extraInformationCarrier: 'Info para Guía',
-                              emailContact:
-                                userDataRes.merchantSelected.emailAdminUserId,
-                              carrierId: `${
-                                userDataRes.merchantSelected
-                                  .typeDocumentMerchant
-                              }-${
-                                userDataRes.merchantSelected
-                                  .numberDocumentMerchant
-                              }-${String(
-                                userDataRes.merchantSelected
-                                  .denominationMerchant,
-                              )
-                                .toLowerCase()
-                                .trim()
-                                .replace(/\s+/g, '')}-${
-                                userDataRes.merchantSelected.merchantId
-                              }`,
-                              addressCarrier:
-                                userDataRes.merchantSelected.addressMerchant,
-                              numberContact: '51994683152',
-                              emailCarrier:
-                                userDataRes.merchantSelected.emailAdminUserId,
-                              numberDocumentCarrier:
-                                userDataRes.merchantSelected
-                                  .numberDocumentMerchant,
-                              denominationCarrier:
-                                userDataRes.merchantSelected
-                                  .denominationMerchant,
-                              merchantId:
-                                userDataRes.merchantSelected.merchantId,
-                            };
-                            setSelectedCarrier(selfCarrier);
-                            setExistCarrier(true);
-                          } else {
-                            setSelectedCarrier({});
-                            setExistCarrier(false);
-                          }
-                          console.log('modo de transporte', event.target.value);
-                        }}
-                        name='transportMode'
-                        labelId='transportMode-label'
-                        label='Modalidad de transporte'
-                        value={transportModeVal}
-                      >
-                        <MenuItem
-                          value='privateTransportation'
-                          style={{fontWeight: 200}}
-                        >
-                          Transporte privado
-                        </MenuItem>
-                        <MenuItem
-                          value='publicTransportation'
-                          style={{fontWeight: 200}}
-                        >
-                          Transporte público
-                        </MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Grid>
-
-                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
-                    <Button
-                      sx={{width: 1}}
-                      variant='outlined'
-                      onClick={() => openSelectAddressee()}
-                      //disabled={!selectedDeliveryState}
-                    >
-                      Seleccionar Destinatario (Cliente)
-                    </Button>
-                  </Grid>
                   <Grid xs={12} sm={8} sx={{px: 1, mt: 2}}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel id='reason-label' style={{fontWeight: 200}}>
@@ -1793,6 +1685,7 @@ const GetReferralGuide = (props) => {
                       }}
                     />
                   </Grid>
+                  
                   {reasonVal == 'others' ? (
                     <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                       <AppLowerCaseTextField
@@ -1810,6 +1703,114 @@ const GetReferralGuide = (props) => {
                       />
                     </Grid>
                   ) : null}
+                  <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
+                    <Button
+                      sx={{width: 1}}
+                      variant='outlined'
+                      onClick={() => openSelectAddressee()}
+                      //disabled={!selectedDeliveryState}
+                    >
+                      {reasonVal == 'buy' ? "Seleccionar Proveedor" : "Seleccionar Destinatario (Cliente)"}
+                    </Button>
+                  </Grid>
+                  <Grid xs={6} sm={8} sx={{px: 1, mt: 2}}>
+                    <AppTextField
+                      label={reasonVal == 'buy' ? 'Proveedor' : 'Destinatario'}
+                      name='addressee'
+                      disabled
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                        mx: 0,
+                      }}
+                    />
+                  </Grid>
+                  <Grid xs={12} sm={4} sx={{px: 1, mt: 2}}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='transportMode-label'
+                        style={{fontWeight: 200}}
+                      >
+                        Modalidad de transporte
+                      </InputLabel>
+                      <Select
+                        sx={{textAlign: 'left'}}
+                        onChange={(event) => {
+                          setTransportModeVal(event.target.value);
+
+                          if (event.target.value == 'privateTransportation') {
+                            const selfCarrier = {
+                              nameContact:
+                                userDataRes.merchantSelected
+                                  .denominationMerchant,
+                              typeDocumentCarrier:
+                                userDataRes.merchantSelected
+                                  .typeDocumentMerchant,
+                              extraInformationCarrier: 'Info para Guía',
+                              emailContact:
+                                userDataRes.merchantSelected.emailAdminUserId,
+                              carrierId: `${
+                                userDataRes.merchantSelected
+                                  .typeDocumentMerchant
+                              }-${
+                                userDataRes.merchantSelected
+                                  .numberDocumentMerchant
+                              }-${String(
+                                userDataRes.merchantSelected
+                                  .denominationMerchant,
+                              )
+                                .toLowerCase()
+                                .trim()
+                                .replace(/\s+/g, '')}-${
+                                userDataRes.merchantSelected.merchantId
+                              }`,
+                              addressCarrier:
+                                userDataRes.merchantSelected.addressMerchant,
+                              numberContact: '51994683152',
+                              emailCarrier:
+                                userDataRes.merchantSelected.emailAdminUserId,
+                              numberDocumentCarrier:
+                                userDataRes.merchantSelected
+                                  .numberDocumentMerchant,
+                              denominationCarrier:
+                                userDataRes.merchantSelected
+                                  .denominationMerchant,
+                              merchantId:
+                                userDataRes.merchantSelected.merchantId,
+                            };
+                            setSelectedCarrier(selfCarrier);
+                            setExistCarrier(true);
+                          } else {
+                            setSelectedCarrier({});
+                            setExistCarrier(false);
+                          }
+                          console.log('modo de transporte', event.target.value);
+                        }}
+                        name='transportMode'
+                        labelId='transportMode-label'
+                        label='Modalidad de transporte'
+                        value={transportModeVal}
+                      >
+                        <MenuItem
+                          value='privateTransportation'
+                          style={{fontWeight: 200}}
+                        >
+                          Transporte privado
+                        </MenuItem>
+                        <MenuItem
+                          value='publicTransportation'
+                          style={{fontWeight: 200}}
+                        >
+                          Transporte público
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
                 </Grid>
 
                 <Divider sx={{mt: 2, mb: 4}} />

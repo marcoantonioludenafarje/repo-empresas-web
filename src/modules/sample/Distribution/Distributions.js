@@ -1017,15 +1017,6 @@ const FinancesTable = (props) => {
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {deliveryItem.arrivalPointAddress}
-                                </TableCell>
-                                <TableCell>
-                                  {deliveryItem.arrivalPointUbigeo}
-                                </TableCell>
-                                <TableCell>
-                                  {deliveryItem.arrivalInternalCode || ''}
-                                </TableCell>
-                                <TableCell>
                                   {deliveryItem.startingPointAddress}
                                 </TableCell>
                                 <TableCell>
@@ -1033,6 +1024,15 @@ const FinancesTable = (props) => {
                                 </TableCell>
                                 <TableCell>
                                   {deliveryItem.startingInternalCode || ''}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.arrivalPointAddress}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.arrivalPointUbigeo}
+                                </TableCell>
+                                <TableCell>
+                                  {deliveryItem.arrivalInternalCode || ''}
                                 </TableCell>
                                 <TableCell>
                                   {deliveryItem.driverDocumentType &&
