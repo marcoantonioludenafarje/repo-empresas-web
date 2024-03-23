@@ -491,8 +491,9 @@ const Distribution = (props) => {
                     description: prod.description,
                     unitMeasure: prod.unitMeasure,
                     quantityMovement: prod.count,
+                    sumQuantity: prod.sumQuantity || 0,
                     weight: prod.weight,
-                    businessProductCode: prod.businessProductCode,
+                    typeProduct: prod.typeProduct || null
                   };
                 }),
               };

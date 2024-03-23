@@ -691,6 +691,7 @@ const Distribution = (props) => {
                         : null,
                     count: product.quantity,
                     weight: productInfo['PESO (Kg)'],
+                    sumQuantity: productInfo['CANTIDAD UMS'] || productInfo['CANTIDAD']
                   });
                 }
                 totalWeight +=
