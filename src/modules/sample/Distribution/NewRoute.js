@@ -327,6 +327,7 @@ const Distribution = (props) => {
                 totalGrossWeight: obj.totalWeight,
                 numberOfPackages: obj.numberPackages,
                 observationDelivery: obj.observationDelivery,
+                grouper: obj.grouper || "",
                 startingPointAddress: obj.startingAddress,
                 startingInternalCode: obj.startingInternalCode || '',
                 startingPointUbigeo: completeWithZeros(
@@ -738,7 +739,8 @@ const Distribution = (props) => {
           products: productsInfo,
           numberPackages: '1',
           totalWeight: totalWeight,
-          observationDelivery: item['OBSERVACION'],
+          observationDelivery: item['OBSERVACION'] || "",
+          grouper: item['AGRUPADOR'],
           generateReferralGuide:
             item['DESEA GENERAR GUIA REMISION?'] == 'SI' ? true : false,
           transferStartDate: 1676155434735,

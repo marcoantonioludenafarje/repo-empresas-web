@@ -455,6 +455,7 @@ const Distribution = (props) => {
                 totalGrossWeight: route.totalWeight,
                 numberOfPackages: route.numberPackages,
                 observationDelivery: route.observationDelivery,
+                grouper: route.grouper || "",
                 reasonForTransfer: route.reasonForTransfer || 'sale',
                 startingPointAddress: route.startingAddress,
                 startingInternalCode: route.startingInternalCode || '',
