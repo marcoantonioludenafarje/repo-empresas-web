@@ -649,6 +649,7 @@ const ReferralGuidesTable = (props) => {
           searchByBill: null,
           movementHeaderId: null,
           outputId: null,
+          observation: valueObservation,
         },
       },
     };
