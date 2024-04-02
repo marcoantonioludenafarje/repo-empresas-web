@@ -265,7 +265,8 @@ const GetReferralGuide = (props) => {
   //PDF
   const [pdfScale, setPdfScale] = React.useState('100');
   const [weightFields, setWeightFields] = React.useState(true);
-  const [complianceSeal, setComplianceSeal] = React.useState(true);
+  const [complianceSeal, setComplianceSeal] = React.useState(false);
+  const [complianceSealOnlySign, setComplianceSealOnlySign] = React.useState(false);
   let changeValueField;
 
   const {listDistribution} = useSelector(({movements}) => movements);
@@ -546,6 +547,11 @@ const GetReferralGuide = (props) => {
         setComplianceSeal(false);
       } else {
         setComplianceSeal(true);
+      }
+      if (referralGuideParameter.complianceSealOnlySign == false) {
+        setComplianceSealOnlySign(false);
+      } else {
+        setComplianceSealOnlySign(true);
       }
       if (referralGuideParameter.pdfScale) {
         setPdfScale(referralGuideParameter.pdfScale);
@@ -992,6 +998,7 @@ const GetReferralGuide = (props) => {
               userDataRes.merchantSelected.denominationMerchant,
             weightFields: weightFields,
             complianceSeal: complianceSeal,
+            complianceSealOnlySign: complianceSealOnlySign,
             pdfScale: pdfScale,
           },
         },
@@ -1462,6 +1469,7 @@ const GetReferralGuide = (props) => {
             userDataRes.merchantSelected.denominationMerchant,
           weightFields: weightFields,
           complianceSeal: complianceSeal,
+          complianceSealOnlySign: complianceSealOnlySign,
           pdfScale: pdfScale,
         },
       },
