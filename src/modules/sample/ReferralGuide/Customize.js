@@ -619,7 +619,6 @@ const Customize = (props) => {
                       color='primary'
                       onChange={() => {
                         setComplianceSeal(!complianceSeal);
-                        setComplianceSealOnlySign(!complianceSealOnlySign);
                       }}
                     >
                       Sello de Conformidad
@@ -632,7 +631,6 @@ const Customize = (props) => {
                       color='primary'
                       onChange={() => {
                         setComplianceSealOnlySign(!complianceSealOnlySign);
-                        setComplianceSeal(!complianceSeal);
                       }}
                     >
                       Conformidad Solo Firma
