@@ -152,6 +152,7 @@ const Customize = (props) => {
   const [pdfScale, setPdfScale] = React.useState('100');
   const [weightFields, setWeightFields] = React.useState(false);
   const [complianceSeal, setComplianceSeal] = React.useState(false);
+  const [complianceSealOnlySign, setComplianceSealOnlySign] = React.useState(false);
 
 
   //PREVISUALIZE
@@ -244,6 +245,11 @@ const Customize = (props) => {
         setComplianceSeal(false);
       } else {
         setComplianceSeal(true);
+      }
+      if (!referralGuideParameter.complianceSealOnlySign) {
+        setComplianceSealOnlySign(false);
+      } else {
+        setComplianceSealOnlySign(true);
       }
       if (referralGuideParameter.pdfScale) {
         setPdfScale(referralGuideParameter.pdfScale);
@@ -364,6 +370,7 @@ const Customize = (props) => {
           weightFields: weightFields,
           pdfScale: pdfScale,
           complianceSeal: complianceSeal,
+          complianceSealOnlySign: complianceSealOnlySign
         },
       },
     };
@@ -393,6 +400,7 @@ const Customize = (props) => {
         obj.weightFields = weightFields;
         obj.pdfScale = pdfScale;
         obj.complianceSeal = complianceSeal
+        obj.complianceSealOnlySign = complianceSealOnlySign
       }
       return obj;
     });
@@ -409,6 +417,7 @@ const Customize = (props) => {
             weightFields: weightFields,
             pdfScale: pdfScale,
             complianceSeal: complianceSeal,
+            complianceSealOnlySign: complianceSealOnlySign
           },
         },
       },
@@ -610,9 +619,23 @@ const Customize = (props) => {
                       color='primary'
                       onChange={() => {
                         setComplianceSeal(!complianceSeal);
+                        setComplianceSealOnlySign(!complianceSealOnlySign);
                       }}
                     >
                       Sello de Conformidad
+                    </ToggleButton>
+
+                    <ToggleButton
+                      sx={{ml: 2}}
+                      value='check'
+                      selected={complianceSealOnlySign}
+                      color='primary'
+                      onChange={() => {
+                        setComplianceSealOnlySign(!complianceSealOnlySign);
+                        setComplianceSeal(!complianceSeal);
+                      }}
+                    >
+                      Conformidad Solo Firma
                     </ToggleButton>
 
                   </Stack>
