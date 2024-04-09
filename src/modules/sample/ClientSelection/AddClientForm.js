@@ -215,7 +215,36 @@ const AddClientForm = ({sendData}) => {
                       <ManageSearchIcon />
                     </IconButton>
                   </Grid>
-
+                  <Grid
+                    sx={{
+                      justifyContent: 'center',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                    item
+                    xs={12}
+                    >
+                    <Collapse in={showAlert}>
+                      <Alert
+                        severity='error'
+                        action={
+                          <IconButton
+                            aria-label='close'
+                            color='inherit'
+                            size='small'
+                            onClick={() => {
+                              setShowAlert(false);
+                            }}
+                          >
+                            <CloseIcon fontSize='inherit' />
+                          </IconButton>
+                        }
+                        sx={{mb: 2}}
+                      >
+                        Por favor selecciona un cliente.
+                      </Alert>
+                    </Collapse>
+                  </Grid>
                   <Grid
                     sx={{
                       justifyContent: 'center',
@@ -278,26 +307,6 @@ const AddClientForm = ({sendData}) => {
           );
         }}
       </Formik>
-      <Collapse in={showAlert}>
-        <Alert
-          severity='error'
-          action={
-            <IconButton
-              aria-label='close'
-              color='inherit'
-              size='small'
-              onClick={() => {
-                setShowAlert(false);
-              }}
-            >
-              <CloseIcon fontSize='inherit' />
-            </IconButton>
-          }
-          sx={{mb: 2}}
-        >
-          Por favor selecciona un cliente.
-        </Alert>
-      </Collapse>
     </>
   );
 };

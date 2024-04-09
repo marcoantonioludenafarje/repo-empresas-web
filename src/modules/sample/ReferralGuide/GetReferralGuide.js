@@ -1548,7 +1548,7 @@ const GetReferralGuide = (props) => {
                       // disabled
                       label='Fecha de emisión'
                       minDate={new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)} // establece la fecha mínima en dos días a partir de la actual
-                      maxDate={new Date(Date.now() + 1 * 24 * 60 * 60 * 1000)}
+                      maxDate={new Date(Date.now())}
                       inputFormat='dd/MM/yyyy'
                       name='issueDate'
                       onChange={(newValue) => {
