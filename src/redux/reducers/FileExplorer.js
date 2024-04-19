@@ -8,14 +8,22 @@ import {
   DOWNLOAD_ZIP,
   UPLOAD_FILE,
   RESET_FILEEXPLORER,
+  COLLATE_RECORDS_AND_GUIDES,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
   list: [],
+  collateRecordsAndGuidesRes: "",
 };
 
 const dataReducer = (state = INIT_STATE, action) => {
   switch (action.type) {
+    case COLLATE_RECORDS_AND_GUIDES:
+      console.log('url del collate', action.payload);
+      return {
+        ...state,
+        collateRecordsAndGuidesRes: action.payload.message
+      }
     case GET_DATA:
       console.log('data de reducer GET_DATA', action.payload);
       return {

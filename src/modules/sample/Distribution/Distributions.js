@@ -171,6 +171,8 @@ const FinancesTable = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [records, setRecords] = React.useState('');
   const [openEndCollate, setOpenEndCollate] = React.useState(false);
+  const [randomNumber, setRandomNumber] = React.useState("0");
+  const [loading, setLoading] = React.useState(true);
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -192,7 +194,7 @@ const FinancesTable = (props) => {
 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-
+  const {collateRecordsAndGuidesRes} = useSelector(({fileExplorer}) => fileExplorer);
   const [distributionSelected, setDistributionSelected] = React.useState(null);
   const [indexDistributionSelected, setIndexDistributionSelected] =
     React.useState(null);
@@ -405,17 +407,27 @@ const FinancesTable = (props) => {
   };
   const sendCollate = ()=>{
     if(listDistribution[indexDistributionSelected].deliveries !== 0){
+      const random = (Math.floor(Math.random() * (10000 - 1)) + 1);
+      setRandomNumber(random)
       toCollateRecordsAndGuides({
         request: {
           payload: {
             deliveries: listDistribution[indexDistributionSelected].deliveries,
-            pdf64: base64.split("base64,")[1]
+            pdf64: base64.split("base64,")[1],
+            randomNumber: random
           }
         }
       })
     }
     setOpenCollateRecordsAndGuides(false)
     setOpenEndCollate(true)
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 60000);
+
+    // Limpia el temporizador si el componente se desmonta
+    return () => clearTimeout(timer);
   };
   const getReferralGuide = () => {
     console.log('Selected distribution', selectedDistribution);
@@ -1024,8 +1036,29 @@ const FinancesTable = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{ fontSize: '1.5em' }} id='alert-dialog-title'>
-          {'El PDF se guardará en los Archivos de la distribución en unos minutos'}
+          {'El PDF se guardará en los Archivos de la distribución en un minuto.'}
         </DialogTitle>
+        
+        <DialogContent>
+          <Stack
+            sx={{ mt: 2 }}
+            direction={'column'}
+            alignItems='center' // Añade esta línea
+            className={classes.stack}
+          >
+            {loading && <CircularProgress />}
+            <Button
+              color='secondary'
+              variant='outlined'
+              disabled={loading}
+              sx={{mt: 2}}
+              onClick={() => window.open(`${listDistribution[indexDistributionSelected].deliveries[0].linkPdf.split("pdf/")[0]}ActasConsolidado-${randomNumber}.pdf`)}
+            >
+              Descargar
+            </Button>
+          </Stack>
+        </DialogContent>
+
         <DialogActions sx={{ justifyContent: 'center' }}>
           <Button
             variant='outlined'
