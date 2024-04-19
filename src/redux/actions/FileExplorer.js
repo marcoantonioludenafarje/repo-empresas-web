@@ -8,6 +8,7 @@ import {
   FETCH_START,
   FETCH_SUCCESS,
   FETCH_ERROR,
+  COLLATE_RECORDS_AND_GUIDES,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
@@ -37,6 +38,21 @@ export const generatePresigned = (payload) => {
       })
       .catch((error) => {
         console.log('generatePresigned error', error);
+        dispatch({type: FETCH_ERROR, payload: 'error'});
+      });
+  };
+};
+export const collateRecordsAndGuides = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/utility/distribution/consolidatedPdf', {body: payload})
+      .then((data) => {
+        console.log('collateRecordsAndGuides resultado', data);
+        dispatch({type: COLLATE_RECORDS_AND_GUIDES, payload: data.response.payload});
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('collateRecordsAndGuides error', error);
         dispatch({type: FETCH_ERROR, payload: 'error'});
       });
   };

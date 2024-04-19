@@ -350,6 +350,8 @@ export const SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION =
   'set_list_route_predefined_____page_new_distribution';
 export const SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION =
   'set_deliveries_in_route_predefined_____page_new_distribution';
+export const COLLATE_RECORDS_AND_GUIDES = 
+  'collate_records_and_guides';
 
 //RESETS
 export const RESET_CLIENTS = 'reset_clients';
