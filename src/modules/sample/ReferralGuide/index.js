@@ -110,6 +110,7 @@ import {
 const XLSX = require('xlsx');
 
 import { normalizeConfig } from 'next/dist/server/config-shared';
+import BatchConsultCountdown from './batchConsultCountdown';
 //ESTILOS
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -500,61 +501,7 @@ const ReferralGuidesTable = (props) => {
 
       toGetUserData(getUserDataPayload);
     }
-    const timerInterval = 1 * 60 * 1000; // 1 minuto en milisegundos
-    const activeInterval = 4 * 60 * 1000; // 4 minutos en milisegundos
-    //const baseTime = new Date().getTime(); // Hora actual en milisegundos
-    const baseTime = new Date(); // -5 UTC
-    baseTime.setHours(1);
-    baseTime.setMinutes(36);
-    baseTime.setSeconds(22);
-    baseTime.setMilliseconds(921);
-    const offsetMinutes = -300; // Offset de tiempo para GMT-5 (horario estándar del este de los Estados Unidos)
-    const offsetMilliseconds = offsetMinutes * 60 * 1000; // Convertir el offset a milisegundos
-
-    baseTime.setUTCMinutes(baseTime.getUTCMinutes() + offsetMinutes); // Ajustar el offset de tiempo
-
-    console.log('baseTime2');
-    console.log('baseTime', baseTime);
-    const checkTime = () => {
-      const currentTime = new Date().getTime();
-      const elapsedTime = currentTime - baseTime;
-      setCountdown(
-        (timerInterval +
-          activeInterval -
-          (elapsedTime % (timerInterval + activeInterval))) /
-          1000,
-      );
-      if (elapsedTime % (timerInterval + activeInterval) < timerInterval) {
-        setBatchConsultIsActive(false);
-      } else {
-        setBatchConsultIsActive(true);
-      }
-    };
-
-    const intervalId = setInterval(checkTime, 1000); // Verificar el tiempo cada segundo
-
-    return () => {
-      clearInterval(intervalId); // Limpiar el intervalo cuando el componente se desmonte
-    };
   }, []);
-  // useEffect(()=> {
-  //   if(batchConsultIsActive){
-  //     setCountdown(240)
-  //   }
-  // },[batchConsultIsActive])
-  useEffect(() => {
-    let intervalId;
-
-    if (countdown > 0) {
-      intervalId = setInterval(() => {
-        setCountdown((prevCountdown) => prevCountdown - 1);
-      }, 1000);
-    }
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [countdown]);
   useEffect(() => {
     if (userDataRes) {
       setLoading(true);
@@ -1221,22 +1168,8 @@ const ReferralGuidesTable = (props) => {
             Exportar todo
           </Button>
         ) : null}
-        <Button
-          //variant='outlined'
-          //startIcon={<FindReplaceIcon />}
-          //onClick={batchConsultReferralGuide}
-          disabled={isLoading || !batchConsultIsActive}
-          color='success'
-          disableRipple
-          disableFocusRipple
-          disableElevation
-          sx={{cursor: 'default'}}
-        >
-          {renderTimer(countdown)}
-          {(isLoading || !batchConsultIsActive) && (
-            <CircularProgress sx={{ml: 2}} size={24} />
-          )}
-        </Button>
+        
+        <BatchConsultCountdown loading={isLoading}/>
       </Stack>
       <Dialog
         open={openStatus}

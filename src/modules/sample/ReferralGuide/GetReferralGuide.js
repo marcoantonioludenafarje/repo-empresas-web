@@ -1718,7 +1718,7 @@ const GetReferralGuide = (props) => {
                       onClick={() => openSelectAddressee()}
                       //disabled={!selectedDeliveryState}
                     >
-                      {reasonVal == 'buy' ? "Seleccionar Proveedor" : "Seleccionar Destinatario (Cliente)"}
+                      {(reasonVal == 'buy' || reasonVal == 'return') ? "Seleccionar Proveedor" : "Seleccionar Destinatario (Cliente)"}
                     </Button>
                   </Grid>
                   <Grid xs={6} sm={8} sx={{px: 1, mt: 2}}>

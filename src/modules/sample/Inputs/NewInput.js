@@ -698,7 +698,7 @@ const NewInput = (props) => {
         request: {
           payload: {
             initialTime: Date.now() - 2678400000,
-            finalTime: Date.now(),
+            finalTime: Date.now() + 28400000,
             businessProductCode: null,
             movementType: 'INPUT',
             merchantId: userDataRes.merchantSelected.merchantId,

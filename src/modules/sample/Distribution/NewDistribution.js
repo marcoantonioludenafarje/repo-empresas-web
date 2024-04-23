@@ -59,6 +59,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import CachedIcon from '@mui/icons-material/Cached';
 import SettingsIcon from '@mui/icons-material/Settings';
 import CloseIcon from '@mui/icons-material/Close';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import {makeStyles} from '@mui/styles';
 import {Form, Formik} from 'formik';
 import * as yup from 'yup';
@@ -161,6 +162,12 @@ const Distribution = (props) => {
     products: [],
   };
   let changeValueField;
+  let getValueField;
+  let isFormikSubmitting;
+  let setFormikSubmitting;
+  const [openDateComprobation, setOpenDateComprobation] =
+    React.useState(false);
+  const [isDateValidated, setIsDateValidated] = React.useState(false);
   const [initialDate, setInitialDate] = React.useState(new Date());
   const [finalDate, setFinalDate] = React.useState(new Date());
   const [selectedRouteId, setSelectedRouteId] = React.useState('');
@@ -411,110 +418,118 @@ const Distribution = (props) => {
   const defaultValues = {
     observation: '',
   };
-  const handleData = (data, {setSubmitting}) => {
-    setSubmitting(true);
-    dispatch({type: FETCH_SUCCESS, payload: undefined});
-    dispatch({type: FETCH_ERROR, payload: undefined});
-    dispatch({type: GENERATE_DISTRIBUTION, payload: undefined});
-    setExecAll(true);
-    setExecAll(false);
-    console.log(`inicio ${initialDate}, final ${finalDate}`);
-    console.log('final estado', status);
-    console.log('final data', data);
-    console.log('final routes', routes);
-    const finalPayload = {
-      request: {
-        payload: {
-          userActor: userAttributes['sub'],
-          merchantId: userDataRes.merchantSelected.merchantId,
-          denominationMerchant:
-            userDataRes.merchantSelected.denominationMerchant,
-          routeName: selectedRoute.routeName,
-          typePDF: userDataRes.merchantSelected.typeMerchant,
-          folderMovement: selectedOutput?.folderMovement,
-          movementTypeMerchantId: selectedOutput?.movementTypeMerchantId,
-          contableMovementId: selectedOutput?.contableMovementId || '',
-          movementHeaderId: selectedOutput?.movementHeaderId,
-          createdAt: selectedOutput?.createdAt,
-          clientId: selectedOutput
-            ? selectedOutput.clientId
-            : selectedAddressee.clientId,
-          addressee: selectedAddressee,
-          issueDate: dateWithHyphen(issueDate),
-          serial: serial,
-          documentsMovement: selectedOutput?.documentsMovement,
-          startingDate: toDateAndHOurs(initialDate),
-          arrivalDate: toDateAndHOurs(finalDate),
-          reasonForTransfer: 'sale',
-          routerId: selectedRoute.routePredefinedId,
-          typeOfTransport: transportModeVal,
-          observation: data.observation,
-          weightFields: weightFields,
-          complianceSeal: complianceSeal,
-          complianceSealOnlySign: complianceSealOnlySign,
-          pdfScale: pdfScale,
-          deliveries: routes.map((route, index) => {
-            if (route !== undefined) {
-              return {
-                destination: route.startingAddress,
-                localRouteId: index,
-                //transferStartDate: toDateAndHOurs(route.transferStartDate),
-                totalGrossWeight: route.totalWeight,
-                numberOfPackages: route.numberPackages,
-                observationDelivery: route.observationDelivery,
-                grouper: route.grouper || "",
-                reasonForTransfer: route.reasonForTransfer || 'sale',
-                startingPointAddress: route.startingAddress,
-                startingInternalCode: route.startingInternalCode || '',
-                startingPointUbigeo: completeWithZeros(
-                  route.startingPointUbigeo,
-                  6,
-                ),
-                arrivalPointAddress: route.arrivalAddress,
-                arrivalInternalCode: route.arrivalInternalCode || '',
-                arrivalPointUbigeo: completeWithZeros(
-                  route.arrivalPointUbigeo,
-                  6,
-                ),
-                carrierDocumentType: route.carrierDocumentType,
-                carrierDocumentNumber: route.carrierDocumentNumber,
-                carrierDenomination: route.carrierDenomination,
-                driverDenomination: route.driverName,
-                driverLastName: route.driverLastName,
-                driverDocumentType: route.driverDocumentType,
-                driverDocumentNumber: route.driverDocumentNumber,
-                driverLicenseNumber: route.driverLicenseNumber,
-                driverId: '',
-                carrierPlateNumber: route.plate,
-                generateReferralGuide: route.generateReferralGuide,
-                transferStartDate:
-                  typeof route.transferStartDate == 'number'
-                    ? dateWithHyphen(route.transferStartDate)
-                    : route.transferStartDate,
-                productsInfo: route.products.map((prod) => {
-                  return {
-                    productId: prod.productId,
-                    product: prod.product,
-                    description: prod.description,
-                    unitMeasure: prod.unitMeasure,
-                    quantityMovement: prod.count,
-                    sumQuantity: prod.sumQuantity || 0,
-                    weight: prod.weight,
-                    typeProduct: prod.typeProduct || null
-                  };
-                }),
-              };
-            }
-          }),
+  const handleData = (data, validation) => {
+    //setSubmitting(true);
+    let localIsDateValidated = isDateValidated;
+    console.log("localIsDateValidated", localIsDateValidated)
+    if (!localIsDateValidated && validation !== "enabled") {
+      setOpenDateComprobation(true);
+      setFormikSubmitting(false);
+    } else {
+      setFormikSubmitting(true);
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      dispatch({type: GENERATE_DISTRIBUTION, payload: undefined});
+      setExecAll(true);
+      setExecAll(false);
+      console.log(`inicio ${initialDate}, final ${finalDate}`);
+      console.log('final estado', status);
+      console.log('final data', data);
+      console.log('final routes', routes);
+      const finalPayload = {
+        request: {
+          payload: {
+            userActor: userAttributes['sub'],
+            merchantId: userDataRes.merchantSelected.merchantId,
+            denominationMerchant:
+              userDataRes.merchantSelected.denominationMerchant,
+            routeName: selectedRoute.routeName,
+            typePDF: userDataRes.merchantSelected.typeMerchant,
+            folderMovement: selectedOutput?.folderMovement,
+            movementTypeMerchantId: selectedOutput?.movementTypeMerchantId,
+            contableMovementId: selectedOutput?.contableMovementId || '',
+            movementHeaderId: selectedOutput?.movementHeaderId,
+            createdAt: selectedOutput?.createdAt,
+            clientId: selectedOutput
+              ? selectedOutput.clientId
+              : selectedAddressee.clientId,
+            addressee: selectedAddressee,
+            issueDate: dateWithHyphen(issueDate),
+            serial: serial,
+            documentsMovement: selectedOutput?.documentsMovement,
+            startingDate: toDateAndHOurs(initialDate),
+            arrivalDate: toDateAndHOurs(finalDate),
+            reasonForTransfer: 'sale',
+            routerId: selectedRoute.routePredefinedId,
+            typeOfTransport: transportModeVal,
+            observation: getValueField('observation').value,
+            weightFields: weightFields,
+            complianceSeal: complianceSeal,
+            complianceSealOnlySign: complianceSealOnlySign,
+            pdfScale: pdfScale,
+            deliveries: routes.map((route, index) => {
+              if (route !== undefined) {
+                return {
+                  destination: route.startingAddress,
+                  localRouteId: index,
+                  //transferStartDate: toDateAndHOurs(route.transferStartDate),
+                  totalGrossWeight: route.totalWeight,
+                  numberOfPackages: route.numberPackages,
+                  observationDelivery: route.observationDelivery,
+                  grouper: route.grouper || "",
+                  reasonForTransfer: route.reasonForTransfer || 'sale',
+                  startingPointAddress: route.startingAddress,
+                  startingInternalCode: route.startingInternalCode || '',
+                  startingPointUbigeo: completeWithZeros(
+                    route.startingPointUbigeo,
+                    6,
+                  ),
+                  arrivalPointAddress: route.arrivalAddress,
+                  arrivalInternalCode: route.arrivalInternalCode || '',
+                  arrivalPointUbigeo: completeWithZeros(
+                    route.arrivalPointUbigeo,
+                    6,
+                  ),
+                  carrierDocumentType: route.carrierDocumentType,
+                  carrierDocumentNumber: route.carrierDocumentNumber,
+                  carrierDenomination: route.carrierDenomination,
+                  driverDenomination: route.driverName,
+                  driverLastName: route.driverLastName,
+                  driverDocumentType: route.driverDocumentType,
+                  driverDocumentNumber: route.driverDocumentNumber,
+                  driverLicenseNumber: route.driverLicenseNumber,
+                  driverId: '',
+                  carrierPlateNumber: route.plate,
+                  generateReferralGuide: route.generateReferralGuide,
+                  transferStartDate:
+                    typeof route.transferStartDate == 'number'
+                      ? dateWithHyphen(route.transferStartDate)
+                      : route.transferStartDate,
+                  productsInfo: route.products.map((prod) => {
+                    return {
+                      productId: prod.productId,
+                      product: prod.product,
+                      description: prod.description,
+                      unitMeasure: prod.unitMeasure,
+                      quantityMovement: prod.count,
+                      sumQuantity: prod.sumQuantity || 0,
+                      weight: prod.weight,
+                      typeProduct: prod.typeProduct || null
+                    };
+                  }),
+                };
+              }
+            }),
+          },
         },
-      },
-    };
-    console.log('finalPayload', finalPayload);
-    toGenerateDistribution(finalPayload);
-    setOpenStatus(true);
-    setTimeout(() => {
-      setSubmitting(false);
-    }, 2000);
+      };
+      console.log('finalPayload', finalPayload);
+      toGenerateDistribution(finalPayload);
+      setOpenStatus(true);
+      setTimeout(() => {
+        setFormikSubmitting(false);;
+      }, 2000);
+    }
   };
   const openSelectAddressee = () => {
     setOpenAddresseeDialog(true);
@@ -783,8 +798,11 @@ const Distribution = (props) => {
           initialValues={{...defaultValues}}
           onSubmit={handleData}
         >
-          {({isSubmitting, setFieldValue}) => {
+          {({isSubmitting, setFieldValue, getFieldProps, setSubmitting}) => {
             changeValueField = setFieldValue;
+            getValueField = getFieldProps;
+            setFormikSubmitting = setSubmitting;
+            isFormikSubmitting = isSubmitting;
             const arrFolderMovement = query.folderMovement?.split('/');
             return (
               <Form
@@ -1099,6 +1117,7 @@ const Distribution = (props) => {
             <TableHead sx={{backgroundColor: '#ededed'}}>
               <TableRow>
                 <TableCell>Nro</TableCell>
+                <TableCell sx={{backgroundColor: '#ec5353'}}>Fecha Inicio Traslado</TableCell>
                 <TableCell>Dirección de punto de partida</TableCell>
                 <TableCell>Ubigeo de punto de partida</TableCell>
                 <TableCell>CodInterno de punto de partida</TableCell>
@@ -1115,7 +1134,6 @@ const Distribution = (props) => {
                 <TableCell>Observaciones</TableCell>
                 <TableCell>Peso total</TableCell>
                 <TableCell>Número de paquetes</TableCell>
-                <TableCell>Fecha de Entrega</TableCell>
                 <TableCell>Generar Guía de Remisión?</TableCell>
                 <TableCell></TableCell>
               </TableRow>
@@ -1129,6 +1147,9 @@ const Distribution = (props) => {
                       <>
                         <TableRow key={index2}>
                           <TableCell>{index2 + 1}</TableCell>
+                          <TableCell align='center'>
+                            {route.transferStartDate}
+                          </TableCell>
                           <TableCell>
                             {route.startingAddress ||
                               route.startingPointAddress}
@@ -1179,9 +1200,6 @@ const Distribution = (props) => {
                           </TableCell>
                           <TableCell>
                             {route.numberPackages || route.numberOfPackages}
-                          </TableCell>
-                          <TableCell align='center'>
-                            {route.transferStartDate}
                           </TableCell>
                           <TableCell align='center'>
                             {showIconStatus(route.generateReferralGuide, route)}
@@ -1452,6 +1470,51 @@ const Distribution = (props) => {
           </DialogContent>
 
           <DialogActions sx={{justifyContent: 'center'}}></DialogActions>
+        </Dialog>
+      </ClickAwayListener>
+      <ClickAwayListener>
+        <Dialog
+          open={openDateComprobation}
+          onClose={() => setOpenDateComprobation(false)}
+          sx={{textAlign: 'center'}}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+            {'Confirmación de Inicio de Traslado'}
+          </DialogTitle>
+          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+            <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+            <DialogContentText
+              sx={{fontSize: '1.2em', m: 'auto'}}
+              id='alert-dialog-description'
+            >
+              {'Se ha indicado como fecha de inicio el '}
+      <span style={{color: 'red'}}>{routes[0]?.transferStartDate}</span>
+      {', está seguro de continuar?'}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions sx={{justifyContent: 'center'}}>
+            <Button
+              disabled={isFormikSubmitting}
+              variant='outlined'
+              onClick={() => {
+                setFormikSubmitting(true);
+                setIsDateValidated(true);
+                handleData({data1: 'a'}, 'enabled');
+              }}
+            >
+              Sí
+            </Button>
+            <Button
+              variant='outlined'
+              onClick={() => {
+                setOpenDateComprobation(false);
+              }}
+            >
+              No
+            </Button>
+          </DialogActions>
         </Dialog>
       </ClickAwayListener>
       <Modal
