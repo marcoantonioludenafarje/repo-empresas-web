@@ -63,6 +63,8 @@ import {
   fixDecimals,
 } from '../../../Utils/utils';
 const maxLength = 11111111111111111111; //20 caracteres
+import {convertToDate, convertToDateWithoutTime} from '../../../Utils/utils';
+
 const validationSchema = yup.object({
   name: yup
     .string()
@@ -138,7 +140,9 @@ function createData(name, calories, fat, carbs, protein, million) {
   return {name, calories, fat, carbs, protein, million};
 }
 
-const rows = [createData(0.04, 0.03, 0.025, 0.02, 0.015, 0.01)];
+const rows = [createData(0.035, 0.03, 0.025, 0.02, 0.015, 0.01)];
+const rows2 = [createData(0.03, 0.025, 0.02, 0.015, 0.01, 0.005)];
+
 const MyBilling = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
@@ -253,12 +257,21 @@ const MyBilling = (props) => {
   useEffect(() => {
     if (!currentMovementsDocuments && userDataRes) {
       dispatch({type: GET_CURRENT_MOVEMENTS_DOCUMENTS, payload: undefined});
+      let today = new Date();
+      const currentMonth = today.getMonth() + 1;
+      const finalOperationDate = new Date(userDataRes.merchantSelected.plans.find(obj => obj.active == true).finishAt);
+      const finalOperationDay = finalOperationDate.getDate()
+      const initialTime = new Date(`${year}-${currentMonth}-${finalOperationDay}`).getTime()
+      const finalTime =  new Date(`${currentMonth == 12 ? (Number(year) + 1) : year}-${currentMonth == 12 ? 1 : (currentMonth+1)}-${finalOperationDay}`).getTime()
       const toGetCurrentMovementsDocumentsBusinessPayload = {
         request: {
           payload: {
             numberDocumentMerchant: indicadorDesarrollo
               ? '20561337633'
               : userDataRes.merchantSelected.numberDocumentMerchant,
+            merchantId: userDataRes.merchantSelected.merchantId,
+            initialTime: initialTime,
+            finalTime: finalTime,
             year: year,
             month: month,
           },
@@ -271,6 +284,7 @@ const MyBilling = (props) => {
   }, [currentMovementsDocuments || userDataRes]);
   useEffect(() => {
     if (userDataRes && businessParameter && currentMovementsDocuments) {
+      //Para consultar Peso en archivos
       let getDataPayload = {
         request: {
           payload: {
@@ -286,11 +300,9 @@ const MyBilling = (props) => {
       setMonthPrice(`S/${monthPriceStart}.00`);
       let actualDocumentsParam = businessParameter.find(
         (element) => element.abreParametro == 'CURRENT_COUNT_MOVEMENT',
-      ).transactionalSunatDocuments;
+      ).sunatDocuments;
       if (userDataRes.merchantSelected.isBillingEnabled) {
-        actualDocumentsParam = currentMovementsDocuments.find(
-          (element) => element.month == month,
-        ).totalDocuments;
+        actualDocumentsParam = actualDocumentsParam[`${year}`][`${month}`].quantity
       }
 
       setActualDocuments(actualDocumentsParam);
@@ -339,7 +351,7 @@ const MyBilling = (props) => {
       const deuda = userDataRes.merchantSelected.businessDebt;
       setBusinessDebt(deuda);
     }
-  }, [userDataRes && currentMovementsDocuments]);
+  }, [userDataRes && currentMovementsDocuments, month]);
   return businessParameter && currentMovementsDocuments ? (
     <>
       <Card sx={{p: 4}}>
@@ -359,7 +371,7 @@ const MyBilling = (props) => {
             <IntlMessages id='common.myBilling' /> - Mes:{' '}
             {months[getActualMonth()]} del {year}
           </Typography>
-          {/* <FormControl sx={{my: 0, width: 160}}>
+          <FormControl sx={{my: 0, width: 160}}>
             <InputLabel id='moneda-label' style={{fontWeight: 200}}>
               Mes
             </InputLabel>
@@ -393,7 +405,7 @@ const MyBilling = (props) => {
                 );
               })}
             </Select>
-          </FormControl> */}
+          </FormControl>
         </Stack>
         <Divider sx={{my: 2}} />
 
@@ -609,7 +621,7 @@ const MyBilling = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
+                {(rows || rows2).map((row) => (
                   <TableRow
                     key={row.name}
                     sx={{'&:last-child td, &:last-child th': {border: 0}}}

@@ -68,6 +68,7 @@ import {red} from '@mui/material/colors';
 import ExtendExpirationForm from './extend';
 
 import {ClickAwayListener} from '@mui/base';
+import defaultConfig from '@crema/utility/AppContextProvider/defaultConfig';
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
     marginTop: '2rem',
@@ -412,12 +413,29 @@ export default function Views(props) {
               <TableCell>Tipo</TableCell>
               <TableCell>Plan</TableCell>
               <TableCell>Vencimiento Suscripción</TableCell>
+              <TableCell>Exceso Mes</TableCell>
               <TableCell>Integrada a SUNAT?</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredBusiness?.map((row, index) => {
+              const sunatLimit = row.plans? row.plans.find((obj) => obj.active == true).limits.transactionalSunatDocuments : 0
+              const currentSunatDocuments = row.currentCountMovement.sunatDocuments ? row.currentCountMovement.sunatDocuments["2024"]["APRIL"].quantity : 0
+              console.log("sunatLimit", sunatLimit);
+              console.log("currentSunatDocuments", currentSunatDocuments)
+              const excessDocuments = sunatLimit && (currentSunatDocuments > sunatLimit) ? currentSunatDocuments - sunatLimit : 0;
+              const dueTimestamp = row.plans.length && row.plans.find((obj) => obj.active == true).finishAt > 0 ? row.plans.find((obj) => obj.active == true).finishAt : 0
+              const dueDate = row.plans.length &&
+              row.plans.find((obj) => obj.active == true).finishAt > 0
+                ? convertToDateWithoutTime(
+                    row.plans.find((obj) => obj.active == true).finishAt,
+                  )
+                : ''
+              console.log("dueTimestamp", dueTimestamp)
+              console.log("DateNow", Date.now())
+              const todayIsMoreThanDueDate = dueTimestamp - Date.now()
+              console.log("todayIsMoreThanDueDate", todayIsMoreThanDueDate)
               return (
                 <TableRow
                   key={index}
@@ -453,14 +471,15 @@ export default function Views(props) {
                       : ''}
                   </TableCell>
                   <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    style={{maxWidth: '200px', wordWrap: 'break-word', color: todayIsMoreThanDueDate < 0 ? red[500] : defaultConfig}}
                   >
-                    {row.plans.length &&
-                    row.plans.find((obj) => obj.active == true).finishAt > 0
-                      ? convertToDateWithoutTime(
-                          row.plans.find((obj) => obj.active == true).finishAt,
-                        )
-                      : ''}
+                    {dueDate}
+                  </TableCell>
+                  <TableCell
+                    style={{maxWidth: '200px', wordWrap: 'break-word', color: excessDocuments ? red[500] : defaultConfig}}
+
+                  >
+                    {excessDocuments}
                   </TableCell>
                   <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
