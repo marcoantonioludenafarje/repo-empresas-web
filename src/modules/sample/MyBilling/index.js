@@ -174,15 +174,9 @@ const MyBilling = (props) => {
   const {currentMovementsDocuments} = useSelector(({myBilling}) => myBilling);
   console.log('businessParameter', businessParameter);
   const indicadorDesarrollo = false;
-  const existQuery = () => {
-    return query && query !== {} && query.goDirectory;
-  };
 
   console.log('redirectUrl', JSON.parse(localStorage.getItem('redirectUrl')));
-  const existStorage = () => {
-    const data = JSON.parse(localStorage.getItem('redirectUrl'));
-    return data && data !== {} && data.goDirectory && data.path;
-  };
+
   const toGetCurrentMovementsDocumentsBusiness = (payload) => {
     dispatch(getCurrentMovementsDocumentsBusiness(payload));
   };
