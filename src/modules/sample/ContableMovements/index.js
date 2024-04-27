@@ -102,7 +102,7 @@ import {
 import MoreFiltersContableMovements from '../Filters/MoreFiltersContableMovements';
 import {exportExcelTemplateMovementsDetails} from '../../../redux/actions/Finances';
 
-import { normalizeConfig } from 'next/dist/server/config-shared';
+import {normalizeConfig} from 'next/dist/server/config-shared';
 
 const useStyles = makeStyles((theme) => ({
   btnGroup: {
@@ -1083,9 +1083,9 @@ const ContableMovements = (props) => {
                 Codigo
               </TableCell>
               {isNotMobile ? (
-              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
-                Tipo
-              </TableCell>
+                <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                  Tipo
+                </TableCell>
               ) : null}
               <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
                 Fecha registrada
@@ -1094,39 +1094,47 @@ const ContableMovements = (props) => {
                 Tipo Comprobante Principal
               </TableCell>
               {isNotMobile ? (
-              <>
-              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
-                Número Comprobante Principal
-              </TableCell>
-              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
-                Fecha emisión Comprobante
-              </TableCell>
-              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
-                Fecha vencimiento Comprobante
-              </TableCell>
-              <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
-                Fecha transacción Comprobante
-              </TableCell>
-              <TableCell sx={{width: isMobile ? '9px' : '12px'}}>
-                <TableSortLabel
-                  active={orderBy === 'status'}
-                  direction={orderBy === 'status' ? order : 'asc'}
-                  onClick={() => handleSort('status')}
-                >
-                  Estado
-                </TableSortLabel>
-              </TableCell>
-              <TableCell sx={{width: isMobile ? '12px' : '15px'}}>
-                Medio de Pago
-              </TableCell>
-              <TableCell>Monto Neto</TableCell>
-              <TableCell>Monto Igv</TableCell>
-              </>
+                <>
+                  <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                    Número Comprobante Principal
+                  </TableCell>
+                  <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                    Fecha emisión Comprobante
+                  </TableCell>
+                  <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                    Fecha vencimiento Comprobante
+                  </TableCell>
+                  <TableCell sx={{width: isMobile ? '7px' : '10px'}}>
+                    Fecha transacción Comprobante
+                  </TableCell>
+                  <TableCell sx={{width: isMobile ? '9px' : '12px'}}>
+                    <TableSortLabel
+                      active={orderBy === 'status'}
+                      direction={orderBy === 'status' ? order : 'asc'}
+                      onClick={() => handleSort('status')}
+                    >
+                      Estado
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell sx={{width: isMobile ? '12px' : '15px'}}>
+                    Medio de Pago
+                  </TableCell>
+                  <TableCell>Monto Neto</TableCell>
+                  <TableCell>Monto Igv</TableCell>
+                </>
               ) : null}
               <TableCell>Monto Total</TableCell>
               <TableCell>Vendedor</TableCell>
               <TableCell>Recaudador</TableCell>
-              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
+              <TableCell
+                align='center'
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '16px',
+                }}
+              >
+                {isNotMobile ? 'Opciones' : '#'}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1153,7 +1161,7 @@ const ContableMovements = (props) => {
                           : obj.folderMovement.split('/').slice(-1)
                       }`}</TableCell>
                       {isNotMobile ? (
-                      <TableCell>{showType(obj.movementType)}</TableCell>
+                        <TableCell>{showType(obj.movementType)}</TableCell>
                       ) : null}
                       <TableCell>
                         {convertToDateWithoutTime(obj.createdAt)}
@@ -1165,41 +1173,41 @@ const ContableMovements = (props) => {
                         )}
                       </TableCell>
                       {isNotMobile ? (
-                      <>
-                      <TableCell>{obj.serialNumberBill}</TableCell>
-                      <TableCell>
-                        {obj.proofIssueDate
-                          ? ISO8601DateToSunatDate(obj.proofIssueDate)
-                          : obj.billIssueDate}
-                      </TableCell>
-                      <TableCell>
-                        {obj.proofDueDate
-                          ? ISO8601DateToSunatDate(obj.proofDueDate)
-                          : obj.billDueDate}
-                      </TableCell>
-                      <TableCell>
-                        {obj.proofTransactionDate
-                          ? ISO8601DateToSunatDate(obj.proofTransactionDate)
-                          : 'Indeterminado'}
-                      </TableCell>
-                      <TableCell>
-                        {showStatus(obj.status, obj.movementType)}
-                      </TableCell>
-                      <TableCell>
-                        {obj.methodToPay
-                          ? translateValue(
-                              'PAYMENTMETHOD',
-                              obj.methodToPay.toUpperCase(),
-                            )
-                          : null}
-                      </TableCell>
-                      <TableCell>{`${moneySymbol} ${fixDecimals(
-                        obj.totalNet,
-                      )}`}</TableCell>
-                      <TableCell>{`${moneySymbol} ${fixDecimals(
-                        obj.totalIgv,
-                      )}`}</TableCell>
-                      </>
+                        <>
+                          <TableCell>{obj.serialNumberBill}</TableCell>
+                          <TableCell>
+                            {obj.proofIssueDate
+                              ? ISO8601DateToSunatDate(obj.proofIssueDate)
+                              : obj.billIssueDate}
+                          </TableCell>
+                          <TableCell>
+                            {obj.proofDueDate
+                              ? ISO8601DateToSunatDate(obj.proofDueDate)
+                              : obj.billDueDate}
+                          </TableCell>
+                          <TableCell>
+                            {obj.proofTransactionDate
+                              ? ISO8601DateToSunatDate(obj.proofTransactionDate)
+                              : 'Indeterminado'}
+                          </TableCell>
+                          <TableCell>
+                            {showStatus(obj.status, obj.movementType)}
+                          </TableCell>
+                          <TableCell>
+                            {obj.methodToPay
+                              ? translateValue(
+                                  'PAYMENTMETHOD',
+                                  obj.methodToPay.toUpperCase(),
+                                )
+                              : null}
+                          </TableCell>
+                          <TableCell>{`${moneySymbol} ${fixDecimals(
+                            obj.totalNet,
+                          )}`}</TableCell>
+                          <TableCell>{`${moneySymbol} ${fixDecimals(
+                            obj.totalIgv,
+                          )}`}</TableCell>
+                        </>
                       ) : null}
                       <TableCell>{`${moneySymbol} ${fixDecimals(
                         obj.totalAmount,
@@ -1214,9 +1222,17 @@ const ContableMovements = (props) => {
                           ? obj.proofOfPaymentUserCreatedMetadata.nombreCompleto
                           : ''}
                       </TableCell>
-                      <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
+                      <TableCell
+                        sx={{
+                          px: isNotMobile ? normalizeConfig : 0,
+                          width: isNotMobile ? normalizeConfig : '16px',
+                        }}
+                      >
                         <Button
-                          sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
+                          sx={{
+                            px: isNotMobile ? normalizeConfig : 0,
+                            minWidth: isNotMobile ? normalizeConfig : '16px',
+                          }}
                           id='basic-button'
                           aria-controls={openMenu ? 'basic-menu' : undefined}
                           aria-haspopup='true'
@@ -1442,16 +1458,17 @@ const ContableMovements = (props) => {
               />
             )}
             <TableRow>
-              <TableCell colSpan={isNotMobile ? 12: 3}>Total</TableCell>
+              <TableCell colSpan={isNotMobile ? 12 : 3}>Total</TableCell>
               <TableCell align='left'>S/ {totalAmount}</TableCell>
             </TableRow>
           </TableBody>
         </Table>
-        { loading ? (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        ): null}
-        { successMessage && !loading && allFinancesRes && allFinancesRes.length == 0 ? (
-        <span>{`No se han encontrado resultados`}</span>
+        {loading ? <CircularProgress disableShrink sx={{m: '10px'}} /> : null}
+        {successMessage &&
+        !loading &&
+        allFinancesRes &&
+        allFinancesRes.length == 0 ? (
+          <span>{`No se han encontrado resultados`}</span>
         ) : null}
         {financesLastEvaluatedKey_pageListFinances ? (
           <Stack spacing={2}>

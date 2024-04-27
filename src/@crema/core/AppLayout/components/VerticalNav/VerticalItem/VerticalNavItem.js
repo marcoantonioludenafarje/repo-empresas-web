@@ -26,9 +26,9 @@ const VerticalNavItem = ({
   return (
     <ListItem
       onClick={() => {
-        console.log("he clickeado")
-        if(closeM){
-          closeM()
+        console.log('he clickeado');
+        if (closeM) {
+          closeM();
         }
       }}
       className={clsx('nav-item menu-vertical-item', {

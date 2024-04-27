@@ -125,7 +125,12 @@ const VerticalCollapse = ({item, router, level, closeM}) => {
               )}
 
               {item.type === 'item' && (
-                <VerticalItem item={item} level={level + 1} router={router} closeM={closeM}/>
+                <VerticalItem
+                  item={item}
+                  level={level + 1}
+                  router={router}
+                  closeM={closeM}
+                />
               )}
             </React.Fragment>
           ))}

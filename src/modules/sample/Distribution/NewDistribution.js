@@ -165,8 +165,7 @@ const Distribution = (props) => {
   let getValueField;
   let isFormikSubmitting;
   let setFormikSubmitting;
-  const [openDateComprobation, setOpenDateComprobation] =
-    React.useState(false);
+  const [openDateComprobation, setOpenDateComprobation] = React.useState(false);
   const [isDateValidated, setIsDateValidated] = React.useState(false);
   const [initialDate, setInitialDate] = React.useState(new Date());
   const [finalDate, setFinalDate] = React.useState(new Date());
@@ -200,7 +199,8 @@ const Distribution = (props) => {
   const [pdfScale, setPdfScale] = React.useState('100');
   const [weightFields, setWeightFields] = React.useState(true);
   const [complianceSeal, setComplianceSeal] = React.useState(false);
-  const [complianceSealOnlySign, setComplianceSealOnlySign] = React.useState(false);
+  const [complianceSealOnlySign, setComplianceSealOnlySign] =
+    React.useState(false);
   const [openAddresseeDialog, setOpenAddresseeDialog] = React.useState(false);
   const [issueDate, setIssueDate] = React.useState(Date.now());
   const [selectedAddressee, setSelectedAddressee] = React.useState('');
@@ -228,7 +228,10 @@ const Distribution = (props) => {
     dispatch(
       listPredefinedRoutes_____PageNewDistribution({
         merchantId: userDataRes.merchantSelected.merchantId,
-        locations: userDataRes.locations && userDataRes.locations.length > 0 ? JSON.stringify(userDataRes.locations) : ""
+        locations:
+          userDataRes.locations && userDataRes.locations.length > 0
+            ? JSON.stringify(userDataRes.locations)
+            : '',
       }),
     );
   };
@@ -421,8 +424,8 @@ const Distribution = (props) => {
   const handleData = (data, validation) => {
     //setSubmitting(true);
     let localIsDateValidated = isDateValidated;
-    console.log("localIsDateValidated", localIsDateValidated)
-    if (!localIsDateValidated && validation !== "enabled") {
+    console.log('localIsDateValidated', localIsDateValidated);
+    if (!localIsDateValidated && validation !== 'enabled') {
       setOpenDateComprobation(true);
       setFormikSubmitting(false);
     } else {
@@ -476,7 +479,7 @@ const Distribution = (props) => {
                   totalGrossWeight: route.totalWeight,
                   numberOfPackages: route.numberPackages,
                   observationDelivery: route.observationDelivery,
-                  grouper: route.grouper || "",
+                  grouper: route.grouper || '',
                   reasonForTransfer: route.reasonForTransfer || 'sale',
                   startingPointAddress: route.startingAddress,
                   startingInternalCode: route.startingInternalCode || '',
@@ -514,7 +517,7 @@ const Distribution = (props) => {
                       quantityMovement: prod.count,
                       sumQuantity: prod.sumQuantity || 0,
                       weight: prod.weight,
-                      typeProduct: prod.typeProduct || null
+                      typeProduct: prod.typeProduct || null,
                     };
                   }),
                 };
@@ -527,7 +530,7 @@ const Distribution = (props) => {
       toGenerateDistribution(finalPayload);
       setOpenStatus(true);
       setTimeout(() => {
-        setFormikSubmitting(false);;
+        setFormikSubmitting(false);
       }, 2000);
     }
   };
@@ -1117,7 +1120,9 @@ const Distribution = (props) => {
             <TableHead sx={{backgroundColor: '#ededed'}}>
               <TableRow>
                 <TableCell>Nro</TableCell>
-                <TableCell sx={{backgroundColor: '#ec5353'}}>Fecha Inicio Traslado</TableCell>
+                <TableCell sx={{backgroundColor: '#ec5353'}}>
+                  Fecha Inicio Traslado
+                </TableCell>
                 <TableCell>Dirección de punto de partida</TableCell>
                 <TableCell>Ubigeo de punto de partida</TableCell>
                 <TableCell>CodInterno de punto de partida</TableCell>
@@ -1490,8 +1495,8 @@ const Distribution = (props) => {
               id='alert-dialog-description'
             >
               {'Se ha indicado como fecha de inicio el '}
-      <span style={{color: 'red'}}>{routes[0]?.transferStartDate}</span>
-      {', está seguro de continuar?'}
+              <span style={{color: 'red'}}>{routes[0]?.transferStartDate}</span>
+              {', está seguro de continuar?'}
             </DialogContentText>
           </DialogContent>
           <DialogActions sx={{justifyContent: 'center'}}>

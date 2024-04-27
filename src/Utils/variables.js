@@ -30,17 +30,29 @@ export const dictionary = {
   REASON_FOR_TRANSFER: {
     BUY: <IntlMessages id='referralGuide.reason.buys' />,
     SALE: <IntlMessages id='referralGuide.reason.sales' />,
-    TRANSFERBETWEENESTABLISHMENTSOFTHESAMECOMPANY: <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOfTheSameCompany' />,
-    SALESUBJECTTOBUYERCONFIRMATION: <IntlMessages id='referralGuide.reason.saleSubjectToBuyerConfirmation' />,
-    TRANSFERITINERANTISSUERCP: <IntlMessages id='referralGuide.reason.itinerantSenderTransferCP' />,
+    TRANSFERBETWEENESTABLISHMENTSOFTHESAMECOMPANY: (
+      <IntlMessages id='referralGuide.reason.transferBetweenEstablishmentsOfTheSameCompany' />
+    ),
+    SALESUBJECTTOBUYERCONFIRMATION: (
+      <IntlMessages id='referralGuide.reason.saleSubjectToBuyerConfirmation' />
+    ),
+    TRANSFERITINERANTISSUERCP: (
+      <IntlMessages id='referralGuide.reason.itinerantSenderTransferCP' />
+    ),
     IMPORT: <IntlMessages id='referralGuide.reason.import' />,
     EXPORT: <IntlMessages id='referralGuide.reason.export' />,
-    TRANSFERTOPRIMARYAREA: <IntlMessages id='referralGuide.reason.transferToPrimaryArea' />,
+    TRANSFERTOPRIMARYAREA: (
+      <IntlMessages id='referralGuide.reason.transferToPrimaryArea' />
+    ),
     RETURN: <IntlMessages id='referralGuide.reason.return' />,
     OTHERS: <IntlMessages id='referralGuide.reason.others' />,
-    SALETOTHIRDPARTIES: <IntlMessages id='referralGuide.reason.saleToThirdParties' />,
+    SALETOTHIRDPARTIES: (
+      <IntlMessages id='referralGuide.reason.saleToThirdParties' />
+    ),
     CONSIGNMENT: <IntlMessages id='referralGuide.reason.consignment' />,
-    COLLECTIONOFTRANSFORMEDGOODS: <IntlMessages id='referralGuide.reason.collectionOfTransformedGoods' />,
+    COLLECTIONOFTRANSFORMEDGOODS: (
+      <IntlMessages id='referralGuide.reason.collectionOfTransformedGoods' />
+    ),
   },
   CONTABLE_MOVEMENTS: {
     INPUT: <IntlMessages id='sidebar.sample.inputs' />,

@@ -122,18 +122,11 @@ export const generateVariations = (payload) => {
 export const getCampaign = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    request3(
-      'get',
-      `/inventory/campaigns/${payload.campaignId}`,
-      {
-        body: payload,
-      },
-    )
+    request3('get', `/inventory/campaigns/${payload.campaignId}`, {
+      body: payload,
+    })
       .then((data) => {
-        console.log(
-          'getCampaignMicroservice resultado',
-          data,
-        );
+        console.log('getCampaignMicroservice resultado', data);
         dispatch({
           type: GET_CAMPAIGN,
           payload: data.data,
@@ -150,13 +143,9 @@ export const getCampaign = (payload) => {
 export const newCampaign2 = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START, payload: {process: 'CREATE_CAMPAIGN'}});
-    request3(
-      'post',
-      `/inventory/campaigns`,
-      {
-        body: payload,
-      },
-    )
+    request3('post', `/inventory/campaigns`, {
+      body: payload,
+    })
       .then((data) => {
         console.log('Nueva campaña resultado', data);
         dispatch({type: CREATE_CAMPAIGN, payload: data.data});
@@ -176,13 +165,9 @@ export const getCampaigns2 = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START, payload: {process: 'LIST_CAMPAIGN'}});
 
-    request3(
-      'get',
-      `/inventory/campaigns`,
-      {
-        body: payload,
-      },
-    )
+    request3('get', `/inventory/campaigns`, {
+      body: payload,
+    })
       .then((data) => {
         console.log('get CAMPAÑAAS resultado', data);
         dispatch({
@@ -240,7 +225,7 @@ export const updateCampaigns2 = (payload) => {
     try {
       const data = await request3('put', '/inventory/campaigns', {
         body: payload,
-      })
+      });
       console.log('Campaña data update', data);
       dispatch({type: UPDATE_CAMPAIGN, payload: data.data});
       dispatch({type: FETCH_SUCCESS, payload: 'success'});

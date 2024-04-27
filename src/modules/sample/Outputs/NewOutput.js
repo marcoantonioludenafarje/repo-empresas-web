@@ -59,7 +59,7 @@ import {
 import Router, {useRouter} from 'next/router';
 
 import {ClickAwayListener} from '@mui/base';
-import { getLocations } from 'redux/actions';
+import {getLocations} from 'redux/actions';
 import {DesktopDatePicker, DateTimePicker} from '@mui/lab';
 /* import SelectedProducts from './SelectedProducts';
 import AddProductForm from './AddProductForm'; */
@@ -188,8 +188,6 @@ const NewOutput = (props) => {
     dispatch(getLocations(payload));
   };
 
-
-
   //VARIABLES DE PARAMETROS
   let weight_unit;
   let changeValueField;
@@ -221,8 +219,10 @@ const NewOutput = (props) => {
   const [isClientValidated, setIsClientValidated] = React.useState(false);
 
   const [minTutorial, setMinTutorial] = React.useState(false);
-  const [selectedStartingLocation, setSelectedStartingLocation] = React.useState("");
-  const [selectedStartingLocationId, setSelectedStartingLocationId] = React.useState('ND');
+  const [selectedStartingLocation, setSelectedStartingLocation] =
+    React.useState('');
+  const [selectedStartingLocationId, setSelectedStartingLocationId] =
+    React.useState('ND');
   const prevExchangeRateRef = useRef();
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
@@ -351,10 +351,7 @@ const NewOutput = (props) => {
   }, [exchangeRate]);
 
   useEffect(() => {
-    console.log(
-      'Este es el getLocationRes',
-      getStartingLocationsRes,
-    );
+    console.log('Este es el getLocationRes', getStartingLocationsRes);
     // if (
     //   getStartingLocationsRes &&
     //   getStartingLocationsRes.length > 0 &&
@@ -393,7 +390,6 @@ const NewOutput = (props) => {
     money_unit: moneyToConvert,
   };
 
-
   console.log('Valores default peso', weight_unit, 'moneda', moneyUnit);
   console.log('userDataRes', userDataRes);
 
@@ -412,16 +408,16 @@ const NewOutput = (props) => {
 
   const selectStartingLocation = (event) => {
     console.log('Id Location', event.target.value);
-    if(event.target.value !== "ND"){
+    if (event.target.value !== 'ND') {
       const selectedLocation = getStartingLocationsRes.find(
         (obj) => obj.locationId == event.target.value,
       );
-  
+
       setSelectedStartingLocationId(event.target.value);
       setSelectedStartingLocation(selectedLocation);
     } else {
       setSelectedStartingLocationId(event.target.value);
-      setSelectedStartingLocation("");
+      setSelectedStartingLocation('');
     }
   };
   const getNewProduct = (product) => {
@@ -758,7 +754,7 @@ const NewOutput = (props) => {
         request: {
           payload: {
             initialTime: Date.now() - 2678400000,
-            finalTime: Date.now()+ 28400000,
+            finalTime: Date.now() + 28400000,
             businessProductCode: null,
             movementType: 'OUTPUT',
             merchantId: userDataRes.merchantSelected.merchantId,
@@ -1165,14 +1161,18 @@ const NewOutput = (props) => {
                   )}
                 </Grid>
 
-                {getStartingLocationsRes && getStartingLocationsRes.length > 0 ? (
+                {getStartingLocationsRes &&
+                getStartingLocationsRes.length > 0 ? (
                   <Grid
                     container
                     spacing={2}
-                    sx={{ maxWidth: 500, width: 'auto', margin: 'auto' }}
+                    sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
                   >
-                    <FormControl fullWidth sx={{ my: 2 }}>
-                      <InputLabel id='startingLocation-label' style={{ fontWeight: 200 }}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='startingLocation-label'
+                        style={{fontWeight: 200}}
+                      >
                         <IntlMessages id='common.startingLocation' />
                       </InputLabel>
                       <Select
@@ -1181,27 +1181,30 @@ const NewOutput = (props) => {
                         label={<IntlMessages id='common.startingLocation' />}
                         onChange={(event) => selectStartingLocation(event)}
                         value={selectedStartingLocationId}
-                        MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
-                        disabled={selectedProducts && selectedProducts.length > 0}
+                        MenuProps={{PaperProps: {style: {maxHeight: 200}}}}
+                        disabled={
+                          selectedProducts && selectedProducts.length > 0
+                        }
                       >
-                        <MenuItem
-                          value={"ND"}
-                          style={{ fontWeight: 200 }}
-                        >
+                        <MenuItem value={'ND'} style={{fontWeight: 200}}>
                           No Designado
                         </MenuItem>
                         {getStartingLocationsRes.map((location, index) => {
-                          if(!(userDataRes.locations) || !(userDataRes.locations.length > 0) || userDataRes.locations.includes(location.modularCode)){
+                          if (
+                            !userDataRes.locations ||
+                            !(userDataRes.locations.length > 0) ||
+                            userDataRes.locations.includes(location.modularCode)
+                          ) {
                             return (
                               <MenuItem
                                 value={location.locationId}
                                 key={index}
-                                style={{ fontWeight: 200 }}
+                                style={{fontWeight: 200}}
                               >
                                 {location.locationName}
                               </MenuItem>
                             );
-                          } 
+                          }
                         })}
                       </Select>
                     </FormControl>

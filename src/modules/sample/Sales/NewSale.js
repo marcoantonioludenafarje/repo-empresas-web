@@ -920,10 +920,10 @@ const NewSale = (props) => {
                       variant='outlined'
                       onClick={handleClickOpen.bind(this, 'client')}
                     >
-                    Cliente:{' '}
-                    {selectedClient && selectedClient.denominationClient
-                      ? selectedClient.denominationClient
-                      : 'No Definido'}
+                      Cliente:{' '}
+                      {selectedClient && selectedClient.denominationClient
+                        ? selectedClient.denominationClient
+                        : 'No Definido'}
                     </Button>
                   </Grid>
                   {/* <Grid sx={{px: 1, mt: 2}} xs={11}>
@@ -973,22 +973,22 @@ const NewSale = (props) => {
                   {registerType == 'saleWithProofOfPayment' ? (
                     <>
                       {isNotMobile ? (
-                      <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
-                        <AppTextField
-                          label='Nro Venta'
-                          name='nroReceipt'
-                          disabled
-                          variant='outlined'
-                          sx={{
-                            width: '100%',
-                            '& .MuiInputBase-input': {
-                              fontSize: 14,
-                            },
-                            my: 2,
-                            mx: 0,
-                          }}
-                        />
-                      </Grid>
+                        <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
+                          <AppTextField
+                            label='Nro Venta'
+                            name='nroReceipt'
+                            disabled
+                            variant='outlined'
+                            sx={{
+                              width: '100%',
+                              '& .MuiInputBase-input': {
+                                fontSize: 14,
+                              },
+                              my: 2,
+                              mx: 0,
+                            }}
+                          />
+                        </Grid>
                       ) : null}
                       <Grid xs={6} sm={4} sx={{px: 1, mt: 2}}>
                         <DateTimePicker

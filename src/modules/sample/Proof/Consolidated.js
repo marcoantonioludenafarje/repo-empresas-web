@@ -125,7 +125,7 @@ const ProofsOfPaymentConsolidation = (props) => {
   };
 
   const handleNextPage = (event) => {
-    setLoading(true)
+    setLoading(true);
     let listPayload = {
       request: {
         payload: {
@@ -236,7 +236,7 @@ const ProofsOfPaymentConsolidation = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
-    setLoading(true)
+    setLoading(true);
     let listPayload = {
       request: {
         payload: {
@@ -272,7 +272,7 @@ const ProofsOfPaymentConsolidation = (props) => {
   }, []);
   useEffect(() => {
     if (userDataRes) {
-      setLoading(true)
+      setLoading(true);
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       let listPayload = {
@@ -603,11 +603,12 @@ const ProofsOfPaymentConsolidation = (props) => {
             )}
           </TableBody>
         </Table>
-        { loading ? (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        ): null}
-        { successMessage && !loading && proofMonitoringItems_pageListGuide && proofMonitoringItems_pageListGuide.length == 0 ? (
-        <span>{`No se han encontrado resultados`}</span>
+        {loading ? <CircularProgress disableShrink sx={{m: '10px'}} /> : null}
+        {successMessage &&
+        !loading &&
+        proofMonitoringItems_pageListGuide &&
+        proofMonitoringItems_pageListGuide.length == 0 ? (
+          <span>{`No se han encontrado resultados`}</span>
         ) : null}
         {proofMonitoringLastEvaluatedKey_pageListGuide ? (
           <Stack spacing={2}>

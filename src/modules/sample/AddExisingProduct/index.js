@@ -13,7 +13,7 @@ import {
   Alert,
   DialogTitle,
   Typography,
-  Snackbar
+  Snackbar,
 } from '@mui/material';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
@@ -272,7 +272,11 @@ const AddExistingProduct = ({sendData, type}) => {
 
                   <Grid item xs={4}>
                     <AppTextField
-                      label={`${type == "input" ? "Costo sugerido" : "Valor de venta sugerido"}`}
+                      label={`${
+                        type == 'input'
+                          ? 'Costo sugerido'
+                          : 'Valor de venta sugerido'
+                      }`}
                       name='priceProduct'
                       variant='outlined'
                       sx={{

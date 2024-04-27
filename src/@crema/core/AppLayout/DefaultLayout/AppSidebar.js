@@ -21,16 +21,20 @@ const AppSidebar = (props) => {
 
   const {sidebarTextColor} = useSidebarContext();
   const {userDataRes} = useSelector(({user}) => user);
-  const [listWarehouse, setListWarehouse] = React.useState("");
+  const [listWarehouse, setListWarehouse] = React.useState('');
 
   useEffect(() => {
-    if (userDataRes && userDataRes.locations && userDataRes.locations.length > 0) {
-      let listW = "";
+    if (
+      userDataRes &&
+      userDataRes.locations &&
+      userDataRes.locations.length > 0
+    ) {
+      let listW = '';
       userDataRes.locations.forEach((element, index) => {
-        if((index+1) == userDataRes.locations.length){
-          listW = listW + element
+        if (index + 1 == userDataRes.locations.length) {
+          listW = listW + element;
         } else {
-          listW = listW + element + " | "
+          listW = listW + element + ' | ';
         }
       });
       setListWarehouse(listW);
@@ -56,13 +60,15 @@ const AppSidebar = (props) => {
           <MainSidebar>
             <UserInfo color={sidebarTextColor} />
             <Tooltip title={`Almacenes: ${listWarehouse}`}>
-              <Box sx={{
-                pl: 3,
-                pr: 3,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}>
+              <Box
+                sx={{
+                  pl: 3,
+                  pr: 3,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
                 {`Almacenes: ${listWarehouse}`}
               </Box>
             </Tooltip>
@@ -74,7 +80,7 @@ const AppSidebar = (props) => {
                 mt: 0.5,
               }}
             >
-              <VerticalNav closeMenu={handleToggleDrawer}/>
+              <VerticalNav closeMenu={handleToggleDrawer} />
             </AppScrollbar>
           </MainSidebar>
         </Drawer>
@@ -83,13 +89,15 @@ const AppSidebar = (props) => {
         <MainSidebar>
           <UserInfo color={sidebarTextColor} />
           <Tooltip title={`Almacenes: ${listWarehouse}`}>
-            <Box sx={{
-              pl: 3,
-              pr: 3,
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis', // Ajusta este valor según tus necesidades
-            }}>
+            <Box
+              sx={{
+                pl: 3,
+                pr: 3,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis', // Ajusta este valor según tus necesidades
+              }}
+            >
               {`Almacenes: ${listWarehouse}`}
             </Box>
           </Tooltip>

@@ -77,7 +77,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 
 import {ClickAwayListener} from '@mui/base';
-import { getLocations } from 'redux/actions';
+import {getLocations} from 'redux/actions';
 const useStyles = makeStyles((theme) => ({
   container: {
     textAlign: 'center',
@@ -184,7 +184,6 @@ const NewInput = (props) => {
     dispatch(getLocations(payload));
   };
 
-
   //VARIABLES DE PARAMETROS
   let weight_unit;
   let changeValueField;
@@ -208,8 +207,10 @@ const NewInput = (props) => {
   const [status, setStatus] = React.useState('requested');
   const [guide, setGuide] = React.useState(false);
   const [percentageIgv, setPercentageIgv] = React.useState(null);
-  const [selectedStartingLocation, setSelectedStartingLocation] = React.useState("");
-  const [selectedStartingLocationId, setSelectedStartingLocationId] = React.useState('ND');
+  const [selectedStartingLocation, setSelectedStartingLocation] =
+    React.useState('');
+  const [selectedStartingLocationId, setSelectedStartingLocationId] =
+    React.useState('ND');
   const [typeDocument, settypeDocument] = React.useState('buys');
   const [exchangeRate, setExchangeRate] = React.useState('');
   const [hasBill, setHasBill] = React.useState([]);
@@ -254,7 +255,7 @@ const NewInput = (props) => {
   const {getStartingLocationsRes} = useSelector(({locations}) => locations);
 
   console.log('Quiero usar jwtToken', jwtToken);
-  
+
   let businessParameterPayload = {
     request: {
       payload: {
@@ -344,10 +345,7 @@ const NewInput = (props) => {
     }, 2000);
   }, [exchangeRate]);
   useEffect(() => {
-    console.log(
-      'Este es el getLocationRes',
-      getStartingLocationsRes,
-    );
+    console.log('Este es el getLocationRes', getStartingLocationsRes);
     // if (
     //   getStartingLocationsRes &&
     //   getStartingLocationsRes.length > 0 &&
@@ -402,16 +400,16 @@ const NewInput = (props) => {
   };
   const selectStartingLocation = (event) => {
     console.log('Id Location', event.target.value);
-    if(event.target.value !== "ND"){
+    if (event.target.value !== 'ND') {
       const selectedLocation = getStartingLocationsRes.find(
         (obj) => obj.locationId == event.target.value,
       );
-  
+
       setSelectedStartingLocationId(event.target.value);
       setSelectedStartingLocation(selectedLocation);
     } else {
       setSelectedStartingLocationId(event.target.value);
-      setSelectedStartingLocation("");
+      setSelectedStartingLocation('');
     }
   };
   const getNewProduct = (product) => {
@@ -1062,14 +1060,18 @@ const NewInput = (props) => {
                     </Typography>
                   </Grid>
                 </Grid>
-                {getStartingLocationsRes && getStartingLocationsRes.length > 0 ? (
+                {getStartingLocationsRes &&
+                getStartingLocationsRes.length > 0 ? (
                   <Grid
                     container
                     spacing={2}
-                    sx={{ maxWidth: 500, width: 'auto', margin: 'auto' }}
+                    sx={{maxWidth: 500, width: 'auto', margin: 'auto'}}
                   >
-                    <FormControl fullWidth sx={{ my: 2 }}>
-                      <InputLabel id='startingLocation-label' style={{ fontWeight: 200 }}>
+                    <FormControl fullWidth sx={{my: 2}}>
+                      <InputLabel
+                        id='startingLocation-label'
+                        style={{fontWeight: 200}}
+                      >
                         <IntlMessages id='common.startingLocation' />
                       </InputLabel>
                       <Select
@@ -1078,27 +1080,30 @@ const NewInput = (props) => {
                         label={<IntlMessages id='common.startingLocation' />}
                         onChange={(event) => selectStartingLocation(event)}
                         value={selectedStartingLocationId}
-                        MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
-                        disabled={selectedProducts && selectedProducts.length > 0}
+                        MenuProps={{PaperProps: {style: {maxHeight: 200}}}}
+                        disabled={
+                          selectedProducts && selectedProducts.length > 0
+                        }
                       >
-                        <MenuItem
-                          value={"ND"}
-                          style={{ fontWeight: 200 }}
-                        >
+                        <MenuItem value={'ND'} style={{fontWeight: 200}}>
                           No Designado
                         </MenuItem>
                         {getStartingLocationsRes.map((location, index) => {
-                          if(!(userDataRes.locations) || !(userDataRes.locations.length > 0) || userDataRes.locations.includes(location.modularCode)){
+                          if (
+                            !userDataRes.locations ||
+                            !(userDataRes.locations.length > 0) ||
+                            userDataRes.locations.includes(location.modularCode)
+                          ) {
                             return (
                               <MenuItem
                                 value={location.locationId}
                                 key={index}
-                                style={{ fontWeight: 200 }}
+                                style={{fontWeight: 200}}
                               >
                                 {location.locationName}
                               </MenuItem>
                             );
-                          } 
+                          }
                         })}
                       </Select>
                     </FormControl>

@@ -178,7 +178,7 @@ const PredefinedRoutes = () => {
   const dispatch = useDispatch();
   const [reload, setReload] = React.useState(true);
   const [selectedLocations, setSelectedLocations] = React.useState([]);
-  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
+  const [selectedLocation, setSelectedLocation] = React.useState('TODOS');
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
@@ -283,7 +283,7 @@ const PredefinedRoutes = () => {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: LIST_ROUTE, payload: undefined});
-      setSelectedLocations(userDataRes.locations)
+      setSelectedLocations(userDataRes.locations);
       toListRoutes(payload);
     }
   }, [userDataRes]);
@@ -433,9 +433,8 @@ const PredefinedRoutes = () => {
           },
         };
         toListRoutes(payload);
-        
-      }      
-    }, 2000);  
+      }
+    }, 2000);
   };
 
   const confirmDelete = () => {
@@ -661,7 +660,7 @@ const PredefinedRoutes = () => {
       LastEvaluatedKey: lastEvaluatedKeys_PageListPredefinedRoutes,
       locations: JSON.stringify(selectedLocations),
     };
-    console.log("payload listRoutes", payload)
+    console.log('payload listRoutes', payload);
     toListRoutes(payload);
   };
   return (
@@ -676,9 +675,15 @@ const PredefinedRoutes = () => {
             spacing={2}
             className={classes.stack}
           >
-            {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+            {userDataRes &&
+            getStartingLocationsRes &&
+            userDataRes.locations &&
+            userDataRes.locations.length > 0 ? (
               <FormControl sx={{my: 0, width: 160}}>
-                <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+                <InputLabel
+                  id='selectedLocation-label'
+                  style={{fontWeight: 200}}
+                >
                   Almacén
                 </InputLabel>
                 <Select
@@ -687,12 +692,12 @@ const PredefinedRoutes = () => {
                   label='Almacén'
                   onChange={(event) => {
                     console.log(event.target.value);
-                    setSelectedLocation(event.target.value)
-                    if(event.target.value == "TODOS"){
-                      let allLocations = userDataRes.locations
-                      setSelectedLocations(allLocations)
+                    setSelectedLocation(event.target.value);
+                    if (event.target.value == 'TODOS') {
+                      let allLocations = userDataRes.locations;
+                      setSelectedLocations(allLocations);
                     } else {
-                      setSelectedLocations([event.target.value])
+                      setSelectedLocations([event.target.value]);
                     }
                   }}
                   defaultValue={selectedLocation}
@@ -701,11 +706,18 @@ const PredefinedRoutes = () => {
                     TODOS
                   </MenuItem>
                   {userDataRes.locations.map((actualLocation, index) => {
-                    const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+                    const locationName = getStartingLocationsRes.find(
+                      (obj) => obj.modularCode == actualLocation,
+                    ).locationName;
                     return (
-                      <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                      <MenuItem
+                        key={`locationItem-${index}`}
+                        value={actualLocation}
+                        style={{fontWeight: 200}}
+                      >
                         {locationName}
-                      </MenuItem>)
+                      </MenuItem>
+                    );
                   })}
                 </Select>
               </FormControl>

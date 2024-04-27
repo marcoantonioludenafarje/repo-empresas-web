@@ -76,7 +76,7 @@ import {
 } from '../../../Utils/utils';
 import originalUbigeos from '../../../Utils/ubigeo.json';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
-import { normalizeConfig } from 'next/dist/server/config-shared';
+import {normalizeConfig} from 'next/dist/server/config-shared';
 
 import {ClickAwayListener} from '@mui/base';
 let selectedLocation = {};
@@ -450,7 +450,11 @@ const LocationTable = (arrayObjs, props) => {
     // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
   };
   const showMessage = () => {
-    if (successMessage != undefined && deleteLocationRes && (!deleteLocationRes.error)) {
+    if (
+      successMessage != undefined &&
+      deleteLocationRes &&
+      !deleteLocationRes.error
+    ) {
       return (
         <>
           <CheckCircleOutlineOutlinedIcon
@@ -465,7 +469,10 @@ const LocationTable = (arrayObjs, props) => {
           </DialogContentText>
         </>
       );
-    } else if (deleteLocationRes && deleteLocationRes.error || errorMessage != undefined ) {
+    } else if (
+      (deleteLocationRes && deleteLocationRes.error) ||
+      errorMessage != undefined
+    ) {
       return (
         <>
           <CancelOutlinedIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
@@ -473,7 +480,7 @@ const LocationTable = (arrayObjs, props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-           {deleteLocationRes.error} {errorMessage}
+            {deleteLocationRes.error} {errorMessage}
           </DialogContentText>
         </>
       );
@@ -511,7 +518,8 @@ const LocationTable = (arrayObjs, props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     deletePayload.request.payload.locationId = selectedLocation.locationId;
-    deletePayload.request.payload.locationName = selectedLocation.modularCode + "-" + selectedLocation.locationName;
+    deletePayload.request.payload.locationName =
+      selectedLocation.modularCode + '-' + selectedLocation.locationName;
     deletePayload.request.payload.type = selectedLocation.type;
     deletePayload.request.payload.merchantId = selectedLocation.merchantId;
     toDeleteLocation(deletePayload);
@@ -693,10 +701,16 @@ const LocationTable = (arrayObjs, props) => {
               <TableCell>Dirección</TableCell>
               <TableCell>Ubicación</TableCell>
               <TableCell>Tipo</TableCell>
-              {isNotMobile ? (
-              <TableCell>Última actualización</TableCell>
-              ) : null}
-              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
+              {isNotMobile ? <TableCell>Última actualización</TableCell> : null}
+              <TableCell
+                align='center'
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '16px',
+                }}
+              >
+                {isNotMobile ? 'Opciones' : '#'}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -715,16 +729,24 @@ const LocationTable = (arrayObjs, props) => {
                     <TableCell>{setLabelUbigeo(obj.ubigeo)}</TableCell>
                     <TableCell>{obj.type}</TableCell>
                     {isNotMobile ? (
-                    <TableCell>
-                      {convertToDate(obj.updatedAt || obj.updatedDate)}
-                    </TableCell>
+                      <TableCell>
+                        {convertToDate(obj.updatedAt || obj.updatedDate)}
+                      </TableCell>
                     ) : null}
                     {/* <TableCell>{obj.priceWithoutIgv.toFixed(2)}</TableCell>
                     <TableCell>{obj.stock}</TableCell>
                     <TableCell>{obj.costPriceUnit.toFixed(2)}</TableCell> */}
-                    <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
+                    <TableCell
+                      sx={{
+                        px: isNotMobile ? normalizeConfig : 0,
+                        width: isNotMobile ? normalizeConfig : '16px',
+                      }}
+                    >
                       <Button
-                        sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
+                        sx={{
+                          px: isNotMobile ? normalizeConfig : 0,
+                          minWidth: isNotMobile ? normalizeConfig : '16px',
+                        }}
                         id='basic-button'
                         aria-controls={openMenu ? 'basic-menu' : undefined}
                         aria-haspopup='true'

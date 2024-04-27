@@ -277,7 +277,7 @@ const OutputsTable = (props) => {
   );
   const [finalTime, setFinalTime] = React.useState(toEpoch(Date.now()));
   const [selectedLocations, setSelectedLocations] = React.useState([]);
-  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
+  const [selectedLocation, setSelectedLocation] = React.useState('TODOS');
 
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
@@ -432,7 +432,7 @@ const OutputsTable = (props) => {
         userDataRes.merchantSelected.typeClient,
       );
 
-      setSelectedLocations(userDataRes.locations)
+      setSelectedLocations(userDataRes.locations);
       setTypeClient(
         userDataRes.merchantSelected.typeClient
           ? userDataRes.merchantSelected.typeClient
@@ -1663,39 +1663,50 @@ const OutputsTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
-      {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
-      <FormControl sx={{my: 0, width: 160}}>
-        <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
-          Almacén
-        </InputLabel>
-        <Select
-          name='selectedLocation'
-          labelId='selectedLocation-label'
-          label='Almacén'
-          onChange={(event) => {
-            console.log(event.target.value);
-            setSelectedLocation(event.target.value)
-            if(event.target.value == "TODOS"){
-              let allLocations = userDataRes.locations
-              setSelectedLocations(allLocations)
-            } else {
-              setSelectedLocations([event.target.value])
-            }
-          }}
-          defaultValue={selectedLocation}
-        >
-          <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
-            TODOS
-          </MenuItem>
-          {userDataRes.locations.map((actualLocation, index) => {
-            const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
-            return (
-              <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
-                {locationName}
-              </MenuItem>)
-          })}
-        </Select>
-      </FormControl>) : null}
+        {userDataRes &&
+        getStartingLocationsRes &&
+        userDataRes.locations &&
+        userDataRes.locations.length > 0 ? (
+          <FormControl sx={{my: 0, width: 160}}>
+            <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+              Almacén
+            </InputLabel>
+            <Select
+              name='selectedLocation'
+              labelId='selectedLocation-label'
+              label='Almacén'
+              onChange={(event) => {
+                console.log(event.target.value);
+                setSelectedLocation(event.target.value);
+                if (event.target.value == 'TODOS') {
+                  let allLocations = userDataRes.locations;
+                  setSelectedLocations(allLocations);
+                } else {
+                  setSelectedLocations([event.target.value]);
+                }
+              }}
+              defaultValue={selectedLocation}
+            >
+              <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
+                TODOS
+              </MenuItem>
+              {userDataRes.locations.map((actualLocation, index) => {
+                const locationName = getStartingLocationsRes.find(
+                  (obj) => obj.modularCode == actualLocation,
+                ).locationName;
+                return (
+                  <MenuItem
+                    key={`locationItem-${index}`}
+                    value={actualLocation}
+                    style={{fontWeight: 200}}
+                  >
+                    {locationName}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        ) : null}
         <DateTimePicker
           renderInput={(params) => <TextField size='small' {...params} />}
           value={value}
@@ -1749,16 +1760,10 @@ const OutputsTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              {isNotMobile ? (
-              <TableCell>Codigo</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Codigo</TableCell> : null}
               <TableCell>Fecha registrada</TableCell>
-              {isNotMobile ? (
-              <TableCell>Última actualización</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Tipo de movimiento</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Última actualización</TableCell> : null}
+              {isNotMobile ? <TableCell>Tipo de movimiento</TableCell> : null}
               <TableCell>
                 <TableSortLabel
                   active={orderBy === 'denominationClient'}
@@ -1769,44 +1774,26 @@ const OutputsTable = (props) => {
                 </TableSortLabel>
               </TableCell>
               <TableCell>Detalle productos</TableCell>
+              {isNotMobile ? <TableCell>Detalle documentos</TableCell> : null}
               {isNotMobile ? (
-              <TableCell>Detalle documentos</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Boleta Venta relacionada</TableCell>
+                <TableCell>Boleta Venta relacionada</TableCell>
               ) : null}
               {isNotMobile && typeClient == 'PN' ? (
                 <TableCell>Ticket Venta relacionada</TableCell>
               ) : null}
               {isNotMobile ? (
-              <TableCell>Guía de remisión relacionada</TableCell>
+                <TableCell>Guía de remisión relacionada</TableCell>
               ) : null}
-              {isNotMobile ? (
-              <TableCell>Factura relacionada</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Último ingreso</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Ingresos</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Precio total sin IGV</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Factura relacionada</TableCell> : null}
+              {isNotMobile ? <TableCell>Último ingreso</TableCell> : null}
+              {isNotMobile ? <TableCell>Ingresos</TableCell> : null}
+              {isNotMobile ? <TableCell>Precio total sin IGV</TableCell> : null}
               <TableCell>Precio total con IGV</TableCell>
-              {isNotMobile ? (
-              <TableCell>Observaciones</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Estado</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Creado por</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Modificado por</TableCell>
-              ) : null}
-              <TableCell>{isNotMobile ? "Opciones" : "#"}</TableCell>
+              {isNotMobile ? <TableCell>Observaciones</TableCell> : null}
+              {isNotMobile ? <TableCell>Estado</TableCell> : null}
+              {isNotMobile ? <TableCell>Creado por</TableCell> : null}
+              {isNotMobile ? <TableCell>Modificado por</TableCell> : null}
+              <TableCell>{isNotMobile ? 'Opciones' : '#'}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1872,34 +1859,34 @@ const OutputsTable = (props) => {
                       key={index}
                     >
                       {isNotMobile ? (
-                      <TableCell
-                        sx={{
-                          color:
-                            obj.existIncome &&
-                            Array.isArray(obj.documentsMovement) &&
-                            obj.documentsMovement.length > 0
-                              ? 'inherit'
-                              : 'rgba(198, 50, 91, 1)',
-                          fontWeight: 'bold',
-                        }}
-                      >{`${showMinType(obj.movementType)} - ${
-                        obj.codMovement ? obj.codMovement.split('-')[1] : ''
-                      }`}</TableCell>
+                        <TableCell
+                          sx={{
+                            color:
+                              obj.existIncome &&
+                              Array.isArray(obj.documentsMovement) &&
+                              obj.documentsMovement.length > 0
+                                ? 'inherit'
+                                : 'rgba(198, 50, 91, 1)',
+                            fontWeight: 'bold',
+                          }}
+                        >{`${showMinType(obj.movementType)} - ${
+                          obj.codMovement ? obj.codMovement.split('-')[1] : ''
+                        }`}</TableCell>
                       ) : null}
                       <TableCell>
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       {isNotMobile ? (
-                      <TableCell>
-                        {convertToDateWithoutTime(
-                          obj.updatedAt || obj.updatedDate,
-                        )}
-                      </TableCell>
+                        <TableCell>
+                          {convertToDateWithoutTime(
+                            obj.updatedAt || obj.updatedDate,
+                          )}
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>
-                        {showSubtypeMovement(obj.movementSubType)}
-                      </TableCell>
+                        <TableCell>
+                          {showSubtypeMovement(obj.movementSubType)}
+                        </TableCell>
                       ) : null}
                       <TableCell>
                         {(obj.clientId
@@ -1926,24 +1913,24 @@ const OutputsTable = (props) => {
                         )}
                       </TableCell>
                       {isNotMobile ? (
-                      <TableCell>
-                        {obj.documentsMovement &&
-                        obj.documentsMovement.length != 0 ? (
-                          <IconButton
-                            onClick={() => checkDocuments(obj, index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : (
-                          <></>
-                        )}
-                      </TableCell>
+                        <TableCell>
+                          {obj.documentsMovement &&
+                          obj.documentsMovement.length != 0 ? (
+                            <IconButton
+                              onClick={() => checkDocuments(obj, index)}
+                              size='small'
+                            >
+                              <FormatListBulletedIcon fontSize='small' />
+                            </IconButton>
+                          ) : (
+                            <></>
+                          )}
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell align='center'>
-                        {statusObject(obj, obj.existReceipt, 'receipt')}
-                      </TableCell>
+                        <TableCell align='center'>
+                          {statusObject(obj, obj.existReceipt, 'receipt')}
+                        </TableCell>
                       ) : null}
                       {isNotMobile && typeClient == 'PN' ? (
                         <TableCell align='center'>
@@ -1955,58 +1942,58 @@ const OutputsTable = (props) => {
                         </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell align='center'>
-                        {statusObject(
-                          obj,
-                          obj.existReferralGuide,
-                          'referralGuide',
-                        )}
-                      </TableCell>
+                        <TableCell align='center'>
+                          {statusObject(
+                            obj,
+                            obj.existReferralGuide,
+                            'referralGuide',
+                          )}
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell align='center'>
-                        {statusObject(obj, obj.existBill, 'bill')}
-                      </TableCell>
+                        <TableCell align='center'>
+                          {statusObject(obj, obj.existBill, 'bill')}
+                        </TableCell>
                       ) : null}
                       {/* factura */}
                       {isNotMobile ? (
-                      <TableCell align='center'>
-                        {statusObject(
-                          obj,
-                          obj.existIncome,
-                          'income',
-                          obj.codContableMovementRelated
-                            ? showMinTypeRelated(
-                                obj.codContableMovementRelated.split('-')[0],
-                              )
-                            : '',
-                          obj.codContableMovementRelated
-                            ? obj.codContableMovementRelated.split('-')[1]
-                            : '',
-                        )}
-                      </TableCell>
+                        <TableCell align='center'>
+                          {statusObject(
+                            obj,
+                            obj.existIncome,
+                            'income',
+                            obj.codContableMovementRelated
+                              ? showMinTypeRelated(
+                                  obj.codContableMovementRelated.split('-')[0],
+                                )
+                              : '',
+                            obj.codContableMovementRelated
+                              ? obj.codContableMovementRelated.split('-')[1]
+                              : '',
+                          )}
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>
-                        {obj.contableMovements &&
-                        obj.contableMovements.length != 0 ? (
-                          <IconButton
-                            onClick={() => checkContableMovementsInfo(index)}
-                            size='small'
-                          >
-                            <FormatListBulletedIcon fontSize='small' />
-                          </IconButton>
-                        ) : (
-                          <></>
-                        )}
-                      </TableCell>
+                        <TableCell>
+                          {obj.contableMovements &&
+                          obj.contableMovements.length != 0 ? (
+                            <IconButton
+                              onClick={() => checkContableMovementsInfo(index)}
+                              size='small'
+                            >
+                              <FormatListBulletedIcon fontSize='small' />
+                            </IconButton>
+                          ) : (
+                            <></>
+                          )}
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>
-                        {obj.totalPrice
-                          ? `${moneySymbol} ${obj.totalPrice.toFixed(3)}`
-                          : ''}
-                      </TableCell>
+                        <TableCell>
+                          {obj.totalPrice
+                            ? `${moneySymbol} ${obj.totalPrice.toFixed(3)}`
+                            : ''}
+                        </TableCell>
                       ) : null}
                       <TableCell>
                         {obj.totalPriceWithIgv
@@ -2014,24 +2001,24 @@ const OutputsTable = (props) => {
                           : ''}
                       </TableCell>
                       {isNotMobile ? (
-                      <TableCell>{obj.observation}</TableCell>
+                        <TableCell>{obj.observation}</TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>{showStatus(obj.status)}</TableCell>
+                        <TableCell>{showStatus(obj.status)}</TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>
-                        {obj.userCreatedMetadata
-                          ? obj.userCreatedMetadata.nombreCompleto
-                          : ''}
-                      </TableCell>
+                        <TableCell>
+                          {obj.userCreatedMetadata
+                            ? obj.userCreatedMetadata.nombreCompleto
+                            : ''}
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>
-                        {obj.userUpdatedMetadata
-                          ? obj.userUpdatedMetadata.nombreCompleto
-                          : ''}
-                      </TableCell>
+                        <TableCell>
+                          {obj.userUpdatedMetadata
+                            ? obj.userUpdatedMetadata.nombreCompleto
+                            : ''}
+                        </TableCell>
                       ) : null}
                       <TableCell>
                         <Button
@@ -2529,9 +2516,7 @@ const OutputsTable = (props) => {
           // && !selectedOutput.existBill &&
           // !selectedOutput.existReceipt &&
           // !selectedOutput.existSellTicket
-          <MenuItem
-            onClick={getInvoice}
-          >
+          <MenuItem onClick={getInvoice}>
             <LocalAtmIcon sx={{mr: 1, my: 'auto'}} />
             Generar Factura
           </MenuItem>

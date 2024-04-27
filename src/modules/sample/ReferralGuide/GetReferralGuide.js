@@ -266,7 +266,8 @@ const GetReferralGuide = (props) => {
   const [pdfScale, setPdfScale] = React.useState('100');
   const [weightFields, setWeightFields] = React.useState(true);
   const [complianceSeal, setComplianceSeal] = React.useState(false);
-  const [complianceSealOnlySign, setComplianceSealOnlySign] = React.useState(false);
+  const [complianceSealOnlySign, setComplianceSealOnlySign] =
+    React.useState(false);
   let changeValueField;
 
   const {listDistribution} = useSelector(({movements}) => movements);
@@ -984,7 +985,7 @@ const GetReferralGuide = (props) => {
             startingPointUbigeo: ubigeoStartingPoint.toString(),
             startingPointAddress: data.startingPoint,
             startingSunatCode: data.startingSunatCode,
-            startingInternalCode: selectedStartingLocation?.modularCode || "",
+            startingInternalCode: selectedStartingLocation?.modularCode || '',
             arrivalPointUbigeo: ubigeoArrivalPoint.toString(),
             arrivalPointAddress: data.arrivalPoint,
             arrivalSunatCode: data.arrivalSunatCode,
@@ -1642,7 +1643,10 @@ const GetReferralGuide = (props) => {
                         <MenuItem value='consignment' style={{fontWeight: 200}}>
                           Consignación
                         </MenuItem>
-                        <MenuItem value='collectionOfTransformedGoods' style={{fontWeight: 200}}>
+                        <MenuItem
+                          value='collectionOfTransformedGoods'
+                          style={{fontWeight: 200}}
+                        >
                           Recojo de bienes transformados
                         </MenuItem>
                         <MenuItem
@@ -1693,7 +1697,7 @@ const GetReferralGuide = (props) => {
                       }}
                     />
                   </Grid>
-                  
+
                   {reasonVal == 'others' ? (
                     <Grid xs={12} sm={12} sx={{px: 1, mt: 2}}>
                       <AppLowerCaseTextField
@@ -1718,7 +1722,9 @@ const GetReferralGuide = (props) => {
                       onClick={() => openSelectAddressee()}
                       //disabled={!selectedDeliveryState}
                     >
-                      {(reasonVal == 'buy' || reasonVal == 'return') ? "Seleccionar Proveedor" : "Seleccionar Destinatario (Cliente)"}
+                      {reasonVal == 'buy' || reasonVal == 'return'
+                        ? 'Seleccionar Proveedor'
+                        : 'Seleccionar Destinatario (Cliente)'}
                     </Button>
                   </Grid>
                   <Grid xs={6} sm={8} sx={{px: 1, mt: 2}}>
@@ -1818,7 +1824,6 @@ const GetReferralGuide = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-
                 </Grid>
 
                 <Divider sx={{mt: 2, mb: 4}} />

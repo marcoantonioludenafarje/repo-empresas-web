@@ -149,32 +149,34 @@ const SigninAwsCognito = () => {
         </Formik>
       </Box>
 
-      {<Box
-        sx={{
-          color: 'grey.500',
-          mb: {xs: 5, md: 7},
-        }}
-      >
-        <span style={{marginRight: 4}}>
-          <IntlMessages id='common.dontHaveAccount' />
-        </span>
+      {
         <Box
-          component='span'
           sx={{
-            fontWeight: Fonts.MEDIUM,
-            '& a': {
-              color: (theme) => theme.palette.primary.main,
-              textDecoration: 'none',
-            },
+            color: 'grey.500',
+            mb: {xs: 5, md: 7},
           }}
         >
-          <Link href='/signup'>
-            <a>
-              <IntlMessages id='common.signupBusiness' />
-            </a>
-          </Link>
+          <span style={{marginRight: 4}}>
+            <IntlMessages id='common.dontHaveAccount' />
+          </span>
+          <Box
+            component='span'
+            sx={{
+              fontWeight: Fonts.MEDIUM,
+              '& a': {
+                color: (theme) => theme.palette.primary.main,
+                textDecoration: 'none',
+              },
+            }}
+          >
+            <Link href='/signup'>
+              <a>
+                <IntlMessages id='common.signupBusiness' />
+              </a>
+            </Link>
+          </Box>
         </Box>
-        </Box>}
+      }
 
       {/* <Box
         sx={{

@@ -36,15 +36,30 @@ const VerticalNavGroup = ({item, router, level, closeM}) => {
           {item.children.map((item) => (
             <React.Fragment key={item.id}>
               {item.type === 'group' && (
-                <NavVerticalGroup item={item} level={level} router={router}  closeM={closeM}/>
+                <NavVerticalGroup
+                  item={item}
+                  level={level}
+                  router={router}
+                  closeM={closeM}
+                />
               )}
 
               {item.type === 'collapse' && (
-                <VerticalCollapse item={item} level={level} router={router} closeM={closeM} />
+                <VerticalCollapse
+                  item={item}
+                  level={level}
+                  router={router}
+                  closeM={closeM}
+                />
               )}
 
               {item.type === 'item' && (
-                <VerticalItem item={item} level={level} router={router} closeM={closeM} />
+                <VerticalItem
+                  item={item}
+                  level={level}
+                  router={router}
+                  closeM={closeM}
+                />
               )}
             </React.Fragment>
           ))}

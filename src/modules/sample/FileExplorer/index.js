@@ -677,7 +677,15 @@ const FileExplorer = (props) => {
                 }}
               >
                 {`Cantidad de archivos: ${
-                  getDataRes.objects ? getDataRes.objects.some(obj => obj.nameFile == "initialFolder.txt" || obj.nameFile == "initialFolder") ? getDataRes.objects.length - 1 : getDataRes.objects.length : 0
+                  getDataRes.objects
+                    ? getDataRes.objects.some(
+                        (obj) =>
+                          obj.nameFile == 'initialFolder.txt' ||
+                          obj.nameFile == 'initialFolder',
+                      )
+                      ? getDataRes.objects.length - 1
+                      : getDataRes.objects.length
+                    : 0
                 }`}
               </Typography>
             </Grid>

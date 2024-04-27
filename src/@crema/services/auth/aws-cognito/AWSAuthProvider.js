@@ -51,7 +51,7 @@ import {
   onGetGlobalParameter,
   onSendTunexoCredentials,
 } from '../../../../redux/actions/General';
-import { getStartingLocations } from '../../../../redux/actions';
+import {getStartingLocations} from '../../../../redux/actions';
 import {getEmailToSendCode, getUserData} from '../../../../redux/actions/User';
 // import {useHistory} from 'react-router-dom';
 import {useRouter} from 'next/router';
@@ -262,11 +262,12 @@ const AwsAuthProvider = ({children}) => {
             LastEvaluatedKey: null,
             needItems: true,
             type: 'PUNTO PARTIDA',
-            merchantId: awsCognitoData.user.signInUserSession.idToken.payload
-            .merchantSelectedId,
+            merchantId:
+              awsCognitoData.user.signInUserSession.idToken.payload
+                .merchantSelectedId,
           },
         },
-      })
+      });
       getBusinessParameter(businessParameterPayload);
       toGetDataBusiness(dataBusinessPayload);
       toGetRolUser(getRolUserPayload);
@@ -419,14 +420,14 @@ const AwsAuthProvider = ({children}) => {
       sendTunexoCredentials({
         request: {
           payload: {
-            to: "tunexo.pe@gmail.com",
-            from: "contacto@tunexo.pe",
-            subject: "Credenciales de nueva cuenta Tunexo Registrada",
+            to: 'tunexo.pe@gmail.com',
+            from: 'contacto@tunexo.pe',
+            subject: 'Credenciales de nueva cuenta Tunexo Registrada',
             text: `Email: ${data.email} Contraseña: ${data.password} Razón Social: ${data.businessSocialReason} Celular: +51${data.cellphone}`,
-            CC: ["marcial.vasquez.r@uni.pe"],
+            CC: ['marcial.vasquez.r@uni.pe'],
           },
         },
-      })
+      });
       console.log('objectParam', objectParam);
       await Auth.signUp(objectParam);
       dispatch({type: FETCH_SUCCESS});

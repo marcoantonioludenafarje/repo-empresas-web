@@ -48,7 +48,10 @@ export const collateRecordsAndGuides = (payload) => {
     API.post('tunexo', '/utility/distribution/consolidatedPdf', {body: payload})
       .then((data) => {
         console.log('collateRecordsAndGuides resultado', data);
-        dispatch({type: COLLATE_RECORDS_AND_GUIDES, payload: data.response.payload});
+        dispatch({
+          type: COLLATE_RECORDS_AND_GUIDES,
+          payload: data.response.payload,
+        });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {

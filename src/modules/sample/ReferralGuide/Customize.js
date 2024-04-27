@@ -152,8 +152,8 @@ const Customize = (props) => {
   const [pdfScale, setPdfScale] = React.useState('100');
   const [weightFields, setWeightFields] = React.useState(false);
   const [complianceSeal, setComplianceSeal] = React.useState(false);
-  const [complianceSealOnlySign, setComplianceSealOnlySign] = React.useState(false);
-
+  const [complianceSealOnlySign, setComplianceSealOnlySign] =
+    React.useState(false);
 
   //PREVISUALIZE
   const [scale, setScale] = React.useState(1.0);
@@ -370,7 +370,7 @@ const Customize = (props) => {
           weightFields: weightFields,
           pdfScale: pdfScale,
           complianceSeal: complianceSeal,
-          complianceSealOnlySign: complianceSealOnlySign
+          complianceSealOnlySign: complianceSealOnlySign,
         },
       },
     };
@@ -399,8 +399,8 @@ const Customize = (props) => {
       if (obj.abreParametro == 'SERIES_REFERRAL_GUIDE') {
         obj.weightFields = weightFields;
         obj.pdfScale = pdfScale;
-        obj.complianceSeal = complianceSeal
-        obj.complianceSealOnlySign = complianceSealOnlySign
+        obj.complianceSeal = complianceSeal;
+        obj.complianceSealOnlySign = complianceSealOnlySign;
       }
       return obj;
     });
@@ -417,7 +417,7 @@ const Customize = (props) => {
             weightFields: weightFields,
             pdfScale: pdfScale,
             complianceSeal: complianceSeal,
-            complianceSealOnlySign: complianceSealOnlySign
+            complianceSealOnlySign: complianceSealOnlySign,
           },
         },
       },
@@ -586,7 +586,7 @@ const Customize = (props) => {
                         aria-label='left aligned'
                         disabled
                       >
-                       75% 
+                        75%
                       </ToggleButton>
                       <ToggleButton value='100' aria-label='centered'>
                         100%
@@ -594,8 +594,7 @@ const Customize = (props) => {
                       <ToggleButton value='150' aria-label='right aligned'>
                         150%
                       </ToggleButton>
-                      <ToggleButton value='180' aria-label='justified' disabled >
-                      
+                      <ToggleButton value='180' aria-label='justified' disabled>
                         180%
                       </ToggleButton>
                     </ToggleButtonGroup>
@@ -635,7 +634,6 @@ const Customize = (props) => {
                     >
                       Conformidad Solo Firma
                     </ToggleButton>
-
                   </Stack>
                   <Box
                     sx={{

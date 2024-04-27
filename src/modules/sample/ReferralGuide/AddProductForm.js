@@ -25,7 +25,7 @@ import {
   Alert,
   DialogContentText,
   DialogTitle,
-  Snackbar
+  Snackbar,
 } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import IntlMessages from '../../../@crema/utility/IntlMessages';

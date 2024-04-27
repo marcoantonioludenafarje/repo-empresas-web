@@ -481,13 +481,13 @@ const NewOutput = (props) => {
   const [value, setValue] = React.useState(
     Date.now() /* Number(query.createdAt) */,
   );
-  const [quotas, setQuotas] = React.useState(
-    [{
-      date:Date.now(),
+  const [quotas, setQuotas] = React.useState([
+    {
+      date: Date.now(),
       amount: 0,
-      nro: 1   
-    }]
-  );
+      nro: 1,
+    },
+  ]);
   const [value2, setValue2] = React.useState(
     query.deletedAt ? query.deletedAt : Date.now(),
   );

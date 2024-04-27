@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
   },
 }));
-import { normalizeConfig } from 'next/dist/server/config-shared';
+import {normalizeConfig} from 'next/dist/server/config-shared';
 
 // let listPayload = {
 //   request: {
@@ -644,22 +644,26 @@ const ClientTable = (arrayObjs, props) => {
           <TableHead>
             <TableRow>
               {isNotMobile ? (
-              <>
-              <TableCell>Identificador</TableCell>
-              <TableCell>Número Identificador</TableCell>
-              </>
+                <>
+                  <TableCell>Identificador</TableCell>
+                  <TableCell>Número Identificador</TableCell>
+                </>
               ) : (
                 <TableCell>Identificador-Número</TableCell>
               )}
               <TableCell>Nombre / Razón social</TableCell>
-              {isNotMobile ? (
-              <TableCell>Nombre Contacto</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Nombre Contacto</TableCell> : null}
               <TableCell>Etiquetas</TableCell>
-              {isNotMobile ? (
-              <TableCell>Última actualización</TableCell>
-              ) : null}
-              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
+              {isNotMobile ? <TableCell>Última actualización</TableCell> : null}
+              <TableCell
+                align='center'
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '16px',
+                }}
+              >
+                {isNotMobile ? 'Opciones' : '#'}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -674,26 +678,36 @@ const ClientTable = (arrayObjs, props) => {
                     key={index}
                   >
                     {isNotMobile ? (
-                    <>
-                    <TableCell>{parsedId[0]}</TableCell>
-                    <TableCell>{parsedId[1]}</TableCell>
-                    </>
+                      <>
+                        <TableCell>{parsedId[0]}</TableCell>
+                        <TableCell>{parsedId[1]}</TableCell>
+                      </>
                     ) : (
-                      <TableCell>{parsedId[0]}-{parsedId[1]}</TableCell>
+                      <TableCell>
+                        {parsedId[0]}-{parsedId[1]}
+                      </TableCell>
                     )}
                     <TableCell>{obj.denominationClient}</TableCell>
                     {isNotMobile ? (
-                    <TableCell>{obj.nameContact}</TableCell>
+                      <TableCell>{obj.nameContact}</TableCell>
                     ) : null}
                     <TableCell>{verTags(obj, businessParameter)}</TableCell>
                     {isNotMobile ? (
-                    <TableCell>
-                      {convertToDate(obj.updatedAt || obj.updatedDate)}
-                    </TableCell>
+                      <TableCell>
+                        {convertToDate(obj.updatedAt || obj.updatedDate)}
+                      </TableCell>
                     ) : null}
-                    <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
+                    <TableCell
+                      sx={{
+                        px: isNotMobile ? normalizeConfig : 0,
+                        width: isNotMobile ? normalizeConfig : '16px',
+                      }}
+                    >
                       <Button
-                        sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
+                        sx={{
+                          px: isNotMobile ? normalizeConfig : 0,
+                          minWidth: isNotMobile ? normalizeConfig : '16px',
+                        }}
                         id='basic-button'
                         aria-controls={openMenu ? 'basic-menu' : undefined}
                         aria-haspopup='true'

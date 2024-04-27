@@ -30,7 +30,7 @@ import {
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 
-import { normalizeConfig } from 'next/dist/server/config-shared';
+import {normalizeConfig} from 'next/dist/server/config-shared';
 import {ClickAwayListener} from '@mui/base';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -191,7 +191,7 @@ const CreditNotesTable = (props) => {
   };
 
   const handleNextPage = (event) => {
-    setLoading(true)
+    setLoading(true);
     //console.log('Llamando al  handleNextPage', handleNextPage);
     let listPayload = {
       request: {
@@ -260,7 +260,7 @@ const CreditNotesTable = (props) => {
   }, []);
   useEffect(() => {
     if (userDataRes) {
-      setLoading(true)
+      setLoading(true);
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       //dispatch({type: GET_MOVEMENTS, payload: undefined});
@@ -364,7 +364,7 @@ const CreditNotesTable = (props) => {
     }
   };
   const filterData = (dataFilters) => {
-    setLoading(true)
+    setLoading(true);
     console.log('dataFilters', dataFilters);
     let listPayload = {
       request: {
@@ -401,7 +401,7 @@ const CreditNotesTable = (props) => {
 
   //BUTTONS BAR FUNCTIONS
   const searchInputs = () => {
-    setLoading(true)
+    setLoading(true);
     let listPayload = {
       request: {
         payload: {
@@ -587,7 +587,7 @@ const CreditNotesTable = (props) => {
   };
 
   const cancelCreditNote = (reason) => {
-    setLoading(true)
+    setLoading(true);
     console.log('Razón', reason);
     cancelInvoicePayload.request.payload.reason = reason;
     cancelInvoicePayload.request.payload.serial =
@@ -645,13 +645,13 @@ const CreditNotesTable = (props) => {
           }}
         />
         {isNotMobile ? (
-        <Button
-          onClick={() => setMoreFilters(true)}
-          startIcon={<FilterAltOutlinedIcon />}
-          variant='outlined'
-        >
-          Más filtros
-        </Button>
+          <Button
+            onClick={() => setMoreFilters(true)}
+            startIcon={<FilterAltOutlinedIcon />}
+            variant='outlined'
+          >
+            Más filtros
+          </Button>
         ) : null}
         <Button
           variant='contained'
@@ -672,49 +672,47 @@ const CreditNotesTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              {isNotMobile ? (
-              <TableCell>Fecha registro</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Fecha registro</TableCell> : null}
               <TableCell>Fecha emisión</TableCell>
               {isNotMobile ? (
-              <>
-              <TableCell>Número serie</TableCell>
-              <TableCell>Número factura</TableCell>
-              </>
+                <>
+                  <TableCell>Número serie</TableCell>
+                  <TableCell>Número factura</TableCell>
+                </>
               ) : (
                 <TableCell>Serie-Número</TableCell>
               )}
               <TableCell>Identificador Receptor</TableCell>
+              {isNotMobile ? <TableCell>Nombre Receptor</TableCell> : null}
               {isNotMobile ? (
-              <TableCell>Nombre Receptor</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'observation'}
-                  direction={orderBy === 'observation' ? order : 'asc'}
-                  onClick={() => handleSort('observation')}
-                >
-                  Observación
-                </TableSortLabel>
-              </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'observation'}
+                    direction={orderBy === 'observation' ? order : 'asc'}
+                    onClick={() => handleSort('observation')}
+                  >
+                    Observación
+                  </TableSortLabel>
+                </TableCell>
               ) : null}
               {/* <TableCell>Subtotal</TableCell> */}
               {/* <TableCell>Inafecta</TableCell>
               <TableCell>Exonerada</TableCell>
               <TableCell>Gravada</TableCell> */}
-              {isNotMobile ? (
-              <TableCell>IGV</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>IGV</TableCell> : null}
               <TableCell>Importe total</TableCell>
-              {isNotMobile ? (
-              <TableCell>Forma de pago</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Forma de pago</TableCell> : null}
               <TableCell>Aceptado por Sunat</TableCell>
-              {isNotMobile ? (
-              <TableCell>Anulado?</TableCell>
-              ) : null}
-              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
+              {isNotMobile ? <TableCell>Anulado?</TableCell> : null}
+              <TableCell
+                align='center'
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '16px',
+                }}
+              >
+                {isNotMobile ? 'Opciones' : '#'}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -725,44 +723,48 @@ const CreditNotesTable = (props) => {
                   key={index}
                 >
                   {isNotMobile ? (
-                  <TableCell>
-                    {convertToDateWithoutTime(obj.createdAt)}
-                  </TableCell>
+                    <TableCell>
+                      {convertToDateWithoutTime(obj.createdAt)}
+                    </TableCell>
                   ) : null}
                   <TableCell>{strDateToDateObject_ES(obj.issueDate)}</TableCell>
                   {isNotMobile ? (
-                  <>
-                  <TableCell>
-                    {obj.serialNumber && obj.serialNumber.includes('-')
-                      ? obj.serialNumber.split('-')[0]
-                      : null}
-                    {/* {obj.serialNumber &&
+                    <>
+                      <TableCell>
+                        {obj.serialNumber && obj.serialNumber.includes('-')
+                          ? obj.serialNumber.split('-')[0]
+                          : null}
+                        {/* {obj.serialNumber &&
                     typeof obj.serialNumber === 'string' &&
                     obj.serialNumber.length !== 0
                       ? obj.serialNumber.split('-')[0]
                       : Array.isArray(obj.documentIntern)
                       ? obj.documentIntern.split('-')[0]
                       : null} */}
-                  </TableCell>
-                  <TableCell>
-                    {obj.serialNumber && obj.serialNumber.includes('-')
-                      ? obj.serialNumber.split('-')[1]
-                      : null}
-                    {/* {obj.serialNumber &&
+                      </TableCell>
+                      <TableCell>
+                        {obj.serialNumber && obj.serialNumber.includes('-')
+                          ? obj.serialNumber.split('-')[1]
+                          : null}
+                        {/* {obj.serialNumber &&
                     typeof obj.serialNumber === 'string' &&
                     obj.serialNumber.length !== 0
                       ? obj.serialNumber.split('-')[1]
                       : Array.isArray(obj.documentIntern)
                       ? obj.documentIntern.split('-')[1]
                       : null} */}
-                  </TableCell>
-                  </>
+                      </TableCell>
+                    </>
                   ) : (
-                  <TableCell>{obj.serialNumber && obj.serialNumber.includes('-')
-                  ? obj.serialNumber.split('-')[0]
-                  : null}-{obj.serialNumber && obj.serialNumber.includes('-')
-                  ? obj.serialNumber.split('-')[1]
-                  : null}</TableCell>
+                    <TableCell>
+                      {obj.serialNumber && obj.serialNumber.includes('-')
+                        ? obj.serialNumber.split('-')[0]
+                        : null}
+                      -
+                      {obj.serialNumber && obj.serialNumber.includes('-')
+                        ? obj.serialNumber.split('-')[1]
+                        : null}
+                    </TableCell>
                   )}
                   <TableCell>
                     {obj.clientId
@@ -772,14 +774,14 @@ const CreditNotesTable = (props) => {
                       : ''}
                   </TableCell>
                   {isNotMobile ? (
-                  <TableCell>
-                    {obj.clientId
-                      ? obj.denominationClient
-                      : 'Cliente No Definido'}
-                  </TableCell>
+                    <TableCell>
+                      {obj.clientId
+                        ? obj.denominationClient
+                        : 'Cliente No Definido'}
+                    </TableCell>
                   ) : null}
                   {isNotMobile ? (
-                  <TableCell>{obj.observation}</TableCell>
+                    <TableCell>{obj.observation}</TableCell>
                   ) : null}
                   {/* <TableCell>
                     {obj.totalPriceWithoutIgv
@@ -798,31 +800,39 @@ const CreditNotesTable = (props) => {
                   <TableCell>{obj.totalTaxExempt ? `${moneySymbol} ${obj.totalTaxExempt.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell>
                   <TableCell>{obj.totalTaxed ? `${moneySymbol} ${obj.totalTaxed.toFixed(2)} ` : `${moneySymbol} 0`}</TableCell> */}
                   {isNotMobile ? (
-                  <TableCell>
-                    {obj.totalIgv
-                      ? `${moneySymbol} ${obj.totalIgv.toFixed(2)} `
-                      : `${moneySymbol} 0`}
-                  </TableCell>
+                    <TableCell>
+                      {obj.totalIgv
+                        ? `${moneySymbol} ${obj.totalIgv.toFixed(2)} `
+                        : `${moneySymbol} 0`}
+                    </TableCell>
                   ) : null}
                   <TableCell>
-                    {obj.totalPriceWithIgv >=0
+                    {obj.totalPriceWithIgv >= 0
                       ? `${moneySymbol}  ${obj.totalPriceWithIgv.toFixed(2)}`
                       : ''}
                   </TableCell>
                   {isNotMobile ? (
-                  <TableCell>{showPaymentMethod(obj.movementType)}</TableCell>
+                    <TableCell>{showPaymentMethod(obj.movementType)}</TableCell>
                   ) : null}
                   <TableCell align='center'>
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
                   {isNotMobile ? (
-                  <TableCell align='center'>
-                    {showCanceled(obj.cancelStatus)}
-                  </TableCell>
+                    <TableCell align='center'>
+                      {showCanceled(obj.cancelStatus)}
+                    </TableCell>
                   ) : null}
-                  <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
+                  <TableCell
+                    sx={{
+                      px: isNotMobile ? normalizeConfig : 0,
+                      width: isNotMobile ? normalizeConfig : '16px',
+                    }}
+                  >
                     <Button
-                      sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
+                      sx={{
+                        px: isNotMobile ? normalizeConfig : 0,
+                        minWidth: isNotMobile ? normalizeConfig : '16px',
+                      }}
                       id='basic-button'
                       aria-controls={openMenu ? 'basic-menu' : undefined}
                       aria-haspopup='true'
@@ -839,11 +849,12 @@ const CreditNotesTable = (props) => {
             )}
           </TableBody>
         </Table>
-        { loading ? (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        ): null}
-        { successMessage && !loading && noteItems_pageListNote && noteItems_pageListNote.length == 0 ? (
-        <span>{`No se han encontrado resultados`}</span>
+        {loading ? <CircularProgress disableShrink sx={{m: '10px'}} /> : null}
+        {successMessage &&
+        !loading &&
+        noteItems_pageListNote &&
+        noteItems_pageListNote.length == 0 ? (
+          <span>{`No se han encontrado resultados`}</span>
         ) : null}
         {noteLastEvalutedKey_pageListNote ? (
           <Stack spacing={2}>

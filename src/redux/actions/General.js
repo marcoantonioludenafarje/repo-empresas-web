@@ -35,7 +35,10 @@ import {
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 
-import { requestSendCredentials, sunatValidateRequest} from '../../@crema/utility/Utils';
+import {
+  requestSendCredentials,
+  sunatValidateRequest,
+} from '../../@crema/utility/Utils';
 export const onGetBusinessParameter = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
@@ -627,7 +630,6 @@ export const validateSUNAT = (payload) => {
       });
   };
 };
-
 
 export const onSendTunexoCredentials = (payload) => {
   return (dispatch, getState) => {

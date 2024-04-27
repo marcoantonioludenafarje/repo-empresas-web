@@ -109,7 +109,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 const XLSX = require('xlsx');
 
-import { normalizeConfig } from 'next/dist/server/config-shared';
+import {normalizeConfig} from 'next/dist/server/config-shared';
 import BatchConsultCountdown from './batchConsultCountdown';
 //ESTILOS
 const useStyles = makeStyles((theme) => ({
@@ -209,7 +209,7 @@ const ReferralGuidesTable = (props) => {
 
   const [valueObservation, setValueObservation] = React.useState('');
   const [selectedLocations, setSelectedLocations] = React.useState([]);
-  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
+  const [selectedLocation, setSelectedLocation] = React.useState('TODOS');
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getReferralGuides_PageListGuide(payload));
@@ -546,7 +546,7 @@ const ReferralGuidesTable = (props) => {
       }
       listPayload.request.payload.LastEvaluatedKey = null;
       console.log('listPayload133:useEffect userDataRes:', listPayload);
-      setSelectedLocations(userDataRes.locations)
+      setSelectedLocations(userDataRes.locations);
       toGetMovements(listPayload);
       if (Object.keys(query).length !== 0) {
         listPayload.request.payload.movementHeaderId = null;
@@ -886,7 +886,10 @@ const ReferralGuidesTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
-        {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+        {userDataRes &&
+        getStartingLocationsRes &&
+        userDataRes.locations &&
+        userDataRes.locations.length > 0 ? (
           <FormControl sx={{my: 0, width: 160}}>
             <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
               Almacén
@@ -897,12 +900,12 @@ const ReferralGuidesTable = (props) => {
               label='Almacén'
               onChange={(event) => {
                 console.log(event.target.value);
-                setSelectedLocation(event.target.value)
-                if(event.target.value == "TODOS"){
-                  let allLocations = userDataRes.locations
-                  setSelectedLocations(allLocations)
+                setSelectedLocation(event.target.value);
+                if (event.target.value == 'TODOS') {
+                  let allLocations = userDataRes.locations;
+                  setSelectedLocations(allLocations);
                 } else {
-                  setSelectedLocations([event.target.value])
+                  setSelectedLocations([event.target.value]);
                 }
               }}
               defaultValue={selectedLocation}
@@ -911,11 +914,18 @@ const ReferralGuidesTable = (props) => {
                 TODOS
               </MenuItem>
               {userDataRes.locations.map((actualLocation, index) => {
-                const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+                const locationName = getStartingLocationsRes.find(
+                  (obj) => obj.modularCode == actualLocation,
+                ).locationName;
                 return (
-                  <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                  <MenuItem
+                    key={`locationItem-${index}`}
+                    value={actualLocation}
+                    style={{fontWeight: 200}}
+                  >
                     {locationName}
-                  </MenuItem>)
+                  </MenuItem>
+                );
               })}
             </Select>
           </FormControl>
@@ -981,15 +991,13 @@ const ReferralGuidesTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              {isNotMobile ? (
-              <TableCell>Fecha de registro</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Fecha de registro</TableCell> : null}
               <TableCell>Fecha de emisión</TableCell>
               {isNotMobile ? (
-              <>
-              <TableCell>Número de serie</TableCell>
-              <TableCell>Número de guía de remisión</TableCell>
-              </>
+                <>
+                  <TableCell>Número de serie</TableCell>
+                  <TableCell>Número de guía de remisión</TableCell>
+                </>
               ) : (
                 <TableCell>Serie-Número</TableCell>
               )}
@@ -1004,27 +1012,29 @@ const ReferralGuidesTable = (props) => {
                 </TableSortLabel>
               </TableCell>
               {isNotMobile ? (
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'observation'}
-                  direction={orderBy === 'observation' ? order : 'asc'}
-                  onClick={() => handleSort('observation')}
-                >
-                  Observación
-                </TableSortLabel>
-              </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'observation'}
+                    direction={orderBy === 'observation' ? order : 'asc'}
+                    onClick={() => handleSort('observation')}
+                  >
+                    Observación
+                  </TableSortLabel>
+                </TableCell>
               ) : null}
-              {isNotMobile ? (
-              <TableCell>Enviado a Sunat</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Enviado a Sunat</TableCell> : null}
               <TableCell>Aceptado por Sunat</TableCell>
-              {isNotMobile ? (
-              <TableCell>Anulado?</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Error</TableCell>
-              ) : null}
-              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
+              {isNotMobile ? <TableCell>Anulado?</TableCell> : null}
+              {isNotMobile ? <TableCell>Error</TableCell> : null}
+              <TableCell
+                align='center'
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '16px',
+                }}
+              >
+                {isNotMobile ? 'Opciones' : '#'}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1036,9 +1046,9 @@ const ReferralGuidesTable = (props) => {
                   key={index}
                 >
                   {isNotMobile ? (
-                  <TableCell>
-                    {convertToDateWithoutTime(obj.createdAt)}
-                  </TableCell>
+                    <TableCell>
+                      {convertToDateWithoutTime(obj.createdAt)}
+                    </TableCell>
                   ) : null}
                   <TableCell>
                     {obj.issueDate
@@ -1046,62 +1056,81 @@ const ReferralGuidesTable = (props) => {
                       : convertToDateWithoutTime(obj.createdAt)}
                   </TableCell>
                   {isNotMobile ? (
-                  <>
-                  <TableCell>
-                    {obj.documentIntern && obj.documentIntern.includes('-')
-                      ? obj.documentIntern.split('-')[0]
-                      : ''}
-                  </TableCell>
-                  <TableCell>
-                    {obj.documentIntern && obj.documentIntern.includes('-')
-                      ? obj.documentIntern.split('-')[1]
-                      : ''}
-                  </TableCell>
-                  </>
+                    <>
+                      <TableCell>
+                        {obj.documentIntern && obj.documentIntern.includes('-')
+                          ? obj.documentIntern.split('-')[0]
+                          : ''}
+                      </TableCell>
+                      <TableCell>
+                        {obj.documentIntern && obj.documentIntern.includes('-')
+                          ? obj.documentIntern.split('-')[1]
+                          : ''}
+                      </TableCell>
+                    </>
                   ) : (
-                    <TableCell>{obj.documentIntern && obj.documentIntern.includes('-')
-                    ? obj.documentIntern.split('-')[0]
-                    : ''}-{obj.documentIntern && obj.documentIntern.includes('-')
-                    ? obj.documentIntern.split('-')[1]
-                    : ''}</TableCell>
+                    <TableCell>
+                      {obj.documentIntern && obj.documentIntern.includes('-')
+                        ? obj.documentIntern.split('-')[0]
+                        : ''}
+                      -
+                      {obj.documentIntern && obj.documentIntern.includes('-')
+                        ? obj.documentIntern.split('-')[1]
+                        : ''}
+                    </TableCell>
                   )}
-                  <TableCell>{obj.reasonForTransfer ? translateValue("REASON_FOR_TRANSFER",(obj.reasonForTransfer).toUpperCase()) : ''} </TableCell>
+                  <TableCell>
+                    {obj.reasonForTransfer
+                      ? translateValue(
+                          'REASON_FOR_TRANSFER',
+                          obj.reasonForTransfer.toUpperCase(),
+                        )
+                      : ''}{' '}
+                  </TableCell>
                   <TableCell>
                     {`${obj.clientId.split('-')[1]}` +
                       ' ' +
                       obj.denominationClient}
                   </TableCell>
                   {isNotMobile ? (
-                  <TableCell>{obj.observation || ''} </TableCell>
+                    <TableCell>{obj.observation || ''} </TableCell>
                   ) : null}
                   {isNotMobile ? (
-                  <TableCell align='center'>
-                    {showIconStatus(obj.sendingStatus)}
-                  </TableCell>
+                    <TableCell align='center'>
+                      {showIconStatus(obj.sendingStatus)}
+                    </TableCell>
                   ) : null}
                   <TableCell align='center'>
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
                   {isNotMobile ? (
-                  <TableCell>
-                    {showCanceled(obj.cancelStatus || false)}
-                  </TableCell>
+                    <TableCell>
+                      {showCanceled(obj.cancelStatus || false)}
+                    </TableCell>
                   ) : null}
                   {isNotMobile ? (
-                  <TableCell>
-                    <Button
-                      onClick={() => {
-                        setOpenError(true);
-                        setErrorDetail(obj.errorDetail);
-                      }}
-                    >
-                      {showIconErrorStatus(obj.errorDetail || false)}
-                    </Button>
-                  </TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => {
+                          setOpenError(true);
+                          setErrorDetail(obj.errorDetail);
+                        }}
+                      >
+                        {showIconErrorStatus(obj.errorDetail || false)}
+                      </Button>
+                    </TableCell>
                   ) : null}
-                  <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
+                  <TableCell
+                    sx={{
+                      px: isNotMobile ? normalizeConfig : 0,
+                      width: isNotMobile ? normalizeConfig : '16px',
+                    }}
+                  >
                     <Button
-                      sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
+                      sx={{
+                        px: isNotMobile ? normalizeConfig : 0,
+                        minWidth: isNotMobile ? normalizeConfig : '16px',
+                      }}
                       id='basic-button'
                       aria-controls={openMenu ? 'basic-menu' : undefined}
                       aria-haspopup='true'
@@ -1118,11 +1147,12 @@ const ReferralGuidesTable = (props) => {
             )}
           </TableBody>
         </Table>
-        { loading ? (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        ): null}
-        { successMessage && !loading && referralGuideItems_pageListGuide && referralGuideItems_pageListGuide.length == 0 ? (
-        <span>{`No se han encontrado resultados`}</span>
+        {loading ? <CircularProgress disableShrink sx={{m: '10px'}} /> : null}
+        {successMessage &&
+        !loading &&
+        referralGuideItems_pageListGuide &&
+        referralGuideItems_pageListGuide.length == 0 ? (
+          <span>{`No se han encontrado resultados`}</span>
         ) : null}
         {referralGuideLastEvalutedKey_pageListGuide ? (
           <Stack spacing={2}>
@@ -1168,8 +1198,8 @@ const ReferralGuidesTable = (props) => {
             Exportar todo
           </Button>
         ) : null}
-        
-        <BatchConsultCountdown loading={isLoading}/>
+
+        <BatchConsultCountdown loading={isLoading} />
       </Stack>
       <Dialog
         open={openStatus}

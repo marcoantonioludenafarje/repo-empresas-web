@@ -145,7 +145,7 @@ export default function Views(props) {
           payload: {
             merchantId: userDataRes.merchantSelected.merchantId,
             type: type,
-            LastEvaluatedKey: null,            
+            LastEvaluatedKey: null,
           },
         },
       };
@@ -251,18 +251,14 @@ export default function Views(props) {
     }
 
     console.log('negocio0', type);
-    if (type!= 'TODOS') {
+    if (type != 'TODOS') {
       filtered = filtered.filter((business) => {
         const typeBusiness = business.typeMerchant;
-        return (
-          typeBusiness &&
-          typeBusiness.includes(type)
-        );
+        return typeBusiness && typeBusiness.includes(type);
       });
     }
 
     setFilteredBusiness(filtered);
-    
   };
 
   const handleActive = () => {
@@ -306,7 +302,7 @@ export default function Views(props) {
           payload: {
             merchantId: userDataRes.merchantSelected.merchantId,
             type: type,
-            LastEvaluatedKey: null,            
+            LastEvaluatedKey: null,
           },
         },
       };
@@ -390,12 +386,12 @@ export default function Views(props) {
         </FormControl>
         <Button startIcon={<FilterAltOutlinedIcon />} variant='outlined'>
           Más filtros
-        </Button>        
+        </Button>
         <Button
           startIcon={<ManageSearchOutlinedIcon />}
           variant='contained'
           color='primary'
-          onClick={() => searchBusiness(searchValue,type)}
+          onClick={() => searchBusiness(searchValue, type)}
         >
           Buscar
         </Button>

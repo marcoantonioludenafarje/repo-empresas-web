@@ -185,7 +185,9 @@ const UpdateParameters = () => {
   const [tagSelectedDelete, setTagSelectedDelete] = React.useState({});
   const [billParameter, setBillParameter] = React.useState({});
   const [receiptParameter, setReceiptParameter] = React.useState({});
-  const [referralGuideParameter, setReferralGuideParameter] = React.useState({});
+  const [referralGuideParameter, setReferralGuideParameter] = React.useState(
+    {},
+  );
   let deletePayload = {
     request: {
       payload: {
@@ -455,7 +457,6 @@ const UpdateParameters = () => {
       setReceiptParameter(receiptParameters);
       setBillParameter(billParameters);
       setReferralGuideParameter(referralGuideParameters);
-
 
       changeValue('defaultWeight', defaultWeightParameter);
       changeValue('defaultMoney', defaultMoneyParameter);

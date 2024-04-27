@@ -392,9 +392,9 @@ const InventoryTable = (props) => {
                   </TableCell>
                   <TableCell>{obj.description}</TableCell>
                   <TableCell>
-                    <Badge 
-                      badgeContent={obj.stock} 
-                      color="primary" 
+                    <Badge
+                      badgeContent={obj.stock}
+                      color='primary'
                       anchorOrigin={{
                         vertical: 'left',
                         horizontal: 'right',
@@ -463,54 +463,56 @@ const InventoryTable = (props) => {
         ) : null}
       </Menu>
       <Dialog
-          open={openWarehouse}
-          onClose={()=>setOpenWarehouse(false)}
-          sx={{textAlign: 'center'}}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
-        >
-          <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-            {fast.description}
-          </DialogTitle>
-          <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
-            <TableContainer component={Paper} sx={{maxHeight: 440}}>
-              <Table sx={{minWidth: 650}} stickyHeader aria-label='simple table'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Código</TableCell>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell>Cantidad</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {fast.locations && getStartingLocationsRes && Array.isArray(getStartingLocationsRes) &&
-                  Array.isArray(fast.locations) ? (
-                    fast.locations.map((obj, index) => {
-                      const locationName = getStartingLocationsRes.find(objL => objL.modularCode == obj.modularCode).locationName
+        open={openWarehouse}
+        onClose={() => setOpenWarehouse(false)}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {fast.description}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <TableContainer component={Paper} sx={{maxHeight: 440}}>
+            <Table sx={{minWidth: 650}} stickyHeader aria-label='simple table'>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Código</TableCell>
+                  <TableCell>Nombre</TableCell>
+                  <TableCell>Cantidad</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {fast.locations &&
+                getStartingLocationsRes &&
+                Array.isArray(getStartingLocationsRes) &&
+                Array.isArray(fast.locations)
+                  ? fast.locations.map((obj, index) => {
+                      const locationName = getStartingLocationsRes.find(
+                        (objL) => objL.modularCode == obj.modularCode,
+                      ).locationName;
                       return (
                         <TableRow
                           sx={{'&:last-child td, &:last-child th': {border: 0}}}
                           key={obj.modularCode}
                         >
-                          <TableCell>
-                            {obj.modularCode.split("-")[0]}
-                          </TableCell>
+                          <TableCell>{obj.modularCode.split('-')[0]}</TableCell>
                           <TableCell>{locationName}</TableCell>
                           <TableCell>{obj.stock}</TableCell>
                         </TableRow>
-                      )
+                      );
                     })
-                  ) : null}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </DialogContent>
-          <DialogActions sx={{justifyContent: 'center'}}>
-            <Button variant='outlined' onClick={()=>setOpenWarehouse(false)}>
-              Aceptar
-            </Button>
-          </DialogActions>
-        </Dialog>
+                  : null}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={() => setOpenWarehouse(false)}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Card>
   );
 };

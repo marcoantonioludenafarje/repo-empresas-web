@@ -54,7 +54,7 @@ import {exportExcelTemplateToBills} from '../../../redux/actions/General';
 import CloseIcon from '@mui/icons-material/Close';
 import MoreFiltersDocumentSunat from '../Filters/MoreFiltersDocumentSunat';
 
-import { normalizeConfig } from 'next/dist/server/config-shared';
+import {normalizeConfig} from 'next/dist/server/config-shared';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import {
   DesktopDatePicker,
@@ -941,46 +941,44 @@ const BillsTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              {isNotMobile ? (
-              <TableCell>Fecha registro</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Fecha registro</TableCell> : null}
               <TableCell>Fecha emisión</TableCell>
               {isNotMobile ? (
                 <>
-                <TableCell>Número serie</TableCell>
-                <TableCell>Número factura</TableCell>
+                  <TableCell>Número serie</TableCell>
+                  <TableCell>Número factura</TableCell>
                 </>
-              ) : (<TableCell>Serie-Número</TableCell>)}
+              ) : (
+                <TableCell>Serie-Número</TableCell>
+              )}
               <TableCell>Identificador Receptor</TableCell>
+              {isNotMobile ? <TableCell>Nombre Receptor</TableCell> : null}
               {isNotMobile ? (
-              <TableCell>Nombre Receptor</TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'observation'}
+                    direction={orderBy === 'observation' ? order : 'asc'}
+                    onClick={() => handleSort('observation')}
+                  >
+                    Observación
+                  </TableSortLabel>
+                </TableCell>
               ) : null}
-              {isNotMobile ? (
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'observation'}
-                  direction={orderBy === 'observation' ? order : 'asc'}
-                  onClick={() => handleSort('observation')}
-                >
-                  Observación
-                </TableSortLabel>
-              </TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Subtotal</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>IGV</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Subtotal</TableCell> : null}
+              {isNotMobile ? <TableCell>IGV</TableCell> : null}
               <TableCell>Importe total</TableCell>
-              {isNotMobile ? (
-              <TableCell>Forma de pago</TableCell>
-              ) : null}
+              {isNotMobile ? <TableCell>Forma de pago</TableCell> : null}
               <TableCell>Aceptado por Sunat</TableCell>
-              {isNotMobile ? (
-              <TableCell>Anulado?</TableCell>
-              ) : null}
-              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
+              {isNotMobile ? <TableCell>Anulado?</TableCell> : null}
+              <TableCell
+                align='center'
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '16px',
+                }}
+              >
+                {isNotMobile ? 'Opciones' : '#'}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -991,29 +989,39 @@ const BillsTable = (props) => {
                   key={index}
                 >
                   {isNotMobile ? (
-                  <TableCell>
-                    {convertToDateWithoutTime(obj.createdAt)}
-                  </TableCell>
+                    <TableCell>
+                      {convertToDateWithoutTime(obj.createdAt)}
+                    </TableCell>
                   ) : null}
                   <TableCell>{strDateToDateObject_ES(obj.issueDate)}</TableCell>
                   {isNotMobile ? (
                     <>
+                      <TableCell>
+                        {obj.serialNumberBill &&
+                        obj.serialNumberBill.includes('-')
+                          ? obj.serialNumberBill.split('-')[0]
+                          : ''}
+                      </TableCell>
+                      <TableCell>
+                        {obj.serialNumberBill &&
+                        obj.serialNumberBill.includes('-')
+                          ? obj.serialNumberBill.split('-')[1]
+                          : ''}
+                      </TableCell>
+                    </>
+                  ) : (
                     <TableCell>
-                      {obj.serialNumberBill && obj.serialNumberBill.includes('-')
+                      {obj.serialNumberBill &&
+                      obj.serialNumberBill.includes('-')
                         ? obj.serialNumberBill.split('-')[0]
                         : ''}
-                    </TableCell>
-                    <TableCell>
-                      {obj.serialNumberBill && obj.serialNumberBill.includes('-')
+                      -
+                      {obj.serialNumberBill &&
+                      obj.serialNumberBill.includes('-')
                         ? obj.serialNumberBill.split('-')[1]
                         : ''}
                     </TableCell>
-                    </>
-                  ) : (<TableCell>{obj.serialNumberBill && obj.serialNumberBill.includes('-')
-                  ? obj.serialNumberBill.split('-')[0]
-                  : ''}-{obj.serialNumberBill && obj.serialNumberBill.includes('-')
-                  ? obj.serialNumberBill.split('-')[1]
-                  : ''}</TableCell>)}
+                  )}
                   <TableCell>
                     {obj.clientId
                       ? `${obj.clientId.split('-')[0]} - ${
@@ -1022,31 +1030,33 @@ const BillsTable = (props) => {
                       : ''}
                   </TableCell>
                   {isNotMobile ? (
-                  <TableCell>
-                    {obj.clientId
-                      ? obj.denominationClient
-                      : 'Cliente No Definido'}
-                  </TableCell>
+                    <TableCell>
+                      {obj.clientId
+                        ? obj.denominationClient
+                        : 'Cliente No Definido'}
+                    </TableCell>
                   ) : null}
                   {isNotMobile ? (
-                  <TableCell>{obj.observation}</TableCell>
+                    <TableCell>{obj.observation}</TableCell>
                   ) : null}
                   {isNotMobile ? (
-                  <TableCell>
-                    {obj.totalPriceWithoutIgv
-                      ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(2)} `
-                      : ''}
-                  </TableCell>
+                    <TableCell>
+                      {obj.totalPriceWithoutIgv
+                        ? `${moneySymbol} ${obj.totalPriceWithoutIgv.toFixed(
+                            2,
+                          )} `
+                        : ''}
+                    </TableCell>
                   ) : null}
                   {isNotMobile ? (
-                  <TableCell>
-                    {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv
-                      ? `${moneySymbol} ${Number(
-                          obj.totalPriceWithIgv.toFixed(2) -
-                            obj.totalPriceWithoutIgv.toFixed(2),
-                        ).toFixed(2)} `
-                      : ''}
-                  </TableCell>
+                    <TableCell>
+                      {obj.totalPriceWithoutIgv && obj.totalPriceWithIgv
+                        ? `${moneySymbol} ${Number(
+                            obj.totalPriceWithIgv.toFixed(2) -
+                              obj.totalPriceWithoutIgv.toFixed(2),
+                          ).toFixed(2)} `
+                        : ''}
+                    </TableCell>
                   ) : null}
                   <TableCell>
                     {obj.totalPriceWithIgv
@@ -1054,24 +1064,34 @@ const BillsTable = (props) => {
                       : ''}
                   </TableCell>
                   {isNotMobile ? (
-                  <TableCell>{showPaymentMethod(obj.paymentMethod)}</TableCell>
+                    <TableCell>
+                      {showPaymentMethod(obj.paymentMethod)}
+                    </TableCell>
                   ) : null}
                   <TableCell align='center'>
                     {showIconStatus(obj.acceptedStatus)}
                   </TableCell>
                   {isNotMobile ? (
-                  <TableCell align='center'>
-                    {
-                      showDocument(
-                        obj.documentsMovement,
-                        'creditNote',
-                      ) /*showCanceled(obj.cancelStatus)*/
-                    }
-                  </TableCell>
+                    <TableCell align='center'>
+                      {
+                        showDocument(
+                          obj.documentsMovement,
+                          'creditNote',
+                        ) /*showCanceled(obj.cancelStatus)*/
+                      }
+                    </TableCell>
                   ) : null}
-                  <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
+                  <TableCell
+                    sx={{
+                      px: isNotMobile ? normalizeConfig : 0,
+                      width: isNotMobile ? normalizeConfig : '16px',
+                    }}
+                  >
                     <Button
-                      sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
+                      sx={{
+                        px: isNotMobile ? normalizeConfig : 0,
+                        minWidth: isNotMobile ? normalizeConfig : '16px',
+                      }}
                       id='basic-button'
                       aria-controls={openMenu ? 'basic-menu' : undefined}
                       aria-haspopup='true'
@@ -1088,11 +1108,12 @@ const BillsTable = (props) => {
             )}
           </TableBody>
         </Table>
-        { loading ? (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        ): null}
-        { successMessage && !loading && billItems_pageListBill && billItems_pageListBill.length == 0 ? (
-        <span>{`No se han encontrado resultados`}</span>
+        {loading ? <CircularProgress disableShrink sx={{m: '10px'}} /> : null}
+        {successMessage &&
+        !loading &&
+        billItems_pageListBill &&
+        billItems_pageListBill.length == 0 ? (
+          <span>{`No se han encontrado resultados`}</span>
         ) : null}
         {billLastEvalutedKey_pageListBill ? (
           <Stack spacing={2}>

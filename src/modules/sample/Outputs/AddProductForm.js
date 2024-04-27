@@ -25,11 +25,12 @@ import {
   Alert,
   DialogContentText,
   DialogTitle,
-  Snackbar
+  Snackbar,
 } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
+import MuiAlert from '@mui/material/Alert';
 const Alert2 = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
 });

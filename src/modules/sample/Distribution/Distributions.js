@@ -70,9 +70,7 @@ import {
   exportExcelSummaryRoutes,
   excelSummaryRoutesRes,
 } from '../../../redux/actions/Movements';
-import {
-  collateRecordsAndGuides
-} from '../../../redux/actions/FileExplorer'
+import {collateRecordsAndGuides} from '../../../redux/actions/FileExplorer';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {getYear, justDate, showSubtypeMovement} from '../../../Utils/utils';
@@ -148,7 +146,8 @@ const FinancesTable = (props) => {
   const [openStatus, setOpenStatus] = React.useState(false);
   const [resultState, setResultState] = React.useState(false);
   const [openSummaryGuide, setOpenSummaryGuide] = React.useState(false);
-  const [openCollateRecordsAndGuides, setOpenCollateRecordsAndGuides] = React.useState(false);
+  const [openCollateRecordsAndGuides, setOpenCollateRecordsAndGuides] =
+    React.useState(false);
   const [openRoutes, setOpenRoutes] = React.useState(false);
   const [openProducts, setOpenProducts] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
@@ -163,7 +162,7 @@ const FinancesTable = (props) => {
   const [openSummaryPoints, setOpenSummaryPoints] = React.useState(false);
   const [summaryRowNumber, setSummaryRowNumber] = React.useState(0);
   const [selectedLocations, setSelectedLocations] = React.useState([]);
-  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
+  const [selectedLocation, setSelectedLocation] = React.useState('TODOS');
   const [typeFileRecords, setTypeFileRecords] = React.useState('');
   const [nameFileRecords, setNameFileRecords] = React.useState('');
   const [base64, setBase64] = React.useState('');
@@ -171,7 +170,7 @@ const FinancesTable = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [records, setRecords] = React.useState('');
   const [openEndCollate, setOpenEndCollate] = React.useState(false);
-  const [randomNumber, setRandomNumber] = React.useState("0");
+  const [randomNumber, setRandomNumber] = React.useState('0');
   const [loading, setLoading] = React.useState(true);
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
@@ -194,7 +193,9 @@ const FinancesTable = (props) => {
 
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  const {collateRecordsAndGuidesRes} = useSelector(({fileExplorer}) => fileExplorer);
+  const {collateRecordsAndGuidesRes} = useSelector(
+    ({fileExplorer}) => fileExplorer,
+  );
   const [distributionSelected, setDistributionSelected] = React.useState(null);
   const [indexDistributionSelected, setIndexDistributionSelected] =
     React.useState(null);
@@ -244,8 +245,9 @@ const FinancesTable = (props) => {
       } else {
         listDistributionsPayload.request.payload.merchantId =
           userDataRes.merchantSelected.merchantId;
-        listDistributionsPayload.request.payload.locations = userDataRes.locations;
-        setSelectedLocations(userDataRes.locations)
+        listDistributionsPayload.request.payload.locations =
+          userDataRes.locations;
+        setSelectedLocations(userDataRes.locations);
         toListDistributions(listDistributionsPayload);
       }
     }
@@ -344,7 +346,7 @@ const FinancesTable = (props) => {
         console.log('Se reutilizara el metodo');
       }
       setOpenSummaryGuide(true);
-    } else if (type == 'collateRecordsAndGuides'){
+    } else if (type == 'collateRecordsAndGuides') {
       console.log('Selected Distribution', selectedDistribution);
       setTypeDialog(type);
       if (
@@ -405,22 +407,22 @@ const FinancesTable = (props) => {
     setDistributionSelected(deliveryDistributionId);
     setIndexDistributionSelected(index);
   };
-  const sendCollate = ()=>{
-    if(listDistribution[indexDistributionSelected].deliveries !== 0){
-      const random = (Math.floor(Math.random() * (10000 - 1)) + 1);
-      setRandomNumber(random)
+  const sendCollate = () => {
+    if (listDistribution[indexDistributionSelected].deliveries !== 0) {
+      const random = Math.floor(Math.random() * (10000 - 1)) + 1;
+      setRandomNumber(random);
       toCollateRecordsAndGuides({
         request: {
           payload: {
             deliveries: listDistribution[indexDistributionSelected].deliveries,
-            pdf64: base64.split("base64,")[1],
-            randomNumber: random
-          }
-        }
-      })
+            pdf64: base64.split('base64,')[1],
+            randomNumber: random,
+          },
+        },
+      });
     }
-    setOpenCollateRecordsAndGuides(false)
-    setOpenEndCollate(true)
+    setOpenCollateRecordsAndGuides(false);
+    setOpenEndCollate(true);
 
     const timer = setTimeout(() => {
       setLoading(false);
@@ -732,10 +734,10 @@ const FinancesTable = (props) => {
   //   }
   // }, [open, listDistribution])
   const searchDistributions = () => {
-    
-    listDistributionsPayload.request.payload.merchantId = userDataRes.merchantSelected.merchantId;
+    listDistributionsPayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
     listDistributionsPayload.request.payload.locations = selectedLocations;
-    console.log("payload listDistributions", listDistributionsPayload)
+    console.log('payload listDistributions', listDistributionsPayload);
 
     toListDistributions(listDistributionsPayload);
   };
@@ -748,7 +750,7 @@ const FinancesTable = (props) => {
       });
     }
   }, [base64]);
-  
+
   const onLoad = (fileString) => {
     console.log('llega aquí?');
     setBase64(fileString);
@@ -797,7 +799,10 @@ const FinancesTable = (props) => {
         spacing={2}
         className={classes.stack}
       >
-        {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
+        {userDataRes &&
+        getStartingLocationsRes &&
+        userDataRes.locations &&
+        userDataRes.locations.length > 0 ? (
           <FormControl sx={{my: 0, width: 160}}>
             <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
               Almacén
@@ -808,12 +813,12 @@ const FinancesTable = (props) => {
               label='Almacén'
               onChange={(event) => {
                 console.log(event.target.value);
-                setSelectedLocation(event.target.value)
-                if(event.target.value == "TODOS"){
-                  let allLocations = userDataRes.locations
-                  setSelectedLocations(allLocations)
+                setSelectedLocation(event.target.value);
+                if (event.target.value == 'TODOS') {
+                  let allLocations = userDataRes.locations;
+                  setSelectedLocations(allLocations);
                 } else {
-                  setSelectedLocations([event.target.value])
+                  setSelectedLocations([event.target.value]);
                 }
               }}
               defaultValue={selectedLocation}
@@ -822,11 +827,18 @@ const FinancesTable = (props) => {
                 TODOS
               </MenuItem>
               {userDataRes.locations.map((actualLocation, index) => {
-                const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
+                const locationName = getStartingLocationsRes.find(
+                  (obj) => obj.modularCode == actualLocation,
+                ).locationName;
                 return (
-                  <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
+                  <MenuItem
+                    key={`locationItem-${index}`}
+                    value={actualLocation}
+                    style={{fontWeight: 200}}
+                  >
                     {locationName}
-                  </MenuItem>)
+                  </MenuItem>
+                );
               })}
             </Select>
           </FormControl>
@@ -867,7 +879,11 @@ const FinancesTable = (props) => {
                       <TableCell>{justDate(obj.createdAt)}</TableCell>
                       <TableCell>{obj.routeName}</TableCell>
                       <TableCell>{obj.cantDeliveries}</TableCell>
-                      <TableCell>{obj.serialNumberRange ? `${ obj.serialNumberRange[0]} al ${obj.serialNumberRange[1]}` : ""}</TableCell>
+                      <TableCell>
+                        {obj.serialNumberRange
+                          ? `${obj.serialNumberRange[0]} al ${obj.serialNumberRange[1]}`
+                          : ''}
+                      </TableCell>
                       <TableCell>
                         {showSubtypeMovement(obj.reasonForTransfer)}
                       </TableCell>
@@ -944,7 +960,9 @@ const FinancesTable = (props) => {
           <LocalShippingOutlinedIcon sx={{mr: 1, my: 'auto'}} />
           Generar Guía Conglomerada
         </MenuItem>
-        <MenuItem onClick={handleClickOpen.bind(this, 'collateRecordsAndGuides')}>
+        <MenuItem
+          onClick={handleClickOpen.bind(this, 'collateRecordsAndGuides')}
+        >
           <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
           Compaginar actas y guías
         </MenuItem>
@@ -952,19 +970,15 @@ const FinancesTable = (props) => {
       <Dialog
         open={openCollateRecordsAndGuides}
         onClose={handleCloseCollateRecordsAndGuides}
-        PaperProps={{ sx: { textAlign: 'center' } }} // Aplicar textAlign: 'center' al PaperProps
+        PaperProps={{sx: {textAlign: 'center'}}} // Aplicar textAlign: 'center' al PaperProps
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle sx={{ fontSize: '1.5em' }} id='alert-dialog-title'>
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
           {'Compaginar Guías y Actas'}
         </DialogTitle>
-        <DialogContent sx={{justifyContent: 'center' }}>
-          <Stack
-            sx={{ mt: 2 }}
-            direction={'column'}
-            className={classes.stack}
-          >
+        <DialogContent sx={{justifyContent: 'center'}}>
+          <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
             <Button variant='contained' color='primary' component='label'>
               Adjuntar Actas
               <input
@@ -980,7 +994,7 @@ const FinancesTable = (props) => {
               <IconButton onClick={uploadRecords2}>
                 <FilePresentIcon
                   color='success'
-                  sx={{ fontSize: '2em', mx: 2 }}
+                  sx={{fontSize: '2em', mx: 2}}
                 />
                 {records.name}
               </IconButton>
@@ -1003,7 +1017,7 @@ const FinancesTable = (props) => {
                   <CloseIcon fontSize='inherit' />
                 </IconButton>
               }
-              sx={{ mb: 2 }}
+              sx={{mb: 2}}
             >
               {typeAlert == 'sizeOverWeightLimit' ? (
                 'El archivo supera los 12Mb.'
@@ -1013,13 +1027,12 @@ const FinancesTable = (props) => {
             </Alert>
           </Collapse>
         </DialogContent>
-        <DialogActions sx={{ justifyContent: 'center' }}>
+        <DialogActions sx={{justifyContent: 'center'}}>
           <Button
-            disabled={(
+            disabled={
               listDistribution &&
               listDistribution[indexDistributionSelected] &&
               listDistribution[indexDistributionSelected].deliveries == 0
-              )
             }
             variant='outlined'
             onClick={sendCollate}
@@ -1031,17 +1044,19 @@ const FinancesTable = (props) => {
       <Dialog
         open={openEndCollate}
         onClose={handleOpenEndCollate}
-        PaperProps={{ sx: { textAlign: 'center' } }} // Aplicar textAlign: 'center' al PaperProps
+        PaperProps={{sx: {textAlign: 'center'}}} // Aplicar textAlign: 'center' al PaperProps
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
       >
-        <DialogTitle sx={{ fontSize: '1.5em' }} id='alert-dialog-title'>
-          {'El PDF se guardará en los Archivos de la distribución en un minuto.'}
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {
+            'El PDF se guardará en los Archivos de la distribución en un minuto.'
+          }
         </DialogTitle>
-        
+
         <DialogContent>
           <Stack
-            sx={{ mt: 2 }}
+            sx={{mt: 2}}
             direction={'column'}
             alignItems='center' // Añade esta línea
             className={classes.stack}
@@ -1052,18 +1067,23 @@ const FinancesTable = (props) => {
               variant='outlined'
               disabled={loading}
               sx={{mt: 2}}
-              onClick={() => window.open(`${listDistribution[indexDistributionSelected].deliveries[0].linkPdf.split("pdf/")[0]}ActasConsolidado-${randomNumber}.pdf`)}
+              onClick={() =>
+                window.open(
+                  `${
+                    listDistribution[
+                      indexDistributionSelected
+                    ].deliveries[0].linkPdf.split('pdf/')[0]
+                  }ActasConsolidado-${randomNumber}.pdf`,
+                )
+              }
             >
               Descargar
             </Button>
           </Stack>
         </DialogContent>
 
-        <DialogActions sx={{ justifyContent: 'center' }}>
-          <Button
-            variant='outlined'
-            onClick={handleOpenEndCollate}
-          >
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={handleOpenEndCollate}>
             Aceptar
           </Button>
         </DialogActions>
@@ -1467,7 +1487,6 @@ const FinancesTable = (props) => {
             >
               <ExcelIcon />
             </IconButton>
-            
           </Stack>
 
           <IconButton

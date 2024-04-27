@@ -74,15 +74,30 @@ const VerticalNav = ({closeMenu}) => {
         <React.Fragment key={item.id}>
           {/* <span key={item.id + "blue"}>{JSON.stringify(item)}</span> */}
           {item.type === 'group' && (
-            <NavVerticalGroup item={item} level={0} router={router} closeM={closeMenu}/>
+            <NavVerticalGroup
+              item={item}
+              level={0}
+              router={router}
+              closeM={closeMenu}
+            />
           )}
 
           {item.type === 'collapse' && (
-            <VerticalCollapse item={item} level={0} router={router} closeM={closeMenu}/>
+            <VerticalCollapse
+              item={item}
+              level={0}
+              router={router}
+              closeM={closeMenu}
+            />
           )}
 
           {item.type === 'item' && (
-            <VerticalItem item={item} level={0} router={router} closeM={closeMenu}/>
+            <VerticalItem
+              item={item}
+              level={0}
+              router={router}
+              closeM={closeMenu}
+            />
           )}
         </React.Fragment>
       ))}
@@ -92,5 +107,5 @@ const VerticalNav = ({closeMenu}) => {
 
 export default VerticalNav;
 VerticalNav.propTypes = {
-  closeM: PropTypes.func,
+  closeMenu: PropTypes.func,
 };

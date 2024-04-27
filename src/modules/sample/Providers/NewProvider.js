@@ -152,7 +152,7 @@ const NewProvider = () => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
-  const {validateSunatRes} = useSelector(({general}) => general,);
+  const {validateSunatRes} = useSelector(({general}) => general);
   console.log('validateSunatRes', validateSunatRes);
   useEffect(() => {
     dispatch({type: VALIDATE_SUNAT, payload: undefined});

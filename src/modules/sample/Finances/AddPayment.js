@@ -10,7 +10,7 @@ import {
   FormControl,
   Grid,
   Tooltip,
-  Snackbar
+  Snackbar,
 } from '@mui/material';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -22,7 +22,8 @@ import PropTypes from 'prop-types';
 import {useIntl} from 'react-intl';
 import MuiAlert from '@mui/material/Alert';
 const Alert2 = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;});
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+});
 const validationSchema = yup.object({
   description: yup
     .string()
@@ -110,219 +111,224 @@ const AddPayment = ({sendData}) => {
 
   return (
     <>
-    <Formik
-      validateOnChange={true}
-      validationSchema={validationSchema}
-      initialValues={{...defaultValues}}
-      onSubmit={handleData}
-    >
-      {({isSubmitting, setFieldValue}) => {
-        return (
-          <>
-            <Form
-              style={{
-                textAlign: 'left',
-                justifyContent: 'center',
-              }}
-              noValidate
-              autoComplete='on'
-              onChange={handleChange}
-            >
-              <Grid
-                container
-                spacing={2}
-                sx={{width: 500, margin: 'auto', justifyContent: 'center'}}
+      <Formik
+        validateOnChange={true}
+        validationSchema={validationSchema}
+        initialValues={{...defaultValues}}
+        onSubmit={handleData}
+      >
+        {({isSubmitting, setFieldValue}) => {
+          return (
+            <>
+              <Form
+                style={{
+                  textAlign: 'left',
+                  justifyContent: 'center',
+                }}
+                noValidate
+                autoComplete='on'
+                onChange={handleChange}
               >
-                <Grid item xs={12}>
-                  <AppTextField
-                    label='Descripción'
-                    name='description'
-                    htmlFor='filled-adornment-password'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
+                <Grid
+                  container
+                  spacing={2}
+                  sx={{width: 500, margin: 'auto', justifyContent: 'center'}}
+                >
+                  <Grid item xs={12}>
+                    <AppTextField
+                      label='Descripción'
+                      name='description'
+                      htmlFor='filled-adornment-password'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
 
-                <Grid item xs={6}>
-                  <AppTextField
-                    label='Nro de operación'
-                    name='transactionNumber'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <AppTextField
-                    label='Monto'
-                    name='amounth'
-                    variant='outlined'
-                    sx={{
-                      width: '100%',
-                      '& .MuiInputBase-input': {
-                        fontSize: 14,
-                      },
-                      my: 2,
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Tooltip
-                    title={messages['message.greaterThan.need.debit'].replace(
-                      '{1}',
-                      2000,
-                    )}
-                    open={amount > 2000 ? tooltip : false}
-                    placement='top'
-                  >
+                  <Grid item xs={6}>
+                    <AppTextField
+                      label='Nro de operación'
+                      name='transactionNumber'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <AppTextField
+                      label='Monto'
+                      name='amounth'
+                      variant='outlined'
+                      sx={{
+                        width: '100%',
+                        '& .MuiInputBase-input': {
+                          fontSize: 14,
+                        },
+                        my: 2,
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Tooltip
+                      title={messages['message.greaterThan.need.debit'].replace(
+                        '{1}',
+                        2000,
+                      )}
+                      open={amount > 2000 ? tooltip : false}
+                      placement='top'
+                    >
+                      <FormControl fullWidth sx={{my: 2}}>
+                        <InputLabel
+                          id='paymentMethod-label'
+                          style={{fontWeight: 200}}
+                        >
+                          <IntlMessages id='payment.method' />
+                        </InputLabel>
+                        <Select
+                          sx={{textAlign: 'left'}}
+                          value={paymentMethod}
+                          onClick={() => setTooltip(false)}
+                          onChange={(event) => {
+                            setPaymentMethod(event.target.value);
+                            console.log('paymentMethod', event.target.value);
+                          }}
+                          onMouseEnter={() => setTooltip(true)}
+                          onMouseLeave={() => setTooltip(false)}
+                          name='paymentMethod'
+                          labelId='paymentMethod-label'
+                          label={<IntlMessages id='payment.method' />}
+                        >
+                          <MenuItem value='cash' style={{fontWeight: 200}}>
+                            <IntlMessages id='common.cash' />
+                          </MenuItem>
+                          <MenuItem value='yape' style={{fontWeight: 200}}>
+                            Yape
+                          </MenuItem>
+                          <MenuItem value='plin' style={{fontWeight: 200}}>
+                            Plin
+                          </MenuItem>
+                          <MenuItem
+                            value='bankTransfer'
+                            style={{fontWeight: 200}}
+                          >
+                            <IntlMessages id='common.bankTransfer' />
+                          </MenuItem>
+                          <MenuItem value='card' style={{fontWeight: 200}}>
+                            Tarjeta de crédito/débito
+                          </MenuItem>
+                          <MenuItem
+                            value='bankDeposit'
+                            style={{fontWeight: 200}}
+                          >
+                            <IntlMessages id='common.bankDeposit' />
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Tooltip>
+                  </Grid>
+                  <Grid item xs={6}>
                     <FormControl fullWidth sx={{my: 2}}>
                       <InputLabel
-                        id='paymentMethod-label'
+                        id='categoria-label'
                         style={{fontWeight: 200}}
                       >
-                        <IntlMessages id='payment.method' />
+                        Estado
                       </InputLabel>
                       <Select
                         sx={{textAlign: 'left'}}
-                        value={paymentMethod}
-                        onClick={() => setTooltip(false)}
+                        defaultValue={'paid'}
                         onChange={(event) => {
-                          setPaymentMethod(event.target.value);
-                          console.log('paymentMethod', event.target.value);
+                          console.log(event.target.value);
+                          setStatePayment(event.target.value);
                         }}
-                        onMouseEnter={() => setTooltip(true)}
-                        onMouseLeave={() => setTooltip(false)}
-                        name='paymentMethod'
-                        labelId='paymentMethod-label'
-                        label={<IntlMessages id='payment.method' />}
+                        name='state'
+                        labelId='state-label'
+                        label='Estado'
                       >
-                        <MenuItem value='cash' style={{fontWeight: 200}}>
-                          <IntlMessages id='common.cash' />
+                        <MenuItem value='paid' style={{fontWeight: 200}}>
+                          CANCELADO
                         </MenuItem>
-                        <MenuItem value='yape' style={{fontWeight: 200}}>
-                          Yape
-                        </MenuItem>
-                        <MenuItem value='plin' style={{fontWeight: 200}}>
-                          Plin
-                        </MenuItem>
-                        <MenuItem
-                          value='bankTransfer'
-                          style={{fontWeight: 200}}
-                        >
-                          <IntlMessages id='common.bankTransfer' />
-                        </MenuItem>
-                        <MenuItem value='card' style={{fontWeight: 200}}>
-                          Tarjeta de crédito/débito
-                        </MenuItem>
-                        <MenuItem value='bankDeposit' style={{fontWeight: 200}}>
-                          <IntlMessages id='common.bankDeposit' />
+                        {/* <MenuItem value='advance' style={{fontWeight: 200}}>
+                        ADELANTO
+                      </MenuItem> */}
+                        <MenuItem value='toPaid' style={{fontWeight: 200}}>
+                          EN DEUDA
                         </MenuItem>
                       </Select>
                     </FormControl>
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={6}>
-                  <FormControl fullWidth sx={{my: 2}}>
-                    <InputLabel id='categoria-label' style={{fontWeight: 200}}>
-                      Estado
-                    </InputLabel>
-                    <Select
-                      sx={{textAlign: 'left'}}
-                      defaultValue={'paid'}
-                      onChange={(event) => {
-                        console.log(event.target.value);
-                        setStatePayment(event.target.value);
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <DesktopDatePicker
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{width: 1, position: 'relative', bottom: '-8px'}}
+                          {...params}
+                        />
+                      )}
+                      required
+                      sx={{my: 2}}
+                      value={payDate}
+                      label='Fecha de pago'
+                      inputFormat='dd/MM/yyyy'
+                      name='date'
+                      onChange={(newValue) => {
+                        setPayDate(newValue);
+                        console.log('pay date', newValue);
                       }}
-                      name='state'
-                      labelId='state-label'
-                      label='Estado'
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <DesktopDatePicker
+                      renderInput={(params) => (
+                        <TextField
+                          sx={{width: 1, position: 'relative', bottom: '-8px'}}
+                          {...params}
+                        />
+                      )}
+                      required
+                      sx={{my: 2}}
+                      value={expirationDate}
+                      label='Fecha de vencimiento'
+                      inputFormat='dd/MM/yyyy'
+                      name='date'
+                      onChange={(newValue) => {
+                        setExpirationDate(newValue);
+                        console.log('expiration date', newValue);
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Button
+                      color='primary'
+                      type='submit'
+                      variant='contained'
+                      size='large'
+                      sx={{my: '12px', width: 1}}
+                      disabled={isSubmitting}
+                      endIcon={<AddCircleOutlineIcon />}
                     >
-                      <MenuItem value='paid' style={{fontWeight: 200}}>
-                        CANCELADO
-                      </MenuItem>
-                      {/* <MenuItem value='advance' style={{fontWeight: 200}}>
-                        ADELANTO
-                      </MenuItem> */}
-                      <MenuItem value='toPaid' style={{fontWeight: 200}}>
-                        EN DEUDA
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
+                      Añadir
+                    </Button>
+                  </Grid>
                 </Grid>
-
-                <Grid item xs={6}>
-                  <DesktopDatePicker
-                    renderInput={(params) => (
-                      <TextField
-                        sx={{width: 1, position: 'relative', bottom: '-8px'}}
-                        {...params}
-                      />
-                    )}
-                    required
-                    sx={{my: 2}}
-                    value={payDate}
-                    label='Fecha de pago'
-                    inputFormat='dd/MM/yyyy'
-                    name='date'
-                    onChange={(newValue) => {
-                      setPayDate(newValue);
-                      console.log('pay date', newValue);
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <DesktopDatePicker
-                    renderInput={(params) => (
-                      <TextField
-                        sx={{width: 1, position: 'relative', bottom: '-8px'}}
-                        {...params}
-                      />
-                    )}
-                    required
-                    sx={{my: 2}}
-                    value={expirationDate}
-                    label='Fecha de vencimiento'
-                    inputFormat='dd/MM/yyyy'
-                    name='date'
-                    onChange={(newValue) => {
-                      setExpirationDate(newValue);
-                      console.log('expiration date', newValue);
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={4}>
-                  <Button
-                    color='primary'
-                    type='submit'
-                    variant='contained'
-                    size='large'
-                    sx={{my: '12px', width: 1}}
-                    disabled={isSubmitting}
-                    endIcon={<AddCircleOutlineIcon />}
-                  >
-                    Añadir
-                  </Button>
-                </Grid>
-              </Grid>
-            </Form>
-          </>
-        );
-      }}
-  
-    </Formik>
-    <Snackbar
+              </Form>
+            </>
+          );
+        }}
+      </Formik>
+      <Snackbar
         open={openAddedPayment}
         autoHideDuration={4000}
         onClose={handleCloseAddedPayment}
@@ -330,8 +336,7 @@ const AddPayment = ({sendData}) => {
       >
         <Alert2>Producto añadido correctamente!</Alert2>
       </Snackbar>
-    </> 
-    
+    </>
   );
 };
 

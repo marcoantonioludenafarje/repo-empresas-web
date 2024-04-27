@@ -637,7 +637,9 @@ export const showReferralGuideReason = (text, reason) => {
         return <IntlMessages id='referralGuide.reason.consignment' />;
         break;
       case 'recojo_de_bienes_transformados':
-        return <IntlMessages id='referralGuide.reason.collectionOfTransformedGoods' />;
+        return (
+          <IntlMessages id='referralGuide.reason.collectionOfTransformedGoods' />
+        );
         break;
       case 'otros':
         return <IntlMessages id='referralGuide.reason.others' />;
@@ -691,7 +693,9 @@ export const showReferralGuideReason = (text, reason) => {
         return <IntlMessages id='referralGuide.reason.consignment' />;
         break;
       case 'collectionOfTransformedGoods':
-        return <IntlMessages id='referralGuide.reason.collectionOfTransformedGoods' />;
+        return (
+          <IntlMessages id='referralGuide.reason.collectionOfTransformedGoods' />
+        );
         break;
       default:
         return <IntlMessages id='referralGuide.reason.sales' />;

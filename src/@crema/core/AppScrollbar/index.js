@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import {styled} from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import SimpleBarReact from 'simplebar-react';
@@ -20,9 +20,9 @@ const AppScrollbar = (props) => {
     }
   }, []);
   return (
-  <StyledSimpleBarReact {...others}>
-    <div ref={contentRef}>{children}</div>
-  </StyledSimpleBarReact>
+    <StyledSimpleBarReact {...others}>
+      <div ref={contentRef}>{children}</div>
+    </StyledSimpleBarReact>
   );
 };
 

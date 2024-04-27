@@ -27,7 +27,7 @@ import {
   DialogTitle,
   useTheme,
   useMediaQuery,
-  Snackbar
+  Snackbar,
 } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -35,7 +35,8 @@ import AppTextField from '../../../@crema/core/AppFormComponents/AppTextField';
 import AppUpperCaseTextField from '../../../@crema/core/AppFormComponents/AppUpperCaseTextField';
 import MuiAlert from '@mui/material/Alert';
 const Alert2 = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;});
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+});
 import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
@@ -102,7 +103,6 @@ const AddDocumentForm = ({sendData, acceptedType}, props) => {
 
     setOpenAddedDocument(false);
   };
-
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));

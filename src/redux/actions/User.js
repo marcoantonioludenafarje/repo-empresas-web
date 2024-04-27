@@ -156,7 +156,6 @@ export const changeRol = (payload) => {
   };
 };
 
-
 export const changeWarehouses = (payload) => {
   console.log('confeti >>', payload);
   return (dispatch) => {
@@ -175,6 +174,3 @@ export const changeWarehouses = (payload) => {
       });
   };
 };
-
-
-

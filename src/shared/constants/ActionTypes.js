@@ -323,7 +323,7 @@ export const ROUTE_TO_REFERRAL_GUIDE = 'route_to_referral_guide';
 export const UPDATE_GENERATE_REFERRAL_GUIDE_VALUE =
   'update_generate_referral_guide_value';
 export const ACTUAL_DATE = 'actual_date';
-export const SEND_TUNEXO_CREDENTIALS = "send_tunexo_credentials";
+export const SEND_TUNEXO_CREDENTIALS = 'send_tunexo_credentials';
 
 //REQUESTS
 export const NEW_REQUEST = 'new_request';
@@ -350,8 +350,7 @@ export const SET_LIST_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION =
   'set_list_route_predefined_____page_new_distribution';
 export const SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_NEW_DISTRIBUTION =
   'set_deliveries_in_route_predefined_____page_new_distribution';
-export const COLLATE_RECORDS_AND_GUIDES = 
-  'collate_records_and_guides';
+export const COLLATE_RECORDS_AND_GUIDES = 'collate_records_and_guides';
 
 //RESETS
 export const RESET_CLIENTS = 'reset_clients';

@@ -353,15 +353,14 @@ const BulkLoad = (props) => {
             } else {
               product['ALIAS'] = product['ALIAS'].toString().toUpperCase();
               const regex = /^(?![\s]*$)(?!.*&)[\s\S]{3,500}$/;
-              if(!regex.test(product['DESCRIPCION'])){
+              if (!regex.test(product['DESCRIPCION'])) {
                 msjError =
-                msjError +
-                "Validación de PRODUCTO: Con código: '" +
-                product['CODIGO'] +
-                "' debe de tener una descripción válida, entre 3 a 500 caracteres alfanuméricos. No se permite el caracter '&' ni saltos de línea.  ";
+                  msjError +
+                  "Validación de PRODUCTO: Con código: '" +
+                  product['CODIGO'] +
+                  "' debe de tener una descripción válida, entre 3 a 500 caracteres alfanuméricos. No se permite el caracter '&' ni saltos de línea.  ";
               }
             }
-
 
             //jalar categoria y validar
             if (!product['CATEGORIA']) {
@@ -460,7 +459,12 @@ const BulkLoad = (props) => {
                 product['ALIAS'] +
                 "' debe de tener un valor 'VERDADERO' o 'FALSO' en NECESITA STOCK.  ";
             } else {
-              if (!(product['NECESITA STOCK'] == true || product['NECESITA STOCK'] == false)) {
+              if (
+                !(
+                  product['NECESITA STOCK'] == true ||
+                  product['NECESITA STOCK'] == false
+                )
+              ) {
                 msjError =
                   msjError +
                   "Validación de PRODUCTO: NECESITA STOCK '" +
@@ -633,7 +637,7 @@ const BulkLoad = (props) => {
                   "', con IDENTIFICADOR '" +
                   carrier['IDENTIFICADOR'] +
                   "' no existe, debe de ser 'RUC'.  ";
-              } else if (carrier['IDENTIFICADOR'] !== "RUC"){
+              } else if (carrier['IDENTIFICADOR'] !== 'RUC') {
                 msjError =
                   msjError +
                   ". Validación de TRANSPORTISTA: '" +
@@ -727,7 +731,9 @@ const BulkLoad = (props) => {
             }
 
             if (delivery['ESTABLECIMIENTO SUNAT']) {
-              delivery['ESTABLECIMIENTO SUNAT'] = delivery['ESTABLECIMIENTO SUNAT']
+              delivery['ESTABLECIMIENTO SUNAT'] = delivery[
+                'ESTABLECIMIENTO SUNAT'
+              ]
                 .toString()
                 .toUpperCase();
             }
@@ -920,7 +926,6 @@ const BulkLoad = (props) => {
     }
   };
 
-  
   const onChangeHandler2 = (event) => {
     if (excelOrCsv && excelOrCsv.target.files) {
       const reader = new FileReader();

@@ -122,7 +122,7 @@ import {
 } from '../../../shared/constants/ActionTypes';
 import MoreFilters from '../Filters/MoreFilters';
 import {listSales} from '../../../redux/actions/Sales';
-import { normalizeConfig } from 'next/dist/server/config-shared';
+import {normalizeConfig} from 'next/dist/server/config-shared';
 
 //ESTILOS
 const useStyles = makeStyles((theme) => ({
@@ -201,7 +201,7 @@ const SalesTable = (props) => {
   const theme = useTheme();
   const forceUpdate = useForceUpdate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
+
   const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   //MANEJO DE FECHAS
   const toEpoch = (strDate) => {
@@ -1417,34 +1417,34 @@ const SalesTable = (props) => {
       >
         {isNotMobile ? (
           <FormControl sx={{my: 0, width: 140}}>
-          <InputLabel id='proofOfPaymentType-label' style={{fontWeight: 200}}>
-            Tipo de Comprobante
-          </InputLabel>
-          <Select
-            size={isMobile ? 'small' : 'medium'}
-            defaultValue={proofOfPaymentType}
-            name='proofOfPaymentType'
-            labelId='proofOfPaymentType-label'
-            label='Tipo de Comprobante'
-            sx={{maxWidth: 140}}
-            onChange={(event) => {
-              setProofOfPaymentType(event.target.value);
-            }}
-          >
-            <MenuItem value='all' style={{fontWeight: 200}}>
-              Todos
-            </MenuItem>
-            <MenuItem value='receipt' style={{fontWeight: 200}}>
-              Boleta
-            </MenuItem>
-            <MenuItem value='bill' style={{fontWeight: 200}}>
-              Factura
-            </MenuItem>
-            <MenuItem value='ticket' style={{fontWeight: 200}}>
-              Ticket
-            </MenuItem>
-          </Select>
-        </FormControl>
+            <InputLabel id='proofOfPaymentType-label' style={{fontWeight: 200}}>
+              Tipo de Comprobante
+            </InputLabel>
+            <Select
+              size={isMobile ? 'small' : 'medium'}
+              defaultValue={proofOfPaymentType}
+              name='proofOfPaymentType'
+              labelId='proofOfPaymentType-label'
+              label='Tipo de Comprobante'
+              sx={{maxWidth: 140}}
+              onChange={(event) => {
+                setProofOfPaymentType(event.target.value);
+              }}
+            >
+              <MenuItem value='all' style={{fontWeight: 200}}>
+                Todos
+              </MenuItem>
+              <MenuItem value='receipt' style={{fontWeight: 200}}>
+                Boleta
+              </MenuItem>
+              <MenuItem value='bill' style={{fontWeight: 200}}>
+                Factura
+              </MenuItem>
+              <MenuItem value='ticket' style={{fontWeight: 200}}>
+                Ticket
+              </MenuItem>
+            </Select>
+          </FormControl>
         ) : null}
         <DateTimePicker
           renderInput={(params) => (
@@ -1476,14 +1476,14 @@ const SalesTable = (props) => {
           }}
         />
         {isNotMobile ? (
-        <Button
-          size='small'
-          onClick={() => setMoreFilters(true)}
-          startIcon={<FilterAltOutlinedIcon />}
-          variant='outlined'
-        >
-          Más filtros
-        </Button>
+          <Button
+            size='small'
+            onClick={() => setMoreFilters(true)}
+            startIcon={<FilterAltOutlinedIcon />}
+            variant='outlined'
+          >
+            Más filtros
+          </Button>
         ) : null}
         <Button
           size='small'
@@ -1505,18 +1505,31 @@ const SalesTable = (props) => {
         >
           <TableHead>
             <TableRow>
-              {isNotMobile ? (
-              <TableCell>Codigo</TableCell>
-              ) : null}
-              <TableCell sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "60px"}}>Fecha</TableCell>
-              {isNotMobile ? (
-              <TableCell>Última actualización</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Tipo Documento</TableCell>
-              ) : null}
-              <TableCell sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "60px"}}>Numero Documento</TableCell>
-              <TableCell sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "100px"}}>
+              {isNotMobile ? <TableCell>Codigo</TableCell> : null}
+              <TableCell
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '60px',
+                }}
+              >
+                Fecha
+              </TableCell>
+              {isNotMobile ? <TableCell>Última actualización</TableCell> : null}
+              {isNotMobile ? <TableCell>Tipo Documento</TableCell> : null}
+              <TableCell
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '60px',
+                }}
+              >
+                Numero Documento
+              </TableCell>
+              <TableCell
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '100px',
+                }}
+              >
                 <TableSortLabel
                   active={orderBy === 'denominationClient'}
                   direction={orderBy === 'denominationClient' ? order : 'asc'}
@@ -1525,30 +1538,38 @@ const SalesTable = (props) => {
                   Cliente
                 </TableSortLabel>
               </TableCell>
-              <TableCell sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "70px"}}>Productos</TableCell>
-              {isNotMobile ? (
-              <TableCell>Subtotal</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>IGV</TableCell>
-              ) : null}
-              <TableCell sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "80px"}}>Precio Total</TableCell>
-              {isNotMobile ? (
-              <TableCell>Ingreso</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Salida</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Aceptado Sunat</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Creado por</TableCell>
-              ) : null}
-              {isNotMobile ? (
-              <TableCell>Modificado por</TableCell>
-              ) : null}
-              <TableCell align="center" sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
+              <TableCell
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '70px',
+                }}
+              >
+                Productos
+              </TableCell>
+              {isNotMobile ? <TableCell>Subtotal</TableCell> : null}
+              {isNotMobile ? <TableCell>IGV</TableCell> : null}
+              <TableCell
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '80px',
+                }}
+              >
+                Precio Total
+              </TableCell>
+              {isNotMobile ? <TableCell>Ingreso</TableCell> : null}
+              {isNotMobile ? <TableCell>Salida</TableCell> : null}
+              {isNotMobile ? <TableCell>Aceptado Sunat</TableCell> : null}
+              {isNotMobile ? <TableCell>Creado por</TableCell> : null}
+              {isNotMobile ? <TableCell>Modificado por</TableCell> : null}
+              <TableCell
+                align='center'
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '16px',
+                }}
+              >
+                {isNotMobile ? 'Opciones' : '#'}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1609,43 +1630,56 @@ const SalesTable = (props) => {
                       sx={{'&:last-child td, &:last-child th': {border: 0}}}
                       key={index}
                     >
-                      {isNotMobile ? (    
+                      {isNotMobile ? (
+                        <TableCell
+                          sx={{
+                            color:
+                              obj.proofOfPaymentId &&
+                              obj.contableMovement.contableMovementId
+                                ? 'inherit'
+                                : 'rgba(198, 50, 91, 1)',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {obj.codMovement}
+                        </TableCell>
+                      ) : null}
                       <TableCell
                         sx={{
-                          color:
-                            obj.proofOfPaymentId &&
-                            obj.contableMovement.contableMovementId
-                              ? 'inherit'
-                              : 'rgba(198, 50, 91, 1)',
-                          fontWeight: 'bold',
+                          px: isNotMobile ? normalizeConfig : 0,
+                          width: isNotMobile ? normalizeConfig : '40px',
                         }}
                       >
-                        {obj.codMovement}
-                      </TableCell>
-                      ) : null}
-                      <TableCell sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "40px"}}>
                         {convertToDateWithoutTime(obj.createdAt)}
                       </TableCell>
                       {isNotMobile ? (
-                      <TableCell>
-                        {convertToDateWithoutTime(obj.updatedAt)}
-                      </TableCell>
+                        <TableCell>
+                          {convertToDateWithoutTime(obj.updatedAt)}
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>
-                        {obj.proofOfPaymentType ? (
-                          <IntlMessages
-                            id={`document.type.${obj.proofOfPaymentType}`}
-                          />
-                        ) : (
-                          ''
-                        )}
-                      </TableCell>
+                        <TableCell>
+                          {obj.proofOfPaymentType ? (
+                            <IntlMessages
+                              id={`document.type.${obj.proofOfPaymentType}`}
+                            />
+                          ) : (
+                            ''
+                          )}
+                        </TableCell>
                       ) : null}
-                      <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "40px"}}>
+                      <TableCell
+                        sx={{
+                          px: isNotMobile ? normalizeConfig : 0,
+                          width: isNotMobile ? normalizeConfig : '40px',
+                        }}
+                      >
                         <Button
                           variant='secondary'
-                          sx={{fontSize: '1em', px: isNotMobile ? normalizeConfig : 0}}
+                          sx={{
+                            fontSize: '1em',
+                            px: isNotMobile ? normalizeConfig : 0,
+                          }}
                           onClick={() =>
                             showObject(
                               obj.proofOfPaymentType !== 'ticket'
@@ -1658,7 +1692,12 @@ const SalesTable = (props) => {
                           {obj.proofOfPaymentNumber}
                         </Button>
                       </TableCell>
-                      <TableCell sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "100px"}}>
+                      <TableCell
+                        sx={{
+                          px: isNotMobile ? normalizeConfig : 0,
+                          width: isNotMobile ? normalizeConfig : '100px',
+                        }}
+                      >
                         {(obj.clientId
                           ? obj.numberDocumentClient + ' - '
                           : '') +
@@ -1666,7 +1705,13 @@ const SalesTable = (props) => {
                             ? obj.client.denomination
                             : obj.clientName)}
                       </TableCell>
-                      <TableCell align='left  ' sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "70px"}}>
+                      <TableCell
+                        align='left  '
+                        sx={{
+                          px: isNotMobile ? normalizeConfig : 0,
+                          width: isNotMobile ? normalizeConfig : '70px',
+                        }}
+                      >
                         {obj.products && obj.products.length != 0 ? (
                           <IconButton
                             onClick={() => checkProductsInfo(index)}
@@ -1679,82 +1724,101 @@ const SalesTable = (props) => {
                         )}
                       </TableCell>
                       {isNotMobile ? (
-                      <TableCell align='center'>
-                        {obj.totalIgv
-                          ? `${moneySymbol} ${obj.totalPriceWithIgv - obj.totalIgv}`
-                          : `${moneySymbol} ${showSubtotal(obj.products)}`}
-                      </TableCell>
-                      ) : null}
-                      {isNotMobile ? (
-                      <TableCell>
-                        {obj.totalIgv
-                          ? `${moneySymbol} ${Number(obj.totalIgv).toFixed(2)}`
-                          : `${moneySymbol} ${showTotalIgv(obj.products)}`}
-                      </TableCell>
-                      ) : null}
-                      <TableCell sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "80px"}}>{`${moneySymbol} ${obj.totalPriceWithIgv}`}</TableCell>
-                      {isNotMobile ? (
-                      <TableCell>
-                        <Button
-                          variant='secondary'
-                          sx={{fontSize: '1em'}}
-                          onClick={() =>
-                            showObject(
-                              obj.contableMovement.contableMovementId,
-                              'income',
-                            )
-                          }
-                        >
-                          {obj.contableMovement.contableMovementId
-                            ? `${showMinTypeRelated('INCOME')}-${
-                                obj.contableMovement.codMovement.split('-')[1]
+                        <TableCell align='center'>
+                          {obj.totalIgv
+                            ? `${moneySymbol} ${
+                                obj.totalPriceWithIgv - obj.totalIgv
                               }`
+                            : `${moneySymbol} ${showSubtotal(obj.products)}`}
+                        </TableCell>
+                      ) : null}
+                      {isNotMobile ? (
+                        <TableCell>
+                          {obj.totalIgv
+                            ? `${moneySymbol} ${Number(obj.totalIgv).toFixed(
+                                2,
+                              )}`
+                            : `${moneySymbol} ${showTotalIgv(obj.products)}`}
+                        </TableCell>
+                      ) : null}
+                      <TableCell
+                        sx={{
+                          px: isNotMobile ? normalizeConfig : 0,
+                          width: isNotMobile ? normalizeConfig : '80px',
+                        }}
+                      >{`${moneySymbol} ${obj.totalPriceWithIgv}`}</TableCell>
+                      {isNotMobile ? (
+                        <TableCell>
+                          <Button
+                            variant='secondary'
+                            sx={{fontSize: '1em'}}
+                            onClick={() =>
+                              showObject(
+                                obj.contableMovement.contableMovementId,
+                                'income',
+                              )
+                            }
+                          >
+                            {obj.contableMovement.contableMovementId
+                              ? `${showMinTypeRelated('INCOME')}-${
+                                  obj.contableMovement.codMovement.split('-')[1]
+                                }`
+                              : ''}
+                          </Button>
+                        </TableCell>
+                      ) : null}
+                      {isNotMobile ? (
+                        <TableCell>
+                          <Button
+                            variant='secondary'
+                            sx={{fontSize: '1em'}}
+                            onClick={() =>
+                              obj.output
+                                ? showObject(obj.output.outputId, 'output')
+                                : null
+                            }
+                          >
+                            {obj.output
+                              ? obj.output.codMovement
+                              : 'No Generado'}
+                          </Button>
+                        </TableCell>
+                      ) : null}
+                      {isNotMobile ? (
+                        <TableCell>Aceptado Sunat</TableCell>
+                      ) : null}
+                      {isNotMobile ? (
+                        <TableCell>
+                          {obj.userCreatedMetadata
+                            ? obj.userCreatedMetadata.nombreCompleto
                             : ''}
-                        </Button>
-                      </TableCell>
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>
+                        <TableCell>
+                          {obj.userUpdatedMetadata
+                            ? obj.userUpdatedMetadata.nombreCompleto
+                            : ''}
+                        </TableCell>
+                      ) : null}
+                      <TableCell
+                        sx={{
+                          px: isNotMobile ? normalizeConfig : 0,
+                          width: isNotMobile ? normalizeConfig : '16px',
+                        }}
+                      >
                         <Button
-                          variant='secondary'
-                          sx={{fontSize: '1em'}}
-                          onClick={() =>
-                            obj.output
-                              ? showObject(obj.output.outputId, 'output')
-                              : null
-                          }
-                        >
-                          {obj.output ? obj.output.codMovement : 'No Generado'}
-                        </Button>
-                      </TableCell>
-                      ) : null}
-                      {isNotMobile ? (
-                      <TableCell>Aceptado Sunat</TableCell>
-                      ) : null}
-                      {isNotMobile ? (
-                      <TableCell>
-                        {obj.userCreatedMetadata
-                          ? obj.userCreatedMetadata.nombreCompleto
-                          : ''}
-                      </TableCell>
-                      ) : null}
-                      {isNotMobile ? (
-                      <TableCell>
-                        {obj.userUpdatedMetadata
-                          ? obj.userUpdatedMetadata.nombreCompleto
-                          : ''}
-                      </TableCell>
-                      ) : null}
-                      <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
-                        <Button
-                          sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
+                          sx={{
+                            px: isNotMobile ? normalizeConfig : 0,
+                            minWidth: isNotMobile ? normalizeConfig : '16px',
+                          }}
                           id='basic-button'
                           aria-controls={openMenu ? 'basic-menu' : undefined}
                           aria-haspopup='true'
                           aria-expanded={openMenu ? 'true' : undefined}
                           onClick={handleClick.bind(this, obj.saleId)}
                         >
-                          <KeyboardArrowDownIcon sx={{}}/>
+                          <KeyboardArrowDownIcon sx={{}} />
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -1820,11 +1884,12 @@ const SalesTable = (props) => {
             )}
           </TableBody>
         </Table>
-        { loading ? (
-          <CircularProgress disableShrink sx={{m: '10px'}} />
-        ): null}
-        { successMessage && !loading && listSalesRes && listSalesRes.length == 0 ? (
-        <span>{`No se han encontrado resultados`}</span>
+        {loading ? <CircularProgress disableShrink sx={{m: '10px'}} /> : null}
+        {successMessage &&
+        !loading &&
+        listSalesRes &&
+        listSalesRes.length == 0 ? (
+          <span>{`No se han encontrado resultados`}</span>
         ) : null}
         {salesLastEvaluatedKey_pageListSales ? (
           <Stack spacing={2}>

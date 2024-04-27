@@ -57,7 +57,7 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import {red} from '@mui/material/colors';
 
-import { normalizeConfig } from 'next/dist/server/config-shared';
+import {normalizeConfig} from 'next/dist/server/config-shared';
 import {makeStyles} from '@mui/styles';
 import {useHistory} from 'react-router-dom';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -156,7 +156,7 @@ const ProductTable = (arrayObjs, props) => {
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
   const [selectedLocations, setSelectedLocations] = React.useState([]);
-  const [selectedLocation, setSelectedLocation] = React.useState("TODOS");
+  const [selectedLocation, setSelectedLocation] = React.useState('TODOS');
   const [open2, setOpen2] = React.useState(false);
   const [openLimit, setOpenLimit] = React.useState(false);
   const [showAddProd, setShowAddProd] = React.useState(false);
@@ -306,15 +306,8 @@ const ProductTable = (arrayObjs, props) => {
     }
   }, []);
   useEffect(() => {
-    console.log(
-      'Este es el getLocationRes',
-      getStartingLocationsRes,
-    );
-    if (
-      getStartingLocationsRes &&
-      getStartingLocationsRes.length > 0
-    ) {
-      
+    console.log('Este es el getLocationRes', getStartingLocationsRes);
+    if (getStartingLocationsRes && getStartingLocationsRes.length > 0) {
     }
   }, [getStartingLocationsRes]);
   useEffect(() => {
@@ -340,7 +333,7 @@ const ProductTable = (arrayObjs, props) => {
         userDataRes.merchantSelected.merchantId;
       businessParameterPayload.request.payload.merchantId =
         userDataRes.merchantSelected.merchantId;
-      setSelectedLocations(userDataRes.locations)
+      setSelectedLocations(userDataRes.locations);
       toGetAllProducts(listPayload);
       getBusinessParameter(businessParameterPayload);
       getGlobalParameter(globalParameterPayload);
@@ -744,16 +737,16 @@ const ProductTable = (arrayObjs, props) => {
     if (type == 'service') return 'Servicio';
   };
   const showLocations = (locations) => {
-    let locationsText = "";
+    let locationsText = '';
     if (locations) {
       locations.forEach((obj, index) => {
-        locationsText += obj
-        if ((index + 1) !== locations.length) {
-          locationsText += " , "
+        locationsText += obj;
+        if (index + 1 !== locations.length) {
+          locationsText += ' , ';
         }
-      })
+      });
     }
-    return locationsText
+    return locationsText;
   };
   const goToMovementsDetail = (product) => {
     console.log('|', product);
@@ -786,39 +779,50 @@ const ProductTable = (arrayObjs, props) => {
         spacing={2}
         className={classes.stack}
       >
-        {userDataRes && getStartingLocationsRes && userDataRes.locations && userDataRes.locations.length > 0 ? (
-        <FormControl sx={{my: 0, width: 160}}>
-          <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
-            Almacén
-          </InputLabel>
-          <Select
-            name='selectedLocation'
-            labelId='selectedLocation-label'
-            label='Almacén'
-            onChange={(event) => {
-              console.log(event.target.value);
-              setSelectedLocation(event.target.value)
-              if(event.target.value == "TODOS"){
-                let allLocations = userDataRes.locations
-                setSelectedLocations(allLocations)
-              } else {
-                setSelectedLocations([event.target.value])
-              }
-            }}
-            defaultValue={selectedLocation}
-          >
-            <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
-              TODOS
-            </MenuItem>
-            {userDataRes.locations.map((actualLocation, index) => {
-              const locationName = getStartingLocationsRes.find(obj => obj.modularCode == actualLocation).locationName
-              return (
-                <MenuItem key={`locationItem-${index}`} value={actualLocation} style={{fontWeight: 200}}>
-                  {locationName}
-                </MenuItem>)
-            })}
-          </Select>
-        </FormControl>) : null}
+        {userDataRes &&
+        getStartingLocationsRes &&
+        userDataRes.locations &&
+        userDataRes.locations.length > 0 ? (
+          <FormControl sx={{my: 0, width: 160}}>
+            <InputLabel id='selectedLocation-label' style={{fontWeight: 200}}>
+              Almacén
+            </InputLabel>
+            <Select
+              name='selectedLocation'
+              labelId='selectedLocation-label'
+              label='Almacén'
+              onChange={(event) => {
+                console.log(event.target.value);
+                setSelectedLocation(event.target.value);
+                if (event.target.value == 'TODOS') {
+                  let allLocations = userDataRes.locations;
+                  setSelectedLocations(allLocations);
+                } else {
+                  setSelectedLocations([event.target.value]);
+                }
+              }}
+              defaultValue={selectedLocation}
+            >
+              <MenuItem value={'TODOS'} style={{fontWeight: 200}}>
+                TODOS
+              </MenuItem>
+              {userDataRes.locations.map((actualLocation, index) => {
+                const locationName = getStartingLocationsRes.find(
+                  (obj) => obj.modularCode == actualLocation,
+                ).locationName;
+                return (
+                  <MenuItem
+                    key={`locationItem-${index}`}
+                    value={actualLocation}
+                    style={{fontWeight: 200}}
+                  >
+                    {locationName}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        ) : null}
         <TextField
           label='Código'
           variant='outlined'
@@ -888,15 +892,15 @@ const ProductTable = (arrayObjs, props) => {
                 </TableSortLabel>
               </TableCell> */}
               {isNotMobile ? (
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'description'}
-                  direction={orderBy === 'description' ? order : 'asc'}
-                  onClick={() => handleSort('description')}
-                >
-                  Descripción
-                </TableSortLabel>
-              </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'description'}
+                    direction={orderBy === 'description' ? order : 'asc'}
+                    onClick={() => handleSort('description')}
+                  >
+                    Descripción
+                  </TableSortLabel>
+                </TableCell>
               ) : null}
               <TableCell>
                 <TableSortLabel
@@ -908,26 +912,26 @@ const ProductTable = (arrayObjs, props) => {
                 </TableSortLabel>
               </TableCell>
               {isNotMobile ? (
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'weight'}
-                  direction={orderBy === 'weight' ? order : 'asc'}
-                  onClick={() => handleSort('weight', 'number')}
-                >
-                  Peso
-                </TableSortLabel>
-              </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'weight'}
+                    direction={orderBy === 'weight' ? order : 'asc'}
+                    onClick={() => handleSort('weight', 'number')}
+                  >
+                    Peso
+                  </TableSortLabel>
+                </TableCell>
               ) : null}
               {isNotMobile ? (
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'costPriceUnit'}
-                  direction={orderBy === 'costPriceUnit' ? order : 'asc'}
-                  onClick={() => handleSort('costPriceUnit', 'number')}
-                >
-                  Precio costo sugerido
-                </TableSortLabel>
-              </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'costPriceUnit'}
+                    direction={orderBy === 'costPriceUnit' ? order : 'asc'}
+                    onClick={() => handleSort('costPriceUnit', 'number')}
+                  >
+                    Precio costo sugerido
+                  </TableSortLabel>
+                </TableCell>
               ) : null}
               <TableCell>
                 <TableSortLabel
@@ -939,39 +943,47 @@ const ProductTable = (arrayObjs, props) => {
                 </TableSortLabel>
               </TableCell>
               {isNotMobile ? (
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'warehouse'}
-                  direction={orderBy === 'warehouse' ? order : 'asc'}
-                  onClick={() => handleSort('warehouse')}
-                >
-                  Almacenes
-                </TableSortLabel>
-              </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'warehouse'}
+                    direction={orderBy === 'warehouse' ? order : 'asc'}
+                    onClick={() => handleSort('warehouse')}
+                  >
+                    Almacenes
+                  </TableSortLabel>
+                </TableCell>
               ) : null}
               {isNotMobile ? (
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'createdAt'}
-                  direction={orderBy === 'createdAt' ? order : 'asc'}
-                  onClick={() => handleSort('createdAt', 'date')}
-                >
-                  Fecha registrada
-                </TableSortLabel>
-              </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'createdAt'}
+                    direction={orderBy === 'createdAt' ? order : 'asc'}
+                    onClick={() => handleSort('createdAt', 'date')}
+                  >
+                    Fecha registrada
+                  </TableSortLabel>
+                </TableCell>
               ) : null}
               {isNotMobile ? (
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === 'updatedAt'}
-                  direction={orderBy === 'updatedAt' ? order : 'asc'}
-                  onClick={() => handleSort('updatedAt', 'date')}
-                >
-                  Última actualización
-                </TableSortLabel>
-              </TableCell>
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === 'updatedAt'}
+                    direction={orderBy === 'updatedAt' ? order : 'asc'}
+                    onClick={() => handleSort('updatedAt', 'date')}
+                  >
+                    Última actualización
+                  </TableSortLabel>
+                </TableCell>
               ) : null}
-              <TableCell align="center"  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>{isNotMobile ? "Opciones" : "#"}</TableCell>
+              <TableCell
+                align='center'
+                sx={{
+                  px: isNotMobile ? normalizeConfig : 0,
+                  width: isNotMobile ? normalizeConfig : '16px',
+                }}
+              >
+                {isNotMobile ? 'Opciones' : '#'}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1016,37 +1028,47 @@ const ProductTable = (arrayObjs, props) => {
                         )}
                       </TableCell>
                       {isNotMobile ? (
-                      <TableCell>{`${obj.alias ? obj.alias : ''}`}</TableCell>
+                        <TableCell>{`${obj.alias ? obj.alias : ''}`}</TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>{`${obj.weight} ${weight_unit}`}</TableCell>
+                        <TableCell>{`${obj.weight} ${weight_unit}`}</TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>{`${obj.costPriceUnit.toFixed(
-                        3,
-                      )} ${money_unit}`}</TableCell>
+                        <TableCell>{`${obj.costPriceUnit.toFixed(
+                          3,
+                        )} ${money_unit}`}</TableCell>
                       ) : null}
                       <TableCell>{`${obj.priceBusinessMoneyWithIgv.toFixed(
                         3,
                       )} ${money_unit}`}</TableCell>
                       {isNotMobile ? (
-                      <TableCell>{showLocations(obj.locationsArray)}</TableCell>
+                        <TableCell>
+                          {showLocations(obj.locationsArray)}
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>
-                        {convertToDateWithoutTime(obj.createdAt)}
-                      </TableCell>
+                        <TableCell>
+                          {convertToDateWithoutTime(obj.createdAt)}
+                        </TableCell>
                       ) : null}
                       {isNotMobile ? (
-                      <TableCell>
-                        {convertToDateWithoutTime(
-                          obj.updatedAt || obj.updatedDate,
-                        )}
-                      </TableCell>
+                        <TableCell>
+                          {convertToDateWithoutTime(
+                            obj.updatedAt || obj.updatedDate,
+                          )}
+                        </TableCell>
                       ) : null}
-                      <TableCell  sx={{px: isNotMobile ? normalizeConfig : 0, width: isNotMobile ? normalizeConfig : "16px"}}>
+                      <TableCell
+                        sx={{
+                          px: isNotMobile ? normalizeConfig : 0,
+                          width: isNotMobile ? normalizeConfig : '16px',
+                        }}
+                      >
                         <Button
-                          sx={{px: isNotMobile ? normalizeConfig : 0, minWidth: isNotMobile ? normalizeConfig : "16px"}}
+                          sx={{
+                            px: isNotMobile ? normalizeConfig : 0,
+                            minWidth: isNotMobile ? normalizeConfig : '16px',
+                          }}
                           id='basic-button'
                           aria-controls={openMenu ? 'basic-menu' : undefined}
                           aria-haspopup='true'

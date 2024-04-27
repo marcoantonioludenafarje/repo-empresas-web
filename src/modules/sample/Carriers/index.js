@@ -493,8 +493,11 @@ const CarrierTable = (arrayObjs, props) => {
         className={classes.stack}
       >
         <FormControl sx={{my: 0, width: 140}}>
-          <InputLabel id='categoria-label' style={{fontWeight: 200}}
-            sx={{mt: -2}}>
+          <InputLabel
+            id='categoria-label'
+            style={{fontWeight: 200}}
+            sx={{mt: -2}}
+          >
             Identificador
           </InputLabel>
           <Select

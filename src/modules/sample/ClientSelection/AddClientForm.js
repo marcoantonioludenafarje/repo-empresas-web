@@ -223,7 +223,7 @@ const AddClientForm = ({sendData}) => {
                     }}
                     item
                     xs={12}
-                    >
+                  >
                     <Collapse in={showAlert}>
                       <Alert
                         severity='error'

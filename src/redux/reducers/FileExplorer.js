@@ -13,7 +13,7 @@ import {
 
 const INIT_STATE = {
   list: [],
-  collateRecordsAndGuidesRes: "",
+  collateRecordsAndGuidesRes: '',
 };
 
 const dataReducer = (state = INIT_STATE, action) => {
@@ -22,8 +22,8 @@ const dataReducer = (state = INIT_STATE, action) => {
       console.log('url del collate', action.payload);
       return {
         ...state,
-        collateRecordsAndGuidesRes: action.payload.message
-      }
+        collateRecordsAndGuidesRes: action.payload.message,
+      };
     case GET_DATA:
       console.log('data de reducer GET_DATA', action.payload);
       return {

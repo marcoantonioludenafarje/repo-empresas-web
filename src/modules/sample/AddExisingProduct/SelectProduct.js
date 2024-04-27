@@ -210,9 +210,9 @@ const SelectProduct = ({fcData, search}) => {
                   <TableCell>{obj.businessProductCode}</TableCell>
                   <TableCell>{obj.description}</TableCell>
                   <TableCell>
-                    <Badge 
-                      badgeContent={obj.stock} 
-                      color="primary" 
+                    <Badge
+                      badgeContent={obj.stock}
+                      color='primary'
                       anchorOrigin={{
                         vertical: 'left',
                         horizontal: 'right',
@@ -255,7 +255,7 @@ const SelectProduct = ({fcData, search}) => {
       </Table>
       <Dialog
         open={openWarehouse}
-        onClose={()=>setOpenWarehouse(false)}
+        onClose={() => setOpenWarehouse(false)}
         sx={{textAlign: 'center'}}
         aria-labelledby='alert-dialog-title'
         aria-describedby='alert-dialog-description'
@@ -274,30 +274,29 @@ const SelectProduct = ({fcData, search}) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {fast.locations &&
-                Array.isArray(fast.locations) ? (
-                  fast.locations.map((obj, index) => {
-                    const locationName = getStartingLocationsRes.find(objL => objL.modularCode == obj.modularCode).locationName
-                    return (
-                      <TableRow
-                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                        key={obj.modularCode}
-                      >
-                        <TableCell>
-                          {obj.modularCode.split("-")[0]}
-                        </TableCell>
-                        <TableCell>{locationName}</TableCell>
-                        <TableCell>{obj.stock}</TableCell>
-                      </TableRow>
-                    )
-                  })
-                ) : null}
+                {fast.locations && Array.isArray(fast.locations)
+                  ? fast.locations.map((obj, index) => {
+                      const locationName = getStartingLocationsRes.find(
+                        (objL) => objL.modularCode == obj.modularCode,
+                      ).locationName;
+                      return (
+                        <TableRow
+                          sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                          key={obj.modularCode}
+                        >
+                          <TableCell>{obj.modularCode.split('-')[0]}</TableCell>
+                          <TableCell>{locationName}</TableCell>
+                          <TableCell>{obj.stock}</TableCell>
+                        </TableRow>
+                      );
+                    })
+                  : null}
               </TableBody>
             </Table>
           </TableContainer>
         </DialogContent>
         <DialogActions sx={{justifyContent: 'center'}}>
-          <Button variant='outlined' onClick={()=>setOpenWarehouse(false)}>
+          <Button variant='outlined' onClick={() => setOpenWarehouse(false)}>
             Aceptar
           </Button>
         </DialogActions>

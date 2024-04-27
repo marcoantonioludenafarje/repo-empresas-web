@@ -193,7 +193,7 @@ export const request = (method, path, payload) => {
             Authorization: localStorage.getItem('jwt'),
             'Content-type': 'application/json',
             merchantid: payload.body.merchantId,
-            locations: payload.body.locations || "",
+            locations: payload.body.locations || '',
           },
         },
       );
@@ -276,7 +276,6 @@ export const request2 = (method, path, payload) => {
   //   },
   // })
 };
-
 
 export const requestSendCredentials = (method, path, payload) => {
   console.log('Ahora axios');
