@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import Card from '@mui/material/Card';
 import {
   Button,
+  Box,
   Dialog,
   DialogActions,
   DialogContent,
@@ -26,12 +27,15 @@ import {
   useTheme,
   useMediaQuery,
   IconButton,
+  Collapse,
+
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import CachedIcon from '@mui/icons-material/Cached';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
@@ -102,6 +106,7 @@ export default function Views(props) {
   const [extendExpiration, setExtendExpiration] = React.useState(false);
   const [dateExpiration, setDateExpiration] = React.useState('');
 
+  const [openDetails, setOpenDetails] = React.useState(false);
   const [reload, setReload] = React.useState(0);
   const [searchValue, setSearchValue] = useState('');
   const [filteredBusiness, setFilteredBusiness] = useState([]);
@@ -109,6 +114,7 @@ export default function Views(props) {
   const [openStatus2, setOpenStatus2] = useState(false);
   const [type, setType] = React.useState('TODOS');
 
+  const [rowNumber, setRowNumber] = React.useState(0);
   let popUp = false;
 
   const onGetListBusiness = (payload) => {
@@ -414,6 +420,7 @@ export default function Views(props) {
               <TableCell>Plan</TableCell>
               <TableCell>Vencimiento Suscripción</TableCell>
               <TableCell>Exceso Mes</TableCell>
+              <TableCell>Periodos</TableCell>
               <TableCell>Integrada a SUNAT?</TableCell>
               <TableCell>Opciones</TableCell>
             </TableRow>
@@ -436,7 +443,30 @@ export default function Views(props) {
               console.log("DateNow", Date.now())
               const todayIsMoreThanDueDate = dueTimestamp - Date.now()
               console.log("todayIsMoreThanDueDate", todayIsMoreThanDueDate)
+              
+              const arraySunatDocuments = [];
+              if(row.currentCountMovement.sunatDocuments && row.currentCountMovement.sunatDocuments["2024"]){
+
+                for (const month in row.currentCountMovement.sunatDocuments["2024"]) {
+                  if (row.currentCountMovement.sunatDocuments["2024"].hasOwnProperty(month)) {
+                    arraySunatDocuments.push({
+                      month: month,
+                      initialTime: row.currentCountMovement.sunatDocuments["2024"][month].initialTime,
+                      finalTime: row.currentCountMovement.sunatDocuments["2024"][month].finalTime,
+                      quantity: row.currentCountMovement.sunatDocuments["2024"][month].quantity
+                    });
+                  }
+                }
+                arraySunatDocuments.sort((a, b) => a.initialTime - b.initialTime);
+              }
+              
+              console.log(arraySunatDocuments);
+              
+              
+              // Resultado: [ { dato1: 'asdasd' }, { dato2: '234234' } ]
+              
               return (
+                <>
                 <TableRow
                   key={index}
                   sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -482,6 +512,27 @@ export default function Views(props) {
                     {excessDocuments}
                   </TableCell>
                   <TableCell
+                    hover
+                    sx={{
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <IconButton
+                      onClick={() => {
+                        setOpenDetails(false);
+                        setOpenDetails(true);
+                        if (openDetails == true && rowNumber == index) {
+                          setOpenDetails(false);
+                        }
+                        setRowNumber(index);
+                      }}
+                      size='small'
+                    >
+                      <FormatListBulletedIcon fontSize='small' />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell
                     style={{maxWidth: '200px', wordWrap: 'break-word'}}
                   >
                     {row.isBillingEnabled ? 'SÍ' : 'NO'}
@@ -498,6 +549,56 @@ export default function Views(props) {
                     </Button>
                   </TableCell>
                 </TableRow>
+                <TableRow>
+                  <TableCell
+                    style={{paddingBottom: 0, paddingTop: 0}}
+                    colSpan={6}
+                  >
+                    <Collapse
+                      in={openDetails && index == rowNumber}
+                      timeout='auto'
+                      unmountOnExit
+                    >
+                      <Box sx={{margin: 0}}>
+                        <Table size='small' aria-label='purchases'>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Mes</TableCell>
+                              <TableCell>Fec Inicio</TableCell>
+                              <TableCell>Fec Fin</TableCell>
+                              <TableCell>Nro comprobantes</TableCell>
+                              <TableCell>Exceso comprobantes</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {arraySunatDocuments.map((monthSunat, index) => {
+                              return (
+                                <TableRow key={index}>
+                                  <TableCell>
+                                    {monthSunat.month}
+                                  </TableCell>
+                                  <TableCell>
+                                    {convertToDateWithoutTime(monthSunat.initialTime)}
+                                  </TableCell>
+                                  <TableCell>
+                                    {convertToDateWithoutTime(monthSunat.finalTime)}
+                                  </TableCell>
+                                  <TableCell>
+                                    {monthSunat.quantity}
+                                  </TableCell>
+                                  <TableCell sx={{color: red[500]}}>
+                                    { sunatLimit && (monthSunat.quantity > sunatLimit) ? monthSunat.quantity - sunatLimit : 0}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+                </>
               );
             })}
           </TableBody>
