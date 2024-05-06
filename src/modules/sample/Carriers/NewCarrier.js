@@ -182,11 +182,11 @@ const NewCarrier = () => {
     console.log('Data', data);
     console.log('objSelects', objSelects);
     newCarrierPayload.request.payload.carriers[0].typeDocumentCarrier =
-      objSelects.documentType;
+      objSelects.documentType.trim();
     newCarrierPayload.request.payload.carriers[0].numberDocumentCarrier =
-      data.nroDocument;
+      data.nroDocument.trim();
     newCarrierPayload.request.payload.carriers[0].denominationCarrier =
-      data.name;
+      data.name.trim();
     newCarrierPayload.request.payload.carriers[0].addressCarrier =
       data.addressCarrier;
     newCarrierPayload.request.payload.carriers[0].emailCarrier =

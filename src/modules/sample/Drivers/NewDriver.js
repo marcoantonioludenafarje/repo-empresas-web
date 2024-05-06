@@ -163,14 +163,14 @@ const NewDriver = () => {
     console.log('Data', data);
     console.log('objSelects', objSelects);
     newDriverPayload.request.payload.drivers[0].typeDocumentDriver =
-      objSelects.documentType;
+      objSelects.documentType.trim();
     newDriverPayload.request.payload.drivers[0].numberDocumentDriver =
-      data.nroDocument;
+      data.nroDocument.trim();
     newDriverPayload.request.payload.drivers[0].firstName = data.firstName;
     newDriverPayload.request.payload.drivers[0].lastName = data.lastName;
     newDriverPayload.request.payload.drivers[0].fullName =
       data.firstName + ' ' + data.lastName;
-    newDriverPayload.request.payload.drivers[0].license = data.license;
+    newDriverPayload.request.payload.drivers[0].license = data.license.trim();
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     toNewDriver(newDriverPayload);
