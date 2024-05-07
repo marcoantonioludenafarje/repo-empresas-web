@@ -882,6 +882,7 @@ const Distribution = (props) => {
                     <AppTextField
                       label='Destinatario'
                       name='addressee'
+                      defaultValue={`${"Por determinar"}`}
                       disabled
                       variant='outlined'
                       sx={{
