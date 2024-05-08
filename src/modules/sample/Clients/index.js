@@ -694,8 +694,8 @@ const ClientTable = (arrayObjs, props) => {
                     )}
                     <TableCell>{obj.denominationClient}</TableCell>
                     {isNotMobile && obj.numberContact ? (
-                    <TableCell> {obj.numberCountryCode}{obj.numberContact} </TableCell>
-                    ) : null}
+                    <TableCell> {obj.numberCountryCode ? obj.numberCountryCode : ''}{obj.numberContact?obj.numberContact:''} </TableCell>
+                    ) : ''}
                     {isNotMobile ? (
                       <TableCell>{obj.nameContact}</TableCell>
                     ) : null}
