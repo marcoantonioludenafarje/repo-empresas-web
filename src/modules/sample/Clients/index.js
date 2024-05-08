@@ -652,7 +652,12 @@ const ClientTable = (arrayObjs, props) => {
                 <TableCell>Identificador-Número</TableCell>
               )}
               <TableCell>Nombre / Razón social</TableCell>
-              {isNotMobile ? <TableCell>Nombre Contacto</TableCell> : null}
+              {isNotMobile ? (
+              <TableCell>Teléfono</TableCell>
+              ) : null}
+              {isNotMobile ? (
+              <TableCell>Nombre Contacto</TableCell>
+              ) : null}
               <TableCell>Etiquetas</TableCell>
               {isNotMobile ? <TableCell>Última actualización</TableCell> : null}
               <TableCell
@@ -688,6 +693,9 @@ const ClientTable = (arrayObjs, props) => {
                       </TableCell>
                     )}
                     <TableCell>{obj.denominationClient}</TableCell>
+                    {isNotMobile && obj.numberContact ? (
+                    <TableCell> {obj.numberCountryCode}{obj.numberContact} </TableCell>
+                    ) : null}
                     {isNotMobile ? (
                       <TableCell>{obj.nameContact}</TableCell>
                     ) : null}
