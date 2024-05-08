@@ -587,7 +587,17 @@ const Distribution = (props) => {
             // }
           }
         })
-        .filter((obj) => obj.quantity > 0);
+        .filter((obj) => {
+          if(obj){
+            if(obj.quantity > 0){
+              return obj
+            }
+          } else {
+            msjError =
+              msjError +
+              "Existen productos con guión( - ) en sus alias. Removerlos. Si no fuese el caso entonces hay cantidades no señaladas, al menos establecer valor 0, no se permite vacío";
+          }
+        });
 
       let totalWeight = 0;
       let productsInfo = [];
