@@ -797,6 +797,8 @@ const OutputsTable = (props) => {
       obj.clientdenomination =
         (obj.client ? obj.numberDocumentClient + ' - ' : '') +
         (obj.client ? obj.client.denomination : obj.clientName);
+      obj.telephone = 
+        (obj.client && obj.client.telephone ? obj.client.telephone : '');
       obj.totalPrice1 = obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '';
       obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
         ? Number(obj.totalPriceWithIgv.toFixed(3))
@@ -859,6 +861,7 @@ const OutputsTable = (props) => {
           updatedAt,
           movementSubType,
           clientdenomination,
+          telephone,
           descriptionProducts,
           receipt1,
           ticket1,
@@ -876,6 +879,7 @@ const OutputsTable = (props) => {
           updatedAt,
           movementSubType,
           clientdenomination,
+          telephone,
           descriptionProducts,
           receipt1,
           ticket1,
@@ -898,6 +902,7 @@ const OutputsTable = (props) => {
     'Ultima actualización',
     'Tipo de movimiento',
     'Cliente',
+    'Teléfono',
     'Detalle productos',
     'Boleta relacionada',
     'Ticket relacionada',
@@ -1773,6 +1778,7 @@ const OutputsTable = (props) => {
                   Cliente
                 </TableSortLabel>
               </TableCell>
+              <TableCell>Teléfono</TableCell>
               <TableCell>Detalle productos</TableCell>
               {isNotMobile ? <TableCell>Detalle documentos</TableCell> : null}
               {isNotMobile ? (
@@ -1895,6 +1901,11 @@ const OutputsTable = (props) => {
                           (obj.client
                             ? obj.client.denomination
                             : obj.clientName)}
+                      </TableCell>
+                      <TableCell>
+                        {(obj.client.telephone
+                          ? obj.client.telephone
+                            : '')}
                       </TableCell>
                       <TableCell>
                         {/* {obj.descriptionProductsInfo
