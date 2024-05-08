@@ -652,7 +652,6 @@ const ClientTable = (arrayObjs, props) => {
                 <TableCell>Identificador-Número</TableCell>
               )}
               <TableCell>Nombre / Razón social</TableCell>
-              {isNotMobile ? <TableCell>Nombre Contacto</TableCell> : null}
               {isNotMobile ? (
               <TableCell>Teléfono</TableCell>
               ) : null}
