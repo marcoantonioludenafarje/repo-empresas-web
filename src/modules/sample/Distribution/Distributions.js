@@ -29,6 +29,10 @@ import {
   InputLabel,
   Select,
   Alert,
+  RadioGroup,
+  FormControlLabel,
+  FormLabel,
+  Radio,
 } from '@mui/material';
 
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -148,6 +152,7 @@ const FinancesTable = (props) => {
   const [openSummaryGuide, setOpenSummaryGuide] = React.useState(false);
   const [openCollateRecordsAndGuides, setOpenCollateRecordsAndGuides] =
     React.useState(false);
+  //const [openMenu, setOpenMenu] = React.useState(false);
   const [openRoutes, setOpenRoutes] = React.useState(false);
   const [openProducts, setOpenProducts] = React.useState(false);
   const [rowNumber, setRowNumber] = React.useState(0);
@@ -172,6 +177,7 @@ const FinancesTable = (props) => {
   const [openEndCollate, setOpenEndCollate] = React.useState(false);
   const [randomNumber, setRandomNumber] = React.useState('0');
   const [loading, setLoading] = React.useState(true);
+  const [orderBy, setOrderBy] = React.useState('O');
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -362,6 +368,7 @@ const FinancesTable = (props) => {
       } else {
         console.log('Se reutilizara el metodo');
       }
+      //setOpenMenu(false);
       setOpenCollateRecordsAndGuides(true);
     }
     // console.log('Veamos el total', selectedRoute);
@@ -414,9 +421,11 @@ const FinancesTable = (props) => {
       toCollateRecordsAndGuides({
         request: {
           payload: {
-            deliveries: listDistribution[indexDistributionSelected].deliveries,
+            deliveryDistributionId: listDistribution[indexDistributionSelected].deliveryDistributionId,
+            //deliveries: listDistribution[indexDistributionSelected].deliveries,
             pdf64: base64.split('base64,')[1],
             randomNumber: random,
+            orderBy: orderBy,
           },
         },
       });
@@ -791,6 +800,11 @@ const FinancesTable = (props) => {
       console.log('no se selecciono un archivo');
     }
   };
+
+  const handleChangeOrderBy = (event) => {
+    setOrderBy(event.target.value);
+  };
+
   return (
     <Card sx={{p: 4}}>
       <Stack
@@ -978,6 +992,19 @@ const FinancesTable = (props) => {
           {'Compaginar Guías y Actas'}
         </DialogTitle>
         <DialogContent sx={{justifyContent: 'center'}}>
+          <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
+          <FormLabel component='legend'>Ordenar por:</FormLabel>
+            <RadioGroup
+              aria-label='gender'
+              defaultValue='O'
+              value={orderBy}
+              onChange={handleChangeOrderBy}
+              name='radio-buttons-group'
+            >
+              <FormControlLabel value='O' control={<Radio />} label='Mantener orden original' />
+              <FormControlLabel value='G' control={<Radio />} label='Por número de guía' />
+            </RadioGroup>
+          </Stack>
           <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
             <Button variant='contained' color='primary' component='label'>
               Adjuntar Actas
