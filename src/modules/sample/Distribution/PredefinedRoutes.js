@@ -44,7 +44,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import CachedIcon from '@mui/icons-material/Cached';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
-
+import ExcelIcon from '../../../assets/icon/excel.svg';
 import {ClickAwayListener} from '@mui/base';
 import {
   FETCH_SUCCESS,
@@ -52,6 +52,7 @@ import {
   LIST_ROUTE,
   SET_DELIVERIES_SIMPLE,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
+  GENERATE_EXCEL_SUMMARY_ROUTES,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {
@@ -60,6 +61,8 @@ import {
   listPredefinedRoutes_____PageListPredefinedRoutes,
   getPredefinedRoute_____PageListPredefinedRoutes,
   deletePredefinedRoute,
+  exportExcelSummaryItems,
+  excelSummaryRoutesRes,
 } from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -182,6 +185,7 @@ const PredefinedRoutes = () => {
   const router = useRouter();
   const {query} = router;
   console.log('query', query);
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
 
   const {
     predefinedRoutes_PageListPredefinedRoutes,
@@ -206,6 +210,7 @@ const PredefinedRoutes = () => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
+  const {excelSummaryRoutesRes} = useSelector(({movements}) => movements);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   // listRoutesPayload.request.payload.merchantId =
@@ -251,6 +256,10 @@ const PredefinedRoutes = () => {
     };
     dispatch(listPredefinedRoutes_____PageListPredefinedRoutes(payload));
     // setPage(page+1);
+  };
+
+  const toExportExcelSummaryItems = (payload) => {
+    dispatch(exportExcelSummaryItems(payload));
   };
 
   // const handleChangeRowsPerPage = (event) => {
@@ -663,6 +672,51 @@ const PredefinedRoutes = () => {
     console.log('payload listRoutes', payload);
     toListRoutes(payload);
   };
+
+  useEffect(() => {
+    if (excelSummaryRoutesRes && downloadExcel) {
+      setDownloadExcel(false);
+      const byteCharacters = atob(excelSummaryRoutesRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'SummaryItems.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }, [excelSummaryRoutesRes, downloadExcel]);
+  const exportToExcel = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          routePredefinedId: selectedRoute.routePredefinedId,
+          //deliveryDistributionId: 'de33241c-b81d-4a4a-a2b5-06af2a5fa1a3',
+          merchantId: userDataRes.merchantSelected.merchantId,
+        },
+      },
+    };
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({
+      type: GENERATE_EXCEL_SUMMARY_ROUTES,
+      payload: undefined,
+    });
+    toExportExcelSummaryItems(excelPayload);
+    setDownloadExcel(true);
+  };
+
   return (
     <>
       {loading ? (
@@ -1199,6 +1253,23 @@ const PredefinedRoutes = () => {
                   onChange={(e) => setCantidadAgrupacion(e.target.value)}
                   variant='outlined'
                 />
+                <IconButton
+                  sx={{
+                    mt: 1,
+                    '& svg': {
+                      height: 35,
+                      width: 35,
+                    },
+                    color: 'text.secondary',
+                  }}
+                  edge='end'
+                  color='inherit'
+                  aria-label='open drawer'
+                  onClick={exportToExcel}
+                >
+                  <ExcelIcon />
+                </IconButton>
+
               </Stack>
 
               <IconButton

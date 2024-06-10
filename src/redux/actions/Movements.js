@@ -561,6 +561,27 @@ export const exportExcelSummaryRoutes = (payload) => {
   };
 };
 
+export const exportExcelSummaryItems = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/routePredefined/exportExcelItems', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('listDistributions resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_SUMMARY_ROUTES,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('listDistributions error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
 export const updateReferralGuideValue = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
