@@ -30,6 +30,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  Alert,
 } from '@mui/material';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -46,6 +47,7 @@ import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import ExcelIcon from '../../../assets/icon/excel.svg';
 import {ClickAwayListener} from '@mui/base';
+import {Fonts} from '../../../shared/constants/AppEnums';
 import {
   FETCH_SUCCESS,
   FETCH_ERROR,
@@ -53,6 +55,7 @@ import {
   SET_DELIVERIES_SIMPLE,
   SET_DELIVERIES_IN_ROUTE_PREDEFINED_____PAGE_LIST_PREDEFINED_ROUTES,
   GENERATE_EXCEL_SUMMARY_ROUTES,
+  GENERATE_EXCEL_SHEETS_DISPATCH,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {
@@ -63,6 +66,8 @@ import {
   deletePredefinedRoute,
   exportExcelSummaryItems,
   excelSummaryRoutesRes,
+  exportExcelSheetsDispatchFile,
+  downloadSheetsDispatchFileRes,
 } from '../../../redux/actions/Movements';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -74,6 +79,7 @@ import {
 } from '../../../Utils/utils';
 import AppLoader from '@crema/core/AppLoader';
 import {red} from '@mui/material/colors';
+import FilePresentIcon from '@mui/icons-material/FilePresent';
 // let listRoutesPayload = {
 //   request: {
 //     payload: {
@@ -158,7 +164,9 @@ let deletePayload = {
   },
 };
 let selectedSummaryRow = {};
+let fileToUpload;
 const PredefinedRoutes = () => {
+  let typeAlert = 'sizeOverWeightLimit';
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open2, setOpen2] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
@@ -186,11 +194,16 @@ const PredefinedRoutes = () => {
   const {query} = router;
   console.log('query', query);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
-
+  const [downloadSheetsDispatch, setDownloadSheetsDispatch] = React.useState(false);
+  const [openSummaryGuide, setOpenSummaryGuide] = React.useState(false);
+  const [openSheetsDispatch,setOpenSheetsDispatch] = React.useState(false);
+  const [disabledGeneratedSheets,setDisabledGeneratedSheets] = React.useState(false);
+  
   const {
     predefinedRoutes_PageListPredefinedRoutes,
     lastEvaluatedKeys_PageListPredefinedRoutes,
     selectedRoute_PageListPredefinedRoutes,
+    downloadSheetsDispatchFileRes,
   } = useSelector(({movements}) => movements);
   // console.log('listRoute', listRoute);
   const [listRouteBySelectedRoutes, setListRouteBySelectedRoutes] =
@@ -261,7 +274,14 @@ const PredefinedRoutes = () => {
   const toExportExcelSummaryItems = (payload) => {
     dispatch(exportExcelSummaryItems(payload));
   };
+  const toExportSheetsDispatchFile = (payload) => {
+    dispatch(exportExcelSheetsDispatchFile(payload));
+  };  
 
+  const [typeFileRecords, setTypeFileRecords] = React.useState('');
+  const [nameFileRecords, setNameFileRecords] = React.useState('');
+  const [base64, setBase64] = React.useState('');
+  const [records, setRecords] = React.useState('');
   // const handleChangeRowsPerPage = (event) => {
   //   setRowsPerPage(parseInt(event.target.value, 10));
   //   setPage(0);
@@ -717,6 +737,117 @@ const PredefinedRoutes = () => {
     setDownloadExcel(true);
   };
 
+
+  useEffect(() => {
+    if (downloadSheetsDispatchFileRes && downloadSheetsDispatch) {
+      setDownloadSheetsDispatch(false);
+      const byteCharacters = atob(downloadSheetsDispatchFileRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'SheetsDispatchFile.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setDisabledGeneratedSheets(false);
+    }
+  }, [downloadSheetsDispatchFileRes, downloadSheetsDispatch]);
+  const exportSheetsDispatch = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          denominationMerchant: userDataRes.merchantSelected.denominationMerchant,
+          numberDocumentMerchant: userDataRes.merchantSelected.numberDocumentMerchant,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          routePredefinedId: selectedRoute.routePredefinedId,
+          caes: base64.split('base64,')[1],
+        },
+      },
+    };
+    const excelPayload = listPayload;
+
+    console.log('excelPayload', excelPayload);
+    setDisabledGeneratedSheets(true);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({
+      type: GENERATE_EXCEL_SHEETS_DISPATCH,
+      payload: undefined,
+    });
+    toExportSheetsDispatchFile(excelPayload);
+    setDownloadSheetsDispatch(true);
+  };
+
+  const openSheetsDispatchEvent = () => {
+    setOpenSheetsDispatch(true);
+  }
+
+
+  const handleCloseSheetsDispatch = () => {
+    setOpenSheetsDispatch(false);
+  };
+
+  useEffect(() => {
+    if (base64) {
+      setRecords({
+        base64: base64,
+        name: nameFileRecords,
+        type: typeFileRecords,
+      });
+    }
+  }, [base64]);
+
+  const onLoad = (fileString) => {
+    console.log('llega aquí?');
+    setBase64(fileString);
+  };
+
+  const getBase64 = (file) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      onLoad(reader.result);
+    };
+  };
+
+  const uploadRecords = (event) => {
+    if (event.target.value !== '') {
+      console.log('archivo', event.target.files[0]);
+      var imgsize = event.target.files[0].size;
+      console.log('Cuánto es el filesize', imgsize);
+      if (imgsize > 12000000) {
+        typeAlert = 'sizeOverWeightLimit';
+        setShowAlert(true);
+      } else {
+        uploadRecords2(event);
+      }
+    }
+  };
+  const uploadRecords2 = (event) => {
+    if (event.target.value !== '') {
+      fileToUpload = event.target.files[0];
+      getBase64(fileToUpload);
+      console.log('fileToUpload', fileToUpload);
+      console.log(
+        'nombre de archivo',
+        fileToUpload.name.split('.').slice(0, -1).join('.'),
+      );
+      setTypeFileRecords(fileToUpload.type);
+      setNameFileRecords(fileToUpload.name);
+    } else {
+      event = null;
+      console.log('no se selecciono un archivo');
+    }
+  };
+
   return (
     <>
       {loading ? (
@@ -938,6 +1069,90 @@ const PredefinedRoutes = () => {
               </Button>
             </DialogActions>
           </Dialog>
+          <Dialog
+            open={openSheetsDispatch}
+            onClose={handleCloseSheetsDispatch}
+            PaperProps={{sx: {textAlign: 'center'}}} // Aplicar textAlign: 'center' al PaperProps
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+              {'Generar hojas de despacho'}
+            </DialogTitle>
+            <DialogContent sx={{justifyContent: 'center'}}>
+              <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
+                <Button variant='contained' color='primary' component='label'>
+                  Adjuntar Hojas
+                  <input
+                    type='file'
+                    hidden
+                    onChange={uploadRecords}
+                    id='newFile'
+                    name='newfile'
+                    accept='.xlsx'
+                  />
+                </Button>
+                {records ? (
+                  <IconButton onClick={uploadRecords2}>
+                    <FilePresentIcon
+                      color='success'
+                      sx={{fontSize: '2em', mx: 2}}
+                    />
+                    {records.name}
+                  </IconButton>
+                ) : (
+                  <></>
+                )}
+                {disabledGeneratedSheets ? (
+                    <Typography
+                      component='h3'
+                      sx={{
+                        fontSize: 16,
+                        fontWeight: Fonts.BOLD,
+                        mb: {xs: 3, lg: 4},
+                      }}
+                    >
+                      Espere unos segundos por favor...
+                    </Typography>                    
+                ) : (
+                  <></>
+                )}
+              </Stack>
+              <Collapse in={showAlert}>
+                <Alert
+                  severity='error'
+                  action={
+                    <IconButton
+                      aria-label='close'
+                      color='inherit'
+                      size='small'
+                      onClick={() => {
+                        setShowAlert(false);
+                      }}
+                    >
+                      <CloseIcon fontSize='inherit' />
+                    </IconButton>
+                  }
+                  sx={{mb: 2}}
+                >
+                  {typeAlert == 'sizeOverWeightLimit' ? (
+                    'El archivo supera los 12Mb.'
+                  ) : (
+                    <></>
+                  )}
+                </Alert>
+              </Collapse>
+            </DialogContent>
+            <DialogActions sx={{justifyContent: 'center'}}>
+              <Button
+                variant='outlined'
+                onClick={exportSheetsDispatch}
+                disabled={disabledGeneratedSheets}
+              >
+                Generar Hojas
+              </Button>
+            </DialogActions>
+          </Dialog>
 
           <Menu
             id='basic-menu'
@@ -976,6 +1191,11 @@ const PredefinedRoutes = () => {
             <MenuItem onClick={downloadTranslatedFile}>
               <CachedIcon sx={{mr: 1, my: 'auto'}} />
               Descargar archivo de rutas
+            </MenuItem>
+
+            <MenuItem onClick={openSheetsDispatchEvent}>
+              <CachedIcon sx={{mr: 1, my: 'auto'}} />
+              Generar Hojas de despacho
             </MenuItem>
 
             <MenuItem onClick={setDeleteState}>

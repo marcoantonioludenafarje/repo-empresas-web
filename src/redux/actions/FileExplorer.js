@@ -9,6 +9,7 @@ import {
   FETCH_SUCCESS,
   FETCH_ERROR,
   COLLATE_RECORDS_AND_GUIDES,
+  COLLATE_SHEETS_AND_DISPATCH,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 

@@ -43,6 +43,7 @@ import {
   REGISTER_TRANSACTION,
   GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED,
   GENERATE_EXCEL_SUMMARY_ROUTES,
+  GENERATE_EXCEL_SHEETS_DISPATCH,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -577,6 +578,27 @@ export const exportExcelSummaryItems = (payload) => {
       })
       .catch((error) => {
         console.log('listDistributions error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const exportExcelSheetsDispatchFile = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    API.post('tunexo', '/facturacion/routesPredefined/generateDownloadSheets', {
+      body: payload,
+    })
+      .then((data) => {
+        console.log('exportExcelSheetsDispatchFile resultado', data);
+        dispatch({
+          type: GENERATE_EXCEL_SHEETS_DISPATCH,
+          payload: data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('exportExcelSheetsDispatchFile error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };
