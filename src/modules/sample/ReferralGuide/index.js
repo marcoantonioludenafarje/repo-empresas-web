@@ -210,6 +210,7 @@ const ReferralGuidesTable = (props) => {
   const [valueObservation, setValueObservation] = React.useState('');
   const [selectedLocations, setSelectedLocations] = React.useState([]);
   const [selectedLocation, setSelectedLocation] = React.useState('TODOS');
+  const [numberDocumentClientToFilter, setNumberDocumentClientToFilter] = React.useState('');
   //API FUNCTIONS
   const toGetMovements = (payload) => {
     dispatch(getReferralGuides_PageListGuide(payload));
@@ -254,6 +255,8 @@ const ReferralGuidesTable = (props) => {
         },
       },
     };
+    listPayload.request.payload.numberDocumentClient =
+      numberDocumentClientToFilter;
     listPayload.request.payload.LastEvaluatedKey =
       referralGuideLastEvalutedKey_pageListGuide;
     console.log('listPayload111:handleNextPage:', listPayload);
@@ -398,6 +401,7 @@ const ReferralGuidesTable = (props) => {
     listPayload.request.payload.typeDocumentClient = dataFilters.typeIdentifier;
     listPayload.request.payload.numberDocumentClient =
       dataFilters.nroIdentifier;
+    setNumberDocumentClientToFilter(dataFilters.nroIdentifier)
     listPayload.request.payload.denominationClient =
       dataFilters.searchByDenominationProvider.replace(/ /g, '').toUpperCase();
     console.log('listPayload', listPayload);
