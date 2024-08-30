@@ -33,6 +33,9 @@ import {
   FormControlLabel,
   FormLabel,
   Radio,
+  OutlinedInput,
+  ListItemText,
+  Checkbox
 } from '@mui/material';
 
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -130,6 +133,24 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '10px',
   },
 }));
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+function getStyles(name, personName, theme) {
+  return {
+    fontWeight:
+      personName.indexOf(name) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+}
 let listDistributionsPayload = {
   request: {
     payload: {
@@ -156,6 +177,9 @@ const FinancesTable = (props) => {
   const [openSummaryGuide, setOpenSummaryGuide] = React.useState(false);
   const [openCollateRecordsAndGuides, setOpenCollateRecordsAndGuides] =
     React.useState(false);
+    
+  const [openCollateRecordsAndDistributions, setOpenCollateRecordsAndDistributions] =
+    React.useState(false);
   //const [openMenu, setOpenMenu] = React.useState(false);
   const [openRoutes, setOpenRoutes] = React.useState(false);
   const [openProducts, setOpenProducts] = React.useState(false);
@@ -179,10 +203,12 @@ const FinancesTable = (props) => {
   const [showAlert, setShowAlert] = React.useState(false);
   const [records, setRecords] = React.useState('');
   const [openEndCollate, setOpenEndCollate] = React.useState(false);
+  const [openEndCollate2, setOpenEndCollate2] = React.useState(false);
   const [randomNumber, setRandomNumber] = React.useState('0');
   const [loading, setLoading] = React.useState(true);
   const [orderBy, setOrderBy] = React.useState('O');
   const [downloadExcel, setDownloadExcel] = React.useState(false);
+  const [distributionName, setDistributionName] = React.useState([]);
 
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
@@ -372,6 +398,11 @@ const FinancesTable = (props) => {
         console.log('Se reutilizara el metodo');
       }
       setOpenSummaryGuide(true);
+      
+    } else if (type == 'collateRecordsAndDistributions') {
+      console.log('Selected Distribution', selectedDistribution);
+      setTypeDialog(type);
+      setOpenCollateRecordsAndDistributions(true);
     } else if (type == 'collateRecordsAndGuides') {
       console.log('Selected Distribution', selectedDistribution);
       setTypeDialog(type);
@@ -451,12 +482,43 @@ const FinancesTable = (props) => {
             },
           },
         });
-       }, 15000); // 15000 milisegundos = 15 segundos
+       }, 60000); // 15000 milisegundos = 15 segundos
       
       
     }
     setOpenCollateRecordsAndGuides(false);
     setOpenEndCollate(true);
+
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 120000);
+
+    // Limpia el temporizador si el componente se desmonta
+    return () => clearTimeout(timer);
+  };
+  const sendCollate2 = () => {
+    if (distributionName.length !== 0) {
+      const random = Math.floor(Math.random() * (10000 - 1)) + 1;
+      setRandomNumber(random);
+      // Ejecutar toCollateRecordsAndGuides después de 15 segundos
+      setTimeout(() => {
+        toCollateRecordsAndGuides({
+          request: {
+            payload: {
+              deliveryDistributionId: distributionName[0].deliveryDistributionId,
+              distributions: distributionName.map(obj=>obj.deliveryDistributionId),
+              pathActas: `private/merchant/${distributionName[0].merchantId}/distributions/${distributionName[0].routeName}-${distributionName[0].deliveryDistributionId}/${fileToUpload.name}`,
+              randomNumber: random,
+              orderBy: orderBy,
+            },
+          },
+        });
+       }, 60000); // 15000 milisegundos = 15 segundos
+      
+      
+    }
+    setOpenCollateRecordsAndDistributions(false);
+    setOpenEndCollate2(true);
 
     const timer = setTimeout(() => {
       setLoading(false);
@@ -584,8 +646,14 @@ const FinancesTable = (props) => {
   const handleCloseCollateRecordsAndGuides = () => {
     setOpenCollateRecordsAndGuides(false);
   };
+  const handleCloseCollateRecordsAndDistributions = () => {
+    setOpenCollateRecordsAndDistributions(false);
+  };
   const handleOpenEndCollate = () => {
     setOpenEndCollate(false);
+  };
+  const handleOpenEndCollate2 = () => {
+    setOpenEndCollate2(false);
   };
   const handleSearchValues = (event) => {
     if (event.target.name == 'searchObservation') {
@@ -747,7 +815,54 @@ const FinancesTable = (props) => {
       setTypeFileRecords(fileToUpload.type);
       setNameFileRecords(fileToUpload.name);
       toGeneratePresigned(generatePresignedPayload);
-      toUpload = true;
+      setTimeout(() => {
+        toUpload = true;
+      }, 1000);
+      
+      /* setOpenStatus(true); */
+    } else {
+      event = null;
+      console.log('no se selecciono un archivo');
+    }
+  };
+
+  const uploadNewFile2 = (event) => {
+    if (event.target.value !== '') {
+      console.log('archivo', event.target.files[0]);
+      fileToUpload = event.target.files[0];
+      let generatePresignedPayload = {
+        request: {
+          payload: {
+            key: '',
+            path: '',
+            action: 'putObject',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            contentType: '',
+          },
+        },
+      };
+      console.log('fileToUpload', fileToUpload);
+      console.log(
+        'nombre de archivo',
+        fileToUpload.name.split('.').slice(0, -1).join('.'),
+      );
+      generatePresignedPayload.request.payload.key = fileToUpload.name
+        .split('.')
+        .slice(0, -1)
+        .join('.');
+      generatePresignedPayload.request.payload.path = distributionName[0]
+      .folderMovement
+      ? distributionName[0]
+          .folderMovement
+      : `distributions/${distributionName[0].routeName}-${distributionName[0].deliveryDistributionId}`;
+      generatePresignedPayload.request.payload.contentType = fileToUpload.type;
+      getBase64(fileToUpload);
+      setTypeFileRecords(fileToUpload.type);
+      setNameFileRecords(fileToUpload.name);
+      toGeneratePresigned(generatePresignedPayload);
+      setTimeout(() => {
+        toUpload = true;
+      }, 1000);
       /* setOpenStatus(true); */
     } else {
       event = null;
@@ -870,6 +985,17 @@ const FinancesTable = (props) => {
 
   const handleChangeOrderBy = (event) => {
     setOrderBy(event.target.value);
+  };
+
+  const handleChangeGuidesAndDistributions = (event) => {
+    console.log("event guides", event)
+    const {
+      target: { value },
+    } = event;
+    setDistributionName(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
   };
 
   return (
@@ -1022,8 +1148,7 @@ const FinancesTable = (props) => {
         </Button>
         <Button
           variant='outlined'
-          disabled
-          onClick={handleClickOpen.bind(this, 'collateRecordsAndGuides')}
+          onClick={handleClickOpen.bind(this, 'collateRecordsAndDistributions')}
         >
           Compaginar actas con distribuciones
         </Button>
@@ -1145,6 +1270,111 @@ const FinancesTable = (props) => {
         </DialogActions>
       </Dialog>
       <Dialog
+        open={openCollateRecordsAndDistributions}
+        onClose={handleCloseCollateRecordsAndDistributions}
+        PaperProps={{sx: {textAlign: 'center'}}} // Aplicar textAlign: 'center' al PaperProps
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Compaginar Guías y Distribuciones'}
+        </DialogTitle>
+        <DialogContent sx={{justifyContent: 'center'}}>
+          <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
+            <FormControl sx={{ m: 1, width: 300 }}>
+              <InputLabel id="demo-multiple-checkbox-label">Distribuciones</InputLabel>
+              <Select
+                labelId="demo-multiple-name-label"
+                id="demo-multiple-name"
+                multiple
+                value={distributionName}
+                onChange={handleChangeGuidesAndDistributions}
+                input={<OutlinedInput label="Nameasd" />}
+                renderValue={(selected) => selected.map((item) => item.routeName).join(', ')}
+                MenuProps={MenuProps}
+                key={'SelectCollate'}
+              >
+                {listDistribution && Array.isArray(listDistribution) ? (
+                  listDistribution.map((distrib, index) => (
+                        <MenuItem
+                          
+                          key={distrib.deliveryDistributionId}
+                          value={distrib}
+                          style={getStyles(distrib, distributionName, theme)}
+                        >
+                          <Checkbox checked={distributionName.some(item => item.deliveryDistributionId === distrib.deliveryDistributionId)} />
+                          <ListItemText primary={distrib.routeName} />
+                        </MenuItem>
+                      ))
+                    ) : null}
+              </Select>
+            </FormControl>
+          </Stack>
+          <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
+            <Button variant='contained' color='primary' component='label'>
+              Adjuntar Actas
+              <input
+                type='file'
+                hidden
+                //onChange={uploadRecords}
+                onChange={uploadNewFile2}
+                id='newFile'
+                name='newfile'
+                accept='.pdf'
+              />
+            </Button>
+            {records ? (
+              <IconButton onClick={uploadRecords2}>
+                <FilePresentIcon
+                  color='success'
+                  sx={{fontSize: '2em', mx: 2}}
+                />
+                {records.name}
+              </IconButton>
+            ) : (
+              <></>
+            )}
+          </Stack>
+          <Collapse in={showAlert}>
+            <Alert
+              severity='error'
+              action={
+                <IconButton
+                  aria-label='close'
+                  color='inherit'
+                  size='small'
+                  onClick={() => {
+                    setShowAlert(false);
+                  }}
+                >
+                  <CloseIcon fontSize='inherit' />
+                </IconButton>
+              }
+              sx={{mb: 2}}
+            >
+              {typeAlert == 'sizeOverWeightLimit' ? (
+                'El archivo supera los 12Mb.'
+              ) : (
+                <></>
+              )}
+            </Alert>
+          </Collapse>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            disabled={
+              (listDistribution &&
+              listDistribution[indexDistributionSelected] &&
+              listDistribution[indexDistributionSelected].deliveries == 0)
+            }
+            variant='outlined'
+            onClick={sendCollate2}
+          >
+            Generar compaginado
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
         open={openEndCollate}
         onClose={handleOpenEndCollate}
         PaperProps={{sx: {textAlign: 'center'}}} // Aplicar textAlign: 'center' al PaperProps
@@ -1196,6 +1426,53 @@ const FinancesTable = (props) => {
 
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button variant='outlined' onClick={handleOpenEndCollate}>
+            Aceptar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openEndCollate2}
+        onClose={handleOpenEndCollate2}
+        PaperProps={{sx: {textAlign: 'center'}}} // Aplicar textAlign: 'center' al PaperProps
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {
+            `El PDF se guardará en los Archivos de la distribución en dos minutos con el nombre ActasConsolidado-${randomNumber}.pdf.`
+          }
+        </DialogTitle>
+
+        <DialogContent>
+          <Stack
+            sx={{mt: 2}}
+            direction={'column'}
+            alignItems='center' // Añade esta línea
+            className={classes.stack}
+          >
+            {loading && <CircularProgress />}
+            <Button
+              color='secondary'
+              variant='outlined'
+              disabled={loading}
+              sx={{mt: 2}}
+              onClick={() =>
+                goToFiles(
+                  distributionName[0]
+                    .folderMovement
+                    ? distributionName[0]
+                        .folderMovement
+                    : `distributions/${distributionName[0].routeName}-${distributionName[0].deliveryDistributionId}`,
+                )
+              }
+            >
+              Dirigirse a los Archivos
+            </Button>
+          </Stack>
+        </DialogContent>
+
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={handleOpenEndCollate2}>
             Aceptar
           </Button>
         </DialogActions>
@@ -1799,7 +2076,7 @@ const FinancesTable = (props) => {
                   ).map((fila, indexSummary) => {
                     return (
                       <>
-                        <TableRow key={indexSummary}>
+                        <TableRow key={`finances-${indexSummary}`}>
                           <TableCell>{fila.product}</TableCell>
                           <TableCell>{fila.description}</TableCell>
                           <TableCell>{fila.quantityMovement}</TableCell>
