@@ -1280,6 +1280,19 @@ const FinancesTable = (props) => {
           {'Compaginar Guías y Distribuciones'}
         </DialogTitle>
         <DialogContent sx={{justifyContent: 'center'}}>
+        <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
+          <FormLabel component='legend'>Ordenar por:</FormLabel>
+            <RadioGroup
+              aria-label='gender'
+              defaultValue='O'
+              value={orderBy}
+              onChange={handleChangeOrderBy}
+              name='radio-buttons-group'
+            >
+              <FormControlLabel value='O' control={<Radio />} label='Mantener orden original' />
+              <FormControlLabel value='G' control={<Radio />} label='Por número de guía' />
+            </RadioGroup>
+          </Stack>
           <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
             <FormControl sx={{ m: 1, width: 300 }}>
               <InputLabel id="demo-multiple-checkbox-label">Distribuciones</InputLabel>
