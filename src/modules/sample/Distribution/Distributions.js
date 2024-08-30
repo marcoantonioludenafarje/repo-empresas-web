@@ -74,7 +74,9 @@ import {
   exportExcelSummaryRoutes,
   excelSummaryRoutesRes,
 } from '../../../redux/actions/Movements';
-import {collateRecordsAndGuides} from '../../../redux/actions/FileExplorer';
+import {
+  generatePresigned, 
+  uploadFile, collateRecordsAndGuides} from '../../../redux/actions/FileExplorer';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {getYear, justDate, showSubtypeMovement} from '../../../Utils/utils';
@@ -142,6 +144,8 @@ let selectedRoute = '';
 let selectedDelivery = {};
 let selectedSummaryRow = {};
 let fileToUpload;
+let toUpload = false;
+let urlToUpload;
 const FinancesTable = (props) => {
   let typeAlert = 'sizeOverWeightLimit';
 
@@ -178,6 +182,8 @@ const FinancesTable = (props) => {
   const [randomNumber, setRandomNumber] = React.useState('0');
   const [loading, setLoading] = React.useState(true);
   const [orderBy, setOrderBy] = React.useState('O');
+  const [downloadExcel, setDownloadExcel] = React.useState(false);
+
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -195,8 +201,8 @@ const FinancesTable = (props) => {
   console.log('errorMessage', errorMessage);
   const {excelSummaryRoutesRes} = useSelector(({movements}) => movements);
   console.log('excelSummaryRoutesRes', excelSummaryRoutesRes);
-  const [downloadExcel, setDownloadExcel] = React.useState(false);
-
+  const {getPresignedRes} = useSelector(({fileExplorer}) => fileExplorer);
+  console.log('getPresignedRes', getPresignedRes);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   const {collateRecordsAndGuidesRes} = useSelector(
@@ -213,10 +219,24 @@ const FinancesTable = (props) => {
   const toListDistributions = (payload) => {
     dispatch(listDistributions(payload));
   };
-
+  const toGeneratePresigned = (payload) => {
+    dispatch(generatePresigned(payload));
+  };
   const toExportExcelSummaryRoutes = (payload) => {
     dispatch(exportExcelSummaryRoutes(payload));
   };
+  const toUploadFile = (url, data) => {
+    dispatch(uploadFile(url, data));
+  };
+
+  if (getPresignedRes != undefined) {
+    urlToUpload = getPresignedRes.response.payload.presignedS3Url;
+    console.log('urlToUpload', urlToUpload);
+  }
+  if (urlToUpload && fileToUpload && toUpload) {
+    toUploadFile(getPresignedRes.response.payload.presignedS3Url, fileToUpload);
+    toUpload = false;
+  }
 
   useEffect(() => {
     if (!userDataRes) {
@@ -418,24 +438,29 @@ const FinancesTable = (props) => {
     if (listDistribution[indexDistributionSelected].deliveries !== 0) {
       const random = Math.floor(Math.random() * (10000 - 1)) + 1;
       setRandomNumber(random);
-      toCollateRecordsAndGuides({
-        request: {
-          payload: {
-            deliveryDistributionId: listDistribution[indexDistributionSelected].deliveryDistributionId,
-            //deliveries: listDistribution[indexDistributionSelected].deliveries,
-            pdf64: base64.split('base64,')[1],
-            randomNumber: random,
-            orderBy: orderBy,
+      // Ejecutar toCollateRecordsAndGuides después de 15 segundos
+      setTimeout(() => {
+        toCollateRecordsAndGuides({
+          request: {
+            payload: {
+              deliveryDistributionId: listDistribution[indexDistributionSelected].deliveryDistributionId,
+              distributions: [`${listDistribution[indexDistributionSelected].deliveryDistributionId}`],
+              pathActas: `private/merchant/${listDistribution[indexDistributionSelected].merchantId}/distributions/${listDistribution[indexDistributionSelected].routeName}-${listDistribution[indexDistributionSelected].deliveryDistributionId}/${fileToUpload.name}`,
+              randomNumber: random,
+              orderBy: orderBy,
+            },
           },
-        },
-      });
+        });
+       }, 15000); // 15000 milisegundos = 15 segundos
+      
+      
     }
     setOpenCollateRecordsAndGuides(false);
     setOpenEndCollate(true);
 
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 60000);
+    }, 120000);
 
     // Limpia el temporizador si el componente se desmonta
     return () => clearTimeout(timer);
@@ -686,6 +711,48 @@ const FinancesTable = (props) => {
       pathname: '/sample/distribution/new-distribution',
       query: {},
     });
+  };
+
+  const uploadNewFile = (event) => {
+    if (event.target.value !== '') {
+      console.log('archivo', event.target.files[0]);
+      fileToUpload = event.target.files[0];
+      let generatePresignedPayload = {
+        request: {
+          payload: {
+            key: '',
+            path: '',
+            action: 'putObject',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            contentType: '',
+          },
+        },
+      };
+      console.log('fileToUpload', fileToUpload);
+      console.log(
+        'nombre de archivo',
+        fileToUpload.name.split('.').slice(0, -1).join('.'),
+      );
+      generatePresignedPayload.request.payload.key = fileToUpload.name
+        .split('.')
+        .slice(0, -1)
+        .join('.');
+      generatePresignedPayload.request.payload.path = listDistribution[indexDistributionSelected]
+      .folderMovement
+      ? listDistribution[indexDistributionSelected]
+          .folderMovement
+      : `distributions/${listDistribution[indexDistributionSelected].routeName}-${listDistribution[indexDistributionSelected].deliveryDistributionId}`;
+      generatePresignedPayload.request.payload.contentType = fileToUpload.type;
+      getBase64(fileToUpload);
+      setTypeFileRecords(fileToUpload.type);
+      setNameFileRecords(fileToUpload.name);
+      toGeneratePresigned(generatePresignedPayload);
+      toUpload = true;
+      /* setOpenStatus(true); */
+    } else {
+      event = null;
+      console.log('no se selecciono un archivo');
+    }
   };
 
   useEffect(() => {
@@ -942,6 +1009,7 @@ const FinancesTable = (props) => {
       </TableContainer>
       <Stack
         sx={{mt: 2}}
+        spacing={2}
         direction={isMobile ? 'column' : 'row'}
         className={classes.stack}
       >
@@ -951,6 +1019,13 @@ const FinancesTable = (props) => {
           onClick={newDistribution}
         >
           Nuevo
+        </Button>
+        <Button
+          variant='outlined'
+          disabled
+          onClick={handleClickOpen.bind(this, 'collateRecordsAndGuides')}
+        >
+          Compaginar actas con distribuciones
         </Button>
       </Stack>
       <Menu
@@ -1011,7 +1086,8 @@ const FinancesTable = (props) => {
               <input
                 type='file'
                 hidden
-                onChange={uploadRecords}
+                //onChange={uploadRecords}
+                onChange={uploadNewFile}
                 id='newFile'
                 name='newfile'
                 accept='.pdf'
@@ -1057,9 +1133,9 @@ const FinancesTable = (props) => {
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button
             disabled={
-              listDistribution &&
+              (listDistribution &&
               listDistribution[indexDistributionSelected] &&
-              listDistribution[indexDistributionSelected].deliveries == 0
+              listDistribution[indexDistributionSelected].deliveries == 0)
             }
             variant='outlined'
             onClick={sendCollate}
@@ -1077,7 +1153,7 @@ const FinancesTable = (props) => {
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
           {
-            'El PDF se guardará en los Archivos de la distribución en un minuto.'
+            `El PDF se guardará en los Archivos de la distribución en dos minutos con el nombre ActasConsolidado-${randomNumber}.pdf.`
           }
         </DialogTitle>
 
@@ -1094,17 +1170,26 @@ const FinancesTable = (props) => {
               variant='outlined'
               disabled={loading}
               sx={{mt: 2}}
+              // onClick={() =>
+              //   window.open(
+              //     `${
+              //       listDistribution[
+              //         indexDistributionSelected
+              //       ].deliveries[0].linkPdf.split('pdf/')[0]
+              //     }ActasConsolidado-${randomNumber}.pdf`,
+              //   )
+              // }
               onClick={() =>
-                window.open(
-                  `${
-                    listDistribution[
-                      indexDistributionSelected
-                    ].deliveries[0].linkPdf.split('pdf/')[0]
-                  }ActasConsolidado-${randomNumber}.pdf`,
+                goToFiles(
+                  listDistribution[indexDistributionSelected]
+                    .folderMovement
+                    ? listDistribution[indexDistributionSelected]
+                        .folderMovement
+                    : `distributions/${listDistribution[indexDistributionSelected].routeName}-${listDistribution[indexDistributionSelected].deliveryDistributionId}`,
                 )
               }
             >
-              Descargar
+              Dirigirse a los Archivos
             </Button>
           </Stack>
         </DialogContent>
