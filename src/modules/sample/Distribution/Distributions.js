@@ -84,6 +84,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {getYear, justDate, showSubtypeMovement} from '../../../Utils/utils';
 import {makeStyles} from '@mui/styles';
+import { driver } from 'localforage';
 const useStyles = makeStyles((theme) => ({
   container: {
     textAlign: 'center',
@@ -151,6 +152,14 @@ function getStyles(name, personName, theme) {
         : theme.typography.fontWeightMedium,
   };
 }
+const getStyles2 = (driver, driversSelected, theme) => {
+  return {
+    fontWeight:
+      driversSelected.indexOf(driver) === -1
+        ? theme.typography.fontWeightRegular
+        : theme.typography.fontWeightMedium,
+  };
+};
 let listDistributionsPayload = {
   request: {
     payload: {
@@ -167,7 +176,7 @@ let selectedSummaryRow = {};
 let fileToUpload;
 let toUpload = false;
 let urlToUpload;
-const FinancesTable = (props) => {
+const DistributionsTable = (props) => {
   let typeAlert = 'sizeOverWeightLimit';
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -209,6 +218,7 @@ const FinancesTable = (props) => {
   const [orderBy, setOrderBy] = React.useState('O');
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [distributionName, setDistributionName] = React.useState([]);
+  const [driversSelected, setDriversSelected] = React.useState([]);
 
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
@@ -442,6 +452,9 @@ const FinancesTable = (props) => {
         listDistribution[indexDistributionSelected].movementHeaderId,
       deliveryDistributionId:
         listDistribution[indexDistributionSelected].deliveryDistributionId,
+      driversSelected: driversSelected.map((obj)=>{
+        return `${obj.driverDocumentNumber}`
+      }),
     };
     Router.push({
       pathname: '/sample/referral-guide/get',
@@ -754,6 +767,71 @@ const FinancesTable = (props) => {
 
     return Object.values(acumulador);
   };
+  const filterDeliveriesByDriver = (entregas) => {
+    const acumulador = {};
+
+    entregas.forEach((entrega) => {
+      const conductorKey = `${entrega.driverDocumentType}_${entrega.driverDocumentNumber}`;
+
+      if (!acumulador[conductorKey]) {
+        acumulador[conductorKey] = {
+          driverDocumentType: entrega.driverDocumentType,
+          driverDocumentNumber: entrega.driverDocumentNumber,
+          driverDenomination: entrega.driverDenomination,
+          driverLastName: entrega.driverLastName,
+          carrierPlateNumber: entrega.carrierPlateNumber,
+          points: [
+            {
+              arrivalPointUbigeo: entrega.arrivalPointUbigeo,
+              arrivalPointAddress: entrega.arrivalPointAddress,
+              arrivalInternalCode: entrega.arrivalInternalCode,
+              startingInternalCode: entrega.startingInternalCode,
+              startingPointAddress: entrega.startingPointAddress,
+              startingPointUbigeo: entrega.startingPointUbigeo,
+            },
+          ],
+          productsInfo: [],
+        };
+      }
+
+      entrega.productsInfo.forEach((producto) => {
+        const conductorProducto = acumulador[conductorKey].productsInfo.find(
+          (item) => item.product === producto.product,
+        );
+
+        if (conductorProducto) {
+          conductorProducto.quantityMovement += producto.quantityMovement;
+        } else {
+          acumulador[conductorKey].productsInfo.push({
+            product: producto.product,
+            quantityMovement: producto.quantityMovement,
+            description: producto.description,
+            weight: Number(producto.weight),
+            unitMeasure: producto.unitMeasure,
+          });
+        }
+      });
+
+      const conductorPuntos = acumulador[conductorKey].points.find(
+        (item) =>
+          item.arrivalInternalCode === entrega.arrivalInternalCode &&
+          item.startingInternalCode === entrega.startingInternalCode,
+      );
+
+      if (!conductorPuntos) {
+        acumulador[conductorKey].points.push({
+          arrivalPointUbigeo: entrega.arrivalPointUbigeo,
+          arrivalPointAddress: entrega.arrivalPointAddress,
+          arrivalInternalCode: entrega.arrivalInternalCode,
+          startingInternalCode: entrega.startingInternalCode,
+          startingPointAddress: entrega.startingPointAddress,
+          startingPointUbigeo: entrega.startingPointUbigeo,
+        });
+      }
+    });
+
+    return Object.values(acumulador);
+  };
   const checkSummaryProducts = (row, index) => {
     selectedSummaryRow = row;
     console.log('selectedSummaryRow', selectedSummaryRow);
@@ -997,7 +1075,32 @@ const FinancesTable = (props) => {
       typeof value === 'string' ? value.split(',') : value,
     );
   };
+  const handleChangeDriversSelected = (event) => {
+    console.log("event drivers", event)
+    console.log("driversSelected", driversSelected)
+    console.log("driversDeliveries",acumularProductosPorConductor(listDistribution[indexDistributionSelected].deliveries))
 
+    const {
+      target: { value },
+    } = event;
+    
+    console.log("value", value)
+
+    // Contar la cantidad de veces que aparece cada driverDocumentNumber
+    const countMap = value.reduce((acc, item) => {
+      acc[item.driverDocumentNumber] = (acc[item.driverDocumentNumber] || 0) + 1;
+      return acc;
+    }, {});
+
+    // Filtrar los objetos que aparecen más de una vez
+    const newValueDrivers = value.filter(item => countMap[item.driverDocumentNumber] === 1);
+    console.log("newValueDrivers", newValueDrivers)
+    setDriversSelected(
+      // On autofill we get a stringified value.
+      typeof newValueDrivers === 'string' ? newValueDrivers.split(',') : newValueDrivers,
+    );
+    
+  };
   return (
     <Card sx={{p: 4}}>
       <Stack
@@ -1148,6 +1251,7 @@ const FinancesTable = (props) => {
         </Button>
         <Button
           variant='outlined'
+          color='secondary'
           onClick={handleClickOpen.bind(this, 'collateRecordsAndDistributions')}
         >
           Compaginar actas con distribuciones
@@ -1302,7 +1406,7 @@ const FinancesTable = (props) => {
                 multiple
                 value={distributionName}
                 onChange={handleChangeGuidesAndDistributions}
-                input={<OutlinedInput label="Nameasd" />}
+                input={<OutlinedInput label="Distribuciones" />}
                 renderValue={(selected) => selected.map((item) => item.routeName).join(', ')}
                 MenuProps={MenuProps}
                 key={'SelectCollate'}
@@ -1500,6 +1604,37 @@ const FinancesTable = (props) => {
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
           {'Guía de Remisión Conglomerada'}
         </DialogTitle>
+        <DialogContent>
+          <FormControl sx={{ mt:2, width: '100%' }}>
+            <InputLabel id="selectDriver">Conductores</InputLabel>
+            <Select
+                labelId="multiple-selectDriver-label"
+                id="multiple-selectDriver"
+                multiple
+                value={driversSelected}
+                onChange={handleChangeDriversSelected}
+                input={<OutlinedInput label="Conductores" />}
+                renderValue={(selected) => selected.map((item) => `${item.driverDenomination} | ${item.carrierPlateNumber}`).join(', ')}
+                MenuProps={MenuProps}
+                key={'SelectDrivers'}
+              >
+                {listDistribution && listDistribution[indexDistributionSelected] && Array.isArray(listDistribution[indexDistributionSelected].deliveries) && listDistribution[indexDistributionSelected].deliveries.length > 0 ? (
+                  acumularProductosPorConductor(
+                    listDistribution[indexDistributionSelected].deliveries
+                  ).map((driver, index) => (
+                        <MenuItem
+                          key={driver.driverDocumentNumber}
+                          value={driver}
+                          style={getStyles2(driver, driversSelected, theme)}
+                        >
+                          <Checkbox checked={driversSelected.some(item => item.driverDocumentNumber === driver.driverDocumentNumber)} />
+                          <ListItemText primary={`${driver.driverDenomination} | ${driver.carrierPlateNumber}`} />
+                        </MenuItem>
+                      ))
+                    ) : null}
+              </Select>
+          </FormControl>
+        </DialogContent>
         {listDistribution &&
         listDistribution.length > 0 &&
         listDistribution[indexDistributionSelected] &&
@@ -2112,4 +2247,4 @@ const FinancesTable = (props) => {
   );
 };
 
-export default FinancesTable;
+export default DistributionsTable;

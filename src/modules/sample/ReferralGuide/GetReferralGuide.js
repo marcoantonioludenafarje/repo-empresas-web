@@ -601,27 +601,29 @@ const GetReferralGuide = (props) => {
         let numberOfPackages = 0;
 
         entregas.forEach((entrega) => {
-          numberOfPackages += Number(entrega.numberOfPackages);
-          console.log('entrega2', entrega);
-          entrega.productsInfo.forEach((producto) => {
-            const productoKey = producto.product;
-            totalWeightSummary +=
-              Number(producto.weight) * producto.quantityMovement;
-            if (!acumulador[productoKey]) {
-              acumulador[productoKey] = {
-                product: producto.product,
-                count: producto.quantityMovement,
-                description: producto.description,
-                weight: Number(producto.weight),
-                unitMeasure: producto.unitMeasure,
-                quantityMovement: producto.quantityMovement,
-              };
-            } else {
-              acumulador[productoKey].count += producto.quantityMovement;
-              acumulador[productoKey].quantityMovement +=
-                producto.quantityMovement;
-            }
-          });
+          if(!query.driversSelected || query.driversSelected.some(item => item === entrega.driverDocumentNumber)){
+            numberOfPackages += Number(entrega.numberOfPackages);
+            console.log('entrega2', entrega);
+            entrega.productsInfo.forEach((producto) => {
+              const productoKey = producto.product;
+              totalWeightSummary +=
+                Number(producto.weight) * producto.quantityMovement;
+              if (!acumulador[productoKey]) {
+                acumulador[productoKey] = {
+                  product: producto.product,
+                  count: producto.quantityMovement,
+                  description: producto.description,
+                  weight: Number(producto.weight),
+                  unitMeasure: producto.unitMeasure,
+                  quantityMovement: producto.quantityMovement,
+                };
+              } else {
+                acumulador[productoKey].count += producto.quantityMovement;
+                acumulador[productoKey].quantityMovement +=
+                  producto.quantityMovement;
+              }
+            });
+          }
         });
         return {
           items: Object.values(acumulador),
