@@ -194,11 +194,13 @@ const PredefinedRoutes = () => {
   const {query} = router;
   console.log('query', query);
   const [downloadExcel, setDownloadExcel] = React.useState(false);
-  const [downloadSheetsDispatch, setDownloadSheetsDispatch] = React.useState(false);
+  const [downloadSheetsDispatch, setDownloadSheetsDispatch] =
+    React.useState(false);
   const [openSummaryGuide, setOpenSummaryGuide] = React.useState(false);
-  const [openSheetsDispatch,setOpenSheetsDispatch] = React.useState(false);
-  const [disabledGeneratedSheets,setDisabledGeneratedSheets] = React.useState(false);
-  
+  const [openSheetsDispatch, setOpenSheetsDispatch] = React.useState(false);
+  const [disabledGeneratedSheets, setDisabledGeneratedSheets] =
+    React.useState(false);
+
   const {
     predefinedRoutes_PageListPredefinedRoutes,
     lastEvaluatedKeys_PageListPredefinedRoutes,
@@ -276,7 +278,7 @@ const PredefinedRoutes = () => {
   };
   const toExportSheetsDispatchFile = (payload) => {
     dispatch(exportExcelSheetsDispatchFile(payload));
-  };  
+  };
 
   const [typeFileRecords, setTypeFileRecords] = React.useState('');
   const [nameFileRecords, setNameFileRecords] = React.useState('');
@@ -737,7 +739,6 @@ const PredefinedRoutes = () => {
     setDownloadExcel(true);
   };
 
-
   useEffect(() => {
     if (downloadSheetsDispatchFileRes && downloadSheetsDispatch) {
       setDownloadSheetsDispatch(false);
@@ -764,8 +765,10 @@ const PredefinedRoutes = () => {
     let listPayload = {
       request: {
         payload: {
-          denominationMerchant: userDataRes.merchantSelected.denominationMerchant,
-          numberDocumentMerchant: userDataRes.merchantSelected.numberDocumentMerchant,
+          denominationMerchant:
+            userDataRes.merchantSelected.denominationMerchant,
+          numberDocumentMerchant:
+            userDataRes.merchantSelected.numberDocumentMerchant,
           merchantId: userDataRes.merchantSelected.merchantId,
           routePredefinedId: selectedRoute.routePredefinedId,
           caes: base64.split('base64,')[1],
@@ -788,8 +791,7 @@ const PredefinedRoutes = () => {
 
   const openSheetsDispatchEvent = () => {
     setOpenSheetsDispatch(true);
-  }
-
+  };
 
   const handleCloseSheetsDispatch = () => {
     setOpenSheetsDispatch(false);
@@ -1080,7 +1082,11 @@ const PredefinedRoutes = () => {
               {'Generar hojas de despacho'}
             </DialogTitle>
             <DialogContent sx={{justifyContent: 'center'}}>
-              <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
+              <Stack
+                sx={{mt: 2}}
+                direction={'column'}
+                className={classes.stack}
+              >
                 <Button variant='contained' color='primary' component='label'>
                   Adjuntar Hojas
                   <input
@@ -1104,16 +1110,16 @@ const PredefinedRoutes = () => {
                   <></>
                 )}
                 {disabledGeneratedSheets ? (
-                    <Typography
-                      component='h3'
-                      sx={{
-                        fontSize: 16,
-                        fontWeight: Fonts.BOLD,
-                        mb: {xs: 3, lg: 4},
-                      }}
-                    >
-                      Espere unos segundos por favor...
-                    </Typography>                    
+                  <Typography
+                    component='h3'
+                    sx={{
+                      fontSize: 16,
+                      fontWeight: Fonts.BOLD,
+                      mb: {xs: 3, lg: 4},
+                    }}
+                  >
+                    Espere unos segundos por favor...
+                  </Typography>
                 ) : (
                   <></>
                 )}
@@ -1370,6 +1376,9 @@ const PredefinedRoutes = () => {
                                                   Descripción
                                                 </TableCell>
                                                 <TableCell>Cantidad</TableCell>
+                                                <TableCell>
+                                                  Cantidad x Empaque
+                                                </TableCell>
                                               </TableRow>
                                             </TableHead>
                                             <TableBody>
@@ -1394,6 +1403,11 @@ const PredefinedRoutes = () => {
                                                           <TableCell>
                                                             {
                                                               product.quantityMovement
+                                                            }
+                                                          </TableCell>
+                                                          <TableCell>
+                                                            {
+                                                              product.sumQuantity
                                                             }
                                                           </TableCell>
                                                         </TableRow>
@@ -1489,7 +1503,6 @@ const PredefinedRoutes = () => {
                 >
                   <ExcelIcon />
                 </IconButton>
-
               </Stack>
 
               <IconButton
@@ -1573,6 +1586,9 @@ const PredefinedRoutes = () => {
                                           <TableCell>Descripción</TableCell>
                                           <TableCell>Cantidad</TableCell>
                                           <TableCell>Peso Unitario</TableCell>
+                                          <TableCell>
+                                            Cantidad x Empaque
+                                          </TableCell>
                                         </TableRow>
                                       </TableHead>
                                       <TableBody>
@@ -1598,6 +1614,9 @@ const PredefinedRoutes = () => {
                                                     </TableCell>
                                                     <TableCell>
                                                       {product.weight}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                      {product.sumQuantity || 0}
                                                     </TableCell>
                                                   </TableRow>
                                                 );

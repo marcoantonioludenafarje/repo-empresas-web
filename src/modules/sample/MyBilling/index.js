@@ -259,10 +259,20 @@ const MyBilling = (props) => {
       dispatch({type: GET_CURRENT_MOVEMENTS_DOCUMENTS, payload: undefined});
       let today = new Date();
       const currentMonth = today.getMonth() + 1;
-      const finalOperationDate = new Date(userDataRes.merchantSelected.plans.find(obj => obj.active == true).finishAt);
-      const finalOperationDay = finalOperationDate.getDate()
-      const initialTime = new Date(`${year}-${currentMonth}-${finalOperationDay}`).getTime()
-      const finalTime =  new Date(`${currentMonth == 12 ? (Number(year) + 1) : year}-${currentMonth == 12 ? 1 : (currentMonth+1)}-${finalOperationDay}`).getTime()
+      const finalOperationDate = new Date(
+        userDataRes.merchantSelected.plans.find(
+          (obj) => obj.active == true,
+        ).finishAt,
+      );
+      const finalOperationDay = finalOperationDate.getDate();
+      const initialTime = new Date(
+        `${year}-${currentMonth}-${finalOperationDay}`,
+      ).getTime();
+      const finalTime = new Date(
+        `${currentMonth == 12 ? Number(year) + 1 : year}-${
+          currentMonth == 12 ? 1 : currentMonth + 1
+        }-${finalOperationDay}`,
+      ).getTime();
       const toGetCurrentMovementsDocumentsBusinessPayload = {
         request: {
           payload: {
@@ -302,7 +312,8 @@ const MyBilling = (props) => {
         (element) => element.abreParametro == 'CURRENT_COUNT_MOVEMENT',
       ).sunatDocuments;
       if (userDataRes.merchantSelected.isBillingEnabled) {
-        actualDocumentsParam = actualDocumentsParam[`${year}`][`${month}`].quantity
+        actualDocumentsParam =
+          actualDocumentsParam[`${year}`][`${month}`].quantity;
       }
 
       setActualDocuments(actualDocumentsParam);

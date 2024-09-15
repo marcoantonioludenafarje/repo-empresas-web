@@ -588,14 +588,14 @@ const Distribution = (props) => {
           }
         })
         .filter((obj) => {
-          if(obj){
-            if(obj.quantity > 0){
-              return obj
+          if (obj) {
+            if (obj.quantity > 0) {
+              return obj;
             }
           } else {
             msjError =
               msjError +
-              "Existen productos con guión( - ) en sus alias. Removerlos. Si no fuese el caso entonces hay cantidades no señaladas, al menos establecer valor 0, no se permite vacío";
+              'Existen productos con guión( - ) en sus alias. Removerlos. Si no fuese el caso entonces hay cantidades no señaladas, al menos establecer valor 0, no se permite vacío';
           }
         });
 
@@ -1468,6 +1468,7 @@ const Distribution = (props) => {
                                       <TableCell>Descripción</TableCell>
                                       <TableCell>Cantidad</TableCell>
                                       <TableCell>Peso Unitario</TableCell>
+                                      <TableCell>Cantidad x Empaque</TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
@@ -1491,6 +1492,9 @@ const Distribution = (props) => {
                                               </TableCell>
                                               <TableCell>
                                                 {product.weight}
+                                              </TableCell>
+                                              <TableCell>
+                                                {product.sumQuantity || 0}
                                               </TableCell>
                                             </TableRow>
                                           );

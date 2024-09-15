@@ -35,7 +35,7 @@ import {
   Radio,
   OutlinedInput,
   ListItemText,
-  Checkbox
+  Checkbox,
 } from '@mui/material';
 
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -78,13 +78,15 @@ import {
   excelSummaryRoutesRes,
 } from '../../../redux/actions/Movements';
 import {
-  generatePresigned, 
-  uploadFile, collateRecordsAndGuides} from '../../../redux/actions/FileExplorer';
+  generatePresigned,
+  uploadFile,
+  collateRecordsAndGuides,
+} from '../../../redux/actions/FileExplorer';
 import {useDispatch, useSelector} from 'react-redux';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
 import {getYear, justDate, showSubtypeMovement} from '../../../Utils/utils';
 import {makeStyles} from '@mui/styles';
-import { driver } from 'localforage';
+import {driver} from 'localforage';
 const useStyles = makeStyles((theme) => ({
   container: {
     textAlign: 'center',
@@ -186,9 +188,11 @@ const DistributionsTable = (props) => {
   const [openSummaryGuide, setOpenSummaryGuide] = React.useState(false);
   const [openCollateRecordsAndGuides, setOpenCollateRecordsAndGuides] =
     React.useState(false);
-    
-  const [openCollateRecordsAndDistributions, setOpenCollateRecordsAndDistributions] =
-    React.useState(false);
+
+  const [
+    openCollateRecordsAndDistributions,
+    setOpenCollateRecordsAndDistributions,
+  ] = React.useState(false);
   //const [openMenu, setOpenMenu] = React.useState(false);
   const [openRoutes, setOpenRoutes] = React.useState(false);
   const [openProducts, setOpenProducts] = React.useState(false);
@@ -408,7 +412,6 @@ const DistributionsTable = (props) => {
         console.log('Se reutilizara el metodo');
       }
       setOpenSummaryGuide(true);
-      
     } else if (type == 'collateRecordsAndDistributions') {
       console.log('Selected Distribution', selectedDistribution);
       setTypeDialog(type);
@@ -452,8 +455,8 @@ const DistributionsTable = (props) => {
         listDistribution[indexDistributionSelected].movementHeaderId,
       deliveryDistributionId:
         listDistribution[indexDistributionSelected].deliveryDistributionId,
-      driversSelected: driversSelected.map((obj)=>{
-        return `${obj.driverDocumentNumber}`
+      driversSelected: driversSelected.map((obj) => {
+        return `${obj.driverDocumentNumber}`;
       }),
     };
     Router.push({
@@ -487,17 +490,19 @@ const DistributionsTable = (props) => {
         toCollateRecordsAndGuides({
           request: {
             payload: {
-              deliveryDistributionId: listDistribution[indexDistributionSelected].deliveryDistributionId,
-              distributions: [`${listDistribution[indexDistributionSelected].deliveryDistributionId}`],
+              deliveryDistributionId:
+                listDistribution[indexDistributionSelected]
+                  .deliveryDistributionId,
+              distributions: [
+                `${listDistribution[indexDistributionSelected].deliveryDistributionId}`,
+              ],
               pathActas: `private/merchant/${listDistribution[indexDistributionSelected].merchantId}/distributions/${listDistribution[indexDistributionSelected].routeName}-${listDistribution[indexDistributionSelected].deliveryDistributionId}/${fileToUpload.name}`,
               randomNumber: random,
               orderBy: orderBy,
             },
           },
         });
-       }, 60000); // 15000 milisegundos = 15 segundos
-      
-      
+      }, 60000); // 15000 milisegundos = 15 segundos
     }
     setOpenCollateRecordsAndGuides(false);
     setOpenEndCollate(true);
@@ -518,17 +523,18 @@ const DistributionsTable = (props) => {
         toCollateRecordsAndGuides({
           request: {
             payload: {
-              deliveryDistributionId: distributionName[0].deliveryDistributionId,
-              distributions: distributionName.map(obj=>obj.deliveryDistributionId),
+              deliveryDistributionId:
+                distributionName[0].deliveryDistributionId,
+              distributions: distributionName.map(
+                (obj) => obj.deliveryDistributionId,
+              ),
               pathActas: `private/merchant/${distributionName[0].merchantId}/distributions/${distributionName[0].routeName}-${distributionName[0].deliveryDistributionId}/${fileToUpload.name}`,
               randomNumber: random,
               orderBy: orderBy,
             },
           },
         });
-       }, 60000); // 15000 milisegundos = 15 segundos
-      
-      
+      }, 60000); // 15000 milisegundos = 15 segundos
     }
     setOpenCollateRecordsAndDistributions(false);
     setOpenEndCollate2(true);
@@ -883,11 +889,11 @@ const DistributionsTable = (props) => {
         .split('.')
         .slice(0, -1)
         .join('.');
-      generatePresignedPayload.request.payload.path = listDistribution[indexDistributionSelected]
-      .folderMovement
-      ? listDistribution[indexDistributionSelected]
-          .folderMovement
-      : `distributions/${listDistribution[indexDistributionSelected].routeName}-${listDistribution[indexDistributionSelected].deliveryDistributionId}`;
+      generatePresignedPayload.request.payload.path = listDistribution[
+        indexDistributionSelected
+      ].folderMovement
+        ? listDistribution[indexDistributionSelected].folderMovement
+        : `distributions/${listDistribution[indexDistributionSelected].routeName}-${listDistribution[indexDistributionSelected].deliveryDistributionId}`;
       generatePresignedPayload.request.payload.contentType = fileToUpload.type;
       getBase64(fileToUpload);
       setTypeFileRecords(fileToUpload.type);
@@ -896,7 +902,7 @@ const DistributionsTable = (props) => {
       setTimeout(() => {
         toUpload = true;
       }, 1000);
-      
+
       /* setOpenStatus(true); */
     } else {
       event = null;
@@ -929,10 +935,9 @@ const DistributionsTable = (props) => {
         .slice(0, -1)
         .join('.');
       generatePresignedPayload.request.payload.path = distributionName[0]
-      .folderMovement
-      ? distributionName[0]
-          .folderMovement
-      : `distributions/${distributionName[0].routeName}-${distributionName[0].deliveryDistributionId}`;
+        .folderMovement
+        ? distributionName[0].folderMovement
+        : `distributions/${distributionName[0].routeName}-${distributionName[0].deliveryDistributionId}`;
       generatePresignedPayload.request.payload.contentType = fileToUpload.type;
       getBase64(fileToUpload);
       setTypeFileRecords(fileToUpload.type);
@@ -1066,9 +1071,9 @@ const DistributionsTable = (props) => {
   };
 
   const handleChangeGuidesAndDistributions = (event) => {
-    console.log("event guides", event)
+    console.log('event guides', event);
     const {
-      target: { value },
+      target: {value},
     } = event;
     setDistributionName(
       // On autofill we get a stringified value.
@@ -1076,30 +1081,39 @@ const DistributionsTable = (props) => {
     );
   };
   const handleChangeDriversSelected = (event) => {
-    console.log("event drivers", event)
-    console.log("driversSelected", driversSelected)
-    console.log("driversDeliveries",acumularProductosPorConductor(listDistribution[indexDistributionSelected].deliveries))
+    console.log('event drivers', event);
+    console.log('driversSelected', driversSelected);
+    console.log(
+      'driversDeliveries',
+      acumularProductosPorConductor(
+        listDistribution[indexDistributionSelected].deliveries,
+      ),
+    );
 
     const {
-      target: { value },
+      target: {value},
     } = event;
-    
-    console.log("value", value)
+
+    console.log('value', value);
 
     // Contar la cantidad de veces que aparece cada driverDocumentNumber
     const countMap = value.reduce((acc, item) => {
-      acc[item.driverDocumentNumber] = (acc[item.driverDocumentNumber] || 0) + 1;
+      acc[item.driverDocumentNumber] =
+        (acc[item.driverDocumentNumber] || 0) + 1;
       return acc;
     }, {});
 
     // Filtrar los objetos que aparecen más de una vez
-    const newValueDrivers = value.filter(item => countMap[item.driverDocumentNumber] === 1);
-    console.log("newValueDrivers", newValueDrivers)
+    const newValueDrivers = value.filter(
+      (item) => countMap[item.driverDocumentNumber] === 1,
+    );
+    console.log('newValueDrivers', newValueDrivers);
     setDriversSelected(
       // On autofill we get a stringified value.
-      typeof newValueDrivers === 'string' ? newValueDrivers.split(',') : newValueDrivers,
+      typeof newValueDrivers === 'string'
+        ? newValueDrivers.split(',')
+        : newValueDrivers,
     );
-    
   };
   return (
     <Card sx={{p: 4}}>
@@ -1297,7 +1311,7 @@ const DistributionsTable = (props) => {
         </DialogTitle>
         <DialogContent sx={{justifyContent: 'center'}}>
           <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
-          <FormLabel component='legend'>Ordenar por:</FormLabel>
+            <FormLabel component='legend'>Ordenar por:</FormLabel>
             <RadioGroup
               aria-label='gender'
               defaultValue='O'
@@ -1305,8 +1319,16 @@ const DistributionsTable = (props) => {
               onChange={handleChangeOrderBy}
               name='radio-buttons-group'
             >
-              <FormControlLabel value='O' control={<Radio />} label='Mantener orden original' />
-              <FormControlLabel value='G' control={<Radio />} label='Por número de guía' />
+              <FormControlLabel
+                value='O'
+                control={<Radio />}
+                label='Mantener orden original'
+              />
+              <FormControlLabel
+                value='G'
+                control={<Radio />}
+                label='Por número de guía'
+              />
             </RadioGroup>
           </Stack>
           <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
@@ -1362,9 +1384,9 @@ const DistributionsTable = (props) => {
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button
             disabled={
-              (listDistribution &&
+              listDistribution &&
               listDistribution[indexDistributionSelected] &&
-              listDistribution[indexDistributionSelected].deliveries == 0)
+              listDistribution[indexDistributionSelected].deliveries == 0
             }
             variant='outlined'
             onClick={sendCollate}
@@ -1384,8 +1406,8 @@ const DistributionsTable = (props) => {
           {'Compaginar Guías y Distribuciones'}
         </DialogTitle>
         <DialogContent sx={{justifyContent: 'center'}}>
-        <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
-          <FormLabel component='legend'>Ordenar por:</FormLabel>
+          <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
+            <FormLabel component='legend'>Ordenar por:</FormLabel>
             <RadioGroup
               aria-label='gender'
               defaultValue='O'
@@ -1393,37 +1415,54 @@ const DistributionsTable = (props) => {
               onChange={handleChangeOrderBy}
               name='radio-buttons-group'
             >
-              <FormControlLabel value='O' control={<Radio />} label='Mantener orden original' />
-              <FormControlLabel value='G' control={<Radio />} label='Por número de guía' />
+              <FormControlLabel
+                value='O'
+                control={<Radio />}
+                label='Mantener orden original'
+              />
+              <FormControlLabel
+                value='G'
+                control={<Radio />}
+                label='Por número de guía'
+              />
             </RadioGroup>
           </Stack>
           <Stack sx={{mt: 2}} direction={'column'} className={classes.stack}>
-            <FormControl sx={{ m: 1, width: 300 }}>
-              <InputLabel id="demo-multiple-checkbox-label">Distribuciones</InputLabel>
+            <FormControl sx={{m: 1, width: 300}}>
+              <InputLabel id='demo-multiple-checkbox-label'>
+                Distribuciones
+              </InputLabel>
               <Select
-                labelId="demo-multiple-name-label"
-                id="demo-multiple-name"
+                labelId='demo-multiple-name-label'
+                id='demo-multiple-name'
                 multiple
                 value={distributionName}
                 onChange={handleChangeGuidesAndDistributions}
-                input={<OutlinedInput label="Distribuciones" />}
-                renderValue={(selected) => selected.map((item) => item.routeName).join(', ')}
+                input={<OutlinedInput label='Distribuciones' />}
+                renderValue={(selected) =>
+                  selected.map((item) => item.routeName).join(', ')
+                }
                 MenuProps={MenuProps}
                 key={'SelectCollate'}
               >
-                {listDistribution && Array.isArray(listDistribution) ? (
-                  listDistribution.map((distrib, index) => (
-                        <MenuItem
-                          
-                          key={distrib.deliveryDistributionId}
-                          value={distrib}
-                          style={getStyles(distrib, distributionName, theme)}
-                        >
-                          <Checkbox checked={distributionName.some(item => item.deliveryDistributionId === distrib.deliveryDistributionId)} />
-                          <ListItemText primary={distrib.routeName} />
-                        </MenuItem>
-                      ))
-                    ) : null}
+                {listDistribution && Array.isArray(listDistribution)
+                  ? listDistribution.map((distrib, index) => (
+                      <MenuItem
+                        key={distrib.deliveryDistributionId}
+                        value={distrib}
+                        style={getStyles(distrib, distributionName, theme)}
+                      >
+                        <Checkbox
+                          checked={distributionName.some(
+                            (item) =>
+                              item.deliveryDistributionId ===
+                              distrib.deliveryDistributionId,
+                          )}
+                        />
+                        <ListItemText primary={distrib.routeName} />
+                      </MenuItem>
+                    ))
+                  : null}
               </Select>
             </FormControl>
           </Stack>
@@ -1480,9 +1519,9 @@ const DistributionsTable = (props) => {
         <DialogActions sx={{justifyContent: 'center'}}>
           <Button
             disabled={
-              (listDistribution &&
+              listDistribution &&
               listDistribution[indexDistributionSelected] &&
-              listDistribution[indexDistributionSelected].deliveries == 0)
+              listDistribution[indexDistributionSelected].deliveries == 0
             }
             variant='outlined'
             onClick={sendCollate2}
@@ -1499,9 +1538,7 @@ const DistributionsTable = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {
-            `El PDF se guardará en los Archivos de la distribución en dos minutos con el nombre ActasConsolidado-${randomNumber}.pdf.`
-          }
+          {`El PDF se guardará en los Archivos de la distribución en dos minutos con el nombre ActasConsolidado-${randomNumber}.pdf.`}
         </DialogTitle>
 
         <DialogContent>
@@ -1528,10 +1565,8 @@ const DistributionsTable = (props) => {
               // }
               onClick={() =>
                 goToFiles(
-                  listDistribution[indexDistributionSelected]
-                    .folderMovement
-                    ? listDistribution[indexDistributionSelected]
-                        .folderMovement
+                  listDistribution[indexDistributionSelected].folderMovement
+                    ? listDistribution[indexDistributionSelected].folderMovement
                     : `distributions/${listDistribution[indexDistributionSelected].routeName}-${listDistribution[indexDistributionSelected].deliveryDistributionId}`,
                 )
               }
@@ -1555,9 +1590,7 @@ const DistributionsTable = (props) => {
         aria-describedby='alert-dialog-description'
       >
         <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
-          {
-            `El PDF se guardará en los Archivos de la distribución en dos minutos con el nombre ActasConsolidado-${randomNumber}.pdf.`
-          }
+          {`El PDF se guardará en los Archivos de la distribución en dos minutos con el nombre ActasConsolidado-${randomNumber}.pdf.`}
         </DialogTitle>
 
         <DialogContent>
@@ -1575,10 +1608,8 @@ const DistributionsTable = (props) => {
               sx={{mt: 2}}
               onClick={() =>
                 goToFiles(
-                  distributionName[0]
-                    .folderMovement
-                    ? distributionName[0]
-                        .folderMovement
+                  distributionName[0].folderMovement
+                    ? distributionName[0].folderMovement
                     : `distributions/${distributionName[0].routeName}-${distributionName[0].deliveryDistributionId}`,
                 )
               }
@@ -1605,34 +1636,54 @@ const DistributionsTable = (props) => {
           {'Guía de Remisión Conglomerada'}
         </DialogTitle>
         <DialogContent>
-          <FormControl sx={{ mt:2, width: '100%' }}>
-            <InputLabel id="selectDriver">Conductores</InputLabel>
+          <FormControl sx={{mt: 2, width: '100%'}}>
+            <InputLabel id='selectDriver'>Conductores</InputLabel>
             <Select
-                labelId="multiple-selectDriver-label"
-                id="multiple-selectDriver"
-                multiple
-                value={driversSelected}
-                onChange={handleChangeDriversSelected}
-                input={<OutlinedInput label="Conductores" />}
-                renderValue={(selected) => selected.map((item) => `${item.driverDenomination} | ${item.carrierPlateNumber}`).join(', ')}
-                MenuProps={MenuProps}
-                key={'SelectDrivers'}
-              >
-                {listDistribution && listDistribution[indexDistributionSelected] && Array.isArray(listDistribution[indexDistributionSelected].deliveries) && listDistribution[indexDistributionSelected].deliveries.length > 0 ? (
-                  acumularProductosPorConductor(
-                    listDistribution[indexDistributionSelected].deliveries
+              labelId='multiple-selectDriver-label'
+              id='multiple-selectDriver'
+              multiple
+              value={driversSelected}
+              onChange={handleChangeDriversSelected}
+              input={<OutlinedInput label='Conductores' />}
+              renderValue={(selected) =>
+                selected
+                  .map(
+                    (item) =>
+                      `${item.driverDenomination} | ${item.carrierPlateNumber}`,
+                  )
+                  .join(', ')
+              }
+              MenuProps={MenuProps}
+              key={'SelectDrivers'}
+            >
+              {listDistribution &&
+              listDistribution[indexDistributionSelected] &&
+              Array.isArray(
+                listDistribution[indexDistributionSelected].deliveries,
+              ) &&
+              listDistribution[indexDistributionSelected].deliveries.length > 0
+                ? acumularProductosPorConductor(
+                    listDistribution[indexDistributionSelected].deliveries,
                   ).map((driver, index) => (
-                        <MenuItem
-                          key={driver.driverDocumentNumber}
-                          value={driver}
-                          style={getStyles2(driver, driversSelected, theme)}
-                        >
-                          <Checkbox checked={driversSelected.some(item => item.driverDocumentNumber === driver.driverDocumentNumber)} />
-                          <ListItemText primary={`${driver.driverDenomination} | ${driver.carrierPlateNumber}`} />
-                        </MenuItem>
-                      ))
-                    ) : null}
-              </Select>
+                    <MenuItem
+                      key={driver.driverDocumentNumber}
+                      value={driver}
+                      style={getStyles2(driver, driversSelected, theme)}
+                    >
+                      <Checkbox
+                        checked={driversSelected.some(
+                          (item) =>
+                            item.driverDocumentNumber ===
+                            driver.driverDocumentNumber,
+                        )}
+                      />
+                      <ListItemText
+                        primary={`${driver.driverDenomination} | ${driver.carrierPlateNumber}`}
+                      />
+                    </MenuItem>
+                  ))
+                : null}
+            </Select>
           </FormControl>
         </DialogContent>
         {listDistribution &&
@@ -1902,6 +1953,9 @@ const DistributionsTable = (props) => {
                                             <TableCell>Código</TableCell>
                                             <TableCell>Descripción</TableCell>
                                             <TableCell>Cantidad</TableCell>
+                                            <TableCell>
+                                              Cantidad x Empaque
+                                            </TableCell>
                                           </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -1925,6 +1979,9 @@ const DistributionsTable = (props) => {
                                                         {
                                                           product.quantityMovement
                                                         }
+                                                      </TableCell>
+                                                      <TableCell>
+                                                        {product.sumQuantity}
                                                       </TableCell>
                                                     </TableRow>
                                                   );
@@ -2108,6 +2165,7 @@ const DistributionsTable = (props) => {
                                       <TableCell>Descripción</TableCell>
                                       <TableCell>Cantidad</TableCell>
                                       <TableCell>Peso Unitario</TableCell>
+                                      <TableCell>Cantidad x Empaque</TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
@@ -2130,6 +2188,9 @@ const DistributionsTable = (props) => {
                                                 </TableCell>
                                                 <TableCell>
                                                   {product.weight}
+                                                </TableCell>
+                                                <TableCell>
+                                                  {product.sumQuantity || 0}
                                                 </TableCell>
                                               </TableRow>
                                             );

@@ -925,6 +925,17 @@ const ProductTable = (arrayObjs, props) => {
               {isNotMobile ? (
                 <TableCell>
                   <TableSortLabel
+                    active={orderBy === 'sumQuantity'}
+                    direction={orderBy === 'sumQuantity' ? order : 'asc'}
+                    onClick={() => handleSort('sumQuantity', 'number')}
+                  >
+                    Cantidad x Empaque
+                  </TableSortLabel>
+                </TableCell>
+              ) : null}
+              {isNotMobile ? (
+                <TableCell>
+                  <TableSortLabel
                     active={orderBy === 'costPriceUnit'}
                     direction={orderBy === 'costPriceUnit' ? order : 'asc'}
                     onClick={() => handleSort('costPriceUnit', 'number')}
@@ -1032,6 +1043,9 @@ const ProductTable = (arrayObjs, props) => {
                       ) : null}
                       {isNotMobile ? (
                         <TableCell>{`${obj.weight} ${weight_unit}`}</TableCell>
+                      ) : null}
+                      {isNotMobile ? (
+                        <TableCell>{`${obj.sumQuantity}`}</TableCell>
                       ) : null}
                       {isNotMobile ? (
                         <TableCell>{`${obj.costPriceUnit.toFixed(

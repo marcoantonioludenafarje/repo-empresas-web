@@ -882,7 +882,7 @@ const Distribution = (props) => {
                     <AppTextField
                       label='Destinatario'
                       name='addressee'
-                      defaultValue={`${"Por determinar"}`}
+                      defaultValue={`${'Por determinar'}`}
                       disabled
                       variant='outlined'
                       sx={{
@@ -1246,6 +1246,7 @@ const Distribution = (props) => {
                                       <TableCell>Descripción</TableCell>
                                       <TableCell>Cantidad</TableCell>
                                       <TableCell>Peso Unitario</TableCell>
+                                      <TableCell>Cantidad x Empaque</TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
@@ -1266,6 +1267,9 @@ const Distribution = (props) => {
                                               </TableCell>
                                               <TableCell>
                                                 {product.weight}
+                                              </TableCell>
+                                              <TableCell>
+                                                {product.sumQuantity || 0}
                                               </TableCell>
                                             </TableRow>
                                           );

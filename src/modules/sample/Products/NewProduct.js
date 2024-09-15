@@ -1166,36 +1166,36 @@ const NewProduct = (props) => {
                             id='secondaryUnitMeasure-label'
                             style={{fontWeight: 200}}
                           >
-                            Unidad de medida secundaria
+                            Unidad de Empaque
                           </InputLabel>
                           <Select
                             defaultValue='ML'
                             name='secondaryUnitMeasure'
                             labelId='secondaryUnitMeasure-label'
-                            label='Unidad de medida secundaria'
+                            label='Unidad de Empaque'
                             onChange={handleFieldSum}
                           >
-                            <MenuItem value='ML' style={{fontWeight: 200}}>
-                              <IntlMessages id='product.secondaryUnitMeasure.ml' />
+                            <MenuItem value='BX' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.bx' />
                             </MenuItem>
-                            <MenuItem value='L' style={{fontWeight: 200}}>
-                              <IntlMessages id='product.secondaryUnitMeasure.l' />
+                            <MenuItem value='PK' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.pk' />
                             </MenuItem>
-                            <MenuItem value='MGR' style={{fontWeight: 200}}>
-                              <IntlMessages id='product.secondaryUnitMeasure.mgr' />
+                            <MenuItem value='SA' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.sa' />
                             </MenuItem>
-                            <MenuItem value='GR' style={{fontWeight: 200}}>
-                              <IntlMessages id='product.secondaryUnitMeasure.gr' />
+                            <MenuItem value='BG' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.bg' />
                             </MenuItem>
-                            <MenuItem value='TM' style={{fontWeight: 200}}>
-                              <IntlMessages id='product.secondaryUnitMeasure.tm' />
+                            <MenuItem value='DZN' style={{fontWeight: 200}}>
+                              <IntlMessages id='product.secondaryUnitMeasure.dzn' />
                             </MenuItem>
                           </Select>
                         </FormControl>
                       </Grid>
                       <Grid item xs={12}>
                         <AppTextField
-                          label={`Cantidad (${secondaryUnitMeasure})`}
+                          label={`Cantidad x Empaque (${secondaryUnitMeasure})`}
                           name='sumQuantity'
                           variant='outlined'
                           sx={{

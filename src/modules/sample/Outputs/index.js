@@ -797,8 +797,8 @@ const OutputsTable = (props) => {
       obj.clientdenomination =
         (obj.client ? obj.numberDocumentClient + ' - ' : '') +
         (obj.client ? obj.client.denomination : obj.clientName);
-      obj.telephone = 
-        (obj.client && obj.client.telephone ? obj.client.telephone : '');
+      obj.telephone =
+        obj.client && obj.client.telephone ? obj.client.telephone : '';
       obj.totalPrice1 = obj.totalPrice ? Number(obj.totalPrice.toFixed(3)) : '';
       obj.totalPriceWithIgv1 = obj.totalPriceWithIgv
         ? Number(obj.totalPriceWithIgv.toFixed(3))
@@ -1903,9 +1903,7 @@ const OutputsTable = (props) => {
                             : obj.clientName)}
                       </TableCell>
                       <TableCell>
-                        {(obj.client.telephone
-                          ? obj.client.telephone
-                            : '')}
+                        {obj.client.telephone ? obj.client.telephone : ''}
                       </TableCell>
                       <TableCell>
                         {/* {obj.descriptionProductsInfo

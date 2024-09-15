@@ -28,7 +28,6 @@ import {
   useMediaQuery,
   IconButton,
   Collapse,
-
 } from '@mui/material';
 import {makeStyles} from '@mui/styles';
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -427,177 +426,218 @@ export default function Views(props) {
           </TableHead>
           <TableBody>
             {filteredBusiness?.map((row, index) => {
-              const sunatLimit = row.plans? row.plans.find((obj) => obj.active == true).limits.transactionalSunatDocuments : 0
-              const currentSunatDocuments = row.currentCountMovement.sunatDocuments ? row.currentCountMovement.sunatDocuments["2024"]["APRIL"].quantity : 0
-              console.log("sunatLimit", sunatLimit);
-              console.log("currentSunatDocuments", currentSunatDocuments)
-              const excessDocuments = sunatLimit && (currentSunatDocuments > sunatLimit) ? currentSunatDocuments - sunatLimit : 0;
-              const dueTimestamp = row.plans.length && row.plans.find((obj) => obj.active == true).finishAt > 0 ? row.plans.find((obj) => obj.active == true).finishAt : 0
-              const dueDate = row.plans.length &&
-              row.plans.find((obj) => obj.active == true).finishAt > 0
-                ? convertToDateWithoutTime(
-                    row.plans.find((obj) => obj.active == true).finishAt,
-                  )
-                : ''
-              console.log("dueTimestamp", dueTimestamp)
-              console.log("DateNow", Date.now())
-              const todayIsMoreThanDueDate = dueTimestamp - Date.now()
-              console.log("todayIsMoreThanDueDate", todayIsMoreThanDueDate)
-              
-              const arraySunatDocuments = [];
-              if(row.currentCountMovement.sunatDocuments && row.currentCountMovement.sunatDocuments["2024"]){
+              const sunatLimit = row.plans
+                ? row.plans.find((obj) => obj.active == true).limits
+                    .transactionalSunatDocuments
+                : 0;
+              const currentSunatDocuments = row.currentCountMovement
+                .sunatDocuments
+                ? row.currentCountMovement.sunatDocuments['2024']['APRIL']
+                    .quantity
+                : 0;
+              console.log('sunatLimit', sunatLimit);
+              console.log('currentSunatDocuments', currentSunatDocuments);
+              const excessDocuments =
+                sunatLimit && currentSunatDocuments > sunatLimit
+                  ? currentSunatDocuments - sunatLimit
+                  : 0;
+              const dueTimestamp =
+                row.plans.length &&
+                row.plans.find((obj) => obj.active == true).finishAt > 0
+                  ? row.plans.find((obj) => obj.active == true).finishAt
+                  : 0;
+              const dueDate =
+                row.plans.length &&
+                row.plans.find((obj) => obj.active == true).finishAt > 0
+                  ? convertToDateWithoutTime(
+                      row.plans.find((obj) => obj.active == true).finishAt,
+                    )
+                  : '';
+              console.log('dueTimestamp', dueTimestamp);
+              console.log('DateNow', Date.now());
+              const todayIsMoreThanDueDate = dueTimestamp - Date.now();
+              console.log('todayIsMoreThanDueDate', todayIsMoreThanDueDate);
 
-                for (const month in row.currentCountMovement.sunatDocuments["2024"]) {
-                  if (row.currentCountMovement.sunatDocuments["2024"].hasOwnProperty(month)) {
+              const arraySunatDocuments = [];
+              if (
+                row.currentCountMovement.sunatDocuments &&
+                row.currentCountMovement.sunatDocuments['2024']
+              ) {
+                for (const month in row.currentCountMovement.sunatDocuments[
+                  '2024'
+                ]) {
+                  if (
+                    row.currentCountMovement.sunatDocuments[
+                      '2024'
+                    ].hasOwnProperty(month)
+                  ) {
                     arraySunatDocuments.push({
                       month: month,
-                      initialTime: row.currentCountMovement.sunatDocuments["2024"][month].initialTime,
-                      finalTime: row.currentCountMovement.sunatDocuments["2024"][month].finalTime,
-                      quantity: row.currentCountMovement.sunatDocuments["2024"][month].quantity
+                      initialTime:
+                        row.currentCountMovement.sunatDocuments['2024'][month]
+                          .initialTime,
+                      finalTime:
+                        row.currentCountMovement.sunatDocuments['2024'][month]
+                          .finalTime,
+                      quantity:
+                        row.currentCountMovement.sunatDocuments['2024'][month]
+                          .quantity,
                     });
                   }
                 }
-                arraySunatDocuments.sort((a, b) => a.initialTime - b.initialTime);
+                arraySunatDocuments.sort(
+                  (a, b) => a.initialTime - b.initialTime,
+                );
               }
-              
+
               console.log(arraySunatDocuments);
-              
-              
+
               // Resultado: [ { dato1: 'asdasd' }, { dato2: '234234' } ]
-              
+
               return (
                 <>
-                <TableRow
-                  key={index}
-                  sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                >
-                  <TableCell
-                    component='th'
-                    scope='row'
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                  <TableRow
+                    key={index}
+                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
                   >
-                    {row.denominationMerchant}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
-                  >
-                    {row.emailAdminUserId}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
-                  >
-                    {row.indactivo == 'S' ? 'SÍ' : 'NO'}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
-                  >
-                    {row.typeMerchant}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
-                  >
-                    {row.plans.length > 0
-                      ? row.plans[row.plans.length - 1].type
-                      : ''}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word', color: todayIsMoreThanDueDate < 0 ? red[500] : defaultConfig}}
-                  >
-                    {dueDate}
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word', color: excessDocuments ? red[500] : defaultConfig}}
-
-                  >
-                    {excessDocuments}
-                  </TableCell>
-                  <TableCell
-                    hover
-                    sx={{
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <IconButton
-                      onClick={() => {
-                        setOpenDetails(false);
-                        setOpenDetails(true);
-                        if (openDetails == true && rowNumber == index) {
-                          setOpenDetails(false);
-                        }
-                        setRowNumber(index);
+                    <TableCell
+                      component='th'
+                      scope='row'
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.denominationMerchant}
+                    </TableCell>
+                    <TableCell
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.emailAdminUserId}
+                    </TableCell>
+                    <TableCell
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.indactivo == 'S' ? 'SÍ' : 'NO'}
+                    </TableCell>
+                    <TableCell
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.typeMerchant}
+                    </TableCell>
+                    <TableCell
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.plans.length > 0
+                        ? row.plans[row.plans.length - 1].type
+                        : ''}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        maxWidth: '200px',
+                        wordWrap: 'break-word',
+                        color:
+                          todayIsMoreThanDueDate < 0 ? red[500] : defaultConfig,
                       }}
-                      size='small'
                     >
-                      <FormatListBulletedIcon fontSize='small' />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell
-                    style={{maxWidth: '200px', wordWrap: 'break-word'}}
-                  >
-                    {row.isBillingEnabled ? 'SÍ' : 'NO'}
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      id='basic-button'
-                      aria-controls={openMenu ? 'basic-menu' : undefined}
-                      aria-haspopup='true'
-                      aria-expanded={openMenu ? 'true' : undefined}
-                      onClick={handleClick.bind(this, index)}
+                      {dueDate}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        maxWidth: '200px',
+                        wordWrap: 'break-word',
+                        color: excessDocuments ? red[500] : defaultConfig,
+                      }}
                     >
-                      <KeyboardArrowDownIcon />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell
-                    style={{paddingBottom: 0, paddingTop: 0}}
-                    colSpan={6}
-                  >
-                    <Collapse
-                      in={openDetails && index == rowNumber}
-                      timeout='auto'
-                      unmountOnExit
+                      {excessDocuments}
+                    </TableCell>
+                    <TableCell
+                      hover
+                      sx={{
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}
                     >
-                      <Box sx={{margin: 0}}>
-                        <Table size='small' aria-label='purchases'>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Mes</TableCell>
-                              <TableCell>Fec Inicio</TableCell>
-                              <TableCell>Fec Fin</TableCell>
-                              <TableCell>Nro comprobantes</TableCell>
-                              <TableCell>Exceso comprobantes</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {arraySunatDocuments.map((monthSunat, index) => {
-                              return (
-                                <TableRow key={index}>
-                                  <TableCell>
-                                    {monthSunat.month}
-                                  </TableCell>
-                                  <TableCell>
-                                    {convertToDateWithoutTime(monthSunat.initialTime)}
-                                  </TableCell>
-                                  <TableCell>
-                                    {convertToDateWithoutTime(monthSunat.finalTime)}
-                                  </TableCell>
-                                  <TableCell>
-                                    {monthSunat.quantity}
-                                  </TableCell>
-                                  <TableCell sx={{color: red[500]}}>
-                                    { sunatLimit && (monthSunat.quantity > sunatLimit) ? monthSunat.quantity - sunatLimit : 0}
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            })}
-                          </TableBody>
-                        </Table>
-                      </Box>
-                    </Collapse>
-                  </TableCell>
-                </TableRow>
+                      <IconButton
+                        onClick={() => {
+                          setOpenDetails(false);
+                          setOpenDetails(true);
+                          if (openDetails == true && rowNumber == index) {
+                            setOpenDetails(false);
+                          }
+                          setRowNumber(index);
+                        }}
+                        size='small'
+                      >
+                        <FormatListBulletedIcon fontSize='small' />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell
+                      style={{maxWidth: '200px', wordWrap: 'break-word'}}
+                    >
+                      {row.isBillingEnabled ? 'SÍ' : 'NO'}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        id='basic-button'
+                        aria-controls={openMenu ? 'basic-menu' : undefined}
+                        aria-haspopup='true'
+                        aria-expanded={openMenu ? 'true' : undefined}
+                        onClick={handleClick.bind(this, index)}
+                      >
+                        <KeyboardArrowDownIcon />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      style={{paddingBottom: 0, paddingTop: 0}}
+                      colSpan={6}
+                    >
+                      <Collapse
+                        in={openDetails && index == rowNumber}
+                        timeout='auto'
+                        unmountOnExit
+                      >
+                        <Box sx={{margin: 0}}>
+                          <Table size='small' aria-label='purchases'>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Mes</TableCell>
+                                <TableCell>Fec Inicio</TableCell>
+                                <TableCell>Fec Fin</TableCell>
+                                <TableCell>Nro comprobantes</TableCell>
+                                <TableCell>Exceso comprobantes</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {arraySunatDocuments.map((monthSunat, index) => {
+                                return (
+                                  <TableRow key={index}>
+                                    <TableCell>{monthSunat.month}</TableCell>
+                                    <TableCell>
+                                      {convertToDateWithoutTime(
+                                        monthSunat.initialTime,
+                                      )}
+                                    </TableCell>
+                                    <TableCell>
+                                      {convertToDateWithoutTime(
+                                        monthSunat.finalTime,
+                                      )}
+                                    </TableCell>
+                                    <TableCell>{monthSunat.quantity}</TableCell>
+                                    <TableCell sx={{color: red[500]}}>
+                                      {sunatLimit &&
+                                      monthSunat.quantity > sunatLimit
+                                        ? monthSunat.quantity - sunatLimit
+                                        : 0}
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
+                            </TableBody>
+                          </Table>
+                        </Box>
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
                 </>
               );
             })}
