@@ -30,6 +30,9 @@ import {
   useMediaQuery,
   TableSortLabel,
   IconButton,
+  Collapse,
+  Alert,
+  Typography,
 } from '@mui/material';
 
 import {SET_JWT_TOKEN} from '../../../shared/constants/ActionTypes';
@@ -49,6 +52,11 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import ManageSearchOutlinedIcon from '@mui/icons-material/ManageSearchOutlined';
+import CloseIcon from '@mui/icons-material/Close';
+import FilePresentIcon from '@mui/icons-material/FilePresent';
+
+import {Fonts} from '../../../shared/constants/AppEnums';
+
 import {red} from '@mui/material/colors';
 
 import {makeStyles} from '@mui/styles';
@@ -66,6 +74,7 @@ import {
   FETCH_ERROR,
   GET_USER_DATA,
   GET_LOCATIONS,
+  UPDATE_LOCATION,
 } from '../../../shared/constants/ActionTypes';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -111,7 +120,9 @@ const useForceUpdate = () => {
   const [reload, setReload] = React.useState(0); // integer state
   return () => setReload((value) => value + 1); // update the state to force render
 };
+let fileToUpload;
 const LocationTable = (arrayObjs, props) => {
+  let typeAlert = 'sizeOverWeightLimit';
   const classes = useStyles(props);
   const history = useHistory();
   const dispatch = useDispatch();
@@ -125,6 +136,8 @@ const LocationTable = (arrayObjs, props) => {
   const [reload, setReload] = React.useState(0); // integer state
   const [openStatus, setOpenStatus] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [openDeleteAllLocations, setOpenDeleteAllLocations] =
+    React.useState(false);
   const [ubigeo, setUbigeo] = React.useState('');
   const [locationName, setLocationName] = React.useState('');
   const [locationCode, setLocationCode] = React.useState('');
@@ -139,7 +152,15 @@ const LocationTable = (arrayObjs, props) => {
   });
   const [orderBy, setOrderBy] = React.useState(''); // Estado para almacenar el campo de ordenación actual
   const [order, setOrder] = React.useState('asc'); // Estado para almacenar la dirección de ordenación
-
+  const [openBulkLoadLocations, setOpenBulkLoadLocations] =
+    React.useState(false);
+  const [typeFileRecords, setTypeFileRecords] = React.useState('');
+  const [nameFileRecords, setNameFileRecords] = React.useState('');
+  const [base64, setBase64] = React.useState('');
+  const [records, setRecords] = React.useState('');
+  const [disabledBulkLoadLocations, setDisabledBulkLoadLocations] =
+    React.useState(false);
+  const [showAlert, setShowAlert] = React.useState(false);
   let popUp = false;
   let codProdSelected = '';
 
@@ -150,10 +171,15 @@ const LocationTable = (arrayObjs, props) => {
   const toDeleteLocation = (payload) => {
     dispatch(deleteLocation(payload));
   };
-
+  const toUpdateLocation = (payload) => {
+    dispatch(updateLocation(payload));
+  };
   //GET APIS RES
-  const {getLocationsRes, locationsLastEvaluatedKey_pageListLocations} =
-    useSelector(({locations}) => locations);
+  const {
+    getLocationsRes,
+    locationsLastEvaluatedKey_pageListLocations,
+    updateLocationRes,
+  } = useSelector(({locations}) => locations);
   console.log('Locations123', getLocationsRes);
   const {deleteLocationRes} = useSelector(({locations}) => locations);
   console.log('deleteLocationRes', deleteLocationRes);
@@ -212,6 +238,61 @@ const LocationTable = (arrayObjs, props) => {
       toGetUserData(getUserDataPayload);
     }
   }, []);
+  useEffect(() => {
+    if (base64) {
+      setRecords({
+        base64: base64,
+        name: nameFileRecords,
+        type: typeFileRecords,
+      });
+    }
+  }, [base64]);
+  useEffect(() => {
+    if (updateLocationRes) {
+      dispatch({type: FETCH_SUCCESS, payload: undefined});
+      dispatch({type: FETCH_ERROR, payload: undefined});
+      console.log('Esto por que no funciona');
+      let listPayload = {
+        request: {
+          payload: {
+            locationName: '',
+            type: '',
+            ubigeo: '',
+            merchantId: '',
+            modularCode: '',
+            LastEvaluatedKey: null,
+            needItems: true,
+          },
+        },
+      };
+      listPayload.request.payload.merchantId =
+        userDataRes.merchantSelected.merchantId;
+
+      toGetLocations(listPayload, jwtToken);
+
+      setDisabledBulkLoadLocations(false);
+    }
+  }, [updateLocationRes]);
+  const bulkLoadLocationsDispatch = () => {
+    let uploadPayload = {
+      request: {
+        payload: {
+          merchantId: userDataRes.merchantSelected.merchantId,
+          type: 'bulk',
+          locations: base64.split('base64,')[1],
+        },
+      },
+    };
+
+    setDisabledBulkLoadLocations(true);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({
+      type: UPDATE_LOCATION,
+      payload: undefined,
+    });
+    toUpdateLocation(uploadPayload);
+  };
   //OPCIONES SPLIT BUTTON
   const handleMenuItemClick = (event, index) => {
     setSelectedIndex(index);
@@ -449,6 +530,60 @@ const LocationTable = (arrayObjs, props) => {
     // Evita que se cierre el diálogo haciendo clic fuera del contenido
     // Puedes agregar condiciones adicionales aquí si deseas una lógica más específica.
   };
+
+  const openBulkLoadLocationsEvent = () => {
+    setOpenBulkLoadLocations(true);
+  };
+  const handleBulkLoadLocationsDispatch = () => {
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({
+      type: UPDATE_LOCATION,
+      payload: undefined,
+    });
+    setOpenBulkLoadLocations(false);
+  };
+  const uploadRecords2 = (event) => {
+    if (event.target.value !== '') {
+      fileToUpload = event.target.files[0];
+      getBase64(fileToUpload);
+      console.log('fileToUpload', fileToUpload);
+      console.log(
+        'nombre de archivo',
+        fileToUpload.name.split('.').slice(0, -1).join('.'),
+      );
+      setTypeFileRecords(fileToUpload.type);
+      setNameFileRecords(fileToUpload.name);
+    } else {
+      event = null;
+      console.log('no se selecciono un archivo');
+    }
+  };
+  const onLoad = (fileString) => {
+    console.log('llega aquí?');
+    setBase64(fileString);
+  };
+
+  const getBase64 = (file) => {
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      onLoad(reader.result);
+    };
+  };
+  const uploadRecords = (event) => {
+    if (event.target.value !== '') {
+      console.log('archivo', event.target.files[0]);
+      var imgsize = event.target.files[0].size;
+      console.log('Cuánto es el filesize', imgsize);
+      if (imgsize > 12000000) {
+        typeAlert = 'sizeOverWeightLimit';
+        setShowAlert(true);
+      } else {
+        uploadRecords2(event);
+      }
+    }
+  };
   const showMessage = () => {
     if (
       successMessage != undefined &&
@@ -465,7 +600,7 @@ const LocationTable = (arrayObjs, props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            Se ha eliminado correctamente
+            Eliminación finalizada
           </DialogContentText>
         </>
       );
@@ -480,7 +615,7 @@ const LocationTable = (arrayObjs, props) => {
             sx={{fontSize: '1.2em', m: 'auto'}}
             id='alert-dialog-description'
           >
-            {deleteLocationRes.error} {errorMessage}
+            {deleteLocationRes.error || ''} {errorMessage}
           </DialogContentText>
         </>
       );
@@ -514,6 +649,10 @@ const LocationTable = (arrayObjs, props) => {
     handleClose();
   };
 
+  const setDeleteAllLocationsState = () => {
+    setOpenDeleteAllLocations(true);
+  };
+
   const confirmDelete = () => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
@@ -527,6 +666,18 @@ const LocationTable = (arrayObjs, props) => {
     setOpenStatus(true);
   };
 
+  const confirmDeleteAll = () => {
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+
+    deletePayload.request.payload.type = 'all';
+    deletePayload.request.payload.merchantId =
+      userDataRes.merchantSelected.merchantId;
+    toDeleteLocation(deletePayload);
+    setOpenDeleteAllLocations(false);
+    setOpenStatus(true);
+  };
+
   const onChangeHandler = (e) => {
     Router.push('/sample/drivers/bulk-load');
   };
@@ -535,6 +686,9 @@ const LocationTable = (arrayObjs, props) => {
     setOpen2(false);
   };
 
+  const handleCloseDeleteAllLocations = () => {
+    setOpenDeleteAllLocations(false);
+  };
   const compare = (a, b) => {
     if (a.createdAt < b.createdAt) {
       return 1;
@@ -801,6 +955,31 @@ const LocationTable = (arrayObjs, props) => {
           </Button>
         ) : null}
 
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/exportLocations/*') === true ? (
+          <Button
+            variant='outlined'
+            startIcon={<GridOnOutlinedIcon />}
+            onClick={openBulkLoadLocationsEvent}
+          >
+            Subir Excel Locaciones
+          </Button>
+        ) : null}
+
+        {localStorage
+          .getItem('pathsBack')
+          .includes('/facturacion/exportLocations/*') === true ? (
+          <Button
+            color='secondary'
+            variant='outlined'
+            startIcon={<DeleteIcon />}
+            onClick={setDeleteAllLocationsState}
+          >
+            Eliminar todo
+          </Button>
+        ) : null}
+
         {!popUp ? <></> : <CircularProgress disableShrink sx={{m: '10px'}} />}
       </ButtonGroup>
 
@@ -825,6 +1004,109 @@ const LocationTable = (arrayObjs, props) => {
           </DialogActions>
         </Dialog>
       </ClickAwayListener>
+      <Dialog
+        open={openBulkLoadLocations}
+        onClose={handleBulkLoadLocationsDispatch}
+        PaperProps={{sx: {textAlign: 'center'}}} // Aplicar textAlign: 'center' al PaperProps
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Actualizar o Registrar Locaciones via Excel'}
+        </DialogTitle>
+        <DialogContent sx={{justifyContent: 'center'}}>
+          <Stack
+            sx={{mt: 2}}
+            direction={'column'}
+            className={classes.stack}
+            alignItems={'center'}
+          >
+            <Button variant='contained' color='primary' component='label'>
+              Adjuntar Locaciones
+              <input
+                type='file'
+                hidden
+                onChange={uploadRecords}
+                id='newFile'
+                name='newfile'
+                accept='.xlsx'
+              />
+            </Button>
+            {records ? (
+              <IconButton onClick={uploadRecords2}>
+                <FilePresentIcon
+                  color='success'
+                  sx={{fontSize: '2em', mx: 2}}
+                />
+                {records.name}
+              </IconButton>
+            ) : (
+              <></>
+            )}
+            {disabledBulkLoadLocations ? (
+              <Typography
+                component='h3'
+                sx={{
+                  fontSize: 16,
+                  fontWeight: Fonts.BOLD,
+                  mb: {xs: 3, lg: 4},
+                }}
+              >
+                Espere unos segundos por favor...
+              </Typography>
+            ) : !disabledBulkLoadLocations && updateLocationRes ? (
+              <>
+                <CheckCircleOutlineOutlinedIcon
+                  color='success'
+                  sx={{
+                    fontSize: {
+                      xs: '2rem', // Tamaño para pantallas pequeñas
+                      sm: '3rem', // Tamaño para pantallas medianas
+                      md: '4rem', // Tamaño para pantallas grandes
+                      lg: '5rem', // Tamaño para pantallas extra grandes
+                    },
+                  }}
+                />
+              </>
+            ) : (
+              <></>
+            )}
+          </Stack>
+          <Collapse in={showAlert}>
+            <Alert
+              severity='error'
+              action={
+                <IconButton
+                  aria-label='close'
+                  color='inherit'
+                  size='small'
+                  onClick={() => {
+                    setShowAlert(false);
+                  }}
+                >
+                  <CloseIcon fontSize='inherit' />
+                </IconButton>
+              }
+              sx={{mb: 2}}
+            >
+              {typeAlert == 'sizeOverWeightLimit' ? (
+                'El archivo supera los 12Mb.'
+              ) : (
+                <></>
+              )}
+            </Alert>
+          </Collapse>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            variant='outlined'
+            onClick={bulkLoadLocationsDispatch}
+            disabled={disabledBulkLoadLocations}
+          >
+            Registrar/Actualizar Locaciones
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Dialog
         open={open2}
         onClose={handleClose2}
@@ -853,10 +1135,39 @@ const LocationTable = (arrayObjs, props) => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={openDeleteAllLocations}
+        onClose={handleCloseDeleteAllLocations}
+        sx={{textAlign: 'center'}}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Eliminar TODAS las Locaciones'}
+        </DialogTitle>
+        <DialogContent sx={{display: 'flex', justifyContent: 'center'}}>
+          <PriorityHighIcon sx={{fontSize: '6em', mx: 2, color: red[500]}} />
+          <DialogContentText
+            sx={{fontSize: '1.2em', m: 'auto'}}
+            id='alert-dialog-description'
+          >
+            ¿Desea eliminar realmente TODAS sus locaciones?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button variant='outlined' onClick={confirmDeleteAll}>
+            Sí
+          </Button>
+          <Button variant='outlined' onClick={handleCloseDeleteAllLocations}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Menu
         anchorEl={anchorEl}
         open={openMenu}
-        onClose={handleClose}
+        onClose={handleCloseDeleteAllLocations}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
