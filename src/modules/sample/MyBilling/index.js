@@ -29,6 +29,8 @@ import {
   Chip,
   LinearProgress,
   Tab,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 
 import IntlMessages from '../../../@crema/utility/IntlMessages';
@@ -115,6 +117,7 @@ const months = {
   November: 'Noviembre',
   December: 'Diciembre',
 };
+const monthsInEnglish = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 function LinearProgressWithLabel(props) {
   return (
     <Box sx={{display: 'flex', alignItems: 'center'}}>
@@ -146,6 +149,8 @@ const rows2 = [createData(0.03, 0.025, 0.02, 0.015, 0.01, 0.005)];
 const MyBilling = (props) => {
   const classes = useStyles(props);
   const dispatch = useDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [open, setOpen] = React.useState(false);
   const [openStatus, setOpenStatus] = React.useState(false);
   const [actualPath, setActualPath] = React.useState('');
@@ -367,7 +372,7 @@ const MyBilling = (props) => {
     <>
       <Card sx={{p: 4}}>
         <Stack
-          direction='row'
+          direction={isMobile ? 'column' : 'row'}
           spacing={2}
           sx={{display: 'flex', alignItems: 'center'}}
         >
@@ -379,10 +384,9 @@ const MyBilling = (props) => {
               mb: {xs: 3, lg: 4},
             }}
           >
-            <IntlMessages id='common.myBilling' /> - Mes:{' '}
-            {months[getActualMonth()]} del {year}
+            <IntlMessages id='common.myBilling' /> del {year}
           </Typography>
-          <FormControl sx={{my: 0, width: 160}}>
+          <FormControl sx={{my: 0}}>
             <InputLabel id='moneda-label' style={{fontWeight: 200}}>
               Mes
             </InputLabel>
@@ -405,13 +409,23 @@ const MyBilling = (props) => {
               defaultValue={getActualMonth().toUpperCase()}
             >
               {Object.keys(months).map((monthName, index) => {
+                const dayForPay = new Date(userDataRes.merchantSelected.plans.find(
+                  (obj) => obj.active == true,
+                ).finishAt).getDate();
+                const nextMonth = monthsInEnglish[index]
+                let monthLabel = `${months[monthName]}`
+                if(index !== 0 && index !== 12){
+                  monthLabel = `${months[monthName]} ${dayForPay} - ${months[nextMonth]} ${dayForPay}`
+                } else if (index == 12) {
+                  monthLabel = `${months[monthName]} ${dayForPay} - ${months["January"]} ${dayForPay}`
+                }
                 return (
                   <MenuItem
                     key={index}
                     value={monthName.toUpperCase()}
                     style={{fontWeight: 200}}
                   >
-                    {months[monthName]}
+                    {monthLabel}
                   </MenuItem>
                 );
               })}
