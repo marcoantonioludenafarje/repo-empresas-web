@@ -117,7 +117,20 @@ const months = {
   November: 'Noviembre',
   December: 'Diciembre',
 };
-const monthsInEnglish = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+const monthsInEnglish = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 function LinearProgressWithLabel(props) {
   return (
     <Box sx={{display: 'flex', alignItems: 'center'}}>
@@ -409,15 +422,17 @@ const MyBilling = (props) => {
               defaultValue={getActualMonth().toUpperCase()}
             >
               {Object.keys(months).map((monthName, index) => {
-                const dayForPay = new Date(userDataRes.merchantSelected.plans.find(
-                  (obj) => obj.active == true,
-                ).finishAt).getDate();
-                const nextMonth = monthsInEnglish[index]
-                let monthLabel = `${months[monthName]}`
-                if(index !== 0 && index !== 12){
-                  monthLabel = `${months[monthName]} ${dayForPay} - ${months[nextMonth]} ${dayForPay}`
+                const dayForPay = new Date(
+                  userDataRes.merchantSelected.plans.find(
+                    (obj) => obj.active == true,
+                  ).finishAt,
+                ).getDate();
+                const nextMonth = monthsInEnglish[index];
+                let monthLabel = `${months[monthName]}`;
+                if (index !== 0 && index !== 12) {
+                  monthLabel = `${months[monthName]} ${dayForPay} - ${months[nextMonth]} ${dayForPay}`;
                 } else if (index == 12) {
-                  monthLabel = `${months[monthName]} ${dayForPay} - ${months["January"]} ${dayForPay}`
+                  monthLabel = `${months[monthName]} ${dayForPay} - ${months['January']} ${dayForPay}`;
                 }
                 return (
                   <MenuItem
