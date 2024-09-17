@@ -344,6 +344,7 @@ const MyBilling = (props) => {
       if (actualDocumentsParam > availableDocumentsData) {
         setProgressDocument(100);
         aditionalMonthPrice = actualDocumentsParam - availableDocumentsData;
+        console.log('precio adicional sin multiplicador', aditionalMonthPrice);
       } else {
         const progress = actualDocumentsParam / availableDocumentsData;
 
@@ -359,8 +360,8 @@ const MyBilling = (props) => {
 
       setAditionalDocuments(aditionalMonthPrice);
       if (aditionalMonthPrice >= 0 && aditionalMonthPrice <= 1000) {
-        aditionalMonthPrice = aditionalMonthPrice * 0.04;
-      } else if (aditionalMonthPrice > 1001 && aditionalMonthPrice <= 1000) {
+        aditionalMonthPrice = aditionalMonthPrice * 0.035;
+      } else if (aditionalMonthPrice > 1001 && aditionalMonthPrice <= 5000) {
         aditionalMonthPrice = aditionalMonthPrice * 0.03;
       } else if (aditionalMonthPrice > 5001 && aditionalMonthPrice <= 10000) {
         aditionalMonthPrice = aditionalMonthPrice * 0.025;
@@ -371,8 +372,10 @@ const MyBilling = (props) => {
       } else if (aditionalMonthPrice > 100001) {
         aditionalMonthPrice = aditionalMonthPrice * 0.01;
       }
-      setAditionalMonthPrice(`S/${aditionalMonthPrice}.00`);
-      setTotalPrice(`S/${aditionalMonthPrice + monthPriceStart}.00`);
+      setAditionalMonthPrice(`S/${aditionalMonthPrice.toFixed(0)}.00`);
+      setTotalPrice(
+        `S/${Number(aditionalMonthPrice.toFixed(0)) + monthPriceStart}.00`,
+      );
       console.log(
         'Por que no me quiere',
         userDataRes.merchantSelected.businessDebt,
