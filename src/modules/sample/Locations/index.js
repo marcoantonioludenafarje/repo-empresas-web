@@ -168,11 +168,11 @@ const LocationTable = (arrayObjs, props) => {
   const toGetLocations = (payload, jwtToken) => {
     dispatch(getLocations(payload, jwtToken));
   };
-  const toDeleteLocation = (payload) => {
-    dispatch(deleteLocation(payload));
+  const toDeleteLocation = (payload, jwtToken) => {
+    dispatch(deleteLocation(payload, jwtToken));
   };
-  const toUpdateLocation = (payload) => {
-    dispatch(updateLocation(payload));
+  const toUpdateLocation = (payload, jwtToken) => {
+    dispatch(updateLocation(payload, jwtToken));
   };
   //GET APIS RES
   const {
@@ -291,7 +291,7 @@ const LocationTable = (arrayObjs, props) => {
       type: UPDATE_LOCATION,
       payload: undefined,
     });
-    toUpdateLocation(uploadPayload);
+    toUpdateLocation(uploadPayload, jwtToken);
   };
   //OPCIONES SPLIT BUTTON
   const handleMenuItemClick = (event, index) => {
@@ -605,8 +605,8 @@ const LocationTable = (arrayObjs, props) => {
         </>
       );
     } else if (
-      (deleteLocationRes && deleteLocationRes.error) ||
-      errorMessage != undefined
+      (deleteLocationRes) && (deleteLocationRes.error ||
+      errorMessage != undefined)
     ) {
       return (
         <>
@@ -661,7 +661,7 @@ const LocationTable = (arrayObjs, props) => {
       selectedLocation.modularCode + '-' + selectedLocation.locationName;
     deletePayload.request.payload.type = selectedLocation.type;
     deletePayload.request.payload.merchantId = selectedLocation.merchantId;
-    toDeleteLocation(deletePayload);
+    toDeleteLocation(deletePayload, jwtToken);
     setOpen2(false);
     setOpenStatus(true);
   };
@@ -673,7 +673,7 @@ const LocationTable = (arrayObjs, props) => {
     deletePayload.request.payload.type = 'all';
     deletePayload.request.payload.merchantId =
       userDataRes.merchantSelected.merchantId;
-    toDeleteLocation(deletePayload);
+    toDeleteLocation(deletePayload, jwtToken);
     setOpenDeleteAllLocations(false);
     setOpenStatus(true);
   };

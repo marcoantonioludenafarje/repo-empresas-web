@@ -119,8 +119,8 @@ const NewLocation = () => {
   };
 
   //APIS
-  const toNewLocation = (payload) => {
-    dispatch(newLocation(payload));
+  const toNewLocation = (payload, jwtToken) => {
+    dispatch(newLocation(payload, jwtToken));
   };
   //GET_VALUES_APIS
   const {newLocationRes} = useSelector(({locations}) => locations);
@@ -131,6 +131,7 @@ const NewLocation = () => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {jwtToken} = useSelector(({general}) => general);
 
   useEffect(() => {
     if (!userDataRes) {
@@ -192,7 +193,7 @@ const NewLocation = () => {
     };
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toNewLocation(newLocationPayload);
+    toNewLocation(newLocationPayload, jwtToken);
     setSubmitting(false);
     setOpenStatus(true);
   };

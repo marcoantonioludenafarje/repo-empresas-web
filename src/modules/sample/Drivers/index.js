@@ -128,8 +128,8 @@ const DriverTable = (arrayObjs, props) => {
   const toGetDrivers = (payload, jwtToken) => {
     dispatch(getDrivers(payload, jwtToken));
   };
-  const toDeleteDriver = (payload) => {
-    dispatch(deleteDriver(payload));
+  const toDeleteDriver = (payload, jwtToken) => {
+    dispatch(deleteDriver(payload, jwtToken));
   };
 
   //GET APIS RES
@@ -432,6 +432,18 @@ const DriverTable = (arrayObjs, props) => {
   const sendStatus = () => {
     setOpenStatus(false);
     setTimeout(() => {
+      let listPayload = {
+        request: {
+          payload: {
+            typeDocumentDriver: '',
+            numberDocumentDriver: '',
+            fullName: '',
+            merchantId: userDataRes.merchantSelected.merchantId,
+            LastEvaluatedKey: driversLastEvaluatedKey_pageListDrivers,
+            needItems: true,
+          },
+        },
+      };
       toGetDrivers(listPayload, jwtToken);
     }, 2000);
   };
@@ -443,7 +455,7 @@ const DriverTable = (arrayObjs, props) => {
 
   const confirmDelete = () => {
     deletePayload.request.payload.driverId = selectedDriver.driverId;
-    toDeleteDriver(deletePayload);
+    toDeleteDriver(deletePayload, jwtToken);
     setOpen2(false);
     setOpenStatus(true);
   };

@@ -207,6 +207,8 @@ const UpdateSale = (props) => {
   const {errorMessage} = useSelector(({sale}) => sale);
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
+  const {jwtToken} = useSelector(({general}) => general);
+
   let defaultValues = {
     receiver: '',
     totalField: Number(query.totalPriceWithIgv - query.totalIgv),
@@ -222,8 +224,8 @@ const UpdateSale = (props) => {
     totalFieldIgv: '',
     money_unit: '',
   };
-  const toUpdateSale = (payload) => {
-    dispatch(updateSale(payload));
+  const toUpdateSale = (payload, jwtToken) => {
+    dispatch(updateSale(payload, jwtToken));
   };
   useEffect(() => {
     prevExchangeRateRef.current = exchangeRate;
@@ -515,7 +517,7 @@ const UpdateSale = (props) => {
         throw new Error('Algo pasa al crear el payload de boleta');
       }
       console.log('finalPayload', finalPayload);
-      toUpdateSale(finalPayload);
+      toUpdateSale(finalPayload, jwtToken);
       console.log('Data formulario principal', finalPayload);
       setOpenStatus(true);
       setSubmitting(false);

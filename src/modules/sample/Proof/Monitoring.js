@@ -168,17 +168,17 @@ const ProofMonitoring = (props) => {
   const toListProofMonitoringItems = (payload) => {
     dispatch(proofMonitoring(payload));
   };
-  const toCancelInvoice = (payload) => {
-    dispatch(cancelInvoice(payload));
+  const toCancelInvoice = (payload, jwtToken) => {
+    dispatch(cancelInvoice(payload, jwtToken));
   };
   const toExportExcelTemplateToReferralGuides = (payload) => {
     dispatch(exportExcelTemplateToReferralGuides(payload));
   };
-  const toReferralGuidesBatchConsult = (payload) => {
-    dispatch(referralGuidesBatchConsult(payload));
+  const toReferralGuidesBatchConsult = (payload, jwtToken) => {
+    dispatch(referralGuidesBatchConsult(payload, jwtToken));
   };
-  const toCancelReferralGuide = (payload) => {
-    dispatch(cancelReferralGuide(payload));
+  const toCancelReferralGuide = (payload, jwtToken) => {
+    dispatch(cancelReferralGuide(payload, jwtToken));
   };
   const onGetListBusiness = (payload) => {
     dispatch(getListBusiness(payload));
@@ -226,6 +226,8 @@ const ProofMonitoring = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userDataRes} = useSelector(({user}) => user);
   const {listBusinessRes} = useSelector(({admin}) => admin);
+  const {jwtToken} = useSelector(({general}) => general);
+
   useEffect(() => {
     if (loading) {
       setLoading(false);

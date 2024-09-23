@@ -172,25 +172,25 @@ const Previews = (props) => {
   const toListProofMonitoringItems = (payload) => {
     dispatch(proofMonitoring(payload));
   };
-  const toCancelInvoice = (payload) => {
-    dispatch(cancelInvoice(payload));
+  const toCancelInvoice = (payload, jwtToken) => {
+    dispatch(cancelInvoice(payload, jwtToken));
   };
   const toExportExcelTemplateToReferralGuides = (payload) => {
     dispatch(exportExcelTemplateToReferralGuides(payload));
   };
-  const toReferralGuidesBatchConsult = (payload) => {
-    dispatch(referralGuidesBatchConsult(payload));
+  const toReferralGuidesBatchConsult = (payload, jwtToken) => {
+    dispatch(referralGuidesBatchConsult(payload, jwtToken));
   };
-  const toCancelReferralGuide = (payload) => {
-    dispatch(cancelReferralGuide(payload));
+  const toCancelReferralGuide = (payload, jwtToken) => {
+    dispatch(cancelReferralGuide(payload, jwtToken));
   };
   const onGetListBusiness = (payload) => {
     dispatch(getListBusiness(payload));
   };
 
   //PREVISUALIZE
-  const toPrevisualizeReferralGuide = (payload) => {
-    dispatch(previsualizeReferralGuide(payload));
+  const toPrevisualizeReferralGuide = (payload, jwtToken) => {
+    dispatch(previsualizeReferralGuide(payload, jwtToken));
   };
 
   //GET APIS RES
@@ -216,6 +216,7 @@ const Previews = (props) => {
   const {previsualizeReferralGuideRes} = useSelector(
     ({movements}) => movements,
   );
+  const {jwtToken} = useSelector(({general}) => general);
   useEffect(() => {
     if (loading) {
       setLoading(false);
@@ -549,7 +550,7 @@ const Previews = (props) => {
       },
     };
     console.log('previsualizePayload', previsualizePayload);
-    toPrevisualizeReferralGuide(previsualizePayload);
+    toPrevisualizeReferralGuide(previsualizePayload, jwtToken);
   };
   const handleZoomIn = () => {
     setScale((prevScale) => prevScale + 0.1);

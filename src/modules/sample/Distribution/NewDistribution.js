@@ -220,8 +220,8 @@ const Distribution = (props) => {
   const {userDataRes} = useSelector(({user}) => user);
   const {jwtToken} = useSelector(({general}) => general);
 
-  const toGetChildRoutes = (payload) => {
-    dispatch(getChildRoutes(payload));
+  const toGetChildRoutes = (payload, jwtToken) => {
+    dispatch(getChildRoutes(payload, jwtToken));
   };
 
   const toListPredefinedRoutes = () => {
@@ -262,7 +262,7 @@ const Distribution = (props) => {
         //   initialRoute.routePredefinedId;
 
         setRoutes([]);
-        // toGetChildRoutes(getChildRoutesPayload);
+        // toGetChildRoutes(getChildRoutesPayload, jwtToken);
         toGetPredefinedRoute();
 
         // Ahora chekaremos la sgte casuistica simple
@@ -403,8 +403,8 @@ const Distribution = (props) => {
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
   };
-  const toGenerateDistribution = (payload) => {
-    dispatch(generateDistribution(payload));
+  const toGenerateDistribution = (payload, jwtToken) => {
+    dispatch(generateDistribution(payload, jwtToken));
   };
   const getProducts = (payload) => {
     dispatch(onGetProducts(payload));
@@ -527,7 +527,7 @@ const Distribution = (props) => {
         },
       };
       console.log('finalPayload', finalPayload);
-      toGenerateDistribution(finalPayload);
+      toGenerateDistribution(finalPayload, jwtToken);
       setOpenStatus(true);
       setTimeout(() => {
         setFormikSubmitting(false);

@@ -189,14 +189,14 @@ const NewOutput = (props) => {
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
-  const getAddInvoice = (payload) => {
-    dispatch(addInvoice(payload));
+  const getAddInvoice = (payload, jwtToken) => {
+    dispatch(addInvoice(payload, jwtToken));
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
   };
-  const toPrevisualizeBill = (payload) => {
-    dispatch(previsualizeBill(payload));
+  const toPrevisualizeBill = (payload, jwtToken) => {
+    dispatch(previsualizeBill(payload, jwtToken));
   };
 
   //VARIABLES DE PARAMETROS
@@ -260,6 +260,7 @@ const NewOutput = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   const {previsualizeBillRes} = useSelector(({movements}) => movements);
+  const {jwtToken} = useSelector(({general}) => general);
 
   const defaultValues = {
     nroBill: 'Autogenerado' /* query.documentIntern */,
@@ -602,7 +603,7 @@ const NewOutput = (props) => {
         },
       },
     };
-    toPrevisualizeBill(previsualizePayload);
+    toPrevisualizeBill(previsualizePayload, jwtToken);
     setShowAlert(false);
   };
 
@@ -859,7 +860,7 @@ const NewOutput = (props) => {
         },
       };
       console.log('getAddInvoice payload', finalPayload);
-      getAddInvoice(finalPayload);
+      getAddInvoice(finalPayload, jwtToken);
       setOpenStatus(true);
     } catch (error) {
       console.log('Este es el error al generar el payload', error);

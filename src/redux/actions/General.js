@@ -34,6 +34,7 @@ import {
   SEND_TUNEXO_CREDENTIALS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
+import {request} from '../../@crema/utility/Utils';
 
 import {
   requestSendCredentials,
@@ -377,9 +378,10 @@ export const updateNotificationBusinessParameter = (payload) => {
 export const exportExcelTemplateToGenerateRoute = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/exportExcelTemplateToGenerateRoute', {
-      body: payload,
-    })
+    request('post', '/facturacion/exportExcelTemplateToGenerateRoute', payload)
+    // API.post('tunexo', '/facturacion/exportExcelTemplateToGenerateRoute', {
+    //   body: payload,
+    // })
       .then((data) => {
         console.log('onExportExcelTemplateToGenerateRoute resultado', data);
         dispatch({
@@ -587,9 +589,10 @@ export const exportExcelTemplateToProviders = (payload) => {
 export const customizePdf = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/customizePdf', {
-      body: payload,
-    })
+    request('post', '/facturacion/customizePdf', payload)
+    // API.post('tunexo', '/facturacion/customizePdf', {
+    //   body: payload,
+    // })
       .then((data) => {
         console.log('customizePdf resultado', data);
         dispatch({

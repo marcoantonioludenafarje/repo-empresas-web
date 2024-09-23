@@ -243,8 +243,8 @@ const FinancesTable = (props) => {
   const toGetFinancesForResultState = (payload) => {
     dispatch(getFinancesForResultState(payload, jwtToken));
   };
-  const toDeleteFinance = (payload) => {
-    dispatch(deleteFinance(payload));
+  const toDeleteFinance = (payload, jwtToken) => {
+    dispatch(deleteFinance(payload, jwtToken));
   };
 
   useEffect(() => {
@@ -453,7 +453,7 @@ const FinancesTable = (props) => {
     deletePayload.request.payload.movementTypeMerchantId =
       selectedFinance.movementTypeMerchantId;
     dispatch({type: DELETE_FINANCE, payload: undefined});
-    toDeleteFinance(deletePayload);
+    toDeleteFinance(deletePayload, jwtToken);
     setOpen2(false);
     /* setTimeout(() => { */
     setOpenStatus(true);

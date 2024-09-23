@@ -44,10 +44,11 @@ export const getCarriers = (payload, jwtToken) => {
 export const newCarrier = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/carriers/register', {body: payload})
+    request('post', '/facturacion/carriers/register', payload)
+    //API.post('tunexo', '/facturacion/carriers/register', {body: payload})
       .then((data) => {
-        console.log('newCarrier resultado', data);
-        dispatch({type: NEW_CARRIER, payload: data.response.payload});
+        console.log('newCarrier resultado', data.data);
+        dispatch({type: NEW_CARRIER, payload: data.data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -59,10 +60,11 @@ export const newCarrier = (payload) => {
 export const deleteCarrier = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/carriers/delete', {body: payload})
+    request('post', '/facturacion/carriers/delete', payload)
+    //API.post('tunexo', '/facturacion/carriers/delete', {body: payload})
       .then((data) => {
-        console.log('deleteCarrier resultado', data);
-        dispatch({type: DELETE_CARRIER, payload: data.response.payload});
+        console.log('deleteCarrier resultado', data.data);
+        dispatch({type: DELETE_CARRIER, payload: data.data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -74,10 +76,11 @@ export const deleteCarrier = (payload) => {
 export const updateCarrier = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/carriers/update', {body: payload})
+    request('post', '/facturacion/carriers/update', payload)
+    //API.post('tunexo', '/facturacion/carriers/update', {body: payload})
       .then((data) => {
-        console.log('updateCarrier resultado', data);
-        dispatch({type: UPDATE_CARRIER, payload: data.response.payload});
+        console.log('updateCarrier resultado', data.data);
+        dispatch({type: UPDATE_CARRIER, payload: data.data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {

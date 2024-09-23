@@ -128,8 +128,8 @@ const CarrierTable = (arrayObjs, props) => {
   const toGetCarriers = (payload, jwtToken) => {
     dispatch(getCarriers(payload, jwtToken));
   };
-  const toDeleteCarrier = (payload) => {
-    dispatch(deleteCarrier(payload));
+  const toDeleteCarrier = (payload, jwtToken) => {
+    dispatch(deleteCarrier(payload, jwtToken));
   };
 
   //GET APIS RES
@@ -461,7 +461,7 @@ const CarrierTable = (arrayObjs, props) => {
 
   const confirmDelete = () => {
     deletePayload.request.payload.carrierId = selectedCarrier.carrierId;
-    toDeleteCarrier(deletePayload);
+    toDeleteCarrier(deletePayload, jwtToken);
     setOpen2(false);
     setOpenStatus(true);
   };

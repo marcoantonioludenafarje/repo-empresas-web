@@ -71,10 +71,11 @@ export const getStartingLocations = (payload, jwtToken) => {
 export const newLocation = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/locations/register', {body: payload})
+    request('post', '/facturacion/locations/register', payload)
+    //API.post('tunexo', '/facturacion/locations/register', {body: payload})
       .then((data) => {
         console.log('newLocation resultado', data);
-        dispatch({type: NEW_LOCATION, payload: data.response.payload});
+        dispatch({type: NEW_LOCATION, payload: data.data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -86,10 +87,11 @@ export const newLocation = (payload) => {
 export const deleteLocation = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/locations/delete', {body: payload})
+    request('post', '/facturacion/locations/delete', payload)
+    //API.post('tunexo', '/facturacion/locations/delete', {body: payload})
       .then((data) => {
         console.log('deleteLocation resultado', data);
-        dispatch({type: DELETE_LOCATION, payload: data.response.payload});
+        dispatch({type: DELETE_LOCATION, payload: data.data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -101,10 +103,11 @@ export const deleteLocation = (payload) => {
 export const updateLocation = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/locations/update', {body: payload})
+    request('post', '/facturacion/locations/update', payload)
+    //API.post('tunexo', '/facturacion/locations/update', {body: payload})
       .then((data) => {
         console.log('updateLocation resultado', data);
-        dispatch({type: UPDATE_LOCATION, payload: data.response.payload});
+        dispatch({type: UPDATE_LOCATION, payload: data.data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {

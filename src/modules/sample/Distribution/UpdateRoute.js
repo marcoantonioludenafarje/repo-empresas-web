@@ -225,8 +225,8 @@ const Distribution = (props) => {
   const toGetCarriers = (payload, token) => {
     dispatch(getCarriers(payload, token));
   };
-  const updateRoute = (payload) => {
-    dispatch(updatePredefinedRoute(payload));
+  const updateRoute = (payload, jwtToken) => {
+    dispatch(updatePredefinedRoute(payload, jwtToken));
   };
   const getProducts = (payload) => {
     dispatch(onGetProducts(payload));
@@ -542,7 +542,7 @@ const Distribution = (props) => {
     //dispatch({type: FETCH_SUCCESS, payload: undefined});
     //dispatch({type: FETCH_ERROR, payload: undefined});
     //dispatch({type: UPDATE_ROUTE, payload: undefined});
-    updateRoute(finalPayload);
+    updateRoute(finalPayload, jwtToken);
     setOpenStatus(true);
     setSubmitting(false);
   };

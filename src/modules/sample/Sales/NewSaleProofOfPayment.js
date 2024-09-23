@@ -147,8 +147,8 @@ const NewSaleProofOfPayment = (props) => {
   console.log('query', query);
 
   //APIS FUNCTIONS
-  const getAddSaleProofOfPayment = (payload) => {
-    dispatch(newSaleProofOfPayment(payload));
+  const getAddSaleProofOfPayment = (payload, jwtToken) => {
+    dispatch(newSaleProofOfPayment(payload, jwtToken));
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
@@ -216,6 +216,8 @@ const NewSaleProofOfPayment = (props) => {
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
   const {newSaleProofOfPaymentRes} = useSelector(({sale}) => sale);
+  const {jwtToken} = useSelector(({general}) => general);
+
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
     /* guide: '', */
@@ -696,7 +698,7 @@ const NewSaleProofOfPayment = (props) => {
         throw new Error('Algo pasa al crear el payload de boleta');
       }
       console.log('finalPayload', finalPayload);
-      getAddSaleProofOfPayment(finalPayload);
+      getAddSaleProofOfPayment(finalPayload, jwtToken);
       console.log('Data formulario principal', finalPayload);
       setOpenStatus(true);
       setSubmitting(false);

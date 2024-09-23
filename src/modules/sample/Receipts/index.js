@@ -205,8 +205,8 @@ const ReceiptsTable = (props) => {
     dispatch(exportExcelTemplateToReceipts(payload));
   };
 
-  const toRegisterTransaction = (payload) => {
-    dispatch(registerTransaction(payload));
+  const toRegisterTransaction = (payload, jwtToken) => {
+    dispatch(registerTransaction(payload, jwtToken));
   };
   const handleNextPage = (event) => {
     setLoading(true);
@@ -250,6 +250,7 @@ const ReceiptsTable = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {jwtToken} = useSelector(({general}) => general);
 
   useEffect(() => {
     if (loading) {
@@ -754,7 +755,7 @@ const ReceiptsTable = (props) => {
     dispatch({type: REGISTER_TRANSACTION, payload: undefined});
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toRegisterTransaction(finalPayload);
+    toRegisterTransaction(finalPayload, jwtToken);
     setOpenTransactionStatus(true);
 
     setOpenTransaction(false);

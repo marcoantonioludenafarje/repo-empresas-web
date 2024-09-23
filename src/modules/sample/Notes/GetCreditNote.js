@@ -180,6 +180,8 @@ const GetCreditNote = () => {
   const {errorMessage} = useSelector(({movements}) => movements);
   console.log('errorMessage', errorMessage);
   console.log('userAttributes', userAttributes);
+  const {jwtToken} = useSelector(({general}) => general);
+
 
   listOutputsPayload.request.payload.merchantId =
     userDataRes.merchantSelected.merchantId;
@@ -189,8 +191,8 @@ const GetCreditNote = () => {
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
   };
-  const toAddCreditNote = (payload) => {
-    dispatch(addCreditNote(payload));
+  const toAddCreditNote = (payload, jwtToken) => {
+    dispatch(addCreditNote(payload, jwtToken));
   };
 
   useEffect(() => {
@@ -516,7 +518,7 @@ const GetCreditNote = () => {
       dispatch({type: ADD_CREDIT_NOTE, payload: undefined});
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
-      toAddCreditNote(finalPayload);
+      toAddCreditNote(finalPayload, jwtToken);
       setTypeResult('statusResult');
       setOpenDialog(true);
     } else {

@@ -39,10 +39,11 @@ export const listSales = (payload, jwtToken) => {
 export const newSale = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/sale/register', {body: payload})
+    request('post', '/facturacion/sale/register', payload)
+    // API.post('tunexo', '/facturacion/sale/register', {body: payload})
       .then((data) => {
-        console.log('newSale resultado', data);
-        dispatch({type: NEW_SALE, payload: data.response.payload});
+        console.log('newSale resultado', data.data);
+        dispatch({type: NEW_SALE, payload: data.data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -54,14 +55,15 @@ export const newSale = (payload) => {
 export const newSaleProofOfPayment = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/sale/registerProofOfPayment', {
-      body: payload,
-    })
+    request('post', '/facturacion/sale/registerProofOfPayment', payload)
+    // API.post('tunexo', '/facturacion/sale/registerProofOfPayment', {
+    //   body: payload,
+    // })
       .then((data) => {
-        console.log('newSaleProofOfPayment resultado', data);
+        console.log('newSaleProofOfPayment resultado', data.data);
         dispatch({
           type: NEW_SALE_PROOF_OF_PAYMENT,
-          payload: data.response.payload,
+          payload: data.data.response.payload,
         });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
@@ -74,10 +76,11 @@ export const newSaleProofOfPayment = (payload) => {
 export const deleteSale = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/sales/delete', {body: payload})
+    request('post', '/facturacion/sales/delete', payload)
+    // API.post('tunexo', '/facturacion/sales/delete', {body: payload})
       .then((data) => {
-        console.log('deleteSale resultado', data);
-        dispatch({type: DELETE_SALE, payload: data.response.payload});
+        console.log('deleteSale resultado', data.data);
+        dispatch({type: DELETE_SALE, payload: data.data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {
@@ -89,10 +92,11 @@ export const deleteSale = (payload) => {
 export const updateSale = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/sales/update', {body: payload})
+    request('post', '/facturacion/sales/update', payload)
+    // API.post('tunexo', '/facturacion/sales/update', {body: payload})
       .then((data) => {
-        console.log('updateSale resultado', data);
-        dispatch({type: UPDATE_SALE, payload: data.response.payload});
+        console.log('updateSale resultado', data.data);
+        dispatch({type: UPDATE_SALE, payload: data.data.response.payload});
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
       .catch((error) => {

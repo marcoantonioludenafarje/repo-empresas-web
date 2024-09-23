@@ -135,8 +135,8 @@ const UpdateCarrier = (props) => {
   const [statusCarrier, setStatusCarrier] = React.useState(query.status);
   const dispatch = useDispatch();
 
-  const toUpdateCarrier = (payload) => {
-    dispatch(updateCarrier(payload));
+  const toUpdateCarrier = (payload, jwtToken) => {
+    dispatch(updateCarrier(payload, jwtToken));
   };
 
   const useForceUpdate = () => {
@@ -157,6 +157,7 @@ const UpdateCarrier = (props) => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({finances}) => finances);
   console.log('errorMessage', errorMessage);
+  const {jwtToken} = useSelector(({general}) => general);
 
   if (getCarriersRes != undefined) {
     selectedCarrier = getCarriersRes.find(
@@ -224,7 +225,7 @@ const UpdateCarrier = (props) => {
       data.extraInformationCarrier;
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toUpdateCarrier(newCarrierPayload);
+    toUpdateCarrier(newCarrierPayload, jwtToken);
     setSubmitting(false);
     setOpenStatus(true);
   };

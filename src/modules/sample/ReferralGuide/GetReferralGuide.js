@@ -308,11 +308,11 @@ const GetReferralGuide = (props) => {
   const toGetDrivers = (payload, jwtToken) => {
     dispatch(getDrivers(payload, jwtToken));
   };
-  const toAddReferrealGuide = (payload) => {
-    dispatch(addReferrealGuide(payload));
+  const toAddReferrealGuide = (payload, jwtToken) => {
+    dispatch(addReferrealGuide(payload, jwtToken));
   };
-  const toPrevisualizeReferralGuide = (payload) => {
-    dispatch(previsualizeReferralGuide(payload));
+  const toPrevisualizeReferralGuide = (payload, jwtToken) => {
+    dispatch(previsualizeReferralGuide(payload, jwtToken));
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
@@ -320,8 +320,8 @@ const GetReferralGuide = (props) => {
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
   };
-  const updateReferralGuide = (payload) => {
-    dispatch(updateReferralGuideValue(payload));
+  const updateReferralGuide = (payload, jwtToken) => {
+    dispatch(updateReferralGuideValue(payload, jwtToken));
   };
 
   let businessParameterPayload = {
@@ -879,7 +879,7 @@ const GetReferralGuide = (props) => {
           },
         },
       };
-      updateReferralGuide(payloadUpdateRF);
+      updateReferralGuide(payloadUpdateRF, jwtToken);
       setChangeGenerateRG(false);
     }
   }, [successMessage, errorMessage, addReferralGuideRes]);
@@ -1013,7 +1013,7 @@ const GetReferralGuide = (props) => {
       };
       console.log('finalPayload', finalPayload);
       setDataFinal(finalPayload.request.payload);
-      toAddReferrealGuide(finalPayload);
+      toAddReferrealGuide(finalPayload, jwtToken);
       console.log('queryDistribution', queryDistribution());
       if (queryDistribution()) {
         setChangeGenerateRG(true);
@@ -1483,7 +1483,7 @@ const GetReferralGuide = (props) => {
       },
     };
     console.log('previsualizePayload', previsualizePayload);
-    toPrevisualizeReferralGuide(previsualizePayload);
+    toPrevisualizeReferralGuide(previsualizePayload, jwtToken);
   };
 
   return (

@@ -141,8 +141,8 @@ const Customize = (props) => {
   let setFormikSubmitting;
 
   //PREVISUALIZE
-  const toPrevisualizeReferralGuide = (payload) => {
-    dispatch(previsualizeReferralGuide(payload));
+  const toPrevisualizeReferralGuide = (payload, jwtToken) => {
+    dispatch(previsualizeReferralGuide(payload, jwtToken));
   };
   const toCustomizePdf = (payload) => {
     dispatch(customizePdf(payload));
@@ -173,6 +173,8 @@ const Customize = (props) => {
   const {previsualizeReferralGuideRes} = useSelector(
     ({movements}) => movements,
   );
+  const {jwtToken} = useSelector(({general}) => general);
+
   console.log('redirectUrl', JSON.parse(localStorage.getItem('redirectUrl')));
   useEffect(() => {}, []);
   //PREVISUALIZE
@@ -375,7 +377,7 @@ const Customize = (props) => {
       },
     };
     console.log('previsualizePayload', previsualizePayload);
-    toPrevisualizeReferralGuide(previsualizePayload);
+    toPrevisualizeReferralGuide(previsualizePayload, jwtToken);
   };
   const handleZoomIn = () => {
     setScale((prevScale) => prevScale + 0.1);

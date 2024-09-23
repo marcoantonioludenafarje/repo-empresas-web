@@ -246,8 +246,8 @@ const Distribution = (props) => {
   const toGetCarriers = (payload, token) => {
     dispatch(getCarriers(payload, token));
   };
-  const generateRoute = (payload) => {
-    dispatch(generatePredefinedRoute(payload));
+  const generateRoute = (payload, jwtToken) => {
+    dispatch(generatePredefinedRoute(payload, jwtToken));
   };
   const getProducts = (payload) => {
     dispatch(onGetProducts(payload));
@@ -367,7 +367,7 @@ const Distribution = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GENERATE_ROUTE, payload: undefined});
-    generateRoute(finalPayload);
+    generateRoute(finalPayload, jwtToken);
     setOpenStatus(true);
 
     setTimeout(() => {

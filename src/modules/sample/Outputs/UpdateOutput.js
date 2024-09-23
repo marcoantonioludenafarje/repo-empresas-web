@@ -180,8 +180,8 @@ const UpdateOutput = (props) => {
   const getUpdateMovement = (payload) => {
     dispatch(updateMovement(payload));
   };
-  const toCancelInvoice = (payload) => {
-    dispatch(cancelInvoice(payload));
+  const toCancelInvoice = (payload, jwtToken) => {
+    dispatch(cancelInvoice(payload, jwtToken));
   };
 
   //VARIABLES DE PARAMETROS
@@ -273,6 +273,7 @@ const UpdateOutput = (props) => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {jwtToken} = useSelector(({general}) => general);
 
   if (outputItems_pageListOutput != undefined) {
     selectedOutput = outputItems_pageListOutput.find(
@@ -779,7 +780,7 @@ const UpdateOutput = (props) => {
     dispatch({type: CANCEL_INVOICE, payload: undefined});
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toCancelInvoice(cancelInvoicePayload);
+    toCancelInvoice(cancelInvoicePayload, jwtToken);
     setCancelStatus(true);
     setOpenForm(false);
   };

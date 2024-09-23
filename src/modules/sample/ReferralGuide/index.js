@@ -222,17 +222,17 @@ const ReferralGuidesTable = (props) => {
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
-  const toCancelInvoice = (payload) => {
-    dispatch(cancelInvoice(payload));
+  const toCancelInvoice = (payload, jwtToken) => {
+    dispatch(cancelInvoice(payload, jwtToken));
   };
   const toExportExcelTemplateToReferralGuides = (payload) => {
     dispatch(exportExcelTemplateToReferralGuides(payload));
   };
-  const toReferralGuidesBatchConsult = (payload) => {
-    dispatch(referralGuidesBatchConsult(payload));
+  const toReferralGuidesBatchConsult = (payload, jwtToken) => {
+    dispatch(referralGuidesBatchConsult(payload, jwtToken));
   };
-  const toCancelReferralGuide = (payload) => {
-    dispatch(cancelReferralGuide(payload));
+  const toCancelReferralGuide = (payload, jwtToken) => {
+    dispatch(cancelReferralGuide(payload, jwtToken));
   };
 
   const handleNextPage = (event) => {
@@ -288,7 +288,8 @@ const ReferralGuidesTable = (props) => {
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
   const {getStartingLocationsRes} = useSelector(({locations}) => locations);
-
+  const {jwtToken} = useSelector(({general}) => general);
+  
   useEffect(() => {
     if (loading) {
       setLoading(false);
@@ -430,7 +431,7 @@ const ReferralGuidesTable = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: CANCEL_REFERRAL_GUIDE, payload: undefined});
-    toCancelReferralGuide(cancelReferralGuidePayload);
+    toCancelReferralGuide(cancelReferralGuidePayload, jwtToken);
     setOpenStatus(true);
   };
 
@@ -626,7 +627,7 @@ const ReferralGuidesTable = (props) => {
             merchantId: userDataRes.merchantSelected.merchantId,
           },
         },
-      });
+      }, jwtToken);
       setIsLoading(true);
     }
   };

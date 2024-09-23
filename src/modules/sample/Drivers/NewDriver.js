@@ -106,8 +106,8 @@ const NewDriver = () => {
   };
 
   //APIS
-  const toNewDriver = (payload) => {
-    dispatch(newDriver(payload));
+  const toNewDriver = (payload, jwtToken) => {
+    dispatch(newDriver(payload, jwtToken));
   };
   //GET_VALUES_APIS
   const {newDriverRes} = useSelector(({drivers}) => drivers);
@@ -118,6 +118,7 @@ const NewDriver = () => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {jwtToken} = useSelector(({general}) => general);
 
   useEffect(() => {
     if (!userDataRes) {
@@ -173,7 +174,7 @@ const NewDriver = () => {
     newDriverPayload.request.payload.drivers[0].license = data.license.trim();
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toNewDriver(newDriverPayload);
+    toNewDriver(newDriverPayload, jwtToken);
     setSubmitting(false);
     setOpenStatus(true);
   };

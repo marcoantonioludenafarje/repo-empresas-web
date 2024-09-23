@@ -248,17 +248,17 @@ const ContableMovements = (props) => {
   const toGetFinancesInDebt = (payload) => {
     dispatch(getAllFinances(payload, jwtToken));
   };
-  const toDeleteFinance = (payload) => {
-    dispatch(deleteFinance(payload));
+  const toDeleteFinance = (payload, jwtToken) => {
+    dispatch(deleteFinance(payload, jwtToken));
   };
-  const toGetFinancesForResultState = (payload) => {
+  const toGetFinancesForResultState = (payload, jwtToken) => {
     dispatch(getFinancesForResultState(payload, jwtToken));
   };
-  const toGetExcelMovementsDetails = (payload) => {
-    dispatch(exportExcelMovementsDetails(payload));
+  const toGetExcelMovementsDetails = (payload, jwtToken) => {
+    dispatch(exportExcelMovementsDetails(payload, jwtToken));
   };
-  const toGetExcelMovementsSummary = (payload) => {
-    dispatch(exportExcelMovementsSummary(payload));
+  const toGetExcelMovementsSummary = (payload, jwtToken) => {
+    dispatch(exportExcelMovementsSummary(payload, jwtToken));
   };
   useEffect(() => {
     if (loading) {
@@ -564,7 +564,7 @@ const ContableMovements = (props) => {
     };
     dispatch({type: DELETE_FINANCE, payload: undefined});
     console.log('deletePayload', deletePayload);
-    toDeleteFinance(deletePayload);
+    toDeleteFinance(deletePayload, jwtToken);
     setOpen2(false);
     /* setTimeout(() => { */
     setOpenStatus(true);
@@ -872,12 +872,12 @@ const ContableMovements = (props) => {
   };
   const getExcelMovementsSummary = () => {
     dispatch({type: EXPORT_EXCEL_MOVEMENTS_SUMMARY, payload: undefined});
-    toGetExcelMovementsSummary(lastPayload);
+    toGetExcelMovementsSummary(lastPayload, jwtToken);
     setDownloadExcelSummary(true);
   };
   const getExcelMovementsDetails = () => {
     dispatch({type: EXPORT_EXCEL_MOVEMENTS_DETAILS, payload: undefined});
-    toGetExcelMovementsDetails(lastPayload);
+    toGetExcelMovementsDetails(lastPayload, jwtToken);
     setDownloadExcelDetails(true);
   };
   const filterData = (dataFilters) => {

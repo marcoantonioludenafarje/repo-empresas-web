@@ -181,8 +181,8 @@ const UpdateEarning = (props) => {
   );
   const dispatch = useDispatch();
 
-  const toUpdateFinance = (payload) => {
-    dispatch(updateFinance(payload));
+  const toUpdateFinance = (payload, jwtToken) => {
+    dispatch(updateFinance(payload, jwtToken));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -211,6 +211,7 @@ const UpdateEarning = (props) => {
   console.log('errorMessage', errorMessage);
   const {listClients} = useSelector(({clients}) => clients);
   console.log('listClients', listClients);
+  const {jwtToken} = useSelector(({general}) => general);
 
   useEffect(() => {
     if (query.billIssueDate) {
@@ -505,7 +506,7 @@ const UpdateEarning = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: UPDATE_FINANCE, payload: undefined});
-    toUpdateFinance(newFinancePayload);
+    toUpdateFinance(newFinancePayload, jwtToken);
     setOpenStatus(true);
     // } else {
     //   typeAlert = 'faltaPayment';

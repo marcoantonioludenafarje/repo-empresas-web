@@ -235,11 +235,12 @@ const PredefinedRoutes = () => {
     setListRouteBySelectedRoutes(selectedRoute_PageListPredefinedRoutes);
   }, [selectedRoute_PageListPredefinedRoutes]);
   const {getStartingLocationsRes} = useSelector(({locations}) => locations);
+  const {jwtToken} = useSelector(({general}) => general);
 
   const [page, setPage] = React.useState(1);
 
-  const deleteRoutePredefined = (payload) => {
-    dispatch(deletePredefinedRoute(payload));
+  const deleteRoutePredefined = (payload, jwtToken) => {
+    dispatch(deletePredefinedRoute(payload, jwtToken));
   };
 
   const handleClose2 = () => {
@@ -254,8 +255,8 @@ const PredefinedRoutes = () => {
     dispatch(listPredefinedRoutes_____PageListPredefinedRoutes(payload));
   };
 
-  const toGetChildRoutes = (payload) => {
-    dispatch(getChildRoutes(payload));
+  const toGetChildRoutes = (payload, jwtToken) => {
+    dispatch(getChildRoutes(payload, jwtToken));
   };
 
   const toGetPredefinedRoute = (payload) => {
@@ -273,11 +274,11 @@ const PredefinedRoutes = () => {
     // setPage(page+1);
   };
 
-  const toExportExcelSummaryItems = (payload) => {
-    dispatch(exportExcelSummaryItems(payload));
+  const toExportExcelSummaryItems = (payload, jwtToken) => {
+    dispatch(exportExcelSummaryItems(payload, jwtToken));
   };
-  const toExportSheetsDispatchFile = (payload) => {
-    dispatch(exportExcelSheetsDispatchFile(payload));
+  const toExportSheetsDispatchFile = (payload, jwtToken) => {
+    dispatch(exportExcelSheetsDispatchFile(payload, jwtToken));
   };
 
   const [typeFileRecords, setTypeFileRecords] = React.useState('');
@@ -383,7 +384,7 @@ const PredefinedRoutes = () => {
       getChildRoutesPayload.request.payload.deliveryFatherId =
         selectedRoute.routePredefinedId;
 
-      toGetChildRoutes(getChildRoutesPayload);
+      toGetChildRoutes(getChildRoutesPayload, jwtToken);
     } else {
       dispatch({
         type: SET_DELIVERIES_SIMPLE,
@@ -474,7 +475,7 @@ const PredefinedRoutes = () => {
     deletePayload.request.payload.routePredefinedId =
       selectedRoute.routePredefinedId;
     console.log('deletePayload', deletePayload);
-    deleteRoutePredefined(deletePayload);
+    deleteRoutePredefined(deletePayload, jwtToken);
     setOpen2(false);
     setOpenStatus(true);
     /*let payload = {
@@ -735,7 +736,7 @@ const PredefinedRoutes = () => {
       type: GENERATE_EXCEL_SUMMARY_ROUTES,
       payload: undefined,
     });
-    toExportExcelSummaryItems(excelPayload);
+    toExportExcelSummaryItems(excelPayload, jwtToken);
     setDownloadExcel(true);
   };
 
@@ -785,7 +786,7 @@ const PredefinedRoutes = () => {
       type: GENERATE_EXCEL_SHEETS_DISPATCH,
       payload: undefined,
     });
-    toExportSheetsDispatchFile(excelPayload);
+    toExportSheetsDispatchFile(excelPayload, jwtToken);
     setDownloadSheetsDispatch(true);
   };
 

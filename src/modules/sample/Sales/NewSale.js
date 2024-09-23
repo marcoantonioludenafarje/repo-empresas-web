@@ -151,8 +151,8 @@ const NewSale = (props) => {
   const theme = useTheme();
   const isNotMobile = useMediaQuery(theme.breakpoints.up('lg'));
   //APIS FUNCTIONS
-  const getAddSale = (payload) => {
-    dispatch(newSale(payload));
+  const getAddSale = (payload, jwtToken) => {
+    dispatch(newSale(payload, jwtToken));
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
@@ -223,6 +223,8 @@ const NewSale = (props) => {
   console.log('errorMessage', errorMessage);
   const {userDataRes} = useSelector(({user}) => user);
   const {newSaleRes} = useSelector(({sale}) => sale);
+  const {jwtToken} = useSelector(({general}) => general);
+
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
     /* guide: '', */
@@ -678,7 +680,7 @@ const NewSale = (props) => {
           throw new Error('Algo pasa al crear el payload de Venta');
         }
         console.log('finalPayload', finalPayload);
-        getAddSale(finalPayload);
+        getAddSale(finalPayload, jwtToken);
         console.log('Data formulario principal', finalPayload);
         setOpenStatus(true);
         setFormikSubmitting(false);

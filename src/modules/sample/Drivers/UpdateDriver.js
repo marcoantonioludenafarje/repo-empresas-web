@@ -114,8 +114,8 @@ const UpdateDriver = (props) => {
   const [statusDriver, setStatusDriver] = React.useState(query.status);
   const dispatch = useDispatch();
 
-  const toUpdateDriver = (payload) => {
-    dispatch(updateDriver(payload));
+  const toUpdateDriver = (payload, jwtToken) => {
+    dispatch(updateDriver(payload, jwtToken));
   };
 
   const useForceUpdate = () => {
@@ -136,6 +136,7 @@ const UpdateDriver = (props) => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({finances}) => finances);
   console.log('errorMessage', errorMessage);
+  const {jwtToken} = useSelector(({general}) => general);
 
   if (getDriversRes != undefined) {
     selectedDriver = getDriversRes.find(
@@ -192,7 +193,7 @@ const UpdateDriver = (props) => {
     newDriverPayload.request.payload.license = data.license;
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toUpdateDriver(newDriverPayload);
+    toUpdateDriver(newDriverPayload, jwtToken);
     setSubmitting(false);
     setOpenStatus(true);
   };

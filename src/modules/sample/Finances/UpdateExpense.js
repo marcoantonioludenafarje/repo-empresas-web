@@ -189,8 +189,8 @@ const UpdateExpense = (props) => {
   const [listDocuments, setListDocuments] = React.useState([]);
   const dispatch = useDispatch();
 
-  const toUpdateFinance = (payload) => {
-    dispatch(updateFinance(payload));
+  const toUpdateFinance = (payload, jwtToken) => {
+    dispatch(updateFinance(payload, jwtToken));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -219,6 +219,7 @@ const UpdateExpense = (props) => {
   console.log('errorMessage', errorMessage);
   const {listProviders} = useSelector(({providers}) => providers);
   console.log('providers123', listProviders);
+  const {jwtToken} = useSelector(({general}) => general);
 
   useEffect(() => {
     if (query.billIssueDate) {
@@ -518,7 +519,7 @@ const UpdateExpense = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: UPDATE_FINANCE, payload: undefined});
-    toUpdateFinance(newFinancePayload);
+    toUpdateFinance(newFinancePayload, jwtToken);
     setOpenStatus(true);
     // } else {
     //   typeAlert = 'faltaPayment';

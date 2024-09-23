@@ -150,7 +150,7 @@ const Distribution = () => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GET_PRODUCTS, payload: undefined});
-    toListRoutes(listRoutesPayload);
+    toListRoutes(listRoutesPayload, jwtToken);
     getProducts(listPayload);
     let listCarriersPayload = {
       request: {
@@ -203,14 +203,14 @@ const Distribution = () => {
     }
   }, [listRoute]);
 
-  const toListRoutes = (payload) => {
-    dispatch(listRoutes(payload));
+  const toListRoutes = (payload, jwtToken) => {
+    dispatch(listRoutes(payload, jwtToken));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
   };
-  const toGenerateDistribution = (payload) => {
-    dispatch(generateDistribution(payload));
+  const toGenerateDistribution = (payload, jwtToken) => {
+    dispatch(generateDistribution(payload, jwtToken));
   };
   const getProducts = (payload) => {
     dispatch(onGetProducts(payload));
@@ -311,7 +311,7 @@ const Distribution = () => {
       },
     };
     console.log('finalPayload', finalPayload);
-    toGenerateDistribution(finalPayload);
+    toGenerateDistribution(finalPayload, jwtToken);
     setSubmitting(false);
   };
 

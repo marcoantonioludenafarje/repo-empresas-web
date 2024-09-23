@@ -248,6 +248,8 @@ const DistributionsTable = (props) => {
   const {collateRecordsAndGuidesRes} = useSelector(
     ({fileExplorer}) => fileExplorer,
   );
+  const {jwtToken} = useSelector(({general}) => general);
+
   const [distributionSelected, setDistributionSelected] = React.useState(null);
   const [indexDistributionSelected, setIndexDistributionSelected] =
     React.useState(null);
@@ -256,14 +258,14 @@ const DistributionsTable = (props) => {
   const {getStartingLocationsRes} = useSelector(({locations}) => locations);
 
   //APIS
-  const toListDistributions = (payload) => {
-    dispatch(listDistributions(payload));
+  const toListDistributions = (payload, jwtToken) => {
+    dispatch(listDistributions(payload, jwtToken));
   };
   const toGeneratePresigned = (payload) => {
     dispatch(generatePresigned(payload));
   };
-  const toExportExcelSummaryRoutes = (payload) => {
-    dispatch(exportExcelSummaryRoutes(payload));
+  const toExportExcelSummaryRoutes = (payload, jwtToken) => {
+    dispatch(exportExcelSummaryRoutes(payload, jwtToken));
   };
   const toUploadFile = (url, data) => {
     dispatch(uploadFile(url, data));
@@ -314,7 +316,7 @@ const DistributionsTable = (props) => {
         listDistributionsPayload.request.payload.locations =
           userDataRes.locations;
         setSelectedLocations(userDataRes.locations);
-        toListDistributions(listDistributionsPayload);
+        toListDistributions(listDistributionsPayload, jwtToken);
       }
     }
   }, [userDataRes, query]);
@@ -992,7 +994,7 @@ const DistributionsTable = (props) => {
       type: GENERATE_EXCEL_SUMMARY_ROUTES,
       payload: undefined,
     });
-    toExportExcelSummaryRoutes(excelPayload);
+    toExportExcelSummaryRoutes(excelPayload, jwtToken);
     setDownloadExcel(true);
   };
 
@@ -1013,7 +1015,7 @@ const DistributionsTable = (props) => {
     listDistributionsPayload.request.payload.locations = selectedLocations;
     console.log('payload listDistributions', listDistributionsPayload);
 
-    toListDistributions(listDistributionsPayload);
+    toListDistributions(listDistributionsPayload, jwtToken);
   };
   useEffect(() => {
     if (base64) {

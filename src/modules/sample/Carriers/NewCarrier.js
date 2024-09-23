@@ -125,10 +125,11 @@ const NewCarrier = () => {
   };
 
   //APIS
-  const toNewCarrier = (payload) => {
-    dispatch(newCarrier(payload));
+  const toNewCarrier = (payload, jwtToken) => {
+    dispatch(newCarrier(payload, jwtToken));
   };
   //GET_VALUES_APIS
+  const {jwtToken} = useSelector(({general}) => general);
   const {newCarrierRes} = useSelector(({carriers}) => carriers);
   console.log('newCarrierRes', newCarrierRes);
   const {successMessage} = useSelector(({carriers}) => carriers);
@@ -201,7 +202,7 @@ const NewCarrier = () => {
       data.extraInformationCarrier;
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toNewCarrier(newCarrierPayload);
+    toNewCarrier(newCarrierPayload, jwtToken);
     setSubmitting(false);
     setOpenStatus(true);
   };

@@ -83,13 +83,14 @@ export const getFinancesForResultState = (payload) => {
 export const addFinance = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/accounting/movement/register', {
-      body: payload,
-    })
+    request('post', '/facturacion/accounting/movement/register', payload)
+    // API.post('tunexo', '/facturacion/accounting/movement/register', {
+    //   body: payload,
+    // })
       .then((data) => {
-        console.log('addFinance resultado', data);
-        dispatch({type: ADD_FINANCE, payload: data.response.payload});
-        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        console.log('addFinance resultado', data.data);
+        dispatch({type: ADD_FINANCE, payload: data.data.response.payload});
+        dispatch({type: FETCH_SUCCESS, payload: data.data.response.status});
       })
       .catch((error) => {
         console.log('addFinance error', error);
@@ -100,13 +101,15 @@ export const addFinance = (payload) => {
 export const deleteFinance = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/accounting/movement/delete', {
-      body: payload,
-    })
+    request('post', '/facturacion/accounting/movement/delete', payload)
+
+    // API.post('tunexo', '/facturacion/accounting/movement/delete', {
+    //   body: payload,
+    // })
       .then((data) => {
-        console.log('deleteFinance resultado', data);
-        dispatch({type: DELETE_FINANCE, payload: data.response.payload});
-        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        console.log('deleteFinance resultado', data.data);
+        dispatch({type: DELETE_FINANCE, payload: data.data.response.payload});
+        dispatch({type: FETCH_SUCCESS, payload: data.data.response.status});
       })
       .catch((error) => {
         console.log('deleteFinance error', error);
@@ -117,13 +120,15 @@ export const deleteFinance = (payload) => {
 export const updateFinance = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/accounting/movement/update', {
-      body: payload,
-    })
+    request('post', '/facturacion/accounting/movement/update', payload)
+
+    // API.post('tunexo', '/facturacion/accounting/movement/update', {
+    //   body: payload,
+    // })
       .then((data) => {
-        console.log('updateFinance resultado', data);
-        dispatch({type: UPDATE_FINANCE, payload: data.response.payload});
-        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        console.log('updateFinance resultado', data.data);
+        dispatch({type: UPDATE_FINANCE, payload: data.data.response.payload});
+        dispatch({type: FETCH_SUCCESS, payload: data.data.response.status});
       })
       .catch((error) => {
         console.log('updateFinance error', error);
@@ -134,16 +139,18 @@ export const updateFinance = (payload) => {
 export const exportExcelMovementsDetails = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/accounting/movement/exportDetails', {
-      body: payload,
-    })
+    request('post', '/facturacion/accounting/movement/exportDetails', payload)
+
+    // API.post('tunexo', '/facturacion/accounting/movement/exportDetails', {
+    //   body: payload,
+    // })
       .then((data) => {
-        console.log('exportExcelMovementsDetails resultado', data);
+        console.log('exportExcelMovementsDetails resultado', data.data);
         dispatch({
           type: EXPORT_EXCEL_MOVEMENTS_DETAILS,
-          payload: data.response.payload,
+          payload: data.data.response.payload,
         });
-        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        dispatch({type: FETCH_SUCCESS, payload: data.data.response.status});
       })
       .catch((error) => {
         console.log('exportExcelMovementsDetails error', error);
@@ -154,16 +161,18 @@ export const exportExcelMovementsDetails = (payload) => {
 export const exportExcelMovementsSummary = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    API.post('tunexo', '/facturacion/accounting/movement/exportSummary', {
-      body: payload,
-    })
+    request('post', '/facturacion/accounting/movement/exportSummary', payload)
+
+    // API.post('tunexo', '/facturacion/accounting/movement/exportSummary', {
+    //   body: payload,
+    // })
       .then((data) => {
-        console.log('exportExcelMovementsSummary resultado', data);
+        console.log('exportExcelMovementsSummary resultado', data.data);
         dispatch({
           type: EXPORT_EXCEL_MOVEMENTS_SUMMARY,
-          payload: data.response.payload,
+          payload: data.data.response.payload,
         });
-        dispatch({type: FETCH_SUCCESS, payload: data.response.status});
+        dispatch({type: FETCH_SUCCESS, payload: data.data.response.status});
       })
       .catch((error) => {
         console.log('exportExcelMovementsSummary error', error);

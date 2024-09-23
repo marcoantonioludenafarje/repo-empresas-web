@@ -258,8 +258,8 @@ const NewExpense = (props) => {
   const [totalAmount, setTotalAmount] = React.useState(0);
   const dispatch = useDispatch();
 
-  const toAddFinance = (payload) => {
-    dispatch(addFinance(payload));
+  const toAddFinance = (payload, jwtToken) => {
+    dispatch(addFinance(payload, jwtToken));
   };
   const getBusinessParameter = (payload) => {
     dispatch(onGetBusinessParameter(payload));
@@ -284,6 +284,7 @@ const NewExpense = (props) => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({finances}) => finances);
   console.log('errorMessage', errorMessage);
+  const {jwtToken} = useSelector(({general}) => general);
 
   useEffect(() => {
     if (businessParameter != undefined) {
@@ -499,7 +500,7 @@ const NewExpense = (props) => {
       dispatch({type: FETCH_SUCCESS, payload: undefined});
       dispatch({type: FETCH_ERROR, payload: undefined});
       dispatch({type: ADD_FINANCE, payload: undefined});
-      toAddFinance(newFinancePayload);
+      toAddFinance(newFinancePayload, jwtToken);
       setTimeout(() => {
         setOpenStatus(true);
       }, 1000);

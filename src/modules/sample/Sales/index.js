@@ -268,8 +268,8 @@ const SalesTable = (props) => {
   const toGenerateInvoice = (payload) => {
     dispatch(generateInvoice(payload));
   };
-  const toGenerateSellTicket = (payload) => {
-    dispatch(generateSellTicket(payload));
+  const toGenerateSellTicket = (payload, jwtToken) => {
+    dispatch(generateSellTicket(payload, jwtToken));
   };
   let money_unit;
   let weight_unit;
@@ -319,6 +319,8 @@ const SalesTable = (props) => {
   console.log('products123', listProducts);
   const {getRolUserRes} = useSelector(({general}) => general);
   console.log('Esto es getRolUserRes', getRolUserRes);
+  const {jwtToken} = useSelector(({general}) => general);
+
   useEffect(() => {
     if (loading) {
       setLoading(false);

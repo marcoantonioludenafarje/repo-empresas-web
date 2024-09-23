@@ -183,8 +183,8 @@ const CreditNotesTable = (props) => {
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
-  const toCancelInvoice = (payload) => {
-    dispatch(cancelInvoice(payload));
+  const toCancelInvoice = (payload, jwtToken) => {
+    dispatch(cancelInvoice(payload, jwtToken));
   };
   const toExportExcelTemplateToNotes = (payload) => {
     dispatch(exportExcelTemplateToNotes(payload));
@@ -228,6 +228,7 @@ const CreditNotesTable = (props) => {
   console.log('globalParameter123', globalParameter);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {jwtToken} = useSelector(({general}) => general);
 
   /* let money_unit; */
   let weight_unit;
@@ -600,7 +601,7 @@ const CreditNotesTable = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GET_MOVEMENTS, payload: []});
-    toCancelInvoice(cancelInvoicePayload);
+    toCancelInvoice(cancelInvoicePayload, jwtToken);
     setTimeout(() => {
       toGetMovements(listPayload);
     }, 2000);

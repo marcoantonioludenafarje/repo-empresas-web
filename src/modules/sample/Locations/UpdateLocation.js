@@ -127,8 +127,8 @@ const UpdateLocation = (props) => {
   const [typeLocation, setTypeLocation] = React.useState(query.type);
   const dispatch = useDispatch();
 
-  const toUpdateLocation = (payload) => {
-    dispatch(updateLocation(payload));
+  const toUpdateLocation = (payload, jwtToken) => {
+    dispatch(updateLocation(payload, jwtToken));
   };
 
   const useForceUpdate = () => {
@@ -149,6 +149,7 @@ const UpdateLocation = (props) => {
   console.log('successMessage', successMessage);
   const {errorMessage} = useSelector(({finances}) => finances);
   console.log('errorMessage', errorMessage);
+  const {jwtToken} = useSelector(({general}) => general);
 
   if (getLocationsRes != undefined) {
     selectedLocation = getLocationsRes.find(
@@ -218,7 +219,7 @@ const UpdateLocation = (props) => {
 
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toUpdateLocation(newLocationPayload);
+    toUpdateLocation(newLocationPayload, jwtToken);
     setSubmitting(false);
     setOpenStatus(true);
   };

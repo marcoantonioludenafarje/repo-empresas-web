@@ -202,11 +202,11 @@ const BillsTable = (props) => {
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
-  const toCancelInvoice = (payload) => {
-    dispatch(cancelInvoice(payload));
+  const toCancelInvoice = (payload, jwtToken) => {
+    dispatch(cancelInvoice(payload, jwtToken));
   };
-  const toRegisterTransaction = (payload) => {
-    dispatch(registerTransaction(payload));
+  const toRegisterTransaction = (payload, jwtToken) => {
+    dispatch(registerTransaction(payload, jwtToken));
   };
   const toExportExcelTemplateToBills = (payload) => {
     dispatch(exportExcelTemplateToBills(payload));
@@ -263,6 +263,7 @@ const BillsTable = (props) => {
   const {cancelInvoiceRes, registerTransactionRes} = useSelector(
     ({movements}) => movements,
   );
+  const {jwtToken} = useSelector(({general}) => general);
   console.log('cancelInvoiceRes', cancelInvoiceRes);
 
   useEffect(() => {
@@ -849,7 +850,7 @@ const BillsTable = (props) => {
     dispatch({type: CANCEL_INVOICE, payload: undefined});
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toCancelInvoice(finalPayload);
+    toCancelInvoice(finalPayload, jwtToken);
     setOpenStatus(true);
     setOpenForm(false);
   };
@@ -874,7 +875,7 @@ const BillsTable = (props) => {
     dispatch({type: REGISTER_TRANSACTION, payload: undefined});
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
-    toRegisterTransaction(finalPayload);
+    toRegisterTransaction(finalPayload, jwtToken);
     setOpenTransactionStatus(true);
 
     setOpenTransaction(false);

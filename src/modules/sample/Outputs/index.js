@@ -298,8 +298,8 @@ const OutputsTable = (props) => {
   const toGenerateInvoice = (payload) => {
     dispatch(generateInvoice(payload));
   };
-  const toGenerateSellTicket = (payload) => {
-    dispatch(generateSellTicket(payload));
+  const toGenerateSellTicket = (payload, jwtToken) => {
+    dispatch(generateSellTicket(payload, jwtToken));
   };
   let money_unit;
   let weight_unit;
@@ -348,6 +348,7 @@ const OutputsTable = (props) => {
   const {getRolUserRes} = useSelector(({general}) => general);
   console.log('Esto es getRolUserRes', getRolUserRes);
   const {getStartingLocationsRes} = useSelector(({locations}) => locations);
+  const {jwtToken} = useSelector(({general}) => general);
 
   useEffect(() => {
     dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
@@ -1064,7 +1065,7 @@ const OutputsTable = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GENERATE_SELL_TICKET, payload: undefined});
-    toGenerateSellTicket(finalPayload);
+    toGenerateSellTicket(finalPayload, jwtToken);
     setIsLoading(true);
     setSellTicketDialog(false);
     setTicketResponseDialog(true);

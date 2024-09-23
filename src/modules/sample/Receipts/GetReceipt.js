@@ -148,8 +148,8 @@ const GetReceipt = (props) => {
   const getGlobalParameter = (payload) => {
     dispatch(onGetGlobalParameter(payload));
   };
-  const getAddReceipt = (payload) => {
-    dispatch(addReceipt(payload));
+  const getAddReceipt = (payload, jwtToken) => {
+    dispatch(addReceipt(payload, jwtToken));
   };
   const toGetMovements = (payload) => {
     dispatch(getOutputItems_pageListOutput(payload));
@@ -217,6 +217,7 @@ const GetReceipt = (props) => {
   console.log('errorMessage', errorMessage);
   const {userAttributes} = useSelector(({user}) => user);
   const {userDataRes} = useSelector(({user}) => user);
+  const {jwtToken} = useSelector(({general}) => general);
 
   let defaultValues = {
     nroReceipt: 'Autogenerado' /* query.documentIntern */,
@@ -687,7 +688,7 @@ const GetReceipt = (props) => {
       throw new Error('Algo pasa al crear el payload de boleta');
     }
     console.log('finalPayload', finalPayload);
-    getAddReceipt(finalPayload);
+    getAddReceipt(finalPayload, jwtToken);
     console.log('Data formulario principal', finalPayload);
     setOpenStatus(true);
   };
