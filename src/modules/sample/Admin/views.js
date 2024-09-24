@@ -282,6 +282,7 @@ export default function Views(props) {
       request: {
         payload: {
           merchantId: selectedBusiness.merchantId,
+          merchantMasterId: selectedBusiness.merchantMasterId,
           userId: selectedBusiness.adminUserId,
           indactivo: val,
         },
