@@ -75,7 +75,7 @@ export const updateDriver = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/drivers/update', payload)
-    //API.post('tunexo', '/facturacion/drivers/update', {body: payload})
+      //API.post('tunexo', '/facturacion/drivers/update', {body: payload})
       .then((data) => {
         console.log('updateDriver resultado', data.data);
         dispatch({type: UPDATE_DRIVER, payload: data.data.response.payload});

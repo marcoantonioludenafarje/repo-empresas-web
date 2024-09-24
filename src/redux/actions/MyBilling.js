@@ -10,12 +10,19 @@ import {request} from '../../@crema/utility/Utils';
 export const getCurrentMovementsDocumentsBusiness = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    request('post', '/facturacion/getCurrentMovementsDocumentsBusiness', payload)
-    // API.post('tunexo', '/facturacion/getCurrentMovementsDocumentsBusiness', {
-    //   body: payload,
-    // })
+    request(
+      'post',
+      '/facturacion/getCurrentMovementsDocumentsBusiness',
+      payload,
+    )
+      // API.post('tunexo', '/facturacion/getCurrentMovementsDocumentsBusiness', {
+      //   body: payload,
+      // })
       .then((data) => {
-        console.log('getCurrentMovementsDocumentsBusiness resultado', data.data);
+        console.log(
+          'getCurrentMovementsDocumentsBusiness resultado',
+          data.data,
+        );
         dispatch({
           type: GET_CURRENT_MOVEMENTS_DOCUMENTS,
           payload: data.data.response.payload,

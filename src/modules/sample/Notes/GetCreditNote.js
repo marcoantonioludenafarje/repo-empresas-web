@@ -182,7 +182,6 @@ const GetCreditNote = () => {
   console.log('userAttributes', userAttributes);
   const {jwtToken} = useSelector(({general}) => general);
 
-
   listOutputsPayload.request.payload.merchantId =
     userDataRes.merchantSelected.merchantId;
   listOutputsPayload.request.payload.initialTime = 919242684000;

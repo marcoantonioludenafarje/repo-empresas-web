@@ -45,7 +45,7 @@ export const newCarrier = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/carriers/register', payload)
-    //API.post('tunexo', '/facturacion/carriers/register', {body: payload})
+      //API.post('tunexo', '/facturacion/carriers/register', {body: payload})
       .then((data) => {
         console.log('newCarrier resultado', data.data);
         dispatch({type: NEW_CARRIER, payload: data.data.response.payload});
@@ -61,7 +61,7 @@ export const deleteCarrier = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/carriers/delete', payload)
-    //API.post('tunexo', '/facturacion/carriers/delete', {body: payload})
+      //API.post('tunexo', '/facturacion/carriers/delete', {body: payload})
       .then((data) => {
         console.log('deleteCarrier resultado', data.data);
         dispatch({type: DELETE_CARRIER, payload: data.data.response.payload});
@@ -77,7 +77,7 @@ export const updateCarrier = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/carriers/update', payload)
-    //API.post('tunexo', '/facturacion/carriers/update', {body: payload})
+      //API.post('tunexo', '/facturacion/carriers/update', {body: payload})
       .then((data) => {
         console.log('updateCarrier resultado', data.data);
         dispatch({type: UPDATE_CARRIER, payload: data.data.response.payload});

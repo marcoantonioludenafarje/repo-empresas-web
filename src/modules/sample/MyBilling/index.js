@@ -196,7 +196,7 @@ const MyBilling = (props) => {
   const {currentMovementsDocuments} = useSelector(({myBilling}) => myBilling);
   console.log('businessParameter', businessParameter);
   const {jwtToken} = useSelector(({general}) => general);
-  
+
   const indicadorDesarrollo = false;
 
   console.log('redirectUrl', JSON.parse(localStorage.getItem('redirectUrl')));
@@ -308,7 +308,8 @@ const MyBilling = (props) => {
         },
       };
       toGetCurrentMovementsDocumentsBusiness(
-        toGetCurrentMovementsDocumentsBusinessPayload, jwtToken
+        toGetCurrentMovementsDocumentsBusinessPayload,
+        jwtToken,
       );
     }
   }, [currentMovementsDocuments || userDataRes]);

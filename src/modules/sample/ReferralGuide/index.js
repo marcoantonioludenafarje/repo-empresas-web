@@ -289,7 +289,7 @@ const ReferralGuidesTable = (props) => {
   const {userDataRes} = useSelector(({user}) => user);
   const {getStartingLocationsRes} = useSelector(({locations}) => locations);
   const {jwtToken} = useSelector(({general}) => general);
-  
+
   useEffect(() => {
     if (loading) {
       setLoading(false);
@@ -621,13 +621,16 @@ const ReferralGuidesTable = (props) => {
 
   const batchConsultReferralGuide = () => {
     if (userDataRes) {
-      toReferralGuidesBatchConsult({
-        request: {
-          payload: {
-            merchantId: userDataRes.merchantSelected.merchantId,
+      toReferralGuidesBatchConsult(
+        {
+          request: {
+            payload: {
+              merchantId: userDataRes.merchantSelected.merchantId,
+            },
           },
         },
-      }, jwtToken);
+        jwtToken,
+      );
       setIsLoading(true);
     }
   };

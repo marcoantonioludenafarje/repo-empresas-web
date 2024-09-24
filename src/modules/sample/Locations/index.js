@@ -605,8 +605,8 @@ const LocationTable = (arrayObjs, props) => {
         </>
       );
     } else if (
-      (deleteLocationRes) && (deleteLocationRes.error ||
-      errorMessage != undefined)
+      deleteLocationRes &&
+      (deleteLocationRes.error || errorMessage != undefined)
     ) {
       return (
         <>

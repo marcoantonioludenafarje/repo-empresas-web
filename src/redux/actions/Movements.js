@@ -226,9 +226,9 @@ export const generateSellTicket = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/sellTicket/register', payload)
-    // API.post('tunexo', '/facturacion/sellTicket/register', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/sellTicket/register', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('generateSellTicket resultado', data.data);
         dispatch({
@@ -247,9 +247,9 @@ export const addInvoice = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/bill/register', payload)
-    // API.post('tunexo', '/facturacion/bill/register', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/bill/register', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('addInvoice resultado', data.data);
         dispatch({
@@ -268,9 +268,9 @@ export const addReceipt = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/receipt/register', payload)
-    // API.post('tunexo', '/facturacion/receipt/register', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/receipt/register', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('addReceipt resultado', data.data);
         dispatch({
@@ -289,9 +289,9 @@ export const cancelInvoice = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/bill/cancel', payload)
-    // API.post('tunexo', '/facturacion/bill/cancel', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/bill/cancel', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('cancelInvoice resultado', data.data);
         dispatch({
@@ -310,9 +310,9 @@ export const addReferrealGuide = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/referralGuide/register', payload)
-    // API.post('tunexo', '/facturacion/referralGuide/register', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/referralGuide/register', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('addReferrealGuide resultado', data.data);
         dispatch({
@@ -331,9 +331,9 @@ export const addCreditNote = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/creditNote/register', payload)
-    // API.post('tunexo', '/facturacion/creditNote/register', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/creditNote/register', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('addCreditNote resultado', data.data);
         dispatch({
@@ -352,9 +352,9 @@ export const generatePredefinedRoute = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/routePredefined/register', payload)
-    // API.post('tunexo', '/facturacion/routePredefined/register', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/routePredefined/register', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('generatePredefinedRoute resultado', data.data);
         dispatch({
@@ -373,9 +373,9 @@ export const updatePredefinedRoute = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/routePredefined/update', payload)
-    // API.post('tunexo', '/facturacion/routePredefined/update', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/routePredefined/update', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('updatePredefinedRoute resultado', data.data);
         dispatch({
@@ -394,9 +394,9 @@ export const listRoutes = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/routePredefined/list', payload)
-    // API.post('tunexo', '/facturacion/routePredefined/list', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/routePredefined/list', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('listRoutes resultado', data.data);
         dispatch({
@@ -417,9 +417,9 @@ export const getChildRoutes = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/routePredefined/getChild', payload)
-    // API.post('tunexo', '/facturacion/routePredefined/getChild', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/routePredefined/getChild', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('getChildRoute resultado', data.data);
         dispatch({
@@ -460,9 +460,9 @@ export const listDistributions = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/deliveryDistribution/list', payload)
-    // API.post('tunexo', '/facturacion/deliveryDistribution/list', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/deliveryDistribution/list', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('listDistributions resultado', data.data);
         dispatch({
@@ -535,9 +535,9 @@ export const generateDistribution = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/deliveryDistribution/register', payload)
-    // API.post('tunexo', '/facturacion/deliveryDistribution/register', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/deliveryDistribution/register', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('generateDistribution resultado', data.data);
         dispatch({
@@ -556,10 +556,14 @@ export const generateDistribution = (payload) => {
 export const exportExcelSummaryRoutes = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    request('post', '/facturacion/deliveryDistribution/exportExcelRoutes', payload)
-    // API.post('tunexo', '/facturacion/deliveryDistribution/exportExcelRoutes', {
-    //   body: payload,
-    // })
+    request(
+      'post',
+      '/facturacion/deliveryDistribution/exportExcelRoutes',
+      payload,
+    )
+      // API.post('tunexo', '/facturacion/deliveryDistribution/exportExcelRoutes', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('listDistributions resultado', data.data);
         dispatch({
@@ -579,9 +583,9 @@ export const exportExcelSummaryItems = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/routePredefined/exportExcelItems', payload)
-    // API.post('tunexo', '/facturacion/routePredefined/exportExcelItems', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/routePredefined/exportExcelItems', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('listDistributions resultado', data.data);
         dispatch({
@@ -600,10 +604,14 @@ export const exportExcelSummaryItems = (payload) => {
 export const exportExcelSheetsDispatchFile = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    request('post', '/facturacion/routesPredefined/generateDownloadSheets', payload)
-    // API.post('tunexo', '/facturacion/routesPredefined/generateDownloadSheets', {
-    //   body: payload,
-    // })
+    request(
+      'post',
+      '/facturacion/routesPredefined/generateDownloadSheets',
+      payload,
+    )
+      // API.post('tunexo', '/facturacion/routesPredefined/generateDownloadSheets', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('exportExcelSheetsDispatchFile resultado', data.data);
         dispatch({
@@ -622,14 +630,18 @@ export const exportExcelSheetsDispatchFile = (payload) => {
 export const updateReferralGuideValue = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
-    request('post', '/facturacion/deliveryDistribution/updateDeliveryReferralGuide', payload)
-    // API.post(
-    //   'tunexo',
-    //   '/facturacion/deliveryDistribution/updateDeliveryReferralGuide',
-    //   {
-    //     body: payload,
-    //   },
-    // )
+    request(
+      'post',
+      '/facturacion/deliveryDistribution/updateDeliveryReferralGuide',
+      payload,
+    )
+      // API.post(
+      //   'tunexo',
+      //   '/facturacion/deliveryDistribution/updateDeliveryReferralGuide',
+      //   {
+      //     body: payload,
+      //   },
+      // )
       .then((data) => {
         console.log('updateReferralGuideValue resultado', data.data);
         dispatch({
@@ -707,9 +719,9 @@ export const deletePredefinedRoute = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/routePredefined/delete', payload)
-    // API.post('tunexo', '/facturacion/routePredefined/delete', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/routePredefined/delete', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('deletePredefinedRoute resultado', data.data);
         dispatch({
@@ -907,9 +919,9 @@ export const referralGuidesBatchConsult = (payload) => {
     dispatch({type: FETCH_START});
     console.log('/facturacion/consultReferralGuideStatus', {body: payload});
     request('post', '/facturacion/consultReferralGuideStatus', payload)
-    // API.post('tunexo', '/facturacion/consultReferralGuideStatus', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/consultReferralGuideStatus', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('referralGuidesBatchConsult resultado', data.data);
         dispatch({
@@ -929,9 +941,9 @@ export const cancelReferralGuide = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/referralGuide/cancel', payload)
-    // API.post('tunexo', '/facturacion/referralGuide/cancel', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/referralGuide/cancel', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('cancelReferralGuide resultado', data.data);
         dispatch({
@@ -951,9 +963,9 @@ export const previsualizeBill = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/bill/pdfPrevisualizer', payload)
-    // API.post('tunexo', '/facturacion/bill/pdfPrevisualizer', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/bill/pdfPrevisualizer', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('previsualizeBill resultado', data.data);
         dispatch({
@@ -973,9 +985,9 @@ export const previsualizeReferralGuide = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/referralGuide/pdfPrevisualizer', payload)
-    // API.post('tunexo', '/facturacion/referralGuide/pdfPrevisualizer', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/referralGuide/pdfPrevisualizer', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('previsualizeReferralGuide resultado', data.data);
         dispatch({
@@ -1017,9 +1029,9 @@ export const registerTransaction = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/updateProofTransactionDate', payload)
-    // API.post('tunexo', '/facturacion/updateProofTransactionDate', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/updateProofTransactionDate', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('updateProofTransactionDate resultado', data.data);
         dispatch({

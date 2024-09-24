@@ -379,9 +379,9 @@ export const exportExcelTemplateToGenerateRoute = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/exportExcelTemplateToGenerateRoute', payload)
-    // API.post('tunexo', '/facturacion/exportExcelTemplateToGenerateRoute', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/exportExcelTemplateToGenerateRoute', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('onExportExcelTemplateToGenerateRoute resultado', data);
         dispatch({
@@ -590,9 +590,9 @@ export const customizePdf = (payload) => {
   return (dispatch, getState) => {
     dispatch({type: FETCH_START});
     request('post', '/facturacion/customizePdf', payload)
-    // API.post('tunexo', '/facturacion/customizePdf', {
-    //   body: payload,
-    // })
+      // API.post('tunexo', '/facturacion/customizePdf', {
+      //   body: payload,
+      // })
       .then((data) => {
         console.log('customizePdf resultado', data);
         dispatch({
