@@ -252,8 +252,8 @@ const Distribution = (props) => {
   const getProducts = (payload) => {
     dispatch(onGetProducts(payload));
   };
-  const toExportExcelTemplateToGenerateRoute = (payload) => {
-    dispatch(exportExcelTemplateToGenerateRoute(payload));
+  const toExportExcelTemplateToGenerateRoute = (payload, jwtToken) => {
+    dispatch(exportExcelTemplateToGenerateRoute(payload, jwtToken));
   };
 
   useEffect(() => {
@@ -1031,7 +1031,7 @@ const Distribution = (props) => {
     dispatch({type: FETCH_SUCCESS, payload: undefined});
     dispatch({type: FETCH_ERROR, payload: undefined});
     dispatch({type: GENERATE_EXCEL_TEMPLATE_TO_ROUTES, payload: undefined});
-    toExportExcelTemplateToGenerateRoute(excelPayload);
+    toExportExcelTemplateToGenerateRoute(excelPayload, jwtToken);
     setDownloadExcel(true);
   };
 

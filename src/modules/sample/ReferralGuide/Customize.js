@@ -144,8 +144,8 @@ const Customize = (props) => {
   const toPrevisualizeReferralGuide = (payload, jwtToken) => {
     dispatch(previsualizeReferralGuide(payload, jwtToken));
   };
-  const toCustomizePdf = (payload) => {
-    dispatch(customizePdf(payload));
+  const toCustomizePdf = (payload, jwtToken) => {
+    dispatch(customizePdf(payload, jwtToken));
   };
 
   const [openCustomizeUpdate, setOpenCustomizeUpdate] = React.useState('');
@@ -425,7 +425,7 @@ const Customize = (props) => {
       },
     };
     console.log('finalPayload', finalPayload);
-    toCustomizePdf(finalPayload);
+    toCustomizePdf(finalPayload, jwtToken);
     setOpenCustomizeUpdate(true);
     setSubmitting(false);
   };
