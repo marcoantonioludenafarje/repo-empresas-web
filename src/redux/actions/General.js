@@ -383,10 +383,10 @@ export const exportExcelTemplateToGenerateRoute = (payload) => {
       //   body: payload,
       // })
       .then((data) => {
-        console.log('onExportExcelTemplateToGenerateRoute resultado', data);
+        console.log('onExportExcelTemplateToGenerateRoute resultado', data.data);
         dispatch({
           type: GENERATE_EXCEL_TEMPLATE_TO_ROUTES,
-          payload: data.response.payload,
+          payload: data.data.response.payload,
         });
         dispatch({type: FETCH_SUCCESS});
       })
@@ -594,10 +594,10 @@ export const customizePdf = (payload) => {
       //   body: payload,
       // })
       .then((data) => {
-        console.log('customizePdf resultado', data);
+        console.log('customizePdf resultado', data.data);
         dispatch({
           type: CUSTOMIZE_PDF,
-          payload: data.response.payload,
+          payload: data.data.response.payload,
         });
         dispatch({type: FETCH_SUCCESS, payload: 'success'});
       })
