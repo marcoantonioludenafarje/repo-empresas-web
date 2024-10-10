@@ -602,10 +602,10 @@ const GetReferralGuide = (props) => {
 
         entregas.forEach((entrega) => {
           if (
-            !query.driversSelected ||
+            !query.driversSelected || ( Array.isArray(query.driversSelected) &&  
             query.driversSelected.some(
               (item) => Number(item) === Number(entrega.driverDocumentNumber),
-            )
+            )) || Number(query.driversSelected) == Number(entrega.driverDocumentNumber)
           ) {
             numberOfPackages += Number(entrega.numberOfPackages);
             console.log('entrega2', entrega);
