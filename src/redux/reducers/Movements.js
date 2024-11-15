@@ -46,6 +46,7 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED,
   GENERATE_EXCEL_SUMMARY_ROUTES,
   GENERATE_EXCEL_SHEETS_DISPATCH,
+  GENERATE_TRACEABILITY_SHEETS,
 } from '../../shared/constants/ActionTypes';
 
 const INIT_STATE = {
@@ -72,6 +73,7 @@ const INIT_STATE = {
   proofMonitoringItems_pageListGuide: [],
   proofMonitoringLastEvaluatedKey_pageListGuide: null,
   downloadSheetsDispatchFileRes: null,
+  generateTraceabilitySheetsRes: null,
 };
 
 const movementsReducer = (state = INIT_STATE, action) => {
@@ -759,6 +761,16 @@ const movementsReducer = (state = INIT_STATE, action) => {
         ...state,
         downloadSheetsDispatchFileRes: action.payload,
       };
+
+      case GENERATE_TRACEABILITY_SHEETS:
+        console.log(
+          'data de reducer case GENERATE_TRACEABILITY_SHEETS',
+          action.payload,
+        );
+        return {
+          ...state,
+          generateTraceabilitySheetsRes: action.payload,
+        };
   }
 };
 

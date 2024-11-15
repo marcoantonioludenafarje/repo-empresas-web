@@ -38,6 +38,7 @@ import {
   Checkbox,
 } from '@mui/material';
 
+import {Fonts} from '../../../shared/constants/AppEnums';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DirectionsBusFilledIcon from '@mui/icons-material/DirectionsBusFilled';
@@ -68,6 +69,7 @@ import {
   GET_USER_DATA,
   ROUTE_TO_REFERRAL_GUIDE,
   GENERATE_EXCEL_SUMMARY_ROUTES,
+  GENERATE_TRACEABILITY_SHEETS,
 } from '../../../shared/constants/ActionTypes';
 import Router, {useRouter} from 'next/router';
 import {
@@ -75,7 +77,7 @@ import {
   getDistribution,
   getOneDistribution,
   exportExcelSummaryRoutes,
-  excelSummaryRoutesRes,
+  generateTraceabilitySheets,
 } from '../../../redux/actions/Movements';
 import {
   generatePresigned,
@@ -223,7 +225,10 @@ const DistributionsTable = (props) => {
   const [downloadExcel, setDownloadExcel] = React.useState(false);
   const [distributionName, setDistributionName] = React.useState([]);
   const [driversSelected, setDriversSelected] = React.useState([]);
-
+  const [disabledGeneratedTraceability, setDisabledGeneratedTraceability] =
+    React.useState(false);
+  const [downloadTraceabilityDispatch, setDownloadTraceabilityDispatch] =
+  React.useState(false);
   const openMenu = Boolean(anchorEl);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -241,6 +246,8 @@ const DistributionsTable = (props) => {
   console.log('errorMessage', errorMessage);
   const {excelSummaryRoutesRes} = useSelector(({movements}) => movements);
   console.log('excelSummaryRoutesRes', excelSummaryRoutesRes);
+  const {generateTraceabilitySheetsRes} = useSelector(({movements}) => movements);
+  console.log('generateTraceabilitySheetsRes', generateTraceabilitySheetsRes);
   const {getPresignedRes} = useSelector(({fileExplorer}) => fileExplorer);
   console.log('getPresignedRes', getPresignedRes);
   const {userAttributes} = useSelector(({user}) => user);
@@ -256,6 +263,7 @@ const DistributionsTable = (props) => {
 
   const [typeDialog, setTypeDialog] = React.useState('');
   const {getStartingLocationsRes} = useSelector(({locations}) => locations);
+  const [openTraceabilitySheets, setOpenTraceabilitySheets] = React.useState(false);
 
   //APIS
   const toListDistributions = (payload, jwtToken) => {
@@ -266,6 +274,9 @@ const DistributionsTable = (props) => {
   };
   const toExportExcelSummaryRoutes = (payload, jwtToken) => {
     dispatch(exportExcelSummaryRoutes(payload, jwtToken));
+  };
+  const toGenerateTraceabilitySheets = (payload, jwtToken) => {
+    dispatch(generateTraceabilitySheets(payload, jwtToken));
   };
   const toUploadFile = (url, data) => {
     dispatch(uploadFile(url, data));
@@ -436,6 +447,9 @@ const DistributionsTable = (props) => {
       }
       //setOpenMenu(false);
       setOpenCollateRecordsAndGuides(true);
+    } else if (type == 'traceability') {
+      setTypeDialog(type);
+      setOpenTraceabilitySheets(true);
     }
     // console.log('Veamos el total', selectedRoute);
     // let routePredefinedId = selectedRoute.routePredefinedId;
@@ -670,6 +684,9 @@ const DistributionsTable = (props) => {
   const handleCloseCollateRecordsAndDistributions = () => {
     setOpenCollateRecordsAndDistributions(false);
   };
+  const handleCloseTraceabilitySheets = () => {
+    setOpenTraceabilitySheets(false)
+  };
   const handleOpenEndCollate = () => {
     setOpenEndCollate(false);
   };
@@ -866,7 +883,56 @@ const DistributionsTable = (props) => {
       query: {},
     });
   };
+  useEffect(() => {
+    if (generateTraceabilitySheetsRes && downloadTraceabilityDispatch) {
+      setDownloadTraceabilityDispatch(false);
+      const byteCharacters = atob(generateTraceabilitySheetsRes);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'HojasDeRastreabilidad.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setDisabledGeneratedTraceability(false);
+    }
+  }, [generateTraceabilitySheetsRes, downloadTraceabilityDispatch]);
+  const generateTraceabilitySheetsDispatch = () => {
+    let listPayload = {
+      request: {
+        payload: {
+          denominationMerchant:
+            userDataRes.merchantSelected.denominationMerchant,
+          numberDocumentMerchant:
+            userDataRes.merchantSelected.numberDocumentMerchant,
+          merchantId: userDataRes.merchantSelected.merchantId,
+          deliveryDistributionId: listDistribution[indexDistributionSelected]
+          .deliveryDistributionId,
+          records: base64.split('base64,')[1],
+        },
+      },
+    };
+    const excelPayload = listPayload;
 
+    console.log('excelPayload', excelPayload);
+    setDisabledGeneratedTraceability(true);
+    dispatch({type: FETCH_SUCCESS, payload: undefined});
+    dispatch({type: FETCH_ERROR, payload: undefined});
+    dispatch({
+      type: GENERATE_TRACEABILITY_SHEETS,
+      payload: undefined,
+    });
+    toGenerateTraceabilitySheets(excelPayload, jwtToken);
+    setDownloadTraceabilityDispatch(true);
+  };
   const uploadNewFile = (event) => {
     if (event.target.value !== '') {
       console.log('archivo', event.target.files[0]);
@@ -1300,6 +1366,12 @@ const DistributionsTable = (props) => {
           <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
           Compaginar actas y guías
         </MenuItem>
+        <MenuItem
+          onClick={handleClickOpen.bind(this, 'traceability')}
+        >
+          <ReceiptLongIcon sx={{mr: 1, my: 'auto'}} />
+          Generar Rastreabilidad
+        </MenuItem>
       </Menu>
       <Dialog
         open={openCollateRecordsAndGuides}
@@ -1529,6 +1601,94 @@ const DistributionsTable = (props) => {
             onClick={sendCollate2}
           >
             Generar compaginado
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openTraceabilitySheets}
+        onClose={handleCloseTraceabilitySheets}
+        PaperProps={{sx: {textAlign: 'center'}}} // Aplicar textAlign: 'center' al PaperProps
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle sx={{fontSize: '1.5em'}} id='alert-dialog-title'>
+          {'Generar Rastreabilidad'}
+        </DialogTitle>
+        <DialogContent sx={{justifyContent: 'center'}}>
+          <Stack
+            sx={{mt: 2}}
+            direction={'column'}
+            className={classes.stack}
+          >
+            <Button variant='contained' color='primary' component='label'>
+              Adjuntar Reporte de Resultados
+              <input
+                type='file'
+                hidden
+                onChange={uploadRecords}
+                id='newFile'
+                name='newfile'
+                accept='.xlsx'
+              />
+            </Button>
+            {records ? (
+              <IconButton onClick={uploadRecords2}>
+                <FilePresentIcon
+                  color='success'
+                  sx={{fontSize: '2em', mx: 2}}
+                />
+                {records.name}
+              </IconButton>
+            ) : (
+              <></>
+            )}
+            {disabledGeneratedTraceability ? (
+              <Typography
+                component='h3'
+                sx={{
+                  fontSize: 16,
+                  fontWeight: Fonts.BOLD,
+                  mb: {xs: 3, lg: 4},
+                }}
+              >
+                Espere unos segundos por favor...
+              </Typography>
+            ) : (
+              <></>
+            )}
+          </Stack>
+          <Collapse in={showAlert}>
+            <Alert
+              severity='error'
+              action={
+                <IconButton
+                  aria-label='close'
+                  color='inherit'
+                  size='small'
+                  onClick={() => {
+                    setShowAlert(false);
+                  }}
+                >
+                  <CloseIcon fontSize='inherit' />
+                </IconButton>
+              }
+              sx={{mb: 2}}
+            >
+              {typeAlert == 'sizeOverWeightLimit' ? (
+                'El archivo supera los 12Mb.'
+              ) : (
+                <></>
+              )}
+            </Alert>
+          </Collapse>
+        </DialogContent>
+        <DialogActions sx={{justifyContent: 'center'}}>
+          <Button
+            variant='outlined'
+            onClick={generateTraceabilitySheetsDispatch}
+            disabled={disabledGeneratedTraceability}
+          >
+            Generar Rastreabilidad
           </Button>
         </DialogActions>
       </Dialog>

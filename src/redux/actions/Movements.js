@@ -44,6 +44,7 @@ import {
   GENERATE_EXCEL_TEMPLATE_TO_CONSOLIDATED,
   GENERATE_EXCEL_SUMMARY_ROUTES,
   GENERATE_EXCEL_SHEETS_DISPATCH,
+  GENERATE_TRACEABILITY_SHEETS,
 } from '../../shared/constants/ActionTypes';
 import API from '@aws-amplify/api';
 import {request} from '../../@crema/utility/Utils';
@@ -622,6 +623,29 @@ export const exportExcelSheetsDispatchFile = (payload) => {
       })
       .catch((error) => {
         console.log('exportExcelSheetsDispatchFile error', error);
+        dispatch({type: FETCH_ERROR, payload: error.message});
+      });
+  };
+};
+
+export const generateTraceabilitySheets = (payload) => {
+  return (dispatch, getState) => {
+    dispatch({type: FETCH_START});
+    request(
+      'post',
+      '/facturacion/distribution/generateTraceabilitySheets',
+      payload,
+    )
+      .then((data) => {
+        console.log('generateTraceabilitySheets resultado', data.data);
+        dispatch({
+          type: GENERATE_TRACEABILITY_SHEETS,
+          payload: data.data.response.payload,
+        });
+        dispatch({type: FETCH_SUCCESS, payload: 'success'});
+      })
+      .catch((error) => {
+        console.log('generateTraceabilitySheets error', error);
         dispatch({type: FETCH_ERROR, payload: error.message});
       });
   };

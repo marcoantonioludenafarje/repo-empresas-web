@@ -255,7 +255,7 @@ export const TO_UPDATE_ITEM_IN_LIST_DISTRIBUTION =
 export const GENERATE_EXCEL_SUMMARY_ROUTES = 'generate_excel_summary_routes';
 export const GENERATE_EXCEL_SHEETS_DISPATCH =
   'generate_excel_sheets_and_dispatch';
-
+export const GENERATE_TRACEABILITY_SHEETS = 'generate_traceability_sheets'
 export const GENERATE_DISTRIBUTION = 'generate_distribution';
 export const PREVISUALIZE_BILL = 'previsualize_bill';
 export const PREVISUALIZE_REFERRAL_GUIDE = 'previsualize_referral_guide';
