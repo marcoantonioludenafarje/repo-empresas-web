@@ -431,6 +431,7 @@ export default function Views(props) {
                 ? row.plans.find((obj) => obj.active == true).limits
                     .transactionalSunatDocuments
                 : 0;
+              console.log('loooooo0', row);
               console.log('loooooo', row.currentCountMovement.sunatDocuments);
               console.log(
                 'loooooo1',
