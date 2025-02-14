@@ -439,6 +439,7 @@ export default function Views(props) {
               );
               const currentSunatDocuments =
                 row.currentCountMovement.sunatDocuments &&
+                row.currentCountMovement.sunatDocuments != undefined &&
                 row.currentCountMovement.sunatDocuments['2024']
                   ? row.currentCountMovement.sunatDocuments['2024']['APRIL']
                       .quantity
