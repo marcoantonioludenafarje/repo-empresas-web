@@ -432,11 +432,6 @@ export default function Views(props) {
                     .transactionalSunatDocuments
                 : 0;
               console.log('loooooo0', row);
-              console.log('loooooo', row.currentCountMovement.sunatDocuments);
-              console.log(
-                'loooooo1',
-                row.currentCountMovement.sunatDocuments['2024'],
-              );
               const currentSunatDocuments =
                 row.currentCountMovement.sunatDocuments &&
                 row.currentCountMovement.sunatDocuments != undefined &&
