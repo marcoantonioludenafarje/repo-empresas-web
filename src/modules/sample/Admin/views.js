@@ -437,11 +437,12 @@ export default function Views(props) {
                 'loooooo1',
                 row.currentCountMovement.sunatDocuments['2024'],
               );
-              const currentSunatDocuments = row.currentCountMovement
-                .sunatDocuments
-                ? row.currentCountMovement.sunatDocuments['2024']['APRIL']
-                    .quantity
-                : 0;
+              const currentSunatDocuments =
+                row.currentCountMovement.sunatDocuments &&
+                row.currentCountMovement.sunatDocuments['2024']
+                  ? row.currentCountMovement.sunatDocuments['2024']['APRIL']
+                      .quantity
+                  : 0;
               console.log('sunatLimit', sunatLimit);
               console.log('currentSunatDocuments', currentSunatDocuments);
               const excessDocuments =
